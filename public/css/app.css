@@ -1,0 +1,195 @@
+body{
+    min-width: 290px;
+}
+.tickerBox{
+    margin-right: 6px;
+}
+
+.example_path {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 30px;
+    border: 3px solid #000;
+}
+
+.example_path .example_block {
+    position: absolute;
+    background-color: blue;
+    width: 40px;
+    height: 20px;
+    padding-top: 10px;
+    text-align: center;
+    color: #fff;
+    font-size: 10px;
+    white-space: nowrap;
+    margin-left: -20px;
+}
+.panelControls{
+    width: 100%;
+}
+
+.panelControls-mobile table{
+    table-layout: fixed;
+    margin-left: auto;
+    margin-right: auto;
+}
+.panelControls-mobile td{
+    vertical-align: top;
+
+}
+
+.panelControls table { table-layout: fixed; 
+    margin-left: auto;
+    margin-right: auto;
+    }
+.panelControls td { width: 100px; 
+    vertical-align: top;
+}
+.panelButton{
+   
+    
+    cursor:pointer;
+    background-color:#eee;
+    color:#7B8585;
+    height: 40px;
+    width: 125px;
+    font-size: 18px;
+    
+}
+.ledBar td{
+   vertical-align: top;
+
+}
+.panelTitle{
+   
+    white-space: pre;
+    text-align: center;
+}
+.panelTitle b{
+    color: orange;
+}
+.led{
+    width:10px;
+    height:10px;
+}
+.pButton::after{
+    content: url('../assets/angle-up.svg');
+    width: 10px;
+}
+
+.mButton::after{
+    content: url('../assets/angle-down.svg');
+}
+
+.lButton::after{
+    content: url('../assets/angle-left.svg');
+}
+
+.rButton::after{
+    content: url('../assets/angle-right.svg');
+}
+.panelDisplay table{
+    margin-left: auto;
+    margin-right: auto;
+}
+.treeNode .innerDiv{
+    margin-left: 5px;
+}
+.navItem{
+    display: inline-block;
+    text-align: center;
+    width: 100px;
+    padding: 1px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+.internalContainer{
+  border: 1px solid black;
+}
+.settingDisplay{
+    margin-left: auto;
+    margin-right: auto;
+    width: 610px;
+
+}
+.tabNav{
+    margin-left: auto;
+    margin-right: auto;
+    width: 650px;
+
+}
+.volatileDisplay{
+    margin-left: auto;
+    margin-right: auto;
+    width: 610px;
+}
+.buttCell button{
+   	border: none;
+    background: transparent;
+    
+}
+
+.menuTable h1::after{
+    width: 100%;
+    border-bottom: none;
+}
+.menuTable h1{
+    margin: 0px;
+}
+.menuTable{
+    width: 100%;
+    background-color: #E6E6E6;
+    border-bottom: 2px solid #CCC;
+}
+.buttCell{
+    width: 46px;
+
+}
+.backButton::before{
+    /*float: left;*/
+    content:url('../assets/angle-left.svg');
+}
+.config::after{
+    float: right;
+    content:url('../assets/config.svg');
+}
+.attention::after{
+    float: right;
+    content:url('../assets/attention.svg');
+}
+.attention_clear::after{
+    content:url('../assets/attention_h.svg');
+}
+.menuItem h3{
+    padding-left: 10px;
+    display: inline-block;
+    width: 80%;
+}
+.titleSpan_wc::after{
+    float: right;
+    content:url('../assets/angle-right.svg');
+    margin-top: 5px;
+}
+
+
+.menuCategory{
+    border-top-width: 2px;
+    border-top-style: groove;
+    border-top: #dddddd
+}
+.collapsed h2::after{
+    float: right;
+    content:url('../assets/angle-down.svg');
+    margin-top: 5px;
+
+}
+.expanded h2::after{
+    float: right;
+    content:url('../assets/angle-up.svg');
+    margin-top: 5px;    
+}
+.selectNode{
+    padding-left: 15px;
+    border-top-style: groove;
+}
