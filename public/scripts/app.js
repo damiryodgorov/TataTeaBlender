@@ -273,7 +273,7 @@ var Container = React.createClass({
 			//socket.emit('ws', evt)
 		}
 		socket.on('wssss', function(e){
-			//console.log("????")
+		//	console.log("????")
 
 			//console.log(e)
 			//var ev = toArrayBuffer(e)
@@ -289,147 +289,18 @@ var Container = React.createClass({
 	}
 });
 
-var MenuCategory = React.createClass({
-	handleItemclick: function(dat){
-		this.props.onHandleClick(dat);
-	},
-	toggle: function(e){
-		e.preventDefault();
-		this.setState({isHidden: !this.state.isHidden} );
-	},
+
+var EditControl = React.createClass({
 	getInitialState: function(){
-		return({
-			 isHidden: false
-			
-		});
+		return({val:this.props.data, changed:false})
+	},
+	sendPacket: function(){
+		this.props.sendPacket(this.props.name, this.state.val)
 	},
 	render: function(){
-		var ih = this.state.isHidden;
-		var handler = this.handleItemclick;
-		//var hasContent = this.props.data
-	    console.log(this.props.data)
-		var menuNodes = ""
-		var mNodes = []
-		if(Array.isArray(this.props.data)){
-			menuNodes = this.props.data.map(function (item) {
-	        console.log(item)
-	        if(item.length == 2){
-	        	console.log(item.length)
-	        	return (
-	      	<MenuItem lkey={item[0]} name={item[0]} isHidden={ih} hasChild={false} 
-	      	data={item} onItemClick={handler} hasContent={true}/>)	
-	        }else{
-	        	console.log(item)
-	        	for(var it in item){
-	        		console.log(it)
-	        		console.log(item[it])
-	        		var vit = (<MenuItem lkey={it} name={it} isHidden={ih} hasChild={false} data={item[it]} onItemClick={handler} hasContent={true}/>)
-	        		mNodes.push(vit)
-	        	}
-	        //	console.log(mNodes)
-	      	}	
-	        	
-	        });
-
-	      
-	      
-	    
-		}else{
-			menuNodes = <MenuItem isHidden={ih} onItemClick={handler} name={this.props.data} data={this.props.data}/>
-		}
-		
-	    var className = "menuCategory";
-	    if (ih){
-	    	className = "menuCategory collapsed";
-	    }
-	    else{
-	    	className = "menuCategory expanded";
-	    }
-		return(
-			<div className={className}>
-			<span  onClick={this.toggle}><h2 >{this.props.name}</h2></span>
-				{menuNodes}
-				{mNodes}
-			</div>
-		);
+		return (<div></div>)
 	}
 })
-var SearchBox = React.createClass({
-	render: function() {
-		return (
-			<div></div>
-		);
-	}
-})
-var MenuItem = React.createClass({
-	onItemClick: function(){
-		if(Array.isArray(this.props.data)&&(this.props.data.length > 1)){
-			this.props.onItemClick(this.props.data)	
-		}else{
-			console.log(this.props.data)
-		}
-		
-	},
-	render: function(){
-		if(Array.isArray(this.props.data)&&(this.props.data.length > 1)){
-		return (<div className='menuItem' hidden={this.props.isHidden} onClick={this.onItemClick}>{this.props.name}</div>)
-		}else{
-			var pram;
-			var val;
-			if(typeof pVdef[0][this.props.name] != 'undefined'){
-				pram = pVdef[0][this.props.name]
-				console.log(pram)
-				var deps = []
-				val = this.props.data
-				if(pram["@type"]){
-					var f =	pram["@type"]["s"]
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(d){
-							//console.log(d)
-							if(pVdef[2][d]["@rec"] == 0){
-								return sysSettings[d];
-							}else{
-								return prodSettings[d];
-							}
-						});
-					}
-					val = Params[f].apply(this, [].concat.apply([], [val, deps]));
-				}
-
-				if(pram["@labels"]){
-					val = pVdef[3][pram["@labels"]]["english"][val]
-				}
-			}else if(typeof pVdef[1][this.props.name] != 'undefined'){
-				pram = pVdef[1][this.props.name]
-				console.log(pram)
-				var deps = []
-				val = this.props.data
-				if(pram["@type"]){
-					var f =	pram["@type"]["s"]
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(d){
-							//console.log(d)
-							if(pVdef[2][d]["@rec"] == 0){
-								return sysSettings[d];
-							}else{
-								return prodSettings[d];
-							}
-						});
-					}
-					val = Params[f].apply(this, [].concat.apply([], [val, deps]));
-				}
-
-				if(pram["@labels"]){
-					val = pVdef[3][pram["@labels"]]["english"][val]
-				}
-			}else{
-				val = this.props.data
-			}
-			return (<div className='menuItem' hidden={this.props.isHidden} onClick={this.onItemClick}>{this.props.name + ": " + val}</div>)
-		}
-	}
-})
-
 var ItemContent = React.createClass({
 	render: function(){
 		return (<div>could be the plot here!</div>)
@@ -708,11 +579,7 @@ var PanelNav = React.createClass({
 var MobileMenu = React.createClass({
 	//This display will allow for navigating back to previous pages - 
 	getInitialState: function(){
-		var data = [];
-		if(this.props.data.length > 0){
-			data = this.props.data
-		}
-		return {data:[['MainDisplay', data]], stack:[], settings:false, attention:"attention", query: ''}
+		return ({currentView:'MainDisplay', data:[], stack:[], settings:false, attention:"attention", query: '' })
 	},
 	handleMsg: function(evt){
 		var msg = evt
@@ -738,7 +605,7 @@ var MobileMenu = React.createClass({
 			//console.log(lcd_type)
     		if (lcd_type == 0x1){
     	//	console.log('here')
-			this.refs.pn.handleMsg(msg)
+			//this.refs.pn.handleMsg(msg)
 			}else if(lcd_type == 0x4){
 				//system
 				if(isVdefSet){
@@ -785,7 +652,7 @@ var MobileMenu = React.createClass({
     				}
 					prodSettings = prodRec;
 	// 				console.log(this.state.data)
-					if(this.state.data[0][0] == 'MainDisplay'){
+					if(this.state.currentView == 'MainDisplay'){
 					var prodName = this.getVal(prodArray, 1, 'ProdName')		
 					var sens = this.getVal(prodArray, 1, 'SigPath[0].Sens')
 					//console.log([prodName, sens])
@@ -794,7 +661,8 @@ var MobileMenu = React.createClass({
 						this.refs.md.setState({productName:prodName, sens:sens})
 					}
 					}
-					else if(this.state.data[0][0] = "Settings"){
+					else if(this.state.currentView = "SettingsDisplay"){
+			//			console.log('line 810')
 						var comb = [];
 						for(var c in nVdf){
 							comb[c] = {};
@@ -817,8 +685,6 @@ var MobileMenu = React.createClass({
 						
 					}
 				}
-				//Product
-				
 			}
 		}
 		}
@@ -855,10 +721,10 @@ var MobileMenu = React.createClass({
 	},
 	changeView: function(d){
 		var st = this.state.stack;
-		st.push(this.state.data); //immediate parent will be at top of stack
+		st.push([this.state.currentView, this.state.data]); //immediate parent will be at top of stack
 		console.log(d)
 		console.log(st)
-		this.setState({data:[d]})
+		this.setState({currentView:d[0], data:d[1]})
 		//console.log(this.props.data)
 		//this.setState({data: d, stack: st });
 	},
@@ -867,9 +733,9 @@ var MobileMenu = React.createClass({
 			var stack = this.state.stack;
 			var d = stack.pop();
 			if(this.state.settings){
-				setTimeout(this.setState({data: d, stack: stack, settings: !this.state.settings}),100);
+				setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack, settings: !this.state.settings}),100);
 			}else{
-				setTimeout(this.setState({data: d, stack: stack}),100);
+				setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack}),100);
 			}
 			
 		}
@@ -880,7 +746,7 @@ var MobileMenu = React.createClass({
 		}
 		else{
 			this.setState({settings:true});
-			var SettingArray = ['Settings',[]]
+			var SettingArray = ['SettingsDisplay',[]]
 			this.changeView(SettingArray);
 		}
 	},
@@ -901,43 +767,34 @@ var MobileMenu = React.createClass({
 	filter: function(){
 		//filter components? (based on data?)
 	},
-	componentWillReceiveProps: function(nextProps){
-		this.setState({data:[['Settings',nextProps.data],['Volatile',[]]]})
-	},
-	settingClick: function(s){
-		console.log(s)
-		this.changeView(s);
+	settingClick:function(s){
+		var set = this.state.data.slice(0)
+		set.push(s[0])
+		this.changeView(['SettingsDisplay',set]);
 	},
 	render: function(){
-		var self = this;
+		var display;
 		var back = false;
 		if (this.state.stack.length > 0){
 			back = true;
 		}
 		var attention = this.state.attention
-		var cv = this.changeView
-		var menuCats = this.state.data.map(function(ct, i){
-			if(ct[0] == 'MainDisplay'){
-				return(<MainDisplay ws={self.props.ws} ref='md'/>)
-			}else if(ct[0] == 'Settings'){
-				return(<SettingsDisplay ws={self.props.ws} ref='sd' onHandleClick={self.settingClick} data={[]}/>)
-			}else{
-				return(<MenuCategory ws={self.props.ws} key={i} name={ct[0]} data={[ct[1]]} onHandleClick={cv}/>)	
-			}
-			
-		})
+		if(this.state.currentView == 'MainDisplay'){
+			display = <MainDisplay ws={this.props.ws} ref='md'/>
+		}else if(this.state.currentView == 'SettingsDisplay'){
+			display = <SettingsDisplay ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick}/>
+		}
 		var panel = <Panel ws={this.props.ws} ref={'pn'}/>;
-		console.log(this.state.data)
-		return (<div className='menuContainer'>
+
+		return(<div className="menuContainer">
 			<table className="menuTable"><tr><td className="buttCell" hidden={!back} ><button className="backButton" onClick={this.goBack}/></td>
 			<td><h1>Menu</h1></td>
 			<td className="buttCell"><button onClick={this.toggleAttention} className={attention}/></td>
-			<td className="buttCell"><button onClick={this.toggleSettings} className="config"/></td></tr></table><table className="menuTable">
-			<tr><td><SearchBox query={this.state.query} doSearch={this.doSearch}/></td></tr></table> 
-			{menuCats}
-			{panel}
+			<td className="buttCell"><button onClick={this.toggleSettings} className="config"/></td></tr></table>
+			{display}
 			</div>)
 	}
+
 })
 
 var SettingsDisplay = React.createClass({
@@ -975,31 +832,44 @@ var SettingsDisplay = React.createClass({
 			
 		});
 	},
-	render: function(){
+	renderSettings: function(){
+		
+	},
+	render: function (){
 		var ih = this.state.isHidden;
+		var data = this.props.data
+		console.log(data)
+		var lvl = data.length
 		var handler = this.handleItemclick;
-		//var hasContent = this.props.data
-		console.log(this.state)
-	    console.log(this.props.data)
-	    var clis = [];
-		for(var c in combinedSettings){
-			console.log(c)
-			clis.push([c,combinedSettings[c]])
-		}
-		var menuNodes = ""
-		if(Array.isArray(clis)){
-			menuNodes = clis.map(function (item) {
+		
+		console.log(lvl)
+		var nodes;
+		 var clis = [];
+			for(var c in combinedSettings){
+				console.log(c)
+				clis.push([c,combinedSettings[c]])
+			}
+			console.log(clis)
+		if(lvl == 0){
+			nodes = clis.map(function (item) {
 	        console.log(item)
+	     //   return(<SettingItem data={item} onItemClick={handler} isHidden={ih}/>)
 	      return (
-	      	<MenuItem lkey={item[0]} name={item[0]} isHidden={ih} hasChild={false} 
+	      	<SettingItem lkey={item[0]} name={item[0]} isHidden={ih} hasChild={true} 
 	      	data={item} onItemClick={handler} hasContent={true}/>
 	      );
 	    });
-		}else{
-			menuNodes = <MenuItem isHidden={ih} onItemClick={handler} name={this.props.data} data={this.props.data}/>
+
+		}else if(lvl == 1 ){
+			var cat = data[0];
+			var list = combinedSettings[cat]
+			console.log(list)
+			nodes = []
+			for (var l in list){
+				nodes.push((<SettingItem lkey={l} name={l} isHidden={ih} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true} />))
+			}
 		}
-		
-	    var className = "menuCategory";
+			    var className = "menuCategory";
 	    if (ih){
 	    	className = "menuCategory collapsed";
 	    }
@@ -1009,12 +879,87 @@ var SettingsDisplay = React.createClass({
 		return(
 			<div className={className}>
 			<span  onClick={this.toggle}><h2 >Settings</h2></span>
-				{menuNodes}
+				{nodes}
 			</div>
 		);
+	},
+	
+})
+var SettingItem = React.createClass({
+	getInitialState: function(){
+		return({mode:0})
+	},
+	sendPacket: function(){
+
+	},
+	onItemClick: function(){
+		if(this.props.hasChild){
+			this.props.onItemClick(this.props.data)	
+		}
+		
+	},
+	render: function(){
+		if(this.state.mode == 1){
+			return <EditControl name={this.props.name} data={this.props.data} sendPacket={this.sendPacket}/>
+		}
+		if(Array.isArray(this.props.data)&&(this.props.data.length > 1)){
+		return (<div className='menuItem' hidden={this.props.isHidden} onClick={this.onItemClick}>{this.props.name}</div>)
+		}else{
+			var pram;
+			var val;
+			if(typeof pVdef[0][this.props.name] != 'undefined'){
+				pram = pVdef[0][this.props.name]
+				console.log(pram)
+				var deps = []
+				val = this.props.data
+				if(pram["@type"]){
+					var f =	pram["@type"]["s"]
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(d){
+							//console.log(d)
+							if(pVdef[2][d]["@rec"] == 0){
+								return sysSettings[d];
+							}else{
+								return prodSettings[d];
+							}
+						});
+					}
+					val = Params[f].apply(this, [].concat.apply([], [val, deps]));
+				}
+
+				if(pram["@labels"]){
+					val = pVdef[3][pram["@labels"]]["english"][val]
+				}
+			}else if(typeof pVdef[1][this.props.name] != 'undefined'){
+				pram = pVdef[1][this.props.name]
+				console.log(pram)
+				var deps = []
+				val = this.props.data
+				if(pram["@type"]){
+					var f =	pram["@type"]["s"]
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(d){
+							//console.log(d)
+							if(pVdef[2][d]["@rec"] == 0){
+								return sysSettings[d];
+							}else{
+								return prodSettings[d];
+							}
+						});
+					}
+					val = Params[f].apply(this, [].concat.apply([], [val, deps]));
+				}
+
+				if(pram["@labels"]){
+					val = pVdef[3][pram["@labels"]]["english"][val]
+				}
+			}else{
+				val = this.props.data
+			}
+			return (<div className='menuItem' hidden={this.props.isHidden} onClick={this.onItemClick}>{this.props.name + ": " + val}</div>)
+		}
 	}
 })
-
 var TreeNode = React.createClass({
 	getInitialState: function(){
 		return ({hidden:true})

@@ -102,6 +102,7 @@ client.on('connect', function(conn){
 		var ab = toArrayBuffer(message.binaryData)
 		//console.log('ab::')
 		//console.log(ab)
+		//console.log('packet')
 		socket.emit('wssss', ab)
 	})
 	socket.on('wsans', function(e){
