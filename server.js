@@ -90,25 +90,33 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 http.listen(app.get('port'), function(){
 	console.log('Server started: http://localhost:' + app.get('port') + '/');
+
 });
+var wsocket = new WebSocketClient();
+	wsocket.connect('ws://192.168.10.2/panel');
+var connection;
+wsocket.on('connect', function (conn) {
+	// body...
+	connection = conn;
+})
 io.on('connection', function(socket){ 
 var client = new WebSocketClient();
 
-client.connect('ws://192.168.10.2/panel');
-client.on('connect', function(conn){
-	console.log('ws connected')
-	conn.on('message', function(message){
+//client.connect('ws://192.168.10.2/panel');
+	if (connection){
+		connection.on('message', function(message){
 		//console.log(message)
 		var ab = toArrayBuffer(message.binaryData)
 		//console.log('ab::')
 		//console.log(ab)
 		//console.log('packet')
 		socket.emit('wssss', ab)
-	})
+		})	
+	}
+	
 	socket.on('wsans', function(e){
 		//conn.send(e)
 	})
-})
 
   
   console.log("connected")

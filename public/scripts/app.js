@@ -236,6 +236,9 @@ var pVdef;
 var isVdefSet = false;
 var nVdf;
 
+
+
+
 socket.on('location', function(data){
 	console.log(data)
 })
@@ -258,6 +261,17 @@ socket.on('vdef', function(vdf){
 	isVdefSet = true;
 	//console.log(pVdef);
 })
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
 
 var Container = React.createClass({
 	getInitialState:function(){
@@ -289,23 +303,42 @@ var Container = React.createClass({
 	}
 });
 
-
-var EditControl = React.createClass({
+var TickerBox = React.createClass({
 	getInitialState: function(){
-		return({val:this.props.data, changed:false})
+		return{ticks:0}
 	},
-	sendPacket: function(){
-		this.props.sendPacket(this.props.name, this.state.val)
+	componentDidMount: function(){
+		var ref = this;
+		
 	},
 	render: function(){
-		return (<div></div>)
+		var tickerVal= this.state.ticks;
+		if(Math.abs(tickerVal)<50){
+			tickerVal = 0;
+		}else if(tickerVal>0){
+			tickerVal = tickerVal - 50;
+		}else{
+			tickerVal = tickerVal + 50
+		}
+		var color = 'green';
+		if(Math.abs(tickerVal)>50){
+			color = 'red';
+		}
+		if(tickerVal>200){
+			tickerVal = 200;
+		}else if(tickerVal < -200){
+			tickerVal = -200
+		}
+		return (
+			<div className='tickerBox'>
+			<div className='example_path'>
+				<div className='example_block' style = {{left:50-(tickerVal/4)+'%',backgroundColor:color}}/>
+			</div>
+			</div>
+		)
 	}
-})
-var ItemContent = React.createClass({
-	render: function(){
-		return (<div>could be the plot here!</div>)
-	}
-})
+});
+
 
 var CanvasElem = React.createClass({
 	componentDidMount: function(){
@@ -325,7 +358,38 @@ var CanvasElem = React.createClass({
 		);
 	}
 });
-
+var LEDBar = React.createClass({
+	getInitialState: function(){
+		return ({leds:0, lcd:0})
+	},
+	render: function(){
+		var rej = 'black';
+		var prod = 'black';
+		var fault = 'black';
+		console.log(this.state.leds & 0xf)
+		if ((this.state.lcd>>3)&1 == 1){
+			fault = 'red';
+		}
+		if ((this.state.leds>>5)&1 == 1){
+			prod = 'green';
+		}
+		if ((this.state.leds>>4)&1 == 1){
+			prod = 'red';
+		}
+		if ((this.state.leds>>6)&1 == 1){
+			rej = 'red';
+		}
+		return(<div className='ledBar' >
+				<table><tbody><tr><td style={{width:'17px'}}><LED color={rej}/></td><td>Detection</td><td className='txtLeft'>Product:</td><td style={{width:'17px'}}><LED color={prod}/></td></tr></tbody></table>
+			</div>
+			)
+	}
+});
+var LED = React.createClass({
+	render: function(){
+		return(<div className='led' style={{ backgroundColor:this.props.color}}/>)
+	}
+})
 var Panel = React.createClass({
 	handleItemclick: function(dat){
 		this.props.onHandleClick(dat);
@@ -380,6 +444,53 @@ var Panel = React.createClass({
 			</div>)
 	}
 })
+
+var App = React.createClass({
+
+  getInitialState: function() {
+    return { modalIsOpen: false };
+  },
+
+  openModal: function() {
+    this.setState({modalIsOpen: true});
+  },
+
+  afterOpenModal: function() {
+    // references are now sync'd and can be accessed.
+    this.refs.subtitle.style.color = '#f00';
+  },
+
+  closeModal: function() {
+    this.setState({modalIsOpen: false});
+  },
+
+  render: function() {
+    return (
+      <div>
+        <button onClick={this.openModal}>Open Modal</button>
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModal}
+          style={customStyles} >
+
+          <h2 ref="subtitle">Hello</h2>
+          <button onClick={this.closeModal}>close</button>
+          <div>I am a modal</div>
+          <form>
+            <input />
+            <button>tab navigation</button>
+            <button>stays</button>
+            <button>inside</button>
+            <button>the modal</button>
+          </form>
+        </Modal>
+      </div>
+    );
+  }
+});
+
+
 var PanelDisplay = React.createClass({
 	getInitialState: function(){
 		var t1 = ''
@@ -445,141 +556,29 @@ var PanelDisplay = React.createClass({
     		}
 		return(
 			<div className="panelDisplay" hidden={!this.state.show}>
-				<table><tr>
+				<table><tbody><tr>
 				<td><NavButton ws={self.props.ws} klass='rButton' keyMap={65}/></td><td>
 				<h3  className='panelTitle' style={font}><pre id='l1' style={{margin:0}}>{t1}</pre></h3>
 				</td><td><NavButton ws={self.props.ws} klass='lButton' keyMap={57}/></td></tr><tr>
 				<td><NavButton ws={self.props.ws} klass='rButton' keyMap={51}/></td><td>
 				<h3  className='panelTitle' style={font}><pre id='l2' style={{margin:0}}>{t2}</pre></h3>
-				</td><td><NavButton ws={self.props.ws} klass='lButton' keyMap={56}/></td></tr></table>
+				</td><td><NavButton ws={self.props.ws} klass='lButton' keyMap={56}/></td></tr></tbody></table>
 				{editControls}
 			</div>
 		)
 	}
 });
 
-var NavButton = React.createClass({
-	handleClick: function(){
-		//send DSP call to update panel accordingly
-		var data = new Uint8Array(1);
-		data[0] = this.props.keyMap & 0xff;
-		console.log(this.props.ws)
-		this.props.ws.send(data.buffer);
-		
-	},
-	render: function(){
-		return(<button className={this.props.klass} onClick={this.handleClick}></button>)
-	}
-})
 
-var PanelControls = React.createClass({
-	
-	render: function(){
-		var self = this;
-		if(!this.props.isDesktop){
-			return(
-			<div className="panelControls-mobile">
-			<PanelNav flat={true}/>
-			<table><tr>
-			<td>
-				<PanelButton ws={self.props.ws} label="Enter" keyMap={50}/>
-				<PanelButton ws={self.props.ws} label="Exit" keyMap={49}/>
-				<PanelButton ws={self.props.ws} label="Menu" keyMap={66}/>
-				
-			</td><td>
-				<PanelButton ws={self.props.ws} label="Sensitivity" keyMap={55}/>
-				<PanelButton ws={self.props.ws} label="Product" keyMap={68}/>
-				<PanelButton ws={self.props.ws} label="Calibrate" keyMap={35}/>
-				<PanelButton ws={self.props.ws} label="Test" keyMap={48}/>
-				<PanelButton ws={self.props.ws} label="Unit" keyMap={42}/>
-			</td>
-			</tr>
-			</table>
-			</div>
-			)
-		}
-		return(
-			<div className="panelControls">
-			<table><tr>
-			<td>
-				<PanelButton ws={self.props.ws} label="Enter" keyMap={50}/>
-				<PanelButton ws={self.props.ws} label="Exit" keyMap={49}/>
-				<PanelButton ws={self.props.ws} label="Menu" keyMap={66}/>
-			</td><td>
-				<PanelNav ws={self.props.ws}/>
-			</td>
-			<td>
-				<PanelButton ws={self.props.ws} label="Sensitivity" keyMap={55}/>
-				<PanelButton ws={self.props.ws} label="Product" keyMap={68}/>
-				<PanelButton ws={self.props.ws} label="Calibrate" keyMap={35}/>
-				<PanelButton ws={self.props.ws} label="Test" keyMap={48}/>
-				<PanelButton ws={self.props.ws} label="Unit" keyMap={42}/>
-			</td>
-			</tr>
-			</table>
-			</div>
-		)
-	}
-});
-
-var PanelButton = React.createClass({
-	handleClick: function(){
-		//send DSP call to update panel accordingly
-		var data = new Uint8Array(1);
-		data[0] = this.props.keyMap & 0xff;
-		this.props.ws.send(data.buffer);
-		
-	},
-	render: function(){
-		return(
-			<div>
-			<button className='panelButton' onClick={this.handleClick}>
-				{this.props.label}
-				</button>
-			</div>)
-	}
-});
-var PanelNav = React.createClass({
-	render: function(){
-		var self = this;
-		if(this.props.flat){
-			return(
-				<div className='panelNav'>
-				<table><tr>
-				<td><NavButton ws={self.props.ws} klass='pButton' keyMap={67}/></td>
-				<td><NavButton ws={self.props.ws} klass='lButton' keyMap={54}/></td>
-				<td><NavButton ws={self.props.ws} klass='rButton' keyMap={52}/></td>
-				<td><NavButton ws={self.props.ws} klass='mButton' keyMap={53}/></td>
-				</tr></table>
-				</div>
-				)
-		}else{
-		return(<div className='panelNav'>
-				<table>
-				<tr><td></td><td>
-					<NavButton ws={self.props.ws} klass='pButton' keyMap={67}/>
-	
-				</td><td></td></tr>
-				<tr><td>
-					<NavButton ws={self.props.ws} klass='lButton' keyMap={54}/>
-	
-				</td><td></td><td>
-					<NavButton ws={self.props.ws} klass='rButton' keyMap={52}/>
-
-				</td></tr>
-				<tr><td></td><td>
-					<NavButton ws={self.props.ws} klass='mButton' keyMap={53}/>
-
-				</td><td></td></tr>
-				</table>
-			</div>)
-	}
-	}
-});
 var MobileMenu = React.createClass({
 	//This display will allow for navigating back to previous pages - 
 	getInitialState: function(){
-		return ({currentView:'MainDisplay', data:[], stack:[], settings:false, attention:"attention", query: '' })
+		var mq = window.matchMedia("(min-width: 800px)");
+		mq.addListener(this.listenToMq)
+		console.log(mq.matches)
+	
+		return ({modalIsOpen:false, currentView:'MainDisplay', data:[], stack:[], 
+			settings:false, attention:"attention", query: '' , faults:[], mq:mq, br7:mq.matches})
 	},
 	handleMsg: function(evt){
 		var msg = evt
@@ -657,9 +656,9 @@ var MobileMenu = React.createClass({
 					var sens = this.getVal(prodArray, 1, 'SigPath[0].Sens')
 					//console.log([prodName, sens])
 
-					if((this.refs.md.state.productName != prodName)||(this.refs.md.state.sens != sens)){
+					/*if((this.refs.md.state.productName != prodName)||(this.refs.md.state.sens != sens)){
 						this.refs.md.setState({productName:prodName, sens:sens})
-					}
+					}*/
 					}
 					else if(this.state.currentView = "SettingsDisplay"){
 			//			console.log('line 810')
@@ -732,17 +731,16 @@ var MobileMenu = React.createClass({
 		if(this.state.stack.length > 0){
 			var stack = this.state.stack;
 			var d = stack.pop();
-			if(this.state.settings){
-				setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack, settings: !this.state.settings}),100);
-			}else{
-				setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack}),100);
-			}
+			
+				setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack, setttings:(d[0] == 'SettingsDisplay') }),100);
 			
 		}
 	},
 	toggleSettings: function(){
 		if(this.state.settings){
-			this.goBack();
+			var st = [];
+			var currentView = 'MainDisplay';
+			this.setState({currentView:currentView, stack:[], data:[], settings:false})
 		}
 		else{
 			this.setState({settings:true});
@@ -752,9 +750,11 @@ var MobileMenu = React.createClass({
 	},
 	toggleAttention: function(){
 		if(this.state.attention == "attention"){
-			this.setState({attention:"attention_clear"});
+			this.setState({attention:"attention_clear", faults:[{'type':'reference'},{'type':'24v'}]});
+			this.openModal();
 		}else{
-			this.setState({attention:"attention"})
+			this.setState({attention:"attention", faults:[]})
+			this.closeModal();
 		}
 	},
 	doSearch: function(q){
@@ -772,7 +772,25 @@ var MobileMenu = React.createClass({
 		set.push(s[0])
 		this.changeView(['SettingsDisplay',set]);
 	},
+	openModal: function() {
+	this.refs.faultModal.toggle();
+    this.setState({modalIsOpen: true});
+  },
+
+  afterOpenModal: function() {
+    // references are now sync'd and can be accessed.
+    this.refs.subtitle.style.color = '#f00';
+  },
+
+  closeModal: function() {
+    this.setState({modalIsOpen: false});
+  },
+  listenToMq:function (match) {
+  	// body...
+  	this.setState({br7:this.state.mq.matches})
+   },
 	render: function(){
+		var products = [{name:'Product1', number:1}, {name:'Product2', number:2}]
 		var display;
 		var back = false;
 		if (this.state.stack.length > 0){
@@ -780,21 +798,80 @@ var MobileMenu = React.createClass({
 		}
 		var attention = this.state.attention
 		if(this.state.currentView == 'MainDisplay'){
-			display = <MainDisplay ws={this.props.ws} ref='md'/>
+		//	display = <MainDisplay ws={this.props.ws} ref='md'/>
+			display = 	<MainView ws={this.props.ws}/>
 		}else if(this.state.currentView == 'SettingsDisplay'){
-			display = <SettingsDisplay ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick}/>
+			display = <SettingsDisplay goBack={this.goBack} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick}/>
 		}
 		var panel = <Panel ws={this.props.ws} ref={'pn'}/>;
+		var faults = this.state.faults.map(function(f){
+			return <FaultItem data={f}/>
+		})
+		var menuString = 'Stealth'
+		var config = 'config'
+		if(this.state.currentView == 'SettingsDisplay'){
+			menuString = 'Settings'
+			config = 'config_active'
+		}
+		if (!this.state.br7){
+
 
 		return(<div className="menuContainer">
-			<table className="menuTable"><tr><td className="buttCell" hidden={!back} ><button className="backButton" onClick={this.goBack}/></td>
-			<td><h1>Menu</h1></td>
+			<table className="menuTable"><tbody><tr><td className="buttCell" hidden={true} ><button className="backButton" onClick={this.goBack}/></td>
+			<td><img className='logo' src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
 			<td className="buttCell"><button onClick={this.toggleAttention} className={attention}/></td>
-			<td className="buttCell"><button onClick={this.toggleSettings} className="config"/></td></tr></table>
-			{display}
+			<td className="buttCell"><button onClick={this.toggleSettings} className={config}/></td></tr></tbody></table>
+			<Modal
+          ref={'faultModal'} >
+
+          <h2 ref="subtitle">Faults</h2>
+          <button onClick={this.closeModal}>close</button>
+          <div>Current Faults</div>
+       		{faults}
+        </Modal>
+        	<LiveView/>
+        	{display}
+
+        	<ProductEditor products={products}/>
+			<MultiScan/>
 			</div>)
+		}else{
+			return (<div className="menuContainer">
+			<table className="menuTable"><tbody><tr><td className="buttCell" hidden={true} ><button className="backButton" onClick={this.goBack}/></td>
+			<td><img className='logo' src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td><td className='mobCell'><MobLiveBar/></td>
+			<td className="buttCell"><button onClick={this.toggleAttention} className={attention}/></td>
+			<td className="buttCell"><button onClick={this.toggleSettings} className={config}/></td></tr></tbody></table>
+			<Modal
+          ref={'faultModal'} >
+
+          <h2 ref="subtitle">Faults</h2>
+          <button onClick={this.closeModal}>close</button>
+          <div>Current Faults</div>
+       		{faults}
+        </Modal>
+        	{display}
+        	<ProductEditor products={products}/>
+        	<MultiScan/>
+			</div>)
+		}
 	}
 
+})
+
+var MobLiveBar = React.createClass({
+	render: function () {
+		return(<div className="mobLiveBar"><StatBar/></div>)
+		// body...
+	}
+})
+
+
+var FaultItem = React.createClass({
+	render: function(){
+		var type = this.props.data.type
+
+		return <div><label>{"Fault type: " + type}</label></div>
+	}
 })
 
 var SettingsDisplay = React.createClass({
@@ -810,13 +887,9 @@ var SettingsDisplay = React.createClass({
 		for(var p in x){
 			if(typeof y[p] != 'undefined'){
 				if(!(x[p] == y[p])){
-					//console.log(p)
 					return true
 				}
 			}else{
-
-				//console.log(x[p])
-				//console.log(y[p])
 				return true
 			}
 		}
@@ -828,12 +901,8 @@ var SettingsDisplay = React.createClass({
 	},
 	getInitialState: function(){
 		return({
-			 isHidden: true, sysRec:sysSettings, prodRec:prodSettings
-			
+			 isHidden: false, sysRec:sysSettings, prodRec:prodSettings
 		});
-	},
-	renderSettings: function(){
-		
 	},
 	render: function (){
 		var ih = this.state.isHidden;
@@ -841,7 +910,7 @@ var SettingsDisplay = React.createClass({
 		console.log(data)
 		var lvl = data.length
 		var handler = this.handleItemclick;
-		
+		var lab = 'Settings'
 		console.log(lvl)
 		var nodes;
 		 var clis = [];
@@ -850,6 +919,8 @@ var SettingsDisplay = React.createClass({
 				clis.push([c,combinedSettings[c]])
 			}
 			console.log(clis)
+		var nav =''
+		var backBut = ''
 		if(lvl == 0){
 			nodes = clis.map(function (item) {
 	        console.log(item)
@@ -858,16 +929,24 @@ var SettingsDisplay = React.createClass({
 	      	<SettingItem lkey={item[0]} name={item[0]} isHidden={ih} hasChild={true} 
 	      	data={item} onItemClick={handler} hasContent={true}/>
 	      );
+	      
 	    });
-
+			nav = nodes;
 		}else if(lvl == 1 ){
+
 			var cat = data[0];
+			lab = cat
 			var list = combinedSettings[cat]
 			console.log(list)
 			nodes = []
 			for (var l in list){
 				nodes.push((<SettingItem lkey={l} name={l} isHidden={ih} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true} />))
 			}
+			nav = (<div className='setNav'><span><h3>{cat}</h3></span>
+					{nodes}
+				</div>)
+			backBut =(<img className='bbut' onClick={this.props.goBack} src='assets/angle-left.svg'/>)
+
 		}
 			    var className = "menuCategory";
 	    if (ih){
@@ -877,9 +956,11 @@ var SettingsDisplay = React.createClass({
 	    	className = "menuCategory expanded";
 	    }
 		return(
+			<div className='settingsDiv'>
 			<div className={className}>
-			<span  onClick={this.toggle}><h2 >Settings</h2></span>
-				{nodes}
+			<span  onClick={this.toggle}><h2 >{backBut}{lab}</h2></span>
+				{nav}
+			</div>
 			</div>
 		);
 	},
@@ -900,13 +981,15 @@ var SettingItem = React.createClass({
 	},
 	render: function(){
 		if(this.state.mode == 1){
-			return <EditControl name={this.props.name} data={this.props.data} sendPacket={this.sendPacket}/>
+			return (<div className='sItem' hidden={this.props.isHidden}>
+				<EditControl name={this.props.name} data={this.props.data} sendPacket={this.sendPacket}/></div>) 
 		}
 		if(Array.isArray(this.props.data)&&(this.props.data.length > 1)){
-		return (<div className='menuItem' hidden={this.props.isHidden} onClick={this.onItemClick}>{this.props.name}</div>)
+		return (<div className='sItem hasChild' hidden={this.props.isHidden} onClick={this.onItemClick}><label>{this.props.name}</label></div>)
 		}else{
 			var pram;
 			var val;
+			var label = false
 			if(typeof pVdef[0][this.props.name] != 'undefined'){
 				pram = pVdef[0][this.props.name]
 				console.log(pram)
@@ -929,6 +1012,7 @@ var SettingItem = React.createClass({
 
 				if(pram["@labels"]){
 					val = pVdef[3][pram["@labels"]]["english"][val]
+					label = true
 				}
 			}else if(typeof pVdef[1][this.props.name] != 'undefined'){
 				pram = pVdef[1][this.props.name]
@@ -951,42 +1035,47 @@ var SettingItem = React.createClass({
 				}
 
 				if(pram["@labels"]){
-					val = pVdef[3][pram["@labels"]]["english"][val]
+				//	val = pVdef[3][pram["@labels"]]["english"][val]
+					label = true
 				}
 			}else{
 				val = this.props.data
+			} 
+			var edctrl = <EditControl name={this.props.name} sendPacket={this.sendPacket} data={val}/>
+			if(label){
+				edctrl = <EditControlSelect mode={true} list={pVdef[3][pram["@labels"]]['english']} val = {val}><label>{this.props.name}</label></EditControlSelect>
 			}
-			return (<div className='menuItem' hidden={this.props.isHidden} onClick={this.onItemClick}>{this.props.name + ": " + val}</div>)
+
+			return (<div className='sItem' hidden={this.props.isHidden}> {edctrl}
+				</div>)
 		}
 	}
 })
-var TreeNode = React.createClass({
+
+var EditControl = React.createClass({
 	getInitialState: function(){
-		return ({hidden:true})
+		return({val:this.props.data, changed:false})
 	},
-	toggle: function(){
-		var hidden = !this.state.hidden
-		this.setState({hidden:hidden});
+	sendPacket: function(){
+		this.props.sendPacket(this.props.name, this.state.val)
+	},
+	valChanged: function(e){
+		this.setState({val:e.target.value})
+	},
+	submit: function(){
+
 	},
 	render: function(){
-		//console.log("render")
-		var cName = "collapsed"
-		if(!this.state.hidden){
-			cName = "expanded"
-		}
-		return (
-			<div hidden={this.props.hide} className="treeNode">
-				<div onClick={this.toggle} className={cName}/>
-				<div className="nodeName">
-					<span onClick={this.toggle}>{this.props.nodeName}</span>
-				</div>
-				<div className="innerDiv" hidden={this.state.hidden}>
-				{this.props.children}
-				</div>
-			</div>
-		)
+		return (<div><label>{this.props.name + ": "}</label><input onChange={this.valChanged} type='text' value={this.state.val}></input>
+			<button onClick={this.sendPacket}>Submit</button></div>)
 	}
 })
+var ItemContent = React.createClass({
+	render: function(){
+		return (<div>could be the plot here!</div>)
+	}
+})
+
 var MainDisplay = React.createClass({
 	getInitialState: function(){
 		return({productName:'',sens:100,sig:0,phase:'90', isHidden:false})
@@ -1010,14 +1099,329 @@ var MainDisplay = React.createClass({
 			<span  onClick={this.toggle}><h2 >Main</h2></span>
 			<div hidden={ih} className='mainPage'>
 				<table>
+					<tbody>
 					<tr><td>Current Product: </td><td>{this.state.productName}</td></tr>
 					<tr><td>Sensitivity: </td><td>{this.state.sens}</td></tr>
 					<tr><td>Signal: </td><td>{this.state.sig}</td></tr>
 					<tr><td>Phase: </td><td>{this.state.phase}</td></tr>
+					</tbody>
 				</table>
 			</div>
 			</div>)
 	}
 })
 
-React.render(<Container/>,document.getElementById('content'))
+var MainView = React.createClass({
+	//this will contain product info, etc, and be 
+	getInitialState: function(){
+		return ({products:{}, currProd:0,prodList:[], hasProd:false})
+	},
+	setProd: function(e){
+		e.preventDefault();
+	},
+	render: function(){
+		var selectProduct = (<select onChange={this.setProd}>
+			<option value = "product1">Product 1</option>
+		</select>)
+		return(<div className='mainView'><table><tbody><tr><td>Current Product: </td><td>{selectProduct}</td></tr><tr><td>Sensitivity: </td><td>100</td></tr>
+			<tr><td>Phase:</td><td>90</td></tr>
+			<tr><td>Mode:</td><td>0</td></tr></tbody></table></div>)
+	}
+})
+
+var LiveView = React.createClass({
+	getInitialState: function(){
+		return ({rejects:0, mode:0, phase:90})
+	},
+	render: function(){
+		return (<div className='liveView'>
+			{this.props.children}
+			<StatBar/>
+			</div>
+			)
+		/*<table className='liveTable'><tbody><tr><td>Current Rejects: </td><td>{this.state.rejects}</td></tr>
+			<tr><td>Mode: </td><td>{this.state.mode}</td></tr>
+			<tr><td>Phase: </td><td>{this.state.phase}</td></tr></tbody></table>*/
+	}	
+})
+
+var StatBar = React.createClass({
+	render: function(){
+		return (<div className='statBar'>
+			<TickerBox/>
+			<LEDBar/>
+			</div>)
+	}
+})
+
+var EditControlSelect = React.createClass({
+	getInitialState: function(){
+		return({value:this.props.val, editMode:this.props.mode})
+	},
+	onSubmit:function(e){
+		e.preventDefault();
+		var val = this.state.value;
+		if(helpers.Editable.indexOf(this.props.s) != -1 ){
+			val = helpers.Reverse[this.props.s].apply(this, [].concat.apply([],[val, deps] ))
+		}else if(this.props.bitLen == 16){
+			val = VdefHelper.swap16(val)
+
+		}
+		this.props.handleSubmit(this.props.param, parseInt(val));
+		this.setState({editMode:false})
+	},
+	changeMode:function(e){
+		e.preventDefault();
+		if(this.props.editable){
+			this.setState({editMode:true})
+		}
+	},
+	valChanged:function(e){
+		this.setState({value:e.target.value});
+	},
+	render: function(){
+		var selected = this.state.value;
+		console.log('line 924')
+		console.log(this.props.list)
+		var options = this.props.list.map(function(e,i){
+			if(i==selected){
+				return (<option value={i} selected>{e}</option>)
+			}else{
+				return (<option value={i}>{e}</option>)
+			}
+		})
+		var editbutton = "";
+		if(this.props.editable){
+			editbutton = <input type="submit" value="Edit" />
+		}
+		if(this.state.editMode){
+		return(<form className='editControl' onSubmit={this.onSubmit}>
+			{this.props.children}
+			<select onChange={this.valChanged}>
+			{options}
+			</select>
+			{editbutton}
+			</form>)
+		}else{
+			return(
+				<form className='editControl' onSubmit={this.changeMode}>
+					{this.props.children}
+					<label>{this.props.displayValue}</label>
+					{editbutton}
+				</form>
+			)
+		}
+	}
+})	
+var Modal = React.createClass({
+	getInitialState: function () {
+		// body...
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		return({className:klass, show:false})
+	},
+	toggle: function () {
+		// body...
+		this.setState({show:!this.state.show})
+	},
+	doNothing:function (e) {
+		e.preventDefault();
+		// body...
+	},
+	render: function () {
+		// body...
+		return(<div className={this.state.className} hidden={!this.state.show}>
+				<div className='modal-outer'>
+				<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
+				<div className='modal-content'>
+					{this.props.children}
+				</div>
+				</div>
+			</div>)
+	}
+})
+
+var ResponsiveMenuBar = React.createClass({
+	render:function(){
+		return (<div></div>)
+	}
+})
+var ProductEditor = React.createClass({
+	getInitialState: function () {
+		// body...
+		return({products:this.props.products, prodNum:1, index:0})
+	},
+	addProd: function (n) {
+		// body...
+		var products = this.state.products
+		products.push(n);
+		this.setState({products:products})
+
+	},
+	selectProd: function(index) {
+		// body...
+		//alert(prod)
+		this.setState({prodNum:this.state.products[index].number, index:index})
+	},
+	call: function (f,i,data) {
+		// body...
+
+		 if(f == 'copy'){
+		 	this.addProd(i)
+		 }
+		 else if(f == 'del')
+		 {
+		 	this.del(i)
+		 }else if( f == 'update'){
+		 	this.update(i,data)
+		 }	
+	},
+	update: function (i,d) {
+		// body...
+		var products = this.state.products
+		products[i].name = d
+		this.setState({products:products})
+	},
+	del: function(p) {
+		var products = this.state.products;
+		products.splice(p,1);
+		this.setState({products:products})
+		
+	},
+	openAddModal: function () {
+		// body...
+		this.refs.addModal.toggle()
+	},
+	copyProd: function() {
+		this.addProd(this.props.products[this.state.index])
+		// body...
+	},
+	addNewProd: function () {
+		// body...
+		this.addProd({name:'Product', number:(this.props.products.length + 1)})
+	},
+	delCurrent: function () {
+		// body...
+		var products = this.state.products;
+		products.splice(this.state.index,1);
+
+		this.setState({products:products, index:0, prodNum:products[0].number})
+	},
+	render: function() {
+		// body...
+		var self = this;
+		var ProdList = this.state.products.map(function(p,i){
+			var active = false;
+			if(p.number == self.state.prodNum){
+				active= true;
+			}
+			return <ProductView call={self.call} prod={p} index={i} select={self.selectProd} active={active}/>
+			console.log(active)
+		});
+		return (<div className='productEditor'>
+				<button onClick={this.addNewProd}>Add New</button>
+				<button onClick={this.copyProd}>Copy Current Product</button>
+				<button onClick={this.delCurrent}>Delete Current Product</button>
+			
+				{ProdList}
+				<Modal ref='addModal'>
+					<div>copy existing product</div>
+					<div>new product</div>
+				</Modal>
+			</div>)
+		}
+	
+});
+var ProductView = React.createClass({
+	getInitialState: function(){
+		return ({data:[], name:this.props.prod.name})
+	},
+	del: function () {
+		// body...
+		this.props.call('del', this.props.index)
+	},
+	copy: function () {
+		// body...
+		this.props.call('copy',this.props.index, this.props.prod)
+	},
+	edit: function () {
+		//alert('edit')
+		//this.props.call('edit', this.props.index, this.state.data)
+		// body...
+		console.log('edit')
+		this.refs.editModal.toggle()
+	},
+	submitClick: function (argument) {
+		// body...
+		//console.log('click me')
+		this.refs.editModal.toggle()
+		this.props.call('update', this.props.index, this.state.name)
+	},
+	select: function () {
+		// body...
+		//alert("select this")
+		this.props.select(this.props.index)
+	},
+	onNameChange: function (e){
+		// body...
+		this.setState({name:e.target.value})
+	},
+	render: function (argument) {
+		// body...
+		var p = this.props.prod
+		var act;
+		if(this.props.active){
+			act=(<img className='checkmark' src='assets/check48.png'/>)
+		}
+
+		return (<div className='productView'>
+				<button onClick={this.edit}><img className='checkmark' src='assets/edit48.png'/></button><label>{p.name}</label> <button onClick={this.del}>Delete</button> <button onClick={this.copy}>Copy</button> 
+				<button onClick={this.select}>Select</button>{act}
+				<Modal ref={'editModal'}><div><label>Edit Product</label>
+				<input type='text' value={this.state.name} onChange={this.onNameChange}/>
+				<button onClick={this.submitClick}>submit</button></div></Modal>
+			</div>)
+	}
+})
+
+var MultiScan = React.createClass({
+	getInitialState: function () {
+		// body...
+		return ({units:['192.168.10.50','192.168.10.51']})
+	},
+	switchUnit: function (u) {
+		// body...
+		console.log(u)
+		alert(u)
+	},
+	render: function () {
+		var self = this;
+		var units = this.state.units.map(function (u) {
+			// body...
+			return <MultiScanUnit onSelect={self.switchUnit} unit={u}/>
+		})
+		// body...
+		return (<div className='multScan'>
+				{units}
+			</div>)
+	}
+})
+var MultiScanUnit = React.createClass({
+	onClick: function () {
+		// body...
+		this.props.onSelect(this.props.unit)
+	},
+	render: function () {
+		// body...
+		return(<div className='multiScanUnit'>
+			<LiveView>
+				<div onClick={this.onClick}><label>Detector Name</label></div>
+				<div><label>Current Product</label></div>
+			</LiveView>
+		</div>)
+	}
+})
+ReactDOM.render(<Container/>,document.getElementById('content'))
+

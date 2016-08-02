@@ -19,8 +19,9 @@ class NetInterface{
 			return this.interface_list_mac(filter);
 		}
 	}
-	static interface_list_mac(filter){
+		static interface_list_mac(filter){
 		var list = os.networkInterfaces();
+		console.log(list)
 		var names = []
 		var ifList = []
 		if (filter != null){
@@ -33,9 +34,17 @@ class NetInterface{
 		
 
 		for (var i = names.length - 1; i >= 0; i--) {
-			var block = new Netmask(list[names[i]][1]['address'],list[names[i]][1]['netmask']);
+			//console.log(list[names[i]])
+			var j;
+			if(list[names[i]][0]['family']=='IPv4'){
+				j = 0;
+			}else{
+				j = 1;
+			}
+			console.log(j)
+			var block = new Netmask(list[names[i]][j]['address'],list[names[i]][j]['netmask']);
 
-			ifList.push( new NetInterface(names[i], list[names[i]][1]['address'], block.broadcast, list[names[i]][1]['mac'].split(':').map(function(e){
+			ifList.push( new NetInterface(names[i], list[names[i]][j]['address'], block.broadcast, list[names[i]][j]['mac'].split(':').map(function(e){
 				return parseInt(e,16);
 			}), block.mask));
 		};
@@ -55,14 +64,19 @@ class NetInterface{
 		console.log(names);
 
 		for (var i = names.length - 1; i >= 0; i--) {
-			var block = new Netmask(list[names[i]][1]['address'],list[names[i]][1]['netmask']);
+			var j;
+			if(list[names[i]][0]['family']=='IPv4'){
+				j = 0;
+			}else{
+				j = 1;
+			}
+			var block = new Netmask(list[names[i]][j]['address'],list[names[i]][j]['netmask']);
 
-			ifList.push( new NetInterface(names[i], list[names[i]][1]['address'], block.broadcast, list[names[i]][1]['mac'].split(':').map(function(e){
+			ifList.push( new NetInterface(names[i], list[names[i]][j]['address'], block.broadcast, list[names[i]][j]['mac'].split(':').map(function(e){
 				return parseInt(e,16);
 			}), block.mask));
 		};
 		return ifList;
 	}
-
 }
 module.exports = NetInterface

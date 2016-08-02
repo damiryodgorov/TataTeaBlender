@@ -1,3 +1,30 @@
+var TreeNode = React.createClass({
+	getInitialState: function(){
+		return ({hidden:true})
+	},
+	toggle: function(){
+		var hidden = !this.state.hidden
+		this.setState({hidden:hidden});
+	},
+	render: function(){
+		//console.log("render")
+		var cName = "collapsed"
+		if(!this.state.hidden){
+			cName = "expanded"
+		}
+		return (
+			<div hidden={this.props.hide} className="treeNode">
+				<div onClick={this.toggle} className={cName}/>
+				<div className="nodeName">
+					<span onClick={this.toggle}>{this.props.nodeName}</span>
+				</div>
+				<div className="innerDiv" hidden={this.state.hidden}>
+				{this.props.children}
+				</div>
+			</div>
+		)
+	}
+})
 var MenuCategory = React.createClass({
 	handleItemclick: function(dat){
 		this.props.onHandleClick(dat);
@@ -144,3 +171,121 @@ var MenuItem = React.createClass({
 		}
 	}
 })
+var NavButton = React.createClass({
+	handleClick: function(){
+		//send DSP call to update panel accordingly
+		var data = new Uint8Array(1);
+		data[0] = this.props.keyMap & 0xff;
+		console.log(this.props.ws)
+		this.props.ws.send(data.buffer);
+		
+	},
+	render: function(){
+		return(<button className={this.props.klass} onClick={this.handleClick}></button>)
+	}
+})
+
+var PanelControls = React.createClass({
+	
+	render: function(){
+		var self = this;
+		if(!this.props.isDesktop){
+			return(
+			<div className="panelControls-mobile">
+			<PanelNav flat={true}/>
+			<table><tr>
+			<td>
+				<PanelButton ws={self.props.ws} label="Enter" keyMap={50}/>
+				<PanelButton ws={self.props.ws} label="Exit" keyMap={49}/>
+				<PanelButton ws={self.props.ws} label="Menu" keyMap={66}/>
+				
+			</td><td>
+				<PanelButton ws={self.props.ws} label="Sensitivity" keyMap={55}/>
+				<PanelButton ws={self.props.ws} label="Product" keyMap={68}/>
+				<PanelButton ws={self.props.ws} label="Calibrate" keyMap={35}/>
+				<PanelButton ws={self.props.ws} label="Test" keyMap={48}/>
+				<PanelButton ws={self.props.ws} label="Unit" keyMap={42}/>
+			</td>
+			</tr>
+			</table>
+			</div>
+			)
+		}
+		return(
+			<div className="panelControls">
+			<table><tr>
+			<td>
+				<PanelButton ws={self.props.ws} label="Enter" keyMap={50}/>
+				<PanelButton ws={self.props.ws} label="Exit" keyMap={49}/>
+				<PanelButton ws={self.props.ws} label="Menu" keyMap={66}/>
+			</td><td>
+				<PanelNav ws={self.props.ws}/>
+			</td>
+			<td>
+				<PanelButton ws={self.props.ws} label="Sensitivity" keyMap={55}/>
+				<PanelButton ws={self.props.ws} label="Product" keyMap={68}/>
+				<PanelButton ws={self.props.ws} label="Calibrate" keyMap={35}/>
+				<PanelButton ws={self.props.ws} label="Test" keyMap={48}/>
+				<PanelButton ws={self.props.ws} label="Unit" keyMap={42}/>
+			</td>
+			</tr>
+			</table>
+			</div>
+		)
+	}
+});
+
+var PanelButton = React.createClass({
+	handleClick: function(){
+		//send DSP call to update panel accordingly
+		var data = new Uint8Array(1);
+		data[0] = this.props.keyMap & 0xff;
+		this.props.ws.send(data.buffer);
+		
+	},
+	render: function(){
+		return(
+			<div>
+			<button className='panelButton' onClick={this.handleClick}>
+				{this.props.label}
+				</button>
+			</div>)
+	}
+});
+var PanelNav = React.createClass({
+	render: function(){
+		var self = this;
+		if(this.props.flat){
+			return(
+				<div className='panelNav'>
+				<table><tr>
+				<td><NavButton ws={self.props.ws} klass='pButton' keyMap={67}/></td>
+				<td><NavButton ws={self.props.ws} klass='lButton' keyMap={54}/></td>
+				<td><NavButton ws={self.props.ws} klass='rButton' keyMap={52}/></td>
+				<td><NavButton ws={self.props.ws} klass='mButton' keyMap={53}/></td>
+				</tr></table>
+				</div>
+				)
+		}else{
+		return(<div className='panelNav'>
+				<table>
+				<tr><td></td><td>
+					<NavButton ws={self.props.ws} klass='pButton' keyMap={67}/>
+	
+				</td><td></td></tr>
+				<tr><td>
+					<NavButton ws={self.props.ws} klass='lButton' keyMap={54}/>
+	
+				</td><td></td><td>
+					<NavButton ws={self.props.ws} klass='rButton' keyMap={52}/>
+
+				</td></tr>
+				<tr><td></td><td>
+					<NavButton ws={self.props.ws} klass='mButton' keyMap={53}/>
+
+				</td><td></td></tr>
+				</table>
+			</div>)
+	}
+	}
+});

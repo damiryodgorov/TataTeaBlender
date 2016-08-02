@@ -1,10 +1,138 @@
 body{
     min-width: 290px;
 }
+.logo{
+    height: 72px;
+    margin-right: 20px;
+}
+.custom-modal{
+    /*display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.modal-content{
+    background-color: #fefefe;
+    /* margin: 15% auto; */
+    margin-top: -30px;
+    padding: 20px;
+    border: 1px solid #888;
+    /* width: 80%; */
+    border-radius: 10px;
+    top: 0px;
+    position: relative;
+   /* z-index: -1;/* Could be more or less, depending on screen size */
+}
+.modal-close{
+    left: -10px;
+    position: relative;
+    width: 34px;
+    height: 34px;
+    padding: 0px;
+    /* margin-top: 15%; */
+    margin-bottom: -20px;
+    border-radius: 20px;
+    border: 1px solid #eee;
+    background-color: #fff;
+    z-index: 8;
+}
+.innerDiv{
+    background: #ddd;
+}
+.modal-outer{
+    margin: 15% auto;
+    width: 80%;
+}
 .tickerBox{
     margin-right: 6px;
 }
 
+.liveView{
+    height: 100px;
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+}
+.multiScanUnit .liveView{
+    height: 150px;
+}
+.mainView{
+    height: 200px;
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+}
+.hasChild::before{
+    position:fixed;
+    content: url('../assets/angle-right.svg');
+}
+.hasChild label{
+    margin-left: 32px
+}
+.settingsDiv{
+   padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    min-height: 200px;
+  
+}
+.setNav{
+    padding: 5px;
+}
+@media (min-width: 1290px) and (orientation: landscape) {
+   /* .liveView{
+   /*    width: 40%;
+        display: inline-block;
+          padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    }
+    */
+
+    .mainView{
+        min-height: 200px;
+         padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    }
+    .settingsDiv{
+   
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    min-height: 200px;
+  
+    }
+}
+.statBar table{
+    width: 100%
+}
+.mobCell{
+    width: 100%
+}
+.closeIcon{
+
+}
+
+.ledClass{
+    width: 130px;
+}
+.ledClass label{
+    width: 111px;
+    display: inline-block;
+}  
 .example_path {
     position: relative;
     overflow: hidden;
@@ -16,14 +144,14 @@ body{
 .example_path .example_block {
     position: absolute;
     background-color: blue;
-    width: 40px;
+    width: 20px;
     height: 20px;
     padding-top: 10px;
     text-align: center;
     color: #fff;
     font-size: 10px;
     white-space: nowrap;
-    margin-left: -20px;
+    margin-left: -10px;
 }
 .panelControls{
     width: 100%;
@@ -45,6 +173,20 @@ body{
     }
 .panelControls td { width: 100px; 
     vertical-align: top;
+}
+.sItem{
+    padding-left: 10px;
+    border: solid rgba(0, 0, 0, 0.5) 1px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    
+}
+.sItem label{
+    width: 300px;
+    display: inline-block;
+}
+.txtLeft{
+    text-align: -webkit-right;
 }
 .panelButton{
    
@@ -70,8 +212,9 @@ body{
     color: orange;
 }
 .led{
-    width:10px;
-    height:10px;
+    width:15px;
+    height:15px;
+    display: inline-block;
 }
 .pButton::after{
     content: url('../assets/angle-up.svg');
@@ -142,6 +285,9 @@ body{
     background-color: #E6E6E6;
     border-bottom: 2px solid #CCC;
 }
+.tickerCell{
+    width: 200px;
+}
 .buttCell{
     width: 46px;
 
@@ -153,6 +299,10 @@ body{
 .config::after{
     float: right;
     content:url('../assets/config.svg');
+}
+.config_active::after{
+    float: right;
+    content:url('../assets/config_active.svg');
 }
 .attention::after{
     float: right;
@@ -192,4 +342,20 @@ body{
 .selectNode{
     padding-left: 15px;
     border-top-style: groove;
+}
+.menuItem{
+    border: solid rgba(0, 0, 0, 0.49) 1px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    padding-left: 5px;
+}
+.productEditor{
+       padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    min-height: 200px;
+}
+.checkmark{
+    height: 20px;
 }
