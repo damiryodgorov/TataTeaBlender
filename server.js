@@ -145,10 +145,14 @@ var client = new WebSocketClient();
     }else{
       console.log('dsp visible')
       dspip = ip.join('.');
-      }
+     
       console.log(dspip);
-      dspips.push(dspip);
-      socket.emit('location', dspips)
+      dspips.push(e[i]);
+
+     } 
+    }
+  }
+       socket.emit('location', dspips)
         fs.readFile(__dirname + "/json/vdef.json", (err, data) => {
       var vdef = JSON.parse(data);
       console.log('vdef')
@@ -159,8 +163,6 @@ var client = new WebSocketClient();
       })
       
     });
-    }
-  }
   dspips = [];
 });
 });

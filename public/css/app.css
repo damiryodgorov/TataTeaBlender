@@ -5,6 +5,35 @@ body{
     height: 72px;
     margin-right: 20px;
 }
+.find::after{
+    float: right;
+    content:url('../assets/search.svg');
+}
+.prefInterface{
+     height: 200px;
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+}
+.multiBankUnit{
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    margin-top: 30px;
+}
+.customSelect{
+    height: 30px;
+    width: 100px;
+    display: inline-block;
+}
+.customSelect select{
+    font-size: 18px;
+    height: 30px;
+    width: 100px;
+    padding: 5px;
+}
 .custom-modal{
     /*display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -51,8 +80,15 @@ body{
 }
 .tickerBox{
     margin-right: 6px;
+    
 }
-
+.smCell{
+    width: 130px;
+}
+.statCell{
+    display: inline-block;
+    width: 130px;
+}
 .liveView{
     height: 100px;
     padding: 10px;
@@ -61,7 +97,13 @@ body{
     margin: 5px;
 }
 .multiScanUnit .liveView{
-    height: 150px;
+    height: 180px;
+}
+.inactive .liveView {
+    background: grey;
+}
+.faultactive .liveView{
+    background: rgba(255, 118, 0, 0.5);
 }
 .mainView{
     height: 200px;
@@ -71,11 +113,14 @@ body{
     margin: 5px;
 }
 .hasChild::before{
-    position:fixed;
+    /*position:fixed;*/
     content: url('../assets/angle-right.svg');
+        display: inline-block;
+    height: 32px;
+    vertical-align: bottom;
 }
 .hasChild label{
-    margin-left: 32px
+    margin-left: 2px
 }
 .settingsDiv{
    padding: 10px;
@@ -85,8 +130,17 @@ body{
     min-height: 200px;
   
 }
+.defCont{
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+}
 .setNav{
     padding: 5px;
+}
+.landingMenuTable{
+    width: 100%;
 }
 @media (min-width: 1290px) and (orientation: landscape) {
    /* .liveView{
@@ -118,6 +172,32 @@ body{
 }
 .statBar table{
     width: 100%
+
+}
+.statBarMB{
+        border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    padding-left: 10px;
+    
+   
+    
+}
+.statBarMB table{
+    width: 100%;
+    line-height: 20px;
+}
+.statBarMB .namelabel{
+    border: 1px solid grey;
+    padding: 1px;
+    padding-left: 4px;
+    border-radius: 10px;
+    margin-top: -10px;
+    margin-left: -16px;
+    background: #f1e8e8;
+    width: 10px;
+    margin-bottom: 4px;
+    font-size: 10px;
 }
 .mobCell{
     width: 100%
@@ -129,6 +209,9 @@ body{
 .ledClass{
     width: 130px;
 }
+.ledCell{
+    align-content: right;
+}
 .ledClass label{
     width: 111px;
     display: inline-block;
@@ -137,15 +220,16 @@ body{
     position: relative;
     overflow: hidden;
     width: 100%;
-    height: 30px;
-    border: 3px solid #000;
+    height: 10px;
+    background: #ddd;
+    /*border: 3px solid #000;*/
 }
 
 .example_path .example_block {
     position: absolute;
     background-color: blue;
     width: 20px;
-    height: 20px;
+    height: 10px;
     padding-top: 10px;
     text-align: center;
     color: #fff;
@@ -203,6 +287,12 @@ body{
    vertical-align: top;
 
 }
+.mbTable{
+    width: 100%;
+}
+.mbTable td{
+    border: black 1px solid;
+}
 .panelTitle{
    
     white-space: pre;
@@ -256,6 +346,11 @@ body{
     width: 610px;
 
 }
+.bbut{
+    float:left;
+    display: inline-block;
+    margin-right: -130px;
+}
 .tabNav{
     margin-left: auto;
     margin-right: auto;
@@ -292,6 +387,10 @@ body{
     width: 46px;
 
 }
+.flRight{
+    float: right;
+    margin-right: 5px;
+}
 .backButton::before{
     /*float: left;*/
     content:url('../assets/angle-left.svg');
@@ -303,6 +402,14 @@ body{
 .config_active::after{
     float: right;
     content:url('../assets/config_active.svg');
+}
+.burger::after{
+    float: right;
+    content:url('../assets/burger.png');
+}
+.burger_active::after{
+    float: right;
+    content:url('../assets/burger.png');
 }
 .attention::after{
     float: right;
@@ -322,7 +429,17 @@ body{
     margin-top: 5px;
 }
 
+.multiBankUnit .nameLabel{
+    border: 1px solid grey;
+    padding: 8px;
+    border-radius: 10px;
+    margin-top: -32px;
+    margin-left: -16px;
+    background: #f1e8e8;
+    width: 136px;
+    margin-bottom: 15px;
 
+}
 .menuCategory{
     border-top-width: 2px;
     border-top-style: groove;
@@ -358,4 +475,7 @@ body{
 }
 .checkmark{
     height: 20px;
+}
+.mainContTable{
+    width: 100%;
 }

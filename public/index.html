@@ -27,6 +27,80 @@
   </head>
   <body>
     <div id="content"></div>
+    <script>
+
+var vdefList ={};
+var Vdef;
+var pVdef;
+var isVdefSet = false;
+var nVdf;
+var value_groups = {
+  "Calibration"  : ["AutoPhasePacks", "CalibrateMode", "PhaseTrigLimit", "PhaseTrigThres"],
+  "Faults"       : ["Mask", "FaultLatch", "FaultRejMode", "FlashRejCount", "Rej2Fault", "TOGGLE_REJ_MODE"], 
+  "Output"       : ["BannerBuzzMode", "BannerMode", "BannerRejMode"],
+  "Password"     : ["PassAccCal", "PassAccClrFaults", "PassAccClrLatch", "PassAccClrRej", "PassAccProd", "PassAccSelUnit", 
+                      "PassAccSens", "PassAccTest", "PassOn", "PW1", "PW2", "PW3", "PW4"],
+  "Rej Setup"    : ["AppUnitDist", "BeltSpeed",  "EyeBlockTime", "EyeDetSwipe", "EyeDist", "EyeMinGapDist", "EyePkgLength", 
+                      "EyeReject", "HeadCoilSp", "HeadDepth", "Rej2Check", "Rej2Latch", "RejBinDoorTime", "RejCheckMode",
+                      "RejCheckTime", "RejDelClock", "RejDelSec", "RejDelSec2", "RejDurSec", "RejDurSec2", "RejExitDist",
+                        "RejExitWin", "RejLatchMode", "RejMode", "RejOnProdHi", "RejTravDel", "RejTravDur", "SplitPkgLength"],
+  "Sensitivity" : ["PeakMode"],
+  "Test"        : ["HaloPeakRFe", "HaloPeakRNFe", "HaloPeakRSs", "HaloPeakXFe", "HaloPeakXNFe", "HaloPeakXSs", 
+                    "IBTestPassesFe", "IBTestPassesNFe", "IBTestPassesSS", "TestMode", "TestTime"]                      
+}  
+      function load_vdef_parameters(json) {
+  // body...
+  if (vdefList[json['@version']]){
+    console.log('already have this version')
+
+  }else{
+      Vdef = json;
+  console.log(json)
+  var res = [];
+    res[0] = [];
+    res[1] = [];
+    res[2] = [];
+    res[3] = [];
+    nVdf = {};
+    nVdf['Other'] = [];
+    nVdf['Password'] = [];
+    nVdf['Rej Setup'] = [];
+    nVdf['Faults'] = [];
+    nVdf['Output'] = [];
+    nVdf['Sensitivity'] = [];
+    nVdf['Test'] = [];
+    nVdf['Calibration'] = [];
+
+    json["@params"].forEach(function(p ){
+      res[p["@rec"]][p["@name"]] = p;
+     var nm = p['@name'];
+     var otherFlag = true;
+     for(var o in value_groups){
+      console.log(o)
+
+     if(value_groups[o].indexOf(nm) != -1){
+      nVdf[o].push(p);
+      otherFlag = false;
+      break;
+     }
+   }
+   if(otherFlag){  
+      nVdf['Other'].push(p)
+   }
+    });
+    console.log(nVdf)
+    res[2] = json["@deps"];
+    res[3] = json["@labels"]
+    pVdef = res;
+    vdefList[json['@version']] = [json, res, nVdf]
+    isVdefSet = true;
+    
+
+  }
+
+  //isVdefSet = true;
+}
+    </script>
     <script type="text/babel" src="scripts/components.js"></script>
     <script type="text/babel" src="scripts/app.js"></script>
      </body>
