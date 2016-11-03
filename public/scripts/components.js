@@ -1,3 +1,53 @@
+var Panel = React.createClass({
+	handleItemclick: function(dat){
+		this.props.onHandleClick(dat);
+	},
+	toggle: function(e){
+		e.preventDefault();
+		this.setState({isHidden: !this.state.isHidden} );
+	},
+	
+	getInitialState: function(){
+		var t1 = '                    '
+		var ws;
+
+		return{hide:true, prodRec:{}, sysRec:{}, prodvar:0, prodArray:[], sysvar:0, sysArray:[], dspip:"192.168.10.51", 
+		tickerVal:0, cursor:0, type:'',n:0,text:'', t1:t1,t2:'                    ', leds:0, lcd:0, ws:ws, isDesktop:true, isHidden:false}
+
+	},
+	handleMsg: function(msg){
+		//console.log(msg)
+		var dv = new DataView(msg);
+			var lcd_type = dv.getUint8(0);
+			//console.log(lcd_type)
+    		var lcd_leds = dv.getUint8(1);
+    		var lcd_bits = dv.getUint8(2);
+    		var lcd_cur  = dv.getUint8(3);
+    		var lcd_len  = dv.getUint8(4); // text-size
+    		if (lcd_len > 72) return; // packet is screwed up -> not necessarily!! need to grab info from vdef for packet size
+    		var line1 = String.fromCharCode.apply(null, new Uint8Array(msg,5,lcd_len/2))
+    		var line2 = String.fromCharCode.apply(null, new Uint8Array(msg,5+lcd_len/2,lcd_len/2));
+    		if(!((this.refs.pd.state.cursor == lcd_cur)&&(this.refs.pd.state.t1 == line1)&&(this.refs.pd.state.t2 == line2))){
+    			this.refs.pd.setState({cursor:lcd_cur, t1:line1, t2:line2});
+    		}
+	},
+	render: function(){
+		var ih = this.state.isHidden;
+		var handler = this.handleItemclick;
+		
+		 var className = "menuCategory expanded";
+	   
+
+		return (<div className={className}>
+			<span  onClick={this.toggle}><h2 >{"Panel"}</h2></span>
+			<div hidden ={ih}>
+				<PanelDisplay ws={this.props.ws} ref={'pd'} isDesktop={this.state.isDesktop} minFont={this.state.minFont} maxFont={this.state.maxFont} />
+				<PanelControls ws={this.props.ws} isDesktop={this.state.isDesktop}/>
+				</div>
+			</div>)
+	}
+})
+
 var TreeNode = React.createClass({
 	getInitialState: function(){
 		return ({hidden:true})

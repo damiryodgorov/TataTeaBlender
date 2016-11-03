@@ -1,16 +1,47 @@
 body{
     min-width: 290px;
 }
+li.placeholder { background: rgb(255,240,120);}
+li.placeholder:before {
+  content: "Drop here"; color: rgb(225,210,90);
+}
+ul {
+  list-style: none;
+  margin:0;
+  padding:0
+}
+li {
+  padding: 5px;
+  background:#eee
+}
+#dummyCanvas{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+.npTable{
+    font-size:16px;
+}
+.mtab{
+
+}
+.mtab td{
+    /*width:200px;*/
+    white-space: nowrap;
+}
 .logo{
     height: 72px;
     margin-right: 20px;
+}
+.mbGroupCont{
+    border:1px solid black;
 }
 .find::after{
     float: right;
     content:url('../assets/search.svg');
 }
 .prefInterface{
-     height: 200px;
+    min-height: 200px;
     padding: 10px;
     border: 1px solid gray;
     border-radius: 10px;
@@ -26,13 +57,15 @@ body{
 .customSelect{
     height: 30px;
     width: 100px;
-    display: inline-block;
+    margin-bottom: 8px;
+   display: inline-block;
 }
 .customSelect select{
     font-size: 18px;
     height: 30px;
     width: 100px;
     padding: 5px;
+    background: white;
 }
 .custom-modal{
     /*display: none; /* Hidden by default */
@@ -75,29 +108,33 @@ body{
     background: #ddd;
 }
 .modal-outer{
-    margin: 15% auto;
-    width: 80%;
+    position: fixed;
+    margin-top: 20px;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 .tickerBox{
     margin-right: 6px;
     
 }
 .smCell{
-    width: 130px;
+   /* width: 130px;*/
 }
 .statCell{
     display: inline-block;
-    width: 130px;
+    width: 85px;
 }
 .liveView{
-    height: 100px;
+    height: 90px;
     padding: 10px;
     border: 1px solid gray;
     border-radius: 10px;
     margin: 5px;
+    line-height: 1.5;
 }
 .multiScanUnit .liveView{
-    height: 180px;
+    height: 160px;
 }
 .inactive .liveView {
     background: grey;
@@ -105,6 +142,10 @@ body{
 .faultactive .liveView{
     background: rgba(255, 118, 0, 0.5);
 }
+.detInfo{
+    line-height: 1.3;
+}
+
 .mainView{
     height: 200px;
     padding: 10px;
@@ -135,6 +176,7 @@ body{
     border: 1px solid gray;
     border-radius: 10px;
     margin: 5px;
+    min-width: 380px;
 }
 .setNav{
     padding: 5px;
@@ -198,6 +240,12 @@ body{
     width: 10px;
     margin-bottom: 4px;
     font-size: 10px;
+}
+.inactive .statBarMB{
+    background: grey;
+}
+.faultactive .statBarMB{
+    background: rgba(255, 118, 0, 0.5);
 }
 .mobCell{
     width: 100%
@@ -266,9 +314,11 @@ body{
     
 }
 .sItem label{
-    width: 300px;
-    display: inline-block;
+
+  /*  width: 300px;*/
+   
 }
+
 .txtLeft{
     text-align: -webkit-right;
 }
@@ -282,6 +332,9 @@ body{
     width: 125px;
     font-size: 18px;
     
+}
+.ledBar{
+    font-size:16px;
 }
 .ledBar td{
    vertical-align: top;
@@ -349,7 +402,7 @@ body{
 .bbut{
     float:left;
     display: inline-block;
-    margin-right: -130px;
+    margin-right: -70px ;
 }
 .tabNav{
     margin-left: auto;
@@ -416,6 +469,7 @@ body{
     content:url('../assets/attention.svg');
 }
 .attention_clear::after{
+    float: right;
     content:url('../assets/attention_h.svg');
 }
 .menuItem h3{
@@ -438,7 +492,7 @@ body{
     background: #f1e8e8;
     width: 136px;
     margin-bottom: 15px;
-
+    height: 30px;
 }
 .menuCategory{
     border-top-width: 2px;
@@ -467,10 +521,7 @@ body{
     padding-left: 5px;
 }
 .productEditor{
-       padding: 10px;
-    border: 1px solid gray;
-    border-radius: 10px;
-    margin: 5px;
+
     min-height: 200px;
 }
 .checkmark{

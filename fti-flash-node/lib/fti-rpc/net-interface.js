@@ -21,7 +21,7 @@ class NetInterface{
 	}
 		static interface_list_mac(filter){
 		var list = os.networkInterfaces();
-		console.log(list)
+		//console.log(list)
 		var names = []
 		var ifList = []
 		if (filter != null){
@@ -30,7 +30,7 @@ class NetInterface{
 		else{
 			names = Object.keys(list);
 		}
-		console.log(names);
+		//console.log(names);
 		
 
 		for (var i = names.length - 1; i >= 0; i--) {
@@ -61,7 +61,7 @@ class NetInterface{
 		else{
 			names = Object.keys(list);
 		}
-		console.log(names);
+	//	console.log(names);
 
 		for (var i = names.length - 1; i >= 0; i--) {
 			var j;

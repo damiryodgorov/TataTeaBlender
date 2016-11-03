@@ -8,6 +8,16 @@ function toArrayBuffer(buffer) {
     }
     return ab;
 }
+function uintToInt(uint, nbit) {
+    nbit = +nbit || 32;
+    if (nbit > 32) throw new RangeError('uintToInt only supports ints up to 32 bits');
+    uint <<= 32 - nbit;
+    uint >>= 32 - nbit;
+    if(uint<0){
+    	//console.log(uint)
+    }
+    return uint;
+}
 function dsp_rpc_paylod_for (n_func, i16_args, byte_data) {
         var rpc = [];
         var n_args = i16_args.length;
@@ -48,11 +58,7 @@ function dsp_rpc_paylod_for (n_func, i16_args, byte_data) {
         }
         return [c1,c2];
       }
-      function reconSockets(ip){
-
-
-      }
-var ToySettings = {'Others':{}, 'Password':{},'Sensitivity':{}}
+ var ToySettings = {'Others':{}, 'Password':{},'Sensitivity':{}}
 var VolatileList = {'Signal':{}}
 var MenuStructure = [ToySettings,VolatileList]
 var socket = io();
@@ -61,11 +67,11 @@ var sysSettings = {};
 var prodSettings ={};
 var combinedSettings = [];
 
-
+var located = false;
 var cnt = 0;
 
 
-
+var myTimers = {}
 
 class Params{
 	static frac_value(int){
@@ -297,45 +303,127 @@ class Params{
 		return wArray;
 
 	}
+	static ipv4_address(ip){
+		//todo
+		return ip
+	}
 }
 
 
 
 socket.on('vdef', function(vdf){
-//Vdef = vdf[0];
-	//nVdf = vdf[1];
-	/*console.log(nVdf)
-		var res = [];
-		res[0] = [];
-		res[1] = [];
-		res[2] = [];
-		res[3] = [];
 
-		Vdef["@params"].forEach(function(p){
-			res[p["@rec"]][p["@name"]] = p;
-		});
-		res[2] = Vdef["@deps"];
-		res[3] = Vdef["@labels"]
-		pVdef = res;*/
-	//isVdefSet = true;
-	//console.log(pVdef);
+var json = vdf[0];
+Vdef = json
+console.log(Vdef)
+if (vdefList[json['@version']]){
+    console.log('already have this version')
+
+  }else{
+  	    // Vdef = json;
+  //console.log(json)
+  var res = [];
+    res[0] = {};
+    res[1] = {};
+    res[2] = {};
+    res[3] = {};
+    nVdf = {};
+    nVdf['Other'] = [];
+    nVdf['Password'] = [];
+    nVdf['Rej Setup'] = [];
+    nVdf['Faults'] = [];
+    nVdf['Output'] = [];
+    nVdf['Sensitivity'] = [];
+    nVdf['Test'] = [];
+    nVdf['Calibration'] = [];
+    nVdf['Input'] = [];
+    nVdf['Output'] = [];
+
+    json["@params"].forEach(function(p ){
+      res[p["@rec"]][p["@name"]] = p;
+     var nm = p['@name'];
+     var otherFlag = true;
+     if(p["@rec"]<2){
+
+
+     for(var o in value_groups){
+     // console.log(o)
+
+	if(o == 'Faults'){
+      if(nm.indexOf('FaultMask')!= -1){
+        nVdf[o].push(p);
+        otherFlag = false;
+        break;
+      }
+     }else if(o == 'Test'){
+     	if(nm.indexOf('TestConfig')!= -1){
+        nVdf[o].push(p);
+        otherFlag = false;
+        break;
+      }
+     }else if(o == 'Input'){
+     	if(nm.indexOf('INPUT')!= -1){
+     		console.log([o,p])
+     		  nVdf[o].push(p);
+        otherFlag = false;
+        break;
+     	} 
+     }else if(o == 'Output'){
+     	if(nm.indexOf('OUT')!= -1){
+     		  nVdf[o].push(p);
+        otherFlag = false;
+        break;
+     	}
+     }else if(o == 'Calibration'){
+     	if(nm.indexOf('Phase')!= -1){
+     		//nVdf[o].push(p);
+        	//otherFlag = false;
+        	//break;
+     	}
+     }
+     if(value_groups[o].indexOf(nm) != -1){
+      nVdf[o].push(p);
+      otherFlag = false;
+      break;
+     }
+
+   }
+   if(otherFlag){  
+   	if(p["@rec"] <2){
+
+      nVdf['Other'].push(p)
+   	}
+   }
+}
+    });
+    console.log(res[2])
+    console.log(res[3])
+    console.log(nVdf)
+    res[4] = json["@deps"];
+    res[5] = json["@labels"]
+    res[6] = [];
+   for(var par in res[2]){ 	
+   //	var p = res[2][par]
+   	//console.log(p["@name"])
+    	if(par.indexOf('Fault') != -1){
+    		console.log("fault found")
+    		res[6].push(par)
+    	}
+    	// body...
+    }
+    pVdef = res;
+    vdefList[json['@version']] = [json, res, nVdf]
+    isVdefSet = true;
+    console.log(res)
+}
 })
 
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
-  }
-};
 
 var wSockets = {}
 var wVdefSockets = {}
 var wParamSockets = {}
 var wRSockets = {}
+var reconTries = [{},{},{}]
 var liveTimer = {}
 
 
@@ -343,25 +431,11 @@ var Container = React.createClass({
 	getInitialState:function(){
 		var self = this;
 		//socket.emit('hello', 'from me')
-		var dspip = '192.168.20.2'
-		var ws = new WebSocket('ws://'+dspip + '/panel')
-		ws.binaryType = 'arraybuffer'
-
-		ws.onmessage = function(evt){
-			//console.log('evt')
-			//self.refs.mm.handleMsg(evt)
-			//socket.emit('ws', evt)
-		}
-		socket.on('wssss', function(e){
-		//	console.log("????")
-
-			//console.log(e)
-			//var ev = toArrayBuffer(e)
-		//	self.refs.mm.handleMsg(e)
-		})
+		
+	
 		var dat = []
 
-		return({ws:ws, data:dat})
+		return({ data:dat})
 	},
 	render: function (){
 		// body...	<MobileMenu ref={'mm'} ws={this.state.ws} data={this.state.data}/>
@@ -433,24 +507,26 @@ var CanvasElem = React.createClass({
 });
 var LEDBar = React.createClass({
 	getInitialState: function(){
-		return ({leds:0, lcd:0})
+		return ({pled:0, dled:0})
+	},
+	update:function (p,d) {
+		// body...
+		if((this.state.pled != p) || (this.state.dled != d)){
+			this.setState({pled:p, dled:d})
+		}
 	},
 	render: function(){
 		var rej = 'black';
 		var prod = 'black';
 		var fault = 'black';
 	//	console.log(this.state.leds & 0xf)
-		if ((this.state.lcd>>3)&1 == 1){
-			fault = 'red';
-		}
-		if ((this.state.leds>>5)&1 == 1){
+		if(this.state.pled == 1){
 			prod = 'green';
+		}else if(this.state.pled == 2){
+			prod = 'red'
 		}
-		if ((this.state.leds>>4)&1 == 1){
-			prod = 'red';
-		}
-		if ((this.state.leds>>6)&1 == 1){
-			rej = 'red';
+		if(this.state.dled == 1){
+			rej = 'red'
 		}
 		return(<div className='ledBar' >
 				<table><tbody><tr><td style={{width:'17px'}}><LED color={rej}/></td><td>Detection</td><td className='txtLeft'>Product:</td><td style={{width:'17px'}}><LED color={prod}/></td></tr></tbody></table>
@@ -462,593 +538,6 @@ var LED = React.createClass({
 	render: function(){
 		return(<div className='led' style={{ backgroundColor:this.props.color}}/>)
 	}
-})
-var Panel = React.createClass({
-	handleItemclick: function(dat){
-		this.props.onHandleClick(dat);
-	},
-	toggle: function(e){
-		e.preventDefault();
-		this.setState({isHidden: !this.state.isHidden} );
-	},
-	
-	getInitialState: function(){
-		var t1 = '                    '
-		var ws;
-
-		return{hide:true, prodRec:{}, sysRec:{}, prodvar:0, prodArray:[], sysvar:0, sysArray:[], dspip:"192.168.10.51", 
-		tickerVal:0, cursor:0, type:'',n:0,text:'', t1:t1,t2:'                    ', leds:0, lcd:0, ws:ws, isDesktop:true, isHidden:false}
-
-	},
-	handleMsg: function(msg){
-		//console.log(msg)
-		var dv = new DataView(msg);
-			var lcd_type = dv.getUint8(0);
-			//console.log(lcd_type)
-    		var lcd_leds = dv.getUint8(1);
-    		var lcd_bits = dv.getUint8(2);
-    		var lcd_cur  = dv.getUint8(3);
-    		var lcd_len  = dv.getUint8(4); // text-size
-    		if (lcd_len > 72) return; // packet is screwed up -> not necessarily!! need to grab info from vdef for packet size
-    		var line1 = String.fromCharCode.apply(null, new Uint8Array(msg,5,lcd_len/2))
-    		var line2 = String.fromCharCode.apply(null, new Uint8Array(msg,5+lcd_len/2,lcd_len/2));
-    		if(!((this.refs.pd.state.cursor == lcd_cur)&&(this.refs.pd.state.t1 == line1)&&(this.refs.pd.state.t2 == line2))){
-    			this.refs.pd.setState({cursor:lcd_cur, t1:line1, t2:line2});
-    		}
-	},
-	render: function(){
-		var ih = this.state.isHidden;
-		var handler = this.handleItemclick;
-		
-		 var className = "menuCategory expanded";
-	   
-
-		return (<div className={className}>
-			<span  onClick={this.toggle}><h2 >{"Panel"}</h2></span>
-			<div hidden ={ih}>
-				<PanelDisplay ws={this.props.ws} ref={'pd'} isDesktop={this.state.isDesktop} minFont={this.state.minFont} maxFont={this.state.maxFont} />
-				<PanelControls ws={this.props.ws} isDesktop={this.state.isDesktop}/>
-				</div>
-			</div>)
-	}
-})
-
-
-
-
-var MobileMenu = React.createClass({
-	//This display will allow for navigating back to previous pages - 
-	getInitialState: function(){
-		var mq = window.matchMedia("(min-width: 800px)");
-		mq.addListener(this.listenToMq)
-		console.log(mq.matches)
-	
-		return ({modalIsOpen:false, currentView:'MultiScan', data:[], stack:[], dspips:[], curIp:'',curDetName:'', dsps:[],
-			settings:false, attention:"attention", query: '' , faults:[], mq:mq, br7:mq.matches, multi:false, 
-			units:[{type:'Stealth', name:'Detector1', ip:'192.168.10.3'},{type:'MultiBank', name:'MultiBank 1', ip:['192.168.10.4','192.168.10.5','192.168.10.6','192.168.10.7']}]})
-	},
-	handleDisplay: function(msg,ip){
-		//console.log(msg)
-		var dv = new DataView(msg);
-			var lcd_type = dv.getUint8(0);
-			//console.log(lcd_type)
-    		var lcd_leds = dv.getUint8(1);
-    		var lcd_bits = dv.getUint8(2);
-    		var lcd_cur  = dv.getUint8(3);
-    		var lcd_len  = dv.getUint8(4); // text-size
-    		if (lcd_len > 72) return; // packet is screwed up -> not necessarily!! need to grab info from vdef for packet size
-    		var line1 = String.fromCharCode.apply(null, new Uint8Array(msg,5,lcd_len/2))
-    		var line2 = String.fromCharCode.apply(null, new Uint8Array(msg,5+lcd_len/2,lcd_len/2));
-    		if(this.refs.ms.refs[ip].lv.refs.tb.state.ticks != ((lcd_leds & 0xf)- 5)*50){
-    			this.refs.ms.updateMeter(((lcd_leds & 0xf)- 5)*50,ip)
-    		}
-    		
-	},
-	handleMsg: function(evt){
-		var msg = evt.data
-	//	console.log(msg)
-		
-		if (msg instanceof ArrayBuffer) {
-	//			console.log('yes')
-				var n = msg.byteLength;
-		
-				
-		if(n<77){
-			var dv = new DataView(msg);
-			//this.setState({dv:msg})
-			if (n < 9 ) return;
-			var dsp_signal = dv.getInt32(1, true);
-
-				
-			//}
-		}else{
-			var self = this;
-			
-			var dv = new DataView(msg);
-			var lcd_type = dv.getUint8(0);
-			//console.log(lcd_type)
-    		if (lcd_type == 0x1){
-    	//	console.log('here')
-    		var lcd_leds = dv.getUint8(1);
-    //		console.log(lcd_leds)
-    		this.refs.lv.update((((lcd_leds & 0xf)- 5)*50))
-
-			//this.refs.pn.handleMsg(msg)
-			}else if(lcd_type == 0x4){
-				//system
-				if(isVdefSet){
-				var sysArray = [];
-					for(var i = 0; i<64; i++){
-						sysArray[i] = dv.getUint16(i*2 + 1);	
-					}
-				//	sysSettings = sysArray.slice(0)
-				var sysRec = {}
-    				Vdef["@params"].forEach(function(p){
-    					if(p["@rec"] == 0){
-    						var setting = self.getVal(sysArray, 0, p["@name"])
-    						sysRec[p["@name"]] = setting;
-    					}
-    				})
-    				for(var p in Vdef["@deps"]){
-   // 					console.log(p)
-    					if(Vdef["@deps"][p]["@rec"] == 0){
-    						var setting = self.getVal(sysArray,2, p)
-    						sysRec[p] = setting;
-    					}
-    				}
-    				sysSettings = sysRec;
-    
-    			}
-			}else if(lcd_type == 0x5){
-				if(isVdefSet ){
-					var prodArray = [];
-					for(var i = 0; i<64; i++){
-						prodArray[i] = dv.getUint16(i*2 + 1);	
-					}
-					var prodRec = {}
-    				Vdef["@params"].forEach(function(p){
-    					if(p["@rec"] == 1){
-    						var setting = self.getVal(prodArray, 1,p["@name"])
-    						prodRec[p["@name"]] = setting;
-    					}
-    				})
-    				for(var p in Vdef["@deps"]){
-    					if(Vdef["@deps"][p]["@rec"] == 1){
-    						var setting = self.getVal(prodArray,2, p)
-    						prodRec[p] = setting;
-    					}
-    				}
-					prodSettings = prodRec;
-	// 				console.log(this.state.data)
-					if(this.state.currentView == 'MainDisplay'){
-					var prodName = this.getVal(prodArray, 1, 'ProdName')		
-					var sens = this.getVal(prodArray, 1, 'SigPath[0].Sens')
-					//console.log([prodName, sens])
-
-					/*if((this.refs.md.state.productName != prodName)||(this.refs.md.state.sens != sens)){
-						this.refs.md.setState({productName:prodName, sens:sens})
-					}*/
-					}
-					else if(this.state.currentView == "SettingsDisplay"){
-			//			console.log('line 810')
-						var comb = [];
-						for(var c in nVdf){
-							comb[c] = {};
-							for(var i = 0; i < nVdf[c].length; i++){
-						//		console.log(nVdf[c][i])
-								if(nVdf[c][i]['@rec'] == 0){
-									comb[c][nVdf[c][i]["@name"]] = sysSettings[nVdf[c][i]["@name"]]
-								}else{
-									comb[c][nVdf[c][i]["@name"]] = prodSettings[nVdf[c][i]["@name"]]
-								}
-				
-							}
-						}
-						combinedSettings = comb;
-						//diff, and set settings
-						//console.log(this.state.data)	
-						if(this.refs.sd){
-							this.refs.sd.parseInfo(sysSettings, prodSettings)	
-						}
-						
-					}
-				}
-			}
-		}
-		}
-	},
-	getVal: function(arr, rec, key){
-		//console.log(key)
-		var param = pVdef[rec][key]
-	//	console.log(key)
-	//	console.log(param)
-		if(param['@bit_len']>16){
-			return this.wordValue(arr, param)
-		}else{
-			
-			var val = Params.swap16(arr[param["@i_var"]]);
-			
-			if(param["@bit_len"] < 16){
-				
-				val = (val >> param["@bit_pos"]) & ((1<<param["@bit_len"])-1)
-			}
-			return val;
-		}
-
-
-	},
-	wordValue: function(arr, p){
-		
-		var n = Math.floor(p["@bit_len"]/16);
-		var sa = arr.slice(p["@i_var"], p["@i_var"]+n)
-		var str = sa.map(function(e){
-			//console.log(e);
-			return (String.fromCharCode((e>>8),(e%256)));
-		}).join("");
-		return str;
-	},
-	changeView: function(d){
-		var st = this.state.stack;
-		st.push([this.state.currentView, this.state.data]); //immediate parent will be at top of stack
-		console.log(d)
-		console.log(st)
-		this.setState({currentView:d[0], data:d[1]})
-		//console.log(this.props.data)
-		//this.setState({data: d, stack: st });
-	},
-	goBack: function(){
-		if(this.state.stack.length > 0){
-			var stack = this.state.stack;
-			var d = stack.pop();
-			
-				setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack, setttings:(d[0] == 'SettingsDisplay') }),100);
-			
-		}
-	},
-	toggleSettings: function(){
-		console.log(vdefList)
-		if(this.state.settings){
-			var st = [];
-			var currentView = 'MainDisplay';
-			this.setState({currentView:currentView, stack:[], data:[], settings:false})
-		}
-		else{
-			this.setState({settings:true});
-			var SettingArray = ['SettingsDisplay',[]]
-			this.changeView(SettingArray);
-		}
-	},
-	toggleAttention: function(){
-		if(this.state.attention == "attention"){
-			this.setState({attention:"attention_clear", faults:[{'type':'reference'},{'type':'24v'}]});
-			this.openModal();
-		}else{
-			this.setState({attention:"attention", faults:[]})
-			this.closeModal();
-		}
-	},
-	doSearch: function(q){
-		//placeholder... literally does nothing
-		//actually do somthing now
-		this.setState({query:q});
-		this.filter();
-
-	},
-	filter: function(){
-		//filter components? (based on data?)
-	},
-	settingClick:function(s){
-		var set = this.state.data.slice(0)
-		set.push(s[0])
-		this.changeView(['SettingsDisplay',set]);
-	},
-	openModal: function() {
-	this.refs.faultModal.toggle();
-    this.setState({modalIsOpen: true});
-  },
-
-  afterOpenModal: function() {
-    // references are now sync'd and can be accessed.
-    this.refs.subtitle.style.color = '#f00';
-  },
-
-  closeModal: function() {
-    this.setState({modalIsOpen: false});
-  },
-  listenToMq:function (match) {
-  	// body...
-  	this.setState({br7:this.state.mq.matches})
-   },
-   showMulti:function () {
-   	// body...
-   	if(this.state.multi){
-			var st = [];
-			var currentView = 'MainDisplay';
-			this.setState({currentView:currentView, stack:[], data:[], multi:false})
-   	}else{
-   			this.setState({multi:true})
-   			this.changeView(['MultiScan', []])
-   	}
-   
-   },
-   componentDidMount: function () {
-   	// body...
-   	var self = this;
-   	socket.on('location', function(data){
-   		data.forEach(function(d){
-   			wSockets[d.ip] = new WebSocket('ws://'+ d.ip + '/panel')
-   			wParamSockets[d.ip] = new WebSocket('ws://' +d.ip +'/parameters');
-   			wParamSockets[d.ip].binaryType = 'arraybuffer';
-   			wParamSockets[d.ip].onmessage = function (e) {
-   				// body...
-   				self.onParamMsg(e,d)
-   			}
-
-
-			wSockets[d.ip].binaryType = 'arraybuffer'
-			wSockets[d.ip].onmessage = function(evt){
-				self.onMsg(evt, d)
-			}
-
-			wRSockets[d.ip] = new WebSocket('ws://' + d.ip + '/rpc');
-			wRSockets[d.ip].binaryType = 'arraybuffer';
-			wRSockets[d.ip].onmessage = function(evt){ console.log(evt)}
-
-   		})
-   		console.log(data)
-   		self.setState({dspips:data})
-   	})
-   },
-   onParamMsg: function (e,d) {
-   	if(d.ip == this.state.curIp){
-   		var self = this;
-   	
-   			var msg = e.data;
-   	var data = new Uint8Array(msg);
-    
-   	var dv = new DataView(msg);
-	var lcd_type = dv.getUint8(0);
-  	      var n = data.length;
-   //       console.log('n:' + n);
-     //     console.log(lcd_type);
-       //   console.log(data);
-     	
-   	 	//console.log()
-   	// console.log(data)
-   	if(cnt < 2){
-   		console.log(Vdef)
-		console.log(isVdefSet)
-		cnt++;
-   	}
-
-   	 	if(lcd_type== 0){
-				//system
-
-				if(isVdefSet){
-				var sysArray = [];
-					for(var i = 0; i<((n-1)/2); i++){
-						sysArray[i] = dv.getUint16(i*2 + 1);	
-					}
-				//	sysSettings = sysArray.slice(0)
-				var sysRec = {}
-    				Vdef["@params"].forEach(function(p){
-    					if(p["@rec"] == 0){
-    						var setting = self.getVal(sysArray, 0, p["@name"])
-    						sysRec[p["@name"]] = setting;
-    					}
-    				})
-    				for(var p in Vdef["@deps"]){
-   // 					console.log(p)
-    					if(Vdef["@deps"][p]["@rec"] == 0){
-    						var setting = self.getVal(sysArray,2, p)
-    						sysRec[p] = setting;
-    					}
-    				}
-    				sysSettings = sysRec;
-    
-    			}
-			}else if(lcd_type == 1){
-				if(isVdefSet ){
-					var prodArray = [];
-					for(var i = 0; i<((n-1)/2); i++){
-						prodArray[i] = dv.getUint16(i*2 + 1);	
-					}
-					var prodRec = {}
-    				Vdef["@params"].forEach(function(p){
-    					if(p["@rec"] == 1){
-    						var setting = self.getVal(prodArray, 1,p["@name"])
-    						prodRec[p["@name"]] = setting;
-    					}
-    				})
-    				for(var p in Vdef["@deps"]){
-    					if(Vdef["@deps"][p]["@rec"] == 1){
-    						var setting = self.getVal(prodArray,2, p)
-    						prodRec[p] = setting;
-    					}
-    				}
-					prodSettings = prodRec;
-	// 				console.log(this.state.data)
-					if(this.state.currentView == 'MainDisplay'){
-					var prodName = this.getVal(prodArray, 1, 'ProdName')		
-					var sens = this.getVal(prodArray, 1, 'SigPath[0].Sens')
-					//console.log([prodName, sens])
-
-					//if((this.refs.md.state.productName != prodName)||(this.refs.md.state.sens != sens)){
-					//	this.refs.md.setState({productName:prodName, sens:sens})
-					//}
-					}
-					else if(this.state.currentView = "SettingsDisplay"){
-			//			console.log('line 810')
-						var comb = [];
-						for(var c in nVdf){
-							comb[c] = {};
-							for(var i = 0; i < nVdf[c].length; i++){
-						//		console.log(nVdf[c][i])
-								if(nVdf[c][i]['@rec'] == 0){
-									comb[c][nVdf[c][i]["@name"]] = sysSettings[nVdf[c][i]["@name"]]
-								}else{
-									comb[c][nVdf[c][i]["@name"]] = prodSettings[nVdf[c][i]["@name"]]
-								}
-				
-							}
-						}
-						combinedSettings = comb;
-						//diff, and set settings
-						//console.log(this.state.data)	
-						if(this.refs.sd){
-							this.refs.sd.parseInfo(sysSettings, prodSettings)	
-						}
-						
-					}
-				}
-			}
-		
-   	}
-   	// body...
-   },
-   onMsg:function (e,d) {
-   	// body...
-   //	console.log(d)
-  // 	console.log(this.state.curIp)
-
-  	if(e.data instanceof ArrayBuffer ){
-  		var dv = new DataView(e.data)
-  		if(dv.getUint8(0) == 0x1){
-  			var lcd_leds = dv.getUint8(1)
-  			//display packet
-  			if(this.refs.ms){
-  				this.refs.ms.updateMeter(((lcd_leds & 0xf)- 5)*50, d.ip)	
-  			}
-  			
-  		}
-  	}
-   	if(this.state.curIp == d.ip){
-   		
-   		//console.log('yesese')
-   		this.handleMsg(e)
-   	}
-   		 
-
-   },
-   switchUnit:function (u) {
-   	// body...
-   	this.setState({curIp:u.ip, curDetName:u.name})
-   },
-   addUnit: function (argument) {
-   	// body...
-   },
-   addMBUnit: function (argument) {
-   	// body...
-   },
-   returnHome: function () {
-   	// body...
-   },
-	render: function(){
-		var products = [{name:'Product1', number:1}, {name:'Product2', number:2}]
-		var display;
-		var back = false;
-		if (this.state.stack.length > 0){
-			back = true;
-		}
-		var attention = this.state.attention
-		if(this.state.currentView == 'MainDisplay'){
-		//	display = <MainDisplay ws={this.props.ws} ref='md'/>
-			display = 	<MainView ws={this.props.ws} ref='mv'/>
-		}else if(this.state.currentView == 'SettingsDisplay'){
-			display = <SettingsDisplay goBack={this.goBack} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.state.curIp}/>
-		}else if(this.state.currentView == 'MultiScan'){
-			console.log('multiscan should rerender')
-			console.log(this.state.dspips)
-			display = <MultiScan SwitchUnit={this.switchUnit} ref='ms' data={this.state.dspips}/>
-		}
-		var panel = <Panel ws={this.props.ws} ref={'pn'}/>;
-		var faults = this.state.faults.map(function(f){
-			return <FaultItem data={f}/>
-		})
-		var menuString = 'Stealth'
-		var config = 'config'
-		var burger = 'burger'
-		if(this.state.currentView == 'SettingsDisplay'){
-			menuString = 'Settings'
-			config = 'config_active'
-		}else if(this.state.currentView == 'MultiScan'){
-			menuString = 'MultiBank'
-			burger = 'burger_active'
-		}
-		var addUnit = (<button onClick={this.addUnit}>Add Unit</button>);
-		var addMBUnit = (<button onClick={this.addMBUnit}>Add MB Unit</button>);
-		var stealths = [];
-		var mbs = []
-		var unitsTesting = this.state.units.map(function (u) {
-			if(u.type == 'Stealth'){
-				stealths.push(u.ip)
-			}else{
-				mbs.push(u)
-			}
-			// body...
-		})
-		var multbanks = mbs.map(function (mb) {
-			return <MultiBankUnit name={mb.name} data={mb.ip}/>
-			// body...
-		})
-		if (!this.state.br7){
-
-
-		return(<div className="menuContainer">
-			<table className="menuTable"><tbody><tr><td className="buttCell" hidden={true} ><button className="backButton" onClick={this.goBack}/></td>
-			<td onClick={this.returnHome}><img className='logo' src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
-			<td className="buttCell"><button onClick={this.toggleAttention} className={attention}/></td>
-			<td className="buttCell"><button onClick={this.toggleSettings} className={config}/></td>
-			<td className="buttCell"><button onClick={this.showMulti} className={burger}/></td>
-			
-			</tr></tbody></table>
-			<Modal
-          ref={'faultModal'} >
-
-          <h2 ref="subtitle">Faults</h2>
-          <button onClick={this.closeModal}>close</button>
-          <div>Current Faults</div>
-       		{faults}
-        </Modal>
-        	<LiveView ref='lv'/>
-        	{display}
-
-        	<ProductEditor products={products}/>
-        	{multbanks}
-     		<MultiBankUnit name={'MultiBankUnit'} data={[]}/>
-			</div>)
-		}else{
-			return (<div className="menuContainer">
-			<table className="menuTable"><tbody><tr><td className="buttCell" hidden={true} ><button className="backButton" onClick={this.goBack}/></td>
-			<td onClick={this.returnHome}><img className='logo' src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td><td className='mobCell'><MobLiveBar ref='lv'/></td>
-			<td className="buttCell"><button onClick={this.toggleAttention} className={attention}/></td>
-			<td className="buttCell"><button onClick={this.toggleSettings} className={config}/></td>
-				<td className="buttCell"><button onClick={this.showMulti} className={burger}/></td>
-		</tr></tbody></table>
-			<div><label>Detector Ip:</label><label>{this.state.curIp}</label></div>
-			<div><label>Detector Name:</label><label>{this.state.curDetName}</label></div>
-
-			<Modal
-          ref={'faultModal'} >
-
-          <h2 ref="subtitle">Faults</h2>
-          <button onClick={this.closeModal}>close</button>
-          <div>Current Faults</div>
-       		{faults}
-        </Modal>
-        <Modal ref='addUnitModal'>
-        </Modal>
-        <Modal ref='addMBUnitModal'>
-        </Modal>
-        
-        	{display}
-        	<ProductEditor products={products}/>
-        	{multbanks}
-        	<MultiBankUnit name={'MultiBankUnit'} data={[]}/>
-     		</div>)
-		}
-	}
-
 })
 
 var MobLiveBar = React.createClass({
@@ -1064,10 +553,13 @@ var MobLiveBar = React.createClass({
 
 
 var FaultItem = React.createClass({
+	maskFault:function(){
+		this.props.maskFault(this.props.fault)
+	},
 	render: function(){
-		var type = this.props.data.type
-
-		return <div><label>{"Fault type: " + type}</label></div>
+		var type = this.props.fault
+		return <div><label>{"Fault type: " + type}</label>
+		</div>
 	}
 })
 
@@ -1079,6 +571,12 @@ var SettingsDisplay = React.createClass({
 		if(this.isDiff(sys,this.state.sysRec)||this.isDiff(prd,this.state.prodRec)){
 			this.setState({sysRec:sys, prodRec:prd})
 		}
+	},
+	componentDidMount: function () {
+		// body...
+		var packet = dsp_rpc_paylod_for(19,[556,0,0])
+		var buf =  new Uint8Array(packet)
+		socket.emit('rpc',{ip:this.props.dsp, data:buf.buffer})
 	},
 	isDiff: function(x, y){
 		for(var p in x){
@@ -1097,33 +595,164 @@ var SettingsDisplay = React.createClass({
 		//this.setState({isHidden: !this.state.isHidden} );
 	},
 	getInitialState: function(){
+		var mqls = [
+			window.matchMedia('(min-width: 300px)'),
+			window.matchMedia('(min-width: 467px)'),
+			window.matchMedia('(min-width: 600px)')
+		]
+		for (var i=0; i<mqls.length; i++){
+			mqls[i].addListener(this.listenToMq)
+		}
+		var font = 0;
+		if(mqls[2].matches){
+			font = 2
+		}else if(mqls[1].matches){
+			font = 1
+			
+		}else if(mqls[0].matches){
+			font = 0;
+			//shouldn't happen
+		}
+
 		return({
-			 isHidden: false, sysRec:sysSettings, prodRec:prodSettings
+			 isHidden: false, sysRec:sysSettings, prodRec:prodSettings, mqls:mqls, font:font
 		});
+	},
+	listenToMq:function () {
+		// body...
+		//this.setState({})
+		if(this.state.mqls[2].matches){
+			this.setState({font:2})
+		}else if(this.state.mqls[1].matches){
+			this.setState({font:1})
+			
+		}else if(this.state.mqls[0].matches){
+			this.setState({font:0})
+		}else{
+			//shouldn't happen
+		}
 	},
 	sendPacket: function (n,v) {
 		// body...
+		var self = this;
 		console.log([n,v])
-		if(n == 'Sens'){
-			console.log(this.props.dsp)
-			var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
-			console.log(packet)
-			var buf = new Uint8Array(packet)
-			wRSockets[this.props.dsp].send(buf.buffer)
-		}else if(n == 'ProdNo'){
-			var packet = dsp_rpc_paylod_for(0x13,[0x8, parseInt(v)]);
-			console.log(packet)
-			var buf = new Uint8Array(packet)
-			wRSockets[this.props.dsp].send(buf.buffer)
-		}else if(n == 'ProdName'){
-			console.log(v)
-			var str = (v + "                    ").slice(0,20)
-			console.log(str)
-			var packet = dsp_rpc_paylod_for(0x13,[0x2a],str);
-			console.log(packet)
-			var buf = new Uint8Array(packet)
-			wRSockets[this.props.dsp].send(buf.buffer)
+		if(pVdef[0][n]){
+			console.log(pVdef[0][n])
+		}else if(pVdef[1][n]){
+			console.log(pVdef[1][n])
 		}
+		if(n['@rpcs']['toggle']){
+
+			var arg1 = n['@rpcs']['toggle'][0];
+			var arg2 = [];
+			for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
+				if(!isNaN(n['@rpcs']['toggle'][1][i])){
+					arg2.push(n['@rpcs']['toggle'][1][i])
+				}else{
+					arg2.push(v)
+				}
+			}
+			if(n['@rec'] == 0){
+				var mphaserd = this.state.prodRec['MPhaseRD']
+				if(mphaserd != 30){
+					mphaserd = 30;
+				}else{
+					mphaserd = 31
+				}
+				var pack = dsp_rpc_paylod_for(19,[356,mphaserd,0])
+				var bu = new Uint8Array(pack);
+				setTimeout(function () {
+					// body...
+					socket.emit('rpc', {ip:self.props.dsp, data:bu.buffer})
+				},150)
+			}
+			var packet = dsp_rpc_paylod_for(arg1, arg2);
+			var buf = new Uint8Array(packet);
+			console.log(buf)
+			socket.emit('rpc', {ip:this.props.dsp, data:buf.buffer})
+		}else if(n['@rpcs']['write']){
+			var arg1 = n['@rpcs']['write'][0];
+			var arg2 = [];
+			for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
+				if(!isNaN(n['@rpcs']['write'][1][i])){
+					arg2.push(n['@rpcs']['write'][1][i])
+				}else if(n['@rpcs']['write'][1][i] == n['@name']){
+					arg2.push(v)
+				}else{
+					var dep = n['@rpcs']['apiwrite'][1][i]
+					if(dep.charAt(0) == '%'){
+
+					}
+				}
+			}
+			if(n['@rpcs']['write'][2]){
+
+			}
+			if(n['@rec'] == 0){
+				var mphaserd = this.state.prodRec['MPhaseRD']
+				if(mphaserd != 30){
+					mphaserd = 30;
+				}else{
+					mphaserd = 31
+				}
+				var pack = dsp_rpc_paylod_for(19,[356,mphaserd,0])
+				var bu = new Uint8Array(pack);
+				setTimeout(function () {
+					// body...
+					socket.emit('rpc', {ip:self.props.dsp, data:bu.buffer})
+				},150)
+			}
+			var packet = dsp_rpc_paylod_for(arg1, arg2);
+			var buf = new Uint8Array(packet);
+			console.log(buf)
+			socket.emit('rpc', {ip:this.props.dsp, data:buf.buffer})
+		}else if(n['@rpcs']['apiwrite']){
+			var arg1 = n['@rpcs']['apiwrite'][0];
+			var arg2 = [];
+			for(var i = 0; i<n['@rpcs']['apiwrite'][1].length;i++){
+				if(!isNaN(n['@rpcs']['apiwrite'][1][i])){
+					arg2.push(n['@rpcs']['apiwrite'][1][i])
+				}else if(n['@rpcs']['apiwrite'][1][i] == n['@name']){
+					arg2.push(v)
+				}else{
+					console.log(n['@rpcs']['apiwrite'][1][i])
+				}
+			}
+			if(n['@rpcs']['apiwrite'][2]){
+
+			}
+			if(n['@rec'] == 0){
+				var mphaserd = this.state.prodRec['MPhaseRD']
+				if(mphaserd != 30){
+					mphaserd = 30;
+				}else{
+					mphaserd = 31
+				}
+				var pack = dsp_rpc_paylod_for(19,[356,mphaserd,0])
+				var bu = new Uint8Array(pack);
+				setTimeout(function () {
+					// body...
+					socket.emit('rpc', {ip:self.props.dsp, data:bu.buffer})
+				},150)
+			}
+			var packet = dsp_rpc_paylod_for(arg1, arg2);
+			var buf = new Uint8Array(packet);
+			console.log(buf)
+			socket.emit('rpc', {ip:this.props.dsp, data:buf.buffer})
+		}
+	},
+	activate: function (n) {
+		// body...
+		var list = combinedSettings[this.props.data[0]]
+		for(var l in list){
+			if(l!=n){
+				if(this.refs[l]){
+					this.refs[l].deactivate();
+				}
+			}
+		}
+
+
 	},
 	render: function (){
 		var self = this;
@@ -1135,6 +764,12 @@ var SettingsDisplay = React.createClass({
 		var lab = 'Settings'
 		console.log(lvl)
 		var nodes;
+		var ft = 25;
+		if(this.state.font == 1){
+			ft = 20
+		}else if(this.state.font == 0){
+			ft = 18
+		}
 		 var clis = [];
 			for(var c in combinedSettings){
 				console.log(c)
@@ -1148,7 +783,7 @@ var SettingsDisplay = React.createClass({
 	        console.log(item)
 	     //   return(<SettingItem data={item} onItemClick={handler} isHidden={ih}/>)
 	      return (
-	      	<SettingItem sendPacket={self.sendPacket} lkey={item[0]} name={item[0]} isHidden={ih} hasChild={true} 
+	      	<SettingItem ref={item[0]} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={item[0]} name={item[0]} isHidden={ih} hasChild={true} 
 	      	data={item} onItemClick={handler} hasContent={true}/>
 	      );
 	      
@@ -1162,12 +797,13 @@ var SettingsDisplay = React.createClass({
 			console.log(list)
 			nodes = []
 			for (var l in list){
-				nodes.push((<SettingItem sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} isHidden={ih} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true} />))
+				nodes.push((<SettingItem ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} isHidden={ih} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true} />))
 			}
 			nav = (<div className='setNav'>
 					{nodes}
 				</div>)
-			backBut =(<div className='bbut' onClick={this.props.goBack}><img  src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:25}}>Settings</label></div>)
+
+			backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>Settings</label></div>)
 
 		}
 			    var className = "menuCategory";
@@ -1178,11 +814,18 @@ var SettingsDisplay = React.createClass({
 	    	className = "menuCategory expanded";
 	    }
 	    console.log(lab)
+	    var titlediv = (<span  onClick={this.toggle}><h2 style={{textAlign:'center'}} >{backBut}<div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>
+)
+	    if (this.state.font == 1){
+	    	titlediv = (<span  onClick={this.toggle}><h2 style={{textAlign:'center', fontSize:30}} >{backBut}<div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>)
+	    }else if (this.state.font == 0){
+	    	titlediv = (<span  onClick={this.toggle}><h2 style={{textAlign:'center', fontSize:24}} >{backBut}<div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>)
+	    }
 		return(
 			<div className='settingsDiv'>
 			<div className={className}>
-			<span  onClick={this.toggle}><h2 style={{textAlign:'center'}} >{backBut}<div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>
-				{nav}
+							{titlediv}
+							{nav}
 			</div>
 			</div>
 		);
@@ -1191,7 +834,7 @@ var SettingsDisplay = React.createClass({
 })
 var SettingItem = React.createClass({
 	getInitialState: function(){
-		return({mode:0})
+		return({mode:0,font:this.props.font})
 	},
 	sendPacket: function(n,v){
 		if(!isNaN(v)){
@@ -1201,16 +844,38 @@ var SettingItem = React.createClass({
 		this.props.sendPacket(n,v)
 		
 	},
+	componentWillReceiveProps: function (newProps) {
+		// body...
+		this.setState({font:newProps.font})
+	},
 	onItemClick: function(){
 		if(this.props.hasChild){
 			this.props.onItemClick(this.props.data)	
 		}
 		
 	},
+	activate: function () {
+		// body...
+		this.props.activate(this.props.name)
+	},
+	deactivate: function () {
+		// body...
+		this.refs.ed.deactivate()
+	},
 	render: function(){
+		var st = {display:'inline-block', fontSize:20, width:250}
+		var vst = {display:'inline-block', fontSize:20}
+			if(this.state.font == 1){
+				st = {display:'inline-block', fontSize:16, width:200}
+				vst = {display:'inline-block', fontSize:16}
+			}else if(this.state.font == 0){
+				st = {display:'inline-block', fontSize:14, width:180}
+				vst = {display:'inline-block', fontSize:14}
+			}
 		if(this.state.mode == 1){
-			return (<div className='sItem' hidden={this.props.isHidden}>
-				<EditControl name={this.props.name} data={this.props.data} sendPacket={this.sendPacket}/></div>) 
+			console.log('what was this...')
+			return (<div className='sItem'  hidden={this.props.isHidden}>
+				<EditControl size={this.state.font} name={this.props.name} data={this.props.data} sendPacket={this.sendPacket}/></div>) 
 		}
 		if(Array.isArray(this.props.data)&&(this.props.data.length > 1)){
 		return (<div className='sItem hasChild' hidden={this.props.isHidden} onClick={this.onItemClick}><label>{this.props.name}</label></div>)
@@ -1221,7 +886,7 @@ var SettingItem = React.createClass({
 			//var pv = vdef
 			if(typeof pVdef[0][this.props.name] != 'undefined'){
 				pram = pVdef[0][this.props.name]
-				console.log(pram)
+			//	console.log(pram)
 				var deps = []
 				val = this.props.data
 				if(pram["@type"]){
@@ -1229,7 +894,7 @@ var SettingItem = React.createClass({
 					if(pram["@dep"]){
 						deps = pram["@dep"].map(function(d){
 							//console.log(d)
-							if(pVdef[2][d]["@rec"] == 0){
+							if(pVdef[4][d]["@rec"] == 0){
 								return sysSettings[d];
 							}else{
 								return prodSettings[d];
@@ -1242,12 +907,12 @@ var SettingItem = React.createClass({
 				}
 
 				if(pram["@labels"]){
-					val = pVdef[3][pram["@labels"]]["english"][val]
+				//	val = pVdef[5][pram["@labels"]]["english"][val]
 					label = true
 				}
 			}else if(typeof pVdef[1][this.props.name] != 'undefined'){
 				pram = pVdef[1][this.props.name]
-				console.log(pram)
+			//	console.log(pram)
 				var deps = []
 				val = this.props.data
 				if(pram["@type"]){
@@ -1255,7 +920,7 @@ var SettingItem = React.createClass({
 					if(pram["@dep"]){
 						deps = pram["@dep"].map(function(d){
 							//console.log(d)
-							if(pVdef[2][d]["@rec"] == 0){
+							if(pVdef[4][d]["@rec"] == 0){
 								return sysSettings[d];
 							}else{
 								return prodSettings[d];
@@ -1273,12 +938,13 @@ var SettingItem = React.createClass({
 			}else{
 				val = this.props.data
 			} 
-			var edctrl = <EditControl name={this.props.name} sendPacket={this.sendPacket} data={val}/>
+		
+			var edctrl = <EditControl activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} name={this.props.name} sendPacket={this.sendPacket} data={val}/>
 			if(label){
-				edctrl = <EditControlSelect mode={true} list={pVdef[3][pram["@labels"]]['english']} val = {val}><label>{this.props.name}</label></EditControlSelect>
+				edctrl = <EditControlSelect activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram}  sendPacket={this.sendPacket} size={this.state.font} mode={true} list={pVdef[5][pram["@labels"]]['english']} val = {val}/>
+				
 			}
-
-			return (<div className='sItem' hidden={this.props.isHidden}> {edctrl}
+			return (<div className='sItem'  hidden={this.props.isHidden}> {edctrl}
 				</div>)
 		}
 	}
@@ -1286,10 +952,11 @@ var SettingItem = React.createClass({
 
 var EditControl = React.createClass({
 	getInitialState: function(){
-		return({val:this.props.data, changed:false})
+		return({val:this.props.data, changed:false, mode:0, size:this.props.size})
 	},
 	sendPacket: function(){
-		this.props.sendPacket(this.props.name, this.state.val)
+		this.props.sendPacket(this.props.param, this.state.val)
+		this.setState({mode:0})
 	},
 	valChanged: function(e){
 		this.setState({val:e.target.value})
@@ -1297,134 +964,208 @@ var EditControl = React.createClass({
 	submit: function(){
 
 	},
+	componentWillReceiveProps: function (newProps) {
+		// body...
+		//console.log(newProps)
+		this.setState({size:newProps.size})
+
+	},
+	deactivate:function () {
+		// body...
+		this.setState({mode:0})
+	},
+	switchMode: function () {
+		// body...
+		if(this.props.param['@rpcs']){
+		if((this.props.param['@rpcs']['write'])||(this.props.param['@rpcs']['toggle'])){
+			var m = Math.abs(this.state.mode - 1)
+			this.props.activate()
+			this.setState({mode:m})
+		}
+	}
+		
+	},
 	render: function(){
-		return (<div><label>{this.props.name + ": "}</label><div style={{display:'inline-block',width:200}}><input style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val}></input></div>
+		var lab = (<label>{this.state.val}</label>)
+		var style = {display:'inline-block',fontSize:20}
+		if(this.state.size == 1){
+			style = {display:'inline-block',fontSize:16}
+		}else if(this.state.size == 0){
+			style = {display:'inline-block',fontSize:14}
+		}
+		if(this.state.mode == 0){
+			return <div onClick={this.switchMode}><label style={this.props.lvst}>{this.props.name + ": "}</label><label style={this.props.vst}>{this.state.val}</label></div>
+		}else{
+			return (<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{this.props.name + ": "}</label><label style={this.props.vst}>{this.state.val}</label></div>
+				<div style={{display:'inline-block',width:200}}><input width={10} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val}></input></div>
 			<button style={{fontSize:16}} onClick={this.sendPacket}>Submit</button></div>)
-	}
-})
-var ItemContent = React.createClass({
-	render: function(){
-		return (<div>could be the plot here!</div>)
-	}
+		
+		}
+
+		}
 })
 
-var MainDisplay = React.createClass({
-	getInitialState: function(){
-		return({productName:'',sens:100,sig:0,phase:'90', isHidden:false})
-	},
-	toggle: function(e){
-		e.preventDefault();
-		this.setState({isHidden: !this.state.isHidden} );
-	},
-	render: function(){
-		var ih = this.state.isHidden
-
-	    var className = "menuCategory";
-	    if (ih){
-	    	className = "menuCategory collapsed";
-	    }
-	    else{
-	    	className = "menuCategory expanded";
-	    }
-		return(
-			<div className={className}>
-			<span  onClick={this.toggle}><h2 >Main</h2></span>
-			<div hidden={ih} className='mainPage'>
-				<table>
-					<tbody>
-					<tr><td>Current Product: </td><td>{this.state.productName}</td></tr>
-					<tr><td>Sensitivity: </td><td>{this.state.sens}</td></tr>
-					<tr><td>Signal: </td><td>{this.state.sig}</td></tr>
-					<tr><td>Phase: </td><td>{this.state.phase}</td></tr>
-					</tbody>
-				</table>
-			</div>
-			</div>)
-	}
-})
-
-var MainView = React.createClass({
-	//this will contain product info, etc, and be 
-	getInitialState: function(){
-		return ({products:{}, currProd:0,prodList:[], hasProd:false})
-	},
-	setProd: function(e){
-		e.preventDefault();
-	},
-	render: function(){
-		var selectProduct = (<select onChange={this.setProd}>
-			<option value = "product1">Product 1</option>
-		</select>)
-		return(<div className='mainView'><table><tbody><tr><td>Current Product: </td><td>{selectProduct}</td></tr>
-			<tr><td>Sensitivity: </td><td>100</td></tr>
-			<tr><td>Phase:</td><td>90</td></tr>
-			<tr><td>Mode:</td><td>0</td></tr></tbody></table></div>)
-	}
-})
 
 var LiveView = React.createClass({
 	getInitialState: function(){
-		return ({rejects:0, mode:0, phase:90})
+		return ({rejects:0, mode:0, phase:90,pled:0,dled:0})
 	},
 	update: function (data) {
 		// body...
 	//	console.log(data)
 		this.refs.st.update(data)
 	},
+	setLEDs: function (p,d) {
+		// body...
+		this.refs.st.setLEDs(p,d)
+	},
 	render: function(){
-		return (<div className='liveView'>
+		return (<div style={this.props.st} className='liveView'>
 			{this.props.children}
 			<StatBar ref='st'/>
 			</div>
 			)
-		/*<table className='liveTable'><tbody><tr><td>Current Rejects: </td><td>{this.state.rejects}</td></tr>
-			<tr><td>Mode: </td><td>{this.state.mode}</td></tr>
-			<tr><td>Phase: </td><td>{this.state.phase}</td></tr></tbody></table>*/
-	}	
+	}
 })
-
+var LiveMView = React.createClass({
+	getInitialState: function(){
+		return ({rejects:0, mode:0, phase:90,pled:0,dled:0})
+	},
+	update: function (data) {
+		// body...
+	//	console.log(data)
+		this.refs.st.update(data)
+	},
+	setLEDs: function (p,d) {
+		// body...
+		this.refs.st.setLEDs(p,d)
+	},
+	render: function(){
+		return (<div className='liveView' style={{fontSize:16}}>
+			{this.props.children}
+			<StatBar ref='st'/>
+			</div>
+			)
+	}
+})
+var LiveTView = React.createClass({
+	getInitialState: function(){
+		return ({rejects:0, mode:0, phase:90,pled:0,dled:0})
+	},
+	update: function (data) {
+		// body...
+	//	console.log(data)
+		this.refs.st.update(data)
+	},
+	setLEDs: function (p,d) {
+		// body...
+		this.refs.st.setLEDs(p,d)
+	},
+	render: function(){
+		return (<div className='liveView' style={{fontSize:16, height:50, paddingTop:0}}>
+			<table style={{width:'100%'}}><tbody><tr><td style={{width:280}}>
+			{this.props.children}
+			</td><td>
+			<StatBar ref='st'/>
+			</td></tr></tbody></table>
+			</div>
+			)
+	}
+})
+var FaultDiv = React.createClass({
+	clearFaults: function () {
+		// body...
+		this.props.clearFaults()
+	},
+	maskFault: function (f) {
+		// body...
+		this.props.maskFault(f)
+	},
+	render:function () {
+		// body...
+		var self = this;
+		var cont;
+		var clButton;
+		if(this.props.faults.length == 0){
+			cont = (<div><label>No Faults</label></div>)
+		}else{
+			clButton = <button onClick={this.clearFaults}>Clear Faults</button>
+			cont = this.props.faults.map(function(f){
+				return <FaultItem maskFault={self.maskFault} fault={f}/>
+			})
+		}
+		return(<div>
+			{cont}
+			{clButton}
+		</div>)
+	}
+})
 var StatBar = React.createClass({
 	update: function (data) {
 		// body...
 		this.refs.tb.update(data)
 	},
+	setLEDs: function (p,d) {
+		// body...
+		this.refs.lb.update(p,d)
+	},
 	render: function(){
 		return (<div className='statBar'>
 			<TickerBox ref='tb'/>
-			<LEDBar/>
+			<LEDBar ref='lb'/>
 			</div>)
 	}
 })
 
 var EditControlSelect = React.createClass({
 	getInitialState: function(){
-		return({value:this.props.val, editMode:this.props.mode})
+		return({value:this.props.val, editMode:false,size:this.props.size})
 	},
 	onSubmit:function(e){
 		e.preventDefault();
 		var val = this.state.value;
-		if(helpers.Editable.indexOf(this.props.s) != -1 ){
-			val = helpers.Reverse[this.props.s].apply(this, [].concat.apply([],[val, deps] ))
-		}else if(this.props.bitLen == 16){
+		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(val)
 
 		}
-		this.props.handleSubmit(this.props.param, parseInt(val));
+		this.props.sendPacket(this.props.param, parseInt(val));
 		this.setState({editMode:false})
 	},
-	changeMode:function(e){
-		e.preventDefault();
-		if(this.props.editable){
-			this.setState({editMode:true})
+	submitVal:function () {
+		// body...
+		this.props.sendPacket(this.props.param, this.state.value)
+	},
+	changeMode:function(){
+		if(this.props.param['@rpcs']){
+		
+			if((this.props.param['@rpcs']['write'])||(this.props.param['@rpcs']['toggle'])){
+				this.props.activate()
+				this.setState({editMode:!this.state.editMode})
+			}
 		}
 	},
+	deactivate:function () {
+		// body...
+		this.setState({editMode:false})
+	},
+	componentWillReceiveProps: function (newProps) {
+		// body...
+		console.log(newProps)
+		this.setState({size:newProps.size})
+
+	},
 	valChanged:function(e){
+		var val = e.target.value;
+		if(this.props.bitLen == 16){
+			val = VdefHelper.swap16(val)
+
+		}
+		this.props.sendPacket(this.props.param, parseInt(val));
 		this.setState({value:e.target.value});
+
 	},
 	render: function(){
 		var selected = this.state.value;
-		//console.log('line 924')
-		//console.log(this.props.list)
 		var options = this.props.list.map(function(e,i){
 			if(i==selected){
 				return (<option value={i} selected>{e}</option>)
@@ -1432,26 +1173,23 @@ var EditControlSelect = React.createClass({
 				return (<option value={i}>{e}</option>)
 			}
 		})
-		var editbutton = "";
-		if(this.props.editable){
-			editbutton = <input type="submit" value="Edit" />
-		}
+			//editbutton = <button onClick={this.submitVal}>Edit</button>
+	
 		if(this.state.editMode){
 		return(<form className='editControl' onSubmit={this.onSubmit}>
-			{this.props.children}
+			<div onClick={this.changeMode}><label style={this.props.lvst}>{this.props.param['@name'] + ': '}</label><label style={this.props.vst}> {this.props.list[this.props.val]}</label></div>
 			<div className='customSelect'>
 			<select onChange={this.valChanged}>
 			{options}
 			</select>
+			
 			</div>
-			{editbutton}
 			</form>)
 		}else{
 			return(
 				<form className='editControl' onSubmit={this.changeMode}>
-					{this.props.children}
-					<label>{this.props.displayValue}</label>
-					{editbutton}
+					<div onClick={this.changeMode}><label style={this.props.lvst}>{this.props.param['@name'] + ': '}</label><label style={this.props.vst}> {this.props.list[this.props.val]}</label></div>
+		
 				</form>
 			)
 		}
@@ -1487,101 +1225,11 @@ var Modal = React.createClass({
 	}
 })
 
-var ResponsiveMenuBar = React.createClass({
-	render:function(){
-		return (<div></div>)
-	}
-})
-var ProductEditor = React.createClass({
-	getInitialState: function () {
-		// body...
-		return({products:this.props.products, prodNum:1, index:0})
-	},
-	addProd: function (n) {
-		// body...
-		var products = this.state.products
-		products.push(n);
-		this.setState({products:products})
 
-	},
-	selectProd: function(index) {
-		// body...
-		//alert(prod)
-		this.setState({prodNum:this.state.products[index].number, index:index})
-	},
-	call: function (f,i,data) {
-		// body...
 
-		 if(f == 'copy'){
-		 	this.addProd(this.state.products[i])
-		 }
-		 else if(f == 'del')
-		 {
-		 	this.del(i)
-		 }else if( f == 'update'){
-		 	this.update(i,data)
-		 }	
-	},
-	update: function (i,d) {
-		// body...
-		var products = this.state.products
-		products[i].name = d
-		this.setState({products:products})
-	},
-	del: function(p) {
-		var products = this.state.products;
-		products.splice(p,1);
-		this.setState({products:products})
-		
-	},
-	openAddModal: function () {
-		// body...
-		this.refs.addModal.toggle()
-	},
-	copyProd: function() {
-
-		this.addProd(this.props.products[this.state.index])
-		// body...
-	},
-	addNewProd: function () {
-		// body...
-		this.addProd({name:'Product', number:(this.props.products.length + 1)})
-	},
-	delCurrent: function () {
-		// body...
-		var products = this.state.products;
-		products.splice(this.state.index,1);
-
-		this.setState({products:products, index:0, prodNum:products[0].number})
-	},
-	render: function() {
-		// body...
-		var self = this;
-		var ProdList = this.state.products.map(function(p,i){
-			var active = false;
-			if(p.number == self.state.prodNum){
-				active= true;
-			}
-			return <ProductView call={self.call} prod={p} index={i} select={self.selectProd} active={active}/>
-		//	console.log(active)
-		});
-		return (<div className='productEditor'>
-				<button onClick={this.addNewProd}>Add New</button>
-				<button onClick={this.copyProd}>Copy Current Product</button>
-				<button onClick={this.delCurrent}>Delete Current Product</button>
-			
-				{ProdList}
-				<Modal ref='addModal'>
-					<div>copy existing product</div>
-					<div>new product</div>
-				</Modal>
-			</div>)
-		}
-	
-});
 var ProductView = React.createClass({
 	getInitialState: function(){
-		return ({data:[], name:this.props.prod.name})
+		return ({data:[], name:this.props.prod})
 	},
 	del: function () {
 		// body...
@@ -1617,130 +1265,321 @@ var ProductView = React.createClass({
 		// body...
 		var p = this.props.prod
 		var act;
+		var style = {color:'grey'}
 		if(this.props.active){
 			act=(<img className='checkmark' src='assets/check48.png'/>)
+			style={color:'green'}
 		}
-
-		return (<div className='productView'>
-				<button onClick={this.edit}><img className='checkmark' src='assets/edit48.png'/></button><label>{p.name}</label> <button onClick={this.del}>Delete</button> <button onClick={this.copy}>Copy</button> 
-				<button onClick={this.select}>Select</button>{act}
-				<Modal ref={'editModal'}><div><label>Edit Product</label>
-				<input type='text' value={this.state.name} onChange={this.onNameChange}/>
-				<button onClick={this.submitClick}>submit</button></div></Modal>
+		var editControl = ""
+		if(this.state.mode == 1){
+			editControl = (<div></div>)
+		}
+		
+		return (<div className='pView'><img onClick={this.edit} src='assets/angle-right.svg'/><label  onClick={this.select} style={style}>{p}</label>
+			{editControl}
 			</div>)
+
 	}
 })
 
 var MultiBankUnit = React.createClass({
-		getInitialState: function () {
+	getInitialState: function () {
 		// body...
-		var dat = [1,2,3,4,5,6,7,8,9,10,11,12];
+		var dat = []//[1,2,3,4,5,6,7,8,9,10,11,12];
 		if(this.props.data.length >0){
 			dat = this.props.data
 			console.log(dat)
 		}
 		return ({banks:dat})
 	},
+	onRMsg: function (e,d) {
+		// body...
+		if(this.refs[d.ip]){
+			console.log(d)
+			this.refs[d.ip].onRMsg(e,d)
+	
+		}
+	},
 	componentWillReceiveProps: function (nextProps) {
 		// body...
 
 		this.setState({banks:nextProps.data})
 	},
+	openEdit: function () {
+		// body...
+		this.refs.editModal.toggle()
+	},
+	setPnSens: function(p,s,d){
+		this.refs[d.ip].setPnSens(p,s);
+	},
+	setPeakRejs: function (p,r,d) {
+		// body...
+		this.refs[d.ip].setPeakRejs(p,r);
+	},
+	setLEDs:function (det,prod,prodhi,d) {
+		// body...
+		this.refs[d.ip].setLEDs(det,prod,prodhi);
+	},
+	setFaults:function (faultArray,d) {
+		// body...
+		this.refs[d.ip].setFaults(faultArray)
+
+	},
+	updateMeter: function (m,d) {
+		// body...
+		this.refs[d.ip].update(m);
+	},
+	switchUnit: function (u) {
+		// body...
+		console.log('switch mb')
+		this.props.onSelect(u)
+	},
 	render: function (argument) {
 		// body...
 		//<div style={{width:100,display:'inline-block'}}>
-		var banks = this.state.banks.map(function (b) {
-			return <tr><td style={{width:100}}>Name:{b}</td><td><StatBarMB name={b}/></td></tr>
+		var self = this;
+		var banks = this.state.banks.map(function (b,i) {
+			console.log(b)
+			return <StatBarMB unit={b} onSelect={self.switchUnit} ref={b.ip} name={b.name}/>
+			//return <tr><td >{i+1}</td><td><StatBarMB unit={b} onSelect={self.switchUnit} ref={b.ip} name={b.name}/></td></tr>
 			// body...
 		})
 		return (<div className='multiBankUnit'>
 			<div className='nameLabel'>
 				<label>{this.props.name}</label>
 			</div>
-			<table style={{width:'100%'}}>
+			{banks}
+				<Modal ref='editModal'>
+					<MBEditor />
+				</Modal>
+			</div>)
+		/*
+<table style={{width:'100%'}}>
 				<tbody>
 					{banks}
 				</tbody>
 
 			</table>
-			
-			</div>)
-		
+		*/
+	}
+})
+var MBEditor = React.createClass({
+	getInitialState: function () {
+		// body...
+		return({name:'', list:['1','2']})
+	},
+	render:function () {
+		// body...
+		var name = this.state.name
+		return (<div>
+				<label>{name}</label>
+
+		</div>)
 	}
 })
 
 var StatBarMB = React.createClass({
-	 update: function (data) {
-		// body...
-		this.refs.tb.update(data)
-	},
-	render: function(){
-		var rejCount=2;
-		return (<div className='statBarMB'>
-			<div className='namelabel'>
-				<label>1</label>
-			</div>
-			<table style={{width:'100%'}}><tbody><tr style={{marginBottom:-5,fontSize:17}}><td className='smCell'><label className='statCell'>Sens: 100</label></td><td><TickerBox ref='tb'/></td></tr>
-			<tr style={{marginBottom:0,fontSize:17}}><td className='smCell'><label className='statCell'>Sig: 32000</label></td><td className='ledCell'>
-			<div className='flRight'><LED color='red' />Reject :<label style={{width:50,display:'inline-block'}}>{rejCount}</label><label style={{width:70,display:'inline-block'}}>Product</label><LED color='blue' /></div></td></tr> 
-			</tbody></table>
-			</div>)
-	}
-})
-var MultiScan = React.createClass({
 	getInitialState: function () {
 		// body...
-		var dat = [1,2,3,4,5,6,7,8,9,10,11,12];
-		if(this.props.data.length >0){
-			dat = this.props.data
-			console.log(dat)
+		var br = window.matchMedia('(min-width:600px)')
+		br.addListener(this.listenToMq)
+		return({pn:'',phase:9000, phasemode:0,sens:100, peak:0,br:br, mobile:br.matches, rejs:2, fault:false, live:false, pled:0,dled:0, rpcResp:false})
+	},
+	listenToMq: function () {
+		// body...
+		this.setState({mobile:this.state.br.matches});
+	},
+	 update: function (data) {
+		// body...
+		liveTimer[this.props.unit.ip] = Date.now();
+		if(!this.state.live){
+			this.setState({live:true})
 		}
-		return ({units:dat})
+		this.refs.lv.update(data)
 	},
-	componentWillReceiveProps: function (nextProps) {
-		// body...
-
-		this.setState({units:nextProps.data})
+	setPnSens: function(p,s){
+		if(this.state.sens != s){
+			this.setState({sens:s})
+		}
 	},
-	updateMeter: function (data, u) {
-		// body...
-
-		this.refs[u].updateMeter(data)
+	setLEDs:function(det,prod,prodhi){
+		var pled = 0
+		if(prodhi == 1){
+			pled = 2
+		}else if(prod == 1){
+			pled = 1
+		}
+		this.refs.lv.setLEDs(pled,det)
 	},
-	switchUnit: function (u) {
+	setPeakRejs: function (p,r) {
 		// body...
-		console.log(u)
+		if((this.state.peak != p) ||(this.state.rejs != r)){
+			console.log(this.state.rejs)
+			this.setState({peak:p,rejs:r})
+		}
+	},
+	setFaults: function(faultArray) {
+		// body...
+		var faults = (faultArray.length != 0);
+		if (faults != this.state.fault){
+			this.setState({fault:faults})
+		}
+	},
+	switchUnit: function () {
+		// body...
+		if(this.state.live){
+			this.props.onSelect(this.props.unit)	
+		}
 		
-		this.props.SwitchUnit(u)
 	},
-	locate:function () {
+	componentDidMount: function () {
 		// body...
-		socket.emit('hello','from button')
-	},
-	render: function () {
 		var self = this;
-		var units = this.state.units.map(function (u) {
-			// body...
-			return <MultiScanUnit ref={u.ip} onSelect={self.switchUnit} unit={u}/>
-		})
+		var packet = dsp_rpc_paylod_for(19,[556,0,0])
+		var buf =  new Uint8Array(packet)
+		myTimers[this.props.unit.ip] = setInterval(function(){
+			if((Date.now()-liveTimer[self.props.unit.ip])>1000){
+				self.setState({live:false})
+			}
+			if(!self.state.rpcResp){
+				socket.emit('rpc',{ip:self.props.unit.ip, data:buf.buffer});	
+			}
+			
+		},1000)
+			
+	},
+	componentWillUnmount: function () {
 		// body...
-		return (<div className='multScan'>
-				<div className='controlInt'>
-					<button onClick={this.locate}>Locate</button>
-				</div>
-				{units}
-			</div>)
+
+		//this._isMounted = false
+		clearInterval(myTimers[this.props.unit.ip]);
+	},
+	onRMsg: function (e,d) {
+		// body...
+		if(d.ip = this.props.unit.ip){
+			this.setState({rpcResp:true})	
+		}		
+
+	},
+	render: function(){
+
+		if(!this.state.mobile){
+			return this.renderMob();
+			
+		}else{
+			return this.renderTab();
+		}
+	
+	},
+	renderTab: function () {
+		// body...
+		var klass =''//noclass'// "statBarMB"
+		if(this.state.fault){
+			klass = 'faultactive'
+			console.log(klass)
+		}
+		if(!this.state.live){
+
+			klass = 'inactive'
+			console.log(klass)
+		}
+		var list = ['dry','wet','DSA']
+		return(
+			<div onClick={this.switchUnit} className={klass}>
+				<LiveTView ref='lv'>
+
+					<table className='mtab'><tbody>
+				<tr><td><label>Sensitivity:{this.state.sens}</label></td><td><label style={{paddingLeft:15}}>Phase:{(this.state.phase/100).toFixed(2).toString() +' ' +list[this.state.phasemode]}</label></td>
+			</tr>
+				<tr><td><label>Peak:{this.state.peak}</label></td>
+				
+				<td><label style={{paddingLeft:15}}>Rejects:{this.state.rejs}</label></td>
+
+				</tr></tbody></table>
+				</LiveTView>
+			</div>
+		)
+
+	},
+	renderMob: function () {
+		// body...
+		var rejCount=2;
+		var klass =''//noclass'// "statBarMB"
+		if(this.state.fault){
+			klass = 'faultactive'
+			console.log(klass)
+		}
+		if(!this.state.live){
+
+			klass = 'inactive'
+			console.log(klass)
+		}
+		var list = ['dry','wet','DSA']
+		
+		return (
+			<div onClick={this.switchUnit} className={klass}>
+				<LiveMView ref='lv'>
+
+					<table className='mtab'><tbody>
+				<tr><td><label>Sensitivity:{this.state.sens}</label></td><td><label style={{paddingLeft:15}}>Phase:{(this.state.phase/100).toFixed(2).toString() +' ' +list[this.state.phasemode]}</label></td>
+			</tr>
+				<tr><td><label>Peak:{this.state.peak}</label></td>
+				
+				<td><label style={{paddingLeft:15}}>Rejects:{this.state.rejs}</label></td>
+
+				</tr></tbody></table>
+				</LiveMView>
+			</div>
+
+		)
 	}
 })
+
 var MultiScanUnit = React.createClass({
 	getInitialState: function () {
 		// body...
-		return ({live:true, fault:false, pn:'', sens:0})
+		var mobMqs = [
+			window.matchMedia('(min-width:321px)'),
+			window.matchMedia('(min-width:376px)'),
+			window.matchMedia('(min-width:426px)')
+		]
+		for(var i = 0; i<3;i++){
+			mobMqs[i].addListener(this.listenToMq)
+		}
+		var font;
+		if(mobMqs[2].matches){
+			font = 3
+		}else if(mobMqs[1].matches){
+			font = 2
+		}else if(mobMqs[0].matches){
+			font = 1
+		}else{
+			font = 0
+		} 
+		return ({font:font,mq:mobMqs,phasemode:0,live:false, fault:false, pn:'', sens:0,peak:0,rejs:0,phase:0,pled:0,dled:0,rpcResp:false})
 	},
 	onClick: function () {
 		// body...
 		console.log('cliecked')
-		this.props.onSelect(this.props.unit)
+		if(this.state.live){
+			this.props.onSelect(this.props.unit)
+	
+		}
+	},
+	listenToMq: function () {
+		// body...
+		var mobMqs = this.state.mq
+			var font;
+		if(mobMqs[2].matches){
+			font = 3
+		}else if(mobMqs[1].matches){
+			font = 2
+		}else if(mobMqs[0].matches){
+			font = 1
+		}else{
+			font = 0
+		} 
+		this.setState({font:font})
 	},
 	updateMeter: function (dat) {
 		// body...
@@ -1758,6 +1597,11 @@ var MultiScanUnit = React.createClass({
 	onMsg: function (e) {
 		// body...
 	},
+	onRMsg: function (e,d) {
+		// body...
+		console.log([e,d])
+		this.setState({rpcResp:true})
+	},
 	onFault: function () {
 		// body...
 		console.log('on fault')
@@ -1767,18 +1611,69 @@ var MultiScanUnit = React.createClass({
 	componentDidMount: function () {
 		// body...
 		var self = this;
-		setInterval(function(){
-			if((Date.now() - liveTimer[self.props.unit.ip]) > 2000){
+		this._isMounted = true;
+		myTimers[this.props.unit.ip] = setInterval(function(){
+			
+			if((Date.now() - liveTimer[self.props.unit.ip]) > 1000){
 				//wSockets[self.props.unit.ip].close();
+				//if(self.)
 				self.setState({live:false})
 			}
-		}, 2000)
+			if(!self.state.rpcResp){
+				var packet = dsp_rpc_paylod_for(19,[556,0,0])
+				var buf =  new Uint8Array(packet)
+				socket.emit('rpc',{ip:self.props.unit.ip, data:buf.buffer})
+			}
+			
+		}, 1000)
+	},
+	componentWillUnmount: function () {
+		// body...
+
+		//this._isMounted = false
+		clearInterval(myTimers[this.props.unit.ip]);
 	},
 	setPnSens: function (pn,sens) {
 		if((this.state.pn != pn) || (this.state.sens != sens)){
 			this.setState({pn:pn, sens:sens})
 		}
 		// body...
+	},
+	setLEDS:function(det,prod,prodhi){
+		var pled = 0
+		if(prodhi == 1){
+			pled = 2
+		}else if(prod == 1){
+			pled = 1
+		}
+		this.refs.lv.setLEDs(pled,det)
+	},
+	setPeakRejs: function (p,r) {
+		if((this.state.peak != p) || (this.state.rejs != r)){
+			console.log(r)	
+			this.setState({peak:p, rejs:r})
+		}
+		// body...
+	},
+	setPhase: function (phase) {
+		// body...
+		if(phase != this.state.phase){
+			console.log(phase)
+			this.setState({phase:phase})
+		}
+	},
+	setPhaseMode:function (mode) {
+		if(mode != this.state.phasemode){
+			this.setState({phasemode:mode})
+		}
+		// body...
+	},
+	setFaults: function (faultArray) {
+		// body...
+		var faults = (faultArray.length != 0);
+		if (faults != this.state.fault){
+			this.setState({fault:faults})
+		}
 	},
 	render: function () {
 		// body...
@@ -1788,192 +1683,225 @@ var MultiScanUnit = React.createClass({
 		}else if(this.state.fault){
 			classname = 'multiScanUnit faultactive'
 		}
+		var st= {fontSize:20};
+		if(this.state.font == 2){
+			st = {fontSize:20, height:160}
+		}else if(this.state.font == 1){
+			st = {fontSize:18, height:145}
+		}else if(this.state.font == 0){
+			st = {fontSize:16, height:145}
+		}
 		console.log(classname)
+		var list = ['dry','wet','DSA']
 		return(<div className={classname}>
-			<LiveView ref='lv'>
+			<LiveView st={st} ref='lv'>
 			<div  onClick={this.onClick}>
-				<div><label>Detector Name: </label><label>{this.props.unit.name}</label></div>
-				<div onClick={this.onClick}><label>Detector IP: </label><label>{this.props.unit.ip}</label></div>
-				<div><label>Current Product:{this.state.pn}</label></div>
-				<div><label>Sensitivity:{this.state.sens}</label></div>
+				<div><label>Name: </label><label>{this.props.unit.name}</label></div>
+				<div><label>Product:{this.state.pn}</label></div>
+				<table className='mtab'><tbody>
+				<tr><td><label>Sensitivity:{this.state.sens}</label></td><td><label style={{paddingLeft:15}}>Phase:{(this.state.phase/100).toFixed(2).toString() +' ' +list[this.state.phasemode]}</label></td>
+			</tr>
+				<tr><td><label  >Peak:{this.state.peak}</label></td>
+				
+				<td><label style={{paddingLeft:15}}>Rejects:{this.state.rejs}</label></td>
+
+				</tr></tbody></table>
 				</div>
 			</LiveView>
-			<button onClick={this.onFault}>simulate fault</button>
 		</div>)
 	}
 })
 
 var LandingPage = React.createClass({
 	getInitialState: function () {
-		var mq = window.matchMedia("(min-width: 800px)");
+		var minMq = window.matchMedia("(min-width: 400px)");
+		var mq = window.matchMedia("(min-width: 850px)");
 		mq.addListener(this.listenToMq)
+		minMq.addListener(this.listenToMq)
+		var mqls = [
+			window.matchMedia("(min-width: 321px)"),
+			window.matchMedia("(min-width: 376px)"),
+			window.matchMedia("(min-width: 426px)")
+		]
+		for (var i=0; i<mqls.length; i++){
+			mqls[i].addListener(this.listenToMq)
+		}
 		console.log(mq.matches)
 		// body...
-		return ({currentPage:'landing', mq:mq, brPoint:mq.matches, detectors:[], ipToAdd:'',curDet:''})
+		return ({currentPage:'landing', curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, 
+			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], 
+			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]},tmpS:{name:'NEW', type:'single', banks:[]}})
 	},
 	listenToMq: function (argument) {
 		// body...
 		if(this.refs.dv){
-			this.refs.dv.setState({br:this.state.mq.matches})
+			this.refs.dv.setState({br:this.state.mq.matches})//, br3:this.state.mqls[0].matches, br4:this.state.mqls[1].matches, br6:this.state.mqls[2].matches})
 		}
 		this.setState({brPoint:this.state.mq.matches})
 	},
 	locateUnits: function (callback) {
+		this.state.detectors.forEach(function(d){
+			if(wSockets[d.ip]){
+				wSockets[d.ip].close()
+			}
+			if(wParamSockets[d.ip]){
+				wParamSockets[d.ip].close()
+			}
+			if(wRSockets[d.ip]){
+				wRSockets[d.ip].close()
+			}
+		})
+		located = false;
 		// body...
 		socket.emit('hello','landing')
+		//socket.emit('locateReq', 'mb')
 		
 		this.refs.findDetModal.toggle();
 	},
-	onError: function (e, u) {
-		// body...
-		alert('socket error')
-		console.log([e,u])
+	locateB: function(){
+		socket.emit('locateReq', 'b')
 	},
-	addByIP: function () {
-		// body...
-		// for this, need to ask detector at that ip for name, ver etc... 
+	onError: function (t,e, d) {
 		var self = this;
-		var dets = this.state.detectors;
-		var unit = {ip:this.state.ipToAdd, name:''}
-		wParamSockets[unit.ip] = new WebSocket('ws://' + unit.ip +'/parameters');
-		wParamSockets[unit.ip].binaryType = 'arraybuffer';
-   		wParamSockets[unit.ip].onmessage = function (e) {
-   				// body...
-   			self.onParamMsg(e,unit)
-   			
+		// body...
+		console.log('socket error')
+		if(t == 1){
+			if(wParamSockets[d.ip].readyState == 1 ){
+				wParamSockets[d.ip].onclose = function (e) {
+					// body...
+					setTimeout(reconSocket(1,d.ip,self.onParamMsg,self.onError,self.onClose,d ),100)
+				}
+				wParamSockets[d.ip].close();
+			}
+			else{
+					//wParamSockets[d.ip] = null;
+					setTimeout(reconSocket(1,d.ip,self.onParamMsg,self.onError,self.onClose,d ),100)
+			}
+		}else if(t ==2 ){
+			if(wRSockets[d.ip].readyState == 1){
+				wRSockets[d.ip].onclose = function (e) {
+					// body...
+					setTimeout(reconSocket(2,d.ip,self.onRMsg,self.onError,self.onClose,d ),100)
+				}
+				wRSockets[d.ip].close();
+			}
+			else{
+					//wRSockets[d.ip] = null;
+					setTimeout(reconSocket(2,d.ip,self.onRMsg,self.onError,self.onClose,d ),100)
+			}
 		}
-		wParamSockets[unit.ip].onerror = function (e) {
-			// body...
-			self.onError(e, unit)
-		}
-
-		wSockets[unit.ip] = new WebSocket('ws://' + unit.ip + '/panel');
-		wSockets[unit.ip].binaryType = 'arraybuffer';
-		wSockets[unit.ip].onmessage = function (ev) {
-			self.onMsg(ev,unit)
-			// body...
-		}
-		wSockets[unit.ip].onclose = function (e) {
-			// body...
-			console.log('closed')
-		}
-		liveTimer[unit.ip] = Date.now()
-		dets.push(unit)
-		this.setState({detectors:dets})
-	},
-	ipChanged: function (e) {
-		e.preventDefault();
-		// body...
-		this.setState({ipToAdd:e.target.value})
-	},
-	renderDetectors: function () {
-
-		// body...
-		var self = this;
-		var units = this.state.detectors.map(function (u) {
-			// body...
-			return <MultiScanUnit ref={u.ip} onSelect={self.switchUnit} unit={u}/>
-		})
-		return units;
-	},
-	setPrefs: function () {
-		// body...
-		this.refs.prefModal.toggle()
-	},
-	showFinder: function () {
-		this.refs.findDetModal.toggle();
-		// body...
-	},
-	switchUnit: function (u) {
-		// body...
-		console.log(u)
-		this.setState({curDet:u, currentPage:'detector'})
-	},
-
-	renderLanding: function () {
-		var detectors = this.renderDetectors()
-		var config = 'config'
-		var find = 'find'
-		// body...
-		return (<div className = 'landingPage'>
-					<table className='landingMenuTable'>
-						<tbody>
-							<tr>
-								<td><img className='logo' src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
-								<td className="buttCell"><button onClick={this.setPrefs} className={config}/></td>
-								<td className="buttCell"><button onClick={this.showFinder} className={find}/></td>
-							</tr>
-						</tbody>
-					</table>
-					<Modal ref='findDetModal'>
-						<div className='prefInterface'><button onClick={this.locateUnits}>Automatically Locate Units</button>
-							<button onClick={this.addByIP}>Manually Add Unit</button>
-							<input type='text' onChange={this.ipChanged}>{this.state.ipToAdd}</input>
-						</div>
-
-					</Modal>
-					<Modal ref='prefModal'>
-						<div className='prefInterface'>
-							<label><h3>Set Prefs Here</h3></label>
-						</div>
-					</Modal>
-				 	{detectors}
-				 	<MultiBankUnit name={'MultiBankUnit'} data={[1,2,3,4,5,6,7,8,9,10,11,12]}/>
-			</div>)	
-	},
-	logoClick: function () {
-		// body...
-		this.setState({currentPage:'landing'})
-	},
-	renderDetector: function () {
-		// body...
-		return (<DetectorView br={this.state.brPoint} ref='dv' logoClick={this.logoClick} det={this.state.curDet} ip={this.state.curDet.ip}/>)
+		console.log([e,d])
 	},
 	componentDidMount: function () {
 		// body...
 		var self = this;
-		socket.on('location', function (data) {
+		this.loadPrefs();
+		socket.on('resetConfirm', function (r) {
 			// body...
-			console.log(data)
-			data.forEach(function(d){
-				console.log(d)
-				wParamSockets[d.ip] = new WebSocket('ws://' +d.ip +'/parameters');
-   				wParamSockets[d.ip].binaryType = 'arraybuffer';
-   				wParamSockets[d.ip].onmessage = function (e) {
-   				// body...
-   				self.onParamMsg(e,d)
-   			
-			}
-			wSockets[d.ip] = new WebSocket('ws://' + d.ip + '/panel')
-			wSockets[d.ip].binaryType = 'arraybuffer'
-			wSockets[d.ip].onmessage = function(evt){
-				self.onMsg(evt, d)
-			}
-			wSockets[d.ip].onclose = function (e) {
+			socket.emit('locateReq');
+		})
+		socket.on('prefs', function(f) {
+			console.log(f)
+			var detL = self.state.detL
+			f.forEach(function (u) {
+				u.banks.forEach(function(b){
+					detL[b.mac] = null
+				})
+				// body...
+			})
+			self.setState({mbunits:f, detL:detL})
 			// body...
-			console.log('closed');
-			//wSockets[d.ip].open();
-			}
+		})
+		socket.on('locatedResp', function (e) {
+			console.log(e)
+			var dets = self.state.detL;
+			//var macs = []
+			var macs = self.state.macList.slice(0);
+			e.forEach(function(d){
+				macs.push(d.mac)
+				dets[d.mac] = d;
+				if(macs.indexOf(d.mac) == -1){
+					macs.push(d.mac)
+					dets[d.mac] = d
 
-			wRSockets[d.ip] = new WebSocket('ws://' + d.ip + '/rpc');
-			wRSockets[d.ip].binaryType = 'arraybuffer';
-			wRSockets[d.ip].onmessage = function(evt){ console.log(evt)}
-			
-			liveTimer[d.ip] = Date.now();
-			 var vdef_script_tag = document.createElement('script');
+				}
+
+				console.log(d)
+
+		/*	 var vdef_script_tag = document.createElement('script');
         	vdef_script_tag.src = "http://"+d.ip+"/vdef"; // can change the ip here
         	vdef_script_tag.type = "application/javascript";
         	document.body.appendChild(vdef_script_tag); 
-        	console.log(vdef_script_tag)
+        	console.log(vdef_script_tag)*/
+			
 			})
-			self.setState({detectors:data})
-		} )
+			console.log(dets)
+			self.state.mbunits.forEach(function(u){
+				u.banks.forEach(function(b) {
+					// body...
+					dets[b.mac] = null;
+				})
+			})
+			self.setState({dets:e, detL:dets, macList:macs})
+			// body...
+		});
+		
+		socket.on('paramMsg', function(data) {
+		//	console.log(data.det.ip)
+			self.onParamMsg(data.data,data.det) 
+
+			// body...
+		})
+		socket.on('rpcMsg', function (data) {
+			// body...
+			self.onRMsg(data.data, data.det)
+		})
+	},
+	onRMsg: function (e,d) {
+		console.log([e,d])
+		var msg = e.data
+		var data = new Uint8Array(msg);
+		if(data[1] == 18){
+		//console.log(data)
+		var prodbits = data.slice(3)
+		var dat = []
+		for(var i = 0; i < 99; i++){
+			if(prodbits[i] ==2){
+				dat.push(i+1)
+			}
+		}
+
+		console.log(dat)
+		}
+		if(this.refs.dv){
+			this.refs.dv.onRMsg(e,d)
+		}else if(this.refs[d.ip]){
+			this.refs[d.ip].onRMsg(e,d)
+		}else {
+			var ind = -1
+			this.state.mbunits.forEach(function(m,i){
+  				//	m.banks.for
+  				//	}
+  					m.banks.forEach(function (b) {
+  						// body...
+  						if(b.ip == d.ip){
+  							ind = i;
+  						}
+  					})
+  				}) 
+  				if(ind != -1){
+  					if(this.refs['mbu' + ind]){
+  						console.log('mbu' + ind)
+  						this.refs['mbu'+ind].onRMsg(e,d)
+  						}
+  					}
+		}
+
+		
 	},
 	onParamMsg: function (e,d) {
 
-		// body...
-		//var data = new Uint8Array(e);
-
+		var self = this;
    				var msg = e.data;
    	var data = new Uint8Array(msg);
     
@@ -1985,36 +1913,80 @@ var LandingPage = React.createClass({
 			prodArray[i] = dv.getUint16(i*2 + 1);	
 		}
 		if(isVdefSet){
+			//console.log(lcd_type)
     		if(lcd_type == 1)
 			{
 				if(this.refs[d.ip]){
 					this.refs[d.ip].setPnSens(this.getVal(prodArray, 1, 'ProdName'),this.getVal(prodArray, 1, 'Sens'))
+					this.refs[d.ip].setPhaseMode(this.getVal(prodArray,1,'PhaseMode'))
+				}else{
+  				var ind = -1;
+  				this.state.mbunits.forEach(function(m,i){
+  				//	m.banks.for
+  				//	}
+  					m.banks.forEach(function (b) {
+  						// body...
+  						if(b.ip == d.ip){
+  							ind = i;
+  						}
+  					})
+  				}) 
+  				if(ind != -1){
+  					if(this.refs['mbu' + ind]){
+  						this.refs['mbu'+ind].setPnSens(this.getVal(prodArray, 1, 'ProdName'),this.getVal(prodArray, 1, 'Sens'),d)
+  	
+  						}
+  					}
+  				}
+  			}else if(lcd_type == 2){
+			//	console.log(this.getVal(prodArray,2,'Peak'))
+				var signal =	uintToInt(this.getVal(prodArray,2,'DetectSignal'),16);
+				var faultArray = [];
+				pVdef[6].forEach(function(f){
+					if(self.getVal(prodArray,2,f) != 0){
+						faultArray.push(f)
+					}
+				});
+				if(faultArray.length != 0){
+					//console.log(faultArray)
+					
 				}
+
+				if(this.refs[d.ip]){
+					this.refs[d.ip].setPhase(uintToInt( this.getVal(prodArray,2,'PhaseAngleAuto'),16))
+					this.refs[d.ip].setLEDS(this.getVal(prodArray,2,'Reject_LED'),this.getVal(prodArray,2,'Prod_LED'),this.getVal(prodArray,2,'Prod_HI_LED'))
+					this.refs[d.ip].setPeakRejs(this.getVal(prodArray, 2, 'Peak'), this.getVal(prodArray,2, 'RejCount'))
+					this.refs[d.ip].updateMeter(signal)
+					this.refs[d.ip].setFaults(faultArray)
+				}else{
+  				var ind = -1;
+  				this.state.mbunits.forEach(function(m,i){
+  				//	m.banks.for
+  				//	}
+  					m.banks.forEach(function (b) {
+  						// body...
+  						if(b.ip == d.ip){
+  							ind = i;
+  						}
+  					})
+  				}) 
+  				if(ind != -1){
+  					if(this.refs['mbu' + ind]){
+  						this.refs['mbu'+ind].setPeakRejs(this.getVal(prodArray, 2, 'Peak'),this.getVal(prodArray,2, 'RejCount'),d)
+  						this.refs['mbu'+ind].updateMeter(signal,d)	
+  						this.refs['mbu'+ind].setFaults(faultArray,d)
+  						this.refs['mbu'+ind].setLEDs(this.getVal(prodArray,2,'Reject_LED'),this.getVal(prodArray,2,'Prod_LED'),this.getVal(prodArray,2,'Prod_HI_LED'),d)
+  						}
+  					}
 			}
     	}
 		
 		if(this.refs.dv){
 			this.refs.dv.onParamMsg(e,d)
+			}
 		}
 	},
-	onMsg: function (e,d) {
-		// body...
-		if(e.data instanceof ArrayBuffer ){
-  		var dv = new DataView(e.data)
-  		if(dv.getUint8(0) == 0x1){
-  			var lcd_leds = dv.getUint8(1)
-  			//display packet
-  			if(this.refs[d.ip]){
-  				this.refs[d.ip].updateMeter(((lcd_leds & 0xf)- 5)*50)	
-  			}
-  			
-  		}
-  		if(this.refs.dv){
-  			this.refs.dv.onMsg(e,d)
-  		}
-  	}
 
-	},
 	getVal: function(arr, rec, key){
 		//console.log(key)
 		var param = pVdef[rec][key]
@@ -2045,44 +2017,783 @@ var LandingPage = React.createClass({
 		}).join("");
 		return str;
 	},
-	render: function () {
-		/*
-			Initial landing
-			<menu - no real navigation menu, configs for prefs?>
-				<detectors>
-					{individual detectors here}
-				</detectors>
-			</menu>
+	ipChanged: function (e) {
+		e.preventDefault();
+		// body...
+		this.setState({ipToAdd:e.target.value})
+	},
+	renderDetectors: function () {
+
+		// body...
+		var self = this;
+		var units = this.state.detectors.map(function (u) {
+			// body...
+			return <MultiScanUnit ref={u.ip} onSelect={self.switchUnit} unit={u}/>
+		})
+		return units;
+	},
+	setPrefs: function () {
+		// body...
+		this.refs.prefModal.toggle()
+	},
+	showFinder: function () {
+		this.refs.findDetModal.toggle();
+		this.locateB()
+		// body...
+	},
+	logoClick: function () {
+		// body...
+		this.setState({currentPage:'landing'})
+	},
+	onClose: function (argument) {
+		// body...
+		console.log(argument)
+	},
+	switchUnit: function (u) {
+		// body...
+		console.log(u)
+		this.setState({curDet:u, currentPage:'detector'})
+	},
+	addNewMBUnit:function () {
+		// body...
+		this.setState({curModal:'newMB'})
+		//this.addMBUnit({name:"new", type:"mb", banks:[]})
+	}, 
+	addNewSingleUnit: function () {
+		// body...
+		this.setState({curModal:'newSingle'})
+		//this.addMBUnit({name:"new",type:"single", banks:[]})
+	},
+	addMBUnit: function (mb) {
+		// body...
+		var mbunits = this.state.mbunits
+		mbunits.push(mb)
+		this.setState({mbunits:mbunits})
+	},
+	editMb:function (i) {
+		// body...
+		console.log(i)
+		//this.refs.findDetModal.toggle()
+		var mbunits = this.state.mbunits;
+
+		var mbunit ={}
+		mbunit.type = mbunits[i].type;
+		mbunit.name = mbunits[i].name;
+		mbunit.banks = mbunits[i].banks;
+		if(mbunit.type == 'single'){
+			this.setState({curIndex:i, curModal:'edit', tmpS:mbunit})	
+		}else{
+			this.setState({curIndex:i, curModal:'edit', tmpMB:mbunit})
+		}
+		
+	},
+	callFromMB: function(f,d){
+
+	},
+	dragStart: function (e) {
+		// body...
+			// body...
+		console.log('dragstart')
+		this.dragged = e.currentTarget;
+		console.log(e.currentTarget)
+		e.dataTransfer.effectAllowed = 'move';
+    // Firefox requires dataTransfer data to be set
+    e.dataTransfer.setData("text", e.currentTarget.id);
+
+	},
+	addToGroup: function (e) {
+		// body...
+		console.log(e)
+		var cont = this.state.mbunits[this.state.curIndex].banks;
+		var dsps = this.state.dets;
+		
+			console.log(dsps[e])
+			cont.push(dsps[e])
 			
-			Specific Detector
-			<menu - ability to go back to landing 
+			dsps.splice(e,1)
+		var mbUnits = this.state.mbunits;
+		mbUnits[this.state.curIndex].banks = cont;
+		console.log(dsps)
+		console.log(mbUnits)
+		this.setState({mbunits:mbUnits, dets:dsps})
+		
+		
+	},
+	addToTmpGroup: function (e) {
+		// body...
+		console.log(e)
+		var cont = this.state.tmpMB.banks;
+		var dsps = this.state.dets;
+		var detL = this.state.detL
+		
+			console.log(dsps[e])
+			cont.push(dsps[e])
+			
+			//dsps.splice(e,1)
+			detL[dsps[e].mac] = null;
+		var mbUnits = this.state.tmpMB;
+		mbUnits.banks = cont;
+		console.log(dsps)
+		console.log(mbUnits)
+		this.setState({tmpMB:mbUnits, detL:detL})
+		
+		
+	},
+	addToTmpSingle: function (e) {
+		// body...
+		console.log(e)
+		var cont = this.state.tmpS.banks;
+		var dsps = this.state.dets;
+		var detL = this.state.detL
+		if(cont.length != 0){
+			return;
+		}
+			console.log(dsps[e])
+			cont.push(dsps[e])
+			detL[dsps[e].mac] = null;
+		var mbUnits = this.state.tmpS;
+		mbUnits.banks = cont;
+		mbUnits.name = dsps[e].name
+		console.log(dsps)
+		console.log(mbUnits)
+		this.setState({tmps:mbUnits, detL:detL})
+		
+		
+	},
+	removeFromGroup: function (e) {
+		// body...
 
+		var cont = this.state.mbunits[this.state.curIndex].banks;
+		var dsps = this.state.dets;
+		var detL = this.state.detL
+		console.log(cont[e])
+		detL[cont[e].mac] = cont[e];
+		cont.splice(e,1)
+		
+		var mbUnits = this.state.mbunits;
+		mbUnits[this.state.curIndex].banks = cont;
+		this.setState({mbunits:mbUnits, detL:detL})
+	},
+	removeFromTmpGroup: function (e) {
+		// body...
 
-		*/
+		var cont = this.state.tmpMB.banks;
+		var dsps = this.state.dets;
+		var detL = this.state.detL
+		console.log(cont[e])
+		detL[cont[e].mac] = cont[e]
+		
+		cont.splice(e,1)
+		
+		var mbUnits = this.state.tmpMB;
+		mbUnits.banks = cont;
+		this.setState({tmpMB:mbUnits, detL:detL})
+	},
+	removeFromTmpSingle: function (e) {
+		// body...
+
+		var cont = this.state.tmpS.banks;
+		var dsps = this.state.dets;
+		var detL = this.state.detL
+		
+		detL[cont[e].mac] = cont[e]
+		
+		
+		cont.splice(e,1)
+		
+		var mbUnits = this.state.tmpS;
+		mbUnits.banks = cont;
+		this.setState({tmpS:mbUnits, detL:detL})
+	},
+	cancel: function () {
+		var detL = this.state.detL;
+		this.state.tmpS.banks.forEach(function (b) {
+			// body...
+			detL[b.mac] = b
+		})
+		this.state.tmpMB.banks.forEach(function (b) {
+			// body...
+			detL[b.mac]= b
+		})
+		this.setState({curModal:'add',detL:detL, tmpS:{name:'NEW',type:'single',banks:[]}, tmpMB:{name:'NEW',type:'mb',banks:[]}})
+		// body...
+	},
+	submitMB: function(){
+		var mbunits = this.state.mbunits;
+		mbunits.push(this.state.tmpMB)
+		this.saveSend(mbunits);
+		this.setState({curModal:'add', tmpS:{name:'NEW',type:'single',banks:[]}, tmpMB:{name:'NEW',type:'mb',banks:[]}})
+		
+	
+	},
+
+	submitS: function(){
+		var mbunits = this.state.mbunits;
+		mbunits.push(this.state.tmpS)
+		this.saveSend(mbunits);
+		this.setState({curModal:'add', tmpS:{name:'NEW',type:'single',banks:[]}, tmpMB:{name:'NEW',type:'mb',banks:[]}})
+		
+	},
+		submitMBe: function(){
+		var mbunits = this.state.mbunits;
+		mbunits[this.state.curIndex]= this.state.tmpMB 
+		this.saveSend(mbunits);
+		this.setState({curModal:'add', tmpS:{name:'NEW',type:'single',banks:[]}, tmpMB:{name:'NEW',type:'mb',banks:[]}})
+		
+	
+	},
+
+	submitSe: function(){
+		var mbunits = this.state.mbunits;
+		mbunits[this.state.curIndex]= this.state.tmpS
+		this.saveSend(mbunits);
+		this.setState({curModal:'add', tmpS:{name:'NEW',type:'single',banks:[]}, tmpMB:{name:'NEW',type:'mb',banks:[]}})
+		
+	},
+	changeModalMode: function () {
+		// body...
+		this.setState({curModal:'add'})
+	},
+	move: function (i,d) {
+		var mbunits = this.state.mbunits
+		if(d == 'up'){
+			if(i != 0){
+				var punit = mbunits[i-1];
+				var unit = mbunits[i];
+				mbunits[i] = punit;
+				mbunits[i-1] = unit;
+			}
+		}else{
+			if(i != (mbunits.length - 1)){
+				var nunit = mbunits[i+1];
+				var unit = mbunits[i];
+				mbunits[i+1] = unit;
+				mbunits[i] = nunit;
+			}
+		}
+		this.setState({mbunits:mbunits});
+		// body...
+	},
+	saveSend: function (mbunits) {
+		// body...
+		socket.emit('savePrefs', mbunits)
+	},
+	save: function () {
+		// body...
+		socket.emit('savePrefs', this.state.mbunits)
+	},
+	loadPrefs: function () {
+		socket.emit('locateReq');
+		socket.emit('getPrefs');
+		// body...
+	},
+	removeMb: function (i) {
+		// body...
+
+		var mbunits = this.state.mbunits;
+		var detL = this.state.detL
+		mbunits[i].banks.forEach(function(b){
+			detL[b.mac] = b
+		})
+		mbunits.splice(i,1);
+		this.saveSend(mbunits)
+		this.setState({mbunits:mbunits, detL:detL})
+	},
+	reset: function () {
+		// body...
+		socket.emit('reset', 'reset requested')
+	},
+	renderModal: function () {
+		// body...
+		var self = this;
+		var mbSetup = this.state.mbunits.map(function(mb,ind) {
+			console.log(ind)
+			return <MbSetup remove={self.removeMb} move={self.move} mb={mb} edit={self.editMb} index={ind} singleUnits={self.state.single}/>	// body...
+		})
+		var detList = this.state.dets.map(function(d){
+			return d.name
+		})
+		
+		if(this.state.curModal == 'edit'){
+			var MB = this.renderMBGroup(0)// <MBGroupView unit={this.state.mbunits[this.state.curIndex]} index={this.state.curIndex} call={this.callFromMB} singleUnits={this.state.dets}/>
+		
+			return (<div>
+				{MB}
+			</div>)
+		}else if(this.state.curModal == 'newMB'){
+			var MB = this.renderMBGroup(1)
+			return (<div>
+				{MB}
+			</div>)
+		}else if(this.state.curModal == 'newSingle'){
+			var MB = this.renderMBGroup(2)
+			return (<div>
+				{MB}
+			</div>)
+		}else{
+			return (<div>
+						<div className='prefInterface'>
+								<button onClick={this.addNewMBUnit}>Add new MultiBankUnit</button>
+								<button onClick={this.addNewSingleUnit}>Add new Single Unit</button>
+								<button onClick={this.save}>Save Settings</button>
+								<button onClick={this.loadPrefs}>Load Saved Settings </button>
+								<button onClick={this.reset}>Reset Connections</button>
+								<div className='mbManager'>
+								{mbSetup}
+						</div>
+						</div>
+						</div>)
+		}
+		/*	{console.log('what happened here')}*/
+	},
+	changeMBName: function (e) {
+		e.preventDefault();
+		var mbs = this.state.mbunits;
+		var MB = this.state.mbunits[this.state.curIndex]
+		MB.name = e.target.value;
+		mbs[this.state.curIndex] = MB;
+		this.setState({mbunits:mbs})		// body...
+	},
+	changetMBName: function (e) {
+		e.preventDefault();
+		var mbs = this.state.mbunits;
+		var MB = this.state.tmpMB//this.state.mbunits[this.state.curIndex]
+		MB.name = e.target.value;
+		//mbs[this.state.curIndex] = MB;
+		this.setState({tmpMB:MB})		// body...
+	},
+	changetSName: function (e) {
+		e.preventDefault();
+		var mbs = this.state.mbunits;
+		var MB = this.state.tmpS//mbunits[this.state.curIndex]
+		MB.name = e.target.value;
+		//mbs[this.state.curIndex] = MB;
+		this.setState({tmps:MB})		// body...
+	},
+	submitChange: function (e) {
+		// body...
+	},
+	renderMBGroup: function (mode) {
+		// body...
+		var self = this;
+		if(mode == 0){
+	var detectors = this.state.dets.map(function(det, i){
+		//console.log(det)
+		if(self.state.detL[det.mac]){
+		if(type=='single'){
+
+			return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpSingle}>
+					</DetItemView>)
+		}else{
+			return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpGroup}/>)
+		}
+	}
+		})
+
+		var MB; 
+		var type;
+		console.log('what')
+		if(this.state.mbunits[this.state.curIndex].type == 'single'){
+			MB = this.state.tmpS;
+			type = 'single'
+		}else{
+			MB = this.state.tmpMB
+			type = 'MB'
+		}
+		var banks = MB.banks.map(function (b,i) {
+			// body...
+			if(type == 'single'){
+				return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpSingle}/>)
+			}else{
+				return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)	
+			}
+			
+		})
+		var nameEdit;
+		var submit;
+		if(type == 'single'){
+			nameEdit = (<input onChange={this.changetSName} type='text' value={MB.name}/>)
+			submit = (<button onClick={this.submitSe}>Submit</button>)
+		}else{
+			nameEdit = (<input onChange={this.changetMBName} type='text' value={MB.name}/>)
+			submit = (<button onClick={this.submitMBe}>Submit</button>)
+		}
+		return (<div>
+
+				<label>Name:</label>{nameEdit}
+		
+			<table ><tbody><tr>
+			<th>Available Detectors</th><th>Banks</th>
+			</tr><tr>
+			<td style={{width:300, border:'1px solid black', minHeight:50}}>
+				{detectors}
+			</td><td style={{width:300,  border:'1px solid black', minHeight:50}}>
+				{banks}
+			</td><td><div style={{height:30}}/></td></tr></tbody></table>
+			{submit}<button onClick={this.cancel}>Cancel</button>
+		</div>)
+		}else if(mode == 1){
+
+				var detectors = this.state.dets.map(function(det, i){
+						if(self.state.detL[det.mac]){
+	
+			return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpGroup}>
+					</DetItemView>)
+		}
+		})
+			var MB = this.state.tmpMB;
+			var banks = MB.banks.map(function (b,i) {
+			// body...
+			return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)
+			})
+			return (<div>
+				<label>Name:</label><input onChange={this.changetMBName} type='text' value={MB.name}/>
+		
+			<table ><tbody><tr>
+			<th>Available Detectors</th><th>Banks</th>
+			</tr><tr>
+			<td style={{width:300, border:'1px solid black', minHeight:50}}>
+				{detectors}
+			</td><td style={{width:300,  border:'1px solid black', minHeight:50}}>
+				{banks}
+			</td><td><div style={{height:30}}/></td></tr></tbody></table>
+			<button onClick={this.submitMB}>Submit</button><button onClick={this.cancel}>Cancel</button>
+		</div>)
+		}else{
+				var detectors = this.state.dets.map(function(det, i){
+						if(self.state.detL[det.mac]){
+	
+			return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpSingle}>
+					</DetItemView>)
+		}
+		})
+			var MB = this.state.tmpS;//{name:"new", type:"single", banks:[]}
+			var banks = MB.banks.map(function (b,i) {
+			// body...
+			return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpSingle}/>)
+			})
+			return (<div>
+				<label>Name:</label><input onChange={this.changetSName} type='text' value={MB.name}/>
+		
+			<table ><tbody><tr>
+			<th>Available Detectors</th><th>Banks</th>
+			</tr><tr>
+			<td style={{width:300, border:'1px solid black', minHeight:50}}>
+				{detectors}
+			</td><td style={{width:300,  border:'1px solid black', minHeight:50}}>
+				{banks}
+			</td><td><div style={{height:30}}/></td></tr></tbody></table>
+			<button onClick={this.submitS}>Submit</button><button onClick={this.cancel}>Cancel</button>
+		</div>)
+		}
+	},
+	renderPModal: function () {
+		// body...
+		var self = this;
+		var mbSetup = this.state.mbunits.map(function(mb,ind) {
+			return <MbSetup remove={self.removeMb} move={self.move} mb={mb} edit={self.editMb} index={ind} singleUnits={self.state.single}/>	// body...
+		})
+		var detList = this.state.dets.map(function(d){
+			return d.name
+		})
+	if(this.state.curModal == 'edit'){
+			var MB = this.renderMBGroup(0)// <MBGroupView unit={this.state.mbunits[this.state.curIndex]} index={this.state.curIndex} call={this.callFromMB} singleUnits={this.state.dets}/>
+		
+			return (<div>
+				<button onClick={this.changeModalMode}>back</button>
+				{MB}
+			</div>)
+		}else if(this.state.curModal == 'newMB'){
+			var MB = this.renderMBGroup(1)
+			return (<div>
+				<button onClick={this.changeModalMode}>back</button>
+				{MB}
+			</div>)
+		}else if(this.state.curModal == 'newSingle'){
+			var MB = this.renderMBGroup(2)
+			return (<div>
+				<button onClick={this.changeModalMode}>back</button>
+				{MB}
+			</div>)
+		}
+		return (<div>
+						<div className='prefInterface'>
+								<button onClick={this.locateUnits}>Automatically Locate Units</button>
+								<button onClick={this.addNewMBUnit}>Add new MultiBankUnit</button>
+								<button onClick={this.addNewSingleUnit}>Add new Single Unit</button>
+								<button onClick={this.save}>Save Settings</button>
+								<button onClick={this.loadPrefs}>Load Saved Settings </button>
+							
+								<List data={detList}/>
+						</div>
+						<div className='mbManager'>
+								{mbSetup}
+						</div></div>)
+	},
+	renderLanding: function () {
+		var self = this;
+		var detectors = this.renderDetectors()
+		console.log('detectors rendered')
+		var config = 'config'
+		var find = 'find'
+		// body...
+		var lstyle = {height: 72,marginRight: 20}
+		if(!this.state.minW){
+			lstyle = { height: 60, marginRight: 15}
+		}
+		var mbunits = this.state.mbunits.map(function(mb,i){
+			if(mb.type == 'mb'){
+				return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/>	
+			}else{
+				if(mb.banks[0]){
+					return <MultiScanUnit ref={mb.banks[0].ip} onSelect={self.switchUnit} unit={mb.banks[0]}/>	
+				}						
+			}
+			
+		})
+		
+		var modalContent = this.renderModal();
+		return (<div className = 'landingPage'>
+					<table className='landingMenuTable'>
+						<tbody>
+							<tr>
+								<td><img style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
+								<td className="buttCell" hidden><button onClick={this.setPrefs} className={config}/></td>
+								<td className="buttCell"><button onClick={this.showFinder} className={find}/></td>
+							</tr>
+						</tbody>
+					</table>
+					<Modal ref='findDetModal'>
+						{modalContent}
+						
+					
+					</Modal>
+
+				
+					<Modal ref='prefModal'>
+						{this.renderPModal()}
+					</Modal>
+				 	{detectors}
+				 	{mbunits}
+			</div>)	
+	},
+	renderMB: function () {
+		var MB = <MBGroupView unit={this.state.mbunits[this.state.curIndex]} index={this.state.curIndex} call={this.callFromMB} singleUnits={this.state.dets}/>
+		// body...
+		var lstyle = {height: 72,marginRight: 20}
+		if(!this.state.minW){
+			lstyle = { height: 60, marginRight: 15}
+		}
+		var config = 'config'
+		var find = 'find'
+		return(<div className = 'landingPage'>
+					<table className='landingMenuTable'>
+						<tbody>
+							<tr>
+								<td><img style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
+								<td className="buttCell"><button onClick={this.setPrefs} className={config}/></td>
+								<td className="buttCell"><button onClick={this.showFinder} className={find}/></td>
+							</tr>
+						</tbody>
+					</table>
+					{MB}
+		</div>
+
+		)
+	},
+	renderDetector: function () {
+		// body...
+		//socket.emit()
+		return (<DetectorView br={this.state.brPoint} ref='dv' logoClick={this.logoClick} det={this.state.curDet} ip={this.state.curDet.ip}/>)
+	},
+	render: function () {
 		var cont;
 		if(this.state.currentPage == 'landing'){
+			console.log('here')
 			cont = this.renderLanding();
 		}else if(this.state.currentPage == 'detector'){
+			//alert('render Detector')
 			cont = this.renderDetector();
+		}else if(this.state.currentPage == 'multibank'){
+			cont = this.renderMB();
 		}
-
 		return (<div>
 			{cont}
 		</div>)
 		// body...
 	}
 })
+var DetItemView = React.createClass({
+	addClick: function () {
+		// body...
+		this.props.addClick(this.props.i)
+	},
+	render: function () {
+		console.log(this.props)
+		// body...
+		var addText = 'Add'
+		if(this.props.type == 1){
+			addText = 'Remove'
+		}
+		return (<div>
+				<label onClick={this.addClick}>{this.props.det.name}</label>
+			</div>)
+	}
+})
+var MBGroupView = React.createClass({
+	getInitialState: function () {
+		// body...
+		return ({font:2})
+	},
+
+	render: function() {
+		var banks = this.props.unit.banks;
+		var lab = "Config Multibank Unit"
+	    var titlediv = (<span  ><h2 style={{textAlign:'center'}} ><div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>
+)
+	    if (this.state.font == 1){
+	    	titlediv = (<span  ><h2 style={{textAlign:'center', fontSize:30}} ><div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>)
+	    }else if (this.state.font == 0){
+	    	titlediv = (<span  ><h2 style={{textAlign:'center', fontSize:24}} ><div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>)
+	    }
+
+		// body...
+		return(<div className='settingsDiv'>
+				<div className='menuCategory'>
+				{titlediv}
+				<TreeNode nodeName="Config banks">
+					{this.props.unit.name}
+				</TreeNode>
+			</div>
+		</div>)
+	}
+})
+var MbSetup = React.createClass({
+		getInitialState: function () {
+			return({mode:false})
+			// body...
+		},
+		editMb:function () {
+			// body...
+			console.log(this.props.index)
+			this.props.edit(this.props.index)
+		},
+		remove:function () {
+			this.props.remove(this.props.index)
+			// body...
+		},
+		moveUp: function () {
+			// body...
+			this.props.move(this.props.index,'up')
+		},
+		moveDown: function (){
+			this.props.move(this.props.index,'down')
+		},
+		toggleOptions: function () {
+			// body...
+			this.setState({mode:!this.state.mode})
+		},
+		render:function () {
+			var editRow;
+			if(this.state.mode){
+				editRow = (<div>
+					<button onClick={this.editMb}>Edit</button>
+					<button onClick={this.remove}>Remove</button>
+					<button onClick={this.moveUp}>move up</button>
+					<button onClick={this.moveDown}>move down</button>
+					</div>)
+			}
+			// body...
+			return (<div className="sItem" onClick={this.toggleOptions}>
+						<label >Name:{this.props.mb.name}</label>
+						{editRow}
+					</div>)	
+		}
+	})
 
 var DetectorView = React.createClass({
 	getInitialState: function () {
 		// body...
-		return {currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, br:this.props.br}
+		var mqls = [
+			window.matchMedia('(min-width: 300px)'),
+			window.matchMedia('(min-width: 467px)'),
+			window.matchMedia('(min-width: 600px)')
+		]
+		var minMq = window.matchMedia("(min-width: 400px)");
+		for (var i=0; i<mqls.length; i++){
+			mqls[i].addListener(this.listenToMq)
+		}
+		minMq.addListener(this.listenToMq);
+		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, 
+		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, peak:0, rej:0, phase:0}
+	},
+	componentDidMount: function () {
+		// body...
+		var packet = dsp_rpc_paylod_for(19,[556,0,0])
+		var buf =  new Uint8Array(packet)
+		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})
+	},
+	componentWillReceiveProps: function (newProps) {
+		// body...
+		var packet = dsp_rpc_paylod_for(19,[556,0,0])
+		var buf =  new Uint8Array(packet)
+		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})
+
 	},
 	toggleAttention: function () {
 		// body...
+		this.refs.fModal.toggle();
+
 	},
-	onParamMsg: function (e) {
+	onRMsg:function (e,d) {
 		// body...
+		console.log([e,d])
+		if(this.props.det.ip != d.ip){
+			return;
+		}
+		var msg = e.data
+		var data = new Uint8Array(msg);
+		if(data[1] == 18){
+			//prodList
+			console.log('prodList')
+			var prodbits = data.slice(3)
+			var dat = []
+			for(var i = 0; i < 99; i++){
+			if(prodbits[i] ==2){
+					dat.push(i+1)
+				}
+			}
+			if(this.refs.dm){
+				console.log(dat)
+				this.refs.dm.setState({prodList:dat})
+			}
+
+		}else if(data[1] == 24){
+			console.log(data)
+		}
+	},
+	listenToMq: function () {
+		// body...
+		if(this.state.mqls[2].matches){
+			console.log(1)
+		}else if(this.state.mqls[1].matches){
+			console.log(2)
+		}else if(this.state.mqls[0].matches){
+			console.log(3)
+		}else{
+			console.log(4)
+		}
+		
+		this.setState({minW:this.state.minMq.matches})
+		
+	},
+	onParamMsg: function (e,d) {
+		// body...
+		
+		if(this.props.det.ip != d.ip){
+		//	console.log('wrong')
+			return;
+		}
 		var self = this;
    	
    			var msg = e.data;
@@ -2091,13 +2802,7 @@ var DetectorView = React.createClass({
    	var dv = new DataView(msg);
 	var lcd_type = dv.getUint8(0);
   	      var n = data.length;
-   //       console.log('n:' + n);
-     //     console.log(lcd_type);
-       //   console.log(data);
-     	
-   	 	//console.log()
-   	// console.log(data)
-   	if(cnt < 2){
+ if(cnt < 2){
    		console.log(Vdef)
 		console.log(isVdefSet)
 		cnt++;
@@ -2105,7 +2810,7 @@ var DetectorView = React.createClass({
 
    	 	if(lcd_type== 0){
 				//system
-
+				console.log('sysrec sent')
 				if(isVdefSet){
 				var sysArray = [];
 					for(var i = 0; i<((n-1)/2); i++){
@@ -2122,14 +2827,20 @@ var DetectorView = React.createClass({
     				for(var p in Vdef["@deps"]){
    // 					console.log(p)
     					if(Vdef["@deps"][p]["@rec"] == 0){
-    						var setting = self.getVal(sysArray,2, p)
+    						var setting = self.getVal(sysArray,4, p)
     						sysRec[p] = setting;
     					}
     				}
     				sysSettings = sysRec;
+    				if(this.state.currentView == "SettingsDisplay"){
+						if(this.refs.sd){
+							this.refs.sd.parseInfo(sysSettings, prodSettings)	
+						}
+					}
     
     			}
 			}else if(lcd_type == 1){
+				console.log('prodrec sent')
 				if(isVdefSet ){
 					var prodArray = [];
 					for(var i = 0; i<((n-1)/2); i++){
@@ -2144,28 +2855,23 @@ var DetectorView = React.createClass({
     				})
     				for(var p in Vdef["@deps"]){
     					if(Vdef["@deps"][p]["@rec"] == 1){
-    						var setting = self.getVal(prodArray,2, p)
+    						var setting = self.getVal(prodArray,4, p)
     						prodRec[p] = setting;
     					}
     				}
 					prodSettings = prodRec;
-	// 				console.log(this.state.data)
-				//	if(this.state.currentView == 'MainDisplay'){
-					var prodName = this.getVal(prodArray, 1, 'ProdName')		
-					var sens = this.getVal(prodArray, 1, 'Sens')
-					//console.log([prodName, sens])
-
-					//if((this.refs.md.state.productName != prodName)||(this.refs.md.state.sens != sens)){
-					//	this.refs.md.setState({productName:prodName, sens:sens})
-					//}
-					
-			//			console.log('line 810')
+					var prodName = prodSettings['ProdName']
+					var prodNo =  sysSettings['ProdNo']		
+					var sens = prodSettings['Sens']
+					var phaseMode = prodSettings['PhaseMode']
+					var phaseSpeed = Vdef['@labels']['PhaseSpeed']['english'][prodSettings['PhaseSpeed']]
 						var comb = [];
 						for(var c in nVdf){
 							comb[c] = {};
 							for(var i = 0; i < nVdf[c].length; i++){
 						//		console.log(nVdf[c][i])
 								if(nVdf[c][i]['@rec'] == 0){
+									
 									comb[c][nVdf[c][i]["@name"]] = sysSettings[nVdf[c][i]["@name"]]
 								}else{
 									comb[c][nVdf[c][i]["@name"]] = prodSettings[nVdf[c][i]["@name"]]
@@ -2174,35 +2880,118 @@ var DetectorView = React.createClass({
 							}
 						}
 						combinedSettings = comb;
-
-						//diff, and set settings
-						//console.log(this.state.data)	
-						
-						//console.log(comb)
-						if(this.state.currentView == "SettingsDisplay"){
+					if(this.state.currentView == "SettingsDisplay"){
 						if(this.refs.sd){
 							this.refs.sd.parseInfo(sysSettings, prodSettings)	
 						}
 					}
-						if((this.state.pn != prodName)||(this.state.sens != sens)){
-							if(this.refs.dm){
-								this.refs.dm.setState({pn:prodName, sens:sens})
+						
+						if(this.refs.dm){
+							if((this.refs.dm.state.pn != prodName)||(this.refs.dm.state.sens != sens)||(this.refs.dm.state.prodNo != prodNo)||(this.refs.dm.state.phaseMode != phaseMode)||(this.refs.dm.state.phaseSpeed != phaseSpeed)){
+								console.log(prodNo)
+								this.refs.dm.setState({pn:prodName, sens:sens, prodNo:prodNo, phaseMode:phaseMode, phaseSpeed:phaseSpeed})
 							}
+						}
 							
 					
-					}
+					
 				}
+			}else if(lcd_type==2){
+			//	console.log('on param msg dyn')
+				if(isVdefSet ){
+					var prodArray = [];
+					for(var i = 0; i<((n-1)/2); i++){
+						prodArray[i] = dv.getUint16(i*2 + 1);	
+					}
+					var prodRec = {}
+    				Vdef["@params"].forEach(function(p){
+    					if(p["@rec"] == 2){
+    						var setting = self.getVal(prodArray, 2,p["@name"])
+    						prodRec[p["@name"]] = setting;
+    					}
+    				})
+    				for(var p in Vdef["@deps"]){
+    					if(Vdef["@deps"][p]["@rec"] == 2){
+    						var setting = self.getVal(prodArray,4, p)
+    						prodRec[p] = setting;
+    					}
+    				}
+					//prodSettings = prodRec;
+
+					
+					var peak = prodRec['Peak']
+					var rej = prodRec['RejCount']
+					var sig = uintToInt(prodRec['DetectSignal'],16)
+					var phase = (uintToInt(prodRec['PhaseAngleAuto'],16)/100).toFixed(2)
+					//console.log(phase)
+					var phaseSpeed = prodRec['PhaseFastBit'];
+					var rpeak = prodRec['ProdPeakR']
+					var xpeak = prodRec['ProdPeakX']
+					var faultArray = [];
+					pVdef[6].forEach(function(f){
+					if(self.getVal(prodArray,2,f) != 0){
+						faultArray.push(f)
+						}
+					});
+				//	console.log(this.refs)
+					if(this.state.currentView == 'MainDisplay'){
+						if((this.refs.dm.state.peak !=peak)||(this.refs.dm.state.rpeak != rpeak)||(this.refs.dm.state.xpeak != xpeak)||(this.refs.dm.state.rej != rej)||(this.refs.dm.state.phase != phase)){
+						
+							this.refs.dm.setState({peak:peak, rej:rej, phase:phase, phaseFast:phaseSpeed, rpeak:rpeak, xpeak:xpeak})
+						
+						}
+					}
+					if(this.refs.lv){
+						//console.log(sig)
+  						this.refs.lv.update(sig)	
+  					}
+  					if(this.refs.dg){
+  						this.refs.dg.stream({t:Date.now(),val:sig})
+  					}
+  					if(this.state.faultArray.length != faultArray.length){
+  						this.setState({faultArray:faultArray})
+  					}else{
+  						var diff = false;
+  						faultArray.forEach(function (f) {
+  							if(self.state.faultArray.indexOf(f) == -1){
+  								diff = true;
+  							}
+  							// body...
+  						})
+  						if(diff){
+  							this.setState({faultArray:faultArray})
+  						}
+  					}				
 			}
-			
-		
-   	
-   	// body...
+
+   		}else if(lcd_type == 3){
+   			if(isVdefSet ){
+					var prodArray = [];
+					for(var i = 0; i<((n-1)/2); i++){
+						prodArray[i] = dv.getUint16(i*2 + 1);	
+					}
+					var prodRec = {}
+    				Vdef["@params"].forEach(function(p){
+    					if(p["@rec"] == 3){
+    						var setting = self.getVal(prodArray, 3,p["@name"])
+    						prodRec[p["@name"]] = setting;
+    					}
+    				})
+    				for(var p in Vdef["@deps"]){
+    					if(Vdef["@deps"][p]["@rec"] == 3){
+    						var setting = self.getVal(prodArray,4, p)
+    						prodRec[p] = setting;
+    					}
+    				}
+					prodSettings = prodRec;
+				}
+   		}
 	},
-		getVal: function(arr, rec, key){
-		//console.log(key)
+	getVal: function(arr, rec, key){
 		var param = pVdef[rec][key]
-	//	console.log(key)
-	//	console.log(param)
+		if(typeof param == 'undefined'){
+			console.log([rec,key])
+		}
 		if(param['@bit_len']>16){
 			return this.wordValue(arr, param)
 		}else{
@@ -2215,8 +3004,6 @@ var DetectorView = React.createClass({
 			}
 			return val;
 		}
-
-
 	},
 	wordValue: function(arr, p){
 		
@@ -2228,22 +3015,7 @@ var DetectorView = React.createClass({
 		}).join("");
 		return str;
 	},
-	onMsg: function (e,d) {
-		// body...
-		//console.log(e)
-		if(e.data instanceof ArrayBuffer ){
-  		var dv = new DataView(e.data)
-  		if(dv.getUint8(0) == 0x1){
-  			var lcd_leds = dv.getUint8(1)
-  			//display packet
-  			if(this.refs.lv){
-  				this.refs.lv.update(((lcd_leds & 0xf)- 5)*50)	
-  			}
-  			
-  		}
-  	}
 
-	},
 	showSettings: function () {
 		if(this.state.settings){
 			var st = [];
@@ -2275,6 +3047,14 @@ var DetectorView = React.createClass({
 			
 		}
 	},
+	clearFaults: function () {
+		// body...
+		alert('todo')
+	},
+	maskFault:function (f) {
+		// body...
+		alert('set ' +f +'Mask to 1')
+	},
 	changeView: function (d) {
 		// body...
 		var st = this.state.stack;
@@ -2289,49 +3069,107 @@ var DetectorView = React.createClass({
 		set.push(s[0])
 		this.changeView(['SettingsDisplay',set]);
 	},
-		sendPacket: function (n,v) {
+	clear: function (param) {
+		// body...
+		var packet = dsp_rpc_paylod_for(param['@rpcs']['clear'][0],param['@rpcs']['clear'][1]) 
+		var buf = new Uint8Array(packet);
+		socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+	},
+	sendPacket: function (n,v) {
 		// body...
 		console.log([n,v])
-		if(n == 'Sens'){
+		if(typeof n == 'string'){
+			if(n == 'Sens'){
 			console.log(this.props.ip)
 			var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
 			console.log(packet)
 			var buf = new Uint8Array(packet)
-			wRSockets[this.props.ip].send(buf.buffer)
+			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+			//wRSockets[this.props.ip].send(buf.buffer)
 		}else if(n == 'ProdNo'){
 			var packet = dsp_rpc_paylod_for(0x13,[0x8, parseInt(v)]);
 			console.log(packet)
 			var buf = new Uint8Array(packet)
-			wRSockets[this.props.ip].send(buf.buffer)
-		}else if(n == 'ProdName'){
+		socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+			}else if(n == 'ProdName'){
 			console.log(v)
 			var str = (v + "                    ").slice(0,20)
 			console.log(str)
 			var packet = dsp_rpc_paylod_for(0x13,[0x2a],str);
 			console.log(packet)
 			var buf = new Uint8Array(packet)
-			wRSockets[this.props.ip].send(buf.buffer)
+			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+		
 		}else if(n == 'cal'){
 			var packet = dsp_rpc_paylod_for(0x13, [0x1e,1])
 			var buf = new Uint8Array(packet);
-			wRSockets[this.props.ip].send(buf.buffer);
+			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+		
 		}else if(n == 'test'){
 			console.log('test')
+		}else if(n == 'getProdList'){
+			var packet = dsp_rpc_paylod_for(0x13, [0x12])
+			var buf = new Uint8Array(packet);
+			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+		}else if(n =='getProdName'){
+			var packet = dsp_rpc_paylod_for(0x13, [24,parseInt(v)])
+				var buf = new Uint8Array(packet);
+			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+		}else if(n=='refresh'){
+			var packet = dsp_rpc_paylod_for(19,[556,0,0])
+		var buf =  new Uint8Array(packet)
+		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})	
+		}else if(n=='rpeak'){
+			console.log(n)
+			var packet = dsp_rpc_paylod_for(19,[474,0,0])
+			var buf = new Uint8Array(packet);
+			socket.emit('rpc', {ip:this.props.det.ip, data:buf.buffer})
+		}else if(n=='xpeak'){
+			console.log(n)
+			var packet = dsp_rpc_paylod_for(19,[474,0,0])
+			var buf = new Uint8Array(packet);
+			socket.emit('rpc', {ip:this.props.det.ip, data:buf.buffer})
 		}
+		}else{
+		if(n['@rpc']['toggle']){
+
+			var arg1 = n['@rpc']['toggle'][0];
+			var arg2 = [];
+			for(var i = 0; i<n['@rpc']['toggle'][1].length;i++){
+				if(!isNaN(n['@rpc']['toggle'][1][i])){
+					arg2.push(n['@rpc']['toggle'][1][i])
+				}else{
+					arg2.push(parseInt(v))
+				}
+			}
+			var packet = dsp_rpc_paylod_for(arg1, arg2);
+			var buf = new Uint8Array(packet);
+			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+		}
+		}
+		/**/
 	},
 	render: function () {
 		// body...
 		var attention = 'attention'
+		if(this.state.faultArray.length != 0){
+			attention = 'attention_clear'
+		}
 		var config = 'config'
 		if(this.state.settings){
 			config = 'config_active'
 		}
 		var find = 'find'
-		//console.log()
+		console.log('detview render')
 
 		var SD ="";
 		var MD ="";
-	 	console.log(this.state.currentView)	
+	 	//console.log(this.state.currentView)	
+	 	var lstyle = {height: 72,marginRight: 20}
+	 	var np = (<NetPollView ref='np' eventCount={15}/>)
+		if(!this.state.minW){
+			lstyle = { height: 60, marginRight: 15}
+		}
 		if(this.state.settings){
 			console.log('yer')
 				SD = (<SettingsDisplay 
@@ -2340,16 +3178,19 @@ var DetectorView = React.createClass({
 		}else{
 			MD = (<div style={{margin:5}}>
 					<table className='mainContTable'><tbody><tr><td className='defCont'>
-					<DetMainInfo sendPacket={this.sendPacket} ref='dm'/></td><td style={{width:400}} className='defCont'>
-					<DummyGraph/>
+					<DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm'/></td><td style={{width:400}} className='defCont'>
+					<DummyGraph ref='dg' canvasId={'dummyCanvas'}/>
+
 					</td></tr></tbody></table>
+					<div className='prefInterface'>{np}</div>
+					
 					</div>)
 		}
 		var finder =(<td className="buttCell"><button onClick={this.showFinder} className={find}/></td>)
 		var lmtable = (<table className='landingMenuTable'>
 						<tbody>
 							<tr>
-								<td onClick={this.logoClick}><img className='logo' src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
+								<td onClick={this.logoClick}><img style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
 								<td className='mobCell'><MobLiveBar ref='lv'/></td>
 								<td className="buttCell"><button onClick={this.toggleAttention} className={attention}/></td>
 								<td className="buttCell"><button onClick={this.showSettings} className={config}/></td>
@@ -2360,17 +3201,24 @@ var DetectorView = React.createClass({
 			lmtable = (<div><table className='landingMenuTable'>
 						<tbody>
 							<tr>
-								<td onClick={this.logoClick}><img className='logo' src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
+								<td onClick={this.logoClick}><img style={lstyle} src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
 								
 								<td className="buttCell"><button onClick={this.toggleAttention} className={attention}/></td>
 								<td className="buttCell"><button onClick={this.showSettings} className={config}/></td>
 						</tr>
 						</tbody>
 					</table>
-					<LiveView ref='lv'>
-						<div>{this.props.det.name}</div>
-					</LiveView>
+					<MobLiveBar ref='lv'/>
+					
+					
 					</div>)
+			if(!this.state.settings){
+				MD = (<div><div className='prefInterface' ><DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm'/></div>
+					<div className='prefInterface' ><DummyGraph ref='dg' canvasId={'dummyCanvas'}/> </div>
+					<div className='prefInterface'>{np}</div>
+					</div>)
+			}
+			
 		}
 	
 		return(<div>
@@ -2378,73 +3226,454 @@ var DetectorView = React.createClass({
 			
 						{MD}
 						{SD}
+						<Modal ref='fModal'>
+							<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.state.faultArray}/>
+						</Modal>
 					
 					</div>)
 	}
 })
+var NetPollView = React.createClass({
+	getInitialState: function () {
+		// body...
+		
+		
+		return({events:[{timeStamp:"Mon, 31 Oct 2016 21:47:49 GMT",event:'Reject'}, {timeStamp:"Mon, 31 Oct 2016 21:48:39 GMT",event:'Reference Fault'}]})
+	},
 
+	pushEvent: function (e) {
+		// body...
+		var events = this.state.events
+		if(events.length == this.props.eventCount){
+			events.splice(0,1);
+		}
+		events.push(e);
+		this.setState({events:events})
+	},
+	dummyEvent: function () {
+		// body...
+		this.pushEvent({timeStamp:(new Date(Date.now())).toUTCString(), event:'Reject - dummy'})
+	},
+	render:function () {
+		var events = this.state.events.map(function(e){
+			return (<tr><td>{e.timeStamp}</td><td>{e.event}</td></tr>)
+		})
+		// body...
+		return (<div>
+			<label onClick={this.dummyEvent}>Events Log</label>
+			<table className='npTable'><tbody>
+			{events}
+			</tbody></table>
+
+		</div>)
+	}
+})
 var DetMainInfo = React.createClass({
 	getInitialState: function () {
 		// body...
-		return({pn:'', sens:0, signal:0, rejects:0,phaseMode:0})
+		return({pn:'',rpeak:0,xpeak:0, sens:0, peak:0,phase:0, rej:0,phaseMode:0, tmp:'', prodNo:1, prodList:[], phaseSpeed:'', phaseFast:0})
 	},
 	clearRej: function () {
 		// body...
-		alert('reject cleared')
+		var param = pVdef[2]['RejCount']
+		//var packet = dsp_rpc_paylod_for(param['@rpcs']['clear'][0],param['@rpcs']['clear'][1]) 
+		this.props.clear(param )
+
+		//alert('reject cleared')
+	},
+	switchProd: function (p) {
+		// body...
+		this.props.sendPacket('ProdNo',p)
+	},
+	sendPacket: function (n,v) {
+		// body...
+		this.props.sendPacket(n,v)
+	},
+	getProdName: function (num) {
+		// body...
+		this.props.sendPacket('getProdName',99)
+	},
+	clearPeak: function () {
+		// body...
+		var param = pVdef[2]['Peak']
+		//var packet = dsp_rpc_paylod_for(param['@rpcs']['clear'][0],param['@rpcs']['clear'][1])
+		this.props.clear(param) 
+		//alert('Peak cleared')
 	},
 	calibrate: function () {
 		// body...
-		this.props.sendPacket('cal',1)
+		//this.props.sendPacket('cal',1)
+		this.refs.calbModal.toggle()
 	},
 	showEditor: function () {
 		// body...\
+		this.props.sendPacket('getProdList')
 		this.refs.pedit.toggle()
 	},
 	editSens: function () {
 		// body...
 		this.refs.sensEdit.toggle()
 	},
+	setTest: function () {
+		// body...
+		this.refs.testModal.toggle()
+	},
+	updateTmp:function (e) {
+		// body...
+		e.preventDefault();
+		this.setState({tmp:e.target.value})
+	},
+	submitTmpSns:function () {
+		// body...
+		this.props.sendPacket('Sens',this.state.tmp)
+		this.cancel()
+		//this.setState({tmp:""})
+	},
+	refresh: function () {
+		// body...
+		this.props.sendPacket('refresh')
+	},
+	cancel:function () {
+		// body...
+		this.refs.sensEdit.toggle()
+		this.setState({tmp:''})
+	},
+	cal: function () {
+		// body...
+		this.props.sendPacket('cal')
+	},
 	render: function () {
+		console.log('render here')
+		var self = this;
 		var info = (<div><div><span><label>Current Product: {this.state.pn}</label></span></div>
 						<div><span><label>Sensitivity: {this.state.sens}</label></span></div>
-						<div><span><label>Signal: {32000}</label></span></div>
-						<div><span><label>Rejects: {0}</label></span></div>
+						<div><span><label>Signal: {this.state.peak}</label></span></div>
+						<div><span><label>Rejects: {this.state.rej}</label></span></div>
 
 						</div>)
-
+		var tdstyle = {paddingLeft:10}
+		var list = ['dry', 'wet', 'DSA']
+		var ps = this.state.phaseSpeed;
+		if(this.state.phaseFast == 1){
+			ps = 'fast'
+		}
 		var tab = (
 		<table className='dtmiTab'>
 			<tbody>
-				<tr onClick={this.showEditor}><td>Current Product</td><td>{this.state.pn}</td></tr>
-				<tr onClick={this.editSens}><td>Sensitivity</td><td>{this.state.sens}</td></tr>
-				<tr><td>Signal</td><td>{this.state.signal}</td></tr>
-				<tr><td>Rejects</td><td onClick={this.clearRej}>{this.state.rejects}</td></tr>
-				<tr><td>Phase</td><td>{this.state.phaseMode}</td></tr>
-				<tr><td>Test</td><td><input type='text'></input> <button>Test</button></td>
+				<tr><td>Name</td><td style={tdstyle}>{this.props.det.name}</td></tr>
+				<tr onClick={this.showEditor}><td>Product</td><td style={tdstyle}>{this.state.pn}</td></tr>
+				<tr onClick={this.editSens}><td>Sensitivity</td><td style={tdstyle}>{this.state.sens}</td></tr>
+				<tr><td>Signal</td><td style={tdstyle} onClick={this.clearPeak}>{this.state.peak}</td></tr>
+				<tr><td>Rejects</td><td style={tdstyle} onClick={this.clearRej}>{this.state.rej}</td></tr>
+				<tr><td>Phase</td><td style={tdstyle} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.phaseMode]}</td></tr>
+				<tr hidden><td>Test</td><td style={tdstyle}><input type='text'></input> <button onClick={this.setTest}>Test</button></td>
 				</tr>		
 			</tbody>
 		</table>)
 		// body...
+
+		var prodList = this.state.prodList.map(function(p){
+			var sel = false
+			//console.log([p,self.state.prodNo])
+			if(p==self.state.prodNo){
+				sel = true;
+			}
+
+			return (<ProductItem selected={sel} p={p} switchProd={self.switchProd}/>)
+		})
 		return (<div className='detInfo'>
 						{tab}
-						<button onClick={this.calibrate}>Calibrate</button>
-						<Modal ref='pedit'>
-							<ProductEditor products={[{name:'Product1', number:1}, {name:'Product2', number:2}]}/>
+							<Modal ref='pedit'>
+							{prodList}
 						</Modal>
 						<Modal ref='sensEdit'>
-							<div>Sensitivity: <input type='text' ></input><button>OK</button><button>Cancel</button></div>
+							<div>Sensitivity: <input type='text' onChange={this.updateTmp} value={this.state.tmp}></input><button onClick={this.submitTmpSns}>OK</button><button onClick={this.cancel}>Cancel</button></div>
+						</Modal>
+						<Modal ref='testModal'>
+							<TestInterface/>
+						</Modal>
+						<Modal ref='calbModal'>
+							<CalibInterface sendPacket={this.sendPacket} refresh={this.refresh} calib={this.cal} phase={[this.state.phase, this.state.phaseMode, ps]} peaks={[this.state.rpeak,this.state.xpeak]}ref='ci'/>
 						</Modal>
 					</div>)
 	}
 })
-var DummyGraph = React.createClass({
+var ProductItem = React.createClass({
+	switchProd:function () {
+		// body...
+		this.props.switchProd(this.props.p)
+	},
 	render: function () {
-	return(	<div className='DummyGraph'>
+		// body...
+		var st = {color:'grey'}
+		if(this.props.selected){
+			st = {color:'green'}
+		}
+		return (<div onClick={this.switchProd}><label style={st}>{'Product '+this.props.p}</label></div>)
+	}
+})
+var CalibInterface = React.createClass({
+	getInitialState: function () {
+		// body...
+		return({phaseSpeed:0,phase:0,phaseMode:0, edit:false, tmpStr:''})
+	},
+	calibrate: function () {
+		// body...
+		this.props.calib()
+	}, 
+	editPhase: function () {
+		// body...
+		this.setState({edit:!this.state.edit})
+	},
+	refresh: function () {
+		// body...
+		this.props.refresh()
+	},
+	onChangePhase: function (e) {
+		// body...
+		e.preventDefault();
+		this.setState({tmpStr:e.target.value})
+	},
+	clearR: function () {
+		// body...
+		this.props.sendPacket('rpeak','clear')
+	},
+	clearX: function(){
+		this.props.sendPacket('xpeak','clear')
+	},
+	render: function () {
+		// body...
+		var list = ['dry', 'wet', 'DSA']
+		var phase = (<div> {this.props.phase[0] + '-' + list[this.props.phase[1]]}</div>)
+		if(this.state.edit){
+			phase = (<div><div> {this.props.phase[0] + '-' + list[this.props.phase[1]]}</div>
+					<div><input type='text' onChange={this.onChangePhase}>{this.state.tmpStr}</input></div>
+				</div>)
+		}
+		return (<div className='calib'>
+				<label>
+					Calibration Menu
+				</label>
+				<table><tbody>
+					<tr><td>Phase Speed:</td><td>{this.props.phase[2]}</td></tr>
+					<tr><td onClick={this.editPhase}>Phase:</td><td >{phase}</td></tr>
+					<tr><td>R Peak:</td><td onClick={this.clearR}>{this.props.peaks[0]}</td></tr>
+					<tr><td>X Peak:</td><td onClick={this.clearX}>{this.props.peaks[1]}</td></tr>
+				</tbody></table>
+				<button onClick={this.calibrate}>Calibrate</button>
+				<button onClick={this.refresh}>Refresh</button>
+			</div>)
+	}
+})
+var TestInterface = React.createClass({
+	run: function () {
+		// body...
+	},
+	render: function () {
+		// body...
+		return(<div className='testInt'>
+			<label>Select Test</label>
+			<select>
+				<option value={1}>Test 1</option>
+				<option value={2}>Test 2</option>
+				<option value={3}>Test 3</option>
+			</select>
+					<table><tbody>
+						<tr>
+							<td>Test Mode</td><td><select><option>Manual</option><option>Halo</option><option>Halo2</option></select></td>
+						</tr>
+						<tr><td>FE</td><td><input type='text'/></td></tr><tr><td>NFE</td><td><input type='text'/></td></tr><tr><td>SS</td><td><input type='text'/></td></tr>
+					</tbody></table>
+					<button onClick={this.run}>Run Test</button>
+			</div>)
+	}
+})
+var DummyGraph = React.createClass({
+	getInitialState: function () {
+		// body...
+		var mqls = [
+			window.matchMedia('(min-width: 300px)'),
+			window.matchMedia('(min-width: 444px)'),
+			window.matchMedia('(min-width: 600px)'),
+			window.matchMedia('(min-width: 850px)')
+		]
+		for (var i=0; i<mqls.length; i++){
+			mqls[i].addListener(this.listenToMq)
+		}
+		return({width:400, height:200, mqls:mqls})
+	},
+	listenToMq: function () {
+		// body...
+		if(this.state.mqls[3].matches){
+			this.setState({width:400})
+		}else if(this.state.mqls[2].matches){
+			this.setState({width:558})
+		}else if(this.state.mqls[1].matches){
+			this.setState({width:400})
+		}else{
+			this.setState({width:280})
+		}
+	},
+	componentDidMount: function () {
+		// body...
+		this.listenToMq()
+	},
+	renderCanv: function () {
+		// body...
+		return(<CanvasElem canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height}/>)
+	},
+	stream:function (dat) {
+		this.refs.cv.stream(dat)
+		// body...
+	},
+	render: function () {
+		var cv = this.renderCanv()
+		return (<div className='detGraph'>
+			{cv}
+			</div>)
+	/*return(	<div className='DummyGraph'>
+
 			<img style={{width:400}}src='assets/dummygraph.png'/>
-		</div>)
+		</div>)*/
 		// body...
 	}
 
 })
+
+var placeholder = document.createElement("li");
+placeholder.className = "placeholder";
+
+var List = React.createClass({
+  getInitialState: function() {
+    return {data: this.props.data};
+  },
+  componentWillReceiveProps: function (newProps) {
+  	// body...
+  	console.log(newProps)
+  	this.setState({data:newProps.data})
+  },
+  dragStart: function(e) {
+    this.dragged = e.currentTarget;
+    e.dataTransfer.effectAllowed = 'move';
+    // Firefox requires dataTransfer data to be set
+    e.dataTransfer.setData("text/html", e.currentTarget);
+  },
+  dragEnd: function(e) {
+
+    this.dragged.style.display = "block";
+    this.dragged.parentNode.removeChild(placeholder);
+    // Update data
+    var data = this.state.data;
+    var from = Number(this.dragged.dataset.id);
+    var to = Number(this.over.dataset.id);
+    if(from < to) to--;
+    if(this.nodePlacement == "after") to++;
+    data.splice(to, 0, data.splice(from, 1)[0]);
+    this.setState({data: data});
+  },
+  dragOver: function(e) {
+    e.preventDefault();
+    this.dragged.style.display = "none";
+    if(e.target.className == "placeholder") return;
+    this.over = e.target;
+    // Inside the dragOver method
+    var relY = e.clientY - this.over.offsetTop;
+    var height = this.over.offsetHeight / 2;
+    var parent = e.target.parentNode;
+    
+    if(relY > height) {
+      this.nodePlacement = "after";
+      parent.insertBefore(placeholder, e.target.nextElementSibling);
+    }
+    else if(relY < height) {
+      this.nodePlacement = "before"
+      parent.insertBefore(placeholder, e.target);
+    }
+  },
+  render: function() {
+  	console.log(this.state.data)
+    return <ul onDragOver={this.dragOver}>
+    	{this.state.data.map(function(item, i) {
+      	return (
+        	<li
+		        data-id={i}
+            key={i}
+            draggable="true"
+            onDragEnd={this.dragEnd}
+            onDragStart={this.dragStart}
+          >
+       			{item}
+          </li>
+        )
+   	 	}, this)}
+    </ul>
+  }
+});
+
+var TreeNode = React.createClass({
+	getInitialState: function(){
+		return ({hidden:true})
+	},
+	toggle: function(){
+		var hidden = !this.state.hidden
+		this.setState({hidden:hidden});
+	},
+	render: function(){
+		//console.log("render")
+		var cName = "collapsed"
+		if(!this.state.hidden){
+			cName = "expanded"
+		}
+		return (
+			<div hidden={this.props.hide} className="treeNode">
+				<div onClick={this.toggle} className={cName}/>
+				<div className="nodeName">
+					<span onClick={this.toggle}>{this.props.nodeName}</span>
+				</div>
+				<div className="innerDiv" hidden={this.state.hidden}>
+				{this.props.children}
+				</div>
+			</div>
+		)
+	}
+})
+function yRangeFunc(range){
+	var max = 200;
+	if(Math.abs(range.max) > max){
+		max = Math.abs(range.max)
+	}
+	if(Math.abs(range.min) > max){
+		max = Math.abs(range.min)
+	}
+	return({min:(0-max),max:max});
+
+}
+
+var CanvasElem = React.createClass({
+	getInitialState: function () {
+		// body...
+		var l1 = new TimeSeries();
+		return ({line:l1})
+	},
+	componentDidMount: function(){
+		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
+		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#000000'}, grid:{fillStyle:'#ffffff'}, yRangeFunction:yRangeFunc});
+		smoothie.streamTo(document.getElementById(this.props.canvasId));
+		//var line1 = new TimeSeries();
+		
+		smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#000000'});
+	},
+	stream:function (dat) {
+			this.state.line.append(dat.t, dat.val);
+		// body...
+	},
+	render: function(){
+		return(
+			<div className="canvElem">
+				<canvas id={this.props.canvasId} height={this.props.h} width={this.props.w}></canvas>
+			</div>
+		);
+	}
+});
 ReactDOM.render(<Container/>,document.getElementById('content'))
 

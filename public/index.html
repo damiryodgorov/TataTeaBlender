@@ -19,9 +19,11 @@
 
     <script src="node_modules/babel-core/browser.min.js"></script>
      <script src="scripts/smoothie.js"></script>
-     <script src="scripts/react.min.js"></script>
+  <!--<script src="scripts/react.min.js"></script>-->
+    <script src="node_modules/react/dist/react.js"></script>
      <script src="node_modules/react-dom/dist/react-dom.min.js"></script>
     <script src="node_modules/react-data-grid/dist/react-data-grid.min.js"></script>
+    <script src="scripts/react-sortable-hoc.min.js"></script>
     <scripts src="scripts/react-modal.min.js"></scripts>
     <script src="node_modules/socket.io/node_modules/socket.io-client/socket.io.js"></script>
   </head>
@@ -46,7 +48,8 @@ var value_groups = {
                         "RejExitWin", "RejLatchMode", "RejMode", "RejOnProdHi", "RejTravDel", "RejTravDur", "SplitPkgLength"],
   "Sensitivity" : ["PeakMode"],
   "Test"        : ["HaloPeakRFe", "HaloPeakRNFe", "HaloPeakRSs", "HaloPeakXFe", "HaloPeakXNFe", "HaloPeakXSs", 
-                    "IBTestPassesFe", "IBTestPassesNFe", "IBTestPassesSS", "TestMode", "TestTime"]                      
+                    "IBTestPassesFe", "IBTestPassesNFe", "IBTestPassesSS", "TestMode", "TestTime"],
+  "Input"       : []                      
 }  
       function load_vdef_parameters(json) {
   // body...
@@ -76,8 +79,20 @@ var value_groups = {
      var nm = p['@name'];
      var otherFlag = true;
      for(var o in value_groups){
-      console.log(o)
-
+     // console.log(o)
+     if(o == 'Faults'){
+      if(nm.indexOf('FaultMask')!=1){
+        nVdf[o].push(p);
+        otherFlag = false;
+        break;
+      }
+     }else if(o == 'Test'){
+      if(nm.indexOf('TestConfig')!= -1){
+        nVdf[o].push(p);
+        otherFlag = false;
+        break;
+      }
+     }
      if(value_groups[o].indexOf(nm) != -1){
       nVdf[o].push(p);
       otherFlag = false;

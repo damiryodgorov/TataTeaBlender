@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "minifyify": "^7.3.3"
+    "minifyify": "^7.3.3",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-sortable-hoc": "0.0.8"
   }
 }
