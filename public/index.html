@@ -19,8 +19,8 @@
 
     <script src="node_modules/babel-core/browser.min.js"></script>
      <script src="scripts/smoothie.js"></script>
-  <!--<script src="scripts/react.min.js"></script>-->
-    <script src="node_modules/react/dist/react.js"></script>
+  <script src="scripts/react.min.js"></script>
+    <!--<script src="node_modules/react/dist/react.js"></script>-->
      <script src="node_modules/react-dom/dist/react-dom.min.js"></script>
     <script src="node_modules/react-data-grid/dist/react-data-grid.min.js"></script>
     <script src="scripts/react-sortable-hoc.min.js"></script>
@@ -37,19 +37,22 @@ var pVdef;
 var isVdefSet = false;
 var nVdf;
 var value_groups = {
-  "Calibration"  : ["AutoPhasePacks", "CalibrateMode", "PhaseTrigLimit", "PhaseTrigThres"],
-  "Faults"       : ["Mask", "FaultLatch", "FaultRejMode", "FlashRejCount", "Rej2Fault", "TOGGLE_REJ_MODE"], 
-  "Output"       : ["BannerBuzzMode", "BannerMode", "BannerRejMode"],
+  "Calibration"  : ["AutoPhasePacks", "CalibrateMode", "PhaseTrigLimit", "PhaseTrigThres","PhaseLimitDry","PhaseLimitDrySpread",
+                  "PhaseAngle", "PhaseLimitWet","PhaseLimitWetSpread","MPhaseOrder","MPhaseDD","MPhaseRD","PhaseSpeed",
+                  "OscPower","PhaseMode","PhaseModeHold","AutoLearn"],
+  "Faults"       : ["FaultStore","Mask", "FaultLatch", "FaultRejMode", "FlashRejCount", "Rej2Fault", "TOGGLE_REJ_MODE","FaultClearTime"], 
+  "Output"       : ["BannerBuzzMode", "BannerMode", "BannerRejMode","IOBoardType","LightStackMode"],
   "Password"     : ["PassAccCal", "PassAccClrFaults", "PassAccClrLatch", "PassAccClrRej", "PassAccProd", "PassAccSelUnit", 
-                      "PassAccSens", "PassAccTest", "PassOn", "PW1", "PW2", "PW3", "PW4"],
+                      "PassAccSens", "PassAccTest", "PassOn", "PW1", "PW2", "PW3", "PW4","PassAccTime","PassAccSync"],
   "Rej Setup"    : ["AppUnitDist", "BeltSpeed",  "EyeBlockTime", "EyeDetSwipe", "EyeDist", "EyeMinGapDist", "EyePkgLength", 
                       "EyeReject", "HeadCoilSp", "HeadDepth", "Rej2Check", "Rej2Latch", "RejBinDoorTime", "RejCheckMode",
                       "RejCheckTime", "RejDelClock", "RejDelSec", "RejDelSec2", "RejDurSec", "RejDurSec2", "RejExitDist",
-                        "RejExitWin", "RejLatchMode", "RejMode", "RejOnProdHi", "RejTravDel", "RejTravDur", "SplitPkgLength"],
-  "Sensitivity" : ["PeakMode"],
-  "Test"        : ["HaloPeakRFe", "HaloPeakRNFe", "HaloPeakRSs", "HaloPeakXFe", "HaloPeakXNFe", "HaloPeakXSs", 
-                    "IBTestPassesFe", "IBTestPassesNFe", "IBTestPassesSS", "TestMode", "TestTime"],
-  "Input"       : []                      
+                        "RejExitWin", "RejLatchMode", "RejMode", "RejOnProdHi", "RejTravDel", "RejTravDur", "SplitPkgLength",
+                        "PowerupRej","ExcessRejects","ExcessRejTime"],
+  "Sensitivity" : ["PeakMode","Sens","BigMetThres","DetMode","ThresX","ThresR","DetThresh","ThresProdHi","FilterNoise","DcCoeffNorm"],
+  "Test"        : ["HaloBoard","HaloPeakRFe", "HaloPeakRNFe", "HaloPeakRSs", "HaloPeakXFe", "HaloPeakXNFe", "HaloPeakXSs", 
+                    "IBTestPassesFe", "IBTestPassesNFe", "IBTestPassesSS", "TestMode", "TestTime","TestDeferTime"],
+  "Input"       : ["CIPCycleTime","CIPDwellTime"]                      
 }  
       function load_vdef_parameters(json) {
   // body...

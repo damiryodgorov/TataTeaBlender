@@ -137,13 +137,11 @@ class Params{
 		}
 		var speed = (231.0/tpm) * 60;
 		if(metric==0){
-			return speed
+			return (speed*3.281).toFixed(1) + ' ft/min'
 		}else{
-			return speed
+			return speed.toFixed(1) + ' M/min'
 		}
-		//do we want to handle this on the front end or here?
-		//might be better to do it here
-		//okay.
+	
 	}
 	static password8(words){
 			var arr = words.match(/../g).map(function(c){
@@ -772,14 +770,35 @@ var SettingsDisplay = React.createClass({
 		}
 		 var clis = [];
 			for(var c in combinedSettings){
-				console.log(c)
+			//	console.log(c)
 				clis.push([c,combinedSettings[c]])
 			}
-			console.log(clis)
+			//console.log(clis)
 		var nav =''
 		var backBut = ''
 		if(lvl == 0){
-			nodes = clis.map(function (item) {
+			nodes = [];
+			nodes.push(	<SettingItem ref={'Sensitivity'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={'Sensitivity'} name={'Sensitivity'} isHidden={ih} hasChild={true} 
+	      	data={['Sensitivity',combinedSettings['Sensitivity']]} onItemClick={handler} hasContent={true}/>)
+	      	nodes.push(	<SettingItem ref={'Calibration'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={'Calibration'} name={'Calibration'} isHidden={ih} hasChild={true} 
+	      	data={['Calibration',combinedSettings['Calibration']]} onItemClick={handler} hasContent={true}/>)
+	      	nodes.push(	<SettingItem ref={'Faults'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={'Faults'} name={'Faults'} isHidden={ih} hasChild={true} 
+	      	data={['Faults',combinedSettings['Faults']]} onItemClick={handler} hasContent={true}/>)
+	      	nodes.push(	<SettingItem ref={'Rej Setup'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={'Rej Setup'} name={'Rej Setup'} isHidden={ih} hasChild={true} 
+	      	data={['Rej Setup',combinedSettings['Rej Setup']]} onItemClick={handler} hasContent={true}/>)
+	      	nodes.push(	<SettingItem ref={'Test'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={'Test'} name={'Test'} isHidden={ih} hasChild={true} 
+	      	data={['Test',combinedSettings['Test']]} onItemClick={handler} hasContent={true}/>)
+	      	nodes.push(	<SettingItem ref={'Input'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={'Input'} name={'Input'} isHidden={ih} hasChild={true} 
+	      	data={['Input',combinedSettings['Input']]} onItemClick={handler} hasContent={true}/>)
+	      	nodes.push(	<SettingItem ref={'Output'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={'Output'} name={'Output'} isHidden={ih} hasChild={true} 
+	      	data={['Output',combinedSettings['Output']]} onItemClick={handler} hasContent={true}/>)
+	      	nodes.push(	<SettingItem ref={'Test'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={'Test'} name={'Test'} isHidden={ih} hasChild={true} 
+	      	data={['Test',combinedSettings['Test']]} onItemClick={handler} hasContent={true}/>)
+	      	nodes.push(	<SettingItem ref={'Password'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={'Password'} name={'Password'} isHidden={ih} hasChild={true} 
+	      	data={['Password',combinedSettings['Password']]} onItemClick={handler} hasContent={true}/>)
+	      	nodes.push(	<SettingItem ref={'Other'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={'Other'} name={'Other'} isHidden={ih} hasChild={true} 
+	      	data={['Other',combinedSettings['Other']]} onItemClick={handler} hasContent={true}/>)
+			/*nodes = clis.map(function (item) {
 	        console.log(item)
 	     //   return(<SettingItem data={item} onItemClick={handler} isHidden={ih}/>)
 	      return (
@@ -787,7 +806,7 @@ var SettingsDisplay = React.createClass({
 	      	data={item} onItemClick={handler} hasContent={true}/>
 	      );
 	      
-	    });
+	    });*/
 			nav = nodes;
 		}else if(lvl == 1 ){
 
@@ -863,13 +882,13 @@ var SettingItem = React.createClass({
 		this.refs.ed.deactivate()
 	},
 	render: function(){
-		var st = {display:'inline-block', fontSize:20, width:250}
+		var st = {display:'inline-block', fontSize:20, width:260}
 		var vst = {display:'inline-block', fontSize:20}
 			if(this.state.font == 1){
-				st = {display:'inline-block', fontSize:16, width:200}
+				st = {display:'inline-block', fontSize:16, width:210}
 				vst = {display:'inline-block', fontSize:16}
 			}else if(this.state.font == 0){
-				st = {display:'inline-block', fontSize:14, width:180}
+				st = {display:'inline-block', fontSize:14, width:190}
 				vst = {display:'inline-block', fontSize:14}
 			}
 		if(this.state.mode == 1){
@@ -967,7 +986,7 @@ var EditControl = React.createClass({
 	componentWillReceiveProps: function (newProps) {
 		// body...
 		//console.log(newProps)
-		this.setState({size:newProps.size})
+		this.setState({size:newProps.size, val:newProps.data})
 
 	},
 	deactivate:function () {
@@ -993,12 +1012,23 @@ var EditControl = React.createClass({
 		}else if(this.state.size == 0){
 			style = {display:'inline-block',fontSize:14}
 		}
+		var namestring = this.props.name;
+		console.log(this.props.name)
+		if(namestring.indexOf('INPUT_')!= -1){
+			console.log(namestring)
+			namestring = this.props.name.slice(6);
+		}else if(namestring.indexOf('OUT_')!=-1){
+			namestring = this.props.name.slice(4)
+		}
+		if(namestring.indexOf('PHY_')!= -1){
+			namestring = namestring.slice(4)
+		}
 		if(this.state.mode == 0){
-			return <div onClick={this.switchMode}><label style={this.props.lvst}>{this.props.name + ": "}</label><label style={this.props.vst}>{this.state.val}</label></div>
+			return <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{this.props.data}</label></div>
 		}else{
-			return (<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{this.props.name + ": "}</label><label style={this.props.vst}>{this.state.val}</label></div>
-				<div style={{display:'inline-block',width:200}}><input width={10} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val}></input></div>
-			<button style={{fontSize:16}} onClick={this.sendPacket}>Submit</button></div>)
+			return (<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{this.props.data}</label></div>
+				<div style={{display:'inline-block',width:200,marginRight:10}}><input width={10} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val}></input></div>
+			<label style={{fontSize:16,marginLeft:20, border:'1px solid grey',padding:2, paddingLeft:5,paddingRight:5, background:'#e6e6e6',borderRadius:10}} onClick={this.sendPacket}>Submit</label></div>)
 		
 		}
 
@@ -1175,9 +1205,16 @@ var EditControlSelect = React.createClass({
 		})
 			//editbutton = <button onClick={this.submitVal}>Edit</button>
 	
+		var namestring = this.props.param['@name'];
+		if(namestring.indexOf('INPUT_')!= -1){
+			console.log(namestring)
+			namestring = namestring.slice(6);
+		}else if(namestring.indexOf('OUT_')!=-1){
+			namestring = namestring.slice(4)
+		}
 		if(this.state.editMode){
 		return(<form className='editControl' onSubmit={this.onSubmit}>
-			<div onClick={this.changeMode}><label style={this.props.lvst}>{this.props.param['@name'] + ': '}</label><label style={this.props.vst}> {this.props.list[this.props.val]}</label></div>
+			<div onClick={this.changeMode}><label style={this.props.lvst}>{namestring + ': '}</label><label style={this.props.vst}> {this.props.list[this.props.val]}</label></div>
 			<div className='customSelect'>
 			<select onChange={this.valChanged}>
 			{options}
@@ -1188,7 +1225,7 @@ var EditControlSelect = React.createClass({
 		}else{
 			return(
 				<form className='editControl' onSubmit={this.changeMode}>
-					<div onClick={this.changeMode}><label style={this.props.lvst}>{this.props.param['@name'] + ': '}</label><label style={this.props.vst}> {this.props.list[this.props.val]}</label></div>
+					<div onClick={this.changeMode}><label style={this.props.lvst}>{namestring + ': '}</label><label style={this.props.vst}> {this.props.list[this.props.val]}</label></div>
 		
 				</form>
 			)
@@ -1740,17 +1777,7 @@ var LandingPage = React.createClass({
 		this.setState({brPoint:this.state.mq.matches})
 	},
 	locateUnits: function (callback) {
-		this.state.detectors.forEach(function(d){
-			if(wSockets[d.ip]){
-				wSockets[d.ip].close()
-			}
-			if(wParamSockets[d.ip]){
-				wParamSockets[d.ip].close()
-			}
-			if(wRSockets[d.ip]){
-				wRSockets[d.ip].close()
-			}
-		})
+		
 		located = false;
 		// body...
 		socket.emit('hello','landing')
@@ -1765,31 +1792,7 @@ var LandingPage = React.createClass({
 		var self = this;
 		// body...
 		console.log('socket error')
-		if(t == 1){
-			if(wParamSockets[d.ip].readyState == 1 ){
-				wParamSockets[d.ip].onclose = function (e) {
-					// body...
-					setTimeout(reconSocket(1,d.ip,self.onParamMsg,self.onError,self.onClose,d ),100)
-				}
-				wParamSockets[d.ip].close();
-			}
-			else{
-					//wParamSockets[d.ip] = null;
-					setTimeout(reconSocket(1,d.ip,self.onParamMsg,self.onError,self.onClose,d ),100)
-			}
-		}else if(t ==2 ){
-			if(wRSockets[d.ip].readyState == 1){
-				wRSockets[d.ip].onclose = function (e) {
-					// body...
-					setTimeout(reconSocket(2,d.ip,self.onRMsg,self.onError,self.onClose,d ),100)
-				}
-				wRSockets[d.ip].close();
-			}
-			else{
-					//wRSockets[d.ip] = null;
-					setTimeout(reconSocket(2,d.ip,self.onRMsg,self.onError,self.onClose,d ),100)
-			}
-		}
+
 		console.log([e,d])
 	},
 	componentDidMount: function () {
@@ -3129,6 +3132,12 @@ var DetectorView = React.createClass({
 			var packet = dsp_rpc_paylod_for(19,[474,0,0])
 			var buf = new Uint8Array(packet);
 			socket.emit('rpc', {ip:this.props.det.ip, data:buf.buffer})
+		}else if(n=='phaseEdit'){
+			var phase = Math.round(parseFloat(v)*100)
+			var packet = dsp_rpc_paylod_for(19,[48,phase,0])
+				var buf = new Uint8Array(packet);
+			socket.emit('rpc', {ip:this.props.det.ip, data:buf.buffer})
+		
 		}
 		}else{
 		if(n['@rpc']['toggle']){
@@ -3438,16 +3447,20 @@ var CalibInterface = React.createClass({
 		// body...
 		this.props.sendPacket('rpeak','clear')
 	},
+	submitPhase: function () {
+		// body...
+		this.props.sendPacket('phaseEdit',this.state.tmpStr)
+	},
 	clearX: function(){
 		this.props.sendPacket('xpeak','clear')
 	},
 	render: function () {
 		// body...
 		var list = ['dry', 'wet', 'DSA']
-		var phase = (<div> {this.props.phase[0] + '-' + list[this.props.phase[1]]}</div>)
+		var phase = (<div onClick={this.editPhase}> {this.props.phase[0] + '-' + list[this.props.phase[1]]}</div>)
 		if(this.state.edit){
-			phase = (<div><div> {this.props.phase[0] + '-' + list[this.props.phase[1]]}</div>
-					<div><input type='text' onChange={this.onChangePhase}>{this.state.tmpStr}</input></div>
+			phase = (<div><div onClick={this.editPhase}> {this.props.phase[0] + '-' + list[this.props.phase[1]]}</div>
+					<div><input type='text' onChange={this.onChangePhase}>{this.state.tmpStr}</input> <button onClick={this.submitPhase}>Submit</button></div>
 				</div>)
 		}
 		return (<div className='calib'>
@@ -3456,7 +3469,7 @@ var CalibInterface = React.createClass({
 				</label>
 				<table><tbody>
 					<tr><td>Phase Speed:</td><td>{this.props.phase[2]}</td></tr>
-					<tr><td onClick={this.editPhase}>Phase:</td><td >{phase}</td></tr>
+					<tr><td >Phase:</td><td  >{phase}</td></tr>
 					<tr><td>R Peak:</td><td onClick={this.clearR}>{this.props.peaks[0]}</td></tr>
 					<tr><td>X Peak:</td><td onClick={this.clearX}>{this.props.peaks[1]}</td></tr>
 				</tbody></table>
