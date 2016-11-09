@@ -1,14 +1,14 @@
 'use strict'
 
-var fs = require('fs');
-var path = require('path');
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var fti = require('./fti-flash-node/index.js');
-var arloc = fti.ArmFind;
+const fs = require('fs');
+const path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const fti = require('./fti-flash-node/index.js');
+const arloc = fti.ArmFind;
 
 var WebSocket = require('websocket')
 var WebSocketClient = WebSocket.client
@@ -18,10 +18,10 @@ var prefs;
 
 var cur = Date.now()
 
-var passocs = {}
-var rassocs = {}
-var rconns = {}
-var dsp_ips = []
+let passocs = {}
+let rassocs = {}
+let rconns = {}
+let dsp_ips = []
 
 function initSocks(arr){
   dsp_ips = []
@@ -209,7 +209,7 @@ http.listen(app.get('port'), function(){
 	console.log('Server started: http://localhost:' + app.get('port') + '/');
 
 });
-var clients = {};
+let clients = {};
 io.on('connection', function(socket){ 
   socket.on('disconnect',function(){
     console.log('destroy socket')

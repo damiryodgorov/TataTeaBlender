@@ -4,39 +4,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FTI Touch Display</title>
-    <!-- Not present in the tutorial. Just for basic styling. -->
    
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/app.css" />
 
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.min.js"></script>-->
-   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.min.js"></script>-->
-  <!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-    <script src="scripts/Chart.Scatter.min.js"></script>-->
-   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>-->
-   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>-->
-
     <script src="node_modules/babel-core/browser.min.js"></script>
      <script src="scripts/smoothie.js"></script>
   <script src="scripts/react.min.js"></script>
-    <!--<script src="node_modules/react/dist/react.js"></script>-->
-     <script src="node_modules/react-dom/dist/react-dom.min.js"></script>
-    <script src="node_modules/react-data-grid/dist/react-data-grid.min.js"></script>
-    <script src="scripts/react-sortable-hoc.min.js"></script>
-    <scripts src="scripts/react-modal.min.js"></scripts>
-    <script src="node_modules/socket.io/node_modules/socket.io-client/socket.io.js"></script>
+  <script src="node_modules/react-dom/dist/react-dom.min.js"></script>
+   <script src="node_modules/socket.io-client/socket.io.js"></script>
   </head>
   <body>
     <div id="content"></div>
     <script>
 
-var vdefList ={};
+let vdefList ={};
 var Vdef;
 var pVdef;
-var isVdefSet = false;
+let isVdefSet = false;
 var nVdf;
-var value_groups = {
+const value_groups = {
   "Calibration"  : ["AutoPhasePacks", "CalibrateMode", "PhaseTrigLimit", "PhaseTrigThres","PhaseLimitDry","PhaseLimitDrySpread",
                   "PhaseAngle", "PhaseLimitWet","PhaseLimitWetSpread","MPhaseOrder","MPhaseDD","MPhaseRD","PhaseSpeed",
                   "OscPower","PhaseMode","PhaseModeHold","AutoLearn"],
@@ -54,6 +41,15 @@ var value_groups = {
                     "IBTestPassesFe", "IBTestPassesNFe", "IBTestPassesSS", "TestMode", "TestTime","TestDeferTime"],
   "Input"       : ["CIPCycleTime","CIPDwellTime"]                      
 }  
+
+const _testMap = [[{count:'TestConfigCount0_0',metal:'TestConfigMetal0_0'},{count:'TestConfigCount0_1',metal:'TestConfigMetal0_1'},{count:'TestConfigCount0_2',metal:'TestConfigMetal0_2'}],
+                  [{count:'TestConfigCount1_0',metal:'TestConfigMetal1_0'},{count:'TestConfigCount1_1',metal:'TestConfigMetal1_1'},{count:'TestConfigCount1_2',metal:'TestConfigMetal1_2'}],
+                  [{count:'TestConfigCount2_0',metal:'TestConfigMetal2_0'},{count:'TestConfigCount2_1',metal:'TestConfigMetal2_1'},{count:'TestConfigCount2_2',metal:'TestConfigMetal2_2'}],
+                  [{count:'TestConfigCount3_0',metal:'TestConfigMetal3_0'},{count:'TestConfigCount3_1',metal:'TestConfigMetal3_1'},{count:'TestConfigCount3_2',metal:'TestConfigMetal3_2'}]]
+const _testSettingsMap = [{ack:'TestConfigAck0',op:'TestConfigOperater0',haloMode:'TestConfigHaloMode0'},
+                          {ack:'TestConfigAck1',op:'TestConfigOperater1',haloMode:'TestConfigHaloMode1'},
+                          {ack:'TestConfigAck2',op:'TestConfigOperater2',haloMode:'TestConfigHaloMode2'},
+                          {ack:'TestConfigAck3',op:'TestConfigOperater3',haloMode:'TestConfigHaloMode3'}]
       function load_vdef_parameters(json) {
   // body...
   if (vdefList[json['@version']]){
@@ -119,7 +115,7 @@ var value_groups = {
   //isVdefSet = true;
 }
     </script>
-    <script type="text/babel" src="scripts/components.js"></script>
+  <!--  <script type="text/babel" src="scripts/components.js"></script>-->
     <script type="text/babel" src="scripts/app.js"></script>
      </body>
 </html>
