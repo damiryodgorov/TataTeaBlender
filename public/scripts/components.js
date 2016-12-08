@@ -409,3 +409,90 @@ var List = React.createClass({
     </ul>
   }
 });
+/*
+	drawStream:function(){
+		var canv = document.getElementById(this.props.canvasId)
+		var ctx = canv.getContext('2d')
+		
+		var self = this;
+		if(this.state.redraw){// || (this.state.line.length > this.state.buf)){
+			console.log('redraw')
+			ctx.clearRect(0,0,400,400)
+			ctx.beginPath();
+			var strokeStyles = ['#000000','#FF0000','#00FF00','#0000FF']
+			ctx.strokeStyle = 'black';//strokeStyles[this.state.curStyle]
+			ctx.moveTo((0-this.state.axis.x[0])/this.state.Xscale,0);
+		ctx.lineTo((0-this.state.axis.x[0])/this.state.Xscale,this.props.h)
+		//ctx.stroke();
+		ctx.moveTo(0,(this.state.axis.r[1])/this.state.Rscale);
+		ctx.lineTo(this.props.w,(this.state.axis.r[1])/this.state.Rscale)
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.strokeStyle = strokeStyles[this.state.curStyle]
+		var line = this.state.line;
+		var br = this.state.line.length - this.state.buf
+
+		if(line.length >0){
+			var start = line[0];
+			//ctx.moveTo(start)
+
+			for(var i = 0; i<line.length; i++){
+				ctx.beginPath();
+				if(i<br){
+					
+					ctx.strokeStyle = '#DCDCDC'
+				}else{
+					ctx.strokeStyle = '#000000'
+				}
+				ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
+				ctx.lineTo((line[i].x - this.state.axis.x[0])/this.state.Xscale, (0-line[i].r+this.state.axis.r[1])/this.state.Rscale)
+				start = line[i]
+				ctx.stroke();
+				this.setState({redraw:false})
+			}
+		}
+		}else if(this.state.line.length > this.state.buf){
+			var line = this.state.line
+			var front = line.length - this.state.buf - 1;
+			var start = line[front]
+			ctx.beginPath();
+			ctx.strokeStyle = '#DCDCDC';
+
+			ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
+			ctx.lineTo((line[front+1].x - this.state.axis.x[0])/this.state.Xscale, (0-line[front+1].r+this.state.axis.r[1])/this.state.Rscale)
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.strokeStyle = '#000000'
+			var count = line.length
+
+			var st = line[count-2];
+				var i = count - 1;
+				ctx.moveTo((st.x-this.state.axis.x[0])/this.state.Xscale,(0-st.r+this.state.axis.r[1])/this.state.Rscale)
+			
+				ctx.lineTo((line[count-1].x - this.state.axis.x[0])/this.state.Xscale, (0-line[count-1].r+this.state.axis.r[1])/this.state.Rscale)
+			ctx.stroke();
+				
+
+		}else{
+			console.log('no redraw')
+			ctx.beginPath();
+			var strokeStyles = ['#000000','#FF0000','#00FF00','#0000FF']
+			ctx.strokeStyle = strokeStyles[this.state.curStyle]
+			var line = this.state.line
+			var count = line.length
+			if(count>1){
+				var start = line[count-2];
+				var i = count - 1;
+				ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
+			
+				ctx.lineTo((line[count-1].x - this.state.axis.x[0])/this.state.Xscale, (0-line[count-1].r+this.state.axis.r[1])/this.state.Rscale)
+				
+			}
+			ctx.stroke();
+			//ctx.beginPath();
+		}
+		
+		
+	},
+*/

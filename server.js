@@ -9,6 +9,18 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const fti = require('./fti-flash-node/index.js');
 const arloc = fti.ArmFind;
+const flatfile = require('flat-file-db')
+const crypto = require('crypto')
+
+var db = flatfile('./dbs/users.db')
+
+db.on('open', function() {
+  //db.clear()
+  //var hs = crypto.createHash('sha256').update('515151').digest('base64');
+  //db.put('admin',{level:5,pw:hs})
+  console.log(db.keys())
+});
+
 
 var WebSocket = require('websocket')
 var WebSocketClient = WebSocket.client
@@ -211,6 +223,9 @@ http.listen(app.get('port'), function(){
 });
 let clients = {};
 io.on('connection', function(socket){ 
+  let loginLevel = 0;
+  let curUser = '';
+  var fileVer = 0;
   socket.on('disconnect',function(){
     console.log('destroy socket')
    // console.log(socket)
@@ -240,7 +255,51 @@ io.on('connection', function(socket){
     clients = {};
     socket.emit('resetConfirm','locate now')
   })
-  
+  socket.on('getUsers', function(arg){
+    var keys = db.keys();
+    var users = []
+    keys.forEach(function(k){
+      users.push({id:k, level:db.get(k).level});
+    })
+    console.log(users)
+    console.log(keys)
+    socket.emit('userList', users)
+  })
+  socket.on('login', function(arg){
+
+    if(db.has(arg.id)){
+      if(crypto.createHash('sha256').update(arg.pw).digest('base64') == db.get(arg.id).pw){
+        loginLevel = db.get(arg.id).level
+        socket.emit('loggedIn', {id:arg.id,level:db.get(arg.id).level})
+        console.log('success logging in')
+      }else{
+        socket.emit('access denied', 'wrong password')
+      }
+    }else{
+      socket.emit('access denied', 'username invalid')
+    }
+  })
+  socket.on('logOut', function(arg){
+    loginLevel = 0;
+    socket.emit('logOut','logged out')
+  })
+  socket.on('addUser', function(args){
+    if(loginLevel == 5){
+      db.put(args.id, {level:args.level,pw:crypto.createHash('sha256').update(args.pw).digest('base64')})
+       var keys = db.keys();
+    var users = []
+    keys.forEach(function(k){
+      users.push({id:k, level:db.get(k).level});
+    })
+    console.log(users)
+    console.log(keys)
+    socket.emit('userList', users)
+    }
+  })
+
+  socket.on('delUser', function(uid){
+    console.log('del ' +uid )
+  })
   console.log("connected")
   socket.on('locateReq', function (argument) {
     // body...
@@ -279,88 +338,7 @@ for(var i = 0; i < dspips.length;i++){
    if(!clients[dspips[i].ip]){
       dsps.push(dspips[i])
    }
-  /*    console.log('init')
-      var ip = dspips[i].ip
 
-     clients[ip] = null;
-     clients[ip] = []; 
-     clients[ip].push({socket:new WebSocketClient()});
-     clients[ip].push({socket:new WebSocketClient()});
-     
-    // clients[ip][0].socket.connect('ws://' + ip + '/parameters');
-    // clients[ip][1].socket.connect('ws://' + ip + '/rpc');
-     
-     clients[dspips[i].ip][0].socket.on('connect',function(conn){
-      setTimeout( function(){
-          console.log('ws://'+conn.remoteAddress+'/rpc')
-      clients[conn.remoteAddress][1].socket.connect('ws://'+conn.remoteAddress+'/rpc');
-    
-    },100)
-      conn.on('disconnect',function(){
-        console.log('clean up connection')
-        conn.removeAllListeners();
-        conn = null;
-        //clients[e.]
-       // clients = null;
-        //clients = {}
-      })
-     
-     // console.log(conn)
-      //console.log(dets)
-      //console.log(i)
-      if(conn){
-       // console.log('conn')
-       // console.log(conn)
-    //  clients[dets[i].ip][0]['conn'] = conn
-         conn.on('message', function(msg){
-          var ab = toArrayBuffer(msg.binaryData)
-         // console.log(conn.remoteAddress)
-          var packet = {det:{ip:conn.remoteAddress}, data:{data:ab}}
-          relayParamMsg(packet)
-        
-                         
-       })
-    }
-  });
-     // console.log(clients[e[i].ip])
-     
-      clients[dspips[i].ip][1].socket.on('connect',function(conn){
-          console.log('rpc socket')
-          console.log(conn.remoteAddress)
-          rconns[conn.remoteAddress] = conn
-         // console.log(rconns)
-         nextSock(conn.remoteAddress);
-     conn.on('disconnect',function(){
-        console.log('clean up connection')
-        conn.removeAllListeners();
-        conn = null;
-        //clients[e.]
-       // clients = null;
-        //clients = {}
-      })
-     
-     // console.log(conn)
-      //console.log(dets)
-      //console.log(i)
-      if(conn){
-      
-       // console.log('conn')
-       // console.log(conn)
-    //  clients[dets[i].ip][0]['conn'] = conn
-         conn.on('message', function(msg){
-          var ab = toArrayBuffer(msg.binaryData)
-         // console.log(conn.remoteAddress)
-          var packet = {det:{ip:conn.remoteAddress}, data:{data:ab}}
-          relayRpcMsg(packet)
-
-          })
-           
-    }
-     });
-  }else{
-    console.log('existing')
-    
-  }*/
   }
   console.log('dsp ips')
  // console.log(dspips)
@@ -399,57 +377,7 @@ for(var i = 0; i < dspips.length;i++){
             }else{
               console.log('failed to send rpc')
               console.log(pack.ip)
-             /* clients[pack.ip][1].socket = new WebSocketClient();
-              clients[pack.ip][1].socket.connect('ws://' + pack.ip + '/rpc')
-              clients[pack.ip][1].socket.on('connect', function(conn){
-                        console.log('rpc socket')
-                     console.log(conn.remoteAddress)
-                 rconns[conn.remoteAddress] = conn
-                     // console.log(rconns)
-                 conn.on('disconnect',function(){
-                    console.log('clean up connection')
-                    conn.removeAllListeners();
-                    conn = null;
-                    //clients[e.]
-                   // clients = null;
-                    //clients = {}
-                  })
-                 
-                 // console.log(conn)
-                  //console.log(dets)
-                  //console.log(i)
-                  if(conn){
-                  
-                   // console.log('conn')
-                   // console.log(conn)
-                //  clients[dets[i].ip][0]['conn'] = conn
-                     conn.on('message', function(msg){
-                      var ab = toArrayBuffer(msg.binaryData)
-                     // console.log(conn.remoteAddress)
-                      var packet = {det:{ip:conn.remoteAddress}, data:{data:ab}}
-                      relayRpcMsg(packet)
-
-                      })
-                       
-                }
-              })
-              console.log('not connected - retrying')
-              //console.log(rconns)
-              console.log(pack.ip)*/
-             /* setTimeout(function(){
-                if(rconns[pack.ip]){
-                  console.log('retry success')
-                //  rconns[pack.ip].send(pack.data)
-                }else{
-                 // console.log('retry fail')
-                }
-              }, 200)*/
-             // console.log(clients[pack.ip][1].socket)
             }
-
-              
-            
-                         
        })
   socket.on('getPrefs', function (f) {
     fs.readFile(__dirname + '/json/prefData.json', (err,data) =>{
@@ -457,6 +385,34 @@ for(var i = 0; i < dspips.length;i++){
       socket.emit('prefs', prefs)
     })
     // body...
+  })
+  socket.on('getTestFss', function(f){
+      fs.readFile(__dirname + '/json/test/testfss.json', (err,data) =>{
+    var testFss = JSON.parse(data)
+      socket.emit('testFss', testFss)
+    })
+  })
+  socket.on('initTestStream', function(f){
+  //  var testFiles = ['/json/test/testAlt.json','/json/test/testAlt2.json','/json/test/testAlt3.json','/json/test/testAlt4.json','/json/test/testAlt5.json','/json/test/testAlt6.json' ];
+    var testFiles = ['/json/test/wipes1.fss','/json/test/wipes2.fss','/json/test/wipes3.fss','/json/test/wipes4.fss','/json/test/wipes5.fss']
+    var fName = testFiles[fileVer]
+    fileVer = (fileVer+1)%5;
+    fs.readFile(__dirname + fName, (err,data) =>{
+      var testFss = JSON.parse(data)
+      var length = testFss.Channels.R.length;
+      var testind = 0;
+     var testInterval = setInterval(function(){
+       if(testind < length){
+         socket.emit('testXR', {x:testFss.Channels.X[testind],r:testFss.Channels.R[testind]})
+          testind++;
+
+         }else{
+          clearInterval(testInterval);
+          testind = 0;
+         }
+      },4)
+     
+    })
   })
   socket.on('savePrefs', function (f) {
     // body...

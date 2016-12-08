@@ -15,6 +15,7 @@
     "bufferpack": "0.0.6",
     "crc": "^3.4.1",
     "express": "^4.14.0",
+    "flat-file-db": "^1.0.0",
     "minifyify": "^7.3.3",
     "netmask": "^1.0.6",
     "react": "^15.3.2",

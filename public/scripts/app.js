@@ -28,12 +28,22 @@ function getVal(arr, rec, key){
 		}
 }
 function wordValue(arr, p){
+
 		var n = Math.floor(p["@bit_len"]/16);
 		var sa = arr.slice(p["@i_var"], p["@i_var"]+n)
-		var str = sa.map(function(e){
+		//console.log(sa)
+		if(p['@type']){
+			if(p['@name'] == 'PW1'){
+				console.log(sa)
+			}
+			return Params[p['@type']](sa)
+		}else{
+			var str = sa.map(function(e){
 			return (String.fromCharCode((e>>8),(e%256)));
 		}).join("");
-		return str;
+		return str;	
+		}
+		
 }
 function isDiff(x, y){
 		for(var p in x){
@@ -94,246 +104,13 @@ var socket = io();
 
 var sysSettings = {};
 var prodSettings ={};
+var framSettings ={};
 var combinedSettings = [];
 var liveTimer = {}
 var myTimers = {}
 
 var located = false;
 var cnt = 0;
-
-class Params{
-	static frac_value(int){
-		return (int/(1<<15))
-	}
-	static mm(dist, metric){
-		if(metric==0){
-			return (dist/25.4).toFixed(1) + " in"
-
-		}
-		else{
-			return dist + " mm";
-		}
-
-	}
-	static prod_name_u16_le(val){
-		return val
-	}
-	static rec_date(val){
-		//needs to be swapped..
-		//0xac26 -> 0x26ac
-		var dd = val & 0x1f;
-		var mm = (val >> 5) & 0xf
-		var yyyy = ((val>>9) & 0x7f) + 1996
-		return yyyy.toString() + '/' + mm.toString() + '/' + dd.toString();
-	}
-	static phase_spread(val){
-		return Math.round(Params.frac_value(val)*45)
-	}
-	static phase_wet(val){
-		return ((Params.frac_value(val) * 45)).toFixed(2);
-	}
-	static phase_dry(val){
-		if(((Params.frac_value(val) * 45)+90) <= 135){
-			return ((Params.frac_value(val) * 45)+90).toFixed(2);	
-		}
-		else{
-			return ((Params.frac_value(val) * 45)).toFixed(2);
-			
-		}
-
-	}
-	static phase(val, wet){
-		//console.log(wet);
-		if(wet==0){
-			return Params.phase_dry(val);
-		}else{
-			return Params.phase_wet(val);
-		}
-	}
-	static rej_del(ticks, tack){
-		if(tack==0){
-			return (ticks/231.0).toFixed(2); //2 decimal float
-		}else{
-			return ticks;
-		}
-	}
-	static belt_speed(tpm, metric, tack){
-		//console.log(tpm);
-		if(tack!=0){
-
-			return tpm;
-		}
-		var speed = (231.0/tpm) * 60;
-		if(metric==0){
-			return (speed*3.281).toFixed(1) + ' ft/min'
-		}else{
-			return speed.toFixed(1) + ' M/min'
-		}
-	
-	}
-	static password8(words){
-			var arr = words.match(/../g).map(function(c){
-				return parseInt((("00" + c.charCodeAt(0).toString(16)).substr(-2)
-				 +("00" + c.charCodeAt(1).toString(16)).substr(-2)),16);
-			});
-		//console.log(arr);
-
-		var res = arr.map(function(w){
-			return ((w & 0xffff).toString(16)) //hex format string
-		}).join(',')
-	//	console.log(res);
-		return(res)
-
-	}
-	static rej_chk(rc1, rc2){
-		if (rc2==0){
-			if(rc1==0){
-				return 0
-			}else{
-				return 1
-			}
-		}else{
-			return 2
-		}
-	}
-	static rej_mode(photo, rev){
-		if (rev==0){
-			if (photo==0){
-				return 0;
-			}else{
-				return 1;
-			}
-		}else{
-			return 2;
-		}
-	}
-
-	static rej_latch(latch, toggle){
-		if (toggle==0){
-			if (latch==0){
-				return 0;
-			}else{
-				return 1;
-			}
-		}else{
-			return 2;
-		}
-	}
-	static prod_name(val){
-		return val;
-	}
-
-
-	static peak_mode(eye, time){
-		if (eye==0){
-			if (time==0){
-				return 0;
-			}else{
-				return 2;
-			}
-		}else{
-			return 1;
-		}
-	}
-
-
-	static eye_rej(photo, lead, width){
-		if (photo==0){
-			return 3;
-		}else{
-			if(lead==0){
-				if(width==0){
-					return 0;
-				}else{
-					return 2;
-				}
-			}else{
-				return 1;
-			}
-		}
-	}
-	static phase_mode(wet, patt){
-		//console.log(patt)
-		if (patt==0){
-			if (wet==0){
-				return 0;
-			}
-			else{
-				return 1;
-			}
-		}else{
-			return 2;
-		}
-	}
-	
-	static bit_array(val){
-		if(val == 0){
-			return 0;
-		}else{
-			var i = 0;
-			while(i<16 && ((val>>i) & 1) == 0){
-				i++;
-			}
-			i++; //1 based index
-			return i;
-		}
-	}
-
-	static patt_frac(val){
-		return (val/10.0).toFixed(1);
-	}
-
-	static eye_rej_mode(val, photo, width){
-		if(photo == 0){
-			return 3;
-		}else{
-			if (val == 0){
-				if (width == 0){
-					return 0;
-				}else{
-					return 2;
-				}
-			}else{
-				return 1;
-			}
-		}
-		
-	}
-
-	static	swap16(val){
-    	return ((val & 0xFF) << 8) | ((val >> 8) & 0xFF);
-	}
-
-	static 	convert_word_array_BE(byteArr){
-		var b = new Buffer(byteArr)
-		var length = byteArr.length/2;
-		var wArray = []
-		//console.log(length)
-		for(var i = 0; i<length; i++){
-			wArray.push(b.readUInt16BE(i*2));
-		}
-		//console.log(wArray)
-		return wArray;
-
-	}
-
-	static convert_word_array_LE(byteArr){
-		var b = new Buffer(byteArr)
-		var length = byteArr.length/2;
-		var wArray = []
-		//console.log(length)
-		for(var i = 0; i<length; i++){
-			wArray.push(b.readUInt16LE(i*2));
-		}
-		//console.log(wArray)
-		return wArray;
-
-	}
-	static ipv4_address(ip){
-		//todo
-		return ip
-	}
-}
 
 
 
@@ -346,8 +123,6 @@ if (vdefList[json['@version']]){
     console.log('already have this version')
 
   }else{
-  	    // Vdef = json;
-  //console.log(json)
   var res = [];
     res[0] = {};
     res[1] = {};
@@ -369,7 +144,7 @@ if (vdefList[json['@version']]){
       res[p["@rec"]][p["@name"]] = p;
      var nm = p['@name'];
      var otherFlag = true;
-     if(p["@rec"]<2){
+     if(p["@rec"]!=2){
 
 
      for(var o in value_groups){
@@ -460,7 +235,7 @@ var LandingPage = React.createClass({
 		console.log(mq.matches)
 		// body...
 		return ({currentPage:'landing', curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, 
-			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], 
+			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]},tmpS:{name:'NEW', type:'single', banks:[]}})
 	},
 	listenToMq: function (argument) {
@@ -544,23 +319,20 @@ var LandingPage = React.createClass({
 			// body...
 			self.onRMsg(data.data, data.det)
 		})
+		socket.on('loggedIn', function(data){
+			self.refs.logIn.toggle();
+			self.setState({curUser:data.id, level:data.level})
+		})
+
+		socket.on('logOut', function(){
+			self.setState({curUser:'', level:0})
+		})
 	},
 	onRMsg: function (e,d) {
 		console.log([e,d])
 		var msg = e.data
 		var data = new Uint8Array(msg);
-		if(data[1] == 18){
-		//console.log(data)
-		var prodbits = data.slice(3)
-		var dat = []
-		for(var i = 0; i < 99; i++){
-			if(prodbits[i] ==2){
-				dat.push(i+1)
-			}
-		}
 
-		console.log(dat)
-		}
 		if(this.refs.dv){
 			this.refs.dv.onRMsg(e,d)
 		}else if(this.refs[d.ip]){
@@ -719,16 +491,6 @@ var LandingPage = React.createClass({
 			this.setState({curIndex:i, curModal:'edit', tmpMB:mbunit})
 		}
 		
-	},
-	dragStart: function (e) {
-		// body...
-			// body...
-		console.log('dragstart')
-		this.dragged = e.currentTarget;
-		console.log(e.currentTarget)
-		e.dataTransfer.effectAllowed = 'move';
-    	e.dataTransfer.setData("text", e.currentTarget.id);
-
 	},
 	addToTmpGroup: function (e) {
 		// body...
@@ -918,117 +680,103 @@ var LandingPage = React.createClass({
 		this.setState({tmps:MB})		// body...
 	},
 	renderMBGroup: function (mode) {
-		// body...
 		var self = this;
 		if(mode == 0){
-	var detectors = this.state.dets.map(function(det, i){
-		//console.log(det)
-		if(self.state.detL[det.mac]){
-		if(type=='single'){
+			var detectors = this.state.dets.map(function(det, i){
+				if(self.state.detL[det.mac]){
+					if(type=='single'){
+						return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpSingle}/>)
+					}else{
+						return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpGroup}/>)
+					}
+				}
+			})
 
-			return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpSingle}>
-					</DetItemView>)
-		}else{
-			return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpGroup}/>)
-		}
-	}
-		})
-
-		var MB; 
-		var type;
-		if(this.state.mbunits[this.state.curIndex].type == 'single'){
-			MB = this.state.tmpS;
-			type = 'single'
-		}else{
-			MB = this.state.tmpMB
-			type = 'MB'
-		}
-		var banks = MB.banks.map(function (b,i) {
-			// body...
-			if(type == 'single'){
-				return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpSingle}/>)
+			var MB; 
+			var type;
+			if(this.state.mbunits[this.state.curIndex].type == 'single'){
+				MB = this.state.tmpS;
+				type = 'single'
 			}else{
-				return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)	
+				MB = this.state.tmpMB
+				type = 'MB'
 			}
-			
-		})
-		var nameEdit;
-		var submit;
-		if(type == 'single'){
-			nameEdit = (<input onChange={this.changetSName} type='text' value={MB.name}/>)
-			submit = (<button onClick={this.submitSe}>Submit</button>)
-		}else{
-			nameEdit = (<input onChange={this.changetMBName} type='text' value={MB.name}/>)
-			submit = (<button onClick={this.submitMBe}>Submit</button>)
-		}
-		return (<div>
-
-				<label>Name:</label>{nameEdit}
-		
-			<table ><tbody><tr>
-			<th>Available Detectors</th><th>Banks</th>
-			</tr><tr>
-			<td style={{width:300, border:'1px solid black', minHeight:50}}>
-				{detectors}
-			</td><td style={{width:300,  border:'1px solid black', minHeight:50}}>
-				{banks}
-			</td><td><div style={{height:30}}/></td></tr></tbody></table>
-			{submit}<button onClick={this.cancel}>Cancel</button>
-		</div>)
+			var banks = MB.banks.map(function (b,i) {
+				if(type == 'single'){
+					return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpSingle}/>)
+				}else{
+					return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)	
+				}
+			})
+			var nameEdit;
+			var submit;
+			if(type == 'single'){
+				nameEdit = (<input onChange={this.changetSName} type='text' value={MB.name}/>)
+				submit = (<button onClick={this.submitSe}>Submit</button>)
+			}else{
+				nameEdit = (<input onChange={this.changetMBName} type='text' value={MB.name}/>)
+				submit = (<button onClick={this.submitMBe}>Submit</button>)
+			}
+			return (<div><label>Name:</label>{nameEdit}
+					<table><tbody><tr>
+					<th>Available Detectors</th><th>Banks</th>
+					</tr><tr>
+					<td style={{width:300, border:'1px solid black', minHeight:50}}>
+						{detectors}
+					</td><td style={{width:300,  border:'1px solid black', minHeight:50}}>
+						{banks}
+					</td><td><div style={{height:30}}/></td></tr></tbody></table>
+					{submit}<button onClick={this.cancel}>Cancel</button>
+					</div>)
 		}else if(mode == 1){
 
-				var detectors = this.state.dets.map(function(det, i){
-						if(self.state.detL[det.mac]){
-	
-			return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpGroup}>
-					</DetItemView>)
-		}
-		})
+			var detectors = this.state.dets.map(function(det, i){
+				if(self.state.detL[det.mac]){
+					return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpGroup}/>)
+				}
+			})
 			var MB = this.state.tmpMB;
 			var banks = MB.banks.map(function (b,i) {
-			// body...
-			return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)
+				return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)
 			})
 			return (<div>
 				<label>Name:</label><input onChange={this.changetMBName} type='text' value={MB.name}/>
-		
-			<table ><tbody><tr>
-			<th>Available Detectors</th><th>Banks</th>
-			</tr><tr>
-			<td style={{width:300, border:'1px solid black', minHeight:50}}>
+				<table ><tbody><tr>
+				<th>Available Detectors</th><th>Banks</th>
+				</tr><tr>
+				<td style={{width:300, border:'1px solid black', minHeight:50}}>
 				{detectors}
-			</td><td style={{width:300,  border:'1px solid black', minHeight:50}}>
+				</td><td style={{width:300,  border:'1px solid black', minHeight:50}}>
 				{banks}
-			</td><td><div style={{height:30}}/></td></tr></tbody></table>
-			<button onClick={this.submitMB}>Submit</button><button onClick={this.cancel}>Cancel</button>
-		</div>)
+				</td><td><div style={{height:30}}/></td></tr></tbody></table>
+				<button onClick={this.submitMB}>Submit</button><button onClick={this.cancel}>Cancel</button>
+				</div>)
 		}else{
-				var detectors = this.state.dets.map(function(det, i){
-						if(self.state.detL[det.mac]){
-	
-			return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpSingle}>
-					</DetItemView>)
-		}
-		})
+			var detectors = this.state.dets.map(function(det, i){
+				if(self.state.detL[det.mac]){
+					return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpSingle}/>)
+				}
+			})
 			var MB = this.state.tmpS;//{name:"new", type:"single", banks:[]}
 			var banks = MB.banks.map(function (b,i) {
-			// body...
-			return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpSingle}/>)
+				return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpSingle}/>)
 			})
 			return (<div>
 				<label>Name:</label><input onChange={this.changetSName} type='text' value={MB.name}/>
-		
-			<table ><tbody><tr>
-			<th>Available Detectors</th><th>Banks</th>
-			</tr><tr>
-			<td style={{width:300, border:'1px solid black', minHeight:50}}>
-				{detectors}
-			</td><td style={{width:300,  border:'1px solid black', minHeight:50}}>
+				<table ><tbody><tr>
+				<th>Available Detectors</th><th>Banks</th>
+				</tr><tr>
+				<td style={{width:300, border:'1px solid black', minHeight:50}}>
+					{detectors}
+				</td><td style={{width:300,  border:'1px solid black', minHeight:50}}>
 				{banks}
-			</td><td><div style={{height:30}}/></td></tr></tbody></table>
-			<button onClick={this.submitS}>Submit</button><button onClick={this.cancel}>Cancel</button>
-		</div>)
+				</td><td><div style={{height:30}}/></td></tr></tbody></table>
+				<button onClick={this.submitS}>Submit</button><button onClick={this.cancel}>Cancel</button>
+				</div>)
 		}
+	},
+	showLogin: function(){
+		this.refs.logIn.toggle();
 	},
 	renderLanding: function () {
 		var self = this;
@@ -1036,6 +784,7 @@ var LandingPage = React.createClass({
 		console.log('detectors rendered')
 		var config = 'config'
 		var find = 'find'
+		var login = 'login'
 		// body...
 		var lstyle = {height: 72,marginRight: 20}
 		if(!this.state.minW){
@@ -1058,6 +807,7 @@ var LandingPage = React.createClass({
 						<tbody>
 							<tr>
 								<td><img style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
+								<td className="buttCell"><button onClick={this.showLogin} className={login}/></td>
 								<td className="buttCell"><button onClick={this.showFinder} className={find}/></td>
 							</tr>
 						</tbody>
@@ -1070,7 +820,18 @@ var LandingPage = React.createClass({
 			</div>)	
 	},
 	renderDetector: function () {
-		return (<DetectorView br={this.state.brPoint} ref='dv' logoClick={this.logoClick} det={this.state.curDet} ip={this.state.curDet.ip}/>)
+		return (<DetectorView br={this.state.brPoint} ref='dv' acc={this.state.level} logoClick={this.logoClick} det={this.state.curDet} ip={this.state.curDet.ip}/>)
+	},
+	renderAccounts: function(){
+		
+		if(this.state.level == 5){
+			return <AccountControlView showLogin={this.showLogin} minW={this.state.minW} ref='acc' active={true} logoClick={this.logoClick}/>
+		}else{
+			return <AccountControlView showLogin={this.showLogin} minW={this.state.minW} ref='acc' active={false} logoClick={this.logoClick}/>
+		}
+	},
+	configAccounts: function(){
+		this.setState({currentPage:'userSetup'})
 	},
 	render: function () {
 		var cont;
@@ -1079,11 +840,139 @@ var LandingPage = React.createClass({
 			cont = this.renderLanding();
 		}else if(this.state.currentPage == 'detector'){
 			cont = this.renderDetector();
+		}else if(this.state.currentPage == 'userSetup'){
+			cont = this.renderAccounts();
 		}
 		return (<div>
+			<Modal ref='logIn'>
+				<LogInControl level={this.state.level} userName={this.state.curUser}/>
+				<button onClick={this.configAccounts}>Configure Accounts</button>
+			</Modal>
 			{cont}
 		</div>)
 		// body...
+	}
+})
+var AccountControlView = React.createClass({
+	getInitialState: function(){
+		return ({userList:[], newuser:'',password:'',level:0})
+	},
+	logoClick: function(){
+		this.props.logoClick();
+	},
+	showLogin: function(){
+		this.props.showLogin();
+	},
+	componentDidMount: function(){
+		var self = this;
+		socket.emit('getUsers','data');
+		socket.on('userList', function(data){
+			self.setState({userList:data})
+		})
+	},
+	addNew:function(){
+		socket.emit('addUser', {id:this.state.newuser, pw:this.state.password, level:parseInt(this.state.level)})
+		this.setState({newuser:'', password:'', level:0})
+	},
+	userNameChange:function(e){
+		this.setState({newuser:e.target.value});
+	},
+	passwordChange:function(e){
+		this.setState({password:e.target.value});
+	},
+	levelChange: function(e){
+		this.setState({level:e.target.value})
+	},
+	render: function(){
+		var cont = '';
+		var login = 'login';
+		// body...
+		var lstyle = {height: 72,marginRight: 20}
+		if(!this.props.minW){
+			lstyle = { height: 60, marginRight: 15}
+		}
+		var users = this.state.userList.map(function(u){
+			return(<UserObj user={u}/>)
+		})
+		if(this.props.active){
+			cont = <div><label>Users</label>
+				<div>
+					{users}
+				</div>
+				<table><tbody>
+				<tr><td>User</td><td><input type='text' onChange={this.userNameChange} value={this.state.newuser}/></td></tr>
+				<tr><td>Password</td><td><input type='text' onChange={this.passwordChange} value={this.state.password}/></td></tr>
+				<tr><td>level</td><td><input type='text' onChange={this.levelChange} value={this.state.level}/></td></tr>
+				</tbody></table>
+				<button onClick={this.addNew}>Add User</button>
+			</div>
+		}else{
+			cont = <div><label>Log in as admin to access this page</label></div>
+		}
+		return(<div className = 'landingPage'>
+					<table className='landingMenuTable'>
+						<tbody>
+							<tr>
+								<td><img onClick={this.logoClick}style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
+								<td className="buttCell"><button onClick={this.showLogin} className={login}/></td>
+							</tr>
+						</tbody>
+					</table>
+					{cont}
+			</div>)	
+	}
+})
+var UserObj = React.createClass({
+	delete:function(){
+		socket.emit('delUser', this.props.user.id)
+	},
+	render: function(){
+		var u = this.props.user
+		return(<div><label>{'Username:' + u.id + '  Level:' + u.level}</label><button onClick={this.delete}>Delete This user</button></div>)
+	}
+})
+var LogInControl = React.createClass({
+	getInitialState: function(){
+		return ({userName:'',password:'',alert:''})
+	},
+	componentDidMount: function(){
+		var self = this;
+		socket.on('access denied', function(alert){
+			console.log(alert)
+			self.setState({alert:alert})
+		})
+	},
+	userNameChange: function(e){
+		this.setState({userName:e.target.value})
+	},
+	passwordChange: function(e){
+		this.setState({password:e.target.value})
+	},
+	loginSubmit: function(){
+		socket.emit('login',{id:this.state.userName, pw:this.state.password})
+		this.setState({password:'', alert:''})
+	},
+	logOut:function(){
+		socket.emit('logOut')
+	},
+	render:function(){
+		if(this.props.level>0){
+			return (<div>
+				<label>{'Logged In as ' + this.props.userName}</label>
+				<button onClick={this.logOut}>Log Out</button>
+			</div>)
+		}else{
+		return (<div>
+			<table>
+				<tbody>
+					<tr><td>Username:</td><td><input onChange={this.userNameChange} type='text' value={this.state.userName}/></td></tr>
+					<tr><td>Password:</td><td><input onChange={this.passwordChange} type='text' value={this.state.password}/></td></tr>
+				</tbody>
+			</table>
+			<label style={{color:'red'}}>{this.state.alert}</label>
+			<button onClick={this.loginSubmit}>Log in</button>
+		</div>)
+		}
 	}
 })
 
@@ -1205,12 +1094,18 @@ var SettingsDisplay = React.createClass({
 			this.setState({sysRec:sys, prodRec:prd})
 		}
 	},
+	parseFRAM: function(fram){
+		if(isDiff(fram, this.state.fram)){
+			this.setState({fram:fram})
+		}
+	},
 	componentDidMount: function () {
 		// body...
 		var packet = dsp_rpc_paylod_for(19,[556,0,0])
 		var buf =  new Uint8Array(packet)
 		socket.emit('rpc',{ip:this.props.dsp, data:buf.buffer})
 	},
+
 	getInitialState: function(){
 		var mqls = [
 			window.matchMedia('(min-width: 300px)'),
@@ -1232,7 +1127,7 @@ var SettingsDisplay = React.createClass({
 		}
 
 		return({
-		 sysRec:sysSettings, prodRec:prodSettings, mqls:mqls, font:font
+		 sysRec:sysSettings, prodRec:prodSettings, mqls:mqls, font:font, fram:framSettings
 		});
 	},
 	listenToMq:function () {
@@ -1443,11 +1338,17 @@ var SettingsDisplay = React.createClass({
 
 			var cat = data[0];
 			lab = cat
+			var accLevel = 0;
+			var accMap = {'Sensitivity':'PassAccSens', 'Calibration':'PassAccCal', 'Other':'PassAccProd', 
+			'Faults':'PassAccClrFaults','Rej Setup':'PassAccClrRej','Test':'PassAccTest'}
+			if(accMap[cat]){
+				accLevel = this.state.sysRec[accMap[cat]]
+			}
 			var list = combinedSettings[cat]
 			console.log(list)
 			nodes = []
 			for (var l in list){
-				nodes.push((<SettingItem ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true} />))
+				nodes.push((<SettingItem ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel}/>))
 			}
 			nav = (<div className='setNav'>
 					{nodes}
@@ -1502,7 +1403,10 @@ var SettingItem = React.createClass({
 	},
 	activate: function () {
 		// body...
-		this.props.activate(this.props.name)
+		//if(this.props.acc > 0){
+			this.props.activate(this.props.name)
+		//}
+		
 	},
 	deactivate: function () {
 		// body...
@@ -1547,7 +1451,10 @@ var SettingItem = React.createClass({
 							}
 						});
 					}
-					val = Params[f].apply(this, [].concat.apply([], [val, deps]));
+					if(pram['@bit_len']<=16){
+						val = Params[f].apply(this, [].concat.apply([], [val, deps]));
+					}
+					
 				}
 
 				if(pram["@labels"]){
@@ -1570,7 +1477,9 @@ var SettingItem = React.createClass({
 						});
 					}
 					console.log(f)
-					val = Params[f].apply(this, [].concat.apply([], [val, deps]));
+					if(pram['@bit_len']<=16){
+						val = Params[f].apply(this, [].concat.apply([], [val, deps]));
+					}
 				}
 
 				if(pram["@labels"]){
@@ -1580,9 +1489,9 @@ var SettingItem = React.createClass({
 				val = this.props.data
 			} 
 		
-			var edctrl = <EditControl activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} name={this.props.name} sendPacket={this.sendPacket} data={val}/>
+			var edctrl = <EditControl acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} name={this.props.name} sendPacket={this.sendPacket} data={val}/>
 			if(label){
-				edctrl = <EditControlSelect activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram}  sendPacket={this.sendPacket} size={this.state.font} mode={true} list={pVdef[5][pram["@labels"]]['english']} val = {val}/>
+				edctrl = <EditControlSelect acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram}  sendPacket={this.sendPacket} size={this.state.font} mode={true} list={pVdef[5][pram["@labels"]]['english']} val = {val}/>
 				
 			}
 			return (<div className='sItem'> {edctrl}
@@ -1620,12 +1529,15 @@ var EditControl = React.createClass({
 	},
 	switchMode: function () {
 		// body...
-		if(this.props.param['@rpcs']){
-		if((this.props.param['@rpcs']['write'])||(this.props.param['@rpcs']['toggle'])){
-			var m = Math.abs(this.state.mode - 1)
-			this.props.activate()
-			this.setState({mode:m})
+		if(this.props.acc){
+			if(this.props.param['@rpcs']){
+				if((this.props.param['@rpcs']['write'])||(this.props.param['@rpcs']['toggle'])){
+					var m = Math.abs(this.state.mode - 1)
+					this.props.activate()
+					this.setState({mode:m})
+				}
 		}
+		
 	}
 		
 	},
@@ -1660,6 +1572,16 @@ var EditControl = React.createClass({
 		}
 })
 
+
+var FRamView =React.createClass({
+	getInitialState: function(){
+		return({dspName:'',XPortIp:'',internalIp:'',haloIp:'',ioIp:''})
+	},
+	render:function(){
+		return(<div></div>)
+	}
+	
+})
 
 var LiveView = React.createClass({
 	getInitialState: function(){
@@ -1781,13 +1703,16 @@ var EditControlSelect = React.createClass({
 		this.props.sendPacket(this.props.param, this.state.value)
 	},
 	changeMode:function(){
-		if(this.props.param['@rpcs']){
+		if(this.props.acc){
+			if(this.props.param['@rpcs']){
 		
 			if((this.props.param['@rpcs']['write'])||(this.props.param['@rpcs']['toggle'])){
 				this.props.activate()
 				this.setState({editMode:!this.state.editMode})
 			}
 		}
+		}
+		
 	},
 	deactivate:function () {
 		// body...
@@ -1929,7 +1854,6 @@ var MultiBankUnit = React.createClass({
 	}
 })
 
-
 var StatBarMB = React.createClass({
 	getInitialState: function () {
 		// body...
@@ -1952,7 +1876,7 @@ var StatBarMB = React.createClass({
 	setDyn: function(p,w,pk,r,f){
 		var faults = (f.length != 0);
 		if((this.state.phase != p)||(this.state.phasemode != w)||(this.state.peak!=pk)||(this.state.rejs != r)||(this.state.fault!=faults)){
-			this.setState({phase:p,phasemode:w,peak:p,rejs:r,fault:faults})
+			this.setState({phase:p,phasemode:w,peak:pk,rejs:r,fault:faults})
 		}
 	},
 	setPnSens: function(p,s){
@@ -2576,7 +2500,7 @@ var DetectorView = React.createClass({
     						prodRec[p] = setting;
     					}
     				}
-					prodSettings = prodRec;
+					console.log(prodRec);
 				}
    		}
 	},
@@ -2738,7 +2662,7 @@ var DetectorView = React.createClass({
 		if(this.state.settings){
 			console.log('yer')
 				SD = (<SettingsDisplay 
-					goBack={this.goBack} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip}/>)
+					goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip}/>)
 	
 		}else{
 			MD = (<div style={{margin:5}}>
@@ -2748,8 +2672,11 @@ var DetectorView = React.createClass({
 
 					</td></tr></tbody></table>
 					<div className='prefInterface'>{np}</div>
-					
-					</div>)
+					<div><ConcreteElem h={400} w={400} concreteId={'concreteCanvas'}/></div>
+				
+					</div>
+
+					)
 		}
 		var finder =(<td className="buttCell"><button onClick={this.showFinder} className={find}/></td>)
 		var lmtable = (<table className='landingMenuTable'>
@@ -2781,6 +2708,8 @@ var DetectorView = React.createClass({
 				MD = (<div><div className='prefInterface' ><DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm'/></div>
 					<div className='prefInterface' ><DummyGraph ref='dg' canvasId={'dummyCanvas'}/> </div>
 					<div className='prefInterface'>{np}</div>
+					<div><ConcreteElem h={400} w={400} concreteId={'concreteCanvas'}/></div>
+				
 					</div>)
 			}
 			
@@ -2800,9 +2729,6 @@ var DetectorView = React.createClass({
 })
 var NetPollView = React.createClass({
 	getInitialState: function () {
-		// body...
-		
-		
 		return({events:[{timeStamp:"Mon, 31 Oct 2016 21:47:49 GMT",event:'Reject'}, {timeStamp:"Mon, 31 Oct 2016 21:48:39 GMT",event:'Reference Fault'}]})
 	},
 
@@ -3054,30 +2980,42 @@ var TestInterface = React.createClass({
 	render: function () {
 		var prod = this.state.prodRec;
 		console.log(prod)
-		var testConfigs = _testMap.map(function(_test){
+		var testConfigs = _testMap.map(function(_test, i){
 			var test = _test.map(function(conf){
 				console.log(conf)
 				return ({count:prod[conf.count], metal:prod[conf.metal]})
 			})	
-			return test
+			console.log(test)
+			return <TestItem metalCounts={test} ind={i+1}/>
 		})  
 		console.log(testConfigs)
 		// body...
 		return(<div className='testInt'>
-			<label>Select Test</label>
-			<select>
-				<option value={1}>Test 1</option>
-				<option value={2}>Test 2</option>
-				<option value={3}>Test 3</option>
-			</select>
-					<table><tbody>
-						<tr>
-							<td>Test Mode</td><td><select><option>Manual</option><option>Halo</option><option>Halo2</option></select></td>
-						</tr>
+			{testConfigs}
+		
+
+					<table hidden><tbody>
+						<tr><td>Test Mode</td><td><select><option>Manual</option><option>Halo</option><option>Halo2</option></select></td></tr>
 						<tr><td>FE</td><td><input type='text'/></td></tr><tr><td>NFE</td><td><input type='text'/></td></tr><tr><td>SS</td><td><input type='text'/></td></tr>
 					</tbody></table>
 					<button onClick={this.run}>Run Test</button>
 			</div>)
+	}
+})
+var TestItem = React.createClass({
+	render:function(){
+		var metList = ['FE','NFE', 'SS']
+		var tests = this.props.metalCounts.map(function(mc){
+
+			return(<tr><td style={{marginRight:10, width:100, display:'inline-block'}}>Metal:{metList[mc.metal]}</td><td>Count:{mc.count}</td></tr>)
+		})
+		return(<div>
+			<TreeNode nodeName={'Test ' + this.props.ind}>
+			<table><tbody>
+			{tests}
+			</tbody></table>
+			</TreeNode>
+		</div>)
 	}
 })
 var DummyGraph = React.createClass({
@@ -3190,5 +3128,293 @@ var CanvasElem = React.createClass({
 		);
 	}
 });
+var ConcreteElem = React.createClass({
+	getInitialState: function(){
+		var axisLayer = new Concrete.Layer();
+		var gridLayer = new Concrete.Layer();
+		var plotLayers = [];
+		for(var i = 0; i<5;i++){
+			plotLayers[i] = new Concrete.Layer();
+		}
+
+		var x = this.props.w/2
+		var y = this.props.h/2
+		return({wrapper:null,gridLayer:gridLayer, plotLayers:plotLayers, axisLayer:axisLayer, axis:{x:[(0-x),x], r:[(0-y),y]}, Xscale:1, Rscale:1, packs:[[],[],[],[],[]], curPack:0, redraw:true})
+	},
+	componentDidMount: function(){
+		var concreteContainer = document.getElementById(this.props.concreteId);
+
+		var wrapper = new Concrete.Wrapper({width:this.props.w, height:this.props.h, container:concreteContainer})
+		concreteContainer.addEventListener('mousedown', function(e){
+			 var boundingRect = concreteContainer.getBoundingClientRect();
+			// if(wrapper.getIntersection(e.clientX - boundingRect.left, e.clientY - boundingRect.top)){
+			 	var x = e.clientX - boundingRect.left
+			 	var y = e.clientY - boundingRect.top
+			 	if((x>0&&x<400)&&(y>0&&y<400)){
+			 		console.log([x,y]);
+			 	}
+			 	
+			 //}
+			
+		});
+		concreteContainer.addEventListener('mousemove', function(e){
+			 var boundingRect = concreteContainer.getBoundingClientRect();
+			// if(wrapper.getIntersection(e.clientX - boundingRect.left, e.clientY - boundingRect.top)){
+			 	var x = e.clientX - boundingRect.left
+			 	var y = e.clientY - boundingRect.top
+			 	if((x>0&&x<400)&&(y>0&&y<400)){
+			 		console.log('move');
+			 	}
+			 	
+			 //}
+			
+		});
+		concreteContainer.addEventListener('mouseup', function(e){
+			 var boundingRect = concreteContainer.getBoundingClientRect();
+			// if(wrapper.getIntersection(e.clientX - boundingRect.left, e.clientY - boundingRect.top)){
+			 	var x = e.clientX - boundingRect.left
+			 	var y = e.clientY - boundingRect.top
+			 	if((x>0&&x<400)&&(y>0&&y<400)){
+			 		console.log([x,y]);
+			 	}
+			 	
+			 //}
+			
+		});
+		wrapper.add(this.state.axisLayer)
+		wrapper.add(this.state.gridLayer)
+		var plotLayers = this.state.plotLayers;
+		for(var i = 0; i<5;i++){
+			//plotLayers[i] = new Concrete.Layer();
+			wrapper.add(plotLayers[i])
+		}
+		var self = this;
+		socket.on('testFss',function(fss){
+			//self.parseFss(fss)
+		})
+		socket.on('testXR', function(xr){
+			self.parseXR(xr)
+		})
+		this.setState({wrapper:wrapper});//, plotLayers:plotLayers, axisLayer:axisLayer})
+		this.drawAxis()
+
+	},
+	getSampleStream: function(){
+		this.onSwitchPack();
+		socket.emit('initTestStream')
+	},
+	onSwitchPack: function(){
+		var nextPack = (this.state.curPack+ 1)%5
+		var packs = this.state.packs;
+		packs[nextPack] = []
+		this.setState({curPack:nextPack,packs:packs, redraw:true})
+
+	},
+	parseXR: function(xr){
+		var packs = this.state.packs
+		packs[this.state.curPack].push(xr)
+		//var lin = this.state.line;
+		//lin.push(xr)
+
+		var minX = this.state.axis.x[0]
+		var maxX = this.state.axis.x[1]
+		var minR = this.state.axis.r[0]
+		var maxR = this.state.axis.r[1]
+		var redraw = this.state.redraw;
+		if(xr.x>maxX){
+			maxX=xr.x;
+			minX= 0-xr.x
+			redraw = true
+		}
+		if(xr.x<minX){
+			minX=xr.x
+			maxX= 0-xr.x
+			redraw = true
+		}
+		if(xr.r>maxR){
+			maxR=xr.r
+			minR = 0-xr.r
+			redraw = true
+		}
+		if(xr.r<minR){
+			minR=xr.r
+			maxR = 0-xr.r
+			redraw = true
+		}
+		var Xscale = (maxX-minX)/this.props.w;
+		var Rscale = (maxR-minR)/this.props.h;
+		this.setState({ axis:{x:[minX,maxX],r:[minR,maxR]},Xscale:Xscale,Rscale:Rscale, redraw:redraw, packs:packs})
+		this.drawPacksSim();
+	},
+	drawPacks: function(){
+		//var canv = document.getElementById(this.props.canvasId)
+		var ctx = this.state.plotLayers[this.state.curPack].sceneCanvas.context;//canv.getContext('2d')
+		var strokeStyles = ['#FF0000', '#d8bab3', '#aa938d', '#7a6965', '493f3d']
+		//var strokeStyles = ['#000000', '#8B8B8B','#FF0000','#00FF00','#0000FF']
+		var alpha = [1.0,0.8,0.7,0.6,0.5,0.4]
+		var lW = [2,1,1,1,1]	
+		if(this.state.redraw){
+			//this.state.plotLayers[this.state.curPack].sceneCanvas.clear();
+			for(var ind= this.state.curPack+1; ind < this.state.curPack+6;ind++){
+				var line = this.state.packs[ind%5]
+				this.state.plotLayers[ind%5].sceneCanvas.clear();
+				if(line.length > 0){
+					var start = line[0];
+					ctx = this.state.plotLayers[ind%5].sceneCanvas.context;//canv.getContext('2d')
+		
+					ctx.beginPath();
+					ctx.strokeStyle = strokeStyles[(ind-this.state.curPack)%5]
+					ctx.globalAlpha = alpha[(ind-this.state.curPack)%5]
+					ctx.lineWidth = lW[(ind-this.state.curPack)%5]
+					ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
+					
+					for(var i = 1; i<line.length; i++){
+					
+						ctx.lineTo((line[i].x - this.state.axis.x[0])/this.state.Xscale, (0-line[i].r+this.state.axis.r[1])/this.state.Rscale)
+						start = line[i]
+					}
+					ctx.stroke();
+					this.setState({redraw:false})
+				}
+			}
+					
+		}else{
+			var line = this.state.packs[this.state.curPack]
+				var count = line.length
+				ctx.beginPath();
+			//var strokeStyles = ['#000000','#FF0000','#00FF00','#0000FF']
+			//ctx.strokeStyle = 'black';//strokeStyles[this.state.curStyle]
+			if(count>1){
+				var start = line[count-2];
+				var i = count - 1;
+				ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
+			
+				ctx.lineTo((line[count-1].x - this.state.axis.x[0])/this.state.Xscale, (0-line[count-1].r+this.state.axis.r[1])/this.state.Rscale)
+				
+			}
+			ctx.stroke();
+		}
+	},
+	clear: function(){
+		this.state.plotLayers.forEach(function(p) {
+			// body...
+			p.sceneCanvas.clear();
+		})
+		var x = this.props.w/2
+		var y = this.props.h/2
+		this.setState({axis:{x:[(0-x),x], r:[(0-y),y]}, Xscale:1, Rscale:1, packs:[[],[],[],[],[]], curPack:0, redraw:true})
+		this.toggleGrid();
+	},
+	drawPacksSim: function(){
+		var self = this;
+		var strokeStyles = ['#FF0000', '#d8bab3', '#aa938d', '#7a6965', '493f3d']
+		//var strokeStyles = ['#000000', '#8B8B8B','#FF0000','#00FF00','#0000FF']
+		var alpha = [1.0,0.8,0.7,0.6,0.5,0.4]
+		var lW = [2,1,1,1,1]
+		var count = this.state.packs[this.state.curPack].length
+		//this.state.plotLayers[this.state.curPack].moveToTop();
+		var curPack = this.state.curPack
+		if(this.state.redraw){
+			this.state.plotLayers.forEach(function(l,j){
+				l.sceneCanvas.clear();
+				l.sceneCanvas.context.beginPath();
+				l.sceneCanvas.context.strokeStyle = strokeStyles[(j+5 - self.state.curPack)%5]
+				l.sceneCanvas.context.globalAlpha = alpha[(j+5 - self.state.curPack)%5];
+				l.sceneCanvas.context.lineWidth = lW[(j+5 - self.state.curPack)%5];
+				
+				var p = self.state.packs[j]
+				if(p.length >0){
+					//l.sceneCanvas.context.beginPath();
+					l.sceneCanvas.context.moveTo((p[0].x-self.state.axis.x[0])/self.state.Xscale,(0-p[0].r +self.state.axis.r[1])/self.state.Rscale);
+				}
+				
+			})
+			for(var i=1;i<count; i++){
+				for(var j=curPack; j<curPack+5;j++){
+					if(i<this.state.packs[j%5].length){
+						var pt = this.state.packs[j%5][i]
+						this.state.plotLayers[j%5].sceneCanvas.context.lineTo((pt.x-self.state.axis.x[0])/self.state.Xscale,(0-pt.r + self.state.axis.r[1])/self.state.Rscale);
+					}
+					
+				}
+			}
+			this.state.plotLayers.forEach(function(l){
+				l.sceneCanvas.context.stroke();
+			})
+			this.toggleGrid();
+		}else{
+			for(var j=curPack; j<curPack+5;j++){
+				if(count-1<this.state.packs[j%5].length){
+					var pt = this.state.packs[j%5][count-1]
+					this.state.plotLayers[j%5].sceneCanvas.context.lineTo((pt.x-self.state.axis.x[0])/self.state.Xscale,(0-pt.r + self.state.axis.r[1])/self.state.Rscale);
+					this.state.plotLayers[j%5].sceneCanvas.context.stroke();
+				}				
+			}
+		}
+	},
+
+	drawAxis: function(){
+		//var canv = document.getElementById(this.props.canvasId)
+		var ctx = this.state.axisLayer.sceneCanvas.context//canv.getContext('2d')
+			ctx.beginPath();
+			ctx.strokeStyle = 'black'
+			ctx.lineWidth = 3;
+			ctx.moveTo((0-this.state.axis.x[0])/this.state.Xscale,0);
+		ctx.lineTo((0-this.state.axis.x[0])/this.state.Xscale,this.props.h)
+		//ctx.stroke();
+		ctx.moveTo(0,(this.state.axis.r[1])/this.state.Rscale);
+		ctx.lineTo(this.props.w,(this.state.axis.r[1])/this.state.Rscale)
+		ctx.stroke();
+		this.toggleGrid();
+	},
+	toggleGrid:function(){
+		var ctx = this.state.gridLayer.sceneCanvas.context
+		var hctx = this.state.gridLayer.hitCanvas.context;
+		hctx.fillRect(0,0,400,400)
+		this.state.gridLayer.sceneCanvas.clear();
+		var xlim = this.state.axis.x[1];
+		var rlim = this.state.axis.r[1];
+		var xcnt = Math.floor(xlim/100)
+		var xfactor = 1
+		var rfactor = 1
+		while(xcnt > 10){
+			xcnt = Math.floor(xcnt/2)
+			xfactor = xfactor*2
+		}
+
+		var ycnt = Math.floor(rlim/100)
+		while(ycnt >10){
+			ycnt = Math.floor(ycnt/2);
+			rfactor = rfactor*2
+		}
+		//console.log(xcnt)
+		ctx.beginPath()
+		for(var i=0;i<xcnt;i++){
+			ctx.moveTo(((-100)*(i+1)*xfactor - this.state.axis.x[0])/this.state.Xscale, (this.state.axis.r[1])/this.state.Rscale - 5)
+			ctx.lineTo(((-100)*(i+1)*xfactor - this.state.axis.x[0])/this.state.Xscale, (this.state.axis.r[1])/this.state.Rscale + 5)
+			ctx.moveTo(((100)*(i+1)*xfactor - this.state.axis.x[0])/this.state.Xscale, (this.state.axis.r[1])/this.state.Rscale - 5)
+			ctx.lineTo(((100)*(i+1)*xfactor - this.state.axis.x[0])/this.state.Xscale, (this.state.axis.r[1])/this.state.Rscale + 5)
+		}
+		for(var j = 0; j<ycnt;j++){
+			ctx.moveTo(xlim/this.state.Xscale - 5,((-100)*(j+1)*rfactor + rlim)/this.state.Rscale)
+			ctx.lineTo(xlim/this.state.Xscale + 5,((-100)*(j+1)*rfactor + rlim)/this.state.Rscale)
+			ctx.moveTo(xlim/this.state.Xscale - 5,((100)*(j+1)*rfactor + rlim)/this.state.Rscale)
+			ctx.lineTo(xlim/this.state.Xscale + 5,((100)*(j+1)*rfactor + rlim)/this.state.Rscale)
+		}
+		ctx.stroke();
+		//ctx.moveTo((-100 - this.state.axis.x[0])/this.state.Xscale, (this.state.axis.r[1])/this.state.Rscale - 5)
+	},
+	render:function(){
+		return(<div className='prefInterface'>
+			<div><label>X Range:[ {this.state.axis.x[0] + ' ~ ' + this.state.axis.x[1]}]</label></div>
+			<div><label>R Range:[ {this.state.axis.r[0] + ' ~ ' + this.state.axis.r[1]}]</label></div>
+		
+				<div id={this.props.concreteId}/>
+				<button onClick={this.getSample}>Get Sample</button>
+			<button onClick={this.getSampleStream}>Get Stream</button>
+			<button onClick={this.clear}>Clear</button>
+			</div>)
+	}
+})
 ReactDOM.render(<Container/>,document.getElementById('content'))
 
