@@ -2,3 +2,7 @@
 
 Works with ST160621
 Mock Phase plot
+
+--161209
+
+refactored some code

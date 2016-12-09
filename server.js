@@ -392,6 +392,14 @@ for(var i = 0; i < dspips.length;i++){
       socket.emit('testFss', testFss)
     })
   })
+  
+    /*   var vdef_script_tag = document.createElement('script');
+          vdef_script_tag.src = "http://"+d.ip+"/vdef"; // can change the ip here
+          vdef_script_tag.type = "application/javascript";
+          document.body.appendChild(vdef_script_tag); 
+          console.log(vdef_script_tag)*/
+      
+
   socket.on('initTestStream', function(f){
   //  var testFiles = ['/json/test/testAlt.json','/json/test/testAlt2.json','/json/test/testAlt3.json','/json/test/testAlt4.json','/json/test/testAlt5.json','/json/test/testAlt6.json' ];
     var testFiles = ['/json/test/wipes1.fss','/json/test/wipes2.fss','/json/test/wipes3.fss','/json/test/wipes4.fss','/json/test/wipes5.fss']
