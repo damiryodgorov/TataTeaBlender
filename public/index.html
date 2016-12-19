@@ -22,10 +22,11 @@
     <script>
 
 let vdefList ={};
-var Vdef;
-var pVdef;
+let vdefByIp = {};
+var _Vdef;
+var _pVdef;
 let isVdefSet = false;
-var nVdf;
+var _nVdf;
 const value_groups = {
   "Calibration"  : ["AutoPhasePacks", "CalibrateMode", "PhaseTrigLimit", "PhaseTrigThres","PhaseLimitDry","PhaseLimitDrySpread",
                   "PhaseAngle", "PhaseLimitWet","PhaseLimitWetSpread","MPhaseOrder","MPhaseDD","MPhaseRD","PhaseSpeed",

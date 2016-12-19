@@ -6,11 +6,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const http = require('http').Server(app);
+const HTTP = require('http')
+const net = require('net')
 const io = require('socket.io')(http);
 const fti = require('./fti-flash-node/index.js');
 const arloc = fti.ArmFind;
 const flatfile = require('flat-file-db')
 const crypto = require('crypto')
+const parser = require('http-string-parser')
+const zlib = require('zlib')
+const unzipResponse = require('unzip-response')
+
 
 var db = flatfile('./dbs/users.db')
 
@@ -26,6 +32,7 @@ var WebSocket = require('websocket')
 var WebSocketClient = WebSocket.client
 var W3CWebSocket = WebSocket.w3cwebsocket;
 
+
 var prefs;
 
 var cur = Date.now()
@@ -35,6 +42,10 @@ let rassocs = {}
 let rconns = {}
 let dsp_ips = []
 
+function load_vdef_parameters(json){
+ // console.log(json)
+  return json;
+}
 function initSocks(arr){
   dsp_ips = []
   console.log('dsp_ips')
@@ -73,7 +84,71 @@ function nextSock(ip){
           clients[conn.remoteAddress][1].socket.connect('ws://'+conn.remoteAddress+'/rpc');},100) 
          clients[conn.remoteAddress][1].socket.on('connect', function(connn){
           console.log('connected')
+         try{
+          HTTP.get('http://'+connn.remoteAddress+'/vdef', (res) =>{
+            console.log('receiving response')
+            let ip = connn.remoteAddress;
+             console.log(ip)
+             res = unzipResponse(res)
+             let rawData = '';
+         //    console.log(res)
+  
+            res.on('data', (chunk) =>{
+              //console.log(typeof chunk)
+              rawData += chunk;
+            });// 
+            res.on('end', () => {
+              try {
+                // console.log(rawData.toString('utf8'))
+               if(/^load_vdef_parameters/.test(rawData)){
+                console.log('this should be alright')
+               var vdef = eval(rawData)
+               vdefs[ip] = vdef;
+                 nextSock(ip);
+        
+               }
+              } catch (e) {
+                console.log(e.message);
+              }
+            });
+
+          })
+        }catch(e){
+          console.log(e)
+        }
+      /*  try{
+          HTTP.get('http://'+connn.remoteAddress+'/vdef', (res) =>{
+             let ip = connn.remoteAddress;
+             console.log(ip)
+             res = unzipResponse(res)
+             let rawData = '';
+         //    console.log(res)
+  
+            res.on('data', (chunk) =>{
+              //console.log(typeof chunk)
+              rawData += chunk;
+            });// 
+            res.on('end', () => {
+              try {
+                // console.log(rawData.toString('utf8'))
+               if(/^load_vdef_parameters/.test(rawData)){
+                console.log('this should be alright')
+               var vdef = eval(rawData)
+               vdefs[ip] = vdef;
+                 nextSock(ip);
+        
+               }
+              } catch (e) {
+                console.log(e.message);
+              }
+            });
+           })
+        } catch(e){
+          console.log('vdef error for '+connn.remoteAddress);
+          console.log(e);
           nextSock(connn.remoteAddress);
+        }*/
+     //   nextSock(connn.remoteAddress);
            clients[conn.remoteAddress][1].conn = connn
           connn.on('message', function(msg){
                       var ab = toArrayBuffer(msg.binaryData)
@@ -83,6 +158,8 @@ function nextSock(ip){
 
             })
          })
+
+          
       })
     }
   }else if(dsp_ips.indexOf(ip) != -1){
@@ -111,7 +188,6 @@ function nextSock(ip){
        },100)  
          clients[conn.remoteAddress][1].socket.on('connect', function(connn){
           console.log('connected')
-          nextSock(connn.remoteAddress);
           clients[conn.remoteAddress][1].conn = connn
             connn.on('message', function(msg){
                       var ab = toArrayBuffer(msg.binaryData)
@@ -120,6 +196,36 @@ function nextSock(ip){
                       relayRpcMsg(packet)
 
             })
+     
+          HTTP.get('http://'+conn.remoteAddress+'/vdef', (res) =>{
+             let ip = conn.remoteAddress;
+               console.log(ip)
+           
+             res = unzipResponse(res)
+             let rawData = '';
+            // console.log(res)
+  
+            res.on('data', (chunk) =>{
+              //console.log(typeof chunk)
+              rawData += chunk;
+            });// 
+            res.on('end', () => {
+              try {
+                // console.log(rawData.toString('utf8'))
+               if(/^load_vdef_parameters/.test(rawData)){
+                console.log('this should be alright')
+               var vdef = eval(rawData)
+                     vdefs[connn.remoteAddress] = vdef;
+         
+                nextSock(connn.remoteAddress);
+         
+               }
+              } catch (e) {
+                console.log(e.message);
+              }
+            });
+           })
+          
          })
       })
     }
@@ -222,6 +328,7 @@ http.listen(app.get('port'), function(){
 
 });
 let clients = {};
+let vdefs = {};
 io.on('connection', function(socket){ 
   let loginLevel = 0;
   let curUser = '';
@@ -306,6 +413,7 @@ io.on('connection', function(socket){
     console.log('locate req')
         Helper.scan_for_dsp_board(function (e) {
           dets = e
+          console.log(dets)
     dspips = [];
   for(var i = 0; i < e.length; i++){
     if(e[i].board_type == 1){
@@ -344,13 +452,14 @@ for(var i = 0; i < dspips.length;i++){
  // console.log(dspips)
   initSocks(dsps);
        socket.emit('locatedResp', dspips)
-        fs.readFile(__dirname + "/json/vdef160621.json", (err, data) => {
+        fs.readFile(__dirname + "/json/vdef160704.json", (err, data) => {
       var vdef = JSON.parse(data);
+  //    console.log(vdef)
      // console.log('vdef')
       //console.log(err)
       fs.readFile(__dirname + '/json/new_vdef.json', (er,dat) =>{
         var nVdef = JSON.parse(dat);
-        socket.emit('vdef', [vdef, nVdef])
+       // socket.emit('vdef', [vdef, nVdef])
       });
       
     });
@@ -358,6 +467,13 @@ for(var i = 0; i < dspips.length;i++){
  
 });
 });
+          socket.on('vdefReq', function(ip){
+            if(vdefs[ip]){
+                socket.emit('vdef',[vdefs[ip],ip])
+              }else{
+                socket.emit('noVdef', ip)
+              }
+          })
           socket.on('rpc', function(pack){
             console.log(pack)
 
@@ -369,7 +485,6 @@ for(var i = 0; i < dspips.length;i++){
                   console.log(clients[pack.ip][1].conn.state)
                   clients[pack.ip][1].conn.send(pack.data)
                 }else{
-                   console.log('failed to send rpc - 383')
                    console.log(pack.ip)
                 }
               }
@@ -392,7 +507,7 @@ for(var i = 0; i < dspips.length;i++){
       socket.emit('testFss', testFss)
     })
   })
-  
+
     /*   var vdef_script_tag = document.createElement('script');
           vdef_script_tag.src = "http://"+d.ip+"/vdef"; // can change the ip here
           vdef_script_tag.type = "application/javascript";

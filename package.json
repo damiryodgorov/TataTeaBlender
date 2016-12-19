@@ -16,12 +16,14 @@
     "crc": "^3.4.1",
     "express": "^4.14.0",
     "flat-file-db": "^1.0.0",
+    "http-string-parser": "0.0.5",
     "minifyify": "^7.3.3",
     "netmask": "^1.0.6",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-sortable-hoc": "0.0.8",
     "socket.io": "^1.5.1",
+    "unzip-response": "^2.0.1",
     "websocket": "^1.0.23"
   }
 }
