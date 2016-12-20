@@ -2540,7 +2540,22 @@ var DetectorView = React.createClass({
     						prodRec[p] = setting;
     					}
     				}
-					
+					if(this.state.interceptor){
+						var pka = prodRec['Peak_A'];
+						var pkb = prodRec['Peak_B'];
+						var siga = uintToInt(prodRec['DetectSignal_A'],16)
+						var sigb = uintToInt(prodRec['DetectSignal_B'],16)
+						var phaseA = (uintToInt(prodRec['PhaseAngleAuto_A'],16)/100).toFixed(2)
+						var phaseB = (uintToInt(prodRec['PhaseAngleAuto_B'],16)/100).toFixed(2)
+						var phaseSpeedA = prodRec['PhaseFastBit_A']
+						var phaseSpeedB = prodRec['PhaseFastBit_B']
+						var rpka = prodRec['ProdPeakR_A']
+						var xpka = prodRec['ProdPeakX_A']
+						var rpkb = prodRec['ProdPeakR_B']
+						var xpkb = prodRec['ProdPeakX_B']
+
+
+					}else{
 					var peak = prodRec['Peak']
 					var rej = prodRec['RejCount']
 					var sig = uintToInt(prodRec['DetectSignal'],16)
@@ -2549,12 +2564,7 @@ var DetectorView = React.createClass({
 					var phaseSpeed = prodRec['PhaseFastBit'];
 					var rpeak = prodRec['ProdPeakR']
 					var xpeak = prodRec['ProdPeakX']
-					var faultArray = [];
-					pVdef[6].forEach(function(f){
-					if(getVal(prodArray,2,f,pVdef) != 0){
-						faultArray.push(f)
-						}
-					});
+					
 				//	console.log(this.refs)
 					if(this.state.currentView == 'MainDisplay'){
 						if((this.refs.dm.state.peak !=peak)||(this.refs.dm.state.rpeak != rpeak)||(this.refs.dm.state.xpeak != xpeak)||(this.refs.dm.state.rej != rej)||(this.refs.dm.state.phase != phase)){
@@ -2569,6 +2579,13 @@ var DetectorView = React.createClass({
   					if(this.refs.dg){
   						this.refs.dg.stream({t:Date.now(),val:sig})
   					}
+  				}
+  				var faultArray = [];
+					pVdef[6].forEach(function(f){
+					if(getVal(prodArray,2,f,pVdef) != 0){
+						faultArray.push(f)
+						}
+					});
   					if(this.state.faultArray.length != faultArray.length){
   						this.setState({faultArray:faultArray})
   					}else{

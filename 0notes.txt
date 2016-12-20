@@ -14,3 +14,5 @@ working in support for interceptor
 --161220
 
 statbars, leds for interceptor now working
+bug fixed with reading parameters split over different words
+
