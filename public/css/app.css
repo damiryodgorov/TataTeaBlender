@@ -289,6 +289,27 @@ li {
     white-space: nowrap;
     margin-left: -10px;
 }
+.example_path_i {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 5px;
+    background: #ddd;
+    /*border: 3px solid #000;*/
+}
+
+.example_path_i .example_block_i {
+    position: absolute;
+    background-color: blue;
+    width: 20px;
+    height: 5px;
+    padding-top: 10px;
+    text-align: center;
+    color: #fff;
+    font-size: 10px;
+    white-space: nowrap;
+    margin-left: -10px;
+}
 .panelControls{
     width: 100%;
 }
@@ -359,8 +380,13 @@ li {
     color: orange;
 }
 .led{
-    width:15px;
-    height:15px;
+    width:14px;
+    height:14px;
+    display: inline-block;
+}
+.ledi{
+    width:7px;
+    height:14px;
     display: inline-block;
 }
 .pButton::after{

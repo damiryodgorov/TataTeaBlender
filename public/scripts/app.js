@@ -24,8 +24,19 @@ function getVal(arr, rec, key, pVdef){
 		if(param['@bit_len']>16){
 
 			return wordValue(arr, param)
-		}else{		
-			var val = Params.swap16(arr[param["@i_var"]]);
+		}else{
+			var val;
+			if((param['@bit_pos'] + param['@bit_len']) > 16){
+				var wd = (Params.swap16(arr[param['@i_var']+1])<<16) | Params.swap16((arr[param['@i_var']]))
+				val = (wd >> param["@bit_pos"]) & ((1<<param["@bit_len"])-1)
+				
+			}else{
+				val = Params.swap16(arr[param["@i_var"]]);
+				
+				if(param['@name'] == 'DetectSignal_B'){
+					//console.log([(val & 0xFF), (val >> 8) & 0xFF]);
+				}
+			}	
 			if(param["@bit_len"] < 16){
 				val = (val >> param["@bit_pos"]) & ((1<<param["@bit_len"])-1)
 			}
@@ -1026,10 +1037,16 @@ var TickerBox = React.createClass({
 		}else if(tickerVal < -200){
 			tickerVal = -200
 		}
+		var path = 'example_path'
+		var block = 'example_block'
+		if(this.props.int){
+			path = 'example_path_i'
+			block = 'example_block_i'
+		}
 		return (
 			<div className='tickerBox'>
-			<div className='example_path'>
-				<div className='example_block' style = {{left:50-(tickerVal/4)+'%',backgroundColor:color}}/>
+			<div className={path}>
+				<div className={block} style = {{left:50-(tickerVal/4)+'%',backgroundColor:color}}/>
 			</div>
 			</div>
 		)
@@ -1086,6 +1103,51 @@ var LEDBar = React.createClass({
 var LED = React.createClass({
 	render: function(){
 		return(<div className='led' style={{ backgroundColor:this.props.color}}/>)
+	}
+})
+var LEDBarInt = React.createClass({
+	getInitialState: function(){
+		return ({pled_a:0, dled_a:0,pled_b:0, dled_b:0})
+	},
+	update:function (pa,pb,da,db) {
+		// body...
+		if((this.state.pled_a != pa) || (this.state.dled_a != da)||(this.state.pled_b != pb) || (this.state.dled_b != db)){
+			this.setState({pled_a:pa, dled_a:da,pled_b:pb, dled_b:db})
+		}
+	},
+	render: function(){
+		var rej_a = 'black';
+		var rej_b = 'black';
+		
+		var prod_a = 'black';
+		var prod_b = 'black';
+		
+		var fault = 'black';
+			if(this.state.pled_a == 1){
+			prod_a = 'green';
+		}else if(this.state.pled_a == 2){
+			prod_a = 'red'
+		}
+		if(this.state.dled_a == 1){
+			rej_a = 'red'
+		}
+			if(this.state.pled_b == 1){
+			prod_b = 'green';
+		}else if(this.state.pled_b == 2){
+			prod_b = 'red'
+		}
+		if(this.state.dled_b == 1){
+			rej_b = 'red'
+		}
+		return(<div className='ledBar' >
+				<table><tbody><tr><td style={{width:'17px'}}><LEDi color={rej_a}/><LEDi color={rej_b}/></td><td>Detection</td><td className='txtLeft'>Product:</td><td style={{width:'17px'}}><LEDi color={prod_a}/><LEDi color={prod_b}/></td></tr></tbody></table>
+			</div>
+			)
+	}
+});
+var LEDi = React.createClass({
+	render: function(){
+		return(<div className='ledi' style={{ backgroundColor:this.props.color}}/>)
 	}
 })
 
@@ -1594,6 +1656,7 @@ var LiveView = React.createClass({
 		this.refs.st.setLEDs(p,d)
 	},
 	render: function(){
+		console.log('rendering st')
 		var style = {fontSize:20}
 		if(this.props.layout =='mobile'){
 			style = {fontSize:16}
@@ -1620,14 +1683,15 @@ var LiveViewInt = React.createClass({
 		return ({rejects:0, mode:0, phase:90,pled:0,dled:0})
 	},
 	update: function (a,b) {
-		this.refs.sta.update(a)
-		this.refs.stb.update(b)
+		
+		this.refs.st.update(a,b)
 	},
 	setLEDs: function (pa,da,pb,db) {
-		this.refs.sta.setLEDs(pa,da)
-		this.refs.sta.setLEDs(pb,db)
+		this.refs.st.setLEDs(pa,pb,da,db)
+	//	this.refs.sta.setLEDs(pb,db)
 	},
 	render: function(){
+		console.log('rendering int')
 		var style = {fontSize:20}
 		if(this.props.layout =='mobile'){
 			style = {fontSize:16}
@@ -1636,8 +1700,7 @@ var LiveViewInt = React.createClass({
 			<table style={{width:'100%'}}><tbody><tr><td style={{width:280}}>
 			{this.props.children}
 			</td><td>
-			<StatBar ref='sta'/>
-			<StatBar ref='stb'/>
+			<StatBarInt ref = 'st'/>
 			</td></tr></tbody></table>
 			</div>
 			)
@@ -1645,8 +1708,7 @@ var LiveViewInt = React.createClass({
 
 		return (<div style={this.props.st} className='liveView' style={style}>
 			{this.props.children}
-			<StatBar ref='sta'/>
-			<StatBar ref='stb'/>
+			<StatBarInt ref = 'st'/>		
 			</div>
 			)
 	}
@@ -1688,7 +1750,7 @@ var StatBar = React.createClass({
 	},
 	render: function(){
 		return (<div className='statBar'>
-			<TickerBox ref='tb'/>
+			<TickerBox ref='tb' int={false}/>
 			<LEDBar ref='lb'/>
 			</div>)
 	}
@@ -1698,14 +1760,14 @@ var StatBarInt = React.createClass({
 		this.refs.ta.update(a)
 		this.refs.tb.update(b)
 	},
-	setLEDs: function (p,d) {
-		this.refs.lb.update(p,d)
+	setLEDs: function (pa,pb,da,db) {
+		this.refs.lb.update(pa,pb,da,db)
 	},
 	render: function(){
 		return (<div className='statBar'>
-			<TickerBox ref='ta'/>
-			<TickerBox ref='tb'/>
-			<LEDBar ref='lb'/>
+			<TickerBox ref='ta' int={true}/>
+			<TickerBox ref='tb' int={true}/>
+			<LEDBarInt ref='lb'/>
 			</div>)
 	}
 })
@@ -1993,6 +2055,7 @@ var MultiScanUnit = React.createClass({
 		if(!this.state.live){
 			this.setState({live:true})
 		}
+		//console.log([a,b])
 		this.refs.lv.update(a,b)	
 	},
 	onRMsg: function (e,d) {
@@ -2035,8 +2098,15 @@ var MultiScanUnit = React.createClass({
 				if(!this.state.interceptor){
 					this.setDyn(uintToInt(getVal(prodArray,2,'PhaseAngleAuto',pVdef),16),getVal(prodArray,2,'Peak',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray)
 					this.updateMeter(uintToInt(getVal(prodArray,2,'DetectSignal',pVdef),16))
+				/*	var rled = getVal(prodArray,2,'Reject_LED', pVdef);
+				var pled = getVal(prodArray,2,'Prod_LED',pVdef);
+				var phled = getVal(prodArray,2,'Prod_LED',pVdef)*/
+				
+					this.setLEDS(getVal(prodArray,2,'Reject_LED', pVdef),getVal(prodArray,2,'Prod_LED',pVdef),getVal(prodArray,2,'Prod_HI_LED',pVdef))
 				}else{
 					this.updateMeterInt(uintToInt(getVal(prodArray,2,'DetectSignal_A',pVdef),16),uintToInt(getVal(prodArray,2,'DetectSignal_B',pVdef),16))
+					this.setDynInt(uintToInt(getVal(prodArray,2,'PhaseAngleAuto_A',pVdef),16),getVal(prodArray,2,'Peak_A',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray, uintToInt(getVal(prodArray,2,'PhaseAngleAuto_B',pVdef),16),getVal(prodArray,2,'Peak_B',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray)
+					this.setLEDSInt(getVal(prodArray,2,'Reject_LED_A', pVdef),getVal(prodArray,2,'Prod_LED_A',pVdef),getVal(prodArray,2,'Prod_HI_LED_A',pVdef),getVal(prodArray,2,'Reject_LED_B', pVdef),getVal(prodArray,2,'Prod_LED_B',pVdef),getVal(prodArray,2,'Prod_HI_LED_B',pVdef))
 				}
 			}
 		}
@@ -2089,6 +2159,27 @@ var MultiScanUnit = React.createClass({
 			this.setState({phase_A:phase,peak_A:pk,rejs_A:rc,fault:faults})
 		}
 	},
+	setLEDSInt:function(det_a,prod_a,prodhi_a,det_b,prod_b,prodhi_b){
+		var pled_a = 0
+		if(prodhi_a == 1){
+			pled_a = 2
+		}else if(prod_a == 1){
+			pled_a = 1
+		}
+		var pled_b = 0
+		if(prodhi_b == 1){
+			pled_b = 2
+		}else if(prod_b == 1){
+			pled_b = 1
+		}
+		this.refs.lv.setLEDs(pled_a,det_a,pled_b,det_b)
+	},
+	setDynInt: function(phase,pk,rc,fa,phase_b,pk_b){
+		var faults = (fa.length != 0);
+		if((phase!=this.state.phase_A)||(this.state.peak_A != pk)||(phase_b!=this.state.phase_B)||(this.state.peak_B != pk_b) || (this.state.rejs_A != rc)||(faults != this.state.fault)){
+			this.setState({phase_A:phase,peak_A:pk,rejs_A:rc,fault:faults, phase_B:phase_b,peak_B:pk_b})
+		}
+	},
 	render: function(){
 		if(this.state.interceptor){
 			return this.renderInt()
@@ -2117,7 +2208,15 @@ var MultiScanUnit = React.createClass({
 			<div onClick={this.onClick}>
 			<div><label>Name: </label><label>{this.props.unit.name}</label></div>
 				<div><label>Product:{this.state.pn}</label></div>
-	
+				<table className='mtab'><tbody>
+				<tr><td><label>Sensitivity:{this.state.sens_A+ "  "+ this.state.sens_B}</label></td><td><label style={{paddingLeft:15}}>Phase:{(this.state.phase_A/100).toFixed(2).toString() +' ' +list[this.state.phasemode_A] 
+				+ "  "+ (this.state.phase_A/100).toFixed(2).toString() +' ' +list[this.state.phasemode_A]}</label></td>
+			</tr>
+				<tr><td><label>Peak:{this.state.peak_A+ "  "+ this.state.peak_B}</label></td>
+				
+				<td><label style={{paddingLeft:15}}>Rejects:{this.state.rejs_A}</label></td>
+
+				</tr></tbody></table>
 			</div>
 			</LiveViewInt>
 			</div>)
@@ -2259,8 +2358,10 @@ var DetectorView = React.createClass({
 			mqls[i].addListener(this.listenToMq)
 		}
 		minMq.addListener(this.listenToMq);
+		var interceptor = (this.props.det.board_id == 4);
+		//if(vdefByIp[this.props.det.ip])
 		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, 
-		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, peak:0, rej:0, phase:0}
+		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, peak:0, rej:0, phase:0, interceptor:interceptor}
 	},
 	componentDidMount: function () {
 		// body...

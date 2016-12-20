@@ -10,3 +10,7 @@ refactored some code
 --161219
 
 working in support for interceptor
+
+--161220
+
+statbars, leds for interceptor now working
