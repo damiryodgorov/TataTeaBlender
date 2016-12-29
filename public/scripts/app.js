@@ -17,10 +17,6 @@ function uintToInt(uint, nbit) {
 }
 function getVal(arr, rec, key, pVdef){
 		var param = pVdef[rec][key]
-		if(!param){
-			console.log([rec,key])
-			console.log(pVdef)
-		}
 		if(param['@bit_len']>16){
 
 			return wordValue(arr, param)
@@ -32,10 +28,6 @@ function getVal(arr, rec, key, pVdef){
 				
 			}else{
 				val = Params.swap16(arr[param["@i_var"]]);
-				
-				if(param['@name'] == 'DetectSignal_B'){
-					//console.log([(val & 0xFF), (val >> 8) & 0xFF]);
-				}
 			}	
 			if(param["@bit_len"] < 16){
 				val = (val >> param["@bit_pos"]) & ((1<<param["@bit_len"])-1)
@@ -47,7 +39,6 @@ function wordValue(arr, p){
 
 		var n = Math.floor(p["@bit_len"]/16);
 		var sa = arr.slice(p["@i_var"], p["@i_var"]+n)
-		//console.log(sa)
 		if(p['@type']){
 			if(p['@name'] == 'PW1'){
 				console.log(sa)
@@ -78,15 +69,11 @@ function dsp_rpc_paylod_for (n_func, i16_args, byte_data) {
         var n_args = i16_args.length;
         var bytes = [];
         if (n_args > 3) n_args = 3;
-        // if (byte_data instanceof String) {
         if (typeof byte_data == "string") {
-         // alert(byte_data);
           for(var i=0; i<byte_data.length; i++) {
               bytes.push(byte_data.charCodeAt(i));
-          }
-         
+          }         
         } else if (byte_data instanceof Array) {
-        	
           bytes = byte_data;
          }
         rpc[0] = n_func;
@@ -97,12 +84,11 @@ function dsp_rpc_paylod_for (n_func, i16_args, byte_data) {
           rpc[j] = i16_args[i] & 0xff; j+= 1;
           rpc[j] = (i16_args[i] >> 8) & 0xff; j+= 1;
         }
-        console.log(bytes.length)
         if (bytes.length > 0) rpc = rpc.concat(bytes);
         
         var cs = fletcherCheckBytes(rpc);
-        var cs1=255-((cs[0]+cs[1])%255);  // modify the bytes so the the checksum
-        var cs2=255-((cs[0]+cs1)%255); // of the whole payload will be zero
+        var cs1=255-((cs[0]+cs[1])%255); 
+        var cs2=255-((cs[0]+cs1)%255);
         rpc.push(cs1);
         rpc.push(cs2);
         return rpc;
@@ -159,8 +145,6 @@ console.log(_Vdef)
 
 
      for(var o in value_groups){
-     // console.log(o)
-
 	if(o == 'Faults'){
       if(nm.indexOf('FaultMask')!= -1){
         nVdf[o].push(p);
@@ -245,7 +229,7 @@ var LandingPage = React.createClass({
 		}
 		return ({currentPage:'landing', curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, 
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:0,
-			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]},tmpS:{name:'NEW', type:'single', banks:[]}})
+			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]}})
 	},
 	listenToMq: function (argument) {
 		// body...
@@ -255,21 +239,17 @@ var LandingPage = React.createClass({
 		this.setState({brPoint:this.state.mq.matches})
 	},
 	locateUnits: function (callback) {
-		
 		located = false;
 		socket.emit('hello','landing')
-		
 		this.refs.findDetModal.toggle();
 	},
 	locateB: function(){
 		socket.emit('locateReq', 'b')
 	},
 	componentDidMount: function () {
-		// body...
 		var self = this;
 		this.loadPrefs();
 		socket.on('resetConfirm', function (r) {
-			// body...
 			socket.emit('locateReq');
 		})
 		socket.on('prefs', function(f) {
@@ -279,21 +259,16 @@ var LandingPage = React.createClass({
 				u.banks.forEach(function(b){
 					detL[b.mac] = null
 				})
-				// body...
 			})
 			self.setState({mbunits:f, detL:detL})
-			// body...
 		})
 		socket.on('noVdef', function(ip){
-			console.log(ip)
 			setTimeout(function(){
 				socket.emit('vdefReq', ip);
 			}, 1000)
 		})
 		socket.on('locatedResp', function (e) {
-			console.log(e)
 			var dets = self.state.detL;
-			//var macs = []
 			var macs = self.state.macList.slice(0);
 			e.forEach(function(d){
 				macs.push(d.mac)
@@ -310,22 +285,16 @@ var LandingPage = React.createClass({
 			console.log(dets)
 			self.state.mbunits.forEach(function(u){
 				u.banks.forEach(function(b) {
-					// body...
 					dets[b.mac] = null;
 				})
 			})
 			self.setState({dets:e, detL:dets, macList:macs})
-			// body...
 		});
 		
 		socket.on('paramMsg', function(data) {
-		//	console.log(data.det.ip)
 			self.onParamMsg(data.data,data.det) 
-
-			// body...
 		})
 		socket.on('rpcMsg', function (data) {
-			// body...
 			self.onRMsg(data.data, data.det)
 		})
 		socket.on('loggedIn', function(data){
@@ -372,7 +341,6 @@ var LandingPage = React.createClass({
   	    var n = data.length;
 		var prodArray = [];
 		var res = vdefByIp[d.ip];
-		//var pVdef = 
 		for(var i = 0; i<((n-1)/2); i++){
 			prodArray[i] = dv.getUint16(i*2 + 1);	
 		}
@@ -382,7 +350,7 @@ var LandingPage = React.createClass({
 			if(lcd_type == 1)
 			{
 				if(this.refs[d.ip]){
-					this.refs[d.ip].onParamMsg(e);//.setProdVars(getVal(prodArray, 1, 'ProdName', pVdef),getVal(prodArray, 1, 'Sens', pVdef),getVal(prodArray,1,'PhaseMode', pVdef))
+					this.refs[d.ip].onParamMsg(e);
 				}else{
   				var ind = -1;
   				this.state.mbunits.forEach(function(m,i){
@@ -394,8 +362,7 @@ var LandingPage = React.createClass({
   				}) 
   				if(ind != -1){
   					if(this.refs['mbu' + ind]){
-  						this.refs['mbu'+ind].onParamMsg(e,d);//.setPnSens(getVal(prodArray, 1, 'ProdName',pVdef),getVal(prodArray, 1, 'Sens',pVdef),d)
-  	
+  						this.refs['mbu'+ind].onParamMsg(e,d);
   						}
   					}
   				}
@@ -417,48 +384,6 @@ var LandingPage = React.createClass({
   					}
   					}
   				}
-
-  				/*var detsig = 'DetectSignal'
-  				 var _phs = 'PhaseAngleAuto', _pk = 'Peak'
-  				if(Vdef['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2){
-  					detsig = 'DetectSignal_A'
-  					_phs = 'PhaseAngleAuto_A', _pk = 'Peak_A'
-  				}
-				var signal = uintToInt(getVal(prodArray,2,detsig,pVdef),16);
-				var phase = uintToInt( getVal(prodArray,2,_phs, pVdef),16);
-				var peak = getVal(prodArray, 2, _pk, pVdef);
-				var rejs = getVal(prodArray,2, 'RejCount',pVdef);
-				var rled = getVal(prodArray,2,'Reject_LED', pVdef);
-				var pled = getVal(prodArray,2,'Prod_LED',pVdef);
-				var phled = getVal(prodArray,2,'Prod_HI_LED', pVdef)
-				var pwet = getVal(prodArray,2,'PhaseWetBit', pVdef);
-				var faultArray = [];
-				pVdef[6].forEach(function(f){
-					if(getVal(prodArray,2,f, pVdef) != 0){
-						faultArray.push(f)
-					}
-				});
-				if(this.refs[d.ip]){
-					this.refs[d.ip].setDyn(phase,peak,rejs,faultArray)
-					this.refs[d.ip].setLEDS(rled,pled,phled)
-					this.refs[d.ip].updateMeter(signal)
-				}else{
-  				var ind = -1;
-  				this.state.mbunits.forEach(function(m,i){
-  				m.banks.forEach(function (b) {
-  						if(b.ip == d.ip){
-  							ind = i;
-  						}
-  					})
-  				}) 
-  				if(ind != -1){
-  					if(this.refs['mbu' + ind]){
-  						this.refs['mbu'+ind].setDyn(phase,pwet,peak,rejs,faultArray,d)
-  						this.refs['mbu'+ind].updateMeter(signal,d)	
-  						this.refs['mbu'+ind].setLEDs(rled,pled,phled,d)
-  					}
-  				}
-			}*/
     	}
 		
 		if(this.refs.dv){
@@ -473,7 +398,6 @@ var LandingPage = React.createClass({
 	renderDetectors: function () {
 		var self = this;
 		var units = this.state.detectors.map(function (u) {
-			// body...
 			return <MultiScanUnit ref={u.ip} onSelect={self.switchUnit} unit={u}/>
 		})
 		return units;
@@ -481,27 +405,21 @@ var LandingPage = React.createClass({
 	showFinder: function () {
 		this.refs.findDetModal.toggle();
 		this.locateB()
-		// body...
 	},
 	logoClick: function () {
-		// body...
 		this.setState({currentPage:'landing'})
 	},
 	switchUnit: function (u) {
-		// body...
 		console.log(u)
 		this.setState({curDet:u, currentPage:'detector'})
 	},
 	addNewMBUnit:function () {
-		// body...
-		this.setState({curModal:'newMB'})
+		this.setState({curModal:'newMB', tmpMB:{name:'NEW', type:'mb', banks:[]}})
 	}, 
 	addNewSingleUnit: function () {
-		// body...
-		this.setState({curModal:'newSingle'})
+		this.setState({curModal:'newSingle', tmpMB:{name:'NEW', type:'single', banks:[]}})
 	},
 	addMBUnit: function (mb) {
-		// body...
 		var mbunits = this.state.mbunits
 		mbunits.push(mb)
 		this.setState({mbunits:mbunits})
@@ -514,38 +432,26 @@ var LandingPage = React.createClass({
 		mbunit.type = mbunits[i].type;
 		mbunit.name = mbunits[i].name;
 		mbunit.banks = mbunits[i].banks;
-		if(mbunit.type == 'single'){
-			this.setState({curIndex:i, curModal:'edit', tmpS:mbunit})	
-		}else{
-			this.setState({curIndex:i, curModal:'edit', tmpMB:mbunit})
-		}
-		
+		this.setState({curIndex:i, curModal:'edit', tmpMB:mbunit})
 	},
 	addToTmp:function(e, type){
 		var cont;
 		var dsps = this.state.dets
 		var detL = this.state.detL
 		var mbUnits;
-		if(type == 'single'){
-			cont = this.state.tmpS.banks;
-			mbUnits = this.state.tmpS
+			cont = this.state.tmpMB.banks;
+			mbUnits = this.state.tmpMB
+			if(mbUnits.type == 'single'){
 			if(cont.length != 0){
 				return;
 			}
-			mbUnits.name = dsps[e].name
-		}else{
-			cont = this.state.tmpMB.banks;
-			mbUnits = this.state.tmpMB
-		}
+				mbUnits.name = dsps[e].name
+			}
 		cont.push(dsps[e])
 		detL[dsps[e].mac] = null;
 		mbUnits.banks = cont;
-		if(type == 'single'){
-			this.setState({tmps:mbUnits, detL:detL})
-		}else{
-			this.setState({tmpMB:mbUnits, detL:detL})
-		}
-
+		this.setState({tmpMB:mbUnits, detL:detL})
+		
 	},
 	addToTmpGroup: function (e) {
 		this.addToTmp(e,'multi')
@@ -563,16 +469,6 @@ var LandingPage = React.createClass({
 		mbUnits.banks = cont;
 		this.setState({tmpMB:mbUnits, detL:detL})
 	},
-	removeFromTmpSingle: function (e) {
-		var cont = this.state.tmpS.banks;
-		var dsps = this.state.dets;
-		var detL = this.state.detL
-		detL[cont[e].mac] = cont[e]
-		cont.splice(e,1)
-		var mbUnits = this.state.tmpS;
-		mbUnits.banks = cont;
-		this.setState({tmpS:mbUnits, detL:detL})
-	},
 	cancel: function () {
 		var detL = this.state.detL;
 		this.state.tmpS.banks.forEach(function (b) {
@@ -589,27 +485,13 @@ var LandingPage = React.createClass({
 		this.saveSend(mbunits);
 		this.setState({curModal:'add', tmpS:{name:'NEW',type:'single',banks:[]}, tmpMB:{name:'NEW',type:'mb',banks:[]}})
 	},
-	submitS: function(){
-		var mbunits = this.state.mbunits;
-		mbunits.push(this.state.tmpS)
-		this.saveSend(mbunits);
-		this.setState({curModal:'add', tmpS:{name:'NEW',type:'single',banks:[]}, tmpMB:{name:'NEW',type:'mb',banks:[]}})
-	},
 	submitMBe: function(){
 		var mbunits = this.state.mbunits;
 		mbunits[this.state.curIndex]= this.state.tmpMB 
 		this.saveSend(mbunits);
 		this.setState({curModal:'add', tmpS:{name:'NEW',type:'single',banks:[]}, tmpMB:{name:'NEW',type:'mb',banks:[]}})
 	},
-	submitSe: function(){
-		var mbunits = this.state.mbunits;
-		mbunits[this.state.curIndex]= this.state.tmpS
-		this.saveSend(mbunits);
-		this.setState({curModal:'add', tmpS:{name:'NEW',type:'single',banks:[]}, tmpMB:{name:'NEW',type:'mb',banks:[]}})
-		
-	},
 	changeModalMode: function () {
-		// body...
 		this.setState({curModal:'add'})
 	},
 	move: function (i,d) {
@@ -633,17 +515,14 @@ var LandingPage = React.createClass({
 		// body...
 	},
 	saveSend: function (mbunits) {
-		// body...
 		socket.emit('savePrefs', mbunits)
 	},
 	save: function () {
-		// body...
 		socket.emit('savePrefs', this.state.mbunits)
 	},
 	loadPrefs: function () {
 		socket.emit('locateReq');
 		socket.emit('getPrefs');
-		// body...
 	},
 	removeMb: function (i) {
 		var mbunits = this.state.mbunits;
@@ -656,11 +535,9 @@ var LandingPage = React.createClass({
 		this.setState({mbunits:mbunits, detL:detL})
 	},
 	reset: function () {
-		// body...
 		socket.emit('reset', 'reset requested')
 	},
 	renderModal: function () {
-		// body...
 		var self = this;
 		var mbSetup = this.state.mbunits.map(function(mb,ind) {
 			console.log(ind)
@@ -703,55 +580,33 @@ var LandingPage = React.createClass({
 	changetMBName: function (e) {
 		e.preventDefault();
 		if(this.state.mbunits)
-		var MB = this.state.tmpMB//this.state.mbunits[this.state.curIndex]
+		var MB = this.state.tmpMB
 		MB.name = e.target.value;
-		this.setState({tmpMB:MB})		// body...
+		this.setState({tmpMB:MB})
 	},
 	changetSName: function (e) {
 		e.preventDefault();
 		var mbs = this.state.mbunits;
-		var MB = this.state.tmpS//mbunits[this.state.curIndex]
+		var MB = this.state.tmpS
 		MB.name = e.target.value;
-		this.setState({tmps:MB})		// body...
+		this.setState({tmps:MB})
 	},
 	renderMBGroup: function (mode) {
 		var self = this;
 		if(mode == 0){
 			var detectors = this.state.dets.map(function(det, i){
 				if(self.state.detL[det.mac]){
-					if(type=='single'){
-						return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpSingle}/>)
-					}else{
 						return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpGroup}/>)
-					}
 				}
 			})
 
-			var MB; 
-			var type;
-			if(this.state.mbunits[this.state.curIndex].type == 'single'){
-				MB = this.state.tmpS;
-				type = 'single'
-			}else{
-				MB = this.state.tmpMB
-				type = 'MB'
-			}
+			var MB = this.state.tmpMB; 
+			var type = MB.type;
 			var banks = MB.banks.map(function (b,i) {
-				if(type == 'single'){
-					return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpSingle}/>)
-				}else{
 					return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)	
-				}
 			})
-			var nameEdit;
-			var submit;
-			if(type == 'single'){
-				nameEdit = (<input onChange={this.changetSName} type='text' value={MB.name}/>)
-				submit = (<button onClick={this.submitSe}>Submit</button>)
-			}else{
-				nameEdit = (<input onChange={this.changetMBName} type='text' value={MB.name}/>)
-				submit = (<button onClick={this.submitMBe}>Submit</button>)
-			}
+			var	nameEdit = (<input onChange={this.changetMBName} type='text' value={MB.name}/>)
+			var submit = (<button onClick={this.submitMBe}>Submit</button>)
 			return (<div><label>Name:</label>{nameEdit}
 					<table><tbody><tr>
 					<th>Available Detectors</th><th>Banks</th>
@@ -763,7 +618,7 @@ var LandingPage = React.createClass({
 					</td><td><div style={{height:30}}/></td></tr></tbody></table>
 					{submit}<button onClick={this.cancel}>Cancel</button>
 					</div>)
-		}else if(mode == 1){
+		}else{
 
 			var detectors = this.state.dets.map(function(det, i){
 				if(self.state.detL[det.mac]){
@@ -786,28 +641,6 @@ var LandingPage = React.createClass({
 				</td><td><div style={{height:30}}/></td></tr></tbody></table>
 				<button onClick={this.submitMB}>Submit</button><button onClick={this.cancel}>Cancel</button>
 				</div>)
-		}else{
-			var detectors = this.state.dets.map(function(det, i){
-				if(self.state.detL[det.mac]){
-					return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmpSingle}/>)
-				}
-			})
-			var MB = this.state.tmpS;//{name:"new", type:"single", banks:[]}
-			var banks = MB.banks.map(function (b,i) {
-				return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpSingle}/>)
-			})
-			return (<div>
-				<label>Name:</label><input onChange={this.changetSName} type='text' value={MB.name}/>
-				<table ><tbody><tr>
-				<th>Available Detectors</th><th>Banks</th>
-				</tr><tr>
-				<td style={{width:300, border:'1px solid black', minHeight:50}}>
-					{detectors}
-				</td><td style={{width:300,  border:'1px solid black', minHeight:50}}>
-				{banks}
-				</td><td><div style={{height:30}}/></td></tr></tbody></table>
-				<button onClick={this.submitS}>Submit</button><button onClick={this.cancel}>Cancel</button>
-				</div>)
 		}
 	},
 	showLogin: function(){
@@ -816,11 +649,9 @@ var LandingPage = React.createClass({
 	renderLanding: function () {
 		var self = this;
 		var detectors = this.renderDetectors()
-		console.log('detectors rendered')
 		var config = 'config'
 		var find = 'find'
 		var login = 'login'
-		// body...
 		var lstyle = {height: 72,marginRight: 20}
 		if(!this.state.minW){
 			lstyle = { height: 60, marginRight: 15}
@@ -973,7 +804,6 @@ var LogInControl = React.createClass({
 	componentDidMount: function(){
 		var self = this;
 		socket.on('access denied', function(alert){
-			console.log(alert)
 			self.setState({alert:alert})
 		})
 	},
@@ -1077,7 +907,6 @@ var LEDBar = React.createClass({
 		return ({pled:0, dled:0})
 	},
 	update:function (p,d) {
-		// body...
 		if((this.state.pled != p) || (this.state.dled != d)){
 			this.setState({pled:p, dled:d})
 		}
@@ -1095,16 +924,11 @@ var LEDBar = React.createClass({
 			rej = 'red'
 		}
 		return(<div className='ledBar' >
-				<table><tbody><tr><td style={{width:'17px'}}><LED color={rej}/></td><td>Detection</td><td className='txtLeft'>Product:</td><td style={{width:'17px'}}><LED color={prod}/></td></tr></tbody></table>
+				<table><tbody><tr><td style={{width:'17px'}}><LEDi color={rej}/><LEDi color={rej}/></td><td>Detection</td><td className='txtLeft'>Product:</td><td style={{width:'17px'}}><LEDi color={prod}/><LEDi color={prod}/></td></tr></tbody></table>
 			</div>
 			)
 	}
 });
-var LED = React.createClass({
-	render: function(){
-		return(<div className='led' style={{ backgroundColor:this.props.color}}/>)
-	}
-})
 var LEDBarInt = React.createClass({
 	getInitialState: function(){
 		return ({pled_a:0, dled_a:0,pled_b:0, dled_b:0})
@@ -1152,13 +976,15 @@ var LEDi = React.createClass({
 })
 
 var MobLiveBar = React.createClass({
-	update: function (data) {
-		this.refs.st.update(data)
-		// body...
+	update: function (a,b) {
+		this.refs.st.update(a,b)
 	},
 	render: function () {
-		return(<div className="mobLiveBar"><StatBar ref='st'/></div>)
-		// body...
+		var st=<StatBar ref='st' />
+		if(this.props.int){
+			st = <StatBarInt ref='st'/>
+		}
+		return(<div className="mobLiveBar">{st}</div>)
 	}
 })
 
@@ -1193,8 +1019,6 @@ var SettingsDisplay = React.createClass({
 		});
 	},
 	listenToMq:function () {
-		// body...
-		//this.setState({})
 		if(this.state.mqls[2].matches){
 			this.setState({font:2})
 		}else if(this.state.mqls[1].matches){
@@ -1276,9 +1100,6 @@ var SettingsDisplay = React.createClass({
 				}else{
 					console.log(n['@rpcs']['apiwrite'][1][i])
 				}
-			}
-			if(n['@rpcs']['apiwrite'][2]){
-
 			}
 			if(n['@rec'] == 0){
 				var mphaserd = this.state.prodRec['MPhaseRD']
@@ -1371,7 +1192,6 @@ var SettingsDisplay = React.createClass({
 		}else if(this.state.font == 0){
 			ft = 18
 		}
-			//console.log(clis)
 		var nav =''
 		var backBut = ''
 		var catList = ['Sensitivity', 'Calibration','Faults','Rej Setup', 'Test','Input','Output','Password','Other'];
@@ -1409,12 +1229,13 @@ var SettingsDisplay = React.createClass({
 	     var className = "menuCategory expanded";
 	    
 	    console.log(lab)
-	    var titlediv = (<span ><h2 style={{textAlign:'center'}} >{backBut}<div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>
+	    var tstl = {display:'inline-block', textAlign:'center'}
+	    var titlediv = (<span ><h2 style={{textAlign:'center'}} >{backBut}<div style={tstl}>{lab}</div></h2></span>
 )
 	    if (this.state.font == 1){
-	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:30}} >{backBut}<div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>)
+	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:30}} >{backBut}<div style={tstl}>{lab}</div></h2></span>)
 	    }else if (this.state.font == 0){
-	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24}} >{backBut}<div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>)
+	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24}} >{backBut}<div style={tstl}>{lab}</div></h2></span>)
 	    }
 		return(
 			<div className='settingsDiv'>
@@ -1433,7 +1254,6 @@ var SettingItem = React.createClass({
 	},
 	sendPacket: function(n,v){
 		if(!isNaN(v)){
-			console.log(this.props)
 			console.log(parseInt(v))	
 		}
 		this.props.sendPacket(n,v)
@@ -1688,7 +1508,6 @@ var LiveViewInt = React.createClass({
 	},
 	setLEDs: function (pa,da,pb,db) {
 		this.refs.st.setLEDs(pa,pb,da,db)
-	//	this.refs.sta.setLEDs(pb,db)
 	},
 	render: function(){
 		console.log('rendering int')
@@ -1723,7 +1542,6 @@ var FaultDiv = React.createClass({
 		this.props.maskFault(f)
 	},
 	render:function () {
-		// body...
 		var self = this;
 		var cont;
 		var clButton;
@@ -1936,7 +1754,6 @@ var StatBarMB = React.createClass({
 
 		if(!this.state.mobile){
 			return this.renderMob();
-			
 		}else{
 			return this.renderTab();
 		}
@@ -2086,9 +1903,6 @@ var MultiScanUnit = React.createClass({
 				
 
 			}else if(lcd_type == 2){
-
-
-			
 				var faultArray = [];
 				pVdef[6].forEach(function(f){
 					if(getVal(prodArray,2,f, pVdef) != 0){
@@ -2098,10 +1912,6 @@ var MultiScanUnit = React.createClass({
 				if(!this.state.interceptor){
 					this.setDyn(uintToInt(getVal(prodArray,2,'PhaseAngleAuto',pVdef),16),getVal(prodArray,2,'Peak',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray)
 					this.updateMeter(uintToInt(getVal(prodArray,2,'DetectSignal',pVdef),16))
-				/*	var rled = getVal(prodArray,2,'Reject_LED', pVdef);
-				var pled = getVal(prodArray,2,'Prod_LED',pVdef);
-				var phled = getVal(prodArray,2,'Prod_LED',pVdef)*/
-				
 					this.setLEDS(getVal(prodArray,2,'Reject_LED', pVdef),getVal(prodArray,2,'Prod_LED',pVdef),getVal(prodArray,2,'Prod_HI_LED',pVdef))
 				}else{
 					this.updateMeterInt(uintToInt(getVal(prodArray,2,'DetectSignal_A',pVdef),16),uintToInt(getVal(prodArray,2,'DetectSignal_B',pVdef),16))
@@ -2283,15 +2093,13 @@ var MBGroupView = React.createClass({
 	render: function() {
 		var banks = this.props.unit.banks;
 		var lab = "Config Multibank Unit"
-	    var titlediv = (<span  ><h2 style={{textAlign:'center'}} ><div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>
-)
+		var tstl = {display:'inline-block', textAlign:'center'}
+	    var titlediv = (<span><h2 style={{textAlign:'center'}} ><div style={tstl}>{lab}</div></h2></span>)
 	    if (this.state.font == 1){
-	    	titlediv = (<span  ><h2 style={{textAlign:'center', fontSize:30}} ><div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>)
+	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:30}} ><div style={tstl}>{lab}</div></h2></span>)
 	    }else if (this.state.font == 0){
-	    	titlediv = (<span  ><h2 style={{textAlign:'center', fontSize:24}} ><div style={{display:'inline-block', textAlign:'center'}}>{lab}</div></h2></span>)
+	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24}} ><div style={tstl}>{lab}</div></h2></span>)
 	    }
-
-		// body...
 		return(<div className='settingsDiv'>
 				<div className='menuCategory'>
 				{titlediv}
@@ -2305,26 +2113,21 @@ var MBGroupView = React.createClass({
 var MbSetup = React.createClass({
 		getInitialState: function () {
 			return({mode:false})
-			// body...
 		},
 		editMb:function () {
-			// body...
 			console.log(this.props.index)
 			this.props.edit(this.props.index)
 		},
 		remove:function () {
 			this.props.remove(this.props.index)
-			// body...
 		},
 		moveUp: function () {
-			// body...
 			this.props.move(this.props.index,'up')
 		},
 		moveDown: function (){
 			this.props.move(this.props.index,'down')
 		},
 		toggleOptions: function () {
-			// body...
 			this.setState({mode:!this.state.mode})
 		},
 		render:function () {
@@ -2337,7 +2140,6 @@ var MbSetup = React.createClass({
 					<button onClick={this.moveDown}>move down</button>
 					</div>)
 			}
-			// body...
 			return (<div className="sItem" onClick={this.toggleOptions}>
 						<label >Name:{this.props.mb.name}</label>
 						{editRow}
@@ -2359,27 +2161,21 @@ var DetectorView = React.createClass({
 		}
 		minMq.addListener(this.listenToMq);
 		var interceptor = (this.props.det.board_id == 4);
-		//if(vdefByIp[this.props.det.ip])
 		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, 
 		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, peak:0, rej:0, phase:0, interceptor:interceptor}
 	},
 	componentDidMount: function () {
-		// body...
 		var packet = dsp_rpc_paylod_for(19,[556,0,0])
 		var buf =  new Uint8Array(packet)
 		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})
 	},
 	componentWillReceiveProps: function (newProps) {
-		// body...
 		var packet = dsp_rpc_paylod_for(19,[556,0,0])
 		var buf =  new Uint8Array(packet)
 		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})
-
 	},
 	toggleAttention: function () {
-		// body...
 		this.refs.fModal.toggle();
-
 	},
 	onRMsg:function (e,d) {
 		// body...
@@ -2518,7 +2314,6 @@ var DetectorView = React.createClass({
 				}
 			}			
 		}else if(lcd_type==2){
-			//	console.log('on param msg dyn')
 			if(vdefByIp[d.ip]){
 				var Vdef = vdefByIp[d.ip][0]
 				var nVdf = vdefByIp[d.ip][2]
@@ -2553,6 +2348,23 @@ var DetectorView = React.createClass({
 						var xpka = prodRec['ProdPeakX_A']
 						var rpkb = prodRec['ProdPeakR_B']
 						var xpkb = prodRec['ProdPeakX_B']
+						var rej = prodRec['RejCount']
+					
+
+						if(this.state.currentView == 'MainDisplay'){
+							if((this.refs.dm.state.peak !=pka)||(this.refs.dm.state.rpeak != rpka)||(this.refs.dm.state.xpeak != xpka)||(this.refs.dm.state.rej != rej)||(this.refs.dm.state.phase != phaseA)
+								||(this.refs.dm.state.peakb !=pkb)||(this.refs.dm.state.rpeakb != rpkb)||(this.refs.dm.state.xpeakb != xpkb)||(this.refs.dm.state.phaseb != phaseB)){
+								
+								this.refs.dm.setState({peak:pka,peakb:pkb,rpeak:rpka,rpeakb:rpkb,xpeak:xpka,xpeakb:xpkb,rej:rej,phase:phaseA,phaseb:phaseB})
+							}
+						}
+						if(this.refs.lv){
+							this.refs.lv.update(siga,sigb)
+
+  						}
+  						if(this.refs.dg){
+  							this.refs.dg.stream({t:Date.now(),val:siga, valb:sigb})
+  						}
 
 
 					}else{
@@ -2564,8 +2376,6 @@ var DetectorView = React.createClass({
 					var phaseSpeed = prodRec['PhaseFastBit'];
 					var rpeak = prodRec['ProdPeakR']
 					var xpeak = prodRec['ProdPeakX']
-					
-				//	console.log(this.refs)
 					if(this.state.currentView == 'MainDisplay'){
 						if((this.refs.dm.state.peak !=peak)||(this.refs.dm.state.rpeak != rpeak)||(this.refs.dm.state.xpeak != xpeak)||(this.refs.dm.state.rej != rej)||(this.refs.dm.state.phase != phase)){
 						
@@ -2623,7 +2433,6 @@ var DetectorView = React.createClass({
     						prodRec[p] = setting;
     					}
     				}
-					console.log(prodRec);
 				}
    		}
    		
@@ -2641,46 +2450,34 @@ var DetectorView = React.createClass({
 		}
 	},
 	logoClick: function () {
-		// body...
 		this.props.logoClick();
 	},
 	goBack: function () {
-		// body...
 		if(this.state.stack.length > 0){
 			var stack = this.state.stack;
 			var d = stack.pop();
-			
-				setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack, setttings:(d[0] == 'SettingsDisplay') }),100);
+			setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack, setttings:(d[0] == 'SettingsDisplay') }),100);
 			
 		}
 	},
-	clearFaults: function () {
-
-	},
-	maskFault:function (f) {
-		// body...
-		alert('set ' +f +'Mask to 1')
-	},
+	clearFaults: function () {},
+	maskFault:function (f) {},
 	changeView: function (d) {
-		// body...
 		var st = this.state.stack;
 		st.push([this.state.currentView, this.state.data]);
 		this.setState({currentView:d[0], data:d[1]})
 	},
 	settingClick: function (s) {
-		// body...
 		var set = this.state.data.slice(0)
 		set.push(s[0])
 		this.changeView(['SettingsDisplay',set]);
 	},
 	clear: function (param) {
-		// body...
-		var packet = dsp_rpc_paylod_for(param['@rpcs']['clear'][0],param['@rpcs']['clear'][1]) 
+		var packet = dsp_rpc_paylod_for(param['@rpcs']['clear'][0],param['@rpcs']['clear'][1],param['@rpcs']['clear'][2] ) 
 		var buf = new Uint8Array(packet);
 		socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 	},
 	sendPacket: function (n,v) {
-		// body...
 		console.log([n,v])
 		if(typeof n == 'string'){
 			if(n == 'Sens'){
@@ -2769,9 +2566,9 @@ var DetectorView = React.createClass({
 		
 		var SD ="";
 		var MD ="";
-		var dm = <DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm'/>
-		var dg = <DummyGraph ref='dg' canvasId={'dummyCanvas'}/>
-		var ce = <ConcreteElem h={400} w={400} concreteId={'concreteCanvas'}/>
+		var dm = <DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm' int={this.state.interceptor}/>
+		var dg = <DummyGraph ref='dg' canvasId={'dummyCanvas'} int={this.state.interceptor}/>
+		var ce = <ConcreteElem h={400} w={400} concreteId={'concreteCanvas'} int={this.state.interceptor}/>
 	 	var lstyle = {height: 72,marginRight: 20}
 	 	var np = (<NetPollView ref='np' eventCount={15}/>)
 		if(!this.state.minW){
@@ -2796,7 +2593,7 @@ var DetectorView = React.createClass({
 						<tbody>
 							<tr>
 								{lbut}
-								<td className='mobCell'><MobLiveBar ref='lv'/></td>
+								<td className='mobCell'><MobLiveBar ref='lv' int={this.state.interceptor}/></td>
 								{abut}
 								{cbut}
 						</tr>
@@ -2812,7 +2609,7 @@ var DetectorView = React.createClass({
 						</tr>
 						</tbody>
 					</table>
-					<MobLiveBar ref='lv'/>
+					<MobLiveBar ref='lv' int={this.state.interceptor}/>
 					</div>)
 			if(!this.state.settings){
 				MD = (<div><div className='prefInterface' >{dm}</div>
@@ -2874,7 +2671,7 @@ var DetMainInfo = React.createClass({
 			pVdef = res[1];
 		} 
 		
-		return({rpeak:0,xpeak:0, peak:0,phase:0, rej:0, sysRec:{},prodRec:{}, tmp:'', prodList:[], phaseFast:0, pVdef:pVdef})
+		return({rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0, sysRec:{},prodRec:{}, tmp:'', prodList:[], phaseFast:0, phaseFastB:0, pVdef:pVdef})
 	},
 	clearRej: function () {
 		// body...
@@ -2895,7 +2692,20 @@ var DetMainInfo = React.createClass({
 	},
 	clearPeak: function () {
 		// body...
-		var param = this.state.pVdef[2]['Peak']
+		var p = 'Peak'
+		if(this.props.int){
+			p = 'Peak_A'
+		}
+		var param = this.state.pVdef[2][p]
+		this.props.clear(param) 
+	},
+	clearPeakB: function () {
+		// body...
+		var p = 'Peak'
+		if(this.props.int){
+			p = 'Peak_B'
+		}
+		var param = this.state.pVdef[2][p]
 		this.props.clear(param) 
 	},
 	calibrate: function () {
@@ -2909,45 +2719,36 @@ var DetMainInfo = React.createClass({
 		}
 	},
 	showEditor: function () {
-		// body...\
 		this.props.sendPacket('getProdList')
 		this.refs.pedit.toggle()
 	},
 	editSens: function () {
-		// body...
 		this.refs.sensEdit.toggle()
 	},
 	setTest: function () {
-		// body...
 		this.refs.testModal.toggle()
 	},
 	updateTmp:function (e) {
-		// body...
 		e.preventDefault();
 		this.setState({tmp:e.target.value})
 	},
 	submitTmpSns:function () {
-		// body...
 		if(!isNaN(this.state.tmp)){
 			this.props.sendPacket('Sens',this.state.tmp)
 			this.cancel()
 		}
 	},
 	refresh: function () {
-		// body...
 		this.props.sendPacket('refresh')
 	},
 	cancel:function () {
-		// body...
 		this.refs.sensEdit.toggle()
 		this.setState({tmp:''})
 	},
 	cal: function () {
-		// body...
 		this.props.sendPacket('cal')
 	},
 	_handleKeyPress: function (e) {
-		// body...
 		if(e.key === 'Enter'){
 			this.submitTmpSns();
 		}
@@ -2975,11 +2776,22 @@ var DetMainInfo = React.createClass({
 				</tr>		
 			</tbody>
 		</table>)
-		// body...
-
+		if(this.props.int){
+			tab = (<table className='dtmiTab'>
+				<tbody>
+				<tr onClick={this.showEditor}><td>Product</td><td style={tdstyle}>{this.state.prodRec['ProdName']}</td></tr>
+				<tr onClick={this.editSens}><td>Sensitivity</td><td style={tdstyle}>{this.state.prodRec['Sens_A']}</td><td>{this.state.prodRec['Sens_B']}</td></tr>
+				<tr><td>Signal</td><td style={tdstyle} onClick={this.clearPeak}>{this.state.peak}</td><td style={tdstyle} onClick={this.clearPeakB}>{this.state.peakb}</td></tr>
+				<tr><td>Rejects</td><td style={tdstyle} onClick={this.clearRej}>{this.state.rej}</td></tr>
+				<tr><td>Phase</td><td style={tdstyle} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode_A']]}</td>
+				<td>{this.state.phaseb + ' ' + list[this.state.prodRec['PhaseMode_B']]}</td></tr>
+				<tr><td>Test</td><td style={tdstyle}><input type='text'></input> <button onClick={this.setTest}>Test</button></td>
+				</tr>		
+			</tbody>
+				</table>)
+		}
 		var prodList = this.state.prodList.map(function(p){
 			var sel = false
-			//console.log([p,self.state.prodNo])
 			if(p==self.state.sysRec['ProdNo']){
 				sel = true;
 			}
@@ -3005,7 +2817,6 @@ var DetMainInfo = React.createClass({
 })
 var ProductItem = React.createClass({
 	switchProd:function () {
-		// body...
 		this.props.switchProd(this.props.p)
 	},
 	render: function () {
@@ -3036,8 +2847,6 @@ var CalibInterface = React.createClass({
 		this.props.refresh()
 	},
 	onChangePhase: function (e) {
-		// body...
-		//e.preventDefault();
 		this.setState({tmpStr:e.target.value})
 	},
 	clearR: function () {
@@ -3102,7 +2911,6 @@ var TestInterface = React.createClass({
 			return <TestItem metalCounts={test} ind={i+1}/>
 		})  
 		console.log(testConfigs)
-		// body...
 		return(<div className='testInt'>
 			{testConfigs}
 		
@@ -3133,7 +2941,6 @@ var TestItem = React.createClass({
 })
 var DummyGraph = React.createClass({
 	getInitialState: function () {
-		// body...
 		var mqls = [
 			window.matchMedia('(min-width: 300px)'),
 			window.matchMedia('(min-width: 444px)'),
@@ -3158,16 +2965,13 @@ var DummyGraph = React.createClass({
 		}
 	},
 	componentDidMount: function () {
-		// body...
 		this.listenToMq()
 	},
 	renderCanv: function () {
-		// body...
-		return(<CanvasElem canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height}/>)
+		return(<CanvasElem canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int}/>)
 	},
 	stream:function (dat) {
 		this.refs.cv.stream(dat)
-		// body...
 	},
 	render: function () {
 		var cv = this.renderCanv()
@@ -3189,7 +2993,6 @@ var TreeNode = React.createClass({
 		this.setState({hidden:hidden});
 	},
 	render: function(){
-		//console.log("render")
 		var cName = "collapsed"
 		if(!this.state.hidden){
 			cName = "expanded"
@@ -3268,33 +3071,24 @@ var ConcreteElem = React.createClass({
 		});
 		concreteContainer.addEventListener('mousemove', function(e){
 			 var boundingRect = concreteContainer.getBoundingClientRect();
-			// if(wrapper.getIntersection(e.clientX - boundingRect.left, e.clientY - boundingRect.top)){
 			 	var x = e.clientX - boundingRect.left
 			 	var y = e.clientY - boundingRect.top
 			 	if((x>0&&x<400)&&(y>0&&y<400)){
 			 		console.log('move');
 			 	}
-			 	
-			 //}
-			
 		});
 		concreteContainer.addEventListener('mouseup', function(e){
 			 var boundingRect = concreteContainer.getBoundingClientRect();
-			// if(wrapper.getIntersection(e.clientX - boundingRect.left, e.clientY - boundingRect.top)){
 			 	var x = e.clientX - boundingRect.left
 			 	var y = e.clientY - boundingRect.top
 			 	if((x>0&&x<400)&&(y>0&&y<400)){
 			 		console.log([x,y]);
 			 	}
-			 	
-			 //}
-			
 		});
 		wrapper.add(this.state.axisLayer)
 		wrapper.add(this.state.gridLayer)
 		var plotLayers = this.state.plotLayers;
 		for(var i = 0; i<5;i++){
-			//plotLayers[i] = new Concrete.Layer();
 			wrapper.add(plotLayers[i])
 		}
 		var self = this;
@@ -3303,7 +3097,6 @@ var ConcreteElem = React.createClass({
 		})
 		this.setState({wrapper:wrapper});
 		this.drawAxis()
-
 	},
 	getSampleStream: function(){
 		this.onSwitchPack();
@@ -3324,24 +3117,14 @@ var ConcreteElem = React.createClass({
 		var minR = this.state.axis.r[0]
 		var maxR = this.state.axis.r[1]
 		var redraw = this.state.redraw;
-		if(xr.x>maxX){
-			maxX=xr.x;
-			minX= 0-xr.x
+		if(Math.abs(xr.x)>maxX){
+			maxX=Math.abs(xr.x);
+			minX= 0-maxX
 			redraw = true
 		}
-		if(xr.x<minX){
-			minX=xr.x
-			maxX= 0-xr.x
-			redraw = true
-		}
-		if(xr.r>maxR){
-			maxR=xr.r
-			minR = 0-xr.r
-			redraw = true
-		}
-		if(xr.r<minR){
-			minR=xr.r
-			maxR = 0-xr.r
+		if(Math.abs(xr.r)>maxR){
+			maxR=Math.abs(xr.r)
+			minR = 0-maxR
 			redraw = true
 		}
 		var Xscale = (maxX-minX)/this.props.w;
@@ -3350,14 +3133,11 @@ var ConcreteElem = React.createClass({
 		this.drawPacksSim();
 	},
 	drawPacks: function(){
-		//var canv = document.getElementById(this.props.canvasId)
-		var ctx = this.state.plotLayers[this.state.curPack].sceneCanvas.context;//canv.getContext('2d')
+		var ctx = this.state.plotLayers[this.state.curPack].sceneCanvas.context;
 		var strokeStyles = ['#FF0000', '#d8bab3', '#aa938d', '#7a6965', '493f3d']
-		//var strokeStyles = ['#000000', '#8B8B8B','#FF0000','#00FF00','#0000FF']
 		var alpha = [1.0,0.8,0.7,0.6,0.5,0.4]
 		var lW = [2,1,1,1,1]	
 		if(this.state.redraw){
-			//this.state.plotLayers[this.state.curPack].sceneCanvas.clear();
 			for(var ind= this.state.curPack+1; ind < this.state.curPack+6;ind++){
 				var line = this.state.packs[ind%5]
 				this.state.plotLayers[ind%5].sceneCanvas.clear();
@@ -3385,9 +3165,7 @@ var ConcreteElem = React.createClass({
 			var line = this.state.packs[this.state.curPack]
 				var count = line.length
 				ctx.beginPath();
-			//var strokeStyles = ['#000000','#FF0000','#00FF00','#0000FF']
-			//ctx.strokeStyle = 'black';//strokeStyles[this.state.curStyle]
-			if(count>1){
+				if(count>1){
 				var start = line[count-2];
 				var i = count - 1;
 				ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
@@ -3400,7 +3178,6 @@ var ConcreteElem = React.createClass({
 	},
 	clear: function(){
 		this.state.plotLayers.forEach(function(p) {
-			// body...
 			p.sceneCanvas.clear();
 		})
 		var x = this.props.w/2
@@ -3414,7 +3191,6 @@ var ConcreteElem = React.createClass({
 		var alpha = [1.0,0.8,0.7,0.6,0.5,0.4]
 		var lW = [2,1,1,1,1]
 		var count = this.state.packs[this.state.curPack].length
-		//this.state.plotLayers[this.state.curPack].moveToTop();
 		var curPack = this.state.curPack
 		if(this.state.redraw){
 			this.state.plotLayers.forEach(function(l,j){
@@ -3426,7 +3202,6 @@ var ConcreteElem = React.createClass({
 				
 				var p = self.state.packs[j]
 				if(p.length >0){
-					//l.sceneCanvas.context.beginPath();
 					l.sceneCanvas.context.moveTo((p[0].x-self.state.axis.x[0])/self.state.Xscale,(0-p[0].r +self.state.axis.r[1])/self.state.Rscale);
 				}
 				
@@ -3456,8 +3231,7 @@ var ConcreteElem = React.createClass({
 	},
 
 	drawAxis: function(){
-		//var canv = document.getElementById(this.props.canvasId)
-		var ctx = this.state.axisLayer.sceneCanvas.context//canv.getContext('2d')
+		var ctx = this.state.axisLayer.sceneCanvas.context
 			ctx.beginPath();
 			ctx.strokeStyle = 'black'
 			ctx.lineWidth = 3;
@@ -3492,10 +3266,10 @@ var ConcreteElem = React.createClass({
 		//console.log(xcnt)
 		ctx.beginPath()
 		for(var i=0;i<xcnt;i++){
-			ctx.moveTo(((-100)*(i+1)*xfactor - this.state.axis.x[0])/this.state.Xscale, (this.state.axis.r[1])/this.state.Rscale - 5)
-			ctx.lineTo(((-100)*(i+1)*xfactor - this.state.axis.x[0])/this.state.Xscale, (this.state.axis.r[1])/this.state.Rscale + 5)
-			ctx.moveTo(((100)*(i+1)*xfactor - this.state.axis.x[0])/this.state.Xscale, (this.state.axis.r[1])/this.state.Rscale - 5)
-			ctx.lineTo(((100)*(i+1)*xfactor - this.state.axis.x[0])/this.state.Xscale, (this.state.axis.r[1])/this.state.Rscale + 5)
+			ctx.moveTo(((-100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale - 5)
+			ctx.lineTo(((-100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale + 5)
+			ctx.moveTo(((100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale - 5)
+			ctx.lineTo(((100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale + 5)
 		}
 		for(var j = 0; j<ycnt;j++){
 			ctx.moveTo(xlim/this.state.Xscale - 5,((-100)*(j+1)*rfactor + rlim)/this.state.Rscale)
@@ -3504,7 +3278,6 @@ var ConcreteElem = React.createClass({
 			ctx.lineTo(xlim/this.state.Xscale + 5,((100)*(j+1)*rfactor + rlim)/this.state.Rscale)
 		}
 		ctx.stroke();
-		//ctx.moveTo((-100 - this.state.axis.x[0])/this.state.Xscale, (this.state.axis.r[1])/this.state.Rscale - 5)
 	},
 	render:function(){
 		return(<div className='prefInterface'>
