@@ -1,3 +1,8 @@
+var React = require('react');
+var SmoothieChart = require('./smoothie.js').SmoothieChart;
+var TimeSeries = require('./smoothie.js').TimeSeries;
+//var Concrete = require('./concrete.min.js').Concrete
+
 var Panel = React.createClass({
 	handleItemclick: function(dat){
 		this.props.onHandleClick(dat);
@@ -785,3 +790,7 @@ var ConcreteElem = React.createClass({
 		
 	},
 */
+
+module.exports = {}
+module.exports.ConcreteElem =  ConcreteElem;
+module.exports.CanvasElem = CanvasElem;

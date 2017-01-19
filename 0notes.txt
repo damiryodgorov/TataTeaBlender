@@ -19,3 +19,9 @@ bug fixed with reading parameters split over different words
 --161229
 
 refactoring 
+
+--170119
+
+Added keyboard support for touchscreen
+now using webpack, so to run this project, you should do 'npm install', 'webpack -p', 'npm start'
+

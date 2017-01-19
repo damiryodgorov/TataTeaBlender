@@ -1,6 +1,17 @@
-'use strict'
-import React from 'react'
-import ReactDOM from 'react-dom'
+var React = require('react');
+var ReactDOM = require('react-dom')
+var ConcreteElem = require('./components.jsx').ConcreteElem;
+var CanvasElem = require('./components.jsx').CanvasElem;
+import TextField from 'material-ui/TextField';
+import Keyboard from 'react-material-ui-keyboard';
+import { extendedKeyboard, alphaNumericKeyboard } from 'react-material-ui-keyboard/layouts';
+//import { alphaNumericKeyboard} from
+var injectTapEventPlugin = require('react-tap-event-plugin')
+//import * as injectTapEventPlugin from 'react-tap-event-plugin';
+
+//import Keyboard from './Keyboard.js'
+//var Keyboard = require('./Keyboard.js');
+//var Smoothie = require('./smoothie.js');
 
 
 
@@ -379,7 +390,12 @@ var LandingPage = React.createClass({
 		e.preventDefault();
 		if(this.state.mbunits)
 		var MB = this.state.tmpMB
-		MB.name = e.target.value;
+		if(typeof e == 'string'){
+			MB.name = e
+		}else{
+			MB.name = e.target.value;
+		
+		}
 		this.setState({tmpMB:MB})
 	},
 	renderMBGroup: function (mode) {
@@ -402,7 +418,7 @@ var LandingPage = React.createClass({
 			var banks = MB.banks.map(function (b,i) {
 					return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)	
 			})
-			var	nameEdit = (<input onChange={this.changetMBName} type='text' value={MB.name}/>)
+			var	nameEdit = (<KeyboardInput onChange={this.changetMBName} tid='mbtname' value={MB.name}/>)
 			return (<div><label>Name:</label>{nameEdit}
 					<table><tbody><tr>
 					<th>Available Detectors</th><th>Banks</th>
@@ -539,6 +555,7 @@ var AccountControlView = React.createClass({
 				<tr><td>User</td><td><input type='text' onChange={this.userNameChange} value={this.state.newuser}/></td></tr>
 				<tr><td>Password</td><td><input type='text' onChange={this.passwordChange} value={this.state.password}/></td></tr>
 				<tr><td>level</td><td><input type='text' onChange={this.levelChange} value={this.state.level}/></td></tr>
+				<tr><td>test</td><td><KeyboardInput tid="test" value=''/></td></tr>
 				</tbody></table>
 				<button onClick={this.addNew}>Add User</button>
 			</div>
@@ -556,6 +573,79 @@ var AccountControlView = React.createClass({
 					</table>
 					{cont}
 			</div>)	
+	}
+})
+var KeyboardInput = React.createClass({
+	getInitialState: function(){
+		var value = ""
+		 if(typeof this.props.value != 'undefined'){
+		 	value = this.props.value.toString()
+		 }
+		return {textarea:value, open:false}
+	},
+	componentWillReceiveProps: function(newProps){
+		if(newProps.value){
+			this.setState( {textarea:newProps.value.toString()})
+		}
+		
+	},
+	onTextareaChanged: function(e,v){
+		console.log('onTextareaChanged')
+		this.setState({textarea:v})
+		if(this.props.onInput){
+			this.props.onInput(v)
+		}
+		if(this.props.onChange){
+			this.props.onChange(e)
+		}
+		
+	},
+	onInput: function(e){
+		console.log('onInput')
+		this.setState({textarea:e})
+		if(this.props.onInput){
+			this.props.onInput(e)
+		}
+		if(this.props.onChange){
+			this.props.onChange(e)
+		}
+		
+	},
+	onFocus: function(e){
+		this.setState({open:true})
+	},
+	onRequestClose:function(e){
+		this.setState({open:false})
+	},
+	render:function () {
+		//console.log($('#keyboardinput'))
+		/*<Keyboard value={this.state.textarea} name='thetextareaname'
+			 options={{type:'textarea',layout:'qwerty', autoAccept: true, alwaysOpen: false, appendLocally: true, color:'light', class:'sxcycx', updateOnChange: true }} onChange={this.onTextareaChanged} /> 
+*/
+		// body...
+		var style =  this.props.Style || {width:'100%'} 
+		var textfield = ( <TextField
+          	style = {style}
+            id={this.props.tid}
+            value={this.state.textarea}
+            onChange={this.onTextareaChanged}
+            onFocus={this.onFocus}
+          />)
+		if(ftiTouch){
+			console.log(ftiTouch)
+
+		return (
+			<div>
+			      <Keyboard textField={textfield} open={this.state.open} onRequestClose={this.onRequestClose} onInput={this.onInput} layouts={[alphaNumericKeyboard]}/>
+			    </div>)
+			}else{
+				console.log(ftiTouch)
+				return(
+			<div>
+			      <Keyboard textField={textfield} open={false} onInput={this.onInput} layouts={[alphaNumericKeyboard]}/>
+			    </div>)
+			}
+    
 	}
 })
 var UserObj = React.createClass({
@@ -578,10 +668,25 @@ var LogInControl = React.createClass({
 		})
 	},
 	userNameChange: function(e){
-		this.setState({userName:e.target.value})
+		console.log(e)
+		if(typeof e == 'string'){
+
+			this.setState({userName:e})
+		}else if(e.target){
+			if(e.target.value){
+				this.setState({userName:e.target.value})
+			}
+		}
 	},
 	passwordChange: function(e){
-		this.setState({password:e.target.value})
+		if(typeof e == 'string'){
+
+			this.setState({password:e})
+		}else if(e.target){
+			if(e.target.value){
+				this.setState({password:e.target.value})
+			}
+		}
 	},
 	loginSubmit: function(){
 		socket.emit('login',{id:this.state.userName, pw:this.state.password})
@@ -600,8 +705,8 @@ var LogInControl = React.createClass({
 		return (<div>
 			<table>
 				<tbody>
-					<tr><td>Username:</td><td><input onChange={this.userNameChange} type='text' value={this.state.userName}/></td></tr>
-					<tr><td>Password:</td><td><input onChange={this.passwordChange} type='text' value={this.state.password}/></td></tr>
+					<tr><td>Username:</td><td><KeyboardInput onChange={this.userNameChange} tid='username' value={this.state.userName}/></td></tr>
+					<tr><td>Password:</td><td><KeyboardInput onChange={this.passwordChange} tid='password' value={this.state.password}/></td></tr>
 				</tbody>
 			</table>
 			<label style={{color:'red'}}>{this.state.alert}</label>
@@ -652,25 +757,6 @@ var TickerBox = React.createClass({
 	}
 });
 
-
-var CanvasElem = React.createClass({
-	componentDidMount: function(){
-		var smoothie = new SmoothieChart({millisPerPixel:50,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2});
-		smoothie.streamTo(document.getElementById(this.props.canvasId));
-		var line1 = new TimeSeries();
-		socket.on('graph', function(dat){
-			line1.append(dat.t, dat.val);
-		});
-		smoothie.addTimeSeries(smLine);
-	},
-	render: function(){
-		return(
-			<div className="canvElem">
-				<canvas id={this.props.canvasId} height={200} width={300}></canvas>
-			</div>
-		);
-	}
-});
 var LEDBar = React.createClass({
 	getInitialState: function(){
 		return ({pled:0, dled:0})
@@ -1181,19 +1267,59 @@ var EditControl = React.createClass({
 	},
 	sendPacket: function(){
 		this.props.sendPacket(this.props.param[0], this.state.val[0])
-		this.props.sendPacket(this.props.param[1], this.state.val[1])
+		if(this.props.int){
+			setTimeout(function () {
+				// body...
+				this.props.sendPacket(this.props.param[1], this.state.val[1])
+			},100)
+			
+		}
 		this.setState({mode:0})
 	},
 	valChanged: function(e){
-		var val = e.target.value;
+		
+		var val = e//e.target.value;
 		if(this.props.bitLen == 16){
-			val = VdefHelper.swap16(val)
-		}
-		if(this.props.label){
-			this.props.sendPacket(this.props.param[0], parseInt(val));
+			val = VdefHelper.swap16(parseInt(val))
 		}
 		var value = this.state.val;
+		value[0] = e
+		console.log(this.props.data)
+		this.setState({val:value})
+	},
+	valChangedl: function(e){
+		
+		var val = e.target.value//e.target.value;
+		if(this.props.bitLen == 16){
+			val = VdefHelper.swap16(parseInt(val))
+		}
+			//console.log(val)
+			this.props.sendPacket(this.props.param[0], parseInt(val));
+		var value = this.state.val;
 		value[0] = e.target.value
+		console.log(this.props.data)
+		this.setState({val:value})
+	},
+	valChangedb: function(e){
+		console.log(e)
+		var val = e;
+		if(this.props.bitLen == 16){
+			val = VdefHelper.swap16(parseInt(val))
+		}
+		var value = this.state.val;
+		value[1] = e
+		console.log(this.props.data)
+		this.setState({val:value})
+	},
+	valChangedlb: function(e){
+	//	console.log(e)
+		var val = e.target.value;
+		if(this.props.bitLen == 16){
+			val = VdefHelper.swap16(parseInt(val))
+		}
+			this.props.sendPacket(this.props.param[1], parseInt(val));
+		var value = this.state.val;
+		value[1] = e.target.value
 		console.log(this.props.data)
 		this.setState({val:value})
 	},
@@ -1269,27 +1395,47 @@ var EditControl = React.createClass({
 			}else{
 				if(this.props.label){
 					var selected = this.state.val[0];
+					var selectedb = this.state.val[1];
 					console.log(selected)
 					
-					var options = _pVdef[5][this.props.param[0]["@labels"]]['english'].map(function(e,i){
+					var optionsA = _pVdef[5][this.props.param[0]["@labels"]]['english'].map(function(e,i){
 						if(i==selected){
 							return (<option value={i} selected>{e}</option>)
 						}else{
 							return (<option value={i}>{e}</option>)
 						}
 					})
-					return(<form className='editControl' onSubmit={this.onSubmit}>
-							<div onClick={this.changeMode}><label style={this.props.lvst}>{namestring + ': '}</label><label style={this.props.vst}>{valA}</label><label style={this.props.vst}>{valB}</label></div>
-							<div className='customSelect'>
-							<select onChange={this.valChanged}>
-							{options}
+					var optionsB = _pVdef[5][this.props.param[0]["@labels"]]['english'].map(function(e,i){
+						if(i==selectedb){
+							return (<option value={i} selected>{e}</option>)
+						}else{
+							return (<option value={i}>{e}</option>)
+						}
+					})
+					return(
+							<div>
+							<div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label><label style={this.props.vst}>{valA}</label><label style={this.props.vst}>{valB}</label></div>
+							<div className='customSelect' style={{marginLeft:250, width:150}}>
+							<select onChange={this.valChangedl}>
+							{optionsA}
 							</select>
 							</div>
-							</form>)
+							<div className='customSelect'>
+							<select onChange={this.valChangedlb}>
+							{optionsB}
+							</select>
+
+							</div>
+							</div>)
 
 				}else{
+				 ////	
+			var inputA =  (<KeyboardInput tid={namestring+'_kia'} onInput={this.valChanged} value={this.state.val[0]} onKeyPress={this._handleKeyPress} Style={{width:150}}/>) 
+			var inputB =  (<KeyboardInput tid={namestring+'_kib'} onInput={this.valChangedb} value={this.state.val[1]} onKeyPress={this._handleKeyPress} Style={{width:150}}/>) 
+			
+			  //	<input width={10} onKeyPress={this._handleKeyPress} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val[0].toString()}/>
 					return (<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{this.props.data[0]}</label><label style={this.props.vst}>{this.props.data[1]}</label></div>
-						<div style={{display:'inline-block',width:200,marginRight:10}}><input width={10} onKeyPress={this._handleKeyPress} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val[0]}></input></div>
+						<div style={{marginLeft:250,display:'inline-block',width:150,marginRight:10}}>{inputA}</div><div style={{display:'inline-block',width:150,marginRight:10}}>{inputB}</div>
 						<label style={{fontSize:16,marginLeft:20, border:'1px solid grey',padding:2, paddingLeft:5,paddingRight:5, background:'#e6e6e6',borderRadius:10}} onClick={this.sendPacket}>Submit</label></div>)	
 			}
 		}
@@ -1315,18 +1461,23 @@ var EditControl = React.createClass({
 							return (<option value={i}>{e}</option>)
 						}
 					})
-					return(<form className='editControl' onSubmit={this.onSubmitA}>
-							<div onClick={this.changeMode}><label style={this.props.lvst}>{namestring + ': '}</label><label style={this.props.vst}> {dval}</label></div>
-							<div className='customSelect'>
-							<select onChange={this.valChanged}>
+					return(
+						<div>
+						<div onClick={this.switchMode}>
+							<label style={this.props.lvst}>{namestring + ': '}</label><label style={this.props.vst}> {dval}</label>
+							</div>
+							<div style={{marginLeft:250}} className='customSelect'>
+							<select onChange={this.valChangedl}>
 							{options}
 							</select>
 							</div>
-							</form>)
+							</div>)
 
 				}else{
+					/*<input width={10} onKeyPress={this._handleKeyPress} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val[0]}></input>*/
+					var input = (<KeyboardInput tid={namestring+'_ki'} onInput={this.valChanged} value={this.state.val[0].toString()} onKeyPress={this._handleKeyPress} Style={{width:150}}/>)//
 					return (<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{dval}</label></div>
-						<div style={{display:'inline-block',width:200,marginRight:10}}><input width={10} onKeyPress={this._handleKeyPress} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val[0]}></input></div>
+						<div style={{marginLeft:250, display:'inline-block',width:200,marginRight:10}}>{input}</div>
 						<label style={{fontSize:16,marginLeft:20, border:'1px solid grey',padding:2, paddingLeft:5,paddingRight:5, background:'#e6e6e6',borderRadius:10}} onClick={this.sendPacket}>Submit</label></div>)	
 			}
 		}
@@ -2718,7 +2869,12 @@ var DetMainInfo = React.createClass({
 	},
 	updateTmp:function (e) {
 		e.preventDefault();
-		this.setState({tmp:e.target.value})
+		if(typeof e == 'string'){
+			this.setState({tmp:e})
+		}else{
+			this.setState({tmp:e.target.value})	
+		}
+		
 	},
 	submitTmpSns:function () {
 		if(!isNaN(this.state.tmp)){
@@ -2792,7 +2948,7 @@ var DetMainInfo = React.createClass({
 							{prodList}
 						</Modal>
 						<Modal ref='sensEdit'>
-							<div>Sensitivity: <input type='text' onKeyPress={this._handleKeyPress} onChange={this.updateTmp} value={this.state.tmp}></input><button onClick={this.submitTmpSns}>OK</button><button onClick={this.cancel}>Cancel</button></div>
+							<div>Sensitivity: <KeyboardInput tid='sens' onKeyPress={this._handleKeyPress} onChange={this.updateTmp} value={this.state.tmp}></KeyboardInput><button onClick={this.submitTmpSns}>OK</button><button onClick={this.cancel}>Cancel</button></div>
 						</Modal>
 						<Modal ref='testModal'>
 							<TestInterface prodRec={this.state.prodRec}/>
@@ -2998,292 +3154,7 @@ var TreeNode = React.createClass({
 		)
 	}
 })
-function yRangeFunc(range){
-	var max = 200;
-	if(Math.abs(range.max) > max){
-		max = Math.abs(range.max)
-	}
-	if(Math.abs(range.min) > max){
-		max = Math.abs(range.min)
-	}
-	return({min:(0-max),max:max});
-}
 
-var CanvasElem = React.createClass({
-	getInitialState: function () {
-		var l1 = new TimeSeries();
-		var l2 = new TimeSeries();
-		return ({line:l1, line_b:l2})
-	},
-	componentDidMount: function(){
-		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
-		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#000000'}, grid:{fillStyle:'#ffffff'}, yRangeFunction:yRangeFunc});
-		smoothie.streamTo(document.getElementById(this.props.canvasId));
-		smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#000000'});
-		if(this.props.int){
-			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'#FF0000'});
-		
-		}
-	},
-	stream:function (dat) {
-		this.state.line.append(dat.t, dat.val);
-		if(this.props.int){
-			this.state.line_b.append(dat.t, dat.valb)
-		}
-	},
-	render: function(){
-		return(
-			<div className="canvElem">
-				<canvas id={this.props.canvasId} height={this.props.h} width={this.props.w}></canvas>
-			</div>
-		);
-	}
-});
-var ConcreteElem = React.createClass({
-	getInitialState: function(){
-		var axisLayer = new Concrete.Layer();
-		var gridLayer = new Concrete.Layer();
-		var plotLayers = [];
-		for(var i = 0; i<5;i++){
-			plotLayers[i] = new Concrete.Layer();
-		}
-
-		var x = this.props.w/2
-		var y = this.props.h/2
-		return({wrapper:null,gridLayer:gridLayer, plotLayers:plotLayers, axisLayer:axisLayer, axis:{x:[(0-x),x], r:[(0-y),y]}, Xscale:1, Rscale:1, packs:[[],[],[],[],[]], curPack:0, redraw:true})
-	},
-	componentDidMount: function(){
-		var concreteContainer = document.getElementById(this.props.concreteId);
-
-		var wrapper = new Concrete.Wrapper({width:this.props.w, height:this.props.h, container:concreteContainer})
-		concreteContainer.addEventListener('mousedown', function(e){
-			 var boundingRect = concreteContainer.getBoundingClientRect();
-			 	var x = e.clientX - boundingRect.left
-			 	var y = e.clientY - boundingRect.top
-			 	if((x>0&&x<400)&&(y>0&&y<400)){
-			 		console.log([x,y]);
-			}			
-		});
-		concreteContainer.addEventListener('mousemove', function(e){
-			 var boundingRect = concreteContainer.getBoundingClientRect();
-			 	var x = e.clientX - boundingRect.left
-			 	var y = e.clientY - boundingRect.top
-			 	if((x>0&&x<400)&&(y>0&&y<400)){
-			 		console.log('move');
-			 	}
-		});
-		concreteContainer.addEventListener('mouseup', function(e){
-			 var boundingRect = concreteContainer.getBoundingClientRect();
-			 	var x = e.clientX - boundingRect.left
-			 	var y = e.clientY - boundingRect.top
-			 	if((x>0&&x<400)&&(y>0&&y<400)){
-			 		console.log([x,y]);
-			 	}
-		});
-		wrapper.add(this.state.axisLayer)
-		wrapper.add(this.state.gridLayer)
-		var plotLayers = this.state.plotLayers;
-		for(var i = 0; i<5;i++){
-			wrapper.add(plotLayers[i])
-		}
-		var self = this;
-		socket.on('testXR', function(xr){
-			self.parseXR(xr)
-		})
-		this.setState({wrapper:wrapper});
-		this.drawAxis()
-	},
-	getSampleStream: function(){
-		this.onSwitchPack();
-		socket.emit('initTestStream')
-	},
-	onSwitchPack: function(){
-		var nextPack = (this.state.curPack+ 1)%5
-		var packs = this.state.packs;
-		packs[nextPack] = []
-		this.setState({curPack:nextPack,packs:packs, redraw:true})
-
-	},
-	parseXR: function(xr){
-		var packs = this.state.packs
-		packs[this.state.curPack].push(xr)
-		var minX = this.state.axis.x[0]
-		var maxX = this.state.axis.x[1]
-		var minR = this.state.axis.r[0]
-		var maxR = this.state.axis.r[1]
-		var redraw = this.state.redraw;
-		if(Math.abs(xr.x)>maxX){
-			maxX=Math.abs(xr.x);
-			minX= 0-maxX
-			redraw = true
-		}
-		if(Math.abs(xr.r)>maxR){
-			maxR=Math.abs(xr.r)
-			minR = 0-maxR
-			redraw = true
-		}
-		var Xscale = (maxX-minX)/this.props.w;
-		var Rscale = (maxR-minR)/this.props.h;
-		this.setState({ axis:{x:[minX,maxX],r:[minR,maxR]},Xscale:Xscale,Rscale:Rscale, redraw:redraw, packs:packs})
-		this.drawPacksSim();
-	},
-	drawPacks: function(){
-		var ctx = this.state.plotLayers[this.state.curPack].sceneCanvas.context;
-		var strokeStyles = ['#FF0000', '#d8bab3', '#aa938d', '#7a6965', '493f3d']
-		var alpha = [1.0,0.8,0.7,0.6,0.5,0.4]
-		var lW = [2,1,1,1,1]	
-		if(this.state.redraw){
-			for(var ind= this.state.curPack+1; ind < this.state.curPack+6;ind++){
-				var line = this.state.packs[ind%5]
-				this.state.plotLayers[ind%5].sceneCanvas.clear();
-				if(line.length > 0){
-					var start = line[0];
-					ctx = this.state.plotLayers[ind%5].sceneCanvas.context;//canv.getContext('2d')
-		
-					ctx.beginPath();
-					ctx.strokeStyle = strokeStyles[(ind-this.state.curPack)%5]
-					ctx.globalAlpha = alpha[(ind-this.state.curPack)%5]
-					ctx.lineWidth = lW[(ind-this.state.curPack)%5]
-					ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
-					
-					for(var i = 1; i<line.length; i++){
-					
-						ctx.lineTo((line[i].x - this.state.axis.x[0])/this.state.Xscale, (0-line[i].r+this.state.axis.r[1])/this.state.Rscale)
-						start = line[i]
-					}
-					ctx.stroke();
-					this.setState({redraw:false})
-				}
-			}
-					
-		}else{
-			var line = this.state.packs[this.state.curPack]
-				var count = line.length
-				ctx.beginPath();
-				if(count>1){
-				var start = line[count-2];
-				var i = count - 1;
-				ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
-			
-				ctx.lineTo((line[count-1].x - this.state.axis.x[0])/this.state.Xscale, (0-line[count-1].r+this.state.axis.r[1])/this.state.Rscale)
-				
-			}
-			ctx.stroke();
-		}
-	},
-	clear: function(){
-		this.state.plotLayers.forEach(function(p) {
-			p.sceneCanvas.clear();
-		})
-		var x = this.props.w/2
-		var y = this.props.h/2
-		this.setState({axis:{x:[(0-x),x], r:[(0-y),y]}, Xscale:1, Rscale:1, packs:[[],[],[],[],[]], curPack:0, redraw:true})
-		this.toggleGrid();
-	},
-	drawPacksSim: function(){
-		var self = this;
-		var strokeStyles = ['#FF0000', '#d8bab3', '#aa938d', '#7a6965', '493f3d']
-		var alpha = [1.0,0.8,0.7,0.6,0.5,0.4]
-		var lW = [2,1,1,1,1]
-		var count = this.state.packs[this.state.curPack].length
-		var curPack = this.state.curPack
-		if(this.state.redraw){
-			this.state.plotLayers.forEach(function(l,j){
-				l.sceneCanvas.clear();
-				l.sceneCanvas.context.beginPath();
-				l.sceneCanvas.context.strokeStyle = strokeStyles[(j+5 - self.state.curPack)%5]
-				l.sceneCanvas.context.globalAlpha = alpha[(j+5 - self.state.curPack)%5];
-				l.sceneCanvas.context.lineWidth = lW[(j+5 - self.state.curPack)%5];
-				
-				var p = self.state.packs[j]
-				if(p.length >0){
-					l.sceneCanvas.context.moveTo((p[0].x-self.state.axis.x[0])/self.state.Xscale,(0-p[0].r +self.state.axis.r[1])/self.state.Rscale);
-				}
-				
-			})
-			for(var i=1;i<count; i++){
-				for(var j=curPack; j<curPack+5;j++){
-					if(i<this.state.packs[j%5].length){
-						var pt = this.state.packs[j%5][i]
-						this.state.plotLayers[j%5].sceneCanvas.context.lineTo((pt.x-self.state.axis.x[0])/self.state.Xscale,(0-pt.r + self.state.axis.r[1])/self.state.Rscale);
-					}
-					
-				}
-			}
-			this.state.plotLayers.forEach(function(l){
-				l.sceneCanvas.context.stroke();
-			})
-			this.toggleGrid();
-		}else{
-			for(var j=curPack; j<curPack+5;j++){
-				if(count-1<this.state.packs[j%5].length){
-					var pt = this.state.packs[j%5][count-1]
-					this.state.plotLayers[j%5].sceneCanvas.context.lineTo((pt.x-self.state.axis.x[0])/self.state.Xscale,(0-pt.r + self.state.axis.r[1])/self.state.Rscale);
-					this.state.plotLayers[j%5].sceneCanvas.context.stroke();
-				}				
-			}
-		}
-	},
-
-	drawAxis: function(){
-		var ctx = this.state.axisLayer.sceneCanvas.context
-			ctx.beginPath();
-			ctx.strokeStyle = 'black'
-			ctx.lineWidth = 3;
-			ctx.moveTo((0-this.state.axis.x[0])/this.state.Xscale,0);
-		ctx.lineTo((0-this.state.axis.x[0])/this.state.Xscale,this.props.h)
-		//ctx.stroke();
-		ctx.moveTo(0,(this.state.axis.r[1])/this.state.Rscale);
-		ctx.lineTo(this.props.w,(this.state.axis.r[1])/this.state.Rscale)
-		ctx.stroke();
-		this.toggleGrid();
-	},
-	toggleGrid:function(){
-		var ctx = this.state.gridLayer.sceneCanvas.context
-		var hctx = this.state.gridLayer.hitCanvas.context;
-		hctx.fillRect(0,0,400,400)
-		this.state.gridLayer.sceneCanvas.clear();
-		var xlim = this.state.axis.x[1];
-		var rlim = this.state.axis.r[1];
-		var xcnt = Math.floor(xlim/100)
-		var xfactor = 1
-		var rfactor = 1
-		while(xcnt > 10){
-			xcnt = Math.floor(xcnt/2)
-			xfactor = xfactor*2
-		}
-
-		var ycnt = Math.floor(rlim/100)
-		while(ycnt >10){
-			ycnt = Math.floor(ycnt/2);
-			rfactor = rfactor*2
-		}
-		ctx.beginPath()
-		for(var i=0;i<xcnt;i++){
-			ctx.moveTo(((-100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale - 5)
-			ctx.lineTo(((-100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale + 5)
-			ctx.moveTo(((100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale - 5)
-			ctx.lineTo(((100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale + 5)
-		}
-		for(var j = 0; j<ycnt;j++){
-			ctx.moveTo(xlim/this.state.Xscale - 5,((-100)*(j+1)*rfactor + rlim)/this.state.Rscale)
-			ctx.lineTo(xlim/this.state.Xscale + 5,((-100)*(j+1)*rfactor + rlim)/this.state.Rscale)
-			ctx.moveTo(xlim/this.state.Xscale - 5,((100)*(j+1)*rfactor + rlim)/this.state.Rscale)
-			ctx.lineTo(xlim/this.state.Xscale + 5,((100)*(j+1)*rfactor + rlim)/this.state.Rscale)
-		}
-		ctx.stroke();
-	},
-	render:function(){
-		return(<div className='prefInterface'>
-			<div><label>X Range:[ {this.state.axis.x[0] + ' ~ ' + this.state.axis.x[1]}]</label></div>
-			<div><label>R Range:[ {this.state.axis.r[0] + ' ~ ' + this.state.axis.r[1]}]</label></div>
-		
-				<div id={this.props.concreteId}/>
-				<button onClick={this.getSample}>Get Sample</button>
-			<button onClick={this.getSampleStream}>Get Stream</button>
-			<button onClick={this.clear}>Clear</button>
-			</div>)
-	}
-})
+injectTapEventPlugin();
 ReactDOM.render(<Container/>,document.getElementById('content'))
 
