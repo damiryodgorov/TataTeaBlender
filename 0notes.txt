@@ -25,3 +25,6 @@ refactoring
 Added keyboard support for touchscreen
 now using webpack, so to run this project, you should do 'npm install', 'webpack -p', 'npm start'
 
+--170130
+
+Test support, some size changes

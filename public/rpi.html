@@ -24,7 +24,11 @@
   <body>
     <div id="content"></div>
     <script>
-
+$(function () {
+    $(document).on('focus', 'input[type=text]', function () {
+        this.select();
+    });
+});
 let vdefList ={};
 let vdefByIp = {};
 var _Vdef;

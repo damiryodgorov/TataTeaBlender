@@ -4,7 +4,7 @@ var ConcreteElem = require('./components.jsx').ConcreteElem;
 var CanvasElem = require('./components.jsx').CanvasElem;
 import TextField from 'material-ui/TextField';
 import Keyboard from 'react-material-ui-keyboard';
-import { extendedKeyboard, alphaNumericKeyboard } from 'react-material-ui-keyboard/layouts';
+import { extendedKeyboard, alphaNumericKeyboard,numericKeyboard } from 'react-material-ui-keyboard/layouts';
 //import { alphaNumericKeyboard} from
 var injectTapEventPlugin = require('react-tap-event-plugin')
 //import * as injectTapEventPlugin from 'react-tap-event-plugin';
@@ -584,7 +584,7 @@ var KeyboardInput = React.createClass({
 		return {textarea:value, open:false}
 	},
 	componentWillReceiveProps: function(newProps){
-		if(newProps.value){
+		if(typeof newProps.value != 'undefined'){
 			this.setState( {textarea:newProps.value.toString()})
 		}
 		
@@ -623,6 +623,10 @@ var KeyboardInput = React.createClass({
 			 options={{type:'textarea',layout:'qwerty', autoAccept: true, alwaysOpen: false, appendLocally: true, color:'light', class:'sxcycx', updateOnChange: true }} onChange={this.onTextareaChanged} /> 
 */
 		// body...
+		var layout = [alphaNumericKeyboard];
+		if(this.props.num){
+			layout = [numericKeyboard]
+		}
 		var style =  this.props.Style || {width:'100%'} 
 		var textfield = ( <TextField
           	style = {style}
@@ -636,13 +640,15 @@ var KeyboardInput = React.createClass({
 
 		return (
 			<div>
-			      <Keyboard textField={textfield} open={this.state.open} onRequestClose={this.onRequestClose} onInput={this.onInput} layouts={[alphaNumericKeyboard]}/>
+			      <Keyboard textField={textfield}    keyboardKeyHeight={65}
+                        keyboardKeyWidth={105}
+                        keyboardKeySymbolSize={35}  open={this.state.open} onRequestClose={this.onRequestClose} onInput={this.onInput} layouts={layout}/>
 			    </div>)
 			}else{
 				console.log(ftiTouch)
 				return(
 			<div>
-			      <Keyboard textField={textfield} open={false} onInput={this.onInput} layouts={[alphaNumericKeyboard]}/>
+			      <Keyboard textField={textfield} open={false} onInput={this.onInput} layouts={layout}/>
 			    </div>)
 			}
     
@@ -1363,6 +1369,7 @@ var EditControl = React.createClass({
 	},
 	render: function(){
 		var lab = (<label>{this.state.val}</label>)
+		var num = true;
 		var style = {display:'inline-block',fontSize:20}
 		if(this.state.size == 1){
 			style = {display:'inline-block',fontSize:16}
@@ -1378,6 +1385,9 @@ var EditControl = React.createClass({
 		}
 		if(namestring.indexOf('PHY_')!= -1){
 			namestring = namestring.slice(4)
+		}
+		if((namestring.indexOf('ProductName')!=-1)||((namestring.indexOf('ProductName')!=-1))){
+			num = false
 		}
 		if(this.props.int){
 
@@ -1430,8 +1440,8 @@ var EditControl = React.createClass({
 
 				}else{
 				 ////	
-			var inputA =  (<KeyboardInput tid={namestring+'_kia'} onInput={this.valChanged} value={this.state.val[0]} onKeyPress={this._handleKeyPress} Style={{width:150}}/>) 
-			var inputB =  (<KeyboardInput tid={namestring+'_kib'} onInput={this.valChangedb} value={this.state.val[1]} onKeyPress={this._handleKeyPress} Style={{width:150}}/>) 
+			var inputA =  (<KeyboardInput tid={namestring+'_kia'} onInput={this.valChanged} value={this.state.val[0]} onKeyPress={this._handleKeyPress} num={num} Style={{width:150}}/>) 
+			var inputB =  (<KeyboardInput tid={namestring+'_kib'} onInput={this.valChangedb} value={this.state.val[1]} onKeyPress={this._handleKeyPress} num={num} Style={{width:150}}/>) 
 			
 			  //	<input width={10} onKeyPress={this._handleKeyPress} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val[0].toString()}/>
 					return (<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{this.props.data[0]}</label><label style={this.props.vst}>{this.props.data[1]}</label></div>
@@ -1475,7 +1485,7 @@ var EditControl = React.createClass({
 
 				}else{
 					/*<input width={10} onKeyPress={this._handleKeyPress} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val[0]}></input>*/
-					var input = (<KeyboardInput tid={namestring+'_ki'} onInput={this.valChanged} value={this.state.val[0].toString()} onKeyPress={this._handleKeyPress} Style={{width:150}}/>)//
+					var input = (<KeyboardInput tid={namestring+'_ki'} onInput={this.valChanged} value={this.state.val[0].toString()} num={num} onKeyPress={this._handleKeyPress} Style={{width:150}}/>)//
 					return (<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{dval}</label></div>
 						<div style={{marginLeft:250, display:'inline-block',width:200,marginRight:10}}>{input}</div>
 						<label style={{fontSize:16,marginLeft:20, border:'1px solid grey',padding:2, paddingLeft:5,paddingRight:5, background:'#e6e6e6',borderRadius:10}} onClick={this.sendPacket}>Submit</label></div>)	
@@ -2672,15 +2682,19 @@ var DetectorView = React.createClass({
 				var buf = new Uint8Array(packet);
 			socket.emit('rpc', {ip:this.props.det.ip, data:buf.buffer})
 		
+		}else if(n=='tet'){
+			var packet = dsp_rpc_paylod_for(19,[32,0,0]);
+			var buf = new Uint8Array(packet);
+			socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})	
 		}
 		}else{
-		if(n['@rpc']['toggle']){
+		if(n['@rpcs']['toggle']){
 
-			var arg1 = n['@rpc']['toggle'][0];
+			var arg1 = n['@rpcs']['toggle'][0];
 			var arg2 = [];
-			for(var i = 0; i<n['@rpc']['toggle'][1].length;i++){
-				if(!isNaN(n['@rpc']['toggle'][1][i])){
-					arg2.push(n['@rpc']['toggle'][1][i])
+			for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
+				if(!isNaN(n['@rpcs']['toggle'][1][i])){
+					arg2.push(n['@rpcs']['toggle'][1][i])
 				}else{
 					arg2.push(parseInt(v))
 				}
@@ -2688,6 +2702,51 @@ var DetectorView = React.createClass({
 			var packet = dsp_rpc_paylod_for(arg1, arg2);
 			var buf = new Uint8Array(packet);
 			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+		}else if(n['@rpcs']['write']){
+			var arg1 = n['@rpcs']['write'][0];
+			var arg2 = [];
+			var strArg = null;
+			for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
+				if(!isNaN(n['@rpcs']['write'][1][i])){
+					arg2.push(n['@rpcs']['write'][1][i])
+				}else if(n['@rpcs']['write'][1][i] == n['@name']){
+					if(!isNaN(v)){
+						arg2.push(v)
+					}
+					else{
+						arg2.push(0)
+						strArg=v
+					}
+				}else{
+					var dep = n['@rpcs']['write'][1][i]
+					if(dep.charAt(0) == '%'){
+
+					}
+				}
+			}
+			if(n['@rpcs']['write'][2]){
+				strArg = n['@rpcs']['write'][2]
+			}
+			if(n['@rec'] == 0){
+				var mphaserd = this.state.prodRec['MPhaseRD']
+				if(mphaserd != 30){
+					mphaserd = 30;
+				}else{
+					mphaserd = 31
+				}
+				var pack = dsp_rpc_paylod_for(19,[356,mphaserd,0])
+				var bu = new Uint8Array(pack);
+				setTimeout(function () {
+					// body...
+					socket.emit('rpc', {ip:self.props.dsp, data:bu.buffer})
+				},150)
+			}
+			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+			var buf = new Uint8Array(packet);
+			console.log(buf)
+			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+		
+		
 		}
 		}
 	},
@@ -2929,7 +2988,7 @@ var DetMainInfo = React.createClass({
 				<tr><td>Rejects</td><td style={tdstyle} onClick={this.clearRej}>{this.state.rej}</td></tr>
 				<tr><td>Phase</td><td style={tdstyle} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode_A']]}</td>
 				<td>{this.state.phaseb + ' ' + list[this.state.prodRec['PhaseMode_B']]}</td></tr>
-				<tr><td>Test</td><td style={tdstyle}><input type='text'></input> <button onClick={this.setTest}>Test</button></td>
+				<tr><td>Test</td><td style={tdstyle}><button onClick={this.setTest}>Test</button></td>
 				</tr>		
 			</tbody>
 				</table>)
@@ -2948,10 +3007,11 @@ var DetMainInfo = React.createClass({
 							{prodList}
 						</Modal>
 						<Modal ref='sensEdit'>
-							<div>Sensitivity: <KeyboardInput tid='sens' onKeyPress={this._handleKeyPress} onChange={this.updateTmp} value={this.state.tmp}></KeyboardInput><button onClick={this.submitTmpSns}>OK</button><button onClick={this.cancel}>Cancel</button></div>
+							<div>Sensitivity: <KeyboardInput tid='sens' onKeyPress={this._handleKeyPress} onChange={this.updateTmp} value={this.state.tmp}/>
+							<button onClick={this.submitTmpSns}>OK</button><button onClick={this.cancel}>Cancel</button></div>
 						</Modal>
 						<Modal ref='testModal'>
-							<TestInterface prodRec={this.state.prodRec}/>
+							<TestInterface sendPacket={this.sendPacket} prodRec={this.state.prodRec} pVdef={this.state.pVdef}/>
 						</Modal>
 						<Modal ref='calbModal'>
 							<CalibInterface sendPacket={this.sendPacket} refresh={this.refresh} calib={this.cal} phase={[this.state.phase, this.state.prodRec['PhaseMode'], ps]} peaks={[this.state.rpeak,this.state.xpeak]}ref='ci'/>
@@ -3043,44 +3103,125 @@ var TestInterface = React.createClass({
 		this.setState({prodRec:newProps.prodRec})
 		this.render();
 	},
+	sendPacket: function(e,c){
+		this.props.sendPacket(this.props.pVdef[1][c],e)
+	},
+	sendTest: function(){
+		this.props.sendPacket('test','test')
+	},
+	modeChanged: function(e){
+		this.props.sendPacket(this.props.pVdef[1]['TestMode'],e.target.value)
+
+	},
 	render: function () {
 		var prod = this.state.prodRec;
 		//console.log(prod)
+		var self = this;
 		var testConfigs = _testMap.map(function(_test, i){
 			var test = _test.map(function(conf){
 		//		console.log(conf)
 				return ({count:prod[conf.count], metal:prod[conf.metal]})
 			})	
 			//console.log(test)
-			return <TestItem metalCounts={test} ind={i+1}/>
-		})  
+			return <TestItem sendChange={self.sendPacket} conf={_test} metalCounts={test} ind={i+1} pVdef={self.props.pVdef}/>
+		}) 
+
+		console.log('testmode: ' + prod['TestMode']);
+		if(prod['TestMode']){
+			var testConfigs = testConfigs[prod['TestMode']- 1]
+		} 
+		var testModes = ['Prompt', 'Manual', 'Halo', 'Manual2', 'Halo2'];
+		var testSelectOptions = testModes.map(function(m,i){
+			if(i == prod['TestMode']){
+				return <option selected value={i}>{m}</option>
+			}else{
+				return <option  value={i}>{m}</option>
+			}
+		})
+
+		//var selectTestMode
 	//	console.log(testConfigs)
 		return(<div className='testInt'>
 			{testConfigs}
 		
 
-					<table hidden><tbody>
-						<tr><td>Test Mode</td><td><select><option>Manual</option><option>Halo</option><option>Halo2</option></select></td></tr>
-						<tr><td>FE</td><td><input type='text'/></td></tr><tr><td>NFE</td><td><input type='text'/></td></tr><tr><td>SS</td><td><input type='text'/></td></tr>
-					</tbody></table>
-					<button onClick={this.run}>Run Test</button>
+				<select onChange={this.modeChanged}>
+				{testSelectOptions}
+				</select>
+					<button onClick={this.sendTest}>Test</button>
 			</div>)
 	}
 })
 var TestItem = React.createClass({
+	sendChange: function(e,c){
+		console.log('received change')
+		console.log(e)
+		console.log(c)
+		this.props.sendChange(e,c)
+	},
 	render:function(){
 		var metList = ['FE','NFE', 'SS']
-		var tests = this.props.metalCounts.map(function(mc){
+		var self = this;
+		
+		var tests = this.props.metalCounts.map(function(mc, j){
+			var metDrop = metList.map(function(m,i){
+					if(i==mc.metal){
+							return (<option value={i} selected>{m}</option>)
+					}else{
+							return (<option value={i}>{m}</option>)
+					}
+			})
+			return <TestPassRow sendChange={self.sendChange} mc={mc} conf={self.props.conf[j]} />
 
-			return(<tr><td style={{marginRight:10, width:100, display:'inline-block'}}>Metal:{metList[mc.metal]}</td><td>Count:{mc.count}</td></tr>)
+			//return(<tr><td style={{marginRight:10, width:100, display:'inline-block'}}>Metal:<select >{metDrop}</select></td><td>Count:{mc.count}</td></tr>)
 		})
+		var testStr = ['Prompt', 'Manual', 'Halo', 'Manual2', 'Halo2']
 		return(<div>
-			<TreeNode nodeName={'Test ' + this.props.ind}>
+			<TreeNode nodeName={'Test ' + testStr[this.props.ind]}>
 			<table><tbody>
 			{tests}
 			</tbody></table>
 			</TreeNode>
 		</div>)
+	}
+})
+var TestPassRow = React.createClass({
+	getInitialState: function(){
+		return ({mc:this.props.mc})
+	},
+	componentWillReceiveProps: function(np){
+		this.setState({mc:np.mc})
+	},
+	onChangeMet: function(e){
+		var mc = this.state.mc;
+		mc.metal = parseInt(e.target.value);
+		this.props.sendChange(mc.metal, this.props.conf.metal)
+		this.setState({mc:mc})
+
+	},
+	valChanged: function(e){
+		var mc = this.state.mc
+		if(typeof e == 'string'){
+			mc.count = parseInt(e);
+		}else{
+			mc.count = parseInt(e.target.value)
+		}
+		this.props.sendChange(mc.count, this.props.conf.count)
+		this.setState({mc:mc})
+	},
+	render:function(){
+		var metList = ['FE','NFE', 'SS']
+		var self = this;
+		var metDrop = metList.map(function(m,i){
+					if(i==self.props.mc.metal){
+							return (<option value={i} selected>{m}</option>)
+					}else{
+							return (<option value={i}>{m}</option>)
+					}
+			})
+		return (<tr><td style={{marginRight:10, width:100, display:'inline-block'}}>Metal:<select onChange={this.onChangeMet}>{metDrop}</select></td><td>Count:
+			<KeyboardInput tid={this.props.conf.count+'_test'} onInput={this.valChanged} value={this.state.mc.count}  num={true} Style={{width:150}}/>
+	</td></tr>)
 	}
 })
 var DummyGraph = React.createClass({

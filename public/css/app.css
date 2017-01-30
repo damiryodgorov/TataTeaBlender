@@ -1,9 +1,17 @@
 body{
     min-width: 290px;
+    user-select: none;
 }
 li.placeholder { background: rgb(255,240,120);}
 li.placeholder:before {
   content: "Drop here"; color: rgb(225,210,90);
+}
+button{
+    height: 32px;
+    font-size: inherit;
+    margin: 5px;
+    border-radius: 10px;
+    padding: 2px 10px;
 }
 
 ul {
@@ -37,13 +45,25 @@ li {
 .mbGroupCont{
     border:1px solid black;
 }
+.buttCell button::after{
+    background-size: contain;
+    height: 60px;
+    width: 60px;
+    margin-top: -20px;
+
+    display: inline-block;
+}
 .login::after{
     float: right;
-    content:url('../assets/lock.svg');
+    content:" ";
+    background:url('../assets/lock.svg');
+    
+
 }
 .find::after{
     float: right;
-    content:url('../assets/search.svg');
+    content:" ";
+    background:url('../assets/search.svg');
 }
 .prefInterface{
     min-height: 200px;
@@ -97,14 +117,14 @@ li {
    /* z-index: -1;/* Could be more or less, depending on screen size */
 }
 .modal-close{
-    left: -10px;
+    left: -24px;
     position: relative;
-    width: 34px;
-    height: 34px;
+    width: 48px;
+    height: 48px;
     padding: 0px;
     /* margin-top: 15%; */
     margin-bottom: -20px;
-    border-radius: 20px;
+    border-radius: 36px;
     border: 1px solid #eee;
     background-color: #fff;
     z-index: 8;
@@ -256,7 +276,7 @@ li {
     width: 100%
 }
 .closeIcon{
-
+    width: 48px;
 }
 
 .ledClass{
@@ -337,6 +357,8 @@ li {
     border: solid rgba(0, 0, 0, 0.5) 1px;
     border-radius: 10px;
     margin-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     
 }
 .sItem label{
@@ -469,7 +491,7 @@ li {
 }
 .buttCell{
     width: 46px;
-
+    height: 100px;
 }
 .flRight{
     float: right;
@@ -481,11 +503,14 @@ li {
 }
 .config::after{
     float: right;
-    content:url('../assets/config.svg');
+    content: " ";
+    background: url('../assets/config.svg');
 }
 .config_active::after{
     float: right;
-    content:url('../assets/config_active.svg');
+     content: " ";
+   
+    background:url('../assets/config_active.svg');
 }
 .burger::after{
     float: right;
@@ -494,14 +519,17 @@ li {
 .burger_active::after{
     float: right;
     content:url('../assets/burger.png');
+
 }
 .attention::after{
     float: right;
-    content:url('../assets/attention.svg');
+     content: " ";
+    background:url('../assets/attention.svg');
 }
 .attention_clear::after{
     float: right;
-    content:url('../assets/attention_h.svg');
+     content: " ";
+    background:url('../assets/attention_h.svg');
 }
 .menuItem h3{
     padding-left: 10px;

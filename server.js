@@ -96,7 +96,8 @@ function nextSock(ip){
             res.on('data', (chunk) =>{
               //console.log(typeof chunk)
               rawData += chunk;
-            });// 
+            });//
+             
             res.on('end', () => {
               try {
                 // console.log(rawData.toString('utf8'))
