@@ -1,18 +1,23 @@
 var React = require('react');
 var ReactDOM = require('react-dom')
-var ConcreteElem = require('./components.jsx').ConcreteElem;
-var CanvasElem = require('./components.jsx').CanvasElem;
-import TextField from 'material-ui/TextField';
-import Keyboard from 'react-material-ui-keyboard';
-import { extendedKeyboard, alphaNumericKeyboard,numericKeyboard } from 'react-material-ui-keyboard/layouts';
-//import { alphaNumericKeyboard} from
+import {ConcreteElem,CanvasElem,KeyboardInput,TreeNode} from './components.jsx';
 var injectTapEventPlugin = require('react-tap-event-plugin')
-//import * as injectTapEventPlugin from 'react-tap-event-plugin';
+//import {createStore} from 'redux'
 
-//import Keyboard from './Keyboard.js'
-//var Keyboard = require('./Keyboard.js');
-//var Smoothie = require('./smoothie.js');
 
+
+
+var TestSetupPage = React.createClass({
+	getInitialState: function(){
+		return({})
+	},
+	render:function(){
+		return (<div>
+		
+	</div>)
+	}
+
+})
 
 
 var Container = React.createClass({
@@ -82,6 +87,9 @@ var LandingPage = React.createClass({
 		socket.on('locatedResp', function (e) {
 			var dets = self.state.detL;
 			var macs = self.state.macList.slice(0);
+			if(e.length == 1){
+
+			}
 			e.forEach(function(d){
 				macs.push(d.mac)
 				dets[d.mac] = d;
@@ -575,85 +583,7 @@ var AccountControlView = React.createClass({
 			</div>)	
 	}
 })
-var KeyboardInput = React.createClass({
-	getInitialState: function(){
-		var value = ""
-		 if(typeof this.props.value != 'undefined'){
-		 	value = this.props.value.toString()
-		 }
-		return {textarea:value, open:false}
-	},
-	componentWillReceiveProps: function(newProps){
-		if(typeof newProps.value != 'undefined'){
-			this.setState( {textarea:newProps.value.toString()})
-		}
-		
-	},
-	onTextareaChanged: function(e,v){
-		console.log('onTextareaChanged')
-		this.setState({textarea:v})
-		if(this.props.onInput){
-			this.props.onInput(v)
-		}
-		if(this.props.onChange){
-			this.props.onChange(e)
-		}
-		
-	},
-	onInput: function(e){
-		console.log('onInput')
-		this.setState({textarea:e})
-		if(this.props.onInput){
-			this.props.onInput(e)
-		}
-		if(this.props.onChange){
-			this.props.onChange(e)
-		}
-		
-	},
-	onFocus: function(e){
-		this.setState({open:true})
-	},
-	onRequestClose:function(e){
-		this.setState({open:false})
-	},
-	render:function () {
-		//console.log($('#keyboardinput'))
-		/*<Keyboard value={this.state.textarea} name='thetextareaname'
-			 options={{type:'textarea',layout:'qwerty', autoAccept: true, alwaysOpen: false, appendLocally: true, color:'light', class:'sxcycx', updateOnChange: true }} onChange={this.onTextareaChanged} /> 
-*/
-		// body...
-		var layout = [alphaNumericKeyboard];
-		if(this.props.num){
-			layout = [numericKeyboard]
-		}
-		var style =  this.props.Style || {width:'100%'} 
-		var textfield = ( <TextField
-          	style = {style}
-            id={this.props.tid}
-            value={this.state.textarea}
-            onChange={this.onTextareaChanged}
-            onFocus={this.onFocus}
-          />)
-		if(ftiTouch){
-			console.log(ftiTouch)
 
-		return (
-			<div>
-			      <Keyboard textField={textfield}    keyboardKeyHeight={65}
-                        keyboardKeyWidth={105}
-                        keyboardKeySymbolSize={35}  open={this.state.open} onRequestClose={this.onRequestClose} onInput={this.onInput} layouts={layout}/>
-			    </div>)
-			}else{
-				console.log(ftiTouch)
-				return(
-			<div>
-			      <Keyboard textField={textfield} open={false} onInput={this.onInput} layouts={layout}/>
-			    </div>)
-			}
-    
-	}
-})
 var UserObj = React.createClass({
 	delete:function(){
 		socket.emit('delUser', this.props.user.id)
@@ -868,6 +798,7 @@ var FaultItem = React.createClass({
 	}
 })
 
+//Settings Page 
 var SettingsDisplay = React.createClass({
 	getInitialState: function(){
 		var mqls = [
@@ -886,8 +817,11 @@ var SettingsDisplay = React.createClass({
 		}
 
 		return({
-		 sysRec:sysSettings, prodRec:prodSettings, mqls:mqls, font:font, fram:framSettings
+		 sysRec:sysSettings, prodRec:prodSettings, mqls:mqls, font:font, fram:framSettings, data:this.props.data
 		});
+	},
+	componentWillReceiveProps: function(newProps){
+		this.setState({data:newProps.data})
 	},
 	listenToMq:function () {
 		if(this.state.mqls[2].matches){
@@ -1041,6 +975,7 @@ var SettingsDisplay = React.createClass({
 		for(var l in list){
 			if(l!=n){
 				if(this.refs[l]){
+					console.log(['972',l])
 					this.refs[l].deactivate();
 				}
 			}
@@ -1050,7 +985,7 @@ var SettingsDisplay = React.createClass({
 	},
 	render: function (){
 		var self = this;
-		var data = this.props.data
+		var data = this.state.data
 		console.log(data)
 		var lvl = data.length
 		var handler = this.handleItemclick;
@@ -1066,6 +1001,10 @@ var SettingsDisplay = React.createClass({
 		var nav =''
 		var backBut = ''
 		var catList = ['Sensitivity', 'Calibration','Faults','Rej Setup', 'Test','Input','Output','Password','Other'];
+		var accLevel = 0;
+		var accMap = {'Sensitivity':'PassAccSens', 'Calibration':'PassAccCal', 'Other':'PassAccProd', 
+			'Faults':'PassAccClrFaults','Rej Setup':'PassAccClrRej','Test':'PassAccTest'}
+		
 		if(lvl == 0){
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
@@ -1077,24 +1016,36 @@ var SettingsDisplay = React.createClass({
 
 			var cat = data[0];
 			lab = cat
-			var accLevel = 0;
-			var accMap = {'Sensitivity':'PassAccSens', 'Calibration':'PassAccCal', 'Other':'PassAccProd', 
-			'Faults':'PassAccClrFaults','Rej Setup':'PassAccClrRej','Test':'PassAccTest'}
 			if(accMap[cat]){
 				accLevel = this.state.sysRec[accMap[cat]]
 			}
 			var list = combinedSettings[cat]
 			console.log(list)
 			nodes = []
+			if(cat === 'Test'){
+				//console.log(combinedSettings['TestConfig'])
+				//nodes.push(<div><label>Placeholder for TestConfig</label></div>)
+
+			}
 			for (var l in list){
 				if(Array.isArray(list[l])){
-					console.log(list[l])
-					nodes.push((<SettingItem ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
+					console.log('1019 - ' + l)
+					if(list[l].length == 2 ){
+						nodes.push((<SettingItem ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
+	
+					}else{
+						nodes.push((<SettingItem ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
+					}
+					
+				}else if(list[l]['Type'] === 'confObj'){
+					console.log(['conf obj', list[l]])
+					 nodes.push((<SettingItem ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={true} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
+	
 
 				}else{
 
 
-				nodes.push((<SettingItem ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>))
+				nodes.push(<SettingItem ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
 				}
 			}
 			nav = (<div className='setNav'>
@@ -1103,6 +1054,38 @@ var SettingsDisplay = React.createClass({
 
 			backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>Settings</label></div>)
 
+		}else if(lvl == 2){
+			console.log(['lvl 2', data])
+			if(data[1]){
+				if(data[1].Type == 'confObj'){
+				nodes = [];
+				if(accMap[data[0]]){
+					accLevel = this.state.sysRec[accMap[data[0]]]
+				}
+				var testSel = ['Manual', 'Halo', 'Manual2', 'Halo2']
+					
+				lab = testSel[data[1]['Index']]
+				for(var d in data[1]){
+					console.log(['1056', d,data[1][d],combinedSettings])
+					if((d !== 'Type')&&(d !== 'Index')){
+						var nm = d + data[1]['Index']
+						if(Array.isArray(data[1][d])){
+							nm = d + data[1]['Index'] + '_'
+						}
+						nodes.push(<SettingItem ip={self.props.dsp} ref={nm} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={nm} name={d} hasChild={false} data={combinedSettings[data[0]][lab][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
+
+					}
+				}
+				nav = (<div className='setNav'>
+					{nodes}
+				</div>)
+					//lab = testSel[data[1]['Index']]
+
+				backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>Test</label></div>)
+
+				}
+			}
+			
 		}
 			 
 	     var className = "menuCategory expanded";
@@ -1127,6 +1110,7 @@ var SettingsDisplay = React.createClass({
 	},
 	
 })
+
 var SettingItem = React.createClass({
 	getInitialState: function(){
 		return({mode:0,font:this.props.font})
@@ -1153,7 +1137,10 @@ var SettingItem = React.createClass({
 	},
 	deactivate: function () {
 		// body...
-		this.refs.ed.deactivate()
+		if(this.refs.ed){
+			this.refs.ed.deactivate()
+		}
+		
 	},
 	getValue: function(rval, pname){
 		var pram;
@@ -1220,7 +1207,7 @@ var SettingItem = React.createClass({
 		var wd = [190,210,260]
 		var st = {display:'inline-block', fontSize:ft[this.state.font], width:wd[this.state.font]}
 		var vst = {display:'inline-block', fontSize:ft[this.state.font], width:150}
-	
+		var self = this;
 			var res = vdefByIp[this.props.ip];
 			var pVdef = _pVdef;
 			if(res){
@@ -1231,26 +1218,61 @@ var SettingItem = React.createClass({
 		return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{this.props.name}</label></div>)
 		}else{
 			var val, pram;
-			if(this.props.int){
-
-				val = [this.getValue(this.props.data[0],this.props.name + '_A'), this.getValue(this.props.data[1],this.props.name + '_B')]
-				if(typeof pVdef[0][this.props.name+'_A'] != 'undefined'){
-					pram = [pVdef[0][this.props.name+'_A'],pVdef[0][this.props.name+'_B']]
-				}else if(typeof pVdef[1][this.props.name+'_A'] != 'undefined'){
-					pram = [pVdef[1][this.props.name+'_A'],pVdef[1][this.props.name+'_B']]
+			//if(this.props.isArray)
+			if(Array.isArray(this.props.data)){
+				if((this.props.data.length == 2) &&((typeof pVdef[0][this.props.lkey+'_A'] != 'undefined')||(typeof pVdef[1][this.props.lkey+'_A'] != 'undefined'))){
+					val = [this.getValue(this.props.data[0],this.props.lkey + '_A'), this.getValue(this.props.data[1],this.props.lkey + '_B')]
+					if(typeof pVdef[0][this.props.name+'_A'] != 'undefined'){
+						pram = [pVdef[0][this.props.lkey+'_A'],pVdef[0][this.props.lkey+'_B']]
+					}else{
+						pram = [pVdef[1][this.props.lkey+'_A'],pVdef[1][this.props.lkey+'_B']]
+					}
+					if(pram[0]['@labels']){
+						label = true
+					}
+				}else if(Array.isArray(this.props.data[0])){
+					val = []
+					pram = []
+					this.props.data.forEach(function(d,i){
+						val[i] = []
+						pram[i] = []
+						d.forEach(function(dat,j){
+							val[i][j] = self.getValue(dat, self.props.lkey+i+'_'+j)
+							if(typeof pVdef[0][self.props.lkey+i+'_'+j] != 'undefined'){
+								pram[i][j] = pVdef[0][self.props.lkey+i+'_'+j]
+							}else{
+								pram[i][j] = pVdef[1][self.props.lkey+i+'_'+j]
+							}
+						})
+					})
+					if(pram[0][0]['@labels']){
+						label = true
+					}
+				}else{
+					console.log(['1231', self.props.name])
+					val = []
+					pram = []
+					this.props.data.forEach(function(d,i){
+						val[i] = self.getValue(d,self.props.lkey+i)
+						if(typeof pVdef[0][self.props.lkey+i] != 'undefined'){
+							pram[i] = pVdef[0][self.props.lkey+i]
+						}else{
+							pram[i] = pVdef[1][self.props.lkey+i]
+						}
+					})
+					if(pram[0]['@labels']){
+						label = true
+					}
 				}
-				if(pram[0]['@labels']){
-					label = true
-				}
-
 			}else{
 
 
-				val = [this.getValue(this.props.data, this.props.name)]
-				if(typeof pVdef[0][this.props.name] != 'undefined'){
-					pram = [pVdef[0][this.props.name]]
-				}else if(typeof pVdef[1][this.props.name] != 'undefined'){
-					pram = [pVdef[1][this.props.name]]
+				val = [this.getValue(this.props.data, this.props.lkey)]
+				console.log(['1250',this.props.lkey])
+				if(typeof pVdef[0][this.props.lkey] != 'undefined'){
+					pram = [pVdef[0][this.props.lkey]]
+				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
+					pram = [pVdef[1][this.props.lkey]]
 				}
 				if(pram[0]['@labels']){
 					label = true
@@ -1264,19 +1286,222 @@ var SettingItem = React.createClass({
 		}
 	}
 })
+var KeyboardInputWrapper = React.createClass({
+	onChange: function(e){
+		if(this.props.onChange){
+			this.props.onChange(e, this.props.Id)
+		}else{
+			if(typeof e != 'string'){
+				this.props.onInput(e.target.value, this.props.Id)
+			}
+			else{
+				this.props.onInput(e,this.props.Id)
+			}
+		}
+		
+	},
+	onInput: function(e){
+		this.props.onInput(e, this.props.Id)
+	},		
+	render: function(){
 
+		return(<div style={this.props.Style}><KeyboardInput onInput={this.onInput} onChange={this.onChange} value={this.props.value} tid={this.props.tid} Style={this.props.Style} num={this.props.num}/></div>)
+	},
+})
+var NestedEditControl = React.createClass({
+	getInitialState: function(){
+		console.log('slice 2 d array')
+		console.log(this.props.data.slice(0))
+		return ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size})
+	},
+	componentWillReceiveProps:function(newProps){
+		this.setState({val:newProps.data.slice(0)})
+	},
+	selectChanged: function(v,i,j){
+		var data = this.state.val;
+		data[i][j] = v;
+		this.setState({val:data})
+		this.props.sendPacket(this.props.param[i][j],v)
+	},
 
+	switchMode: function () {
+		// body...
+		if(this.props.acc){
+			if(this.props.param[0][0]['@rpcs']){
+				if((this.props.param[0][0]['@rpcs']['write'])||(this.props.param[0][0]['@rpcs']['toggle'])){
+					var m = Math.abs(this.state.mode - 1)
+					this.props.activate()
+					this.setState({mode:m})
+				}
+			}
+		}	
+	},
+	render:function() {
+			var namestring = this.props.name
+		
+		if(this.state.mode == 0){
+			return (<div onClick={this.switchMode}>{namestring}</div>);
+		}else{
+			var self = this;
+			console.log('line 1264')
+			var rows = this.state.val.map(function(r,i){
+			var conts = r.map(function (v,j) {
+					// body...
+			if(self.props.label){
 
+				return(<SelectForMulti val={v} index={i} index2={j} onChange={self.selectChanged} list={_pVdef[5][self.props.param[0][0]["@labels"]]['english']}/>)
+			}else{
+						return(<div style={{display:'inline-block'}}>{v}</div>)
+						//return(<KeyboardInput tid={namestring+'_kia'} onInput={self.valChanged} value={v} onKeyPress={this._handleKeyPress} num={num} Style={{width:150}}/>)
+					}
+
+				})
+				return <div>{conts}</div>
+				
+			})
+		
+		return (
+			<div><div onClick={this.switchMode}><label>{namestring}</label></div><div>
+				{rows}
+			</div></div>
+		);
+		}
+		
+	}
+})
+var MultiEditControl = React.createClass({
+	getInitialState: function(){
+		return ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size})
+	},
+	componentWillReceiveProps:function(newProps){
+		this.setState({val:newProps.data.slice(0)})
+	},
+	switchMode: function () {
+		// body...
+		if(this.props.acc){
+			if(this.props.param[0]['@rpcs']){
+				if((this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])){
+					var m = Math.abs(this.state.mode - 1)
+					this.props.activate()
+					this.setState({mode:m})
+				}
+			}
+		}	
+	},
+	deactivate:function () {
+		// body...
+		this.setState({mode:0})
+	},
+	selectChanged:function(v,i){
+		var val = v//e.target.value//e.target.value;
+		if(this.props.bitLen == 16){
+			val = VdefHelper.swap16(parseInt(val))
+		}
+			//console.log(val)
+			this.props.sendPacket(this.props.param[i], parseInt(val));
+		var value = this.state.val;
+		value[i] = v// e.target.value
+		console.log(this.props.data)
+		this.setState({val:value})
+	},
+	valChanged: function(v,i){
+		var val = v
+		if(this.props.bitLen == 16){
+			val = VdefHelper.swap16(parseInt(val))
+		}
+		var value = this.state.val;	
+		console.log(['1404',v,i])
+		value[i] = val;
+		this.setState({val:value})
+		if(!Number.isNaN(val)){
+			this.props.sendPacket(this.props.param[i], parseInt(val));
+		}
+	},
+	render:function() {
+		var namestring = this.props.name
+		var self = this;
+		var vLabels = this.state.val.map(function(d,i){
+			var val = d;
+			if(self.props.label){
+				val = _pVdef[5][self.props.param[i]["@labels"]]['english'][d]
+			}
+			return (<label style={self.props.vst}>{val}</label>)
+		})
+		/*return (
+			<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{this.props.data[0]}</label><label style={this.props.vst}>{this.props.data[1]}</label></div>
+						<div style={{marginLeft:250,display:'inline-block',width:150,marginRight:10}}>{inputA}</div><div style={{display:'inline-block',width:150,marginRight:10}}>{inputB}</div>
+						<label style={{fontSize:16,marginLeft:20, border:'1px solid grey',padding:2, paddingLeft:5,paddingRight:5, background:'#e6e6e6',borderRadius:10}} onClick={this.sendPacket}>Submit</label></div>)	*/
+		if(this.state.mode == 0){
+				//return <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{valA}</label><label style={this.props.vst}>{valB}</label></div>
+					return(<div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>)
+
+		}else{
+			if(this.props.label){
+				var options = this.state.val.map(function(v, i){
+					var opts = _pVdef[5][self.props.param[0]["@labels"]]['english'].map(function(e,i){
+						if(i == v){
+							return (<option selected value={i}>{e}</option>)
+
+						}else{
+							return (<option value={i}>{e}</option>)
+
+						}
+					})
+					//return <select>{opts}</select>
+					return <SelectForMulti val={v} index={i} onChange={self.selectChanged} list={_pVdef[5][self.props.param[0]["@labels"]]['english']}/>
+				})
+				return(<div><div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>
+					<div>
+						{options}
+					</div></div>)
+			}else{
+				var num = true;
+				var options = this.state.val.map(function(v,i){
+					return(<KeyboardInputWrapper tid={namestring+'_kia'} onInput={self.valChanged} Id={i} value={v} onKeyPress={self._handleKeyPress} num={num} Style={{width:150, display:'inline-block'}}/>)
+				})
+				return(<div><div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>
+					<div>
+						{options}
+					</div></div>)
+			}
+		}
+		
+	}
+})
+var SelectForMulti = React.createClass({
+	getInitialState: function(){
+		return({val: this.props.val})
+	},
+	onChange: function(e){
+		this.setState({val:parseInt(e.target.value)})
+		this.props.onChange(parseInt(e.target.value), this.props.index, this.props.index2)
+	},
+	componentWillReceiveProps:function(newProps){
+		this.setState({val:newProps.val})
+	},
+	render:function(){
+		var val = this.state.val
+		var opts = this.props.list.map(function(e,i){
+			if(i == val){
+				return (<option selected value={i}>{e}</option>)
+			}else{
+				return (<option value={i}>{e}</option>)
+			}
+		})
+		return <select onChange={this.onChange}>{opts}</select>
+	}
+})
 var EditControl = React.createClass({
 	getInitialState: function(){
 		return({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size})
 	},
 	sendPacket: function(){
+		var self = this;
 		this.props.sendPacket(this.props.param[0], this.state.val[0])
 		if(this.props.int){
 			setTimeout(function () {
 				// body...
-				this.props.sendPacket(this.props.param[1], this.state.val[1])
+				self.props.sendPacket(self.props.param[1], self.state.val[1])
 			},100)
 			
 		}
@@ -1334,7 +1559,13 @@ var EditControl = React.createClass({
 	},
 	deactivate:function () {
 		// body...
-		this.setState({mode:0})
+		if(this.refs.ed){
+			console.log(['1511', 'this the prob'])
+			this.refs.ed.setState({mode:0})
+		}else{
+			this.setState({mode:0})	
+		}
+		
 	},
 	_handleKeyPress: function (e) {
 		// body...
@@ -1358,13 +1589,17 @@ var EditControl = React.createClass({
 		e.preventDefault();
 		var valA = this.state.value[0];
 		var valB = this.state.value[1];
+		var self = this;
 		if(this.props.bitLen == 16){
 			valA = VdefHelper.swap16(valA)
 			valB = VdefHelper.swap16(valB)
 
 		}
 		this.props.sendPacket(this.props.param[0], parseInt(valA));
-		this.props.sendPacket(this.props.param[1], parseInt(valB))
+		setTimeout(function(){
+			self.props.sendPacket(self.props.param[1], parseInt(valB))
+			
+		}, 100)
 		this.setState({editMode:false})
 	},
 	render: function(){
@@ -1388,6 +1623,17 @@ var EditControl = React.createClass({
 		}
 		if((namestring.indexOf('ProductName')!=-1)||((namestring.indexOf('ProductName')!=-1))){
 			num = false
+		}
+		if(this.props.data.length > 1){
+			if(Array.isArray(this.props.data[0])){
+				return (<NestedEditControl acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
+					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
+			}else if(this.props.data.length == 2){
+				//this.props.int block
+			}else{
+				return (<MultiEditControl acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
+					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
+			}	
 		}
 		if(this.props.int){
 
@@ -2396,7 +2642,12 @@ var DetectorView = React.createClass({
 				var phaseSpeed = Vdef['@labels']['PhaseSpeed']['english'][prodSettings['PhaseSpeed']]
 				var comb = [];
 				for(var c in nVdf){
-					comb[c] = {};
+
+					if(c != 'TestConfig'){
+					if(!comb[c]){
+						comb[c] = {};
+					
+					}
 					for(var p in nVdf[c][0]){
 						comb[c][p] = []
 						var a,b;
@@ -2413,6 +2664,38 @@ var DetectorView = React.createClass({
 						}
 						comb[c][p].push(a)
 						comb[c][p].push(b)
+						}else if(Array.isArray(nVdf[c][0][p])){
+						//	console.log('2345')
+							//console.log(nVdf[c][0][p])
+								comb[c][p] = [];
+								
+							nVdf[c][0][p].forEach(function(par, j){
+								if(Array.isArray(par)){
+									//console.log('line 2349')
+									console.log(par)
+									comb[c][p][j] = [];
+									par.forEach(function(para, k){
+										if(para['@rec'] ==0){
+											comb[c][p][j][k] = sysSettings[para['@name']]
+	
+										}else{
+											comb[c][p][j][k] = prodSettings[para['@name']]
+											
+										}
+										
+									})
+								}else{
+									if(par['@rec'] == 0){
+
+										comb[c][p][j] = sysSettings[par['@name']]
+									
+									}else{
+										comb[c][p][j] = prodSettings[par['@name']]
+										
+									}
+								}
+
+							})
 						}
 					}
 					for(var i = 1; i < nVdf[c].length; i++){
@@ -2422,9 +2705,39 @@ var DetectorView = React.createClass({
 							comb[c][nVdf[c][i]["@name"]] = prodSettings[nVdf[c][i]["@name"]]
 						}
 						//nVdf[c][0]
+						}
+					}else{
+						if(!comb['Test']){
+							comb['Test'] = {}
+						}
+							var testSel = ['Manual', 'Halo', 'Manual2', 'Halo2']
+							nVdf[c].forEach(function(conf, i){
+								console.log(['2608',i, conf,])
+								var co = {'Type':'confObj', 'Index':i}
+								co['TestConfigAck'] = prodSettings[conf['TestConfigAck']['@name']];
+								co['TestConfigHaloMode'] = prodSettings[conf['TestConfigHaloMode']['@name']]
+								co['TestConfigMetal'] = [];
+								co['TestConfigCount'] = [];
+								conf['TestConfigMetal'].forEach(function(m,i){
+									co['TestConfigMetal'][i] = prodSettings[m['@name']];
+								})
+								
+								conf['TestConfigCount'].forEach(function(m,i){
+									co['TestConfigCount'][i] = prodSettings[m['@name']];
+								})
+								//
+								//prodSettings[conf]
+								comb['Test'][testSel[i]] =  co//{'TestConfigAck':prodSettings[conf['TestConfigAck']['@name']],
+						//	}
+							})
+
+						
+						
 					}
 				}
 				combinedSettings = comb;
+				console.log('combined settings here:')
+				console.log(comb)
 				if(this.state.currentView == "SettingsDisplay"){
 					if(this.refs.sd){
 						this.refs.sd.parseInfo(sysSettings, prodSettings)	
@@ -2618,7 +2931,13 @@ var DetectorView = React.createClass({
 	},
 	settingClick: function (s) {
 		var set = this.state.data.slice(0)
-		set.push(s[0])
+		console.log(['set', s])
+		if(Array.isArray(s)){
+			set.push(s[0])
+		}else{
+			set.push(s)
+		}
+		
 		this.changeView(['SettingsDisplay',set]);
 	},
 	clear: function (param) {
@@ -2927,7 +3246,7 @@ var DetMainInfo = React.createClass({
 		this.refs.testModal.toggle()
 	},
 	updateTmp:function (e) {
-		e.preventDefault();
+		//e.preventDefault();
 		if(typeof e == 'string'){
 			this.setState({tmp:e})
 		}else{
@@ -2937,7 +3256,11 @@ var DetMainInfo = React.createClass({
 	},
 	submitTmpSns:function () {
 		if(!isNaN(this.state.tmp)){
-			this.props.sendPacket('Sens',this.state.tmp)
+			if(this.props.int){
+				this.props.sendPacket('Sens_A', this.state.tmp)
+			}else{
+				this.props.sendPacket('Sens',this.state.tmp)	
+			}
 			this.cancel()
 		}
 	},
@@ -3007,7 +3330,7 @@ var DetMainInfo = React.createClass({
 							{prodList}
 						</Modal>
 						<Modal ref='sensEdit'>
-							<div>Sensitivity: <KeyboardInput tid='sens' onKeyPress={this._handleKeyPress} onChange={this.updateTmp} value={this.state.tmp}/>
+							<div>Sensitivity: <KeyboardInput tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/>
 							<button onClick={this.submitTmpSns}>OK</button><button onClick={this.cancel}>Cancel</button></div>
 						</Modal>
 						<Modal ref='testModal'>
@@ -3269,32 +3592,7 @@ var DummyGraph = React.createClass({
 
 
 
-var TreeNode = React.createClass({
-	getInitialState: function(){
-		return ({hidden:true})
-	},
-	toggle: function(){
-		var hidden = !this.state.hidden
-		this.setState({hidden:hidden});
-	},
-	render: function(){
-		var cName = "collapsed"
-		if(!this.state.hidden){
-			cName = "expanded"
-		}
-		return (
-			<div hidden={this.props.hide} className="treeNode">
-				<div onClick={this.toggle} className={cName}/>
-				<div className="nodeName">
-					<span onClick={this.toggle}>{this.props.nodeName}</span>
-				</div>
-				<div className="innerDiv" hidden={this.state.hidden}>
-				{this.props.children}
-				</div>
-			</div>
-		)
-	}
-})
+
 
 injectTapEventPlugin();
 ReactDOM.render(<Container/>,document.getElementById('content'))

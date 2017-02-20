@@ -453,17 +453,6 @@ for(var i = 0; i < dspips.length;i++){
  // console.log(dspips)
   initSocks(dsps);
        socket.emit('locatedResp', dspips)
-        fs.readFile(__dirname + "/json/vdef160704.json", (err, data) => {
-      var vdef = JSON.parse(data);
-  //    console.log(vdef)
-     // console.log('vdef')
-      //console.log(err)
-      fs.readFile(__dirname + '/json/new_vdef.json', (er,dat) =>{
-        var nVdef = JSON.parse(dat);
-       // socket.emit('vdef', [vdef, nVdef])
-      });
-      
-    });
 
  
 });

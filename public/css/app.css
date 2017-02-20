@@ -45,11 +45,14 @@ li {
 .mbGroupCont{
     border:1px solid black;
 }
+.buttCell button{
+   height: 60px;
+}
 .buttCell button::after{
     background-size: contain;
     height: 60px;
     width: 60px;
-    margin-top: -20px;
+    margin-top: -10px;
 
     display: inline-block;
 }

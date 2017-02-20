@@ -1,7 +1,119 @@
 var React = require('react');
 var SmoothieChart = require('./smoothie.js').SmoothieChart;
 var TimeSeries = require('./smoothie.js').TimeSeries;
+import Keyboard from 'react-material-ui-keyboard';
+import TextField from 'material-ui/TextField';
+import { extendedKeyboard, alphaNumericKeyboard,numericKeyboard } from 'react-material-ui-keyboard/layouts';
+
 //var Concrete = require('./concrete.min.js').Concrete
+
+var TreeNode = React.createClass({
+	getInitialState: function(){
+		return ({hidden:true})
+	},
+	toggle: function(){
+		var hidden = !this.state.hidden
+		this.setState({hidden:hidden});
+	},
+	render: function(){
+		var cName = "collapsed"
+		if(!this.state.hidden){
+			cName = "expanded"
+		}
+		return (
+			<div hidden={this.props.hide} className="treeNode">
+				<div onClick={this.toggle} className={cName}/>
+				<div className="nodeName">
+					<span onClick={this.toggle}>{this.props.nodeName}</span>
+				</div>
+				<div className="innerDiv" hidden={this.state.hidden}>
+				{this.props.children}
+				</div>
+			</div>
+		)
+	}
+})
+var KeyboardInput = React.createClass({
+	getInitialState: function(){
+		var value = ""
+		 if(typeof this.props.value != 'undefined'){
+		 	value = this.props.value.toString()
+		 }
+		return {textarea:value, open:false}
+	},
+	componentWillReceiveProps: function(newProps){
+		if(typeof newProps.value != 'undefined'){
+			this.setState( {textarea:newProps.value.toString()})
+		}
+		
+	},
+	onTextareaChanged: function(e,v){
+		console.log('onTextareaChanged')
+		this.setState({textarea:v})
+		if(this.props.onInput){
+			this.props.onInput(v)
+		}
+		if(this.props.onChange){
+			this.props.onChange(e)
+		}
+		
+	},
+	onInput: function(e){
+		console.log('onInput')
+		this.setState({textarea:e})
+		if(this.props.onInput){
+			this.props.onInput(e)
+		}
+		if(this.props.onChange){
+			this.props.onChange(e)
+		}
+		
+	},
+	onFocus: function(e){
+		this.setState({open:true})
+	},
+	onRequestClose:function(e){
+		this.setState({open:false})
+	},
+	render:function () {
+		//console.log($('#keyboardinput'))
+		/*<Keyboard value={this.state.textarea} name='thetextareaname'
+			 options={{type:'textarea',layout:'qwerty', autoAccept: true, alwaysOpen: false, appendLocally: true, color:'light', class:'sxcycx', updateOnChange: true }} onChange={this.onTextareaChanged} /> 
+*/
+		// body...
+		var layout = [alphaNumericKeyboard];
+		if(this.props.num){
+			layout = [numericKeyboard]
+		}
+		var style =  this.props.Style || {width:'100%'} 
+		var textfield = ( <TextField
+          	style = {style}
+            id={this.props.tid}
+            value={this.state.textarea}
+            onChange={this.onTextareaChanged}
+            onFocus={this.onFocus}
+          />)
+		if(ftiTouch){
+			console.log(ftiTouch)
+
+		return (
+			<div style={{style}}>
+			      <Keyboard textField={textfield}    keyboardKeyHeight={65}
+                        keyboardKeyWidth={105}
+                        keyboardKeySymbolSize={35}  open={this.state.open} onRequestClose={this.onRequestClose} onInput={this.onInput} layouts={layout}/>
+                        </div>
+			 )
+			}else{
+				console.log(ftiTouch)
+				return(
+						<div style={{style}}>
+		
+			      <Keyboard textField={textfield} open={false} onInput={this.onInput} layouts={layout}/>
+			      </div>)
+			}
+    
+	}
+})
 
 var Panel = React.createClass({
 	handleItemclick: function(dat){
@@ -445,8 +557,11 @@ var CanvasElem = React.createClass({
 	},
 	stream:function (dat) {
 		this.state.line.append(dat.t, dat.val);
+		this.state.line.dropOldData(1000, 3000)
 		if(this.props.int){
 			this.state.line_b.append(dat.t, dat.valb)
+			this.state.line_b.dropOldData(1000, 3000)
+		
 		}
 	},
 	render: function(){
@@ -794,3 +909,5 @@ var ConcreteElem = React.createClass({
 module.exports = {}
 module.exports.ConcreteElem =  ConcreteElem;
 module.exports.CanvasElem = CanvasElem;
+module.exports.KeyboardInput = KeyboardInput;
+module.exports.TreeNode = TreeNode

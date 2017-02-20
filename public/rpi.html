@@ -20,6 +20,7 @@
   <!--<script type="text/javascript" src="node_modules/react/dist/react.js"></script>
     <script type="text/javascript" src="node_modules/react-dom/dist/react-dom.min.js"></script>-->
    <script type="text/javascript" src="scripts/socket.io.min.js"></script>
+
   </head>
   <body>
     <div id="content"></div>
@@ -29,6 +30,7 @@ $(function () {
         this.select();
     });
 });
+
 let vdefList ={};
 let vdefByIp = {};
 var _Vdef;
@@ -51,7 +53,8 @@ const value_groups = {
                         "PowerupRej","ExcessRejects","ExcessRejTime"],
   "Sensitivity" : ["PeakMode","Sens","BigMetThres","DetMode","ThresX","ThresR","DetThresh","ThresProdHi","FilterNoise","DcCoeffNorm"],
   "Test"        : ["HaloBoard","HaloPeakRFe", "HaloPeakRNFe", "HaloPeakRSs", "HaloPeakXFe", "HaloPeakXNFe", "HaloPeakXSs", 
-                    "IBTestPassesFe", "IBTestPassesNFe", "IBTestPassesSS", "TestMode", "TestTime","TestDeferTime"],
+                    "IBTestPassesFe", "IBTestPassesNFe", "IBTestPassesSS", "TestMode", "TestTime","TestDeferTime","TestConfigCount",
+                    "TestConfigMetal", "TestConfigAck","TestConfigOperator","TestConfigHaloMode"],
   "Input"       : ["CIPCycleTime","CIPDwellTime"]                      
 }  
 
@@ -523,8 +526,10 @@ console.log(_Vdef)
     json["@params"].forEach(function(p ){
       res[p["@rec"]][p["@name"]] = p;
       var int = false;
+      var arrLevel = 0
 
      var nm = p['@name'];
+     
      var irg = /(_(A|B))$/
      if(nm.match(irg)){
       //console.log(nm.slice(0,-2))
@@ -533,6 +538,9 @@ console.log(_Vdef)
       }
       nVdf['Interceptor'][nm.slice(0,-2)][nm.slice(-1)] = p;
       int = true;
+     }else if(p['@arr_path']){
+      arrLevel = p['@arr_path'].length
+    //  console.log('arrLevel: ' + arrLevel)
      }
      var aarg = /(_(D)_(D))$/
      var otherFlag = true;
@@ -544,7 +552,7 @@ console.log(_Vdef)
         otherFlag = false;
         break;
       }
-     }else if(o == 'Test'){
+     }else if(o == 'Tesst'){
       if(nm.indexOf('TestConfig')!= -1){
         nVdf[o].push(p);
         otherFlag = false;
@@ -578,16 +586,55 @@ console.log(_Vdef)
         otherFlag = false;
           break;
       }
+    }else if(arrLevel != 0){
+        if(arrLevel == 2){
+         // console.log(p)
+           if(value_groups[o].indexOf(nm.slice(0,-3)) != -1){
+            if(!nVdf[o][0][nm.slice(0,-3)]){
+              nVdf[o][0][nm.slice(0,-3)] = []
+
+
+            }
+            if(!nVdf[o][0][nm.slice(0,-3)][p['@arr_path'][0]]){
+              nVdf[o][0][nm.slice(0,-3)][p['@arr_path'][0]] = []
+            }
+            nVdf[o][0][nm.slice(0,-3)][p['@arr_path'][0]][p['@arr_path'][1]]  = p
+            otherFlag = false
+          }
+          
+
+        }else{
+          if(value_groups[o].indexOf(nm.slice(0,-1)) != -1){
+            if(!nVdf[o][0][nm.slice(0,-1)]){
+              nVdf[o][0][nm.slice(0,-1)] = [];
+
+            }
+            nVdf[o][0][nm.slice(0,-1)][p['@arr_path'][0]] = p;
+            otherFlag = false
+          }
+
+        }
+      }
      }
 
-   }
+   
    if(otherFlag){  
     if(p["@rec"] <2){
       nVdf['Other'].push(p)
     }
    }
-}
+  }
     });
+    console.log(nVdf['Test'][0])
+    var testconfig = []
+     var t = nVdf['Test'][0]
+    for(var i = 0; i<4;i++){
+      var conf = {'TestConfigAck':t['TestConfigAck'][i], 'TestConfigMetal':t['TestConfigMetal'][i].slice(0),
+       'TestConfigCount':t['TestConfigCount'][i].slice(0),'TestConfigHaloMode':t['TestConfigHaloMode'][i]}
+       testconfig[i] = conf
+    }
+    nVdf['TestConfig'] = testconfig
+    console.log(testconfig)
     res[4] = json["@deps"];
     res[5] = json["@labels"]
     res[6] = [];
@@ -601,7 +648,8 @@ console.log(_Vdef)
     vdefList[json['@version']] = [json, res, nVdf]
     vdefByIp[vdf[1]] = [json, res, nVdf]
     isVdefSet = true;
-    console.log(nVdf['Interceptor'])
+    console.log(nVdf['Test'])
+
 
 })
 
