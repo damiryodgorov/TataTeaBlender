@@ -28,3 +28,7 @@ now using webpack, so to run this project, you should do 'npm install', 'webpack
 --170130
 
 Test support, some size changes
+
+--170221
+
+Bugfixes, etc

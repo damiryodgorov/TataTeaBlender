@@ -1338,7 +1338,11 @@ var NestedEditControl = React.createClass({
 	},
 	render:function() {
 			var namestring = this.props.name
-		
+			if(vMap[this.props.name]){
+				if(vMap[this.props.name]['@translations']['english']['name'] != ''){
+					namestring = vMap[this.props.name]['@translations']['english']['name']
+				}
+			}
 		if(this.state.mode == 0){
 			return (<div onClick={this.switchMode}>{namestring}</div>);
 		}else{
@@ -1419,6 +1423,11 @@ var MultiEditControl = React.createClass({
 	},
 	render:function() {
 		var namestring = this.props.name
+			if(vMap[this.props.name]){
+				if(vMap[this.props.name]['@translations']['english']['name'] != ''){
+					namestring = vMap[this.props.name]['@translations']['english']['name']
+				}
+			}
 		var self = this;
 		var vLabels = this.state.val.map(function(d,i){
 			var val = d;
@@ -1624,6 +1633,11 @@ var EditControl = React.createClass({
 		if((namestring.indexOf('ProductName')!=-1)||((namestring.indexOf('ProductName')!=-1))){
 			num = false
 		}
+		if(vMap[this.props.name]){
+				if(vMap[this.props.name]['@translations']['english']['name'] != ''){
+					namestring = vMap[this.props.name]['@translations']['english']['name']
+				}
+			}
 		if(this.props.data.length > 1){
 			if(Array.isArray(this.props.data[0])){
 				return (<NestedEditControl acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
