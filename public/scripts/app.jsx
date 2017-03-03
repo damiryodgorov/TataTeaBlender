@@ -3099,7 +3099,7 @@ var DetectorView = React.createClass({
 		var MD ="";
 		var dm = <DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm' int={this.state.interceptor}/>
 		var dg = <DummyGraph ref='dg' canvasId={'dummyCanvas'} int={this.state.interceptor}/>
-		var ce = <ConcreteElem h={400} w={400} concreteId={'concreteCanvas'} int={this.state.interceptor}/>
+		var ce =''// <ConcreteElem h={400} w={400} concreteId={'concreteCanvas'} int={this.state.interceptor}/>
 	 	var lstyle = {height: 72,marginRight: 20}
 	 	var np = (<NetPollView ref='np' eventCount={15}/>)
 		if(!this.state.minW){
