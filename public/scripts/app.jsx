@@ -69,6 +69,10 @@ var LandingPage = React.createClass({
 		socket.on('resetConfirm', function (r) {
 			socket.emit('locateReq');
 		})
+		socket.on('netpoll', function(m){
+			//console.log(['73',m])
+			self.onNetpoll(m.data, m.det)
+		})
 		socket.on('prefs', function(f) {
 			console.log(f)
 			var detL = self.state.detL
@@ -123,6 +127,12 @@ var LandingPage = React.createClass({
 		socket.on('logOut', function(){
 			self.setState({curUser:'', level:0})
 		})
+	},
+	onNetpoll: function(e,d){
+		console.log([e,d])
+		if(this.refs.dv){
+			this.refs.dv.onNetpoll(e,d)
+		}
 	},
 	onRMsg: function (e,d) {
 		console.log([e,d])
@@ -2524,7 +2534,7 @@ var DetectorView = React.createClass({
 		}
 		minMq.addListener(this.listenToMq);
 		var interceptor = (this.props.det.board_id == 4);
-		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, 
+		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:[],
 		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, peak:0, rej:0, phase:0, interceptor:interceptor}
 	},
 	componentDidMount: function () {
@@ -2566,6 +2576,22 @@ var DetectorView = React.createClass({
 		}else if(data[1] == 24){
 			console.log(data)
 		}
+	},
+	onNetpoll: function(e,d){
+		if(this.props.det.ip != d.ip){
+			return;	
+		}
+		console.log(['2600',e])
+		var nps = this.state.netpoll
+		if(nps.length == 15){
+			nps.splice(0,1);
+		}
+		nps.push(e);
+		this.setState({netpoll:nps})
+		//this.setState()
+		/*if(this.refs.np){
+			this.refs.np.onNetpoll(e)
+		}*/
 	},
 	listenToMq: function () {
 		// body...
@@ -3101,7 +3127,7 @@ var DetectorView = React.createClass({
 		var dg = <DummyGraph ref='dg' canvasId={'dummyCanvas'} int={this.state.interceptor}/>
 		var ce =''// <ConcreteElem h={400} w={400} concreteId={'concreteCanvas'} int={this.state.interceptor}/>
 	 	var lstyle = {height: 72,marginRight: 20}
-	 	var np = (<NetPollView ref='np' eventCount={15}/>)
+		var np = (<NetPollView ref='np' eventCount={15} events={this.state.netpoll}/>)
 		if(!this.state.minW){
 			lstyle = { height: 60, marginRight: 15}
 		}
@@ -3165,7 +3191,9 @@ var NetPollView = React.createClass({
 	getInitialState: function () {
 		return({events:[]})
 	},
-
+	onNetpoll: function(e){
+		this.pushEvent(e)
+	},
 	pushEvent: function (e) {
 		// body...
 		var events = this.state.events
@@ -3177,11 +3205,11 @@ var NetPollView = React.createClass({
 	},
 	dummyEvent: function () {
 		// body...
-		this.pushEvent({timeStamp:(new Date(Date.now())).toUTCString(), event:'Reject - dummy'})
+		//this.pushEvent({string:(new Date(Date.now())).toUTCString() + 'Reject - dummy'})
 	},
 	render:function () {
-		var events = this.state.events.map(function(e){
-			return (<tr><td>{e.timeStamp}</td><td>{e.event}</td></tr>)
+		var events = this.props.events.map(function(e){
+			return (<tr><td>{e.string}</td></tr>)
 		})
 		// body...
 		return (<div>
