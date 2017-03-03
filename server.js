@@ -16,7 +16,7 @@ const crypto = require('crypto')
 const parser = require('http-string-parser')
 const zlib = require('zlib')
 const unzipResponse = require('unzip-response')
-
+const NetPollEvents = require('./netpoll_events_server.js')
 
 var db = flatfile('./dbs/users.db')
 
@@ -39,6 +39,7 @@ var cur = Date.now()
 
 let passocs = {}
 let rassocs = {}
+let nassocs = {}
 let rconns = {}
 let dsp_ips = []
 
@@ -46,6 +47,13 @@ function load_vdef_parameters(json){
  // console.log(json)
   return json;
 }
+function write_netpoll_events(message, ip){
+  console.log("Writing NetpollEvents from " + ip);
+  console.log(message);
+  var msg = {det:{ip:ip}, data:message}
+  relayNetPoll(msg)
+}
+
 function initSocks(arr){
   dsp_ips = []
   console.log('dsp_ips')
@@ -105,6 +113,14 @@ function nextSock(ip){
                 console.log('this should be alright')
                var vdef = eval(rawData)
                vdefs[ip] = vdef;
+               console.log('netpollhandler: ' + ip)
+               nphandlers[ip] = new NetPollEvents(ip, vdef, function(_m,_ip){
+               // socket.emit('netpoll', {message:_m,ip:_ip});
+                write_netpoll_events(_m,_ip)
+              //  var msg = {det:{ip:_ip}, msg:_m}
+               // relayNetPoll(msg)
+              });
+               //console.log(nphandlers)
                  nextSock(ip);
         
                }
@@ -217,7 +233,9 @@ function nextSock(ip){
                 console.log('this should be alright')
                var vdef = eval(rawData)
                      vdefs[connn.remoteAddress] = vdef;
-         
+
+                 nphandlers[connn.remoteAddress] = new NetPollEvents(connn.remoteAddress, vdef, write_netpoll_events);
+               
                 nextSock(connn.remoteAddress);
          
                }
@@ -245,6 +263,12 @@ function relayRpcMsg(packet){
     rassocs[pid].relay(packet);
   }
 }
+function relayNetPoll(packet){
+  console.log('relay net poll')
+  for(var pid in nassocs){
+    nassocs[pid].relay(packet)
+  }
+}
 function sendRpcMsg(packet){
   for(var pid in rassocs){
     rassocs[pid].send(packet)
@@ -252,8 +276,8 @@ function sendRpcMsg(packet){
 }
 
 function toArrayBuffer(buffer) {
-//	console.log('toArrayBuffer')
-//	console.log(buffer)
+//  console.log('toArrayBuffer')
+//  console.log(buffer)
     var ab = new ArrayBuffer(buffer.byteLength);
   //  console.log(buffer.byteLength)
     //console.log('why')
@@ -287,7 +311,7 @@ class FtiHelper{
     })
   }
   scan_for_dsp_board(callBack){
-  	console.log('scan')
+    console.log('scan')
     arloc.ArmLocator.scan(1000, function(e){
      // console.log(e)
       callBack(e)
@@ -325,11 +349,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
 http.listen(app.get('port'), function(){
-	console.log('Server started: http://localhost:' + app.get('port') + '/');
+  console.log('Server started: http://localhost:' + app.get('port') + '/');
 
 });
 let clients = {};
 let vdefs = {};
+let nphandlers = {}
 io.on('connection', function(socket){ 
   let loginLevel = 0;
   let curUser = '';
@@ -348,9 +373,13 @@ io.on('connection', function(socket){
     var relayRpcFunc = function(p){
       socket.emit('rpcMsg',p)
     }
+    var relayNetFunc = function(p){
+      socket.emit('netpoll',p)
+    }
       console.log(socket.id)
       passocs[socket.id] = {relay:relayFunc}
       rassocs[socket.id] = {relay:relayRpcFunc}
+      nassocs[socket.id] = {relay:relayNetFunc}
 
 //console.log(socket)
 //var client = new WebSocketClient();
