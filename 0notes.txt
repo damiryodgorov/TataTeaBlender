@@ -32,3 +32,8 @@ Test support, some size changes
 --170221
 
 Bugfixes, etc
+
+--170303
+
+Netpollview added
+

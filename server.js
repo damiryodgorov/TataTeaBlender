@@ -16,7 +16,7 @@ const crypto = require('crypto')
 const parser = require('http-string-parser')
 const zlib = require('zlib')
 const unzipResponse = require('unzip-response')
-
+const NetPollEvents = require('./netpoll_events_server.js')
 
 var db = flatfile('./dbs/users.db')
 
@@ -39,6 +39,7 @@ var cur = Date.now()
 
 let passocs = {}
 let rassocs = {}
+let nassocs = {}
 let rconns = {}
 let dsp_ips = []
 
@@ -46,6 +47,13 @@ function load_vdef_parameters(json){
  // console.log(json)
   return json;
 }
+function write_netpoll_events(message, ip){
+  console.log("Writing NetpollEvents from " + ip);
+  console.log(message);
+  var msg = {det:{ip:ip}, data:message}
+  relayNetPoll(msg)
+}
+
 function initSocks(arr){
   dsp_ips = []
   console.log('dsp_ips')
@@ -105,6 +113,14 @@ function nextSock(ip){
                 console.log('this should be alright')
                var vdef = eval(rawData)
                vdefs[ip] = vdef;
+               console.log('netpollhandler: ' + ip)
+               nphandlers[ip] = new NetPollEvents(ip, vdef, function(_m,_ip){
+               // socket.emit('netpoll', {message:_m,ip:_ip});
+                write_netpoll_events(_m,_ip)
+              //  var msg = {det:{ip:_ip}, msg:_m}
+               // relayNetPoll(msg)
+              });
+               //console.log(nphandlers)
                  nextSock(ip);
         
                }
@@ -217,7 +233,9 @@ function nextSock(ip){
                 console.log('this should be alright')
                var vdef = eval(rawData)
                      vdefs[connn.remoteAddress] = vdef;
-         
+
+                 nphandlers[connn.remoteAddress] = new NetPollEvents(connn.remoteAddress, vdef, write_netpoll_events);
+               
                 nextSock(connn.remoteAddress);
          
                }
@@ -243,6 +261,12 @@ function relayRpcMsg(packet){
   for(var pid in rassocs){
     // console.log(pid)
     rassocs[pid].relay(packet);
+  }
+}
+function relayNetPoll(packet){
+  console.log('relay net poll')
+  for(var pid in nassocs){
+    nassocs[pid].relay(packet)
   }
 }
 function sendRpcMsg(packet){
@@ -330,6 +354,7 @@ http.listen(app.get('port'), function(){
 });
 let clients = {};
 let vdefs = {};
+let nphandlers = {}
 io.on('connection', function(socket){ 
   let loginLevel = 0;
   let curUser = '';
@@ -348,9 +373,13 @@ io.on('connection', function(socket){
     var relayRpcFunc = function(p){
       socket.emit('rpcMsg',p)
     }
+    var relayNetFunc = function(p){
+      socket.emit('netpoll',p)
+    }
       console.log(socket.id)
       passocs[socket.id] = {relay:relayFunc}
       rassocs[socket.id] = {relay:relayRpcFunc}
+      nassocs[socket.id] = {relay:relayNetFunc}
 
 //console.log(socket)
 //var client = new WebSocketClient();
