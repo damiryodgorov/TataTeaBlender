@@ -2988,7 +2988,12 @@ var DetectorView = React.createClass({
 	sendPacket: function (n,v) {
 		console.log([n,v])
 		if(typeof n == 'string'){
-			if(n == 'Sens'){
+			if(n== 'Sens_A'){
+				var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
+			console.log(packet)
+			var buf = new Uint8Array(packet)
+			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+			}else if(n == 'Sens'){
 			console.log(this.props.ip)
 			var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
 			console.log(packet)
