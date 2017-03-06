@@ -160,23 +160,8 @@ var LandingPage = React.createClass({
 		}
 	},
 	onParamMsg: function (e,d) {
-
-		var self = this;
-   		var msg = e.data;
-   		var data = new Uint8Array(msg);
-   		var dv = new DataView(msg);
-		var lcd_type = dv.getUint8(0);
-  	    var n = data.length;
-		var prodArray = [];
-		var res = vdefByIp[d.ip];
-		for(var i = 0; i<((n-1)/2); i++){
-			prodArray[i] = dv.getUint16(i*2 + 1);	
-		}
-		if(res){
-			var Vdef = res[0]
-			var pVdef = res[1]
-			if(lcd_type == 1)
-			{
+		if(vdefByIp[d.ip]){
+			
 				if(this.refs[d.ip]){
 					this.refs[d.ip].onParamMsg(e);
 				}else{
@@ -194,25 +179,7 @@ var LandingPage = React.createClass({
   						}
   					}
   				}
-  			}else if(lcd_type == 2){
-				if(this.refs[d.ip]){
-					this.refs[d.ip].onParamMsg(e)
-				}else{
-  				var ind = -1;
-  				this.state.mbunits.forEach(function(m,i){
-  				m.banks.forEach(function (b) {
-  						if(b.ip == d.ip){
-  							ind = i;
-  						}
-  					})
-  				}) 
-  				if(ind != -1){
-  					if(this.refs['mbu' + ind]){
-  						this.refs['mbu'+ind].onParamMsg(e,d)
-  					}
-  					}
-  				}
-    	}
+  			
 		
 		if(this.refs.dv){
 			this.refs.dv.onParamMsg(e,d)
@@ -298,10 +265,8 @@ var LandingPage = React.createClass({
 		this.setState({tmpMB:mbUnits, detL:detL})
 	},
 	cancel: function () {
+		console.log(['268', 'cancel'])
 		var detL = this.state.detL;
-		this.state.tmpS.banks.forEach(function (b) {
-			detL[b.mac] = b
-		})
 		this.state.tmpMB.banks.forEach(function (b) {
 			detL[b.mac]= b
 		})
@@ -843,8 +808,9 @@ var SettingsDisplay = React.createClass({
 			this.setState({font:0})
 		}
 	},
-	handleItemclick: function(dat){
-		this.props.onHandleClick(dat);
+	handleItemclick: function(dat, n){
+
+		this.props.onHandleClick(dat, n);
 	},
 	parseInfo: function(sys, prd){
 		if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
@@ -1243,6 +1209,7 @@ var SettingItem = React.createClass({
 				}else if(Array.isArray(this.props.data[0])){
 					val = []
 					pram = []
+
 					this.props.data.forEach(function(d,i){
 						val[i] = []
 						pram[i] = []
@@ -1259,7 +1226,7 @@ var SettingItem = React.createClass({
 						label = true
 					}
 				}else{
-					console.log(['1231', self.props.name])
+					console.log(['1231', self.props.lkey, this.props.data])
 					val = []
 					pram = []
 					this.props.data.forEach(function(d,i){
@@ -1278,12 +1245,16 @@ var SettingItem = React.createClass({
 
 
 				val = [this.getValue(this.props.data, this.props.lkey)]
-				console.log(['1250',this.props.lkey])
+				console.log(['1250',this.props.lkey, typeof this.props.data])
+				console.log(['1251', pVdef, pram])
 				if(typeof pVdef[0][this.props.lkey] != 'undefined'){
 					pram = [pVdef[0][this.props.lkey]]
 				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
 					pram = [pVdef[1][this.props.lkey]]
+				}else{
+
 				}
+				console.log(['1252',pram])
 				if(pram[0]['@labels']){
 					label = true
 				}
@@ -1320,8 +1291,6 @@ var KeyboardInputWrapper = React.createClass({
 })
 var NestedEditControl = React.createClass({
 	getInitialState: function(){
-		console.log('slice 2 d array')
-		console.log(this.props.data.slice(0))
 		return ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size})
 	},
 	componentWillReceiveProps:function(newProps){
@@ -2082,6 +2051,7 @@ var StatBarMB = React.createClass({
    		var dv = new DataView(msg);
 		var lcd_type = dv.getUint8(0);
   	    var n = data.length;
+  	    data = null
 		var prodArray = [];
 		var res = vdefByIp[this.props.unit.ip]
 		for(var i = 0; i<((n-1)/2); i++){
@@ -2117,6 +2087,8 @@ var StatBarMB = React.createClass({
 				}
 			}
 		}
+		dv = null;
+		prodArray = null;
 	},
 	render: function(){
 
@@ -2272,11 +2244,13 @@ var SingleUnit = React.createClass({
    		var dv = new DataView(msg);
 		var lcd_type = dv.getUint8(0);
   	    var n = data.length;
+  	    data = null
 		var prodArray = [];
 		var res = vdefByIp[this.props.unit.ip]
 		for(var i = 0; i<((n-1)/2); i++){
 			prodArray[i] = dv.getUint16(i*2 + 1);	
 		}
+		dv = null;
 		if(res){
 			var pVdef = res[1]
 			if(lcd_type == 1){
@@ -2307,7 +2281,7 @@ var SingleUnit = React.createClass({
 				}
 			}
 		}
-		
+		prodArray = null;
 	},
 	onFault: function () {
 		this.setState({fault:!this.state.fault})
@@ -2913,6 +2887,10 @@ var DetectorView = React.createClass({
     				}
 				}
    		}
+   		data = null;
+   		dv = null;
+   		prodArray = null;
+
    		
 	},
 	setLEDS: function(det_a,prod_a,prodhi_a){
@@ -3133,6 +3111,7 @@ var DetectorView = React.createClass({
 		var ce =''// <ConcreteElem h={400} w={400} concreteId={'concreteCanvas'} int={this.state.interceptor}/>
 	 	var lstyle = {height: 72,marginRight: 20}
 		var np = (<NetPollView ref='np' eventCount={15} events={this.state.netpoll}/>)
+
 		if(!this.state.minW){
 			lstyle = { height: 60, marginRight: 15}
 		}
