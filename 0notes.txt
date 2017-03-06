@@ -40,3 +40,7 @@ Netpollview added
 --170303-dev
 
 Start dev branch
+
+--170306-dev
+
+bugfix: cancel add new detector was broken, fixed.

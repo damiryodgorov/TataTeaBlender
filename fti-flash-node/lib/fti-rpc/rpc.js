@@ -49,7 +49,7 @@ class FtiRpc{
 		var packet = this.frame(payload);
 		this.port.write(packet);
 		this.port.callBack = function(){
-			console.log('no callBack set')
+//			console.log('no callBack set')
 		}
 	}
 	payloadForRpc(func,args,string){
@@ -278,7 +278,9 @@ class FtiRpcUdpSocket{
 	constructor(host,port){
 		port = port || 10001
 		this.rem_ip = host;
-		this.callBack = function(){console.log('no callback set')}
+		this.callBack = function(){
+		//	console.log('no callback set')
+		}
 		this.rem_port = port;
 		this.socket = dgram.createSocket('udp4');
 		this.socket.bind(0,'0.0.0.0', function(){
@@ -293,9 +295,9 @@ class FtiRpcUdpSocket{
 	}
 	write(packet){
 		
-		console.log('writing packet')
+//		console.log('writing packet')
 		this.socket.send(packet, 0, packet.length, this.rem_port, this.rem_ip, function(){
-			console.log('packet written')
+//			console.log('packet written')
 		});
 
 	}

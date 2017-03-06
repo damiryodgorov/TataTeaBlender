@@ -265,10 +265,8 @@ var LandingPage = React.createClass({
 		this.setState({tmpMB:mbUnits, detL:detL})
 	},
 	cancel: function () {
+		console.log(['268', 'cancel'])
 		var detL = this.state.detL;
-		this.state.tmpS.banks.forEach(function (b) {
-			detL[b.mac] = b
-		})
 		this.state.tmpMB.banks.forEach(function (b) {
 			detL[b.mac]= b
 		})
@@ -3041,7 +3039,12 @@ var DetectorView = React.createClass({
 	sendPacket: function (n,v) {
 		console.log([n,v])
 		if(typeof n == 'string'){
-			if(n == 'Sens'){
+			if(n== 'Sens_A'){
+				var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
+			console.log(packet)
+			var buf = new Uint8Array(packet)
+			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+			}else if(n == 'Sens'){
 			console.log(this.props.ip)
 			var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
 			console.log(packet)
