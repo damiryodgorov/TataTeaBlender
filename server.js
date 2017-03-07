@@ -514,10 +514,14 @@ for(var i = 0; i < dspips.length;i++){
             }
        })
   socket.on('getPrefs', function (f) {
+    if(fs.existsSync(__dirname + '/json/prefData.json')){
     fs.readFile(__dirname + '/json/prefData.json', (err,data) =>{
       prefs = JSON.parse(data)
       socket.emit('prefs', prefs)
     })
+    }else{
+      socket.emit('prefs',prefs)
+    }
     // body...
   })
   socket.on('getTestFss', function(f){
