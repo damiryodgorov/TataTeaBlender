@@ -44,3 +44,7 @@ Start dev branch
 --170306-dev
 
 bugfix: cancel add new detector was broken, fixed.
+
+--170307-d1 
+
+modified modal, now will close on clicking outside

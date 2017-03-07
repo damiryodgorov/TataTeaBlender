@@ -2,6 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom')
 import {ConcreteElem,CanvasElem,KeyboardInput,TreeNode} from './components.jsx';
 var injectTapEventPlugin = require('react-tap-event-plugin')
+var onClickOutside = require('react-onclickoutside');
 //import {createStore} from 'redux'
 
 
@@ -1920,16 +1921,36 @@ var Modal = React.createClass({
 		this.setState({show:!this.state.show})
 	},
 	render: function () {
+		var cont = '';
+		if(this.state.show){
+				cont = (<ModalCont toggle={this.toggle}>
+			{this.props.children}
+		</ModalCont>)
+		}
 		return(<div className={this.state.className} hidden={!this.state.show}>
-				<div className='modal-outer'>
+			{cont}
+	</div>)
+	}
+})
+var ModalCont = onClickOutside(React.createClass({
+	toggle: function(){
+		this.props.toggle();
+	},
+	handleClickOutside: function(e){
+		this.props.toggle();	
+	},
+	render: function(){
+				return (<div className='modal-outer' >
 				<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
 				<div className='modal-content'>
 					{this.props.children}
 				</div>
-				</div>
-			</div>)
-	}
+				</div>)
+	
+	},
+
 })
+)
 
 var MultiBankUnit = React.createClass({
 	getInitialState: function () {
