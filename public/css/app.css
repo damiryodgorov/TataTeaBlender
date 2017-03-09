@@ -110,14 +110,14 @@ li {
 .modal-content{
     background-color: #fefefe;
     /* margin: 15% auto; */
-    margin-top: -30px;
+    /* margin-top: -30px;*/
     padding: 20px;
     border: 1px solid #888;
     /* width: 80%; */
     border-radius: 10px;
     top: 0px;
     position: relative;
-   /* z-index: -1;/* Could be more or less, depending on screen size */
+    /* z-index: -1;/* Could be more or less, depending on screen size */
 }
 .modal-close{
     left: -24px;

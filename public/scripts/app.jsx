@@ -45,7 +45,7 @@ var LandingPage = React.createClass({
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
 		}
-		return ({currentPage:'landing', curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, 
+		return ({currentPage:'landing',netpolls:{}, curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, 
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]}})
 	},
@@ -92,6 +92,7 @@ var LandingPage = React.createClass({
 		socket.on('locatedResp', function (e) {
 			var dets = self.state.detL;
 			var macs = self.state.macList.slice(0);
+			var nps = self.state.netpolls;
 			if(e.length == 1){
 
 			}
@@ -109,9 +110,12 @@ var LandingPage = React.createClass({
 			self.state.mbunits.forEach(function(u){
 				u.banks.forEach(function(b) {
 					dets[b.mac] = null;
+					if(!nps[b.ip]){
+						nps[b.ip] = []
+					}
 				})
 			})
-			self.setState({dets:e, detL:dets, macList:macs})
+			self.setState({dets:e, detL:dets, macList:macs, netpolls:nps})
 		});
 		
 		socket.on('paramMsg', function(data) {
@@ -131,6 +135,7 @@ var LandingPage = React.createClass({
 	},
 	onNetpoll: function(e,d){
 		console.log([e,d])
+
 		if(this.refs.dv){
 			this.refs.dv.onNetpoll(e,d)
 		}
@@ -217,8 +222,14 @@ var LandingPage = React.createClass({
 	},
 	addMBUnit: function (mb) {
 		var mbunits = this.state.mbunits
+		var nps = this.state.netpolls
 		mbunits.push(mb)
-		this.setState({mbunits:mbunits})
+		mb.banks.forEach(function(b){
+			if(!nps[b.ip]){
+				nps[b.ip] = []
+			}
+		})
+		this.setState({mbunits:mbunits, netpolls:nps})
 	},
 	editMb:function (i) {
 		
@@ -276,6 +287,7 @@ var LandingPage = React.createClass({
 	submitMB: function(){
 		var mbunits = this.state.mbunits;
 		mbunits.push(this.state.tmpMB)
+
 		this.saveSend(mbunits);
 		this.setState({curModal:'add', tmpMB:{name:'NEW',type:'mb',banks:[]}})
 	},
@@ -1940,8 +1952,9 @@ var ModalCont = onClickOutside(React.createClass({
 		this.props.toggle();	
 	},
 	render: function(){
+		var button = 	<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
+			
 				return (<div className='modal-outer' >
-				<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
 				<div className='modal-content'>
 					{this.props.children}
 				</div>
@@ -2679,6 +2692,35 @@ var DetectorView = React.createClass({
     				}
     			}
     			sysSettings = sysRec;
+    			var cob = [];
+				for (var v in cVdf){
+					if(!cob[v]){
+						cob[v] = {}; 
+					}
+					for(var p in cVdf[v]){
+						if(!cVdf[v][p]['@name']){
+							cob[v][p] = {};
+							for(var t in cVdf[v][p]){
+								//cob[v][p][t]
+								var par =  cVdf[v][p][t]
+								if(par['@rec'] == 0){
+									cob[v][p][t] = sysSettings[par['@name']]
+								}else if(par['@rec']){
+									cob[v][p][t] = prodSettings[par['@name']]
+								}
+							}
+						}else{
+							var par = cVdf[v][p]
+								if(par['@rec'] == 0){
+									cob[v][p] = sysSettings[par['@name']]
+								}else if(par['@rec']){
+									cob[v][p] = prodSettings[par['@name']]
+								}
+							
+						}
+					}
+				}
+				combinedSettings = cob;
     			if(this.state.currentView == "SettingsDisplay"){
 					if(this.refs.sd){
 						this.refs.sd.parseInfo(sysSettings, prodSettings)	
@@ -2746,7 +2788,7 @@ var DetectorView = React.createClass({
 						}
 					}
 				}
-				for(var c in nVdf){
+			/*	for(var c in nVdf){
 
 					if(c != 'TestConfig'){
 					if(!comb[c]){
@@ -2839,10 +2881,10 @@ var DetectorView = React.createClass({
 						
 						
 					}
-				}
+				}*/
 				combinedSettings = cob;
 				console.log('combined settings here:')
-				console.log(comb)
+				//console.log(comb)
 				if(this.state.currentView == "SettingsDisplay"){
 					if(this.refs.sd){
 						this.refs.sd.parseInfo(sysSettings, prodSettings)	
@@ -3277,6 +3319,7 @@ var NetPollView = React.createClass({
 		if(events.length == this.props.eventCount){
 			events.splice(0,1);
 		}
+		console.log(['3280',e])
 		events.push(e);
 		this.setState({events:events})
 	},
