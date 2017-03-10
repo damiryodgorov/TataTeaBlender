@@ -70,10 +70,25 @@ var KeyboardInput = React.createClass({
 		
 	},
 	onFocus: function(e){
-		this.setState({open:true})
+		if(ftiTouch){
+			console.log('74 components.jsx')
+
+			this.setState({open:true})
+			if(this.props.onFocus){
+				this.props.onFocus();
+			}
+		}
 	},
 	onRequestClose:function(e){
-		this.setState({open:false})
+		if(ftiTouch){
+
+
+			console.log(['79 comp'])
+			this.setState({open:false})
+			if(this.props.onRequestClose){
+				this.props.onRequestClose();
+			}
+		}
 	},
 	render:function () {
 		//console.log($('#keyboardinput'))

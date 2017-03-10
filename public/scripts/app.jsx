@@ -135,10 +135,18 @@ var LandingPage = React.createClass({
 	},
 	onNetpoll: function(e,d){
 		console.log([e,d])
-
+		var nps = this.state.netpolls
+		if(nps[d.ip]){
+			if(nps[d.ip].length == 15){
+				nps[d.ip].splice(0,1);
+		
+			}
+			nps[d.ip].push(e)
+		}
 		if(this.refs.dv){
 			this.refs.dv.onNetpoll(e,d)
 		}
+		this.setState({netpolls:nps})
 	},
 	onRMsg: function (e,d) {
 		console.log([e,d])
@@ -414,7 +422,7 @@ var LandingPage = React.createClass({
 			var banks = MB.banks.map(function (b,i) {
 					return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)	
 			})
-			var	nameEdit = (<KeyboardInput onChange={this.changetMBName} tid='mbtname' value={MB.name}/>)
+			var	nameEdit = (<KeyboardInput onFocus={this.addFocus} onRequestClose={this.addClose} onChange={this.changetMBName} tid='mbtname' value={MB.name}/>)
 			return (<div><label>Name:</label>{nameEdit}
 					<table><tbody><tr>
 					<th>Available Detectors</th><th>Banks</th>
@@ -483,6 +491,25 @@ var LandingPage = React.createClass({
 	configAccounts: function(){
 		this.setState({currentPage:'userSetup'})
 	},
+	onLoginFocus: function(){
+		this.refs.logIn.setState({override:true})
+	},
+	onLoginClose: function(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.logIn.setState({override:false})	
+		}, 100)
+		
+	},
+	addFocus: function(){
+		this.refs.findDetModal.setState({override:true})
+	},
+	addClose: function(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.findDetModal.setState({override:false})	
+		}, 100)
+	},
 	render: function () {
 		var cont;
 		if(this.state.currentPage == 'landing'){
@@ -495,7 +522,7 @@ var LandingPage = React.createClass({
 		}
 		return (<div>
 			<Modal ref='logIn'>
-				<LogInControl level={this.state.level} userName={this.state.curUser}/>
+				<LogInControl onKeyFocus={this.onLoginFocus} onRequestClose={this.onLoginClose} level={this.state.level} userName={this.state.curUser}/>
 				<button onClick={this.configAccounts}>Configure Accounts</button>
 			</Modal>
 			{cont}
@@ -602,6 +629,12 @@ var LogInControl = React.createClass({
 			}
 		}
 	},
+	onFocus: function(){
+		this.props.onKeyFocus();
+	},
+	onRequestClose: function(){
+		this.props.onRequestClose();
+	},
 	passwordChange: function(e){
 		if(typeof e == 'string'){
 
@@ -629,8 +662,8 @@ var LogInControl = React.createClass({
 		return (<div>
 			<table>
 				<tbody>
-					<tr><td>Username:</td><td><KeyboardInput onChange={this.userNameChange} tid='username' value={this.state.userName}/></td></tr>
-					<tr><td>Password:</td><td><KeyboardInput onChange={this.passwordChange} tid='password' value={this.state.password}/></td></tr>
+					<tr><td>Username:</td><td><KeyboardInput onFocus={this.onFocus} onRequestClose={this.onRequestClose} onChange={this.userNameChange} tid='username' value={this.state.userName}/></td></tr>
+					<tr><td>Password:</td><td><KeyboardInput onFocus={this.onFocus} onRequestClose={this.onRequestClose} onChange={this.passwordChange} tid='password' value={this.state.password}/></td></tr>
 				</tbody>
 			</table>
 			<label style={{color:'red'}}>{this.state.alert}</label>
@@ -1927,11 +1960,15 @@ var Modal = React.createClass({
 		if(this.props.className){
 			klass = this.props.className
 		}
-		return({className:klass, show:false})
+		return({className:klass, show:false, override:false})
 	},
 	toggle: function () {
-		this.setState({show:!this.state.show})
+		if(!this.state.override){
+			this.setState({show:!this.state.show})
+		}
+		
 	},
+
 	render: function () {
 		var cont = '';
 		if(this.state.show){
@@ -1945,11 +1982,17 @@ var Modal = React.createClass({
 	}
 })
 var ModalCont = onClickOutside(React.createClass({
+	getInitialState: function(){
+		return({keyboardVisible:false})
+	},
 	toggle: function(){
 		this.props.toggle();
 	},
 	handleClickOutside: function(e){
-		this.props.toggle();	
+		if(!this.state.keyboardVisible){
+			this.props.toggle();	
+		}
+		
 	},
 	render: function(){
 		var button = 	<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
@@ -3441,6 +3484,15 @@ var DetMainInfo = React.createClass({
 			this.submitTmpSns();
 		}
 	},
+	sensFocus: function(){
+		this.refs.sensEdit.setState({override:true})
+	},
+	sensClose: function(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.sensEdit.setState({override:false})	
+		}, 100)
+	},
 	render: function () {
 			
 		console.log('render here')
@@ -3492,7 +3544,7 @@ var DetMainInfo = React.createClass({
 							{prodList}
 						</Modal>
 						<Modal ref='sensEdit'>
-							<div>Sensitivity: <KeyboardInput tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/>
+							<div>Sensitivity: <KeyboardInput onFocus={this.sensFocus} onRequestClose={this.sensClose} tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/>
 							<button onClick={this.submitTmpSns}>OK</button><button onClick={this.cancel}>Cancel</button></div>
 						</Modal>
 						<Modal ref='testModal'>
