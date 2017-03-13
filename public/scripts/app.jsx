@@ -1963,8 +1963,13 @@ var Modal = React.createClass({
 		return({className:klass, show:false, override:false})
 	},
 	toggle: function () {
+		var self = this;
 		if(!this.state.override){
-			this.setState({show:!this.state.show})
+			this.setState({show:!this.state.show, override:true})
+			setTimeout(function(){
+				//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
+				self.setState({override:false})
+			},50)
 		}
 		
 	},
