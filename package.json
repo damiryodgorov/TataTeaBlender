@@ -33,6 +33,7 @@
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
     "socket.io": "^1.5.1",
+    "tftp": "^0.1.2",
     "unzip-response": "^2.0.1",
     "virtual-keyboard": "^1.26.11",
     "websocket": "^1.0.23"

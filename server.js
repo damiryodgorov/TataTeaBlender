@@ -15,10 +15,16 @@ const flatfile = require('flat-file-db')
 const crypto = require('crypto')
 const parser = require('http-string-parser')
 const zlib = require('zlib')
+const unzip = zlib.createGunzip();
 const unzipResponse = require('unzip-response')
 const NetPollEvents = require('./netpoll_events_server.js')
+const tftp = require('tftp');
+const PassThrough = require('stream').PassThrough;
+
 
 var db = flatfile('./dbs/users.db')
+
+
 
 db.on('open', function() {
   //db.clear()
@@ -92,6 +98,39 @@ function nextSock(ip){
           clients[conn.remoteAddress][1].socket.connect('ws://'+conn.remoteAddress+'/rpc');},100) 
          clients[conn.remoteAddress][1].socket.on('connect', function(connn){
           console.log('connected')
+                /*    var tclient = tftp.createClient({host:conn.remoteAddress})
+                    var get = tclient.createGetStream('/flash/vdef.json')
+                    //var str = new PassThrough();
+                   // str.headers = {'content-encoding':'gzip'}
+                   //get.pipe(unzip).pipe(str)
+
+                   //console.log(get)
+                   var rawVdef = [];
+                    get.on('data', (chnk)=>{
+                      rawVdef.push(chnk)//zlib.gunzipSync(chnk);
+                    })
+                    get.on('end', ()=>{
+                     // console.log(get.headers['content-encoding'])
+                     var buffer = Buffer.concat(rawVdef)
+                     var buf2 = buffer.slice(160)
+                     zlib.unzip(buf2, function(er,b){
+                          //console.log(b.toString())
+                          var vdef = eval(b.toString())
+                          console.log(vdef)
+                      
+                     })
+                    })
+                 /*    fs.readFile(__dirname+'/json/vdef160621.json.gz', function(e,d){
+                      zlib.unzip(d, function(er,b){
+                        console.log(b.toString())
+                      })
+                    })*/
+          /*tclient.get('/flash/vdef.json',__dirname+'/tftpvdef.json',function(e,a){
+            console.log('getting vdef json')
+            console.log(a)
+            console.log('this is e')
+            console.log(e)
+          });*/
          try{
           HTTP.get('http://'+connn.remoteAddress+'/vdef', (res) =>{
             console.log('receiving response')
@@ -213,7 +252,13 @@ function nextSock(ip){
                       relayRpcMsg(packet)
 
             })
-     
+        /*  var tclient = tftp.createClient({host:conn.remoteAddress})
+          tclient.get('/flash/vdef.json',__dirname+'/tftpvdef.json',function(e,a){
+            console.log('getting vdef json')
+            console.log(a)
+            console.log('this is e')
+            console.log(e)
+          });*/
           HTTP.get('http://'+conn.remoteAddress+'/vdef', (res) =>{
              let ip = conn.remoteAddress;
                console.log(ip)

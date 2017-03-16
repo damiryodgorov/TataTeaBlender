@@ -46,7 +46,7 @@ var LandingPage = React.createClass({
 			mqls[i].addListener(this.listenToMq)
 		}
 		return ({currentPage:'landing',netpolls:{}, curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, 
-			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:0,
+			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:5,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]}})
 	},
 	listenToMq: function (argument) {
@@ -690,6 +690,9 @@ var TickerBox = React.createClass({
 			tickerVal = tickerVal + 50
 		}
 		var color = 'green';
+		if(this.props.color){
+			color = this.props.color
+		}
 		if(Math.abs(tickerVal)>50){
 			color = 'red';
 		}
@@ -1947,8 +1950,8 @@ var StatBarInt = React.createClass({
 	},
 	render: function(){
 		return (<div className='statBar'>
-			<TickerBox ref='ta' int={true}/>
-			<TickerBox ref='tb' int={true}/>
+			<TickerBox ref='ta' int={true} color="purple"/>
+			<TickerBox ref='tb' int={true} color="blue"/>
 			<LEDBarInt ref='lb'/>
 			</div>)
 	}
@@ -1982,6 +1985,11 @@ var Modal = React.createClass({
 		</ModalCont>)
 		}
 		return(<div className={this.state.className} hidden={!this.state.show}>
+			<div className='modal-x'>
+			 	 <svg viewbox="0 0 40 40">
+    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
+  				</svg>
+			</div>
 			{cont}
 	</div>)
 	}
@@ -2753,7 +2761,7 @@ var DetectorView = React.createClass({
 								var par =  cVdf[v][p][t]
 								if(par['@rec'] == 0){
 									cob[v][p][t] = sysSettings[par['@name']]
-								}else if(par['@rec']){
+								}else if(par['@rec'] == 1){
 									cob[v][p][t] = prodSettings[par['@name']]
 								}
 							}
@@ -2761,7 +2769,7 @@ var DetectorView = React.createClass({
 							var par = cVdf[v][p]
 								if(par['@rec'] == 0){
 									cob[v][p] = sysSettings[par['@name']]
-								}else if(par['@rec']){
+								}else if(par['@rec'] == 1){
 									cob[v][p] = prodSettings[par['@name']]
 								}
 							
@@ -2821,7 +2829,7 @@ var DetectorView = React.createClass({
 								var par =  cVdf[v][p][t]
 								if(par['@rec'] == 0){
 									cob[v][p][t] = sysSettings[par['@name']]
-								}else if(par['@rec']){
+								}else if(par['@rec'] == 1){
 									cob[v][p][t] = prodSettings[par['@name']]
 								}
 							}
@@ -2829,7 +2837,7 @@ var DetectorView = React.createClass({
 							var par = cVdf[v][p]
 								if(par['@rec'] == 0){
 									cob[v][p] = sysSettings[par['@name']]
-								}else if(par['@rec']){
+								}else if(par['@rec'] == 1){
 									cob[v][p] = prodSettings[par['@name']]
 								}
 							
