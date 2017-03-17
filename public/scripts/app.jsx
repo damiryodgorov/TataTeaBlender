@@ -1027,6 +1027,7 @@ var SettingsDisplay = React.createClass({
 		var backBut = ''
 
 		var catList = []
+		console.log(['1030', combinedSettings])
 		for(var cb in combinedSettings){
 			catList.push(cb)
 		}//['Sensitivity', 'Calibration','Faults','Rej Setup', 'Test','Input','Output','Password','Other'];
@@ -1038,13 +1039,13 @@ var SettingsDisplay = React.createClass({
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[ct,combinedSettings[ct]]} onItemClick={handler} hasContent={true}/>)
+				nodes.push(<SettingItem path={this.state.data} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[ct,combinedSettings[ct]]} onItemClick={handler} hasContent={true}/>)
 			}
 			nav = nodes;
 		}else if(lvl == 1 ){
 
 			var cat = data[0];
-			lab = cat
+			lab = cat//catMap[cat]['@translations']['english']
 			if(accMap[cat]){
 				accLevel = this.state.sysRec[accMap[cat]]
 			}
@@ -1060,21 +1061,21 @@ var SettingsDisplay = React.createClass({
 				if(Array.isArray(list[l])){
 					console.log('1019 - ' + l)
 					if(list[l].length == 2 ){
-						nodes.push((<SettingItem ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
+						nodes.push((<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
 	
 					}else{
-						nodes.push((<SettingItem ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
+						nodes.push((<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
 					}
 					
 				}else if(list[l]['Type'] === 'confObj'){
 					console.log(['conf obj', list[l]])
-					 nodes.push((<SettingItem ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={true} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
+					 nodes.push((<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={true} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
 	
 
 				}else{
 
 
-				nodes.push(<SettingItem ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
+				nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
 				}
 			}
 			nav = (<div className='setNav'>
@@ -1101,7 +1102,7 @@ var SettingsDisplay = React.createClass({
 						if(Array.isArray(data[1][d])){
 							nm = d + data[1]['Index'] + '_'
 						}
-						nodes.push(<SettingItem ip={self.props.dsp} ref={nm} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={nm} name={d} hasChild={false} data={combinedSettings[data[0]][lab][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
+						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={nm} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={nm} name={d} hasChild={false} data={combinedSettings[data[0]][lab][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
 
 					}
 				}
@@ -1114,7 +1115,7 @@ var SettingsDisplay = React.createClass({
 
 				}else if(typeof data[1] == 'object'){
 					console.log(['1058',data])
-					lab = data[2]
+					lab = data[2]//catMap[data[0]+'/'+data[2]]['@translations']['english']
 					for(var d in data[1]){
 
 						var nm = d
@@ -1123,14 +1124,14 @@ var SettingsDisplay = React.createClass({
 								nm = vMap[d]['@translations']['english']['name']
 							}
 						}
-						nodes.push(<SettingItem ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} hasChild={false} data={combinedSettings[data[0]][lab][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
+						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} hasChild={false} data={combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
 					}
 				}
 			}
 			
 		}else if(lvl == 3){
 			nodes = []
-			lab = data[2]
+			lab = data[2]//catMap[data[0]+'/'+data[2]]['@translations']['english']
 			for(var d in data[1]){
 
 						var nm = d
@@ -1139,7 +1140,7 @@ var SettingsDisplay = React.createClass({
 								nm = vMap[d]['@translations']['english']['name']
 							}
 						}
-						nodes.push(<SettingItem ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} hasChild={false} data={combinedSettings[data[0]][lab][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
+						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} hasChild={false} data={combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
 					}
 				backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>{data[0]}</label></div>)
 
@@ -1151,13 +1152,22 @@ var SettingsDisplay = React.createClass({
 	     var className = "menuCategory expanded";
 	    
 	    console.log(lab)
+	    var label = lab
+	    if(lvl == 1){
+	    	label = catMap[data[0]]['@translations']['english']
+	    }else if(lvl == 2){
+
+	    }else if(lvl ==3){
+	    	label = catMap[data[0]+'/'+data[2]]['@translations']['english']
+	    }
+
 	    var tstl = {display:'inline-block', textAlign:'center'}
-	    var titlediv = (<span ><h2 style={{textAlign:'center'}} >{backBut}<div style={tstl}>{lab}</div></h2></span>
+	    var titlediv = (<span ><h2 style={{textAlign:'center'}} >{backBut}<div style={tstl}>{label}</div></h2></span>
 )
 	    if (this.state.font == 1){
-	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:30}} >{backBut}<div style={tstl}>{lab}</div></h2></span>)
+	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:30}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
 	    }else if (this.state.font == 0){
-	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24}} >{backBut}<div style={tstl}>{lab}</div></h2></span>)
+	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
 	    }
 		return(
 			<div className='settingsDiv'>
@@ -1276,15 +1286,67 @@ var SettingItem = React.createClass({
 			}
 			var label = false;
 		if(this.props.hasChild){
-		return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{this.props.name}</label></div>)
+			var namestring = this.props.name;
+			var path = ""
+			if(this.props.path.length > 0){
+				path = this.props.path[0]
+				for(var i=1;i<this.props.path.length;i++){
+					path = path + '/'+this.props.path[i]
+				}
+				path = path +'/'+ namestring;
+			}else{
+				path = namestring
+			}
+			
+			if(typeof catMap[path] != 'undefined'){
+				namestring = catMap[path]['@translations']['english']
+				
+			}
+						
+					
+		return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{namestring}</label></div>)
 		}else{
 			var val, pram;
 			//if(this.props.isArray)
 			//(Array.isArray)
-			if(typeof this.props.data == 'object'){
-				console.log(['1195', this.props.name, this.props.data])
-				return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{this.props.name}</label></div>)
+			var namestring = this.props.name;
 
+			if(typeof this.props.data == 'object'){
+
+				if(typeof this.props.data.param == 'undefined'){
+			var path = ""
+			if(this.props.path.length > 0){
+				path = this.props.path[0]
+				for(var i=1;i<this.props.path.length;i++){
+					path = path + '/'+this.props.path[i]
+				}
+				path = path +'/'+ namestring;
+			}else{
+				path = namestring
+			}
+			
+			if(typeof catMap[path] != 'undefined'){
+				namestring = catMap[path]['@translations']['english']
+				
+			}
+				console.log(['1195', this.props.name, this.props.data])
+				return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{namestring}</label></div>)
+			}else{
+				val = [this.getValue(this.props.data.param, this.props.lkey)]
+				console.log(['1250',this.props.lkey, typeof this.props.data.param])
+				console.log(['1251', pVdef, pram])
+				if(typeof pVdef[0][this.props.lkey] != 'undefined'){
+					pram = [pVdef[0][this.props.lkey]]
+				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
+					pram = [pVdef[1][this.props.lkey]]
+				}else{
+
+				}
+				console.log(['1252',pram])
+				if(pram[0]['@labels']){
+					label = true
+				}	
+			}
 				/*if((this.props.data.length == 2) &&((typeof pVdef[0][this.props.lkey+'_A'] != 'undefined')||(typeof pVdef[1][this.props.lkey+'_A'] != 'undefined'))){
 					val = [this.getValue(this.props.data[0],this.props.lkey + '_A'), this.getValue(this.props.data[1],this.props.lkey + '_B')]
 					if(typeof pVdef[0][this.props.name+'_A'] != 'undefined'){
@@ -1698,7 +1760,7 @@ var EditControl = React.createClass({
 		if(namestring.indexOf('PHY_')!= -1){
 			namestring = namestring.slice(4)
 		}
-		if((namestring.indexOf('ProductName')!=-1)||((namestring.indexOf('ProductName')!=-1))){
+		if(this.props.param[0]["@name"].indexOf('ProdName')!=-1){
 			num = false
 		}
 		if(vMap[this.props.name]){
@@ -1950,8 +2012,8 @@ var StatBarInt = React.createClass({
 	},
 	render: function(){
 		return (<div className='statBar'>
-			<TickerBox ref='ta' int={true} color="purple"/>
-			<TickerBox ref='tb' int={true} color="blue"/>
+			<TickerBox ref='ta' int={true} color='rgba(128, 0, 128, 0.3)'/>
+			<TickerBox ref='tb' int={true} color='rgba(0, 128, 128, 0.3)'/>
 			<LEDBarInt ref='lb'/>
 			</div>)
 	}
@@ -2725,6 +2787,8 @@ var DetectorView = React.createClass({
 		var lcd_type = dv.getUint8(0);
   	    var n = data.length;
  		if(lcd_type== 0){
+ 			console.log(['2783', vdefByIp[d.ip][3]])
+		
 			if(vdefByIp[d.ip]){
 				var Vdef = vdefByIp[d.ip][0]
 				var pVdef = vdefByIp[d.ip][1]
@@ -2754,11 +2818,11 @@ var DetectorView = React.createClass({
 						cob[v] = {}; 
 					}
 					for(var p in cVdf[v]){
-						if(!cVdf[v][p]['@name']){
+						if(!cVdf[v][p].param){
 							cob[v][p] = {};
 							for(var t in cVdf[v][p]){
 								//cob[v][p][t]
-								var par =  cVdf[v][p][t]
+								var par =  cVdf[v][p][t].param
 								if(par['@rec'] == 0){
 									cob[v][p][t] = sysSettings[par['@name']]
 								}else if(par['@rec'] == 1){
@@ -2766,7 +2830,7 @@ var DetectorView = React.createClass({
 								}
 							}
 						}else{
-							var par = cVdf[v][p]
+							var par = cVdf[v][p].param
 								if(par['@rec'] == 0){
 									cob[v][p] = sysSettings[par['@name']]
 								}else if(par['@rec'] == 1){
@@ -2822,11 +2886,11 @@ var DetectorView = React.createClass({
 						cob[v] = {}; 
 					}
 					for(var p in cVdf[v]){
-						if(!cVdf[v][p]['@name']){
+						if(!cVdf[v][p].param){
 							cob[v][p] = {};
 							for(var t in cVdf[v][p]){
 								//cob[v][p][t]
-								var par =  cVdf[v][p][t]
+								var par =  cVdf[v][p][t].param
 								if(par['@rec'] == 0){
 									cob[v][p][t] = sysSettings[par['@name']]
 								}else if(par['@rec'] == 1){
@@ -2834,7 +2898,7 @@ var DetectorView = React.createClass({
 								}
 							}
 						}else{
-							var par = cVdf[v][p]
+							var par = cVdf[v][p].param
 								if(par['@rec'] == 0){
 									cob[v][p] = sysSettings[par['@name']]
 								}else if(par['@rec'] == 1){
@@ -3312,7 +3376,7 @@ var DetectorView = React.createClass({
 		}else{
 			MD = (<div style={{margin:5}}>
 					<table className='mainContTable'><tbody><tr><td className='defCont'>{dm}
-					</td><td style={{width:400}} className='defCont'>{dg}
+					</td><td style={{width:380}} className='defCont'>{dg}
 					</td></tr></tbody></table>
 					<div className='prefInterface'>{np}</div>
 					<div>{ce}</div>
@@ -3406,7 +3470,7 @@ var DetMainInfo = React.createClass({
 			pVdef = res[1];
 		} 
 		
-		return({rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0, sysRec:{},prodRec:{}, tmp:'', prodList:[], phaseFast:0, phaseFastB:0, pVdef:pVdef})
+		return({rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0, sysRec:{},prodRec:{}, tmp:'', tmpB:'', prodList:[], phaseFast:0, phaseFastB:0, pVdef:pVdef})
 	},
 	clearRej: function () {
 		// body...
@@ -3482,6 +3546,16 @@ var DetMainInfo = React.createClass({
 			this.cancel()
 		}
 	},
+	submitTmpSnsB:function () {
+		if(!isNaN(this.state.tmp)){
+			if(this.props.int){
+				this.props.sendPacket('Sens_B', this.state.tmpB)
+			}else{
+				this.props.sendPacket('Sens',this.state.tmpB)	
+			}
+			this.cancel()
+		}
+	},
 	refresh: function () {
 		this.props.sendPacket('refresh')
 	},
@@ -3510,7 +3584,10 @@ var DetMainInfo = React.createClass({
 			
 		console.log('render here')
 		var self = this;
-		var tdstyle = {paddingLeft:10}
+		var padding = {paddingLeft:10}
+		var tdstyle = {paddingLeft:10, backgroundColor:'rgba(50, 50, 50, 0.3)', width:200}
+		var tdstyleintA = {paddingLeft:10, backgroundColor:'rgba(128, 0, 128, 0.3)', width:200}
+		var tdstyleintB = {paddingRight:10, backgroundColor:'rgba(0, 128, 128, 0.3)', width:200}
 		var list = ['dry', 'wet', 'DSA']
 		var ps = this.state.pVdef[5]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed']]
 		if(this.state.phaseFast == 1){
@@ -3519,13 +3596,14 @@ var DetMainInfo = React.createClass({
 		var tab = (
 		<table className='dtmiTab'>
 			<tbody>
-				<tr><td>Name</td><td style={tdstyle}>{this.props.det.name}</td></tr>
+				<tr><td>Name</td><td style={tdstyle}>{this.props.det.name}</td><td style={tdstyle}></td></tr>
 				<tr onClick={this.showEditor}><td>Product</td><td style={tdstyle}>{this.state.prodRec['ProdName']}</td></tr>
 				<tr onClick={this.editSens}><td>Sensitivity</td><td style={tdstyle}>{this.state.prodRec['Sens']}</td></tr>
 				<tr><td>Signal</td><td style={tdstyle} onClick={this.clearPeak}>{this.state.peak}</td></tr>
-				<tr><td>Rejects</td><td style={tdstyle} onClick={this.clearRej}>{this.state.rej}</td></tr>
 				<tr><td>Phase</td><td style={tdstyle} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode']]}</td></tr>
-				<tr><td>Test</td><td style={tdstyle}><input type='text'></input> <button onClick={this.setTest}>Test</button></td>
+				<tr><td>Rejects</td><td style={tdstyle} onClick={this.clearRej}>{this.state.rej}</td></tr>
+			
+				<tr><td></td><td style={padding}>Calibrate </td><td>Test</td>
 				</tr>		
 			</tbody>
 		</table>)
@@ -3533,13 +3611,13 @@ var DetMainInfo = React.createClass({
 			tab = (<table className='dtmiTab'>
 				<tbody>
 				<tr onClick={this.showEditor}><td>Product</td><td style={tdstyle}>{this.state.prodRec['ProdName']}</td></tr>
-				<tr onClick={this.editSens}><td>Sensitivity</td><td style={tdstyle}>{this.state.prodRec['Sens_A']}</td><td>{this.state.prodRec['Sens_B']}</td></tr>
-				<tr><td>Signal</td><td style={tdstyle} onClick={this.clearPeak}>{this.state.peak}</td><td style={tdstyle} onClick={this.clearPeakB}>{this.state.peakb}</td></tr>
+				<tr onClick={this.editSens}><td>Sensitivity</td><td style={tdstyleintA}>{this.state.prodRec['Sens_A']}</td><td style={tdstyleintB}>{this.state.prodRec['Sens_B']}</td></tr>
+				<tr><td>Signal</td><td style={tdstyleintA} onClick={this.clearPeak}>{this.state.peak}</td><td style={tdstyleintB} onClick={this.clearPeakB}>{this.state.peakb}</td></tr>
+				<tr><td>Phase</td><td style={tdstyleintA} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode_A']]}</td>
+				<td style={tdstyleintB}>{this.state.phaseb + ' ' + list[this.state.prodRec['PhaseMode_B']]}</td></tr>
 				<tr><td>Rejects</td><td style={tdstyle} onClick={this.clearRej}>{this.state.rej}</td></tr>
-				<tr><td>Phase</td><td style={tdstyle} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode_A']]}</td>
-				<td>{this.state.phaseb + ' ' + list[this.state.prodRec['PhaseMode_B']]}</td></tr>
-				<tr><td>Test</td><td style={tdstyle}><button onClick={this.setTest}>Test</button></td>
-				</tr>		
+	
+				<tr><td></td><td style={tdstyle}><span>Calibrate</span> </td><td style={tdstyle}><span>Test</span></td></tr>		
 			</tbody>
 				</table>)
 		}
@@ -3785,16 +3863,16 @@ var DummyGraph = React.createClass({
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
 		}
-		return({width:400, height:200, mqls:mqls})
+		return({width:380, height:230, mqls:mqls})
 	},
 	listenToMq: function () {
 		// body...
 		if(this.state.mqls[3].matches){
-			this.setState({width:400})
+			this.setState({width:380})
 		}else if(this.state.mqls[2].matches){
 			this.setState({width:558})
 		}else if(this.state.mqls[1].matches){
-			this.setState({width:400})
+			this.setState({width:380})
 		}else{
 			this.setState({width:280})
 		}

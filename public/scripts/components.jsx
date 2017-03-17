@@ -564,10 +564,13 @@ var CanvasElem = React.createClass({
 		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
 		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#000000'}, grid:{fillStyle:'#ffffff'}, yRangeFunction:yRangeFunc});
 		smoothie.streamTo(document.getElementById(this.props.canvasId));
-		smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#000000'});
 		if(this.props.int){
-			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'#FF0000'});
+			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgba(0, 128, 128, 0.4)'});
+			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgba(128, 0, 128, 0.4)'});
 		
+		}else{
+			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#000000'});
+	
 		}
 	},
 	stream:function (dat) {

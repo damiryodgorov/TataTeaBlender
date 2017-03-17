@@ -177,7 +177,7 @@ li {
     line-height: 1.5;
 }
 .multiScanUnit .liveView{
-    height: 160px;
+    height: 170px;
 }
 .inactive .liveView {
     background: grey;
@@ -318,7 +318,6 @@ li {
 
 .example_path .example_block {
     position: absolute;
-    background-color: blue;
     width: 20px;
     height: 10px;
     padding-top: 10px;
@@ -332,16 +331,16 @@ li {
     position: relative;
     overflow: hidden;
     width: 100%;
-    height: 5px;
+    height: 10px;
     background: #ddd;
+    margin-bottom: 1px;
     /*border: 3px solid #000;*/
 }
 
 .example_path_i .example_block_i {
     position: absolute;
-    background-color: blue;
     width: 20px;
-    height: 5px;
+    height: 10px;
     padding-top: 10px;
     text-align: center;
     color: #fff;
@@ -445,6 +444,14 @@ li {
 
 .rButton::after{
     content: url('../assets/angle-right.svg');
+}
+.dtmiTab{
+    font-size:26px;
+}
+.dtmiTab td{
+   line-height: 45px;
+   padding-right: 5px;
+   text-align: center;
 }
 .panelDisplay table{
     margin-left: auto;

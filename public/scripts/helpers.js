@@ -127,7 +127,7 @@ class Params{
 		}
 	}
 	static prod_name(val){
-		return val;
+		return val.replace("\u0000","");
 	}
 
 
