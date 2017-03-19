@@ -1052,18 +1052,16 @@ var SettingsDisplay = React.createClass({
 			var list = combinedSettings[cat]
 			console.log(list)
 			nodes = []
-			if(cat === 'Test'){
-				//console.log(combinedSettings['TestConfig'])
-				//nodes.push(<div><label>Placeholder for TestConfig</label></div>)
 
-			}
 			for (var l in list){
-				if(Array.isArray(list[l])){
+				/*if(Array.isArray(list[l])){
 					console.log('1019 - ' + l)
 					if(list[l].length == 2 ){
+						console.log('1060')
 						nodes.push((<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
 	
 					}else{
+						console.log('1065')
 						nodes.push((<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
 					}
 					
@@ -1072,11 +1070,11 @@ var SettingsDisplay = React.createClass({
 					 nodes.push((<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={true} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
 	
 
-				}else{
+				}else{*/
 
 
 				nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
-				}
+				//}
 			}
 			nav = (<div className='setNav'>
 					{nodes}
@@ -1087,6 +1085,7 @@ var SettingsDisplay = React.createClass({
 		}else if(lvl == 2){
 			console.log(['lvl 2', data])
 			if(data[1]){
+				/*
 				if(data[1].Type == 'confObj'){
 				nodes = [];
 				if(accMap[data[0]]){
@@ -1113,7 +1112,9 @@ var SettingsDisplay = React.createClass({
 
 				backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>Test</label></div>)
 
-				}else if(typeof data[1] == 'object'){
+				}else 
+				*/
+				if(typeof data[1] == 'object'){
 					console.log(['1058',data])
 					lab = data[2]//catMap[data[0]+'/'+data[2]]['@translations']['english']
 					for(var d in data[1]){
@@ -1124,7 +1125,8 @@ var SettingsDisplay = React.createClass({
 								nm = vMap[d]['@translations']['english']['name']
 							}
 						}
-						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} hasChild={false} data={combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
+						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} 
+							children={vMap[d]['children']} hasChild={false} data={combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
 					}
 				}
 			}
@@ -1140,7 +1142,8 @@ var SettingsDisplay = React.createClass({
 								nm = vMap[d]['@translations']['english']['name']
 							}
 						}
-						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} hasChild={false} data={combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
+						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} 
+							children={vMap[d]['children']} hasChild={false} data={combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
 					}
 				backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>{data[0]}</label></div>)
 
@@ -1313,7 +1316,7 @@ var SettingItem = React.createClass({
 
 			if(typeof this.props.data == 'object'){
 
-				if(typeof this.props.data.param == 'undefined'){
+				if(typeof this.props.data['@data'] == 'undefined'){
 			var path = ""
 			if(this.props.path.length > 0){
 				path = this.props.path[0]
@@ -1332,15 +1335,25 @@ var SettingItem = React.createClass({
 				console.log(['1195', this.props.name, this.props.data])
 				return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{namestring}</label></div>)
 			}else{
-				val = [this.getValue(this.props.data.param, this.props.lkey)]
-				console.log(['1250',this.props.lkey, typeof this.props.data.param])
+				val = [this.getValue(this.props.data['@data'], this.props.lkey)]
+				console.log(['1250',this.props.lkey, typeof this.props.data['@data']])
 				console.log(['1251', pVdef, pram])
 				if(typeof pVdef[0][this.props.lkey] != 'undefined'){
 					pram = [pVdef[0][this.props.lkey]]
 				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
 					pram = [pVdef[1][this.props.lkey]]
-				}else{
+				}
 
+				if(this.props.data['@children']){
+					console.log(['1346', this.props.data.children])
+					for(var ch in this.props.data['@children']){
+						val.push(this.getValue(this.props.data['@children'][ch], ch))
+						if(typeof pVdef[0][ch] != 'undefined'){
+							pram.push(pVdef[0][ch])
+						}else if(typeof pVdef[1][ch] != 'undefined'){
+							pram.push(pVdef[1][ch])
+						}
+					}
 				}
 				console.log(['1252',pram])
 				if(pram[0]['@labels']){
@@ -1395,7 +1408,7 @@ var SettingItem = React.createClass({
 			}else{
 
 
-				val = [this.getValue(this.props.data, this.props.lkey)]
+				val = [this.getValue(this.props.data['@data'], this.props.lkey)]
 				console.log(['1250',this.props.lkey, typeof this.props.data])
 				console.log(['1251', pVdef, pram])
 				if(typeof pVdef[0][this.props.lkey] != 'undefined'){
@@ -1404,6 +1417,17 @@ var SettingItem = React.createClass({
 					pram = [pVdef[1][this.props.lkey]]
 				}else{
 
+				}
+				if(this.props.data['@children']){
+					console.log(['1346', this.props.data.children])
+					for(var ch in this.props.data['@children']){
+						val.push(this.getValue(this.props.data['@children'][ch], ch))
+						if(typeof pVdef[0][ch] != 'undefined'){
+							pram.push(pVdef[0][ch])
+						}else if(typeof pVdef[1][ch] != 'undefined'){
+							pram.push(pVdef[1][ch])
+						}
+					}
 				}
 				console.log(['1252',pram])
 				if(pram[0]['@labels']){
@@ -1779,7 +1803,7 @@ var EditControl = React.createClass({
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}	
 		}
-		if(this.props.int){
+		if((this.props.int)||(this.props.data.length == 2)){
 
 			var valA = this.props.data[0];
 			var valB = this.props.data[1];
@@ -2823,20 +2847,36 @@ var DetectorView = React.createClass({
 							for(var t in cVdf[v][p]){
 								//cob[v][p][t]
 								var par =  cVdf[v][p][t].param
+
 								if(par['@rec'] == 0){
-									cob[v][p][t] = sysSettings[par['@name']]
+									cob[v][p][t] = {'@data':sysSettings[par['@name']], '@children':{}}
 								}else if(par['@rec'] == 1){
-									cob[v][p][t] = prodSettings[par['@name']]
+									cob[v][p][t] = {'@data':prodSettings[par['@name']], '@children':{}}
+								}
+								for(var c in cVdf[v][p][t].children){
+									if(cVdf[v][p][t].children[c]['@rec'] == 0){
+										cob[v][p][t]['@children'][c] = sysSettings[c]
+									}else if(cVdf[v][p][t].children[c]['@rec'] == 1){
+										cob[v][p][t]['@children'][c] = prodSettings[c]
+									}
+									
 								}
 							}
 						}else{
 							var par = cVdf[v][p].param
 								if(par['@rec'] == 0){
-									cob[v][p] = sysSettings[par['@name']]
+									cob[v][p] = {'@data':sysSettings[par['@name']], '@children':{}}
 								}else if(par['@rec'] == 1){
-									cob[v][p] = prodSettings[par['@name']]
+									cob[v][p] = {'@data':prodSettings[par['@name']], '@children':{}}
 								}
-							
+								for(var c in cVdf[v][p].children){
+									if(cVdf[v][p].children[c]['@rec'] == 0){
+										cob[v][p]['@children'][c] = sysSettings[c]
+									}else if(cVdf[v][p].children[c]['@rec'] == 1){
+										cob[v][p]['@children'][c] = prodSettings[c]
+									}
+									
+								}
 						}
 					}
 				}
@@ -2891,24 +2931,40 @@ var DetectorView = React.createClass({
 							for(var t in cVdf[v][p]){
 								//cob[v][p][t]
 								var par =  cVdf[v][p][t].param
+
 								if(par['@rec'] == 0){
-									cob[v][p][t] = sysSettings[par['@name']]
+									cob[v][p][t] = {'@data':sysSettings[par['@name']], '@children':{}}
 								}else if(par['@rec'] == 1){
-									cob[v][p][t] = prodSettings[par['@name']]
+									cob[v][p][t] = {'@data':prodSettings[par['@name']], '@children':{}}
+								}
+								for(var c in cVdf[v][p][t].children){
+									if(cVdf[v][p][t].children[c]['@rec'] == 0){
+										cob[v][p][t]['@children'][c] = sysSettings[c]
+									}else if(cVdf[v][p][t].children[c]['@rec'] == 1){
+										cob[v][p][t]['@children'][c] = prodSettings[c]
+									}
+									
 								}
 							}
 						}else{
 							var par = cVdf[v][p].param
 								if(par['@rec'] == 0){
-									cob[v][p] = sysSettings[par['@name']]
+									cob[v][p] = {'@data':sysSettings[par['@name']], '@children':{}}
 								}else if(par['@rec'] == 1){
-									cob[v][p] = prodSettings[par['@name']]
+									cob[v][p] = {'@data':prodSettings[par['@name']], '@children':{}}
 								}
-							
+								for(var c in cVdf[v][p].children){
+									if(cVdf[v][p].children[c]['@rec'] == 0){
+										cob[v][p]['@children'][c] = sysSettings[c]
+									}else if(cVdf[v][p].children[c]['@rec'] == 1){
+										cob[v][p]['@children'][c] = prodSettings[c]
+									}
+									
+								}
 						}
 					}
 				}
-			/*	for(var c in nVdf){
+				/*for(var c in nVdf){
 
 					if(c != 'TestConfig'){
 					if(!comb[c]){
