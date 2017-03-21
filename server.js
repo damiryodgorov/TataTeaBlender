@@ -20,7 +20,7 @@ const unzipResponse = require('unzip-response')
 const NetPollEvents = require('./netpoll_events_server.js')
 const tftp = require('tftp');
 const PassThrough = require('stream').PassThrough;
-
+const UdpParamServer = require('./udpserver.js')
 
 var db = flatfile('./dbs/users.db')
 
@@ -70,241 +70,78 @@ function initSocks(arr){
   console.log('initiating sockets')
   console.log(dsp_ips.length)
  // setTimeout(function(){nextSock('init');},300);
- nextSock('init')
+ udpCon('init')
 
 }
-function nextSock(ip){
+function getVdef(ip, callback){
+  var tclient = tftp.createClient({host:ip})
+  var get = tclient.createGetStream('/flash/vdef.json')
+      var rawVdef = [];
+      get.on('data', (chnk)=>{
+        rawVdef.push(chnk)//zlib.gunzipSync(chnk);
+      })
+      get.on('end', ()=>{
+                     // console.log(get.headers['content-encoding'])
+      var buffer = Buffer.concat(rawVdef)
+      zlib.unzip(buffer, function(er,b){
+        var vdef = JSON.parse(b.toString())
+        vdefs[ip] = vdef; 
+        callback(ip,vdef)               
+      })
+    })
+}
+function udpCon(ip){
   if(ip == 'init'){
     if(dsp_ips.length != 0){
-      console.log('ws://' + dsp_ips[0] + '/parameters')
-      clients[dsp_ips[0]] = null;
-      clients[dsp_ips[0]] = []
-      clients[dsp_ips[0]].push({socket:new WebSocketClient()});
-      clients[dsp_ips[0]][0].socket.connect('ws://' + dsp_ips[0] + '/parameters');
-      clients[dsp_ips[0]][0].socket.on('connect', function(conn){
-        conn.on('message', function(msg){
-                      var ab = toArrayBuffer(msg.binaryData)
-                     // console.log(conn.remoteAddress)
-                      var packet = {det:{ip:conn.remoteAddress}, data:{data:ab}}
-                      relayParamMsg(packet)
-
-        })
-        console.log('connected')
-         console.log('ws://'+conn.remoteAddress+'/rpc')
-         clients[conn.remoteAddress][1] = {socket:new WebSocketClient()};
-        setTimeout(function(){
-          console.log(conn.remoteAddress)
-          console.log('ws://'+conn.remoteAddress+'/rpc')
-          clients[conn.remoteAddress][1].socket.connect('ws://'+conn.remoteAddress+'/rpc');},100) 
-         clients[conn.remoteAddress][1].socket.on('connect', function(connn){
-          console.log('connected')
-                    var tclient = tftp.createClient({host:conn.remoteAddress})
-                    var get = tclient.createGetStream('/flash/vdef.json')
-                    //var str = new PassThrough();
-                   // str.headers = {'content-encoding':'gzip'}
-                   //get.pipe(unzip).pipe(str)
-
-                   //console.log(get)
-                 /*  var rawVdef = [];
-                    get.on('data', (chnk)=>{
-                      rawVdef.push(chnk)//zlib.gunzipSync(chnk);
-                    })
-                    get.on('end', ()=>{
-                     // console.log(get.headers['content-encoding'])
-                     var buffer = Buffer.concat(rawVdef)
-                     var buf2 = buffer.slice(0)
-                     zlib.unzip(buf2, function(er,b){
-                          //console.log(b.toString())
-                         // var vdef = eval(b.toString())
-                          console.log(JSON.parse(b.toString()))
-                      
-                     })
-                    })
-                 /*    fs.readFile(__dirname+'/json/vdef160621.json.gz', function(e,d){
-                      zlib.unzip(d, function(er,b){
-                        console.log(b.toString())
-                      })
-                    })*/
-          /*tclient.get('/flash/vdef.json',__dirname+'/tftpvdef.json',function(e,a){
-            console.log('getting vdef json')
-            console.log(a)
-            console.log('this is e')
-            console.log(e)
-          });*/
-         try{
-          HTTP.get('http://'+connn.remoteAddress+'/vdef', (res) =>{
-            console.log('receiving response')
-            let ip = connn.remoteAddress;
-             console.log(ip)
-             res = unzipResponse(res)
-             let rawData = '';
-         //    console.log(res)
-  
-            res.on('data', (chunk) =>{
-              //console.log(typeof chunk)
-              rawData += chunk;
-            });//
-             
-            res.on('end', () => {
-              try {
-                // console.log(rawData.toString('utf8'))
-               if(/^load_vdef_parameters/.test(rawData)){
-                console.log('this should be alright')
-               var vdef = eval(rawData)
-               vdefs[ip] = vdef;
-               console.log('netpollhandler: ' + ip)
-               nphandlers[ip] = new NetPollEvents(ip, vdef, function(_m,_ip){
-               // socket.emit('netpoll', {message:_m,ip:_ip});
-                write_netpoll_events(_m,_ip)
-              //  var msg = {det:{ip:_ip}, msg:_m}
-               // relayNetPoll(msg)
-              });
-               //console.log(nphandlers)
-                 nextSock(ip);
-        
-               }
-              } catch (e) {
-                console.log(e.message);
-              }
-            });
-
-          })
-        }catch(e){
-          console.log(e)
+      console.log('udp://'+ dsp_ips[0])
+      udpClients[dsp_ips[0]] = null;
+      udpClients[dsp_ips[0]] = new UdpParamServer(dsp_ips[0], function(__ip,e){
+        if(e){
+          var ab = toArrayBuffer(e)
+          relayParamMsg({det:{ip:__ip},data:{data:ab}})
         }
-      /*  try{
-          HTTP.get('http://'+connn.remoteAddress+'/vdef', (res) =>{
-             let ip = connn.remoteAddress;
-             console.log(ip)
-             res = unzipResponse(res)
-             let rawData = '';
-         //    console.log(res)
-  
-            res.on('data', (chunk) =>{
-              //console.log(typeof chunk)
-              rawData += chunk;
-            });// 
-            res.on('end', () => {
-              try {
-                // console.log(rawData.toString('utf8'))
-               if(/^load_vdef_parameters/.test(rawData)){
-                console.log('this should be alright')
-               var vdef = eval(rawData)
-               vdefs[ip] = vdef;
-                 nextSock(ip);
         
-               }
-              } catch (e) {
-                console.log(e.message);
-              }
-            });
-           })
-        } catch(e){
-          console.log('vdef error for '+connn.remoteAddress);
-          console.log(e);
-          nextSock(connn.remoteAddress);
-        }*/
-     //   nextSock(connn.remoteAddress);
-           clients[conn.remoteAddress][1].conn = connn
-          connn.on('message', function(msg){
-                      var ab = toArrayBuffer(msg.binaryData)
-                     // console.log(conn.remoteAddress)
-                      var packet = {det:{ip:conn.remoteAddress}, data:{data:ab}}
-                      relayRpcMsg(packet)
-
-            })
-         })
-
-          
       })
+      getVdef(dsp_ips[0], function(_ip,vdef){
+        nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
+        udpCon(_ip)
+      })
+      
+
     }
   }else if(dsp_ips.indexOf(ip) != -1){
     var ind = dsp_ips.indexOf(ip);
     console.log('currently connecting ' + (ind+1))
     if(ind + 1 <dsp_ips.length){
-      console.log('ws://'+dsp_ips[ind+1] + '/parameters')
-      clients[dsp_ips[ind+1]] = null;
-      clients[dsp_ips[ind+1]] = [];
-      clients[dsp_ips[ind+1]].push({socket:new WebSocketClient()});
-      clients[dsp_ips[ind+1]][0].socket.connect('ws://'+dsp_ips[ind+1] + '/parameters');
-      clients[dsp_ips[ind+1]][0].socket.on('connect', function(conn){
-          conn.on('message', function(msg){
-                      var ab = toArrayBuffer(msg.binaryData)
-                     // console.log(conn.remoteAddress)
-                      var packet = {det:{ip:conn.remoteAddress}, data:{data:ab}}
-
-                      relayParamMsg(packet)
-
-        })
-        console.log('connected')
-         console.log('ws://'+conn.remoteAddress+'/rpc')
-         clients[conn.remoteAddress].push({socket:new WebSocketClient()});
-       setTimeout(function(){
-          console.log('ws://'+conn.remoteAddress+'/rpc')
-          clients[conn.remoteAddress][1].socket.connect('ws://'+conn.remoteAddress+'/rpc');
-       },100)  
-         clients[conn.remoteAddress][1].socket.on('connect', function(connn){
-          console.log('connected')
-          clients[conn.remoteAddress][1].conn = connn
-            connn.on('message', function(msg){
-                      var ab = toArrayBuffer(msg.binaryData)
-                     // console.log(conn.remoteAddress)
-                      var packet = {det:{ip:conn.remoteAddress}, data:{data:ab}}
-                      relayRpcMsg(packet)
-
-            })
-        /*  var tclient = tftp.createClient({host:conn.remoteAddress})
-          tclient.get('/flash/vdef.json',__dirname+'/tftpvdef.json',function(e,a){
-            console.log('getting vdef json')
-            console.log(a)
-            console.log('this is e')
-            console.log(e)
-          });*/
-          HTTP.get('http://'+conn.remoteAddress+'/vdef', (res) =>{
-             let ip = conn.remoteAddress;
-               console.log(ip)
-           
-             res = unzipResponse(res)
-             let rawData = '';
-            // console.log(res)
-  
-            res.on('data', (chunk) =>{
-              //console.log(typeof chunk)
-              rawData += chunk;
-            });// 
-            res.on('end', () => {
-              try {
-                // console.log(rawData.toString('utf8'))
-               if(/^load_vdef_parameters/.test(rawData)){
-                console.log('this should be alright')
-               var vdef = eval(rawData)
-                     vdefs[connn.remoteAddress] = vdef;
-
-                 nphandlers[connn.remoteAddress] = new NetPollEvents(connn.remoteAddress, vdef, write_netpoll_events);
-               
-                nextSock(connn.remoteAddress);
-         
-               }
-              } catch (e) {
-                console.log(e.message);
-              }
-            });
-           })
-          
-         })
+      console.log('udp://'+ dsp_ips[ind + 1])
+      udpClients[dsp_ips[ind+1]] = null;
+      udpClients[dsp_ips[ind+1]] = new UdpParamServer(dsp_ips[0], function(__ip,e){
+        if(e){
+          var ab = toArrayBuffer(e)
+          relayParamMsg({det:{ip:__ip},data:{data:ab}})
+        }
+        
       })
+      getVdef(dsp_ips[0], function(_ip,vdef){
+        nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
+        udpCon(_ip)
+      })
+      
     }
+   
   }
 }
+
 function relayParamMsg(packet){
 
   for(var pid in passocs){
+    //console.log(packet)
     passocs[pid].relay(packet);
   }
 
 }
 function relayRpcMsg(packet){
-  //console.log('relayRpcMsg')
+  console.log('relayRpcMsg')
   for(var pid in rassocs){
     // console.log(pid)
     rassocs[pid].relay(packet);
@@ -400,6 +237,7 @@ http.listen(app.get('port'), function(){
 
 });
 let clients = {};
+let udpClients = {};
 let vdefs = {};
 let nphandlers = {}
 io.on('connection', function(socket){ 
@@ -540,20 +378,19 @@ for(var i = 0; i < dspips.length;i++){
                 socket.emit('noVdef', ip)
               }
           })
+          socket.on('vdefRec', function(){
+            socket.emit('vdefDone','done')
+          });
           socket.on('rpc', function(pack){
             console.log(pack)
 
-            if(clients[pack.ip]){
+            if(udpClients[pack.ip]){
               
-              if(clients[pack.ip][1]){
-                if(clients[pack.ip][1].conn){
-                  console.log('connection live')
-                  console.log(clients[pack.ip][1].conn.state)
-                  clients[pack.ip][1].conn.send(pack.data)
-                }else{
-                   console.log(pack.ip)
-                }
-              }
+              udpClients[pack.ip].send_rpc(pack.data, function(e){
+                console.log('Ack from ' + pack.ip)
+
+                relayRpcMsg({det:{ip:pack.ip},data:{data:toArrayBuffer(e)}});
+              })
               //rconns[pack.ip].send(pack.data)
             }else{
               console.log('failed to send rpc')
@@ -607,6 +444,7 @@ for(var i = 0; i < dspips.length;i++){
      
     })
   })
+  
   socket.on('savePrefs', function (f) {
     // body...
     console.log(f)
