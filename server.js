@@ -98,25 +98,25 @@ function nextSock(ip){
           clients[conn.remoteAddress][1].socket.connect('ws://'+conn.remoteAddress+'/rpc');},100) 
          clients[conn.remoteAddress][1].socket.on('connect', function(connn){
           console.log('connected')
-                /*    var tclient = tftp.createClient({host:conn.remoteAddress})
+                    var tclient = tftp.createClient({host:conn.remoteAddress})
                     var get = tclient.createGetStream('/flash/vdef.json')
                     //var str = new PassThrough();
                    // str.headers = {'content-encoding':'gzip'}
                    //get.pipe(unzip).pipe(str)
 
                    //console.log(get)
-                   var rawVdef = [];
+                 /*  var rawVdef = [];
                     get.on('data', (chnk)=>{
                       rawVdef.push(chnk)//zlib.gunzipSync(chnk);
                     })
                     get.on('end', ()=>{
                      // console.log(get.headers['content-encoding'])
                      var buffer = Buffer.concat(rawVdef)
-                     var buf2 = buffer.slice(160)
+                     var buf2 = buffer.slice(0)
                      zlib.unzip(buf2, function(er,b){
                           //console.log(b.toString())
-                          var vdef = eval(b.toString())
-                          console.log(vdef)
+                         // var vdef = eval(b.toString())
+                          console.log(JSON.parse(b.toString()))
                       
                      })
                     })
@@ -232,6 +232,7 @@ function nextSock(ip){
                       var ab = toArrayBuffer(msg.binaryData)
                      // console.log(conn.remoteAddress)
                       var packet = {det:{ip:conn.remoteAddress}, data:{data:ab}}
+
                       relayParamMsg(packet)
 
         })
@@ -296,6 +297,7 @@ function nextSock(ip){
   }
 }
 function relayParamMsg(packet){
+
   for(var pid in passocs){
     passocs[pid].relay(packet);
   }
