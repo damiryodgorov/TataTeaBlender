@@ -48,3 +48,7 @@ bugfix: cancel add new detector was broken, fixed.
 --170307-d1 
 
 modified modal, now will close on clicking outside
+
+--170320
+
+Graphic changes, last version before branching to udp version
