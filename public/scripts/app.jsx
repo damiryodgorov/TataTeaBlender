@@ -119,6 +119,7 @@ var LandingPage = React.createClass({
 		});
 		
 		socket.on('paramMsg', function(data) {
+			console.log('parammsg')
 			self.onParamMsg(data.data,data.det) 
 		})
 		socket.on('rpcMsg', function (data) {

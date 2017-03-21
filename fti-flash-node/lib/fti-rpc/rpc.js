@@ -33,6 +33,11 @@ class FtiRpc{
 	rpc(func,args,string,timeout,callBack){
 
 	}
+	rpc2(payload,callback){
+		var packet = this.frame(payload);
+		this.port.write(packet)
+		this.port.callBack = callback;
+	}
 	rpc1(func,args,string,timeout,callBack){
 		var payload = this.payloadForRpc(func,args,string);
 		var packet = this.frame(payload);
