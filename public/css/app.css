@@ -31,6 +31,10 @@ li {
 .npTable{
     font-size:16px;
 }
+.npTable td{
+    padding-left: 7px;
+    padding-right: 7px;
+}
 .mtab{
 
 }
@@ -71,7 +75,9 @@ li {
 .prefInterface{
     min-height: 200px;
     padding: 10px;
-    border: 1px solid gray;
+    border: 0px solid gray;
+    box-shadow: inset 0 0 25px 11px rgba(128, 128, 128, 0.3);
+
     border-radius: 10px;
     margin: 5px;
 }
@@ -177,7 +183,7 @@ li {
     line-height: 1.5;
 }
 .multiScanUnit .liveView{
-    height: 170px;
+    height: 180px;
 }
 .inactive .liveView {
     background: grey;
@@ -216,10 +222,11 @@ li {
 }
 .defCont{
     padding: 10px;
-    border: 1px solid gray;
+    border: 0px solid gray;
     border-radius: 10px;
     margin: 5px;
     min-width: 380px;
+    box-shadow: inset 0 0 25px 11px rgba(128, 128, 128, 0.3);
 }
 .setNav{
     padding: 5px;
@@ -311,27 +318,28 @@ li {
     position: relative;
     overflow: hidden;
     width: 100%;
-    height: 10px;
+    height: 16px;
     background: #ddd;
     /*border: 3px solid #000;*/
 }
 
+
 .example_path .example_block {
     position: absolute;
-    width: 20px;
+    width: 30px;
     height: 10px;
     padding-top: 10px;
     text-align: center;
     color: #fff;
     font-size: 10px;
     white-space: nowrap;
-    margin-left: -10px;
+    margin-left: -15px;
 }
 .example_path_i {
     position: relative;
     overflow: hidden;
     width: 100%;
-    height: 10px;
+    height: 16px;
     background: #ddd;
     margin-bottom: 1px;
     /*border: 3px solid #000;*/
@@ -339,14 +347,14 @@ li {
 
 .example_path_i .example_block_i {
     position: absolute;
-    width: 20px;
-    height: 10px;
+    width: 30px;
+    height: 16px;
     padding-top: 10px;
     text-align: center;
     color: #fff;
     font-size: 10px;
     white-space: nowrap;
-    margin-left: -10px;
+    margin-left: -15px;
 }
 .panelControls{
     width: 100%;
@@ -494,7 +502,7 @@ li {
     width: 610px;
 }
 .buttCell button{
-   	border: none;
+    border: none;
     background: transparent;
     
 }

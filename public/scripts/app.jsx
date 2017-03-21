@@ -119,7 +119,6 @@ var LandingPage = React.createClass({
 		});
 		
 		socket.on('paramMsg', function(data) {
-			console.log('parammsg')
 			self.onParamMsg(data.data,data.det) 
 		})
 		socket.on('rpcMsg', function (data) {
@@ -808,7 +807,7 @@ var MobLiveBar = React.createClass({
 	render: function () {
 		var st=<StatBar ref='st' />
 		if(this.props.int){
-			st = <StatBarInt ref='st'/>
+			st = <StatBarInt style={{marginTop:12}} ref='st'/>
 		}
 		return(<div className="mobLiveBar">{st}</div>)
 	}
@@ -874,7 +873,7 @@ var SettingsDisplay = React.createClass({
 	},
 	componentDidMount: function () {
 		// body...
-		var packet = dsp_rpc_paylod_for(19,[556,0,0])
+		var packet = dsp_rpc_paylod_for(19,[102,0,0])
 		var buf =  new Uint8Array(packet)
 		socket.emit('rpc',{ip:this.props.dsp, data:buf.buffer})
 	},
@@ -1592,6 +1591,7 @@ var MultiEditControl = React.createClass({
 			return (<label style={self.props.vst}>{val}</label>)
 		})
 		/*return (
+		linear-gradient(to left,white, rgba(0,0,128,0), rgba(0,128,128,0.2));
 			<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{this.props.data[0]}</label><label style={this.props.vst}>{this.props.data[1]}</label></div>
 						<div style={{marginLeft:250,display:'inline-block',width:150,marginRight:10}}>{inputA}</div><div style={{display:'inline-block',width:150,marginRight:10}}>{inputB}</div>
 						<label style={{fontSize:16,marginLeft:20, border:'1px solid grey',padding:2, paddingLeft:5,paddingRight:5, background:'#e6e6e6',borderRadius:10}} onClick={this.sendPacket}>Submit</label></div>)	*/
@@ -1624,7 +1624,7 @@ var MultiEditControl = React.createClass({
 					return(<KeyboardInputWrapper tid={namestring+'_kia'} onInput={self.valChanged} Id={i} value={v} onKeyPress={self._handleKeyPress} num={num} Style={{width:150, display:'inline-block'}}/>)
 				})
 				return(<div><div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>
-					<div>
+					<div style={{paddingLeft:this.props.lvst.width}}>
 						{options}
 					</div></div>)
 			}
@@ -1797,8 +1797,6 @@ var EditControl = React.createClass({
 			if(Array.isArray(this.props.data[0])){
 				return (<NestedEditControl acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
-			}else if(this.props.data.length == 2){
-				//this.props.int block
 			}else{
 				return (<MultiEditControl acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
@@ -2037,8 +2035,8 @@ var StatBarInt = React.createClass({
 	},
 	render: function(){
 		return (<div className='statBar'>
-			<TickerBox ref='ta' int={true} color='rgba(128, 0, 128, 0.3)'/>
-			<TickerBox ref='tb' int={true} color='rgba(0, 128, 128, 0.3)'/>
+			<TickerBox ref='ta' int={true} color='#800080'/>
+			<TickerBox ref='tb' int={true} color='#008080'/>
 			<LEDBarInt ref='lb'/>
 			</div>)
 	}
@@ -2161,7 +2159,7 @@ var StatBarMB = React.createClass({
 	getInitialState: function () {
 		var br = window.matchMedia('(min-width:600px)')
 		br.addListener(this.listenToMq)
-		var interceptor = (this.props.unit.board_id == 4)
+		var interceptor = (this.props.unit.board_id == 5)
 		return({pn:'',phase_A:9000, phase_B:9000, phasemode_A:0, phasemode_B:0,sens_A:100,sens_B:100, peak_A:0,peak_B:0,br:br, mobile:br.matches, interceptor:interceptor, rejs:2, fault:false, live:false, pled_A:0,dled_A:0,pled_B:0,dled_B:0, rpcResp:false})
 	},
 	listenToMq: function () {
@@ -2238,7 +2236,7 @@ var StatBarMB = React.createClass({
 	componentDidMount: function () {
 		// body...
 		var self = this;
-		var packet = dsp_rpc_paylod_for(19,[556,0,0])
+		var packet = dsp_rpc_paylod_for(19,[102,0,0])
 		var buf =  new Uint8Array(packet)
 		myTimers[this.props.unit.ip] = setInterval(function(){
 			if((Date.now()-liveTimer[self.props.unit.ip])>1000){
@@ -2410,7 +2408,7 @@ var SingleUnit = React.createClass({
 		}else{
 			font = 0
 		} 
-		var interceptor = (this.props.unit.board_id == 4)
+		var interceptor = (this.props.unit.board_id == 5)
 		return ({font:font,mq:mobMqs,phasemode_A:0,live:false, fault:false, pn:'', sens_A:0,peak_A:0,rejs_A:0,phase_A:0,pled_A:0,dled_A:0,
 			sens_B:0,peak_B:0,rejs_B:0,phase_B:0,pled_B:0,dled_B:0,rpcResp:false, interceptor:interceptor})
 	},
@@ -2512,7 +2510,7 @@ var SingleUnit = React.createClass({
 				self.setState({live:false})
 			}
 			if(!self.state.rpcResp){
-				var packet = dsp_rpc_paylod_for(19,[556,0,0])
+				var packet = dsp_rpc_paylod_for(19,[102,0,0])
 				var buf =  new Uint8Array(packet)
 				socket.emit('rpc',{ip:self.props.unit.ip, data:buf.buffer})
 			}
@@ -2724,17 +2722,17 @@ var DetectorView = React.createClass({
 			mqls[i].addListener(this.listenToMq)
 		}
 		minMq.addListener(this.listenToMq);
-		var interceptor = (this.props.det.board_id == 4);
+		var interceptor = (this.props.det.board_id == 5);
 		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:[],
 		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, peak:0, rej:0, phase:0, interceptor:interceptor}
 	},
 	componentDidMount: function () {
-		var packet = dsp_rpc_paylod_for(19,[556,0,0])
+		var packet = dsp_rpc_paylod_for(19,[102,0,0])
 		var buf =  new Uint8Array(packet)
 		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})
 	},
 	componentWillReceiveProps: function (newProps) {
-		var packet = dsp_rpc_paylod_for(19,[556,0,0])
+		var packet = dsp_rpc_paylod_for(19,[102,0,0])
 		var buf =  new Uint8Array(packet)
 		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})
 	},
@@ -3146,7 +3144,9 @@ var DetectorView = React.createClass({
 					}
 					if(this.refs.lv){
 						this.refs.lv.update(sig)	
+						console.log('3147')
 						this.setLEDS(prodRec['Reject_LED'],prodRec['Prod_LED'],prodRec['Prod_HI_LED'])
+						console.log('3149')
   					}
   					if(this.refs.dg){
   						this.refs.dg.stream({t:Date.now(),val:sig})
@@ -3291,6 +3291,13 @@ var DetectorView = React.createClass({
 			var buf = new Uint8Array(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 			
+		}else if(n == 'Sens_B'){
+			console.log(this.props.ip)
+			var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
+			console.log(packet)
+			var buf = new Uint8Array(packet)
+			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+			
 		}else if(n == 'ProdNo'){
 			var packet = dsp_rpc_paylod_for(0x13,[0x8, parseInt(v)]);
 			console.log(packet)
@@ -3318,7 +3325,7 @@ var DetectorView = React.createClass({
 				var buf = new Uint8Array(packet);
 			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 		}else if(n=='refresh'){
-			var packet = dsp_rpc_paylod_for(19,[556,0,0])
+			var packet = dsp_rpc_paylod_for(19,[102,0,0])
 		var buf =  new Uint8Array(packet)
 		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})	
 		}else if(n=='rpeak'){
@@ -3506,12 +3513,26 @@ var NetPollView = React.createClass({
 	},
 	render:function () {
 		var events = this.props.events.map(function(e){
-			return (<tr><td>{e.string}</td></tr>)
+			var ev = e.net_poll_h;
+			if(netMap[e.net_poll_h]){
+				ev = netMap[e.net_poll_h]['@translations']['english']	
+			}
+			var dateTime = e.date_time.year + '/' + e.date_time.month + '/' + e.date_time.day + ' ' + e.date_time.hours+ ':' + e.date_time.min + ':' + e.date_time.sec;
+			var rejects = e.rejects
+			var faults = e.faults
+
+			var string = 'rejects:' + rejects.number + ', signal:' + rejects.signal;
+			if((e.net_poll_h == 'NET_POLL_PROD_REC_VAR')||(e.net_poll_h == 'NET_POLL_SYS_REC_VAR')){
+				string = e.parameters[0].param_name + ': ' + e.parameters[0].value
+			}
+
+			return (<tr><td>{dateTime}</td><td>{ev}</td><td>{string}</td></tr>)
 		})
 		// body...
 		return (<div>
 			<label onClick={this.dummyEvent}>Events Log</label>
 			<table className='npTable'><tbody>
+			<tr><th>Timestamp</th><th>Event Type</th><th>Details</th></tr>
 			{events}
 			</tbody></table>
 
@@ -3526,7 +3547,9 @@ var DetMainInfo = React.createClass({
 		if(res){
 			pVdef = res[1];
 		} 
-		
+		var tmpA = '';
+		var tmpB = '';
+
 		return({rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0, sysRec:{},prodRec:{}, tmp:'', tmpB:'', prodList:[], phaseFast:0, phaseFastB:0, pVdef:pVdef})
 	},
 	clearRej: function () {
@@ -3571,7 +3594,12 @@ var DetMainInfo = React.createClass({
 		console.log('parseInfo')
 		if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
 			console.log([sys,prd])
-			this.setState({sysRec:sys, prodRec:prd})
+			if(this.props.int){
+				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens_A'], tmpB:prd['Sens_B']})
+			}else{
+				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens']})
+			}
+			
 		}
 	},
 	showEditor: function () {
@@ -3587,9 +3615,30 @@ var DetMainInfo = React.createClass({
 	updateTmp:function (e) {
 		//e.preventDefault();
 		if(typeof e == 'string'){
+			if(this.props.int){
+				this.props.sendPacket(this.state.pVdef[1]['Sens_A'], e)
+			}else{
+				this.props.sendPacket(this.state.pVdef[1]['Sens'],e)	
+			}
 			this.setState({tmp:e})
 		}else{
+			if(this.props.int){
+				this.props.sendPacket(this.state.pVdef[1]['Sens_A'], e.target.value)
+			}else{
+				this.props.sendPacket(this.state.pVdef[1]['Sens'],e.target.value)	
+			}
 			this.setState({tmp:e.target.value})	
+		}
+		
+	},
+	updateTmpB:function (e) {
+		//e.preventDefault();
+		if(typeof e == 'string'){
+			this.props.sendPacket(this.state.pVdef[1]['Sens_B'], e)
+			this.setState({tmpB:e})
+		}else{
+			this.props.sendPacket(this.state.pVdef[1]['Sens_B'], e.target.value)
+			this.setState({tmpB:e.target.value})	
 		}
 		
 	},
@@ -3642,10 +3691,11 @@ var DetMainInfo = React.createClass({
 		console.log('render here')
 		var self = this;
 		var padding = {paddingLeft:10}
-		var tdstyle = {paddingLeft:10, backgroundColor:'rgba(50, 50, 50, 0.3)', width:200}
-		var tdstyleintA = {paddingLeft:10, backgroundColor:'rgba(128, 0, 128, 0.3)', width:200}
-		var tdstyleintB = {paddingRight:10, backgroundColor:'rgba(0, 128, 128, 0.3)', width:200}
+		var tdstyle = {paddingLeft:10, background:'linear-gradient(135deg, rgba(128, 128, 128, 0.3), transparent 67%)', width:200}
+		var tdstyleintA = {paddingLeft:10, background:'linear-gradient(315deg, transparent 33%, rgba(128,0,128,0.4))', width:200}
+		var tdstyleintB = {paddingRight:10, background:'linear-gradient(135deg, rgba(0,128,128,0.4),transparent 67%', width:200}
 		var list = ['dry', 'wet', 'DSA']
+		var headingStyle = {textAlign:'right',background:'linear-gradient(to right, transparent, transparent 33%, rgba(128, 128, 128, 0.3)'}
 		var ps = this.state.pVdef[5]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed']]
 		if(this.state.phaseFast == 1){
 			ps = 'fast'
@@ -3653,9 +3703,10 @@ var DetMainInfo = React.createClass({
 		var tab = (
 		<table className='dtmiTab'>
 			<tbody>
-				<tr><td>Name</td><td style={tdstyle}>{this.props.det.name}</td><td style={tdstyle}></td></tr>
-				<tr onClick={this.showEditor}><td>Product</td><td style={tdstyle}>{this.state.prodRec['ProdName']}</td></tr>
-				<tr onClick={this.editSens}><td>Sensitivity</td><td style={tdstyle}>{this.state.prodRec['Sens']}</td></tr>
+				<tr><td>Name</td><td style={tdstyleintA}>{this.props.det.name}</td></tr>
+				<tr onClick={this.showEditor}><td>Product</td><td style={tdstyleintA}>{this.state.prodRec['ProdName']}</td></tr>
+				<tr><td>Sensitivity</td><td style={tdstyleintA}><KeyboardInputWrapper Style={{fontSize:26, textAlign:'center', width:'100%'}}  Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/>
+</td></tr>
 				<tr><td>Signal</td><td style={tdstyle} onClick={this.clearPeak}>{this.state.peak}</td></tr>
 				<tr><td>Phase</td><td style={tdstyle} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode']]}</td></tr>
 				<tr><td>Rejects</td><td style={tdstyle} onClick={this.clearRej}>{this.state.rej}</td></tr>
@@ -3667,12 +3718,12 @@ var DetMainInfo = React.createClass({
 		if(this.props.int){
 			tab = (<table className='dtmiTab'>
 				<tbody>
-				<tr onClick={this.showEditor}><td>Product</td><td style={tdstyle}>{this.state.prodRec['ProdName']}</td></tr>
-				<tr onClick={this.editSens}><td>Sensitivity</td><td style={tdstyleintA}>{this.state.prodRec['Sens_A']}</td><td style={tdstyleintB}>{this.state.prodRec['Sens_B']}</td></tr>
-				<tr><td>Signal</td><td style={tdstyleintA} onClick={this.clearPeak}>{this.state.peak}</td><td style={tdstyleintB} onClick={this.clearPeakB}>{this.state.peakb}</td></tr>
-				<tr><td>Phase</td><td style={tdstyleintA} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode_A']]}</td>
+				<tr onClick={this.showEditor}><td style={headingStyle}>Product</td><td colSpan={2} style={tdstyleintA}>{this.state.prodRec['ProdName']}</td></tr>
+				<tr><td style={headingStyle}>Sensitivity</td><td style={tdstyleintA}><KeyboardInputWrapper  Style={{fontSize:26, textAlign:'center', width:'100%'}} Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/></td><td style={tdstyleintB}><KeyboardInputWrapper  Style={{fontSize:26, textAlign:'center', width:'100%'}} Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmpB} value={this.state.tmpB}/></td></tr>
+				<tr><td style={headingStyle}>Signal</td><td style={tdstyleintA} onClick={this.clearPeak}>{this.state.peak}</td><td style={tdstyleintB} onClick={this.clearPeakB}>{this.state.peakb}</td></tr>
+				<tr><td style={headingStyle}>Phase</td><td style={tdstyleintA} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode_A']]}</td>
 				<td style={tdstyleintB}>{this.state.phaseb + ' ' + list[this.state.prodRec['PhaseMode_B']]}</td></tr>
-				<tr><td>Rejects</td><td style={tdstyle} onClick={this.clearRej}>{this.state.rej}</td></tr>
+				<tr><td style={headingStyle}>Rejects</td><td colSpan={2} style={tdstyleintA} onClick={this.clearRej}>{this.state.rej}</td></tr>
 	
 				<tr><td></td><td style={tdstyle}><span>Calibrate</span> </td><td style={tdstyle}><span>Test</span></td></tr>		
 			</tbody>

@@ -96,7 +96,7 @@ var KeyboardInput = React.createClass({
 			 options={{type:'textarea',layout:'qwerty', autoAccept: true, alwaysOpen: false, appendLocally: true, color:'light', class:'sxcycx', updateOnChange: true }} onChange={this.onTextareaChanged} /> 
 */
 		// body...
-		var layout = [alphaNumericKeyboard];
+		var layout = [extendedKeyboard];
 		if(this.props.num){
 			layout = [numericKeyboard]
 		}
