@@ -329,7 +329,7 @@ function relayParamMsg(packet){
 
 }
 function relayRpcMsg(packet){
-  //console.log('relayRpcMsg')
+  console.log('relayRpcMsg')
   for(var pid in rassocs){
     // console.log(pid)
     rassocs[pid].relay(packet);
@@ -566,13 +566,18 @@ for(var i = 0; i < dspips.length;i++){
                 socket.emit('noVdef', ip)
               }
           })
+          socket.on('vdefRec', function(){
+            socket.emit('vdefDone','done')
+          });
           socket.on('rpc', function(pack){
             console.log(pack)
 
             if(udpClients[pack.ip]){
               
-              udpClients[pack.ip].send_rpc(pack.data, function(){
+              udpClients[pack.ip].send_rpc(pack.data, function(e){
                 console.log('Ack from ' + pack.ip)
+
+                relayRpcMsg({det:{ip:pack.ip},data:{data:toArrayBuffer(e)}});
               })
               //rconns[pack.ip].send(pack.data)
             }else{
@@ -627,6 +632,7 @@ for(var i = 0; i < dspips.length;i++){
      
     })
   })
+  
   socket.on('savePrefs', function (f) {
     // body...
     console.log(f)

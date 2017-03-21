@@ -70,6 +70,7 @@ var LandingPage = React.createClass({
 		socket.on('resetConfirm', function (r) {
 			socket.emit('locateReq');
 		})
+		
 		socket.on('netpoll', function(m){
 			//console.log(['73',m])
 			self.onNetpoll(m.data, m.det)
@@ -96,7 +97,9 @@ var LandingPage = React.createClass({
 			if(e.length == 1){
 
 			}
+			var detectors = [];
 			e.forEach(function(d){
+				
 				macs.push(d.mac)
 				dets[d.mac] = d;
 				if(macs.indexOf(d.mac) == -1){
@@ -105,6 +108,7 @@ var LandingPage = React.createClass({
 				}
 				console.log(d)
 				socket.emit('vdefReq', d.ip);
+
 			})
 			console.log(dets)
 			self.state.mbunits.forEach(function(u){
@@ -262,7 +266,13 @@ var LandingPage = React.createClass({
 			}
 				mbUnits.name = dsps[e].name
 			}
-		cont.push(dsps[e])
+			var tmpdsp = dsps[e]
+		if(vdefByIp[dsps[e].ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2){
+			tmpdsp.interceptor = true
+		}else{
+			tmpdsp.interceptor = false
+		}
+		cont.push(tmpdsp)
 		detL[dsps[e].mac] = null;
 		mbUnits.banks = cont;
 		this.setState({tmpMB:mbUnits, detL:detL})
@@ -334,6 +344,7 @@ var LandingPage = React.createClass({
 		socket.emit('savePrefs', this.state.mbunits)
 	},
 	loadPrefs: function () {
+		console.log('load prefs')
 		socket.emit('locateReq');
 		socket.emit('getPrefs');
 	},
@@ -453,6 +464,7 @@ var LandingPage = React.createClass({
 				return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/>	
 			}else{
 				if(mb.banks[0]){
+					console.log('457')
 					return <SingleUnit ref={mb.banks[0].ip} onSelect={self.switchUnit} unit={mb.banks[0]}/>	
 				}						
 			}
@@ -1054,27 +1066,8 @@ var SettingsDisplay = React.createClass({
 			nodes = []
 
 			for (var l in list){
-				/*if(Array.isArray(list[l])){
-					console.log('1019 - ' + l)
-					if(list[l].length == 2 ){
-						console.log('1060')
-						nodes.push((<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
-	
-					}else{
-						console.log('1065')
-						nodes.push((<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
-					}
-					
-				}else if(list[l]['Type'] === 'confObj'){
-					console.log(['conf obj', list[l]])
-					 nodes.push((<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={true} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={true}/>))
-	
-
-				}else{*/
-
-
+			
 				nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
-				//}
 			}
 			nav = (<div className='setNav'>
 					{nodes}
@@ -1085,35 +1078,6 @@ var SettingsDisplay = React.createClass({
 		}else if(lvl == 2){
 			console.log(['lvl 2', data])
 			if(data[1]){
-				/*
-				if(data[1].Type == 'confObj'){
-				nodes = [];
-				if(accMap[data[0]]){
-					accLevel = this.state.sysRec[accMap[data[0]]]
-				}
-				var testSel = ['Manual', 'Halo', 'Manual2', 'Halo2']
-					
-				lab = testSel[data[1]['Index']]
-				for(var d in data[1]){
-					console.log(['1056', d,data[1][d],combinedSettings])
-					if((d !== 'Type')&&(d !== 'Index')){
-						var nm = d + data[1]['Index']
-						if(Array.isArray(data[1][d])){
-							nm = d + data[1]['Index'] + '_'
-						}
-						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={nm} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={nm} name={d} hasChild={false} data={combinedSettings[data[0]][lab][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
-
-					}
-				}
-				nav = (<div className='setNav'>
-					{nodes}
-				</div>)
-					//lab = testSel[data[1]['Index']]
-
-				backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>Test</label></div>)
-
-				}else 
-				*/
 				if(typeof data[1] == 'object'){
 					console.log(['1058',data])
 					lab = data[2]//catMap[data[0]+'/'+data[2]]['@translations']['english']
@@ -1132,6 +1096,7 @@ var SettingsDisplay = React.createClass({
 			}
 			
 		}else if(lvl == 3){
+			console.log(['1099', lvl])
 			nodes = []
 			lab = data[2]//catMap[data[0]+'/'+data[2]]['@translations']['english']
 			for(var d in data[1]){
@@ -1145,7 +1110,7 @@ var SettingsDisplay = React.createClass({
 						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} 
 							children={vMap[d]['children']} hasChild={false} data={combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
 					}
-				backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>{data[0]}</label></div>)
+				backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>{catMap[data[0]]['@translations']['english']}</label></div>)
 
 			nav = (<div className='setNav'>
 					{nodes}
@@ -1302,8 +1267,9 @@ var SettingItem = React.createClass({
 			}
 			
 			if(typeof catMap[path] != 'undefined'){
+				console.log('1270')
 				namestring = catMap[path]['@translations']['english']
-				
+				console.log('1272')
 			}
 						
 					
@@ -1329,7 +1295,9 @@ var SettingItem = React.createClass({
 			}
 			
 			if(typeof catMap[path] != 'undefined'){
+				console.log('1298')
 				namestring = catMap[path]['@translations']['english']
+				console.log('1300')
 				
 			}
 				console.log(['1195', this.props.name, this.props.data])
@@ -1360,51 +1328,6 @@ var SettingItem = React.createClass({
 					label = true
 				}	
 			}
-				/*if((this.props.data.length == 2) &&((typeof pVdef[0][this.props.lkey+'_A'] != 'undefined')||(typeof pVdef[1][this.props.lkey+'_A'] != 'undefined'))){
-					val = [this.getValue(this.props.data[0],this.props.lkey + '_A'), this.getValue(this.props.data[1],this.props.lkey + '_B')]
-					if(typeof pVdef[0][this.props.name+'_A'] != 'undefined'){
-						pram = [pVdef[0][this.props.lkey+'_A'],pVdef[0][this.props.lkey+'_B']]
-					}else{
-						pram = [pVdef[1][this.props.lkey+'_A'],pVdef[1][this.props.lkey+'_B']]
-					}
-					if(pram[0]['@labels']){
-						label = true
-					}
-				}else if(Array.isArray(this.props.data[0])){
-					val = []
-					pram = []
-
-					this.props.data.forEach(function(d,i){
-						val[i] = []
-						pram[i] = []
-						d.forEach(function(dat,j){
-							val[i][j] = self.getValue(dat, self.props.lkey+i+'_'+j)
-							if(typeof pVdef[0][self.props.lkey+i+'_'+j] != 'undefined'){
-								pram[i][j] = pVdef[0][self.props.lkey+i+'_'+j]
-							}else{
-								pram[i][j] = pVdef[1][self.props.lkey+i+'_'+j]
-							}
-						})
-					})
-					if(pram[0][0]['@labels']){
-						label = true
-					}
-				}else{
-					console.log(['1231', self.props.lkey, this.props.data])
-					val = []
-					pram = []
-					this.props.data.forEach(function(d,i){
-						val[i] = self.getValue(d,self.props.lkey+i)
-						if(typeof pVdef[0][self.props.lkey+i] != 'undefined'){
-							pram[i] = pVdef[0][self.props.lkey+i]
-						}else{
-							pram[i] = pVdef[1][self.props.lkey+i]
-						}
-					})
-					if(pram[0]['@labels']){
-						label = true
-					}
-				}*/
 			}else{
 
 
@@ -1435,7 +1358,7 @@ var SettingItem = React.createClass({
 				}
 			}
 			
-				var edctrl = <EditControl acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={this.props.int} name={this.props.name}/>
+				var edctrl = <EditControl acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={this.props.lkey}/>
 				return (<div className='sItem'> {edctrl}
 					</div>)
 			
@@ -1577,57 +1500,63 @@ var MultiEditControl = React.createClass({
 	},
 	render:function() {
 		var namestring = this.props.name
-			if(vMap[this.props.name]){
+		console.log(['1548', namestring])
+			if(typeof vMap[this.props.name] != 'undefined'){
 				if(vMap[this.props.name]['@translations']['english']['name'] != ''){
 					namestring = vMap[this.props.name]['@translations']['english']['name']
 				}
 			}
+		console.log(['1554', namestring])
+			
 		var self = this;
 		var vLabels = this.state.val.map(function(d,i){
 			var val = d;
-			if(self.props.label){
+			if(typeof self.props.param[i]['@labels'] != 'undefined'){
+				console.log(['1560',])
 				val = _pVdef[5][self.props.param[i]["@labels"]]['english'][d]
 			}
 			return (<label style={self.props.vst}>{val}</label>)
 		})
-		/*return (
-		linear-gradient(to left,white, rgba(0,0,128,0), rgba(0,128,128,0.2));
-			<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{this.props.data[0]}</label><label style={this.props.vst}>{this.props.data[1]}</label></div>
-						<div style={{marginLeft:250,display:'inline-block',width:150,marginRight:10}}>{inputA}</div><div style={{display:'inline-block',width:150,marginRight:10}}>{inputB}</div>
-						<label style={{fontSize:16,marginLeft:20, border:'1px solid grey',padding:2, paddingLeft:5,paddingRight:5, background:'#e6e6e6',borderRadius:10}} onClick={this.sendPacket}>Submit</label></div>)	*/
 		if(this.state.mode == 0){
-				//return <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{valA}</label><label style={this.props.vst}>{valB}</label></div>
-					return(<div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>)
+			return(<div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>)
 
 		}else{
-			if(this.props.label){
+			console.log(['1574', self.props.param[0]])
+					
 				var options = this.state.val.map(function(v, i){
-					var opts = _pVdef[5][self.props.param[0]["@labels"]]['english'].map(function(e,i){
-						if(i == v){
-							return (<option selected value={i}>{e}</option>)
+					if(typeof self.props.param[i]['@labels'] != 'undefined'){
+						var opts = _pVdef[5][self.props.param[i]["@labels"]]['english'].map(function(e,i){
+							if(i == v){
+								return (<option selected value={i}>{e}</option>)
 
-						}else{
-							return (<option value={i}>{e}</option>)
+							}else{
+								return (<option value={i}>{e}</option>)
 
+							}
+						})
+						return <SelectForMulti val={v} index={i} onChange={self.selectChanged} list={_pVdef[5][self.props.param[i]["@labels"]]['english']} Style={{width:150, display:'inline-block'}}/>
+					}else{
+						var num = true
+						if(self.props.param[i]['@name'] == 'ProdName'){
+							num = false
 						}
-					})
-					//return <select>{opts}</select>
-					return <SelectForMulti val={v} index={i} onChange={self.selectChanged} list={_pVdef[5][self.props.param[0]["@labels"]]['english']}/>
-				})
-				return(<div><div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>
-					<div>
-						{options}
-					</div></div>)
-			}else{
-				var num = true;
-				var options = this.state.val.map(function(v,i){
-					return(<KeyboardInputWrapper tid={namestring+'_kia'} onInput={self.valChanged} Id={i} value={v} onKeyPress={self._handleKeyPress} num={num} Style={{width:150, display:'inline-block'}}/>)
+						return(<KeyboardInputWrapper tid={namestring+'_kia'} onInput={self.valChanged} Id={i} value={v} onKeyPress={self._handleKeyPress} num={num} Style={{width:150, display:'inline-block'}}/>)
+					}
 				})
 				return(<div><div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>
 					<div style={{paddingLeft:this.props.lvst.width}}>
 						{options}
 					</div></div>)
-			}
+		/*	}else{
+				var num = true;
+				var options = this.state.val.map(function(v,i){
+					return(<KeyboardInputWrapper tid={namestring+'_kia'} onInput={self.valChanged} Id={i} value={v} onKeyPress={self._handleKeyPress} num={num} Style={{width:150, display:'inline-block'}}/>)
+				})
+				return(<div><div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>
+					<div >
+						{options}
+					</div></div>)
+			}*/
 		}
 		
 	}
@@ -1652,7 +1581,7 @@ var SelectForMulti = React.createClass({
 				return (<option value={i}>{e}</option>)
 			}
 		})
-		return <select onChange={this.onChange}>{opts}</select>
+		return(<div className='customSelect' style={{width:150}}><select onChange={this.onChange}>{opts}</select></div>)
 	}
 })
 var EditControl = React.createClass({
@@ -1788,16 +1717,19 @@ var EditControl = React.createClass({
 		if(this.props.param[0]["@name"].indexOf('ProdName')!=-1){
 			num = false
 		}
-		if(vMap[this.props.name]){
+		console.log(['1720',this.props.name, this.props.data])
+		if(typeof vMap[this.props.name] != 'undefined'){
 				if(vMap[this.props.name]['@translations']['english']['name'] != ''){
 					namestring = vMap[this.props.name]['@translations']['english']['name']
 				}
 			}
 		if(this.props.data.length > 1){
 			if(Array.isArray(this.props.data[0])){
+				console.log('1728')
 				return (<NestedEditControl acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}else{
+				console.log('1732')
 				return (<MultiEditControl acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}	
@@ -2159,7 +2091,7 @@ var StatBarMB = React.createClass({
 	getInitialState: function () {
 		var br = window.matchMedia('(min-width:600px)')
 		br.addListener(this.listenToMq)
-		var interceptor = (this.props.unit.board_id == 5)
+		var interceptor = this.props.unit.interceptor;//(vdefByIp[this.props.unit.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.unit.board_id == 5)
 		return({pn:'',phase_A:9000, phase_B:9000, phasemode_A:0, phasemode_B:0,sens_A:100,sens_B:100, peak_A:0,peak_B:0,br:br, mobile:br.matches, interceptor:interceptor, rejs:2, fault:false, live:false, pled_A:0,dled_A:0,pled_B:0,dled_B:0, rpcResp:false})
 	},
 	listenToMq: function () {
@@ -2408,7 +2340,7 @@ var SingleUnit = React.createClass({
 		}else{
 			font = 0
 		} 
-		var interceptor = (this.props.unit.board_id == 5)
+		var interceptor =  this.props.unit.interceptor//(vdefByIp[this.props.unit.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.unit.board_id == 5)
 		return ({font:font,mq:mobMqs,phasemode_A:0,live:false, fault:false, pn:'', sens_A:0,peak_A:0,rejs_A:0,phase_A:0,pled_A:0,dled_A:0,
 			sens_B:0,peak_B:0,rejs_B:0,phase_B:0,pled_B:0,dled_B:0,rpcResp:false, interceptor:interceptor})
 	},
@@ -2722,7 +2654,7 @@ var DetectorView = React.createClass({
 			mqls[i].addListener(this.listenToMq)
 		}
 		minMq.addListener(this.listenToMq);
-		var interceptor = (this.props.det.board_id == 5);
+		var interceptor = this.props.det.interceptor//(vdefByIp[this.props.det.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.det.board_id == 5);
 		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:[],
 		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, peak:0, rej:0, phase:0, interceptor:interceptor}
 	},
@@ -3144,10 +3076,8 @@ var DetectorView = React.createClass({
 					}
 					if(this.refs.lv){
 						this.refs.lv.update(sig)	
-						console.log('3147')
 						this.setLEDS(prodRec['Reject_LED'],prodRec['Prod_LED'],prodRec['Prod_HI_LED'])
-						console.log('3149')
-  					}
+					}
   					if(this.refs.dg){
   						this.refs.dg.stream({t:Date.now(),val:sig})
   					}
@@ -3703,15 +3633,15 @@ var DetMainInfo = React.createClass({
 		var tab = (
 		<table className='dtmiTab'>
 			<tbody>
-				<tr><td>Name</td><td style={tdstyleintA}>{this.props.det.name}</td></tr>
-				<tr onClick={this.showEditor}><td>Product</td><td style={tdstyleintA}>{this.state.prodRec['ProdName']}</td></tr>
-				<tr><td>Sensitivity</td><td style={tdstyleintA}><KeyboardInputWrapper Style={{fontSize:26, textAlign:'center', width:'100%'}}  Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/>
+				<tr><td style={headingStyle}>Name</td><td style={tdstyleintA}>{this.props.det.name}</td></tr>
+				<tr onClick={this.showEditor}><td style={headingStyle}>Product</td><td style={tdstyleintA}>{this.state.prodRec['ProdName']}</td></tr>
+				<tr><td style={headingStyle}>Sensitivity</td><td style={tdstyleintA}><KeyboardInputWrapper Style={{fontSize:26, textAlign:'center', width:'100%'}}  Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/>
 </td></tr>
-				<tr><td>Signal</td><td style={tdstyle} onClick={this.clearPeak}>{this.state.peak}</td></tr>
-				<tr><td>Phase</td><td style={tdstyle} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode']]}</td></tr>
-				<tr><td>Rejects</td><td style={tdstyle} onClick={this.clearRej}>{this.state.rej}</td></tr>
+				<tr><td style={headingStyle}>Signal</td><td style={tdstyleintA} onClick={this.clearPeak}>{this.state.peak}</td></tr>
+				<tr><td style={headingStyle}>Phase</td><td style={tdstyleintA} >{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode']]}</td></tr>
+				<tr><td style={headingStyle}>Rejects</td><td style={tdstyleintA} onClick={this.clearRej}>{this.state.rej}</td></tr>
 			
-				<tr><td></td><td style={padding}>Calibrate </td><td>Test</td>
+				<tr><td></td><td style={tdstyle} onClick={this.calibrate}>Calibrate </td><td style={tdstyle}>Test</td>
 				</tr>		
 			</tbody>
 		</table>)
@@ -3725,7 +3655,7 @@ var DetMainInfo = React.createClass({
 				<td style={tdstyleintB}>{this.state.phaseb + ' ' + list[this.state.prodRec['PhaseMode_B']]}</td></tr>
 				<tr><td style={headingStyle}>Rejects</td><td colSpan={2} style={tdstyleintA} onClick={this.clearRej}>{this.state.rej}</td></tr>
 	
-				<tr><td></td><td style={tdstyle}><span>Calibrate</span> </td><td style={tdstyle}><span>Test</span></td></tr>		
+				<tr><td></td><td  onClick={this.calibrate} style={tdstyle}><span>Calibrate</span> </td><td style={tdstyle}><span>Test</span></td></tr>		
 			</tbody>
 				</table>)
 		}
