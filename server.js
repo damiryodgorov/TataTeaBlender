@@ -90,10 +90,31 @@ function getVdef(ip, callback){
       })
     })
 }
+function udpConSing(ip){
+  if(dsp_ips.indexOf(ip) == -1){
+    return;
+  }
+  if(typeof udpClients[ip] == 'undefined'){
+    udpClients[ip] = null;
+    udpClients[ip] = new UdpParamServer(ip , function(_ip,e){
+      if(e){
+        var ab = toArrayBuffer(e)
+        relayParamMsg({det:{ip:_ip},data:{data:ab}})
+      }
+    })
+    getVdef(ip, function(__ip,vdef){
+      if(typeof nphandlers[__ip] == 'undefined'){
+        nphandlers[__ip] = new NetPollEvents(__ip,vdef,write_netpoll_events)
+      }
+    })
+
+  }
+  
+}
 function udpCon(ip){
   if(ip == 'init'){
     if(dsp_ips.length != 0){
-      console.log('udp://'+ dsp_ips[0])
+      /*console.log('udp://'+ dsp_ips[0])
       udpClients[dsp_ips[0]] = null;
       udpClients[dsp_ips[0]] = new UdpParamServer(dsp_ips[0], function(__ip,e){
         if(e){
@@ -101,9 +122,9 @@ function udpCon(ip){
           relayParamMsg({det:{ip:__ip},data:{data:ab}})
         }
         
-      })
+      })*/
       getVdef(dsp_ips[0], function(_ip,vdef){
-        nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
+     //   nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
         udpCon(_ip)
       })
       
@@ -111,9 +132,10 @@ function udpCon(ip){
     }
   }else if(dsp_ips.indexOf(ip) != -1){
     var ind = dsp_ips.indexOf(ip);
-    console.log('currently connecting ' + (ind+1))
     if(ind + 1 <dsp_ips.length){
-      console.log('udp://'+ dsp_ips[ind + 1])
+        console.log('currently grabbing vdef for ' + (ind+1))
+  
+     /* console.log('udp://'+ dsp_ips[ind + 1])
       udpClients[dsp_ips[ind+1]] = null;
       udpClients[dsp_ips[ind+1]] = new UdpParamServer(dsp_ips[0], function(__ip,e){
         if(e){
@@ -121,9 +143,9 @@ function udpCon(ip){
           relayParamMsg({det:{ip:__ip},data:{data:ab}})
         }
         
-      })
-      getVdef(dsp_ips[0], function(_ip,vdef){
-        nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
+      })*/
+      getVdef(dsp_ips[ind+1], function(_ip,vdef){
+     //   nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
         udpCon(_ip)
       })
       
@@ -414,7 +436,10 @@ for(var i = 0; i < dspips.length;i++){
       socket.emit('testFss', testFss)
     })
   })
-
+  socket.on('connectToUnit', function(ip){
+    console.log('connect!! '+ ip)
+    udpConSing(ip)
+  })
     /*   var vdef_script_tag = document.createElement('script');
           vdef_script_tag.src = "http://"+d.ip+"/vdef"; // can change the ip here
           vdef_script_tag.type = "application/javascript";

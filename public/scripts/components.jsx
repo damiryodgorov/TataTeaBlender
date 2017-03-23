@@ -90,6 +90,13 @@ var KeyboardInput = React.createClass({
 			}
 		}
 	},
+	onOutside: function(e){
+		if(this.state.open){
+			//console.log('keyboard should close')
+			this.setState({open:false})
+		}
+		
+	},
 	render:function () {
 		////console.log($('#keyboardinput'))
 		/*<Keyboard value={this.state.textarea} name='thetextareaname'
@@ -115,7 +122,7 @@ var KeyboardInput = React.createClass({
 			<div style={{style}}>
 			      <Keyboard textField={textfield}    keyboardKeyHeight={65}
                         keyboardKeyWidth={105}
-                        keyboardKeySymbolSize={35}  open={this.state.open} onRequestClose={this.onRequestClose} onInput={this.onInput} layouts={layout}/>
+                        keyboardKeySymbolSize={35}  open={this.state.open} onRequestClose={this.onRequestClose} onInput={this.onInput} layouts={layout} handleClickOutside={this.onOutside}/>
                         </div>
 			 )
 			}else{
@@ -123,7 +130,7 @@ var KeyboardInput = React.createClass({
 				return(
 						<div style={{style}}>
 		
-			      <Keyboard textField={textfield} open={false} onInput={this.onInput} layouts={layout}/>
+			      <Keyboard textField={textfield} open={false} onInput={this.onInput} layouts={layout} handleClickOutside={this.onOutside}/>
 			      </div>)
 			}
     
@@ -562,7 +569,7 @@ var CanvasElem = React.createClass({
 	},
 	componentDidMount: function(){
 		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
-		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#000000'}, grid:{fillStyle:'#ffffff'}, yRangeFunction:yRangeFunc});
+		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#000000'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
 		smoothie.streamTo(document.getElementById(this.props.canvasId));
 		if(this.props.int){
 			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgb(0, 128, 128)'});

@@ -117,6 +117,8 @@ var LandingPage = React.createClass({
 					if(!nps[b.ip]){
 						nps[b.ip] = []
 					}
+					console.log('connectToUnit')
+					socket.emit('connectToUnit', b.ip)
 				})
 			})
 			self.setState({dets:e, detL:dets, macList:macs, netpolls:nps})
@@ -142,15 +144,14 @@ var LandingPage = React.createClass({
 		var nps = this.state.netpolls
 		if(nps[d.ip]){
 			if(nps[d.ip].length == 15){
-				nps[d.ip].splice(0,1);
+				nps[d.ip].splice(-1,1);
 		
 			}
-			nps[d.ip].push(e)
+			nps[d.ip].unshift(e)
+
+			this.setState({netpolls:nps})
 		}
-		if(this.refs.dv){
-			this.refs.dv.onNetpoll(e,d)
-		}
-		this.setState({netpolls:nps})
+		
 	},
 	onRMsg: function (e,d) {
 		////console.log([e,d])
@@ -224,7 +225,12 @@ var LandingPage = React.createClass({
 	},
 	switchUnit: function (u) {
 		////console.log(u)
-		this.setState({curDet:u, currentPage:'detector'})
+		var self = this;
+		setTimeout(function () {
+			// body...
+			self.setState({curDet:u, currentPage:'detector'})
+		},100)
+		
 	},
 	addNewMBUnit:function () {
 		this.setState({curModal:'newMB', tmpMB:{name:'NEW', type:'mb', banks:[]}})
@@ -272,6 +278,7 @@ var LandingPage = React.createClass({
 		}else{
 			tmpdsp.interceptor = false
 		}
+		socket.emit('connect',tmpdsp.ip)
 		cont.push(tmpdsp)
 		detL[dsps[e].mac] = null;
 		mbUnits.banks = cont;
@@ -490,7 +497,7 @@ var LandingPage = React.createClass({
 			</div>)	
 	},
 	renderDetector: function () {
-		return (<DetectorView br={this.state.brPoint} ref='dv' acc={this.state.level} logoClick={this.logoClick} det={this.state.curDet} ip={this.state.curDet.ip}/>)
+		return (<DetectorView br={this.state.brPoint} ref='dv' acc={this.state.level} logoClick={this.logoClick} det={this.state.curDet} ip={this.state.curDet.ip} netpolls={this.state.netpolls[this.state.curDet.ip]}/>)
 	},
 	renderAccounts: function(){
 		
@@ -1132,12 +1139,12 @@ var SettingsDisplay = React.createClass({
 	    }
 
 	    var tstl = {display:'inline-block', textAlign:'center'}
-	    var titlediv = (<span ><h2 style={{textAlign:'center'}} >{backBut}<div style={tstl}>{label}</div></h2></span>
+	    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5}} >{backBut}<div style={tstl}>{label}</div></h2></span>
 )
 	    if (this.state.font == 1){
-	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:30}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
+	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
 	    }else if (this.state.font == 0){
-	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
+	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
 	    }
 	    catList = null;
 
@@ -1254,10 +1261,10 @@ var SettingItem = React.createClass({
 			return val;
 	},
 	render: function(){
-		var ft = [14,16,20];
-		var wd = [190,210,260]
+		var ft = [16,20,24];
+		var wd = [220,260,300]
 		var st = {display:'inline-block', fontSize:ft[this.state.font], width:wd[this.state.font]}
-		var vst = {display:'inline-block', fontSize:ft[this.state.font], width:150}
+		var vst = {display:'inline-block', fontSize:ft[this.state.font], width:170}
 		var self = this;
 			var res = vdefByIp[this.props.ip];
 			var pVdef = _pVdef;
@@ -1566,13 +1573,13 @@ var MultiEditControl = React.createClass({
 
 							}
 						})
-						return <SelectForMulti val={v} index={i} onChange={self.selectChanged} list={_pVdef[5][self.props.param[i]["@labels"]]['english']} Style={{width:150, display:'inline-block'}}/>
+						return <SelectForMulti val={v} index={i} onChange={self.selectChanged} list={_pVdef[5][self.props.param[i]["@labels"]]['english']} Style={{width:self.props.vst.width, display:'inline-block'}}/>
 					}else{
 						var num = true
 						if(self.props.param[i]['@name'] == 'ProdName'){
 							num = false
 						}
-						return(<KeyboardInputWrapper tid={namestring+'_kia'} onInput={self.valChanged} Id={i} value={v} onKeyPress={self._handleKeyPress} num={num} Style={{width:150, display:'inline-block'}}/>)
+						return(<KeyboardInputWrapper tid={namestring+'_kia'} onInput={self.valChanged} Id={i} value={v} onKeyPress={self._handleKeyPress} num={num} Style={{width:self.props.vst.width, display:'inline-block'}}/>)
 					}
 				})
 				return(<div><div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>
@@ -1721,11 +1728,11 @@ var EditControl = React.createClass({
 	render: function(){
 		var lab = (<label>{this.state.val}</label>)
 		var num = true;
-		var style = {display:'inline-block',fontSize:20}
+		var style = {display:'inline-block',fontSize:24}
 		if(this.state.size == 1){
-			style = {display:'inline-block',fontSize:16}
+			style = {display:'inline-block',fontSize:20}
 		}else if(this.state.size == 0){
-			style = {display:'inline-block',fontSize:14}
+			style = {display:'inline-block',fontSize:16}
 		}
 		var namestring = this.props.name;
 		if(namestring.indexOf('INPUT_')!= -1){
@@ -1844,7 +1851,7 @@ var EditControl = React.createClass({
 						<div onClick={this.switchMode}>
 							<label style={this.props.lvst}>{namestring + ': '}</label><label style={this.props.vst}> {dval}</label>
 							</div>
-							<div style={{marginLeft:250}} className='customSelect'>
+							<div style={{marginLeft:this.props.lvst.width, width:this.props.vst.width}} className='customSelect'>
 							<select onChange={this.valChangedl}>
 							{options}
 							</select>
@@ -1853,7 +1860,7 @@ var EditControl = React.createClass({
 
 				}else{
 					/*<input width={10} onKeyPress={this._handleKeyPress} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val[0]}></input>*/
-					var input = (<KeyboardInput tid={namestring+'_ki'} onInput={this.valChanged} value={this.state.val[0].toString()} num={num} onKeyPress={this._handleKeyPress} Style={{width:150}}/>)//
+					var input = (<KeyboardInput tid={namestring+'_ki'} onInput={this.valChanged} value={this.state.val[0].toString()} num={num} onKeyPress={this._handleKeyPress} Style={{width:this.props.vst.width}}/>)//
 					return (<div> <div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ": "}</label><label style={this.props.vst}>{dval}</label></div>
 						<div style={{marginLeft:250, display:'inline-block',width:200,marginRight:10}}>{input}</div>
 						<label style={{fontSize:16,marginLeft:20, border:'1px solid grey',padding:2, paddingLeft:5,paddingRight:5, background:'#e6e6e6',borderRadius:10}} onClick={this.sendPacket}>Submit</label></div>)	
@@ -2682,7 +2689,7 @@ var DetectorView = React.createClass({
 		}
 		minMq.addListener(this.listenToMq);
 		var interceptor = this.props.det.interceptor//(vdefByIp[this.props.det.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.det.board_id == 5);
-		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:[], prodSettings:{}, sysSettings:{}, combinedSettings:[],
+		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, prodSettings:{}, sysSettings:{}, combinedSettings:[],
 		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, peak:0, rej:0, phase:0, interceptor:interceptor}
 	},
 	componentDidMount: function () {
@@ -2694,6 +2701,7 @@ var DetectorView = React.createClass({
 		var packet = dsp_rpc_paylod_for(19,[102,0,0])
 		var buf =  new Uint8Array(packet)
 		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})
+		this.setState({netpoll:newProps.netpolls})
 	},
 	toggleAttention: function () {
 		this.refs.fModal.toggle();
@@ -2736,9 +2744,9 @@ var DetectorView = React.createClass({
 		////console.log(['2600',e])
 		var nps = this.state.netpoll
 		if(nps.length == 15){
-			nps.splice(0,1);
+			nps.splice(1,-1);
 		}
-		nps.push(e);
+		nps.unshift(e);
 		this.setState({netpoll:nps})
 		//this.setState()
 		/*if(this.refs.np){
@@ -3278,20 +3286,7 @@ var DetectorView = React.createClass({
 			if(n['@rpcs']['write'][2]){
 				strArg = n['@rpcs']['write'][2]
 			}
-			if(n['@rec'] == 0){
-				var mphaserd = this.state.prodRec['MPhaseRD']
-				if(mphaserd != 30){
-					mphaserd = 30;
-				}else{
-					mphaserd = 31
-				}
-				var pack = dsp_rpc_paylod_for(19,[356,mphaserd,0])
-				var bu = new Uint8Array(pack);
-				setTimeout(function () {
-					// body...
-					socket.emit('rpc', {ip:self.props.dsp, data:bu.buffer})
-				},150)
-			}
+			
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 			var buf = new Uint8Array(packet);
 			////console.log(buf)
@@ -3327,7 +3322,7 @@ var DetectorView = React.createClass({
 			SD = (<SettingsDisplay goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} combinedSettings={this.state.combinedSettings}/>)
 	
 		}else{
-			MD = (<div style={{margin:5}}>
+			MD = (<div style={{margin:5, marginTop:-15}}>
 					<table className='mainContTable'><tbody><tr><td className='defCont'>{dm}
 					</td><td style={{width:380}} className='defCont'>{dg}
 					</td></tr></tbody></table>
@@ -3390,10 +3385,10 @@ var NetPollView = React.createClass({
 		// body...
 		var events = this.state.events
 		if(events.length == this.props.eventCount){
-			events.splice(0,1);
+			events.splice(-1,1);
 		}
 		////console.log(['3280',e])
-		events.push(e);
+		events.unshift(e);
 		this.setState({events:events})
 	},
 	dummyEvent: function () {
@@ -3419,10 +3414,12 @@ var NetPollView = React.createClass({
 		})
 		// body...
 		return (<div>
-			<label onClick={this.dummyEvent}>Events Log</label>
+			<label style={{display: 'inline-block',fontSize:26,width:100,float:'left',paddingLeft: 20}}>Events</label>
+			<div style={{display:'inline-block'}}>
 			<table className='npTable'><tbody>
 			{events}
 			</tbody></table>
+			</div>
 
 		</div>)
 	}
@@ -3865,16 +3862,16 @@ var DummyGraph = React.createClass({
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
 		}
-		return({width:380, height:230, mqls:mqls})
+		return({width:375, height:260, mqls:mqls})
 	},
 	listenToMq: function () {
 		// body...
 		if(this.state.mqls[3].matches){
-			this.setState({width:380})
+			this.setState({width:375})
 		}else if(this.state.mqls[2].matches){
 			this.setState({width:558})
 		}else if(this.state.mqls[1].matches){
-			this.setState({width:380})
+			this.setState({width:375})
 		}else{
 			this.setState({width:280})
 		}
