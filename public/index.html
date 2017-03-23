@@ -441,6 +441,9 @@ function wordValue(arr, p){
     
 }
 function isDiff(x, y){
+    if((typeof x) != (typeof y)){
+      return true;
+    }
     for(var p in x){
       if(typeof y[p] != 'undefined'){
         if(!(x[p] == y[p])){
@@ -493,10 +496,10 @@ function fletcherCheckBytes (data) {
 
 var socket = io();
 
-var sysSettings = {};
-var prodSettings ={};
-var framSettings ={};
-var combinedSettings = [];
+//var sysSettings = {};
+//var prodSettings ={};
+//var framSettings ={};
+//var combinedSettings = [];
 var liveTimer = {}
 var myTimers = {}
 

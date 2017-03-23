@@ -72,11 +72,11 @@ var LandingPage = React.createClass({
 		})
 		
 		socket.on('netpoll', function(m){
-			//console.log(['73',m])
+			//////console.log(['73',m])
 			self.onNetpoll(m.data, m.det)
 		})
 		socket.on('prefs', function(f) {
-			console.log(f)
+			////console.log(f)
 			var detL = self.state.detL
 			f.forEach(function (u) {
 				u.banks.forEach(function(b){
@@ -106,11 +106,11 @@ var LandingPage = React.createClass({
 					macs.push(d.mac)
 					dets[d.mac] = d
 				}
-				console.log(d)
+				////console.log(d)
 				socket.emit('vdefReq', d.ip);
 
 			})
-			console.log(dets)
+			////console.log(dets)
 			self.state.mbunits.forEach(function(u){
 				u.banks.forEach(function(b) {
 					dets[b.mac] = null;
@@ -138,7 +138,7 @@ var LandingPage = React.createClass({
 		})
 	},
 	onNetpoll: function(e,d){
-		console.log([e,d])
+		////console.log([e,d])
 		var nps = this.state.netpolls
 		if(nps[d.ip]){
 			if(nps[d.ip].length == 15){
@@ -153,7 +153,7 @@ var LandingPage = React.createClass({
 		this.setState({netpolls:nps})
 	},
 	onRMsg: function (e,d) {
-		console.log([e,d])
+		////console.log([e,d])
 		var msg = e.data
 		var data = new Uint8Array(msg);
 
@@ -223,7 +223,7 @@ var LandingPage = React.createClass({
 		this.setState({currentPage:'landing'})
 	},
 	switchUnit: function (u) {
-		console.log(u)
+		////console.log(u)
 		this.setState({curDet:u, currentPage:'detector'})
 	},
 	addNewMBUnit:function () {
@@ -295,7 +295,7 @@ var LandingPage = React.createClass({
 		this.setState({tmpMB:mbUnits, detL:detL})
 	},
 	cancel: function () {
-		console.log(['268', 'cancel'])
+		////console.log(['268', 'cancel'])
 		var detL = this.state.detL;
 		this.state.tmpMB.banks.forEach(function (b) {
 			detL[b.mac]= b
@@ -344,7 +344,7 @@ var LandingPage = React.createClass({
 		socket.emit('savePrefs', this.state.mbunits)
 	},
 	loadPrefs: function () {
-		console.log('load prefs')
+		////console.log('load prefs')
 		socket.emit('locateReq');
 		socket.emit('getPrefs');
 	},
@@ -364,7 +364,7 @@ var LandingPage = React.createClass({
 	renderModal: function () {
 		var self = this;
 		var mbSetup = this.state.mbunits.map(function(mb,ind) {
-			console.log(ind)
+			////console.log(ind)
 			return <MbSetup remove={self.removeMb} move={self.move} mb={mb} edit={self.editMb} index={ind} singleUnits={self.state.single}/>	// body...
 		})
 		var detList = this.state.dets.map(function(d){
@@ -464,7 +464,7 @@ var LandingPage = React.createClass({
 				return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/>	
 			}else{
 				if(mb.banks[0]){
-					console.log('457')
+					////console.log('457')
 					return <SingleUnit ref={mb.banks[0].ip} onSelect={self.switchUnit} unit={mb.banks[0]}/>	
 				}						
 			}
@@ -525,7 +525,7 @@ var LandingPage = React.createClass({
 	render: function () {
 		var cont;
 		if(this.state.currentPage == 'landing'){
-			console.log('here')
+			////console.log('here')
 			cont = this.renderLanding();
 		}else if(this.state.currentPage == 'detector'){
 			cont = this.renderDetector();
@@ -631,7 +631,7 @@ var LogInControl = React.createClass({
 		})
 	},
 	userNameChange: function(e){
-		console.log(e)
+		////console.log(e)
 		if(typeof e == 'string'){
 
 			this.setState({userName:e})
@@ -853,7 +853,7 @@ var SettingsDisplay = React.createClass({
 		}
 
 		return({
-		 sysRec:sysSettings, prodRec:prodSettings, mqls:mqls, font:font, fram:framSettings, data:this.props.data
+		 sysRec:this.props.sysSettings, prodRec:this.props.prodSettings, mqls:mqls, font:font, data:this.props.data
 		});
 	},
 	componentWillReceiveProps: function(newProps){
@@ -874,15 +874,17 @@ var SettingsDisplay = React.createClass({
 		this.props.onHandleClick(dat, n);
 	},
 	parseInfo: function(sys, prd){
-		if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
-			this.setState({sysRec:sys, prodRec:prd})
+		if((typeof sys != 'undefined') && (typeof prd != 'undefined')){
+			if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
+				this.setState({sysRec:sys, prodRec:prd})
+			}
 		}
 	},
-	parseFRAM: function(fram){
+	/*parseFRAM: function(fram){
 		if(isDiff(fram, this.state.fram)){
 			this.setState({fram:fram})
 		}
-	},
+	},*/
 	componentDidMount: function () {
 		// body...
 		var packet = dsp_rpc_paylod_for(19,[102,0,0])
@@ -893,7 +895,7 @@ var SettingsDisplay = React.createClass({
 	sendPacket: function (n,v) {
 		// body...
 		var self = this;
-		console.log([n,v])
+		////console.log([n,v])
 		if(n['@rpcs']['toggle']){
 
 			var arg1 = n['@rpcs']['toggle'][0];
@@ -921,7 +923,7 @@ var SettingsDisplay = React.createClass({
 			}
 			var packet = dsp_rpc_paylod_for(arg1, arg2);
 			var buf = new Uint8Array(packet);
-			console.log(buf)
+			////console.log(buf)
 			socket.emit('rpc', {ip:this.props.dsp, data:buf.buffer})
 		}else if(n['@rpcs']['apiwrite']){
 			var arg1 = n['@rpcs']['apiwrite'][0];
@@ -932,7 +934,7 @@ var SettingsDisplay = React.createClass({
 					arg2.push(n['@rpcs']['apiwrite'][1][i])
 				}else if(n['@rpcs']['apiwrite'][1][i] == n['@name']){
 					if(!isNaN(v)){
-						//console.log(n)
+						//////console.log(n)
 						arg2.push(v)
 					}
 					else{
@@ -940,7 +942,7 @@ var SettingsDisplay = React.createClass({
 						
 					}
 				}else{
-					console.log(n['@rpcs']['apiwrite'][1][i])
+					////console.log(n['@rpcs']['apiwrite'][1][i])
 				}
 			}
 			if(n['@rec'] == 0){
@@ -959,7 +961,7 @@ var SettingsDisplay = React.createClass({
 			}
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 			var buf = new Uint8Array(packet);
-			console.log(buf)
+			////console.log(buf)
 			socket.emit('rpc', {ip:this.props.dsp, data:buf.buffer})
 		}else if(n['@rpcs']['write']){
 			var arg1 = n['@rpcs']['write'][0];
@@ -1002,17 +1004,17 @@ var SettingsDisplay = React.createClass({
 			}
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 			var buf = new Uint8Array(packet);
-			console.log(buf)
+			////console.log(buf)
 			socket.emit('rpc', {ip:this.props.dsp, data:buf.buffer})
 		}
 	},
 	activate: function (n) {
 		// body...
-		var list = combinedSettings[this.props.data[0]]
+		var list = this.props.combinedSettings[this.props.data[0]]
 		for(var l in list){
 			if(l!=n){
 				if(this.refs[l]){
-					console.log(['972',l])
+					////console.log(['972',l])
 					this.refs[l].deactivate();
 				}
 			}
@@ -1023,11 +1025,11 @@ var SettingsDisplay = React.createClass({
 	render: function (){
 		var self = this;
 		var data = this.state.data
-		console.log(data)
+		////console.log(data)
 		var lvl = data.length
 		var handler = this.handleItemclick;
 		var lab = 'Settings'
-		console.log(lvl)
+		////console.log(lvl)
 		var nodes;
 		var ft = 25;
 		if(this.state.font == 1){
@@ -1039,8 +1041,8 @@ var SettingsDisplay = React.createClass({
 		var backBut = ''
 
 		var catList = []
-		console.log(['1030', combinedSettings])
-		for(var cb in combinedSettings){
+		//////console.log(['1030', combinedSettings])
+		for(var cb in this.props.combinedSettings){
 			catList.push(cb)
 		}//['Sensitivity', 'Calibration','Faults','Rej Setup', 'Test','Input','Output','Password','Other'];
 		var accLevel = 0;
@@ -1051,7 +1053,7 @@ var SettingsDisplay = React.createClass({
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem path={this.state.data} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[ct,combinedSettings[ct]]} onItemClick={handler} hasContent={true}/>)
+				nodes.push(<SettingItem path={this.state.data} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[ct,this.props.combinedSettings[ct]]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec}/>)
 			}
 			nav = nodes;
 		}else if(lvl == 1 ){
@@ -1061,13 +1063,13 @@ var SettingsDisplay = React.createClass({
 			if(accMap[cat]){
 				accLevel = this.state.sysRec[accMap[cat]]
 			}
-			var list = combinedSettings[cat]
-			console.log(list)
+			var list = this.props.combinedSettings[cat]
+			////console.log(list)
 			nodes = []
-
+			////console.log(['1067',this.state])
 			for (var l in list){
 			
-				nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
+				nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={l} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={l} name={l} hasChild={false} data={list[l]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec}/>)
 			}
 			nav = (<div className='setNav'>
 					{nodes}
@@ -1076,10 +1078,10 @@ var SettingsDisplay = React.createClass({
 			backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>Settings</label></div>)
 
 		}else if(lvl == 2){
-			console.log(['lvl 2', data])
+			////console.log(['lvl 2', data])
 			if(data[1]){
 				if(typeof data[1] == 'object'){
-					console.log(['1058',data])
+					////console.log(['1058',data])
 					lab = data[2]//catMap[data[0]+'/'+data[2]]['@translations']['english']
 					for(var d in data[1]){
 
@@ -1090,13 +1092,13 @@ var SettingsDisplay = React.createClass({
 							}
 						}
 						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} 
-							children={vMap[d]['children']} hasChild={false} data={combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
+							children={vMap[d]['children']} hasChild={false} data={this.props.combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec}/>)
 					}
 				}
 			}
 			
 		}else if(lvl == 3){
-			console.log(['1099', lvl])
+			////console.log(['1099', lvl])
 			nodes = []
 			lab = data[2]//catMap[data[0]+'/'+data[2]]['@translations']['english']
 			for(var d in data[1]){
@@ -1108,7 +1110,7 @@ var SettingsDisplay = React.createClass({
 							}
 						}
 						nodes.push(<SettingItem path={self.state.data} ip={self.props.dsp} ref={d} activate={self.activate} font={self.state.font} sendPacket={this.sendPacket} dsp={this.props.dsp} lkey={d} name={nm} 
-							children={vMap[d]['children']} hasChild={false} data={combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}/>)
+							children={vMap[d]['children']} hasChild={false} data={this.props.combinedSettings[data[0]][data[2]][d]} onItemClick={handler} hasContent={true}  acc={this.props.accLevel>=accLevel} int={false}  sysSettings={this.state.sysRec} prodSettings={this.state.prodRec}/>)
 					}
 				backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>{catMap[data[0]]['@translations']['english']}</label></div>)
 
@@ -1119,7 +1121,7 @@ var SettingsDisplay = React.createClass({
 			 
 	     var className = "menuCategory expanded";
 	    
-	    console.log(lab)
+	    ////console.log(lab)
 	    var label = lab
 	    if(lvl == 1){
 	    	label = catMap[data[0]]['@translations']['english']
@@ -1137,6 +1139,8 @@ var SettingsDisplay = React.createClass({
 	    }else if (this.state.font == 0){
 	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
 	    }
+	    catList = null;
+
 		return(
 			<div className='settingsDiv'>
 			<div className={className}>
@@ -1155,7 +1159,7 @@ var SettingItem = React.createClass({
 	},
 	sendPacket: function(n,v){
 		if(!isNaN(v)){
-			console.log(parseInt(v))	
+			////console.log(parseInt(v))	
 		}
 		this.props.sendPacket(n,v)
 		
@@ -1187,6 +1191,7 @@ var SettingItem = React.createClass({
 			var label = false
 			var res = vdefByIp[this.props.ip];
 			var pVdef = _pVdef;
+			var self = this;
 			if(res){
 				pVdef = res[1];
 			}
@@ -1199,9 +1204,11 @@ var SettingItem = React.createClass({
 					if(pram["@dep"]){
 						deps = pram["@dep"].map(function(d){
 							if(pVdef[4][d]["@rec"] == 0){
-								return sysSettings[d];
+								////console.log(['1205',self.props.sysSettings])
+								return self.props.sysSettings[d];
 							}else{
-								return prodSettings[d];
+								////console.log(['1208',self.props.sysSettings])
+								return self.props.prodSettings[d];
 							}
 						});
 					}
@@ -1222,9 +1229,13 @@ var SettingItem = React.createClass({
 					if(pram["@dep"]){
 						deps = pram["@dep"].map(function(d){
 							if(pVdef[4][d]["@rec"] == 0){
-								return sysSettings[d];
+								////console.log(['1230',self.props.sysSettings])
+								
+								return self.props.sysSettings[d];
 							}else{
-								return prodSettings[d];
+								////console.log(['1233',self.props.prodSettings])
+								
+								return self.props.prodSettings[d];
 							}
 						});
 					}
@@ -1239,6 +1250,7 @@ var SettingItem = React.createClass({
 			}else{
 				val = rval
 			}
+			//self = null;
 			return val;
 	},
 	render: function(){
@@ -1267,9 +1279,9 @@ var SettingItem = React.createClass({
 			}
 			
 			if(typeof catMap[path] != 'undefined'){
-				console.log('1270')
+				////console.log('1270')
 				namestring = catMap[path]['@translations']['english']
-				console.log('1272')
+				////console.log('1272')
 			}
 						
 					
@@ -1295,17 +1307,17 @@ var SettingItem = React.createClass({
 			}
 			
 			if(typeof catMap[path] != 'undefined'){
-				console.log('1298')
+				////console.log('1298')
 				namestring = catMap[path]['@translations']['english']
-				console.log('1300')
+				////console.log('1300')
 				
 			}
-				console.log(['1195', this.props.name, this.props.data])
+				////console.log(['1195', this.props.name, this.props.data])
 				return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{namestring}</label></div>)
 			}else{
 				val = [this.getValue(this.props.data['@data'], this.props.lkey)]
-				console.log(['1250',this.props.lkey, typeof this.props.data['@data']])
-				console.log(['1251', pVdef, pram])
+				////console.log(['1250',this.props.lkey, typeof this.props.data['@data']])
+				////console.log(['1251', pVdef, pram])
 				if(typeof pVdef[0][this.props.lkey] != 'undefined'){
 					pram = [pVdef[0][this.props.lkey]]
 				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
@@ -1313,7 +1325,7 @@ var SettingItem = React.createClass({
 				}
 
 				if(this.props.data['@children']){
-					console.log(['1346', this.props.data.children])
+					////console.log(['1346', this.props.data.children])
 					for(var ch in this.props.data['@children']){
 						val.push(this.getValue(this.props.data['@children'][ch], ch))
 						if(typeof pVdef[0][ch] != 'undefined'){
@@ -1323,7 +1335,7 @@ var SettingItem = React.createClass({
 						}
 					}
 				}
-				console.log(['1252',pram])
+				////console.log(['1252',pram])
 				if(pram[0]['@labels']){
 					label = true
 				}	
@@ -1332,8 +1344,8 @@ var SettingItem = React.createClass({
 
 
 				val = [this.getValue(this.props.data['@data'], this.props.lkey)]
-				console.log(['1250',this.props.lkey, typeof this.props.data])
-				console.log(['1251', pVdef, pram])
+				////console.log(['1250',this.props.lkey, typeof this.props.data])
+				////console.log(['1251', pVdef, pram])
 				if(typeof pVdef[0][this.props.lkey] != 'undefined'){
 					pram = [pVdef[0][this.props.lkey]]
 				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
@@ -1342,7 +1354,7 @@ var SettingItem = React.createClass({
 
 				}
 				if(this.props.data['@children']){
-					console.log(['1346', this.props.data.children])
+					////console.log(['1346', this.props.data.children])
 					for(var ch in this.props.data['@children']){
 						val.push(this.getValue(this.props.data['@children'][ch], ch))
 						if(typeof pVdef[0][ch] != 'undefined'){
@@ -1352,7 +1364,7 @@ var SettingItem = React.createClass({
 						}
 					}
 				}
-				console.log(['1252',pram])
+				////console.log(['1252',pram])
 				if(pram[0]['@labels']){
 					label = true
 				}
@@ -1424,7 +1436,7 @@ var NestedEditControl = React.createClass({
 			return (<div onClick={this.switchMode}>{namestring}</div>);
 		}else{
 			var self = this;
-			console.log('line 1264')
+			////console.log('line 1264')
 			var rows = this.state.val.map(function(r,i){
 			var conts = r.map(function (v,j) {
 					// body...
@@ -1478,11 +1490,11 @@ var MultiEditControl = React.createClass({
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
 		}
-			//console.log(val)
+			//////console.log(val)
 			this.props.sendPacket(this.props.param[i], parseInt(val));
 		var value = this.state.val;
 		value[i] = v// e.target.value
-		console.log(this.props.data)
+		////console.log(this.props.data)
 		this.setState({val:value})
 	},
 	valChanged: function(v,i){
@@ -1491,7 +1503,7 @@ var MultiEditControl = React.createClass({
 			val = VdefHelper.swap16(parseInt(val))
 		}
 		var value = this.state.val;	
-		console.log(['1404',v,i])
+		////console.log(['1404',v,i])
 		value[i] = val;
 		this.setState({val:value})
 		if(!Number.isNaN(val)){
@@ -1500,28 +1512,48 @@ var MultiEditControl = React.createClass({
 	},
 	render:function() {
 		var namestring = this.props.name
-		console.log(['1548', namestring])
+	//	////console.log(['1548', namestring])
 			if(typeof vMap[this.props.name] != 'undefined'){
 				if(vMap[this.props.name]['@translations']['english']['name'] != ''){
 					namestring = vMap[this.props.name]['@translations']['english']['name']
 				}
 			}
-		console.log(['1554', namestring])
+	//	////console.log(['1554', namestring])
 			
 		var self = this;
+		var isInt = false
+		var colors = ['#800080','#008080']
+		var regexA = /_A$/
+		var regexB = /_B$/
+		if(this.state.val.length == 2){
+			if(this.props.param[0]['@name'].search(regexA) != -1){
+				if(this.props.param[1]['@name'].search(regexB) != -1){
+					if(this.props.param[0]['@name'].slice(0,-2) == this.props.param[1]['@name'].slice(0,-2)  ){
+						isInt = true;
+					}
+				}
+			}
+		}
 		var vLabels = this.state.val.map(function(d,i){
 			var val = d;
 			if(typeof self.props.param[i]['@labels'] != 'undefined'){
-				console.log(['1560',])
+				////console.log(['1560',])
 				val = _pVdef[5][self.props.param[i]["@labels"]]['english'][d]
 			}
-			return (<label style={self.props.vst}>{val}</label>)
+			var st = {}
+			st.width = self.props.vst.width;
+			st.fontSize = self.props.vst.fontSize;
+			st.display = self.props.vst.display;
+			if(isInt){
+				st.color = colors[i]
+			}
+			return (<label style={st}>{val}</label>)
 		})
 		if(this.state.mode == 0){
 			return(<div onClick={this.switchMode}><label style={this.props.lvst}>{namestring + ': '}</label>{vLabels}</div>)
 
 		}else{
-			console.log(['1574', self.props.param[0]])
+			////console.log(['1574', self.props.param[0]])
 					
 				var options = this.state.val.map(function(v, i){
 					if(typeof self.props.param[i]['@labels'] != 'undefined'){
@@ -1599,7 +1631,7 @@ var EditControl = React.createClass({
 		}
 		var value = this.state.val;
 		value[0] = e
-		console.log(this.props.data)
+		////console.log(this.props.data)
 		this.setState({val:value})
 	},
 	valChangedl: function(e){
@@ -1608,26 +1640,26 @@ var EditControl = React.createClass({
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
 		}
-			//console.log(val)
+			//////console.log(val)
 			this.props.sendPacket(this.props.param[0], parseInt(val));
 		var value = this.state.val;
 		value[0] = e.target.value
-		console.log(this.props.data)
+		////console.log(this.props.data)
 		this.setState({val:value})
 	},
 	valChangedb: function(e){
-		console.log(e)
+		////console.log(e)
 		var val = e;
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
 		}
 		var value = this.state.val;
 		value[1] = e
-		console.log(this.props.data)
+		////console.log(this.props.data)
 		this.setState({val:value})
 	},
 	valChangedlb: function(e){
-	//	console.log(e)
+	//	////console.log(e)
 		var val = e.target.value;
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
@@ -1635,7 +1667,7 @@ var EditControl = React.createClass({
 			this.props.sendPacket(this.props.param[1], parseInt(val));
 		var value = this.state.val;
 		value[1] = e.target.value
-		console.log(this.props.data)
+		////console.log(this.props.data)
 		this.setState({val:value})
 	},
 	componentWillReceiveProps: function (newProps) {
@@ -1644,7 +1676,7 @@ var EditControl = React.createClass({
 	deactivate:function () {
 		// body...
 		if(this.refs.ed){
-			console.log(['1511', 'this the prob'])
+			////console.log(['1511', 'this the prob'])
 			this.refs.ed.setState({mode:0})
 		}else{
 			this.setState({mode:0})	
@@ -1697,7 +1729,7 @@ var EditControl = React.createClass({
 		}
 		var namestring = this.props.name;
 		if(namestring.indexOf('INPUT_')!= -1){
-			console.log(namestring)
+			////console.log(namestring)
 			namestring = namestring.slice(6);
 		}else if(namestring.indexOf('OUT_')!=-1){
 			namestring = namestring.slice(4)
@@ -1708,7 +1740,7 @@ var EditControl = React.createClass({
 		if(this.props.param[0]["@name"].indexOf('ProdName')!=-1){
 			num = false
 		}
-		console.log(['1720',this.props.name, this.props.data])
+		////console.log(['1720',this.props.name, this.props.data])
 		if(typeof vMap[this.props.name] != 'undefined'){
 				if(vMap[this.props.name]['@translations']['english']['name'] != ''){
 					namestring = vMap[this.props.name]['@translations']['english']['name']
@@ -1716,24 +1748,24 @@ var EditControl = React.createClass({
 			}
 		if(this.props.data.length > 1){
 			if(Array.isArray(this.props.data[0])){
-				console.log('1728')
+				////console.log('1728')
 				return (<NestedEditControl acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}else{
-				console.log('1732')
+				////console.log('1732')
 				return (<MultiEditControl acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}	
 		}
-		if((this.props.int)||(this.props.data.length == 2)){
+/*		if((this.props.int)||(this.props.data.length == 2)){
 
 			var valA = this.props.data[0];
 			var valB = this.props.data[1];
 			if(this.props.label){
 				valA = _pVdef[5][this.props.param[0]["@labels"]]['english'][this.props.data[0]]
-				//console.log(_pVdef[5][this.props.param[0]["@labels"]]['english'])
+				//////console.log(_pVdef[5][this.props.param[0]["@labels"]]['english'])
 				valB = _pVdef[5][this.props.param[1]["@labels"]]['english'][this.props.data[1]]
-				console.log([this.props.param,this.props.data,valA,valB])
+				////console.log([this.props.param,this.props.data,valA,valB])
 			}
 
 			if(this.state.mode == 0){
@@ -1742,7 +1774,7 @@ var EditControl = React.createClass({
 				if(this.props.label){
 					var selected = this.state.val[0];
 					var selectedb = this.state.val[1];
-					console.log(selected)
+					////console.log(selected)
 					
 					var optionsA = _pVdef[5][this.props.param[0]["@labels"]]['english'].map(function(e,i){
 						if(i==selected){
@@ -1787,7 +1819,7 @@ var EditControl = React.createClass({
 		}
 
 		}else{
-
+*/
 
 		var dval = this.props.data[0]
 		if(this.props.label){
@@ -1799,7 +1831,7 @@ var EditControl = React.createClass({
 			}else{
 				if(this.props.label){
 					var selected = this.state.val[0];
-					console.log(selected)
+					////console.log(selected)
 					var options = _pVdef[5][this.props.param[0]["@labels"]]['english'].map(function(e,i){
 						if(i==selected){
 							return (<option value={i} selected>{e}</option>)
@@ -1827,7 +1859,7 @@ var EditControl = React.createClass({
 						<label style={{fontSize:16,marginLeft:20, border:'1px solid grey',padding:2, paddingLeft:5,paddingRight:5, background:'#e6e6e6',borderRadius:10}} onClick={this.sendPacket}>Submit</label></div>)	
 			}
 		}
-	}
+	
 	}
 })
 var FRamView =React.createClass({
@@ -1851,7 +1883,7 @@ var LiveView = React.createClass({
 		this.refs.st.setLEDs(p,d)
 	},
 	render: function(){
-		console.log('rendering st')
+		////console.log('rendering st')
 		var style = {fontSize:20}
 		if(this.props.layout =='mobile'){
 			style = {fontSize:16}
@@ -1885,7 +1917,7 @@ var LiveViewInt = React.createClass({
 		this.refs.st.setLEDs(pa,pb,da,db)
 	},
 	render: function(){
-		console.log('rendering int')
+		////console.log('rendering int')
 		var style = {fontSize:20}
 		if(this.props.layout =='mobile'){
 			style = {fontSize:16}
@@ -2035,21 +2067,21 @@ var MultiBankUnit = React.createClass({
 		var dat = []
 		if(this.props.data.length >0){
 			dat = this.props.data
-			console.log(dat)
+			////console.log(dat)
 		}
 		return ({banks:dat})
 	},
 	onRMsg: function (e,d) {
 		// body...
 		if(this.refs[d.ip]){
-			console.log(d)
+			////console.log(d)
 			this.refs[d.ip].onRMsg(e,d)
 	
 		}
 	},
 	onParamMsg:function(e,d){
 		if(this.refs[d.ip]){
-			//console.log(d)
+			//////console.log(d)
 			this.refs[d.ip].onParamMsg(e,d)
 	
 		}
@@ -2059,13 +2091,13 @@ var MultiBankUnit = React.createClass({
 	},
 	switchUnit: function (u) {
 		// body...
-		console.log('switch mb')
+		////console.log('switch mb')
 		this.props.onSelect(u)
 	},
 	render: function (argument) {
 		var self = this;
 		var banks = this.state.banks.map(function (b,i) {
-			console.log(b)
+			////console.log(b)
 			return <StatBarMB unit={b} onSelect={self.switchUnit} ref={b.ip} name={b.name}/>
 		
 		})
@@ -2178,6 +2210,7 @@ var StatBarMB = React.createClass({
 	onRMsg: function (e,d) {
 		// body...
 		if(d.ip = this.props.unit.ip){
+			clearInterval(myTimers[this.props.unit.ip]);
 			this.setState({rpcResp:true})	
 		}		
 
@@ -2223,10 +2256,12 @@ var StatBarMB = React.createClass({
 					this.setDynInt(uintToInt(getVal(prodArray,2,'PhaseAngleAuto_A',pVdef),16),getVal(prodArray,2,'Peak_A',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray, uintToInt(getVal(prodArray,2,'PhaseAngleAuto_B',pVdef),16),getVal(prodArray,2,'Peak_B',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray)
 					this.setLEDSInt(getVal(prodArray,2,'Reject_LED_A', pVdef),getVal(prodArray,2,'Prod_LED_A',pVdef),getVal(prodArray,2,'Prod_HI_LED_A',pVdef),getVal(prodArray,2,'Reject_LED_B', pVdef),getVal(prodArray,2,'Prod_LED_B',pVdef),getVal(prodArray,2,'Prod_HI_LED_B',pVdef))
 				}
+				faultArray = null;
 			}
 		}
 		dv = null;
 		prodArray = null;
+
 	},
 	render: function(){
 
@@ -2242,12 +2277,12 @@ var StatBarMB = React.createClass({
 		var klass =''
 		if(this.state.fault){
 			klass = 'faultactive'
-			console.log(klass)
+			////console.log(klass)
 		}
 		if(!this.state.live){
 
 			klass = 'inactive'
-			console.log(klass)
+			////console.log(klass)
 		}
 		var list = ['dry','wet','DSA']
 		var mtab = (	<table className='mtab'><tbody>
@@ -2369,10 +2404,11 @@ var SingleUnit = React.createClass({
 		if(!this.state.live){
 			this.setState({live:true})
 		}
-		//console.log([a,b])
+		//////console.log([a,b])
 		this.refs.lv.update(a,b)	
 	},
 	onRMsg: function (e,d) {
+		clearInterval(myTimers[this.props.unit.ip]);
 		this.setState({rpcResp:true})
 	},
 	onParamMsg: function(e){
@@ -2600,7 +2636,7 @@ var MbSetup = React.createClass({
 			return({mode:false})
 		},
 		editMb:function () {
-			console.log(this.props.index)
+			////console.log(this.props.index)
 			this.props.edit(this.props.index)
 		},
 		remove:function () {
@@ -2646,13 +2682,13 @@ var DetectorView = React.createClass({
 		}
 		minMq.addListener(this.listenToMq);
 		var interceptor = this.props.det.interceptor//(vdefByIp[this.props.det.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.det.board_id == 5);
-		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:[],
+		return {faultArray:[],currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:[], prodSettings:{}, sysSettings:{}, combinedSettings:[],
 		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, peak:0, rej:0, phase:0, interceptor:interceptor}
 	},
 	componentDidMount: function () {
-		var packet = dsp_rpc_paylod_for(19,[102,0,0])
+		/*var packet = dsp_rpc_paylod_for(19,[102,0,0])
 		var buf =  new Uint8Array(packet)
-		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})
+		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})*/
 	},
 	componentWillReceiveProps: function (newProps) {
 		var packet = dsp_rpc_paylod_for(19,[102,0,0])
@@ -2664,7 +2700,7 @@ var DetectorView = React.createClass({
 	},
 	onRMsg:function (e,d) {
 		// body...
-		//console.log([e,d])
+		//////console.log([e,d])
 		if(this.props.det.ip != d.ip){
 			return;
 		}
@@ -2672,7 +2708,7 @@ var DetectorView = React.createClass({
 		var data = new Uint8Array(msg);
 		if(data[1] == 18){
 			//prodList
-			console.log('prodList')
+			////console.log('prodList')
 			var prodbits = data.slice(3)
 			var dat = []
 			for(var i = 0; i < 99; i++){
@@ -2681,19 +2717,23 @@ var DetectorView = React.createClass({
 				}
 			}
 			if(this.refs.dm){
-				console.log(dat)
+				////console.log(dat)
 				this.refs.dm.setState({prodList:dat})
 			}
 
 		}else if(data[1] == 24){
-			console.log(data)
+			////console.log(data)
 		}
+		msg = null;
+		data = null;
+		dat = null;
+		prodbits = null;
 	},
 	onNetpoll: function(e,d){
 		if(this.props.det.ip != d.ip){
 			return;	
 		}
-		console.log(['2600',e])
+		////console.log(['2600',e])
 		var nps = this.state.netpoll
 		if(nps.length == 15){
 			nps.splice(0,1);
@@ -2708,13 +2748,13 @@ var DetectorView = React.createClass({
 	listenToMq: function () {
 		// body...
 		if(this.state.mqls[2].matches){
-			console.log(1)
+			////console.log(1)
 		}else if(this.state.mqls[1].matches){
-			console.log(2)
+			////console.log(2)
 		}else if(this.state.mqls[0].matches){
-			console.log(3)
+			////console.log(3)
 		}else{
-			console.log(4)
+			////console.log(4)
 		}
 		
 		this.setState({minW:this.state.minMq.matches})
@@ -2726,6 +2766,9 @@ var DetectorView = React.createClass({
 		if(this.props.det.ip != d.ip){
 			return;
 		}
+		var sysSettings =  null;//this.state.sysSettings;
+		var prodSettings = null;//this.state.prodSettings;
+		var combinedSettings = null;
 		var self = this;
    		var msg = e.data;
    		var data = new Uint8Array(msg);
@@ -2733,7 +2776,7 @@ var DetectorView = React.createClass({
 		var lcd_type = dv.getUint8(0);
   	    var n = data.length;
  		if(lcd_type== 0){
- 			console.log(['2783', vdefByIp[d.ip][3]])
+ 			////console.log(['2783', vdefByIp[d.ip][3]])
 		
 			if(vdefByIp[d.ip]){
 				var Vdef = vdefByIp[d.ip][0]
@@ -2773,13 +2816,13 @@ var DetectorView = React.createClass({
 								if(par['@rec'] == 0){
 									cob[v][p][t] = {'@data':sysSettings[par['@name']], '@children':{}}
 								}else if(par['@rec'] == 1){
-									cob[v][p][t] = {'@data':prodSettings[par['@name']], '@children':{}}
+									cob[v][p][t] = {'@data':this.state.prodSettings[par['@name']], '@children':{}}
 								}
 								for(var c in cVdf[v][p][t].children){
 									if(cVdf[v][p][t].children[c]['@rec'] == 0){
 										cob[v][p][t]['@children'][c] = sysSettings[c]
 									}else if(cVdf[v][p][t].children[c]['@rec'] == 1){
-										cob[v][p][t]['@children'][c] = prodSettings[c]
+										cob[v][p][t]['@children'][c] = this.state.prodSettings[c]
 									}
 									
 								}
@@ -2789,13 +2832,13 @@ var DetectorView = React.createClass({
 								if(par['@rec'] == 0){
 									cob[v][p] = {'@data':sysSettings[par['@name']], '@children':{}}
 								}else if(par['@rec'] == 1){
-									cob[v][p] = {'@data':prodSettings[par['@name']], '@children':{}}
+									cob[v][p] = {'@data':this.state.prodSettings[par['@name']], '@children':{}}
 								}
 								for(var c in cVdf[v][p].children){
 									if(cVdf[v][p].children[c]['@rec'] == 0){
 										cob[v][p]['@children'][c] = sysSettings[c]
 									}else if(cVdf[v][p].children[c]['@rec'] == 1){
-										cob[v][p]['@children'][c] = prodSettings[c]
+										cob[v][p]['@children'][c] = this.state.prodSettings[c]
 									}
 									
 								}
@@ -2803,14 +2846,18 @@ var DetectorView = React.createClass({
 					}
 				}
 				combinedSettings = cob;
+				cob = null;
     			if(this.state.currentView == "SettingsDisplay"){
 					if(this.refs.sd){
-						this.refs.sd.parseInfo(sysSettings, prodSettings)	
+						this.refs.sd.parseInfo(sysSettings, this.state.prodSettings)	
 					}
 				}else{
 					if(this.refs.dm){
-						this.refs.dm.parseInfo(sysSettings, prodSettings)
+						this.refs.dm.parseInfo(sysSettings, this.state.prodSettings)
 					}	
+				}
+				if(isDiff(sysSettings,this.state.sysSettings)){
+					this.setState({sysSettings:sysSettings, combinedSettings:combinedSettings})
 				}
     
     		}  
@@ -2841,7 +2888,6 @@ var DetectorView = React.createClass({
 				prodSettings = prodRec;
 				var phaseMode = prodSettings['PhaseMode']
 				var phaseSpeed = Vdef['@labels']['PhaseSpeed']['english'][prodSettings['PhaseSpeed']]
-				var comb = [];
 				var cob = [];
 				for (var v in cVdf){
 					if(!cob[v]){
@@ -2855,13 +2901,13 @@ var DetectorView = React.createClass({
 								var par =  cVdf[v][p][t].param
 
 								if(par['@rec'] == 0){
-									cob[v][p][t] = {'@data':sysSettings[par['@name']], '@children':{}}
+									cob[v][p][t] = {'@data':this.state.sysSettings[par['@name']], '@children':{}}
 								}else if(par['@rec'] == 1){
 									cob[v][p][t] = {'@data':prodSettings[par['@name']], '@children':{}}
 								}
 								for(var c in cVdf[v][p][t].children){
 									if(cVdf[v][p][t].children[c]['@rec'] == 0){
-										cob[v][p][t]['@children'][c] = sysSettings[c]
+										cob[v][p][t]['@children'][c] = this.state.sysSettings[c]
 									}else if(cVdf[v][p][t].children[c]['@rec'] == 1){
 										cob[v][p][t]['@children'][c] = prodSettings[c]
 									}
@@ -2871,13 +2917,13 @@ var DetectorView = React.createClass({
 						}else{
 							var par = cVdf[v][p].param
 								if(par['@rec'] == 0){
-									cob[v][p] = {'@data':sysSettings[par['@name']], '@children':{}}
+									cob[v][p] = {'@data':this.state.sysSettings[par['@name']], '@children':{}}
 								}else if(par['@rec'] == 1){
 									cob[v][p] = {'@data':prodSettings[par['@name']], '@children':{}}
 								}
 								for(var c in cVdf[v][p].children){
 									if(cVdf[v][p].children[c]['@rec'] == 0){
-										cob[v][p]['@children'][c] = sysSettings[c]
+										cob[v][p]['@children'][c] = this.state.sysSettings[c]
 									}else if(cVdf[v][p].children[c]['@rec'] == 1){
 										cob[v][p]['@children'][c] = prodSettings[c]
 									}
@@ -2886,112 +2932,24 @@ var DetectorView = React.createClass({
 						}
 					}
 				}
-				/*for(var c in nVdf){
 
-					if(c != 'TestConfig'){
-					if(!comb[c]){
-						comb[c] = {};
-					
-					}
-					for(var p in nVdf[c][0]){
-						comb[c][p] = []
-						var a,b;
-						//console.log(p)
-						//console.log
-						if(nVdf[c][0][p]['A']){
-						if(nVdf[c][0][p]['A']['@rec'] == 0){
-							a = sysSettings[p+'_A']
-							b = sysSettings[p+'_B']
-						}else{
-							a = prodSettings[p+'_A']
-							b = prodSettings[p+'_B']
-
-						}
-						comb[c][p].push(a)
-						comb[c][p].push(b)
-						}else if(Array.isArray(nVdf[c][0][p])){
-						//	console.log('2345')
-							//console.log(nVdf[c][0][p])
-								comb[c][p] = [];
-								
-							nVdf[c][0][p].forEach(function(par, j){
-								if(Array.isArray(par)){
-									//console.log('line 2349')
-									console.log(par)
-									comb[c][p][j] = [];
-									par.forEach(function(para, k){
-										if(para['@rec'] ==0){
-											comb[c][p][j][k] = sysSettings[para['@name']]
-	
-										}else{
-											comb[c][p][j][k] = prodSettings[para['@name']]
-											
-										}
-										
-									})
-								}else{
-									if(par['@rec'] == 0){
-
-										comb[c][p][j] = sysSettings[par['@name']]
-									
-									}else{
-										comb[c][p][j] = prodSettings[par['@name']]
-										
-									}
-								}
-
-							})
-						}
-					}
-					for(var i = 1; i < nVdf[c].length; i++){
-						if(nVdf[c][i]['@rec'] == 0){
-							comb[c][nVdf[c][i]["@name"]] = sysSettings[nVdf[c][i]["@name"]]
-						}else{
-							comb[c][nVdf[c][i]["@name"]] = prodSettings[nVdf[c][i]["@name"]]
-						}
-						//nVdf[c][0]
-						}
-					}else{
-						if(!comb['Test']){
-							comb['Test'] = {}
-						}
-							var testSel = ['Manual', 'Halo', 'Manual2', 'Halo2']
-							nVdf[c].forEach(function(conf, i){
-								console.log(['2608',i, conf,])
-								var co = {'Type':'confObj', 'Index':i}
-								co['TestConfigAck'] = prodSettings[conf['TestConfigAck']['@name']];
-								co['TestConfigHaloMode'] = prodSettings[conf['TestConfigHaloMode']['@name']]
-								co['TestConfigMetal'] = [];
-								co['TestConfigCount'] = [];
-								conf['TestConfigMetal'].forEach(function(m,i){
-									co['TestConfigMetal'][i] = prodSettings[m['@name']];
-								})
-								
-								conf['TestConfigCount'].forEach(function(m,i){
-									co['TestConfigCount'][i] = prodSettings[m['@name']];
-								})
-								//
-								//prodSettings[conf]
-								comb['Test'][testSel[i]] =  co//{'TestConfigAck':prodSettings[conf['TestConfigAck']['@name']],
-						//	}
-							})
-
-						
-						
-					}
-				}*/
 				combinedSettings = cob;
-				console.log('combined settings here:')
-				//console.log(comb)
+				cob = null;
+				////console.log('combined settings here:')
+				//////console.log(comb)
 				if(this.state.currentView == "SettingsDisplay"){
 					if(this.refs.sd){
-						this.refs.sd.parseInfo(sysSettings, prodSettings)	
+						this.refs.sd.parseInfo(this.state.sysSettings, prodSettings)	
 					}
 				}else{
 					if(this.refs.dm){
-						this.refs.dm.parseInfo(sysSettings, prodSettings)
+						this.refs.dm.parseInfo(this.state.sysSettings, prodSettings)
 					}
 				}
+				if(isDiff(prodSettings,this.state.prodSettings)){
+					this.setState({prodSettings:prodSettings, combinedSettings:combinedSettings})
+				}
+				//this.setState({sysSettings})
 			}			
 		}else if(lcd_type==2){
 			if(vdefByIp[d.ip]){
@@ -3054,7 +3012,7 @@ var DetectorView = React.createClass({
 					var rej = prodRec['RejCount']
 					var sig = uintToInt(prodRec['DetectSignal'],16)
 					var phase = (uintToInt(prodRec['PhaseAngleAuto'],16)/100).toFixed(2)
-					//console.log(phase)
+					//////console.log(phase)
 					var phaseSpeed = prodRec['PhaseFastBit'];
 					var rpeak = prodRec['ProdPeakR']
 					var xpeak = prodRec['ProdPeakX']
@@ -3067,7 +3025,7 @@ var DetectorView = React.createClass({
 					}
 					if(this.refs.lv){
 						this.refs.lv.update(sig)	
-						console.log('3147')
+						//////console.log('3147')
 						this.setLEDS(prodRec['Reject_LED'],prodRec['Prod_LED'],prodRec['Prod_HI_LED'])
 					}
 				if(this.refs.dg){
@@ -3092,7 +3050,8 @@ var DetectorView = React.createClass({
   						if(diff){
   							this.setState({faultArray:faultArray})
   						}
-  					}				
+  					}	
+
 			}
 
    		}else if(lcd_type == 3){
@@ -3122,6 +3081,14 @@ var DetectorView = React.createClass({
    		data = null;
    		dv = null;
    		prodArray = null;
+   		prodRec = null;	
+   		sysRec = null;
+   		Vdef = null;
+   		cVdf = null;
+   		pVdef = null;
+   		faultArray = null;	
+   		//prodSettings = null;
+   		//sysSettings = null;
 
    		
 	},
@@ -3148,7 +3115,7 @@ var DetectorView = React.createClass({
 		}else if(prod_b == 1){
 			pled_b = 1
 		}
-		//console.log([pled_a, det_a,pled_b,det_b])
+		//////console.log([pled_a, det_a,pled_b,det_b])
 		this.refs.lv.setLEDs(pled_a,det_a,pled_b,det_b)
 	},
 	showSettings: function () {
@@ -3177,12 +3144,12 @@ var DetectorView = React.createClass({
 	changeView: function (d) {
 		var st = this.state.stack;
 		st.push([this.state.currentView, this.state.data]);
-		console.log(['2976',d[1]])
+		////console.log(['2976',d[1]])
 		this.setState({currentView:d[0], data:d[1]})
 	},
 	settingClick: function (s,n) {
 		var set = this.state.data.slice(0)
-		console.log(['set', s,n])
+		////console.log(['set', s,n])
 		if(Array.isArray(s)){
 			set.push(s[0])
 			//set.push(n)
@@ -3199,38 +3166,38 @@ var DetectorView = React.createClass({
 		socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 	},
 	sendPacket: function (n,v) {
-		console.log([n,v])
+		////console.log([n,v])
 		if(typeof n == 'string'){
 			if(n== 'Sens_A'){
 				var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
-			console.log(packet)
+			////console.log(packet)
 			var buf = new Uint8Array(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 			}else if(n == 'Sens'){
-			console.log(this.props.ip)
+			////console.log(this.props.ip)
 			var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
-			console.log(packet)
+			////console.log(packet)
 			var buf = new Uint8Array(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 			
 		}else if(n == 'Sens_B'){
-			console.log(this.props.ip)
+			////console.log(this.props.ip)
 			var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
-			console.log(packet)
+			////console.log(packet)
 			var buf = new Uint8Array(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 			
 		}else if(n == 'ProdNo'){
 			var packet = dsp_rpc_paylod_for(0x13,[0x8, parseInt(v)]);
-			console.log(packet)
+			////console.log(packet)
 			var buf = new Uint8Array(packet)
 		socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 			}else if(n == 'ProdName'){
-			console.log(v)
+			////console.log(v)
 			var str = (v + "                    ").slice(0,20)
-			console.log(str)
+			////console.log(str)
 			var packet = dsp_rpc_paylod_for(0x13,[0x2a],str);
-			console.log(packet)
+			////console.log(packet)
 			var buf = new Uint8Array(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 		
@@ -3251,12 +3218,12 @@ var DetectorView = React.createClass({
 		var buf =  new Uint8Array(packet)
 		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})	
 		}else if(n=='rpeak'){
-			console.log(n)
+			////console.log(n)
 			var packet = dsp_rpc_paylod_for(19,[474,0,0])
 			var buf = new Uint8Array(packet);
 			socket.emit('rpc', {ip:this.props.det.ip, data:buf.buffer})
 		}else if(n=='xpeak'){
-			console.log(n)
+			////console.log(n)
 			var packet = dsp_rpc_paylod_for(19,[474,0,0])
 			var buf = new Uint8Array(packet);
 			socket.emit('rpc', {ip:this.props.det.ip, data:buf.buffer})
@@ -3327,7 +3294,7 @@ var DetectorView = React.createClass({
 			}
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 			var buf = new Uint8Array(packet);
-			console.log(buf)
+			////console.log(buf)
 			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 		
 		
@@ -3357,7 +3324,7 @@ var DetectorView = React.createClass({
 			lstyle = { height: 60, marginRight: 15}
 		}
 		if(this.state.settings){
-			SD = (<SettingsDisplay goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor}/>)
+			SD = (<SettingsDisplay goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} combinedSettings={this.state.combinedSettings}/>)
 	
 		}else{
 			MD = (<div style={{margin:5}}>
@@ -3425,7 +3392,7 @@ var NetPollView = React.createClass({
 		if(events.length == this.props.eventCount){
 			events.splice(0,1);
 		}
-		console.log(['3280',e])
+		////console.log(['3280',e])
 		events.push(e);
 		this.setState({events:events})
 	},
@@ -3454,7 +3421,6 @@ var NetPollView = React.createClass({
 		return (<div>
 			<label onClick={this.dummyEvent}>Events Log</label>
 			<table className='npTable'><tbody>
-			<tr><th>Timestamp</th><th>Event Type</th><th>Details</th></tr>
 			{events}
 			</tbody></table>
 
@@ -3471,8 +3437,12 @@ var DetMainInfo = React.createClass({
 		} 
 		var tmpA = '';
 		var tmpB = '';
+		var res = null;
 
 		return({rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0, sysRec:{},prodRec:{}, tmp:'', tmpB:'', prodList:[], phaseFast:0, phaseFastB:0, pVdef:pVdef})
+	},
+	componentDidMount: function(){
+		this.sendPacket('refresh','')
 	},
 	clearRej: function () {
 		// body...
@@ -3508,14 +3478,15 @@ var DetMainInfo = React.createClass({
 		}
 		var param = this.state.pVdef[2][p]
 		this.props.clear(param) 
+		param = null;
 	},
 	calibrate: function () {
 		this.refs.calbModal.toggle()
 	},
 	parseInfo: function(sys, prd){
-		console.log('parseInfo')
+		//////console.log('parseInfo')
 		if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
-			console.log([sys,prd])
+		//	////console.log([sys,prd])
 			if(this.props.int){
 				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens_A'], tmpB:prd['Sens_B']})
 			}else{
@@ -3610,7 +3581,7 @@ var DetMainInfo = React.createClass({
 	},
 	render: function () {
 			
-		console.log('render here')
+		//////console.log('render here')
 		var self = this;
 		var padding = {paddingLeft:10}
 		var tdstyle = {paddingLeft:10, background:'linear-gradient(135deg, rgba(128, 128, 128, 0.3), transparent 67%)', width:200}
@@ -3634,7 +3605,7 @@ var DetMainInfo = React.createClass({
 				<tr><td style={headingStyle}>Phase</td><td style={tdstyleintA} >{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode']]}</td></tr>
 				<tr><td style={headingStyle}>Rejects</td><td style={tdstyleintA} onClick={this.clearRej}>{this.state.rej}</td></tr>
 			
-				<tr><td></td><td style={tdstyle} onClick={this.calibrate}>Calibrate </td><td style={tdstyle}>Test</td>
+				<tr><td></td><td style={tdstyle} onClick={this.calibrate}>Calibrate </td><td onClick={this.setTest} style={tdstyle}>Test</td>
 				</tr>		
 			</tbody>
 		</table>)
@@ -3648,7 +3619,7 @@ var DetMainInfo = React.createClass({
 				<td style={tdstyleintB}>{this.state.phaseb + ' ' + list[this.state.prodRec['PhaseMode_B']]}</td></tr>
 				<tr><td style={headingStyle}>Rejects</td><td colSpan={2} style={tdstyleintA} onClick={this.clearRej}>{this.state.rej}</td></tr>
 	
-				<tr><td></td><td  onClick={this.calibrate} style={tdstyle}><span>Calibrate</span> </td><td style={tdstyle}><span>Test</span></td></tr>		
+				<tr><td></td><td  onClick={this.calibrate} style={tdstyle}><span>Calibrate</span> </td><td onClick={this.setTest} style={tdstyle}><span>Test</span></td></tr>		
 			</tbody>
 				</table>)
 		}
@@ -3774,18 +3745,18 @@ var TestInterface = React.createClass({
 	},
 	render: function () {
 		var prod = this.state.prodRec;
-		//console.log(prod)
+		//////console.log(prod)
 		var self = this;
 		var testConfigs = _testMap.map(function(_test, i){
 			var test = _test.map(function(conf){
-		//		console.log(conf)
+		//		////console.log(conf)
 				return ({count:prod[conf.count], metal:prod[conf.metal]})
 			})	
-			//console.log(test)
+			//////console.log(test)
 			return <TestItem sendChange={self.sendPacket} conf={_test} metalCounts={test} ind={i+1} pVdef={self.props.pVdef}/>
 		}) 
 
-		console.log('testmode: ' + prod['TestMode']);
+		////console.log('testmode: ' + prod['TestMode']);
 		if(prod['TestMode']){
 			var testConfigs = testConfigs[prod['TestMode']- 1]
 		} 
@@ -3799,7 +3770,7 @@ var TestInterface = React.createClass({
 		})
 
 		//var selectTestMode
-	//	console.log(testConfigs)
+	//	////console.log(testConfigs)
 		return(<div className='testInt'>
 			{testConfigs}
 		
@@ -3813,9 +3784,9 @@ var TestInterface = React.createClass({
 })
 var TestItem = React.createClass({
 	sendChange: function(e,c){
-		console.log('received change')
-		console.log(e)
-		console.log(c)
+		////console.log('received change')
+		////console.log(e)
+		////console.log(c)
 		this.props.sendChange(e,c)
 	},
 	render:function(){

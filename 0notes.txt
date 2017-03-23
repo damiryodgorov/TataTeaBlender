@@ -56,3 +56,7 @@ Graphic changes, last version before branching to udp version
 --170321 
 
 UDP version, interceptor support
+
+--170322
+
+Memory leak fixes - TEST IN PROGRESS

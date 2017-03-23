@@ -48,7 +48,7 @@ var KeyboardInput = React.createClass({
 		
 	},
 	onTextareaChanged: function(e,v){
-		console.log('onTextareaChanged')
+		//console.log('onTextareaChanged')
 		this.setState({textarea:v})
 		if(this.props.onInput){
 			this.props.onInput(v)
@@ -59,7 +59,7 @@ var KeyboardInput = React.createClass({
 		
 	},
 	onInput: function(e){
-		console.log('onInput')
+		//console.log('onInput')
 		this.setState({textarea:e})
 		if(this.props.onInput){
 			this.props.onInput(e)
@@ -71,7 +71,7 @@ var KeyboardInput = React.createClass({
 	},
 	onFocus: function(e){
 		if(ftiTouch){
-			console.log('74 components.jsx')
+			//console.log('74 components.jsx')
 
 			this.setState({open:true})
 			if(this.props.onFocus){
@@ -83,7 +83,7 @@ var KeyboardInput = React.createClass({
 		if(ftiTouch){
 
 
-			console.log(['79 comp'])
+			//console.log(['79 comp'])
 			this.setState({open:false})
 			if(this.props.onRequestClose){
 				this.props.onRequestClose();
@@ -91,7 +91,7 @@ var KeyboardInput = React.createClass({
 		}
 	},
 	render:function () {
-		//console.log($('#keyboardinput'))
+		////console.log($('#keyboardinput'))
 		/*<Keyboard value={this.state.textarea} name='thetextareaname'
 			 options={{type:'textarea',layout:'qwerty', autoAccept: true, alwaysOpen: false, appendLocally: true, color:'light', class:'sxcycx', updateOnChange: true }} onChange={this.onTextareaChanged} /> 
 */
@@ -109,7 +109,7 @@ var KeyboardInput = React.createClass({
             onFocus={this.onFocus}
           />)
 		if(ftiTouch){
-			console.log(ftiTouch)
+			//console.log(ftiTouch)
 
 		return (
 			<div style={{style}}>
@@ -119,7 +119,7 @@ var KeyboardInput = React.createClass({
                         </div>
 			 )
 			}else{
-				console.log(ftiTouch)
+				//console.log(ftiTouch)
 				return(
 						<div style={{style}}>
 		
@@ -148,10 +148,10 @@ var Panel = React.createClass({
 
 	},
 	handleMsg: function(msg){
-		//console.log(msg)
+		////console.log(msg)
 		var dv = new DataView(msg);
 			var lcd_type = dv.getUint8(0);
-			//console.log(lcd_type)
+			////console.log(lcd_type)
     		var lcd_leds = dv.getUint8(1);
     		var lcd_bits = dv.getUint8(2);
     		var lcd_cur  = dv.getUint8(3);
@@ -189,7 +189,7 @@ var TreeNode = React.createClass({
 		this.setState({hidden:hidden});
 	},
 	render: function(){
-		//console.log("render")
+		////console.log("render")
 		var cName = "collapsed"
 		if(!this.state.hidden){
 			cName = "expanded"
@@ -225,26 +225,26 @@ var MenuCategory = React.createClass({
 		var ih = this.state.isHidden;
 		var handler = this.handleItemclick;
 		//var hasContent = this.props.data
-	    console.log(this.props.data)
+	    //console.log(this.props.data)
 		var menuNodes = ""
 		var mNodes = []
 		if(Array.isArray(this.props.data)){
 			menuNodes = this.props.data.map(function (item) {
-	        console.log(item)
+	        //console.log(item)
 	        if(item.length == 2){
-	        	console.log(item.length)
+	        	//console.log(item.length)
 	        	return (
 	      	<MenuItem lkey={item[0]} name={item[0]} isHidden={ih} hasChild={false} 
 	      	data={item} onItemClick={handler} hasContent={true}/>)	
 	        }else{
-	        	console.log(item)
+	        	//console.log(item)
 	        	for(var it in item){
-	        		console.log(it)
-	        		console.log(item[it])
+	        		//console.log(it)
+	        		//console.log(item[it])
 	        		var vit = (<MenuItem lkey={it} name={it} isHidden={ih} hasChild={false} data={item[it]} onItemClick={handler} hasContent={true}/>)
 	        		mNodes.push(vit)
 	        	}
-	        //	console.log(mNodes)
+	        //	//console.log(mNodes)
 	      	}	
 	        	
 	        });
@@ -284,7 +284,7 @@ var MenuItem = React.createClass({
 		if(Array.isArray(this.props.data)&&(this.props.data.length > 1)){
 			this.props.onItemClick(this.props.data)	
 		}else{
-			console.log(this.props.data)
+			//console.log(this.props.data)
 		}
 		
 	},
@@ -302,14 +302,14 @@ var MenuItem = React.createClass({
 			var val;
 			if(typeof pVdef[0][this.props.name] != 'undefined'){
 				pram = pVdef[0][this.props.name]
-				console.log(pram)
+				//console.log(pram)
 				var deps = []
 				val = this.props.data
 				if(pram["@type"]){
 					var f =	pram["@type"]["s"]
 					if(pram["@dep"]){
 						deps = pram["@dep"].map(function(d){
-							//console.log(d)
+							////console.log(d)
 							if(pVdef[2][d]["@rec"] == 0){
 								return sysSettings[d];
 							}else{
@@ -325,14 +325,14 @@ var MenuItem = React.createClass({
 				}
 			}else if(typeof pVdef[1][this.props.name] != 'undefined'){
 				pram = pVdef[1][this.props.name]
-				console.log(pram)
+				//console.log(pram)
 				var deps = []
 				val = this.props.data
 				if(pram["@type"]){
 					var f =	pram["@type"]["s"]
 					if(pram["@dep"]){
 						deps = pram["@dep"].map(function(d){
-							//console.log(d)
+							////console.log(d)
 							if(pVdef[2][d]["@rec"] == 0){
 								return sysSettings[d];
 							}else{
@@ -358,7 +358,7 @@ var NavButton = React.createClass({
 		//send DSP call to update panel accordingly
 		var data = new Uint8Array(1);
 		data[0] = this.props.keyMap & 0xff;
-		console.log(this.props.ws)
+		//console.log(this.props.ws)
 		this.props.ws.send(data.buffer);
 		
 	},
@@ -481,7 +481,7 @@ var List = React.createClass({
   },
   componentWillReceiveProps: function (newProps) {
   	// body...
-  	console.log(newProps)
+  	//console.log(newProps)
   	this.setState({data:newProps.data})
   },
   dragStart: function(e) {
@@ -523,7 +523,7 @@ var List = React.createClass({
     }
   },
   render: function() {
-  	console.log(this.state.data)
+  	//console.log(this.state.data)
     return <ul onDragOver={this.dragOver}>
     	{this.state.data.map(function(item, i) {
       	return (
@@ -565,8 +565,8 @@ var CanvasElem = React.createClass({
 		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#000000'}, grid:{fillStyle:'#ffffff'}, yRangeFunction:yRangeFunc});
 		smoothie.streamTo(document.getElementById(this.props.canvasId));
 		if(this.props.int){
-			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgba(0, 128, 128, 0.4)'});
-			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgba(128, 0, 128, 0.4)'});
+			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgb(0, 128, 128)'});
+			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
 		
 		}else{
 			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#000000'});
@@ -612,7 +612,7 @@ var ConcreteElem = React.createClass({
 			 	var x = e.clientX - boundingRect.left
 			 	var y = e.clientY - boundingRect.top
 			 	if((x>0&&x<400)&&(y>0&&y<400)){
-			 		console.log([x,y]);
+			 		//console.log([x,y]);
 			}			
 		});
 		concreteContainer.addEventListener('mousemove', function(e){
@@ -620,7 +620,7 @@ var ConcreteElem = React.createClass({
 			 	var x = e.clientX - boundingRect.left
 			 	var y = e.clientY - boundingRect.top
 			 	if((x>0&&x<400)&&(y>0&&y<400)){
-			 		console.log('move');
+			 		//console.log('move');
 			 	}
 		});
 		concreteContainer.addEventListener('mouseup', function(e){
@@ -628,7 +628,7 @@ var ConcreteElem = React.createClass({
 			 	var x = e.clientX - boundingRect.left
 			 	var y = e.clientY - boundingRect.top
 			 	if((x>0&&x<400)&&(y>0&&y<400)){
-			 		console.log([x,y]);
+			 		//console.log([x,y]);
 			 	}
 		});
 		wrapper.add(this.state.axisLayer)
@@ -843,7 +843,7 @@ var ConcreteElem = React.createClass({
 		
 		var self = this;
 		if(this.state.redraw){// || (this.state.line.length > this.state.buf)){
-			console.log('redraw')
+			//console.log('redraw')
 			ctx.clearRect(0,0,400,400)
 			ctx.beginPath();
 			var strokeStyles = ['#000000','#FF0000','#00FF00','#0000FF']
@@ -902,7 +902,7 @@ var ConcreteElem = React.createClass({
 				
 
 		}else{
-			console.log('no redraw')
+			//console.log('no redraw')
 			ctx.beginPath();
 			var strokeStyles = ['#000000','#FF0000','#00FF00','#0000FF']
 			ctx.strokeStyle = strokeStyles[this.state.curStyle]
