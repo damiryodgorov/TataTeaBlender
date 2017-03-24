@@ -74,6 +74,7 @@ var LandingPage = React.createClass({
 		socket.on('netpoll', function(m){
 			//////console.log(['73',m])
 			self.onNetpoll(m.data, m.det)
+			m = null;
 		})
 		socket.on('prefs', function(f) {
 			////console.log(f)
@@ -126,9 +127,11 @@ var LandingPage = React.createClass({
 		
 		socket.on('paramMsg', function(data) {
 			self.onParamMsg(data.data,data.det) 
+			data = null;
 		})
 		socket.on('rpcMsg', function (data) {
 			self.onRMsg(data.data, data.det)
+			data = null;
 		})
 		socket.on('loggedIn', function(data){
 			self.refs.logIn.toggle();
@@ -177,6 +180,10 @@ var LandingPage = React.createClass({
   				}
   			}
 		}
+		msg = null;
+		data = null;
+		e = null;
+		d = null;
 	},
 	onParamMsg: function (e,d) {
 		if(vdefByIp[d.ip]){
@@ -204,6 +211,8 @@ var LandingPage = React.createClass({
 			this.refs.dv.onParamMsg(e,d)
 			}
 		}
+		e = null;
+		d = null;
 	},
 	ipChanged: function (e) {
 		e.preventDefault();
@@ -2092,6 +2101,9 @@ var MultiBankUnit = React.createClass({
 			this.refs[d.ip].onParamMsg(e,d)
 	
 		}
+		e = null;
+		d = null;
+
 	},
 	componentWillReceiveProps: function (nextProps) {
 		this.setState({banks:nextProps.data})
@@ -2220,6 +2232,8 @@ var StatBarMB = React.createClass({
 			clearInterval(myTimers[this.props.unit.ip]);
 			this.setState({rpcResp:true})	
 		}		
+		e = null;
+		d = null;
 
 	},
 	onParamMsg: function(e){
@@ -2268,6 +2282,7 @@ var StatBarMB = React.createClass({
 		}
 		dv = null;
 		prodArray = null;
+		e = null;
 
 	},
 	render: function(){
@@ -2463,6 +2478,7 @@ var SingleUnit = React.createClass({
 			}
 		}
 		prodArray = null;
+		e = null;
 	},
 	onFault: function () {
 		this.setState({fault:!this.state.fault})
@@ -3095,6 +3111,8 @@ var DetectorView = React.createClass({
    		cVdf = null;
    		pVdef = null;
    		faultArray = null;	
+   		e = null;
+   		d = null;
    		//prodSettings = null;
    		//sysSettings = null;
 
@@ -3406,7 +3424,7 @@ var NetPollView = React.createClass({
 			var faults = e.faults
 
 			var string = 'rejects:' + rejects.number + ', signal:' + rejects.signal;
-			if((e.net_poll_h == 'NET_POLL_PROD_REC_VAR')||(e.net_poll_h == 'NET_POLL_SYS_REC_VAR')){
+			if((e.net_poll_h == 'NET_POLL_PROD_REC_VAR')||(e.net_poll_h == 'NET_POLL_PROD_SYS_VAR')){
 				string = e.parameters[0].param_name + ': ' + e.parameters[0].value
 			}
 

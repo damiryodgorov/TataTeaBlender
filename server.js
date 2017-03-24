@@ -21,6 +21,7 @@ const NetPollEvents = require('./netpoll_events_server.js')
 const tftp = require('tftp');
 const PassThrough = require('stream').PassThrough;
 const UdpParamServer = require('./udpserver.js')
+const helmet = require('helmet');
 
 var db = flatfile('./dbs/users.db')
 
@@ -253,6 +254,7 @@ app.set('port', (process.env.PORT || 3300));
 app.use('/', express.static(path.join(__dirname,'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(helmet());
 
 http.listen(app.get('port'), function(){
 	console.log('Server started: http://localhost:' + app.get('port') + '/');

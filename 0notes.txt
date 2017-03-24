@@ -65,3 +65,7 @@ Memory leak fixes - TEST IN PROGRESS
 
 Visual fixes, keyboard will now close on clicking outside
 New settings structure
+
+--170324
+
+RELEASE 0.1 demo version
