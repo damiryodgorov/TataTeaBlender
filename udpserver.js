@@ -30,6 +30,8 @@ class UdpParamServer{
       if(self.ip == rinfo.address){
         if(e){
           self.parse_params(e)
+          e = null;
+          rinfo = null;
         }
       }
     })
@@ -53,6 +55,7 @@ class UdpParamServer{
       //console.log(e)
       this.callback(this.ip,e)
     }
+    e = null;
   }
   send_rpc(e, cb){
     this.dsp.rpc2(e, cb)

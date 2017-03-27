@@ -59,6 +59,9 @@ function write_netpoll_events(message, ip){
   console.log(message);
   var msg = {det:{ip:ip}, data:message}
   relayNetPoll(msg)
+  msg = null;
+  ip = null;
+  message = null;
 }
 
 function initSocks(arr){
@@ -102,6 +105,9 @@ function udpConSing(ip){
         var ab = toArrayBuffer(e)
         relayParamMsg({det:{ip:_ip},data:{data:ab}})
       }
+      _ip = null;
+      e = null;
+      ab = null;
     })
     getVdef(ip, function(__ip,vdef){
       if(typeof nphandlers[__ip] == 'undefined'){
@@ -161,7 +167,7 @@ function relayParamMsg(packet){
     //console.log(packet)
     passocs[pid].relay(packet);
   }
-
+  packet = null;
 }
 function relayRpcMsg(packet){
   console.log('relayRpcMsg')
@@ -169,17 +175,20 @@ function relayRpcMsg(packet){
     // console.log(pid)
     rassocs[pid].relay(packet);
   }
+  packet = null;
 }
 function relayNetPoll(packet){
   console.log('relay net poll')
   for(var pid in nassocs){
     nassocs[pid].relay(packet)
   }
+  packet = null;
 }
 function sendRpcMsg(packet){
   for(var pid in rassocs){
     rassocs[pid].send(packet)
   }
+  packet = null;
 }
 
 function toArrayBuffer(buffer) {
@@ -272,6 +281,9 @@ io.on('connection', function(socket){
     console.log('destroy socket')
    // console.log(socket)
   socket.removeAllListeners();
+  passocs[socket.id] = null;
+  rassocs[socket.id] = null;
+  nassocs[socket.id] = null;
   //socket = null;
  // clients = null;
   })
@@ -414,12 +426,15 @@ for(var i = 0; i < dspips.length;i++){
                 console.log('Ack from ' + pack.ip)
 
                 relayRpcMsg({det:{ip:pack.ip},data:{data:toArrayBuffer(e)}});
+                e = null;
+
               })
               //rconns[pack.ip].send(pack.data)
             }else{
               console.log('failed to send rpc')
               console.log(pack.ip)
             }
+            //pack = null;
        })
   socket.on('getPrefs', function (f) {
     if(fs.existsSync(__dirname + '/json/prefData.json')){

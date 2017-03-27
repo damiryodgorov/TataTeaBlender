@@ -37,6 +37,8 @@ class FtiRpc{
 		var packet = this.frame(payload);
 		this.port.write(packet)
 		this.port.callBack = callback;
+		packet = null;
+		payload = null;
 	}
 	rpc1(func,args,string,timeout,callBack){
 		var payload = this.payloadForRpc(func,args,string);
@@ -56,6 +58,8 @@ class FtiRpc{
 		this.port.callBack = function(){
 //			console.log('no callBack set')
 		}
+		payload = null;
+		packet = null;
 	}
 	payloadForRpc(func,args,string){
 		var payload = [func]//String.fromCharCode(func)
