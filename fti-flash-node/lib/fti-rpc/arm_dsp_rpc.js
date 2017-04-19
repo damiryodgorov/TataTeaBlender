@@ -10,6 +10,7 @@ class FtiRpc{
 }
 class ArmDspRpc extends Rpc.FtiRpcUdp{
 	constructor(host, port, unit){
+		super()
 		this.port = port || 10002
 		this.unit = unit || 1
 		this.port = new ArmRpcPort(host, port)

@@ -94,8 +94,9 @@ class NetPollEvents{
 	  {
 	    if((this.vdef["@net_poll_h"][e] == (key & 0xf000)) && ((e=="NET_POLL_PROD_SYS_VAR") || (e=="NET_POLL_PROD_REC_VAR")))
 	    {
-				this.event_info = this.parse_rec(buf,e);
-				this.callback(this.event_info, this.ip);
+	    		//ignore these for now
+				//this.event_info = this.parse_rec(buf,e);
+				//this.callback(this.event_info, this.ip);
 	    }
 	    else if((this.vdef["@net_poll_h"][e] == key) && (e=="NET_POLL_FAULT"))
 	    {

@@ -69,3 +69,7 @@ New settings structure
 --170324
 
 RELEASE 0.1 demo version
+
+--170419
+
+updated test, calibrate (will work with ST170307 or newer)

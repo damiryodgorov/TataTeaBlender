@@ -165,6 +165,7 @@ function relayParamMsg(packet){
 
   for(var pid in passocs){
     //console.log(packet)
+
     passocs[pid].relay(packet);
   }
   packet = null;
@@ -261,11 +262,17 @@ var dets;
 
 app.set('port', (process.env.PORT || 3300));
 app.use('/', express.static(path.join(__dirname,'public')));
+console.log('dirname:' + __dirname)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
+app.get('/', function(req, res) {
+  res.render('index.html');
+});
 app.use(helmet());
 
 http.listen(app.get('port'), function(){
+//  console.log(__dirname)
+
 	console.log('Server started: http://localhost:' + app.get('port') + '/');
 
 });
@@ -281,21 +288,24 @@ io.on('connection', function(socket){
     console.log('destroy socket')
    // console.log(socket)
   socket.removeAllListeners();
-  passocs[socket.id] = null;
-  rassocs[socket.id] = null;
-  nassocs[socket.id] = null;
+  //passocs[socket.id] = null;
+  //rassocs[socket.id] = null;
+  //nassocs[socket.id] = null;
   //socket = null;
  // clients = null;
   })
 
    var relayFunc = function(p){
         socket.emit('paramMsg', p)
+        p = null;
       }
     var relayRpcFunc = function(p){
       socket.emit('rpcMsg',p)
+      p = null;
     }
     var relayNetFunc = function(p){
       socket.emit('netpoll',p)
+      p = null;
     }
       console.log(socket.id)
       passocs[socket.id] = {relay:relayFunc}
@@ -437,8 +447,8 @@ for(var i = 0; i < dspips.length;i++){
             //pack = null;
        })
   socket.on('getPrefs', function (f) {
-    if(fs.existsSync(__dirname + '/json/prefData.json')){
-    fs.readFile(__dirname + '/json/prefData.json', (err,data) =>{
+    if(fs.existsSync(path.join(__dirname, 'json/prefData.json'))){
+    fs.readFile(path.join(__dirname, 'json/prefData.json'), (err,data) =>{
       prefs = JSON.parse(data)
       socket.emit('prefs', prefs)
     })
@@ -490,7 +500,7 @@ for(var i = 0; i < dspips.length;i++){
   socket.on('savePrefs', function (f) {
     // body...
     console.log(f)
-    fs.writeFile(__dirname+'/json/prefData.json', JSON.stringify(f));
+    fs.writeFile(path.join(__dirname, 'json/prefData.json') , JSON.stringify(f));
   })
   socket.on('hello', function(f){
     socket.emit('connected', "CONNECTION");

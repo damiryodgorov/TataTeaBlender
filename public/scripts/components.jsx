@@ -42,13 +42,19 @@ var KeyboardInput = React.createClass({
 		return {textarea:value, open:false}
 	},
 	componentWillReceiveProps: function(newProps){
+		
 		if(typeof newProps.value != 'undefined'){
-			this.setState( {textarea:newProps.value.toString()})
+		//	if(this.props.value.toString() != newProps.value.toString()){
+			//	console.log(['received new props', newProps.value.toString()])
+
+				this.setState( {textarea:newProps.value.toString()})
+		//	}
+			
 		}
 		
 	},
 	onTextareaChanged: function(e,v){
-		//console.log('onTextareaChanged')
+		console.log('onTextareaChanged')
 		this.setState({textarea:v})
 		if(this.props.onInput){
 			this.props.onInput(v)
@@ -59,7 +65,7 @@ var KeyboardInput = React.createClass({
 		
 	},
 	onInput: function(e){
-		//console.log('onInput')
+		console.log('onInput')
 		this.setState({textarea:e})
 		if(this.props.onInput){
 			this.props.onInput(e)

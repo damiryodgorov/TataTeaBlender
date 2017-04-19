@@ -135,6 +135,9 @@ li {
     border-radius: 10px;
     top: 0px;
     position: relative;
+    border: 0px solid gray;
+    box-shadow: inset 0 0 29px 14px rgba(128, 128, 128, 0.3);
+
     /* z-index: -1;/* Could be more or less, depending on screen size */
 }
 .modal-close{
@@ -191,7 +194,13 @@ li {
 .detInfo{
     line-height: 1.3;
 }
-
+.calib{
+    font-size: 25px;
+}
+.calib td{
+    padding: 5px;
+    
+}
 .mainView{
     height: 200px;
     padding: 10px;

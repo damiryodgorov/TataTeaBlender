@@ -43,11 +43,11 @@ class UdpParamServer{
     var dsp = FtiRpc.udp(this.ip);
     this.dsp = dsp
     console.log(port)
-    var arm = new Fti.ArmRpc.ArmRpc(this.ip);
-    arm.dsp_open_cb(function(){
+   //var arm = new Fti.ArmRpc.ArmRpc(this.ip);
+    //arm.dsp_open_cb(function(){
          dsp.rpc0(DRPC_NUMBER,[KAPI_RPC_UDPWEBPARMS,port]);
       
-    });
+   // });
     
   }
   parse_params(e){

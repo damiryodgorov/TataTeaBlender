@@ -261,6 +261,7 @@ class ArmRpc extends ArmRpcBase{
 			
 			callBack([this.aesECB]);
 		}else{
+		//this.KEY = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]//
 		this.KEY = [138, 23, 225,  96, 151, 39,  79,  57, 65, 108, 240, 251, 252, 54, 34,  87];
 		var self = this;
 		var bsize = this.KEY.length;
