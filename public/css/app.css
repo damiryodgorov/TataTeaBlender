@@ -54,11 +54,124 @@ li {
 }
 .buttCell button::after{
     background-size: contain;
-    height: 60px;
-    width: 60px;
+    height: 50px;
+    width: 50px;
     margin-top: -10px;
+    background-repeat: no-repeat;
 
     display: inline-block;
+}
+.pbDiv{
+    display: inline-block;
+}
+.pbDiv button{
+    height: 50px;
+    background: transparent;
+    border: none;
+    padding: 0px 0px;
+    top: 4px;
+    margin: 1px;
+    position: relative;
+    background: white;
+    border-radius: 25px;
+ }
+.pbDiv button::after{
+    background-size: contain;
+    height: 50px;
+    width: 50px;
+    display: inline-block;
+    padding: 0px 0px;
+
+}
+.cbDiv{
+    display: inline-block;
+}
+.cbDiv button{
+    height: 50px;
+    background: transparent;
+    border: none;
+    padding: 0px 0px;
+    top: 4px;
+    margin: 1px;
+    position: relative;
+
+ }
+.cbDiv button::after{
+    background-size: contain;
+    height: 60px;
+    width: 60px;
+    display: inline-block;
+    padding: 0px 0px;
+
+}
+.pbCont{
+    display: inline-block;
+    width: 104px;
+    background-color: grey;
+    float: right;
+    position: relative;
+}
+/*.pbCont::after{
+    position: absolute;
+    content: ' ';
+    height: 100%;
+    z-index: -1;
+    display: inline-block;
+    top: 0px;
+    width: 44px;
+    left: 83px;
+    background: wheat;
+    border-radius: 24px;
+
+}
+.pbCont::before{
+    position: absolute;
+    display: inline-block;
+    content: ' ';
+    height: 100%;
+    width: 44px;
+    top: 0px;
+    left: -20px;
+    background-color: wheat;
+    z-index: -1;
+    border-radius: 24px;
+}*/
+.pbContain{
+    width: 138px;
+    overflow: hidden;
+    position: relative;
+    height: 46px;
+    display: inline-block;
+    margin-bottom: -2px;
+    
+}
+.playButton::after{
+    content: " ";
+    background: url('../assets/playButton.png');
+    background-repeat: no-repeat;
+}
+.circleButton::after{
+    content: " ";
+    background: url('../assets/circle.png');
+    background-repeat: no-repeat;
+}
+.playButtonInv::after{
+    content: " ";
+    background: url('../assets/playButton.png');
+    transform: scaleX(-1);
+    background-repeat: no-repeat;
+}
+.keyboardInputButton{
+    display: inline-block;
+  width: 195px;   
+}
+.round-bg{
+    background: white;
+  /*  border: 1px black solid;*/
+    border-radius: 40px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
 }
 .login::after{
     float: right;
@@ -71,6 +184,13 @@ li {
     float: right;
     content:" ";
     background:url('../assets/search.svg');
+}
+.home::after{
+    height: 50px;
+    width: 50px;
+    float: right;
+    content:" ";
+    background:url('../assets/home.svg');
 }
 .prefInterface{
     min-height: 200px;
@@ -101,12 +221,13 @@ li {
 .custom-modal{
     /*display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 2; /* Sit on top */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
+    overflow-x: hidden;
+    overflow-y:  auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
@@ -164,7 +285,7 @@ li {
     margin-right: 5%;
 }
 .tickerBox{
-    margin-right: 6px;
+   /* margin-right: 6px;*/
     
 }
 .smCell{
@@ -201,6 +322,56 @@ li {
     padding: 5px;
     
 }
+.slantedRight{
+    height: 263px;
+    width: 250px;
+    background: #764399;
+    border-radius: 0px 50px 0px 0px;
+    position: relative;
+    display: inline-block;
+    z-index: 2;
+      box-shadow: 0px 0px 0px 10px grey;
+
+}
+.slantedRight::after{
+  background: #764399;
+    content: "";
+    position: absolute;
+    top: 37px;
+    left: 41px;
+    height: 0px;
+    width: 0px;
+    border-radius: 30px 0px;
+    border: 113px solid #764399;
+    transform: rotate(80deg);
+    z-index: -1;
+    box-shadow: 0px 0px 0px 10px grey;
+}
+.slantedLeft{
+    height: 263px;
+    width: 250px;
+    background: #764399;
+    border-radius: 50px 0px 0px 0px;
+    position: relative;
+    display: inline-block;
+    z-index: 2;
+    box-shadow: 0px 0px 0px 10px grey;
+}
+.slantedLeft::before{
+    background: #764399;
+    content: "";
+    position: absolute;
+    top: 37px;
+    left: -17px;
+    height: 0px;
+    width: 0px;
+    border-radius: 0px 30px;
+    border: 113px solid #764399;
+    transform: rotate(280deg);
+    z-index: -1;
+    box-shadow: 0px 0px 0px 10px grey;
+}
+
 .mainView{
     height: 200px;
     padding: 10px;
@@ -220,11 +391,11 @@ li {
 }
 .settingsDiv{
    padding: 10px;
-    border: 1px solid gray;
+    /*border: 1px solid gray;
     border-radius: 10px;
     margin: 5px;
     min-height: 200px;
-    margin-top: -17px;
+    margin-top: -17px;*/
 }
 .defCont{
     padding: 10px;
@@ -296,6 +467,19 @@ li {
     margin-bottom: 4px;
     font-size: 10px;
 }
+.intNavTable{
+    border-spacing: 0px;
+    border-collapse: collapse;
+    border-color: transparent;
+    /* margin-left: -1px; */
+    /* margin-right: auto; */
+    position: relative;
+    text-align: center;
+    margin-top: 10px;
+}
+.intNavTable td{
+    padding: 0px;
+}
 .inactive .statBarMB{
     background: grey;
 }
@@ -326,6 +510,16 @@ li {
     height: 16px;
     background: #ddd;
     /*border: 3px solid #000;*/
+}
+.noPadding{
+    border-spacing:0;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+.noPadding td{
+    padding: 0px;
 }
 
 
@@ -406,7 +600,7 @@ li {
     
     cursor:pointer;
     background-color:#eee;
-    color:#7B8585;
+    color:#7B8585
     height: 40px;
     width: 125px;
     font-size: 18px;
@@ -536,6 +730,7 @@ li {
     float: right;
     margin-right: 5px;
 }
+
 .backButton::before{
     /*float: left;*/
     content:url('../assets/angle-left.svg');

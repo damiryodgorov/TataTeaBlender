@@ -99,7 +99,9 @@ var KeyboardInput = React.createClass({
 	onOutside: function(e){
 		if(this.state.open){
 			//console.log('keyboard should close')
-			this.setState({open:false})
+
+			//this.setState({open:false})
+			this.onRequestClose()
 		}
 		
 	},
@@ -578,7 +580,7 @@ var CanvasElem = React.createClass({
 		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#000000'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
 		smoothie.streamTo(document.getElementById(this.props.canvasId));
 		if(this.props.int){
-			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgb(0, 128, 128)'});
+			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
 			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
 		
 		}else{

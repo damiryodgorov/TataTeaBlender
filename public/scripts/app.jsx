@@ -522,6 +522,7 @@ var LandingPage = React.createClass({
 					<Modal ref='findDetModal'>
 						{modalContent}
 					</Modal>
+
 				 	{detectors}
 				 	{mbunits}
 			</div>)	
@@ -559,6 +560,10 @@ var LandingPage = React.createClass({
 			self.refs.findDetModal.setState({override:false})	
 		}, 100)
 	},
+	dummy: function () {
+		// body...
+		console.log('dummy')
+	},
 	render: function () {
 		var cont;
 		if(this.state.currentPage == 'landing'){
@@ -574,7 +579,9 @@ var LandingPage = React.createClass({
 				<LogInControl onKeyFocus={this.onLoginFocus} onRequestClose={this.onLoginClose} level={this.state.level} userName={this.state.curUser}/>
 				<button onClick={this.configAccounts}>Configure Accounts</button>
 			</Modal>
+
 			{cont}
+			
 		</div>)
 	}
 })
@@ -1086,7 +1093,7 @@ var SettingsDisplay = React.createClass({
 		//['Sensitivity', 'Calibration','Faults','Rej Setup', 'Test','Input','Output','Password','Other'];
 		var accLevel = 0;
 		var accMap = {'Sensitivity':'PassAccSens', 'Calibration':'PassAccCal', 'Other':'PassAccProd', 
-			'Faults':'PassAccClrFaults','Rej Setup':'PassAccClrRej','Test':'PassAccTest'}
+			'Faults':'PassAccClrFaults','Rej Setup':'PassAccClrRej'}
 		
 		if(lvl == 0){
 			nodes = [];
@@ -1243,9 +1250,11 @@ var SettingItem = React.createClass({
 					if(pram["@dep"]){
 						deps = pram["@dep"].map(function(d){
 							if(pVdef[5][d]["@rec"] == 0){
+								console.log(d)
 								////console.log(['1205',self.props.sysSettings])
 								return self.props.sysSettings[d];
 							}else{
+								console.log(d)
 								////console.log(['1208',self.props.sysSettings])
 								return self.props.prodSettings[d];
 							}
@@ -1268,10 +1277,12 @@ var SettingItem = React.createClass({
 					if(pram["@dep"]){
 						deps = pram["@dep"].map(function(d){
 							if(pVdef[5][d]["@rec"] == 0){
+								console.log(d)
 								////console.log(['1230',self.props.sysSettings])
 								
 								return self.props.sysSettings[d];
 							}else{
+								console.log(d)
 								////console.log(['1233',self.props.prodSettings])
 								
 								return self.props.prodSettings[d];
@@ -2029,6 +2040,9 @@ var Modal = React.createClass({
 				self.setState({override:false})
 			},50)
 		}
+		if(typeof this.props.onClose != 'undefined'){
+			this.props.onClose();
+		}
 		
 	},
 
@@ -2288,6 +2302,7 @@ var StatBarMB = React.createClass({
 				faultArray = null;
 			}
 		}
+		msg = null;
 		dv = null;
 		prodArray = null;
 		e = null;
@@ -2485,6 +2500,7 @@ var SingleUnit = React.createClass({
 				}
 			}
 		}
+		msg = null;
 		prodArray = null;
 		e = null;
 	},
@@ -2748,14 +2764,19 @@ var DetectorView = React.createClass({
 					dat.push(i+1)
 				}
 			}
-			if(this.refs.dm){
+			/*if(this.refs.dm){
 				////console.log(dat)
-				this.refs.dm.setState({prodList:dat})
+				//this.refs.dm.setState({prodList:dat})
+			}*/
+			if(this.refs.im){
+				this.refs.im.setState({prodList:dat})
+				
 			}
 
 		}else if(data[1] == 24){
 			////console.log(data)
 		}
+		e = null;
 		msg = null;
 		data = null;
 		dat = null;
@@ -2879,15 +2900,13 @@ var DetectorView = React.createClass({
 				}
 				combinedSettings = cob;
 				cob = null;
-    			if(this.state.currentView == "SettingsDisplay"){
-					if(this.refs.sd){
+    				if(this.refs.sd){
 						this.refs.sd.parseInfo(sysSettings, this.state.prodSettings)	
 					}
-				}else{
-					if(this.refs.dm){
-						this.refs.dm.parseInfo(sysSettings, this.state.prodSettings)
+					
+					if(this.refs.im){
+						this.refs.im.parseInfo(sysSettings, this.state.prodSettings)
 					}	
-				}
 				if(isDiff(sysSettings,this.state.sysSettings)){
 					this.setState({sysSettings:sysSettings, combinedSettings:combinedSettings})
 				}
@@ -2970,16 +2989,13 @@ var DetectorView = React.createClass({
 				cob = null;
 				////console.log('combined settings here:')
 				//////console.log(comb)
-				if(this.state.currentView == "SettingsDisplay"){
 					if(this.refs.sd){
 						this.refs.sd.parseInfo(this.state.sysSettings, prodSettings)	
 					}
-				}else{
-					if(this.refs.dm){
-						this.refs.dm.parseInfo(this.state.sysSettings, prodSettings)
+					if(this.refs.im){
+						this.refs.im.parseInfo(this.state.sysSettings, prodSettings)
 					}
-				}
-				if(isDiff(prodSettings,this.state.prodSettings)){
+					if(isDiff(prodSettings,this.state.prodSettings)){
 					this.setState({prodSettings:prodSettings, combinedSettings:combinedSettings})
 				}else{
 					console.log('redundant pr')
@@ -2987,7 +3003,8 @@ var DetectorView = React.createClass({
 				//this.setState({sysSettings})
 			}			
 		}else if(lcd_type==2){
-			if(vdefByIp[d.ip]){
+			if(vdefByIp[d.ip])
+			{
 
 				var Vdef = vdefByIp[d.ip][0]
 				var nVdf = vdefByIp[d.ip][2]
@@ -3037,22 +3054,38 @@ var DetectorView = React.createClass({
 						var rej = prodRec['RejCount']
 					
 
-						if(this.state.currentView == 'MainDisplay'){
-							if((this.refs.dm.state.peak !=pka)||(this.refs.dm.state.rpeak != rpka)||(this.refs.dm.state.xpeak != xpka)||(this.refs.dm.state.rej != rej)||(this.refs.dm.state.phase != phaseA)||(this.refs.dm.state.peakb !=pkb)||(this.refs.dm.state.rpeakb != rpkb)||(this.refs.dm.state.xpeakb != xpkb)||(this.refs.dm.state.phaseb != phaseB)||(this.refs.dm.state.phaseFast != phaseSpeedA)||(this.refs.dm.state.phaseFastB != phaseSpeedB)){
+					//	if(this.state.currentView == 'MainDisplay'){
+							/*if((this.refs.dm.state.peak !=pka)||(this.refs.dm.state.rpeak != rpka)||(this.refs.dm.state.xpeak != xpka)||(this.refs.dm.state.rej != rej)||(this.refs.dm.state.phase != phaseA)||(this.refs.dm.state.peakb !=pkb)||(this.refs.dm.state.rpeakb != rpkb)||(this.refs.dm.state.xpeakb != xpkb)||(this.refs.dm.state.phaseb != phaseB)||(this.refs.dm.state.phaseFast != phaseSpeedA)||(this.refs.dm.state.phaseFastB != phaseSpeedB)){
 								console.log('render det main info')
 								this.refs.dm.setState({peak:pka,peakb:pkb,rpeak:rpka,rpeakb:rpkb,xpeak:xpka,xpeakb:xpkb,rej:rej,phase:phaseA,phaseb:phaseB,phaseFast:phaseSpeedA,phaseFastB:phaseSpeedB})
+							}*/
+							if((this.refs.im.state.peak !=pka)||(this.refs.im.state.rpeak != rpka)||(this.refs.im.state.xpeak != xpka)||(this.refs.im.state.rej != rej)||(this.refs.im.state.phase != phaseA)||(this.refs.im.state.peakb !=pkb)||(this.refs.im.state.rpeakb != rpkb)||(this.refs.im.state.xpeakb != xpkb)||(this.refs.im.state.phaseb != phaseB)||(this.refs.im.state.phaseFast != phaseSpeedA)||(this.refs.im.state.phaseFastB != phaseSpeedB)){
+								console.log('render InterceptorMainPageUI info')
+								this.refs.im.setState({peak:pka,peakb:pkb,rpeak:rpka,rpeakb:rpkb,xpeak:xpka,xpeakb:xpkb,rej:rej,phase:phaseA,phaseb:phaseB,phaseFast:phaseSpeedA,phaseFastB:phaseSpeedB})
+								
 							}
-						}
-						if(this.refs.lv){
+							this.refs.im.update(siga,sigb)
+					//	}
+					/*	if(this.refs.lv){
 							this.refs.lv.update(siga,sigb)
 							this.setLEDSInt(prodRec['Reject_LED_A'],prodRec['Prod_LED_A'],prodRec['Prod_HI_LED_A'],prodRec['Reject_LED_B'],prodRec['Prod_LED_B'],prodRec['Prod_HI_LED_B'])
 
 
   						}
   						if(this.refs.dg){
-  							this.refs.dg.stream({t:Date.now(),val:siga, valb:sigb})
-  						}
-
+  						//	this.refs.dg.stream({t:Date.now(),val:siga, valb:sigb})
+  						}*/
+  						pka = null;
+  						pkb = null;
+  						siga = null;
+  						sigb = null;
+  						phaseA = null;
+  						phaseB = null;
+  						phaseSpeedA = null;
+  						phaseSpeedB = null;
+  						rpka = null;
+  						xpkb = null;
+  						rej = null;
 
 					}else{
 					var peak = prodRec['Peak']
@@ -3063,22 +3096,24 @@ var DetectorView = React.createClass({
 					var phaseSpeed = prodRec['PhaseFastBit'];
 					var rpeak = prodRec['ProdPeakR']
 					var xpeak = prodRec['ProdPeakX']
-					if(this.state.currentView == 'MainDisplay'){
-						if((this.refs.dm.state.peak !=peak)||(this.refs.dm.state.rpeak != rpeak)||(this.refs.dm.state.xpeak != xpeak)||(this.refs.dm.state.rej != rej)||(this.refs.dm.state.phase != phase)){
+					//if(this.state.currentView == 'MainDisplay'){
+					/*	if((this.refs.dm.state.peak !=peak)||(this.refs.dm.state.rpeak != rpeak)||(this.refs.dm.state.xpeak != xpeak)||(this.refs.dm.state.rej != rej)||(this.refs.dm.state.phase != phase)){
 						
 							this.refs.dm.setState({peak:peak, rej:rej, phase:phase, phaseFast:phaseSpeed, rpeak:rpeak, xpeak:xpeak})
 						
 						}
+						
 					}
 					if(this.refs.lv){
 						this.refs.lv.update(sig)	
 						//////console.log('3147')
 						this.setLEDS(prodRec['Reject_LED'],prodRec['Prod_LED'],prodRec['Prod_HI_LED'])
 					}
+					
 				if(this.refs.dg){
   						this.refs.dg.stream({t:Date.now(),val:sig})
   					}
-  				}
+  				}*/
   				var faultArray = [];
 					pVdef[7].forEach(function(f){
 					if(getVal(prodArray,2,f,pVdef) != 0){
@@ -3096,10 +3131,13 @@ var DetectorView = React.createClass({
   						})
   						if(diff){
   							this.setState({faultArray:faultArray})
+  							}
   						}
-  					}	
-
+  						faultArray = null;	
+  					//}
+				}
 			}
+			
 
    		}else if(lcd_type == 3){
    			if(vdefByIp[d.ip]){
@@ -3152,6 +3190,7 @@ var DetectorView = React.createClass({
    		}
 
    		data = null;
+   		msg = null;
    		dv = null;
    		prodArray = null;
    		prodRec = null;	
@@ -3195,15 +3234,22 @@ var DetectorView = React.createClass({
 		this.refs.lv.setLEDs(pled_a,det_a,pled_b,det_b)
 	},
 	showSettings: function () {
+		console.log('show settings')
 		if(this.state.settings){
 			var st = [];
 			var currentView = 'MainDisplay';
+
 			this.setState({currentView:currentView, stack:[], data:[], settings:false})
+
+			this.refs.sModal.toggle();
 		}
 		else{
+		//	this.refs.sModal.toggle();
 			this.setState({settings:true});
 			var SettingArray = ['SettingsDisplay',[]]
 			this.changeView(SettingArray);
+
+			this.refs.sModal.toggle();
 		}
 	},
 	logoClick: function () {
@@ -3245,7 +3291,7 @@ var DetectorView = React.createClass({
 		////console.log([n,v])
 		if(typeof n == 'string'){
 			if(n== 'Sens_A'){
-				var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
+			var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)],[1]);
 			////console.log(packet)
 			var buf = new Uint8Array(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
@@ -3258,7 +3304,7 @@ var DetectorView = React.createClass({
 			
 		}else if(n == 'Sens_B'){
 			////console.log(this.props.ip)
-			var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)]);
+			var packet = dsp_rpc_paylod_for(0x13,[0x16,parseInt(v)],[0]);
 			////console.log(packet)
 			var buf = new Uint8Array(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
@@ -3317,6 +3363,16 @@ var DetectorView = React.createClass({
 		}else if(n=='phaseEdit'){
 			var phase = Math.round(parseFloat(v)*100)
 			var packet = dsp_rpc_paylod_for(19,[48,phase,0])
+			if(this.props.det.interceptor){
+				packet = dsp_rpc_paylod_for(19,[48,phase,0],[1])
+			}
+				var buf = new Uint8Array(packet);
+			
+			socket.emit('rpc', {ip:this.props.det.ip, data:buf.buffer})
+		
+		}else if(n=='phaseEditb'){
+			var phase = Math.round(parseFloat(v)*100)
+			var packet = dsp_rpc_paylod_for(19,[48,phase,0],[0])
 				var buf = new Uint8Array(packet);
 			socket.emit('rpc', {ip:this.props.det.ip, data:buf.buffer})
 		
@@ -3408,6 +3464,20 @@ var DetectorView = React.createClass({
 		socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
 		
 	},
+	quitTest: function () {
+		// body...
+		var packet = dsp_rpc_paylod_for(21,[11,0,0])
+		var buf = new Uint8Array(packet);
+		socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
+		
+	},
+	settingsClosed: function () {
+		// body...
+			var st = [];
+			var currentView = 'MainDisplay';
+			this.setState({currentView:currentView, stack:[], data:[], settings:false})
+
+	},
 	renderTest: function () {
 		// body...
 		var testcont = ''
@@ -3493,7 +3563,9 @@ var DetectorView = React.createClass({
 				
 			}
 		}
-		var testprompt = <div>{testcont} </div>
+		var testprompt = (<div>{testcont}
+		<div><button onClick={this.quitTest}>Quit Test</button></div>
+		 </div>)
 		return testprompt
 	},
 	render: function () {
@@ -3510,26 +3582,27 @@ var DetectorView = React.createClass({
 		
 		var SD ="";
 		var MD ="";
-		var dm = <DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm' int={this.state.interceptor}/>
-		var dg = <DummyGraph ref='dg' canvasId={'dummyCanvas'} int={this.state.interceptor}/>
+		var dm = "";// <DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm' int={this.state.interceptor}/>
+		var dg = "";// <DummyGraph ref='dg' canvasId={'dummyCanvas'} int={this.state.interceptor}/>
 		var ce =""// <ConcreteElem h={400} w={400} concreteId={'concreteCanvas'} int={this.state.interceptor}/>
 	 	var lstyle = {height: 72,marginRight: 20}
 	 	var np = (<NetPollView ref='np' eventCount={15} events={this.state.netpoll}/>)
 		if(!this.state.minW){
 			lstyle = { height: 60, marginRight: 15}
 		}
-		if(this.state.settings){
+		
 			SD = (<SettingsDisplay ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} combinedSettings={this.state.combinedSettings}/>)
 	
-		}else{
-			MD = (<div style={{margin:5, marginTop:-15}}>
+		
+			MD = ""; /*(<div style={{margin:5, marginTop:-15}}>
 					<table className='mainContTable'><tbody><tr><td className='defCont'>{dm}
 					</td><td style={{width:380}} className='defCont'>{dg}
-					</td></tr></tbody></table>
+					</td></tr>
+					</tbody></table>
 					<div className='prefInterface' style={{height:160, minHeight:160}}>{np}</div>
 					<div>{ce}</div>
-					</div>)
-		}
+					</div>)*/
+		
 		var lbut = (<td onClick={this.logoClick}><img style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>)
 		var abut = (<td className="buttCell"><button onClick={this.toggleAttention} className={attention}/></td>)
 		var cbut = (<td className="buttCell"><button onClick={this.showSettings} className={config}/></td>)
@@ -3570,10 +3643,16 @@ var DetectorView = React.createClass({
 		
 		var testprompt = this.renderTest();
 		return(<div>
+			<div hidden>
 				{lmtable}
-				{MD}
-				{SD}
-				<Modal ref='fModal'>
+			</div>
+				<InterceptorMainPageUI toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im'/>
+				<Modal ref='sModal' onClose={this.settingsClosed}>
+					<div style={{height:500, overflowY:'scroll'}}>
+					{SD}
+					</div>
+				</Modal>
+					<Modal ref='fModal'>
 					<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.state.faultArray}/>
 				</Modal>
 				<Modal ref='tModal' override={ov}>
@@ -3624,7 +3703,7 @@ var NetPollView = React.createClass({
 		// body...
 		return (<div>
 			<label style={{display: 'inline-block',fontSize:26,width:100,float:'left',paddingLeft: 20}}>Events</label>
-			<div style={{display:'inline-block', overflowY:'scroll', height:160}}>
+			<div style={{display:'inline-block', overflowY:'scroll', height:260,width:600	}}>
 			<table className='npTable'><tbody>
 			{events}
 			</tbody></table>
@@ -3935,9 +4014,14 @@ var CalibInterface = React.createClass({
 	clearRB: function () {
 		// body...
 		this.props.sendPacket('rpeakb','clear')
-	},submitPhase: function () {
+	},
+	submitPhase: function () {
 		// body...
 		this.props.sendPacket('phaseEdit',this.state.tmpStr)
+	},
+	submitPhaseb: function () {
+		// body...
+		this.props.sendPacket('phaseEditb',this.state.tmpStrB)
 	},
 	clearX: function(){
 		this.props.sendPacket('xpeak','clear')
@@ -3963,15 +4047,15 @@ var CalibInterface = React.createClass({
 
 		if(this.state.edit){
 			phase = (<div><div onClick={this.editPhase}> {this.props.phase[0] + '-' + list[this.props.phase[1]]}</div>
-					<div><KeyboardInputWrapper num={true} onKeyPress={this._handleKeyPress} onChange={this.onChangePhase} value={this.state.tmpStr}/> <button onClick={this.submitPhase}>Submit</button></div>
+					<div><KeyboardInputWrapper num={true} onKeyPress={this._handleKeyPress} onInput={this.onChangePhase} value={this.state.tmpStr}/> <button onClick={this.submitPhase}>Submit</button></div>
 				</div>)
 		}
 		if(this.props.int){
 			var phaseb =  <div onClick={this.editPhase}> {this.props.phaseB[0] + '-' + list[this.props.phaseB[1]]}</div>
 			if(this.state.edit){
 				phaseb =  <div><div onClick={this.editPhase}> {this.props.phaseB[0] + '-' + list[this.props.phaseB[1]]}</div>
-						<div><KeyboardInputWrapper num={true} value = {this.state.tmpStr} onChange={this.onChangePhase}/>
-						<button onClick={this.submitPhase}>Submit</button>
+						<div><KeyboardInputWrapper num={true} value = {this.state.tmpStrB} onInput={this.onChangePhaseB}/>
+						<button onClick={this.submitPhaseb}>Submit</button>
 						</div>
 						</div>
 			}
@@ -4244,9 +4328,614 @@ var DummyGraph = React.createClass({
 	}
 
 })
+var SlimGraph = React.createClass({
+	getInitialState: function () {
+		var mqls = [
+			window.matchMedia('(min-width: 300px)'),
+			window.matchMedia('(min-width: 444px)'),
+			window.matchMedia('(min-width: 600px)'),
+			window.matchMedia('(min-width: 850px)')
+		]
+		for (var i=0; i<mqls.length; i++){
+			mqls[i].addListener(this.listenToMq)
+		}
+		return({width:400, height:140, mqls:mqls})
+	},
+	listenToMq: function () {
+		// body...
+		if(this.state.mqls[3].matches){
+			this.setState({width:400})
+		}else if(this.state.mqls[2].matches){
+			this.setState({width:558})
+		}else if(this.state.mqls[1].matches){
+			this.setState({width:400})
+		}else{
+			this.setState({width:280})
+		}
+	},
+	componentDidMount: function () {
+		this.listenToMq()
+	},
+	renderCanv: function () {
+		return(<CanvasElem canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int}/>)
+	},
+	stream:function (dat) {
+		this.refs.cv.stream(dat)
+	},
+	render: function () {
+		var cv = this.renderCanv()
+		return (<div className='detGraph'>
+			{cv}
+			</div>)
+	}
+
+})
+var InterceptorMainPageUI = React.createClass({
+	getInitialState: function () {
+		// body...
+		var res = vdefByIp[this.props.det.ip]
+		var pVdef = _pVdef;
+		if(res){
+			pVdef = res[1];
+		} 
+		var tmpA = '';
+		var tmpB = '';
+		var res = null;
+
+		return({rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0, sysRec:{},prodRec:{}, tmp:'', tmpB:'', prodList:[], phaseFast:0, phaseFastB:0, pVdef:pVdef})
+	},
+	sendPacket: function (n,v) {
+		// body...
+		this.props.sendPacket(n,v);
+	},
+	update(siga, sigb) {
+		// body...
+		var dat = {t:Date.now(),val:siga,valb:sigb}
+		this.refs.nv.streamTo(dat)
+		this.refs.dv.update(siga,sigb)
+	},
+	componentDidMount: function(){
+		this.sendPacket('refresh','')
+	},
+	clearRej: function () {
+		// body...
+		var param = this.state.pVdef[2]['RejCount']
+		this.props.clear(param )
+	},
+	switchProd: function (p) {
+		// body...
+		this.props.sendPacket('ProdNo',p)
+	},
+	getProdName: function (num) {
+		// body...
+		this.props.sendPacket('getProdName',99)
+	},
+	clearPeak: function () {
+		// body...
+		var p = 'Peak_A'
+		
+		var param = this.state.pVdef[2][p]
+		this.props.clear(param) 
+	},
+	clearPeakB: function () {
+		// body...
+		var p = 'Peak_B'
+		
+		var param = this.state.pVdef[2][p]
+		this.props.clear(param) 
+		param = null;
+	},
+	calibrate: function () {
+		this.refs.calibModal.toggle()
+	},
+	parseInfo: function(sys, prd){
+		//////console.log('parseInfo')
+		if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
+		//	////console.log([sys,prd])
+			if(this.props.int){
+				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens_A'], tmpB:prd['Sens_B']})
+			}else{
+				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens']})
+			}
+			
+		}
+	},
+	showEditor: function () {
+		this.props.sendPacket('getProdList')
+		this.refs.pedit.toggle()
+	},
+	editSens: function () {
+		this.refs.sensEdit.toggle()
+	},
+	setTest: function () {
+		if(typeof this.state.prodRec['TestMode'] != 'undefined'){
+			if(this.state.prodRec['TestMode'] != 0){
+				this.props.sendPacket('test', this.state.prodRec['TestMode'] - 1)
+			}else{
+				this.toggleTestModal()
+			}
+			
+		}
+		//
+
+	},
+	toggleTestModal: function () {
+		// body...
+		this.refs.testModal.toggle()
+	},
+	updateTmp:function (e) {
+		//e.preventDefault();
+		if(typeof e == 'string'){
+			if(this.props.int){
+				this.props.sendPacket(this.state.pVdef[1]['Sens_A'], e)
+			}else{
+				this.props.sendPacket(this.state.pVdef[1]['Sens'],e)	
+			}
+			this.setState({tmp:e})
+		}else{
+			if(this.props.int){
+				this.props.sendPacket(this.state.pVdef[1]['Sens_A'], e.target.value)
+			}else{
+				this.props.sendPacket(this.state.pVdef[1]['Sens'],e.target.value)	
+			}
+			this.setState({tmp:e.target.value})	
+		}
+		
+	},
+	updateTmpB:function (e) {
+		//e.preventDefault();
+		if(typeof e == 'string'){
+			this.props.sendPacket(this.state.pVdef[1]['Sens_B'], e)
+			this.setState({tmpB:e})
+		}else{
+			this.props.sendPacket(this.state.pVdef[1]['Sens_B'], e.target.value)
+			this.setState({tmpB:e.target.value})	
+		}
+		
+	},
+	submitTmpSns:function () {
+		if(!isNaN(this.state.tmp)){
+			if(this.props.int){
+				this.props.sendPacket('Sens_A', this.state.tmp)
+			}else{
+				this.props.sendPacket('Sens',this.state.tmp)	
+			}
+			this.cancel()
+		}
+	},
+	submitTmpSnsB:function () {
+		if(!isNaN(this.state.tmp)){
+			if(this.props.int){
+				this.props.sendPacket('Sens_B', this.state.tmpB)
+			}else{
+				this.props.sendPacket('Sens',this.state.tmpB)	
+			}
+			this.cancel()
+		}
+	},
+	refresh: function () {
+		this.props.sendPacket('refresh')
+	},
+	cancel:function () {
+		this.refs.sensEdit.toggle()
+		this.setState({tmp:''})
+	},
+	calB: function () {
+		this.props.sendPacket('cal',[0])
+	},
+	calA:function () {
+		// body...
+		this.props.sendPacket('cal',[1])
+	},
+	_handleKeyPress: function (e) {
+		if(e.key === 'Enter'){
+			this.submitTmpSns();
+		}
+	},
+	sensFocus: function(){
+		this.refs.sensEdit.setState({override:true})
+	},
+	sensClose: function(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.sensEdit.setState({override:false})	
+		}, 100)
+	},
+	gohome: function () {
+		// body...
+		this.props.gohome();
+	},
+	toggleNetpoll:function () {
+		// body...
+		this.refs.netpolls.toggle();
+	},
+	onButton: function (f) {
+		// body...
+		console.log(f)
+			
+		if(f == 'test'){
+			if(typeof this.state.prodRec['TestMode'] != 'undefined'){
+			if(this.state.prodRec['TestMode'] != 0){
+				this.props.sendPacket('test', this.state.prodRec['TestMode'] - 1)
+			}else{
+				this.toggleTestModal()
+			}
+			
+		}	
+		}else if(f == 'log'){
+			this.toggleNetpoll();
+		}else if(f == 'config'){
+			this.props.toggleConfig();
+		}else if(f == 'prod'){
+			this.showEditor();
+		}else if(f == 'cal'){
+			this.calibrate();
+		}else if(f=='sig_a'){
+			this.clearPeak();
+		}else if(f=='sig_b'){
+			this.clearPeakB();
+		}else if(f=='rej'){
+			this.clearRej();
+		}
+	},
+	onSens: function (e,s) {
+		// body...
+		this.props.sendPacket(s,e);
+	},
+	render:function () {
+		// body...
+		var home = 'home'
+		var style = {background:'#764399', width:'100%',display:'block'}
+		var lstyle = {height: 56,marginRight: 20}
+		var self = this;
+		var prodList = this.state.prodList.map(function(p){
+			var sel = false
+			if(p==self.state.sysRec['ProdNo']){
+				sel = true;
+			}
+
+			return (<ProductItem selected={sel} p={p} switchProd={self.switchProd}/>)
+		})
+		var ps = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed_A']]
+			var psb = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed_B']]
+			if(this.state.phaseFast == 1){
+				ps = 'fast'
+			}
+			if(this.state.phaseFastB == 1){
+				psb = 'fast'
+			}
+		var	CB = <CalibInterface int={true} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.calB} calibA={this.calA} phase={[this.state.phase, this.state.prodRec['PhaseMode_A'], ps]} phaseB={[this.state.phaseb, this.state.prodRec['PhaseMode_B'], psb]} peaks={[this.state.rpeak,this.state.xpeak, this.state.rpeakb,this.state.xpeakb]} ref='ci'/>
+		
+		return (<div className='interceptorMainPageUI' style={style}>
+					<table className='landingMenuTable' style={{marginBottom:-8, marginTop:-7}}>
+						<tbody>
+							<tr>
+								<td><img style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
+								<td className="buttCell" style={{height:60}}><button onClick={this.gohome} className={home}/></td>
+							</tr>
+						</tbody>
+					</table>
+			<InterceptorDynamicViewV2 onButton={this.onButton} onSens={this.onSens} ref='dv' sens={[this.state.prodRec['Sens_A'],this.state.prodRec['Sens_B']]} sig={[this.state.peak,this.state.peakb]} rej={this.state.rej}/>
+			<InterceptorNav onButton={this.onButton} ref='nv' prodName={this.state.prodRec['ProdName']} />
+				<Modal ref='testModal'>
+					<TestReq ip={this.props.det.ip} toggle={this.toggleTestModal}/>
+				</Modal>
+				<Modal ref='pedit'>
+				{prodList}
+				</Modal>
+				<Modal ref='calibModal'>
+				{CB}
+				</Modal>
+				<Modal ref='netpolls'>
+					<NetPollView ref='np' eventCount={15} events={this.props.netpoll}/>
+				</Modal>
+				<Modal ref='configs'>
+				</Modal>
+		</div>)
+	}
+})
+var InterceptorNav = React.createClass({
+	onConfig: function () {
+		// body...
+		this.props.onButton('config')
+	},
+	onTest:function () {
+		// body...
+		this.props.onButton('test')
+	},
+	onLog: function () {
+		// body...
+		this.props.onButton('log')
+	},
+	onSens: function () {
+		// body...
+		this.props.onButton('sens')
+	},
+	onCal: function () {
+		// body...
+		this.props.onButton('cal')
+	},
+	onProd: function () {
+		// body...
+		this.props.onButton('prod')
+	},
+	streamTo: function (dat) {
+		// body...
+		this.refs.sg.stream(dat);
+		//console.log('streaming')
+	},
+	render: function () {
+		// body...
+		return (<div className='interceptorNav' style={{display:'block', width:930, marginLeft:'auto',marginRight:'auto', background:'black'}}>
+				
+				<div style={{overflow:'hidden',width:930,height:250}}>
+				<table className='intNavTable' style={{height:240, borderSpacing:0, borderCollapse:'collapse'}}><tbody><tr>
+				<td>
+				<div className='slantedRight'>
+					<div style={{background:'#764399', borderTopRightRadius:'30px 40px', height:240, textAlign:'center'}}>
+					<CircularButton lab={'Config'} onClick={this.onConfig}/>
+					<CircularButton lab={'Test'} onClick={this.onTest}/>
+					<CircularButton lab={'Log'} onClick={this.onLog}/>
+					</div>
+				</div>
+				</td><td>
+				<div style={{display:'inline-block', width:430, height:220, borderBottom:'20px solid grey',position:'relative', borderBottomLeftRadius:'100px 402px', borderBottomRightRadius:'100px 402px'}}>
+						
+				
+				<InterceptorNavContent ref='nv' prodName={this.props.prodName}><SlimGraph int={true} ref='sg' canvasId={'sgcanvas2'}/>	</InterceptorNavContent>
+				</div></td><td>
+				<div className='slantedLeft'><div style={{background:'#764399', borderTopLeftRadius:'30px 40px', height:240, textAlign:'center'}}>
+				<CircularButton lab={'Sensitivity'} inverted={true} onClick={this.onSens}/>
+				<CircularButton lab={'Calibrate'} inverted={true} onClick={this.onCal}/>
+				<CircularButton lab={'Product'} inverted={true} onClick={this.onProd}/>
+				</div>	</div></td></tr></tbody></table></div>
+			</div>)
+	}
+})
+var InterceptorNavContent = React.createClass({
+	getInitialState: function () {
+		// body...
+		return {prodName:'PRODUCT 1'}
+	},
+	stream:function (dat) {
+		// body...
+		//this.refs.sg.stream(dat)
+	},
+	render: function () {
+		// body...
+		var style = {width:345,height:220,background:'white',marginLeft:'auto',marginRight:'auto'}
+		var wrapper = {width:430, height:220}
+		return (<div className='interceptorNavContent' style={wrapper}>
+			<table className='noPadding'>
+				<tbody><tr><td style={{width:40,background:'linear-gradient(80deg,black,black 47%,grey 51%,grey)'}}></td><td style={{height:75,background:'grey', width:330}}><div style={{display:'block', height:34, width:330}}>Product Info</div>
+				<div style={{display:'block', height:34, width:330}}>{this.props.prodName}</div>
+				</td><td style={{width:40,background:'linear-gradient(100deg,grey,grey 49%,black 53%,black)'}}></td></tr>
+				<tr><td colSpan={3}>
+				{this.props.children}
+				
+				</td></tr>
+				</tbody>
+			</table>
+				</div>)
+	}
+})
+var InterceptorDynamicViewV2 = React.createClass({
+	update: function (siga, sigb) {
+		// body...
+
+		this.refs.tba.update(siga)
+		this.refs.tbb.update(sigb)
+	},
+	onSens: function (e) {
+		// body...
+		this.props.onSens(e, 'Sens_A')
+	},
+	onSensB: function(e){
+		this.props.onSens(e, 'Sens_B')
+	},
+	onSigA: function () {
+		// body...
+		this.props.onButton('sig_a')
+	},
+	onSigB: function () {
+		// body...
+		this.props.onButton('sig_b')
+	},
+	onRej:function () {
+		// body...
+		this.props.onButton('rej')
+	},
+	render: function () {
+		// body...
+			// body...
+		var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'white', textAlign:'start'}
+
+		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'white', textAlign:'end'}
+		var contb = {position:'relative', display:'inline-block'} 
+		var conta = {position:'relative', display: 'inline-block'}
+		//linear-gradient(90deg, #764399, rgba(128,128,128,0.5))
+		return (
+			<div style={{marginTop:2}}>
+			<div style={{padding:10, borderRadius:20, border:'5px black solid', display:'block', width:940, marginLeft:'auto',marginRight:'auto',background:'white', boxShadow:'0px 0px 0px 10px grey'}}>
+			<div className='interceptorDynamicView' style={{overflow:'hidden', display:'block', width:940, marginLeft:'auto', marginRight:'auto', textAlign:'center', borderRadius:10, border:'2px solid black'}}>
+				<table  style={{borderSpacing:0,background:'linear-gradient(55deg,grey, grey 49.5%,black 50%, #764399 50.5%, #764399)'}}><tbody>
+				<tr><td style={{display:'inline-block', padding:0,width:336,overflow:'hidden'}}><div style={{width:356,height:36}}></div></td><td colSpan={2} style={{padding:0,display:'inline-block',overflow:'hidden', width:604}}><div style={{padding:10, display:'block', width:500,marginLeft:70,paddingLeft:20}}><TickerBox ref='tba'/></div></td></tr>
+				
+				<tr>
+				<td style={{padding:0, height:160, overflow:'hidden',display:'inline-block'}}>
+				<div  style={{display:'inline-block', width:330, height:160}}>
+					<div style={{position:'relative', marginTop:8, marginBottom:7}}><div style={labstyleb}>sens</div><div style={contb}><KeyboardInputButton num={true} isEditable={true} value={this.props.sens[0]} onInput={this.onSens} inverted={false}/></div></div>
+					<div style={{position:'relative', marginTop:8, marginBottom:7}}><div style={labstyleb}>signal</div><div style={contb}><KeyboardInputButton onClick={this.onSigA} isEditable={false} value={this.props.sig[0]} inverted={false}/></div></div>
+					
+				</div>
+				</td>
+				<td style={{padding:0, height:160, overflow:'hidden', display:'inline-block'}}>
+				<div style={{display:'inline-block', width:280, height:160}}>
+				<div style={{textAlign:'center', display:'block', width:260, marginTop:50}}><div><KeyboardInputButton  isEditable={false} onClick={this.onRej} value={this.props.rej} inverted={false}/></div>
+				<div style={{color:'white'}}>rejects</div>
+				</div>
+
+				</div>
+				</td>
+				<td style={{padding:0, height:160, overflow:'hidden', display:'inline-block'}}>
+				<div style={{display:'inline-block', width:330, height:160}}>
+					<div style={{position:'relative', marginTop:8, marginBottom:7}}><div style={conta}><KeyboardInputButton num={true} isEditable={true} value={this.props.sens[1]} onInput={this.onSensB} inverted={true}/></div><div style={labstylea}>sens</div></div>
+					<div style={{position:'relative',marginTop:8, marginBottom:7}}><div style={conta}><KeyboardInputButton onClick={this.onSigB} isEditable={false} value={this.props.sig[1]} inverted={true}/></div><div style={labstylea}>signal</div></div>
+					
+				</div>
+				</td>
+				</tr>
+				<tr><td colSpan={2} style={{padding:0,display:'inline-block',overflow:'hidden', width:604}}><div style={{padding:10, display:'block', width:500,marginLeft:-7,paddingLeft:20}}><TickerBox ref='tbb'/></div></td><td style={{display:'inline-block', padding:0,width:336,overflow:'hidden'}}><div style={{width:356,height:36}}></div></td></tr>
+				</tbody></table>
+				
+				</div>
+				</div>
+				</div>)
+	}
+})
+var InterceptorDynamicView = React.createClass({
+	render: function () {
+		// body...
+		var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'white', textAlign:'start'}
+
+		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'white', textAlign:'end'}
+		var contb = {position:'relative', display:'inline-block'} 
+		var conta = {position:'relative', display: 'inline-block'}
+
+		return (
+			<div>
+			<div style={{padding:10, borderRadius:20, border:'2px black solid', borderBottom:'none', display:'block', width:940, marginLeft:'auto',marginRight:'auto',background:'white', boxShadow:'0px 0px 0px 8px black'}}>
+			<div className='interceptorDynamicView' style={{overflow:'hidden', display:'block', width:940, marginLeft:'auto', marginRight:'auto', textAlign:'center', borderRadius:10}}>
+				<div></div><div style={{padding:10,borderRadius:10,background:'#764399', display:'block', width:920,marginRight:-10,paddingRight:20}}><TickerBox ref='tbb'/></div>
+				<table style={{borderSpacing:0}}><tbody><tr>
+				<td style={{padding:0, height:160, overflow:'hidden',display:'inline-block'}}>
+				<div  style={{display:'inline-block', width:330, height:156	,background:'grey', marginTop:4, borderTopLeftRadius:10}}>
+					<div style={{position:'relative', marginTop:8, marginBottom:7}}><div style={labstyleb}>sens</div><div style={contb}><KeyboardInputButton isEditable={true} value={100} inverted={false}/></div></div>
+					<div style={{position:'relative', marginTop:8, marginBottom:7}}><div style={labstyleb}>signal</div><div style={contb}><KeyboardInputButton isEditable={false} value={100} inverted={false}/></div></div>
+					
+				</div>
+				</td>
+				<td style={{padding:0, height:160, overflow:'hidden', display:'inline-block'}}>
+				<div style={{display:'inline-block', width:280, height:160, backgroundImage:'linear-gradient(to top right, grey, grey 49%,white 49%,white 51%,#764399 51%, #764399)'}}>
+				<div style={{textAlign:'center', display:'block', width:260, marginTop:50}}><div><KeyboardInputButton isEditable={false} value={100} inverted={false}/></div>
+				<div style={{color:'white'}}>rejects</div>
+				</div>
+
+				</div>
+				</td>
+				<td style={{padding:0, height:160, overflow:'hidden', display:'inline-block'}}>
+				<div style={{display:'inline-block', width:330, height:158, background:'#764399', borderBottomRightRadius:10}}>
+					<div style={{position:'relative', marginTop:8, marginBottom:7}}><div style={conta}><KeyboardInputButton isEditable={true} value={100} inverted={true}/></div><div style={labstylea}>sens</div></div>
+					<div style={{position:'relative',marginTop:8, marginBottom:7}}><div style={conta}><KeyboardInputButton isEditable={false} value={100} inverted={true}/></div><div style={labstylea}>signal</div></div>
+					
+				</div>
+				</td>
+				</tr>
+				</tbody></table>
+				<div style={{padding:10,borderRadius:10,background:'grey', display:'block', width:920,marginLeft:-10,paddingLeft:20}}><TickerBox ref='tba'/></div>	
+				</div>
+				</div>
+				</div>)
+	}
+})
+var CircularButton = React.createClass({
+	onClick: function () {
+		// body...
+		this.props.onClick();
+	},
+	render: function () {
+		// body...
+		var style = {height:55,top:-6,left:-6}
+		var divstyle = {overflow:'hidden',background:'grey',height:50,width:50,borderRadius:25}
+		console.log('render circle')
+		if(this.props.inverted){
+			return(<div style={{width:200,position:'relative',margin:10,height:50,overflow:'hidden', borderRadius:'27px 0px 0px 27px', background:'linear-gradient(90deg, rgba(128,128,128,0.7),#764399)', padding:3, marginLeft:'auto', marginRight:'auto'}}>
+				<div className='cbDiv' style={divstyle}><button className='circleButton' style={style} onClick={this.onClick}/></div> 
+				<div style={{display:'inline-block', position:'relative',top:-23,width:150}}>{this.props.lab}</div>
+			</div>)
+		}else{
+			return(<div style={{width:200,position:'relative',margin:10,height:50,overflow:'hidden', borderRadius:'0px 27px 27px 0px', background:'linear-gradient(90deg, #764399, rgba(128,128,128,0.7))', padding:3, marginLeft:'auto', marginRight:'auto'}}>
+				<div style={{display:'inline-block', position:'relative',top:-23,width:150}}>{this.props.lab}</div>
+				<div className='cbDiv' style={divstyle}><button className='circleButton' style={style} onClick={this.onClick}/></div> 
+			</div>)
+		}
+	}
+})
+var KeyboardInputButton = React.createClass({
+	getInitialState: function () {
+		// body...
+		return {}
+	},
+	onInput: function (e) {
+		// body...
+		this.props.onInput(e)
+	},
+	editValue: function () {
+		// body...
+		var self = this;
+		if(this.props.isEditable){
+			setTimeout(function () {
+				// body...
+				self.refs.input.onFocus()
+			},100)
+			
+		}else{
+			this.props.onClick()
+		}
+		
+	},
+	render: function () {
+		// body...
+		var bgColor='rgba(200,200,200,1)'
+		var boxShadow = '0px 0px 0px 50px '+bgColor
+
+		var kb = <KeyboardInput num={this.props.num} Style={{fontSize:25, textAlign:'center', width:100}} onInput={this.onInput} ref='input' value={this.props.value}/>
+		if(!this.props.isEditable){
+			kb = <label style={{fontSize:25, textAlign:'center', width:100, display:'inline-block', lineHeight:2}} onClick={this.editValue}>{this.props.value}</label>
+		}
+
+		if(this.props.inverted){
+		var before = {position: 'absolute',height:'100%',display: 'inline-block',top:0,width:44,left:0,backgroundColor:bgColor,borderRadius:25, height:46}
+		var after = {position:'absolute',height:'100%',display:'inline-block',top:0,width:44,left:126,backgroundColor:'transparent',boxShadow:boxShadow,  borderRadius:25, height:46}
+		var contStyle= {display:'inline-block',width:100,position:'absolute',left:20,overflow:'hidden', height:46, backgroundColor:bgColor, zIndex:2}
+   		return(<div className='keyboardInputButton' >
+			<div className='round-bg'>
+
+				<div className='pbContain' style={{left:10}}>
+				<div style={before}/>
+				<div style={contStyle}>{kb}</div>
+				<div style={after}/>
+				</div>
+				<div className='pbDiv' style={{position:'relative', paddingRight:5}}>
+				<button className='playButtonInv' onClick={this.editValue}/>
+				</div>
+				</div>
+				</div>)
+		}else{
 
 
-
+		var after = {position: 'absolute',height:'100%',display: 'inline-block',top:0,width:44,left:94,backgroundColor:bgColor,borderRadius:25, height:46}
+		var before = {position:'absolute',height:'100%',display:'inline-block',top:0,width:44,left:-32,backgroundColor:'transparent',boxShadow:boxShadow,  borderRadius:25, height:46}
+		var contStyle= {display:'inline-block',width:100,position:'absolute',left:20,overflow:'hidden', height:46, backgroundColor:bgColor, zIndex:2}
+   /* width: 44px;
+    left: 83px;
+    background: grey;
+    border-radius: 20px;}*/
+		return(<div className='keyboardInputButton'>
+			<div className='round-bg'>
+				<div className='pbDiv'  style={{paddingLeft:5}}>
+				<button className='playButton' onClick={this.editValue}/>
+				</div>
+				<div className='pbContain' style={{left:-10}}>
+				<div style={before}/>
+				<div style={contStyle}>{kb}</div>
+				<div style={after}/>
+				</div>
+			</div>
+			</div>)
+		}
+	}
+})
 
 
 injectTapEventPlugin();
