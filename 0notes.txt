@@ -73,3 +73,7 @@ RELEASE 0.1 demo version
 --170419
 
 updated test, calibrate (will work with ST170307 or newer)
+
+--170504
+
+New ui for interceptor, regular stealth not supported atm
