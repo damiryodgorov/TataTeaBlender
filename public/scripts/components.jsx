@@ -4,35 +4,51 @@ var TimeSeries = require('./smoothie.js').TimeSeries;
 import Keyboard from 'react-material-ui-keyboard';
 import TextField from 'material-ui/TextField';
 import { extendedKeyboard, alphaNumericKeyboard,numericKeyboard } from 'react-material-ui-keyboard/layouts';
+import Snackbar from 'react-toolbox/lib/snackbar/Snackbar.js'
 
 //var Concrete = require('./concrete.min.js').Concrete
 
-var TreeNode = React.createClass({
-	getInitialState: function(){
-		return ({hidden:true})
+var SnackbarNotification = React.createClass({
+	getInitialState:function(){
+		return{faults:this.props.faults}
 	},
-	toggle: function(){
-		var hidden = !this.state.hidden
-		this.setState({hidden:hidden});
+	componentWillReceiveProps:function (newProps) {
+		// body...
+		this.setState({faults:newProps.faults})
 	},
-	render: function(){
-		var cName = "collapsed"
-		if(!this.state.hidden){
-			cName = "expanded"
+	handleSnackbarClick: function () {
+		// body...
+		this.props.onClear();
+	}, 
+	render: function () {
+		// body...
+		var active = (this.state.faults.length > 0)
+		var cont;
+		if(this.state.faults.length < 4){
+			cont = this.state.faults.map(function (f) {
+				return <div style={{display:'inline-block', marginLeft:15}}>{f}</div>
+
+				// body...
+			})
 		}
-		return (
-			<div hidden={this.props.hide} className="treeNode">
-				<div onClick={this.toggle} className={cName}/>
-				<div className="nodeName">
-					<span onClick={this.toggle}>{this.props.nodeName}</span>
-				</div>
-				<div className="innerDiv" hidden={this.state.hidden}>
-				{this.props.children}
-				</div>
-			</div>
-		)
+		else{
+			cont = <div>{this.state.faults.length} Faults</div>
+		}
+		
+		return <Snackbar 
+				action='Clear Faults'
+				active={active}
+				timeout={0}
+				onClick={this.handleSnackbarClick}
+				type='warning'
+				className='faultSnackbar'
+				>
+				<div style={{display:'inline-block'}}>{cont}</div>
+				</Snackbar>
 	}
 })
+
+
 var KeyboardInput = React.createClass({
 	getInitialState: function(){
 		var value = ""
@@ -77,7 +93,7 @@ var KeyboardInput = React.createClass({
 	},
 	onFocus: function(e){
 		if(ftiTouch){
-			//console.log('74 components.jsx')
+			console.log('74 components.jsx')
 
 			this.setState({open:true})
 			if(this.props.onFocus){
@@ -89,7 +105,7 @@ var KeyboardInput = React.createClass({
 		if(ftiTouch){
 
 
-			//console.log(['79 comp'])
+			console.log(['79 comp'])
 			this.setState({open:false})
 			if(this.props.onRequestClose){
 				this.props.onRequestClose();
@@ -98,7 +114,7 @@ var KeyboardInput = React.createClass({
 	},
 	onOutside: function(e){
 		if(this.state.open){
-			//console.log('keyboard should close')
+			console.log('keyboard should close')
 
 			//this.setState({open:false})
 			this.onRequestClose()
@@ -211,9 +227,9 @@ var TreeNode = React.createClass({
 		}
 		return (
 			<div hidden={this.props.hide} className="treeNode">
-				<div onClick={this.toggle} className={cName}/>
+				<div onClick={this.toggle} />
 				<div className="nodeName">
-					<span onClick={this.toggle}>{this.props.nodeName}</span>
+					<label className={cName} onClick={this.toggle}>{this.props.nodeName}</label>
 				</div>
 				<div className="innerDiv" hidden={this.state.hidden}>
 				{this.props.children}
@@ -938,9 +954,287 @@ var ConcreteElem = React.createClass({
 		
 	},
 */
+/*var DetMainInfo = React.createClass({
+	getInitialState: function () {
+		// body...
+		var res = vdefByIp[this.props.det.ip]
+		var pVdef = _pVdef;
+		if(res){
+			pVdef = res[1];
+		} 
+		var tmpA = '';
+		var tmpB = '';
+		var res = null;
+
+		return({rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0, sysRec:{},prodRec:{}, tmp:'', tmpB:'', prodList:[], phaseFast:0, phaseFastB:0, pVdef:pVdef})
+	},
+	componentDidMount: function(){
+		this.sendPacket('refresh','')
+	},
+	clearRej: function () {
+		// body...
+		var param = this.state.pVdef[2]['RejCount']
+		this.props.clear(param )
+	},
+	switchProd: function (p) {
+		// body...
+		this.props.sendPacket('ProdNo',p)
+		
+
+	},
+	sendPacket: function (n,v) {
+		// body...
+		this.props.sendPacket(n,v)
+	},
+	getProdName: function (num) {
+		// body...
+		this.props.sendPacket('getProdName',99)
+	},
+	clearPeak: function () {
+		// body...
+		var p = 'Peak'
+		if(this.props.int){
+			p = 'Peak_A'
+		}
+		var param = this.state.pVdef[2][p]
+		this.props.clear(param) 
+	},
+	clearPeakB: function () {
+		// body...
+		var p = 'Peak'
+		if(this.props.int){
+			p = 'Peak_B'
+		}
+		var param = this.state.pVdef[2][p]
+		this.props.clear(param) 
+		param = null;
+	},
+	calibrate: function () {
+		this.refs.calbModal.toggle()
+	},
+	parseInfo: function(sys, prd){
+		//////console.log('parseInfo')
+		if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
+		//	////console.log([sys,prd])
+			if(this.props.int){
+				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens_A'], tmpB:prd['Sens_B']})
+			}else{
+				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens']})
+			}
+			
+		}
+	},
+	showEditor: function () {
+		this.props.sendPacket('getProdList')
+		this.refs.pedit.toggle()
+		this.setState({peditMode:false})
+	},
+	editSens: function () {
+		this.refs.sensEdit.toggle()
+	},
+	setTest: function () {
+		if(typeof this.state.prodRec['TestMode'] != 'undefined'){
+			if(this.state.prodRec['TestMode'] != 0){
+				this.props.sendPacket('test', this.state.prodRec['TestMode'] - 1)
+			}else{
+				this.toggleTestModal()
+			}
+			
+		}
+		//
+
+	},
+	toggleTestModal: function () {
+		// body...
+		this.refs.testModal.toggle()
+	},
+	updateTmp:function (e) {
+		//e.preventDefault();
+		if(typeof e == 'string'){
+			if(this.props.int){
+				this.props.sendPacket(this.state.pVdef[1]['Sens_A'], e)
+			}else{
+				this.props.sendPacket(this.state.pVdef[1]['Sens'],e)	
+			}
+			this.setState({tmp:e})
+		}else{
+			if(this.props.int){
+				this.props.sendPacket(this.state.pVdef[1]['Sens_A'], e.target.value)
+			}else{
+				this.props.sendPacket(this.state.pVdef[1]['Sens'],e.target.value)	
+			}
+			this.setState({tmp:e.target.value})	
+		}
+		
+	},
+	updateTmpB:function (e) {
+		//e.preventDefault();
+		if(typeof e == 'string'){
+			this.props.sendPacket(this.state.pVdef[1]['Sens_B'], e)
+			this.setState({tmpB:e})
+		}else{
+			this.props.sendPacket(this.state.pVdef[1]['Sens_B'], e.target.value)
+			this.setState({tmpB:e.target.value})	
+		}
+		
+	},
+	submitTmpSns:function () {
+		if(!isNaN(this.state.tmp)){
+			if(this.props.int){
+				this.props.sendPacket('Sens_A', this.state.tmp)
+			}else{
+				this.props.sendPacket('Sens',this.state.tmp)	
+			}
+			this.cancel()
+		}
+	},
+	submitTmpSnsB:function () {
+		if(!isNaN(this.state.tmp)){
+			if(this.props.int){
+				this.props.sendPacket('Sens_B', this.state.tmpB)
+			}else{
+				this.props.sendPacket('Sens',this.state.tmpB)	
+			}
+			this.cancel()
+		}
+	},
+	refresh: function () {
+		this.props.sendPacket('refresh')
+	},
+	cancel:function () {
+		this.refs.sensEdit.toggle()
+		this.setState({tmp:''})
+	},
+	calB: function () {
+		this.props.sendPacket('cal',[0])
+	},
+	calA:function () {
+		// body...
+		this.props.sendPacket('cal',[1])
+	},
+	_handleKeyPress: function (e) {
+		if(e.key === 'Enter'){
+			this.submitTmpSns();
+		}
+	},
+	sensFocus: function(){
+		this.refs.sensEdit.setState({override:true})
+	},
+	sensClose: function(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.sensEdit.setState({override:false})	
+		}, 100)
+	},
+	prodFocus: function(){
+		this.refs.pedit.setState({override:true})
+	},
+	prodClose: function(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.pedit.setState({override:false})	
+		}, 100)
+	},
+	changeProdEditMode:function () {
+		// body...
+		this.setState({peditMode:!this.state.peditMode})
+	},
+	render: function () {
+			
+		//////console.log('render here')
+		var self = this;
+		var padding = {paddingLeft:10}
+		var tdstyle = {paddingLeft:10, background:'linear-gradient(135deg, rgba(128, 128, 128, 0.3), transparent 67%)', width:200}
+		var tdstylest = {paddingLeft:10, background:'linear-gradient(315deg, transparent 33%, rgba(128,0,128,0.4))', width:400}
+		
+		var tdstyleintA = {paddingLeft:10, background:'linear-gradient(315deg, transparent 33%, rgba(128,0,128,0.4))', width:200}
+		var tdstyleintB = {paddingRight:10, background:'linear-gradient(135deg, rgba(0,128,128,0.4),transparent 67%', width:200}
+		var list = ['dry', 'wet', 'DSA']
+		var headingStyle = {textAlign:'right',background:'linear-gradient(to right, transparent, transparent 33%, rgba(128, 128, 128, 0.3)'}
+		var ps = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed']]
+		if(this.state.phaseFast == 1){
+			ps = 'fast'
+		}
+		var tab = (
+		<table className='dtmiTab'>
+			<tbody>
+
+				<tr><td style={headingStyle}>Name</td><td colSpan={2} style={tdstylest}>{this.props.det.name}</td></tr>
+				<tr onClick={this.showEditor}><td style={headingStyle}>Product</td><td colSpan={2} style={tdstylest}>{this.state.prodRec['ProdName']}</td></tr>
+				<tr><td style={headingStyle}>Sensitivity</td><td colSpan={2} style={tdstylest}><KeyboardInputWrapper Style={{fontSize:26, textAlign:'center', width:'100%'}}  Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/>
+</td></tr>
+				<tr><td style={headingStyle}>Signal</td><td colSpan={2} style={tdstylest} onClick={this.clearPeak}>{this.state.peak}</td></tr>
+				<tr><td style={headingStyle}>Phase</td><td colSpan={2} style={tdstylest} >{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode']]}</td></tr>
+				<tr><td style={headingStyle}>Rejects</td><td colSpan={2} style={tdstylest} onClick={this.clearRej}>{this.state.rej}</td></tr>
+			
+				<tr><td></td><td style={tdstyle} onClick={this.calibrate}>Calibrate </td><td onClick={this.setTest} style={tdstyle}>Test</td>
+				</tr>		
+			</tbody>
+		</table>)
+		var CB = 	<CalibInterface int={this.props.int} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.calB} calibA={this.calA} phase={[this.state.phase, this.state.prodRec['PhaseMode'], ps]} phaseA={[this.state.phaseb]} peaks={[this.state.rpeak,this.state.xpeak]}ref='ci'/>
+						
+		if(this.props.int){
+			tab = (<table className='dtmiTab'>
+				<tbody>
+				<tr onClick={this.showEditor}><td style={headingStyle}>Product</td><td colSpan={2} style={tdstyleintA}>{this.state.prodRec['ProdName']}</td></tr>
+				<tr><td style={headingStyle}>Sensitivity</td><td style={tdstyleintA}><KeyboardInputWrapper  Style={{fontSize:26, textAlign:'center', width:'100%'}} Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/></td><td style={tdstyleintB}><KeyboardInputWrapper  Style={{fontSize:26, textAlign:'center', width:'100%'}} Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmpB} value={this.state.tmpB}/></td></tr>
+				<tr><td style={headingStyle}>Signal</td><td style={tdstyleintA} onClick={this.clearPeak}>{this.state.peak}</td><td style={tdstyleintB} onClick={this.clearPeakB}>{this.state.peakb}</td></tr>
+				<tr><td style={headingStyle}>Phase</td><td style={tdstyleintA} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode_A']]}</td>
+				<td style={tdstyleintB}>{this.state.phaseb + ' ' + list[this.state.prodRec['PhaseMode_B']]}</td></tr>
+				<tr><td style={headingStyle}>Rejects</td><td colSpan={2} style={tdstyleintA} onClick={this.clearRej}>{this.state.rej}</td></tr>
+	
+				<tr><td></td><td  onClick={this.calibrate} style={tdstyle}><span>Calibrate</span> </td><td onClick={this.setTest} style={tdstyle}><span>Test</span></td></tr>		
+			</tbody>
+				</table>)
+			ps = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed_A']]
+			var psb = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed_B']]
+			if(this.state.phaseFast == 1){
+				ps = 'fast'
+			}
+			if(this.state.phaseFastB == 1){
+				psb = 'fast'
+			}	
+			CB = <CalibInterface int={this.props.int} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.calB} calibA={this.calA} phase={[this.state.phase, this.state.prodRec['PhaseMode_A'], ps]} phaseB={[this.state.phaseb, this.state.prodRec['PhaseMode_B'], psb]} peaks={[this.state.rpeak,this.state.xpeak, this.state.rpeakb,this.state.xpeakb]}ref='ci'/>
+			
+		}
+		var prodList = this.state.prodList.map(function(p){
+			var sel = false
+			if(p==self.state.sysRec['ProdNo']){
+				sel = true;
+			}
+
+			return (<ProductItem selected={sel} p={p} switchProd={self.switchProd}/>)
+		})
+		if(this.state.peditMode){
+			var peditCont = 	<div><ProductMenu ip={this.props.det.ip} onKeyFocus={this.prodFocus}	onRequestClose={this.prodClose}/><div style={{float:'right'}}><button onClick={this.changeProdEditMode}> Back</button></div></div>
+				
+		}else{
+			peditCont = <div>
+				<div style={{display:'inline-block'}}>{prodList}</div><div style={{float:'right'}}><button onClick={this.changeProdEditMode}>Edit Product List</button></div>
+			</div>
+		}
+		return (<div className='detInfo'>
+						{tab}
+					<Modal ref='pedit'>
+					{prodList}
+						</Modal>
+						<Modal ref='sensEdit'>
+							<div>Sensitivity: <KeyboardInput onFocus={this.sensFocus} onRequestClose={this.sensClose} tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/>
+							<button onClick={this.submitTmpSns}>OK</button><button onClick={this.cancel}>Cancel</button></div>
+						</Modal>
+						<Modal ref='testModal'>
+							<TestReq ip={this.props.det.ip} toggle={this.toggleTestModal}/>
+						</Modal>
+						<Modal ref='calbModal'>
+						{CB}
+						</Modal>
+					</div>)
+	}
+})*/
 
 module.exports = {}
 module.exports.ConcreteElem =  ConcreteElem;
 module.exports.CanvasElem = CanvasElem;
 module.exports.KeyboardInput = KeyboardInput;
 module.exports.TreeNode = TreeNode
+module.exports.SnackbarNotification = SnackbarNotification;

@@ -28,12 +28,43 @@ li {
     margin-right: auto;
     display: block;
 }
+@keyframes flash{
+    0% {background-color: rgba(125,125,125,0.6);}
+    50% {background-color: yellow;}
+    100% {background-color: rgba(125,125,125,0.6)}
+}
+.faultSnackbar{
+    position: fixed;
+    bottom:10px;
+    width: 800px;
+    margin-left: 100px;
+    z-index: 2;
+    background: grey;
+    animation-name: flash;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+.faultSnackbar button{
+    float: right;
+}
 .npTable{
     font-size:16px;
+    table-layout: fixed;
+}
+.npTable thead tr {
+        display: block;
+        position: relative;
+        
 }
 .npTable td{
     padding-left: 7px;
     padding-right: 7px;
+}
+.npTable tbody {
+        display: block;
+        overflow: auto;
+        width: 100%;
+        height: 230px;
 }
 .mtab{
 
@@ -325,16 +356,16 @@ li {
 .slantedRight{
     height: 263px;
     width: 250px;
-    background: #764399;
+    background: #362c66;
     border-radius: 0px 50px 0px 0px;
     position: relative;
     display: inline-block;
     z-index: 2;
-      box-shadow: 0px 0px 0px 10px grey;
+      box-shadow: 0px 0px 0px 10px #818a90;
 
 }
 .slantedRight::after{
-  background: #764399;
+  background: #362c66;
     content: "";
     position: absolute;
     top: 37px;
@@ -342,23 +373,23 @@ li {
     height: 0px;
     width: 0px;
     border-radius: 30px 0px;
-    border: 113px solid #764399;
+    border: 113px solid #362c66;
     transform: rotate(80deg);
     z-index: -1;
-    box-shadow: 0px 0px 0px 10px grey;
+    box-shadow: 0px 0px 0px 10px #818a90;
 }
 .slantedLeft{
     height: 263px;
     width: 250px;
-    background: #764399;
+    background: #362c66;
     border-radius: 50px 0px 0px 0px;
     position: relative;
     display: inline-block;
     z-index: 2;
-    box-shadow: 0px 0px 0px 10px grey;
+    box-shadow: 0px 0px 0px 10px #818a90;
 }
 .slantedLeft::before{
-    background: #764399;
+    background: #362c66;
     content: "";
     position: absolute;
     top: 37px;
@@ -366,10 +397,10 @@ li {
     height: 0px;
     width: 0px;
     border-radius: 0px 30px;
-    border: 113px solid #764399;
+    border: 113px solid #362c66;
     transform: rotate(280deg);
     z-index: -1;
-    box-shadow: 0px 0px 0px 10px grey;
+    box-shadow: 0px 0px 0px 10px #818a90;
 }
 
 .mainView{
@@ -792,16 +823,16 @@ li {
     border-top-style: groove;
     border-top: #dddddd
 }
-.collapsed h2::after{
-    float: right;
-    content:url('../assets/angle-down.svg');
-    margin-top: 5px;
-
+.collapsed::before{
+    
+   /* content:url('../assets/angle-down.svg');
+    position: relative;
+    top: 5px;*/
 }
-.expanded h2::after{
-    float: right;
-    content:url('../assets/angle-up.svg');
-    margin-top: 5px;    
+.expanded::before{
+  /* content:url('../assets/angle-up.svg');
+    position: relative;
+    top: 5px; */ 
 }
 .selectNode{
     padding-left: 15px;

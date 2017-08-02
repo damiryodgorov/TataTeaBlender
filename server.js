@@ -78,21 +78,34 @@ function initSocks(arr){
 
 }
 function getVdef(ip, callback){
-  var tclient = tftp.createClient({host:ip})
+  var tclient = tftp.createClient({host:ip ,retries:10, timeout:1000})
   var get = tclient.createGetStream('/flash/vdef.json')
       var rawVdef = [];
       get.on('data', (chnk)=>{
         rawVdef.push(chnk)//zlib.gunzipSync(chnk);
       })
       get.on('end', ()=>{
+      console.log('getting vdef tftp end')
                      // console.log(get.headers['content-encoding'])
       var buffer = Buffer.concat(rawVdef)
       zlib.unzip(buffer, function(er,b){
         var vdef = JSON.parse(b.toString())
         vdefs[ip] = vdef; 
-        callback(ip,vdef)               
+        callback(ip,vdef) 
+        get.abort()              
+      })
+      get.on('error',(e)=>{
+        console.log(e)
       })
     })
+    /*
+    fs.readFile(__dirname + '/json/170429.json',(err, data) => {
+      // body...
+      var vdef = JSON.parse(data);
+      vdefs[ip] = vdef
+      
+      callback(ip,vdef)
+    })*/
 }
 function udpConSing(ip){
   if(dsp_ips.indexOf(ip) == -1){
@@ -207,7 +220,43 @@ function toArrayBuffer(buffer) {
 function swap16(val){
       return ((val & 0xFF) << 8) | ((val >> 8) & 0xFF);
   }
-
+function dsp_rpc_paylod_for (n_func, i16_args, byte_data) {
+        var rpc = [];
+        var n_args = i16_args.length;
+        var bytes = [];
+        if (n_args > 3) n_args = 3;
+        if (typeof byte_data == "string") {
+          for(var i=0; i<byte_data.length; i++) {
+              bytes.push(byte_data.charCodeAt(i));
+          }         
+        } else if (byte_data instanceof Array) {
+          bytes = byte_data;
+         }
+        rpc[0] = n_func;
+        rpc[1] = n_args;
+        if (bytes.length > 0) rpc[1] += 4;
+        var j=2;
+        for(var i=0; i<n_args; i++) {
+          rpc[j] = i16_args[i] & 0xff; j+= 1;
+          rpc[j] = (i16_args[i] >> 8) & 0xff; j+= 1;
+        }
+        if (bytes.length > 0) rpc = rpc.concat(bytes);
+        
+        var cs = fletcherCheckBytes(rpc);
+        var cs1=255-((cs[0]+cs[1])%255); 
+        var cs2=255-((cs[0]+cs1)%255);
+        rpc.push(cs1);
+        rpc.push(cs2);
+        return rpc;
+}
+function fletcherCheckBytes (data) {
+        var c1=0, c2=0;
+        for(var i=0; i<data.length; i++) {
+          c1 += data[i]; if (c1 >=255) c1 -= 255;
+          c2 += c1;      if (c2 >=255) c2 -= 255;
+        }
+        return [c1,c2];
+      }
 
 class FtiHelper{
   constructor(ip){
@@ -294,6 +343,88 @@ io.on('connection', function(socket){
   //socket = null;
  // clients = null;
   })
+  function getProdList(ip) {
+  // body...
+  if(vdefs[ip]){
+    if(udpClients[ip]){
+    var rpc = vdefs[ip]['@rpc_map']['KAPI_PROD_DEF_FLAGS_READ']
+    var packet = dsp_rpc_paylod_for(rpc[0], rpc[1])
+    var buf = Buffer.from(packet)
+    udpClients[ip].send_rpc(buf, function (e) {
+      var msg = toArrayBuffer(e)
+      var data = new Uint8Array(msg)
+      var prodBits = data.slice(3)
+      var dat = [];
+      for(var i = 0; i < 99; i++){
+    
+        if(prodBits[i] ==2){
+          dat.push(i+1)
+        }
+      
+      }
+      console.log(dat.length + ' products found')
+      getProdName(ip,dat,0,function(ip,arr,list){
+        socket.emit('prodNames',{ip:ip, names:arr, list:list})},[]);
+      // body...
+    })
+
+    }
+  }else{
+    socket.emit('noVdef', ip)
+  }
+
+}
+function getProdName(ip, list, ind, callback, arr){
+  var rpc = vdefs[ip]['@rpc_map']['KAPI_PROD_NAME_APIREAD']
+  var pkt = rpc[1].map(function (r) {
+    if(!isNaN(r)){
+      return r
+    }else{
+      if(isNaN(list[ind])){
+          return 0
+        }else{
+          return parseInt(list[ind])
+        }
+      }
+    })
+    var packet = dsp_rpc_paylod_for(rpc[0], pkt)
+    var buf = Buffer.from(packet);
+    //var array = arr;
+
+    udpClients[ip].send_rpc(buf, function (e) {
+      // body...
+      var array = arr;
+      var msg = toArrayBuffer(e)
+      var name = new Uint8Array(msg)
+      //console.log(e)
+     // array.push(e)
+      var sa = []
+     name.slice(3,23).forEach(function (i) {
+      // body...
+      sa.push(i)
+    })
+   // var self = this;
+      var str = sa.map(function(ch){
+        return String.fromCharCode(ch)
+      }).join("").replace("\u0000","").trim();
+   // console.log(['5888',str])
+   // var prodNames = this.state.prodNames;
+   // prodNames[ind] = str
+      array.push(str)
+      if(ind + 1< list.length){
+        getProdName(ip, list, ind+1, callback, array)
+      }else{
+        if(list.length > 0){
+          callback(ip, array,list)
+        }else{
+          getProdList(ip)
+        }
+        
+      }
+      //callback(e, ip, list, ind)
+    })
+}
+
 
    var relayFunc = function(p){
         socket.emit('paramMsg', p)
@@ -400,6 +531,7 @@ io.on('connection', function(socket){
      }
    }
  }
+
 var dsps = []
 for(var i = 0; i < dspips.length;i++){
     console.log(dspips[i].ip)
@@ -417,6 +549,10 @@ for(var i = 0; i < dspips.length;i++){
  
 });
 });
+socket.on('getProdList', function (ip) {
+  // body...
+  getProdList(ip)
+})
           socket.on('vdefReq', function(ip){
             if(vdefs[ip]){
                 socket.emit('vdef',[vdefs[ip],ip])

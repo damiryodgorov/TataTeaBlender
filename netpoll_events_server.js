@@ -65,12 +65,12 @@ class NetPollEvents{
 				dsp.rpc0(DRPC_NUMBER,[KAPI_RPC_REJ_DEL_CLOCK_READ]);
 			}, 100)
 		}, 100)
-		setInterval(function () {
+		/*setInterval(function () {
 			dsp.rpc0(DRPC_NUMBER,[KAPI_RPC_ETHERNETIP,port]);
 			setTimeout(function () {
 				dsp.rpc0(NP_RPC,[]);
 			}, 100)
-		},10000)
+		},10000)*/
 
 		dsp.port.socket.on('message', function (message, remote) {
 		   // CAN I HANDLE THE RECIVED REPLY HERE????
@@ -95,8 +95,11 @@ class NetPollEvents{
 	    if((this.vdef["@net_poll_h"][e] == (key & 0xf000)) && ((e=="NET_POLL_PROD_SYS_VAR") || (e=="NET_POLL_PROD_REC_VAR")))
 	    {
 	    		//ignore these for now
-				//this.event_info = this.parse_rec(buf,e);
-				//this.callback(this.event_info, this.ip);
+				this.event_info = this.parse_rec(buf,e);
+			//	if((this.event_info.parameters[0].param_name != 'PRecordDate') && (this.event_info.parameters[0].param_name != 'SRecordDate')){
+					this.callback(this.event_info, this.ip);
+			//	}
+				
 	    }
 	    else if((this.vdef["@net_poll_h"][e] == key) && (e=="NET_POLL_FAULT"))
 	    {
@@ -107,7 +110,7 @@ class NetPollEvents{
 				this.faults = this.parse_faults(key,value).string;
 				this.faults_array = this.parse_faults(key,value).faults;
 	    }
-			else if(((this.vdef["@net_poll_h"][e]+1) == key) && (e=="NET_POLL_FAULT"))
+		else if(((this.vdef["@net_poll_h"][e]+1) == key) && (e=="NET_POLL_FAULT"))
 	    {
 	      var value = buf.readUInt16LE(2);
 	      var date_time = this.parse_date_time(buf.slice(4,8));
@@ -210,6 +213,7 @@ class NetPollEvents{
 						this.event_info.test = {operator_no: null, request: null, type: null, signal: null};
 						this.event_info.string = this.event_info.string + ": " + value.toString();
 						this.event_info.rejects.signal = value;
+						this.callback(this.event_info, this.ip);
 					}
 
 				}
