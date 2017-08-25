@@ -10,7 +10,7 @@ import Snackbar from 'react-toolbox/lib/snackbar/Snackbar.js'
 
 var SnackbarNotification = React.createClass({
 	getInitialState:function(){
-		return{faults:this.props.faults}
+		return{faults:this.props.faults, vmap:this.props.vmap}
 	},
 	componentWillReceiveProps:function (newProps) {
 		// body...
@@ -24,9 +24,10 @@ var SnackbarNotification = React.createClass({
 		// body...
 		var active = (this.state.faults.length > 0)
 		var cont;
+		var self = this;
 		if(this.state.faults.length < 4){
 			cont = this.state.faults.map(function (f) {
-				return <div style={{display:'inline-block', marginLeft:15}}>{f}</div>
+				return <div style={{display:'inline-block', marginLeft:15}}>{self.props.vmap[f+'Mask']['@translations']['english']['name']}</div>
 
 				// body...
 			})
@@ -60,12 +61,7 @@ var KeyboardInput = React.createClass({
 	componentWillReceiveProps: function(newProps){
 		
 		if(typeof newProps.value != 'undefined'){
-		//	if(this.props.value.toString() != newProps.value.toString()){
-			//	console.log(['received new props', newProps.value.toString()])
-
-				this.setState( {textarea:newProps.value.toString()})
-		//	}
-			
+			this.setState( {textarea:newProps.value.toString()})
 		}
 		
 	},
@@ -594,7 +590,9 @@ var CanvasElem = React.createClass({
 	componentDidMount: function(){
 		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
 		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#000000'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
+		smoothie.setTargetFPS(24)
 		smoothie.streamTo(document.getElementById(this.props.canvasId));
+
 		if(this.props.int){
 			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
 			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});

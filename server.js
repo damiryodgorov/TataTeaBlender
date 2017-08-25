@@ -22,6 +22,8 @@ const tftp = require('tftp');
 const PassThrough = require('stream').PassThrough;
 const UdpParamServer = require('./udpserver.js')
 const helmet = require('helmet');
+const cp = require('child_process')
+//const processor = cp.fork('./processor.js')
 
 var db = flatfile('./dbs/users.db')
 
@@ -33,7 +35,9 @@ db.on('open', function() {
   //db.put('admin',{level:5,pw:hs})
   console.log(db.keys())
 });
-
+//processor.on('message',(m)=>{
+  //relayParamMsg2(m)
+//})
 
 var WebSocket = require('websocket')
 var WebSocketClient = WebSocket.client
@@ -56,7 +60,7 @@ function load_vdef_parameters(json){
 }
 function write_netpoll_events(message, ip){
   console.log("Writing NetpollEvents from " + ip);
-  console.log(message);
+ // console.log(message);
   var msg = {det:{ip:ip}, data:message}
   relayNetPoll(msg)
   msg = null;
@@ -91,6 +95,17 @@ function getVdef(ip, callback){
       zlib.unzip(buffer, function(er,b){
         var vdef = JSON.parse(b.toString())
         vdefs[ip] = vdef; 
+        var nvdf = [[],[],[],[],[]];
+        var pVdef = [{},{},{},{},{}];
+        vdef['@params'].forEach(function (p) {
+          // body...
+          nvdf[p["@rec"]].push(p['@name'])
+          pVdef[p['@rec']][p['@name']] = p
+        })
+        pVdef[5] = vdef["@deps"]
+
+        nVdfs[ip] = nvdf
+        pVdefs[ip] = pVdef
         callback(ip,vdef) 
         get.abort()              
       })
@@ -107,25 +122,402 @@ function getVdef(ip, callback){
       callback(ip,vdef)
     })*/
 }
+
+function processParam(e, Vdef, nVdf, pVdef, ip) {
+  // body...
+ // console.log(e)
+ // var data = new Uint8Array(e.data);
+ // var dv = new DataView(toArrayBuffer(e))
+  //console.log(e.data)
+  //console.log(dv)
+  var dv = e
+  var rec_type = dv.readUInt8(0)
+  //  console.log(rec_type)
+  var n = e.length
+  var array = []
+  for(var i = 0; i<((n-1)/2); i++ ){
+    array[i] = dv.readUInt16BE(i*2 + 1);
+  }
+  var pack;
+  if(rec_type == 0){
+    var sysRec = {}
+    nVdf[0].forEach(function (p) {
+      sysRec[p] = getVal(array, 0, p, pVdef)
+      // body...
+    })
+    for(var p in Vdef["@deps"]){
+      if(Vdef["@deps"][p]["@rec"] == 0){
+        sysRec[p] = getVal(array,5, p, pVdef);
+      }
+    }
+
+    pack = {type:0, rec:sysRec}
+    //system
+  }else if(rec_type == 1){
+    var prodRec = {}
+    nVdf[1].forEach(function (p) {
+      prodRec[p] = getVal(array, 1, p, pVdef)
+      // body...
+    })
+    for(var p in Vdef["@deps"]){
+      if(Vdef["@deps"][p]["@rec"] == 1){
+        prodRec[p] = getVal(array,5, p, pVdef);
+      }
+    }
+     pack = {type:1, rec:prodRec}
+  }else if(rec_type == 2){
+    var dynRec = {}
+    nVdf[2].forEach(function (p) {
+      dynRec[p] = getVal(array, 2, p, pVdef)
+      // body...
+    })
+
+    pack = {type:2, rec:dynRec}
+    
+  }else if(rec_type == 3){
+    var framRec = {}
+    nVdf[3].forEach(function (p) {
+      framRec[p] = getVal(array, 3, p, pVdef)
+      // body...
+    })
+
+    pack = {type:3, rec:framRec}
+    
+  }else if(rec_type == 4){
+    var testRec = {}
+    nVdf[4].forEach(function (p) {
+      testRec[p] = getVal(array, 4, p, pVdef)
+      // body...
+    })
+
+    pack = {type:4, rec:testRec}
+  }
+ // data = null;
+  dv = null;
+  array = null;
+  e = null;
+ // pack.det = {ip:ip}
+  relayParamMsg2({det:{ip:ip}, data:pack});
+}
+function getVal(arr, rec, key, pVdef){
+    //console.log([rec,key])
+    var param = pVdef[rec][key]
+    if(param['@bit_len']>16){
+
+      return wordValue(arr, param)
+    }else{
+      var val;
+      if((param['@bit_pos'] + param['@bit_len']) > 16){
+        var wd = (Params.swap16(arr[param['@i_var']+1])<<16) | Params.swap16((arr[param['@i_var']]))
+        val = (wd >> param["@bit_pos"]) & ((1<<param["@bit_len"])-1)
+        
+      }else{
+        val = Params.swap16(arr[param["@i_var"]]);
+      } 
+      if(param["@bit_len"] < 16){
+        val = (val >> param["@bit_pos"]) & ((1<<param["@bit_len"])-1)
+      }
+      return val;
+    }
+}
+function wordValue(arr, p){
+
+    var n = Math.floor(p["@bit_len"]/16);
+    var sa = arr.slice(p["@i_var"], p["@i_var"]+n)
+    if(p['@type']){
+      return Params[p['@type']](sa)
+    }else{
+      var str = sa.map(function(e){
+      return (String.fromCharCode((e>>8),(e%256)));
+    }).join("");
+    return str; 
+    }
+    
+}
+
+class Params{
+  static frac_value(int){
+    return (int/(1<<15))
+  }
+  static mm(dist, metric){
+    if(metric==0){
+      return (dist/25.4).toFixed(1) + " in"
+
+    }
+    else{
+      return dist + " mm";
+    }
+
+  }
+  static prod_name_u16_le(sa){
+    //console.log(sa)
+    var str = sa.map(function(e){
+      return (String.fromCharCode((e>>8),(e%256)));
+    }).join("");
+    return str.replace("\u0000","").trim();
+    //return val
+  }
+  static dsp_name_u16_le(sa){
+    var str = sa.map(function(e){
+      return (String.fromCharCode((e>>8),(e%256)));
+    }).join("");
+    return str.replace("\u0000","").trim();
+    //return val
+  }
+  static dsp_serno_u16_le(sa){
+    var str = sa.map(function(e){
+      return (String.fromCharCode((e>>8),(e%256)));
+    }).join("");
+    return str.replace("\u0000","").trim();
+    //return val
+  }
+  static rec_date(val){
+    //needs to be swapped..
+    //0xac26 -> 0x26ac
+    var dd = val & 0x1f;
+    var mm = (val >> 5) & 0xf
+    var yyyy = ((val>>9) & 0x7f) + 1996
+    return yyyy.toString() + '/' + mm.toString() + '/' + dd.toString();
+  }
+  static phase_spread(val){
+    return Math.round(Params.frac_value(val)*45)
+  }
+  static phase_wet(val){
+    return ((Params.frac_value(val) * 45)).toFixed(2);
+  }
+  static phase_dry(val){
+    if(((Params.frac_value(val) * 45)+90) <= 135){
+      return ((Params.frac_value(val) * 45)+90).toFixed(2); 
+    }
+    else{
+      return ((Params.frac_value(val) * 45)).toFixed(2);
+      
+    }
+
+  }
+  static phase(val, wet){
+    //console.log(wet);
+    if(wet==0){
+      return Params.phase_dry(val);
+    }else{
+      return Params.phase_wet(val);
+    }
+  }
+  static rej_del(ticks, tack){
+    if(tack==0){
+      return (ticks/231.0).toFixed(2); //2 decimal float
+    }else{
+      return ticks;
+    }
+  }
+  static belt_speed(tpm, metric, tack){
+    //console.log(tpm);
+    if(tack!=0){
+
+      return tpm;
+    }
+    var speed = (231.0/tpm) * 60;
+    if(metric==0){
+      return (speed*3.281).toFixed(1) + ' ft/min'
+    }else{
+      return speed.toFixed(1) + ' M/min'
+    }
+  
+  }
+  static password8(words){
+  
+    var res = words.map(function(w){
+      return ((w & 0xffff).toString(16)) //hex format string
+    }).join(',')
+  //  console.log(res);
+    return(res)
+
+  }
+  static rej_chk(rc1, rc2){
+    if (rc2==0){
+      if(rc1==0){
+        return 0
+      }else{
+        return 1
+      }
+    }else{
+      return 2
+    }
+  }
+  static rej_mode(photo, rev){
+    if (rev==0){
+      if (photo==0){
+        return 0;
+      }else{
+        return 1;
+      }
+    }else{
+      return 2;
+    }
+  }
+
+  static rej_latch(latch, toggle){
+    if (toggle==0){
+      if (latch==0){
+        return 0;
+      }else{
+        return 1;
+      }
+    }else{
+      return 2;
+    }
+  }
+  static prod_name(sa){
+    var str = sa.map(function(e){
+      return (String.fromCharCode((e>>8),(e%256)));
+    }).join("");
+    return str.replace("\u0000","").trim();
+    //return val;
+  }
+
+
+  static peak_mode(eye, time){
+    if (eye==0){
+      if (time==0){
+        return 0;
+      }else{
+        return 2;
+      }
+    }else{
+      return 1;
+    }
+  }
+
+
+  static eye_rej(photo, lead, width){
+    if (photo==0){
+      return 3;
+    }else{
+      if(lead==0){
+        if(width==0){
+          return 0;
+        }else{
+          return 2;
+        }
+      }else{
+        return 1;
+      }
+    }
+  }
+  static phase_mode(wet, patt){
+    //console.log(patt)
+    if (patt==0){
+      if (wet==0){
+        return 0;
+      }
+      else{
+        return 1;
+      }
+    }else{
+      return 2;
+    }
+  }
+  
+  static bit_array(val){
+    if(val == 0){
+      return 0;
+    }else{
+      var i = 0;
+      while(i<16 && ((val>>i) & 1) == 0){
+        i++;
+      }
+      i++; //1 based index
+      return i;
+    }
+  }
+
+  static patt_frac(val){
+    return (val/10.0).toFixed(1);
+  }
+
+  static eye_rej_mode(val, photo, width){
+    if(photo == 0){
+      return 3;
+    }else{
+      if (val == 0){
+        if (width == 0){
+          return 0;
+        }else{
+          return 2;
+        }
+      }else{
+        return 1;
+      }
+    }
+    
+  }
+
+  static  swap16(val){
+      return ((val & 0xFF) << 8) | ((val >> 8) & 0xFF);
+  }
+
+  static  convert_word_array_BE(byteArr){
+    var b = new Buffer(byteArr)
+    var length = byteArr.length/2;
+    var wArray = []
+    //console.log(length)
+    for(var i = 0; i<length; i++){
+      wArray.push(b.readUInt16BE(i*2));
+    }
+    //console.log(wArray)
+    return wArray;
+
+  }
+
+  static convert_word_array_LE(byteArr){
+    var b = new Buffer(byteArr)
+    var length = byteArr.length/2;
+    var wArray = []
+    //console.log(length)
+    for(var i = 0; i<length; i++){
+      wArray.push(b.readUInt16LE(i*2));
+    }
+    //console.log(wArray)
+    return wArray;
+
+  }
+  static ipv4_address(words){
+    //todo
+    //console.log(ip)
+    //return ip
+    var str_Words = words.map(function(w){
+      return [(w>>8)&0xff,w&0xff].join('.')
+    })
+    return str_Words.join('.')
+  }
+}
 function udpConSing(ip){
   if(dsp_ips.indexOf(ip) == -1){
     return;
   }
   if(typeof udpClients[ip] == 'undefined'){
+   
     udpClients[ip] = null;
-    udpClients[ip] = new UdpParamServer(ip , function(_ip,e){
+       udpClients[ip] = new UdpParamServer(ip , function(_ip,e){
       if(e){
-        var ab = toArrayBuffer(e)
-        relayParamMsg({det:{ip:_ip},data:{data:ab}})
+     //   var ab = toArrayBuffer(e.data)
+      //  console.log(ab)
+      if(vdefs[_ip]){
+        processParam(e,vdefs[_ip],nVdfs[_ip],pVdefs[_ip],ip)
+        //processor.send({e:e,vdef:vdefs[_ip],nVdf:nVdfs[_ip],pVdef:pVdefs[_ip],ip:_ip})
+      }
+       // 
+      //  relayParamMsg({det:{ip:_ip},data:{data:ab}})
       }
       _ip = null;
       e = null;
-      ab = null;
+      //ab = null;
     })
     getVdef(ip, function(__ip,vdef){
       if(typeof nphandlers[__ip] == 'undefined'){
         nphandlers[__ip] = new NetPollEvents(__ip,vdef,write_netpoll_events)
       }
+
     })
 
   }
@@ -180,6 +572,16 @@ function relayParamMsg(packet){
     //console.log(packet)
 
     passocs[pid].relay(packet);
+  }
+  packet = null;
+}
+function relayParamMsg2(packet){
+  //console.log('relay param msg 2')
+
+  for(var pid in passocs){
+    //console.log(packet)
+
+    passocs[pid].relayParsed(packet);
   }
   packet = null;
 }
@@ -328,6 +730,8 @@ http.listen(app.get('port'), function(){
 let clients = {};
 let udpClients = {};
 let vdefs = {};
+let nVdfs = {};
+let pVdefs = {};
 let nphandlers = {}
 io.on('connection', function(socket){ 
   let loginLevel = 0;
@@ -345,6 +749,7 @@ io.on('connection', function(socket){
   })
   function getProdList(ip) {
   // body...
+  console.log('get Prod List')
   if(vdefs[ip]){
     if(udpClients[ip]){
     var rpc = vdefs[ip]['@rpc_map']['KAPI_PROD_DEF_FLAGS_READ']
@@ -430,6 +835,11 @@ function getProdName(ip, list, ind, callback, arr){
         socket.emit('paramMsg', p)
         p = null;
       }
+      var relayFuncP = function (p) {
+        // body...
+        socket.emit('paramMsg2',p)
+        p = null;
+      }
     var relayRpcFunc = function(p){
       socket.emit('rpcMsg',p)
       p = null;
@@ -439,7 +849,7 @@ function getProdName(ip, list, ind, callback, arr){
       p = null;
     }
       console.log(socket.id)
-      passocs[socket.id] = {relay:relayFunc}
+      passocs[socket.id] = {relay:relayFunc, relayParsed:relayFuncP}
       rassocs[socket.id] = {relay:relayRpcFunc}
       nassocs[socket.id] = {relay:relayNetFunc}
 

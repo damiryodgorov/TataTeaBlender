@@ -1,3 +1,81 @@
+// MIT License:
+//
+// Copyright (c) 2010-2013, Joe Walnes
+//               2013-2017, Drew Noakes
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+/**
+ * Smoothie Charts - http://smoothiecharts.org/
+ * (c) 2010-2013, Joe Walnes
+ *     2013-2017, Drew Noakes
+ *
+ * v1.0: Main charting library, by Joe Walnes
+ * v1.1: Auto scaling of axis, by Neil Dunn
+ * v1.2: fps (frames per second) option, by Mathias Petterson
+ * v1.3: Fix for divide by zero, by Paul Nikitochkin
+ * v1.4: Set minimum, top-scale padding, remove timeseries, add optional timer to reset bounds, by Kelley Reynolds
+ * v1.5: Set default frames per second to 50... smoother.
+ *       .start(), .stop() methods for conserving CPU, by Dmitry Vyal
+ *       options.interpolation = 'bezier' or 'line', by Dmitry Vyal
+ *       options.maxValue to fix scale, by Dmitry Vyal
+ * v1.6: minValue/maxValue will always get converted to floats, by Przemek Matylla
+ * v1.7: options.grid.fillStyle may be a transparent color, by Dmitry A. Shashkin
+ *       Smooth rescaling, by Kostas Michalopoulos
+ * v1.8: Set max length to customize number of live points in the dataset with options.maxDataSetLength, by Krishna Narni
+ * v1.9: Display timestamps along the bottom, by Nick and Stev-io
+ *       (https://groups.google.com/forum/?fromgroups#!topic/smoothie-charts/-Ywse8FCpKI%5B1-25%5D)
+ *       Refactored by Krishna Narni, to support timestamp formatting function
+ * v1.10: Switch to requestAnimationFrame, removed the now obsoleted options.fps, by Gergely Imreh
+ * v1.11: options.grid.sharpLines option added, by @drewnoakes
+ *        Addressed warning seen in Firefox when seriesOption.fillStyle undefined, by @drewnoakes
+ * v1.12: Support for horizontalLines added, by @drewnoakes
+ *        Support for yRangeFunction callback added, by @drewnoakes
+ * v1.13: Fixed typo (#32), by @alnikitich
+ * v1.14: Timer cleared when last TimeSeries removed (#23), by @davidgaleano
+ *        Fixed diagonal line on chart at start/end of data stream, by @drewnoakes
+ * v1.15: Support for npm package (#18), by @dominictarr
+ *        Fixed broken removeTimeSeries function (#24) by @davidgaleano
+ *        Minor performance and tidying, by @drewnoakes
+ * v1.16: Bug fix introduced in v1.14 relating to timer creation/clearance (#23), by @drewnoakes
+ *        TimeSeries.append now deals with out-of-order timestamps, and can merge duplicates, by @zacwitte (#12)
+ *        Documentation and some local variable renaming for clarity, by @drewnoakes
+ * v1.17: Allow control over font size (#10), by @drewnoakes
+ *        Timestamp text won't overlap, by @drewnoakes
+ * v1.18: Allow control of max/min label precision, by @drewnoakes
+ *        Added 'borderVisible' chart option, by @drewnoakes
+ *        Allow drawing series with fill but no stroke (line), by @drewnoakes
+ * v1.19: Avoid unnecessary repaints, and fixed flicker in old browsers having multiple charts in document (#40), by @asbai
+ * v1.20: Add SmoothieChart.getTimeSeriesOptions and SmoothieChart.bringToFront functions, by @drewnoakes
+ * v1.21: Add 'step' interpolation mode, by @drewnoakes
+ * v1.22: Add support for different pixel ratios. Also add optional y limit formatters, by @copacetic
+ * v1.23: Fix bug introduced in v1.22 (#44), by @drewnoakes
+ * v1.24: Fix bug introduced in v1.23, re-adding parseFloat to y-axis formatter defaults, by @siggy_sf
+ * v1.25: Fix bug seen when adding a data point to TimeSeries which is older than the current data, by @Nking92
+ *        Draw time labels on top of series, by @comolosabia
+ *        Add TimeSeries.clear function, by @drewnoakes
+ * v1.26: Add support for resizing on high device pixel ratio screens, by @copacetic
+ * v1.27: Fix bug introduced in v1.26 for non whole number devicePixelRatio values, by @zmbush
+ * v1.28: Add 'minValueScale' option, by @megawac
+ *        Fix 'labelPos' for different size of 'minValueString' 'maxValueString', by @henryn
+ * v1.29: Support responsive sizing, by @drewnoakes
+ */
 
 ;(function(exports) {
 
@@ -229,7 +307,9 @@
       fontFamily: 'monospace',
       precision: 2
     },
-    horizontalLines: []
+    horizontalLines: [],
+    responsive: false,
+    targetRefreshRate: 16
   };
 
   // Based on http://inspirit.github.com/jsfeat/js/compatibility.js
@@ -357,29 +437,52 @@
   };
 
   /**
+   * Sets the target FPS
+   * @param fps the desired FPS
+   */
+  SmoothieChart.prototype.setTargetFPS = function(fps) {
+    this.options.targetRefreshRate = 1000 / fps;
+  }
+
+  /**
    * Make sure the canvas has the optimal resolution for the device's pixel ratio.
    */
-  SmoothieChart.prototype.resize = function() {
-    // TODO this function doesn't handle the value of enableDpiScaling changing during execution
-    if (!this.options.enableDpiScaling || !window || window.devicePixelRatio === 1)
-      return;
+  SmoothieChart.prototype.resize = function () {
+    var dpr = !this.options.enableDpiScaling || !window ? window.devicePixelRatio : 1,
+        width, height;
+    if (this.options.responsive) {
+      // Newer behaviour: Use the canvas's size in the layout, and set the internal
+      // resolution according to that size and the device pixel ratio (eg: high DPI)
+      width = this.canvas.offsetWidth;
+      height = this.canvas.offsetHeight;
 
-    var dpr = window.devicePixelRatio;
-    var width = parseInt(this.canvas.getAttribute('width'));
-    var height = parseInt(this.canvas.getAttribute('height'));
+      if (width !== this.lastWidth) {
+        this.lastWidth = width;
+        this.canvas.setAttribute('width', (Math.floor(width * dpr)).toString());
+      }
+      if (height !== this.lastHeight) {
+        this.lastHeight = height;
+        this.canvas.setAttribute('height', (Math.floor(height * dpr)).toString());
+      }
+    } else if (dpr !== 1) {
+      // Older behaviour: use the canvas's inner dimensions and scale the element's size
+      // according to that size and the device pixel ratio (eg: high DPI)
+      width = parseInt(this.canvas.getAttribute('width'));
+      height = parseInt(this.canvas.getAttribute('height'));
 
-    if (!this.originalWidth || (Math.floor(this.originalWidth * dpr) !== width)) {
-      this.originalWidth = width;
-      this.canvas.setAttribute('width', (Math.floor(width * dpr)).toString());
-      this.canvas.style.width = width + 'px';
-      this.canvas.getContext('2d').scale(dpr, dpr);
-    }
+      if (!this.originalWidth || (Math.floor(this.originalWidth * dpr) !== width)) {
+        this.originalWidth = width;
+        this.canvas.setAttribute('width', (Math.floor(width * dpr)).toString());
+        this.canvas.style.width = width + 'px';
+        this.canvas.getContext('2d').scale(dpr, dpr);
+      }
 
-    if (!this.originalHeight || (Math.floor(this.originalHeight * dpr) !== height)) {
-      this.originalHeight = height;
-      this.canvas.setAttribute('height', (Math.floor(height * dpr)).toString());
-      this.canvas.style.height = height + 'px';
-      this.canvas.getContext('2d').scale(dpr, dpr);
+      if (!this.originalHeight || (Math.floor(this.originalHeight * dpr) !== height)) {
+        this.originalHeight = height;
+        this.canvas.setAttribute('height', (Math.floor(height * dpr)).toString());
+        this.canvas.style.height = height + 'px';
+        this.canvas.getContext('2d').scale(dpr, dpr);
+      }
     }
   };
 
@@ -466,6 +569,8 @@
 
   SmoothieChart.prototype.render = function(canvas, time) {
     var nowMillis = new Date().getTime();
+    //Do we want to render?
+    if (nowMillis - this.lastRenderTimeMillis < this.options.targetRefreshRate) return;
 
     if (!this.isAnimatingScale) {
       // We're not animating. We can use the last render time and the scroll speed to work out whether
@@ -675,10 +780,11 @@
     if (!chartOptions.labels.disabled && !isNaN(this.valueRange.min) && !isNaN(this.valueRange.max)) {
       var maxValueString = chartOptions.yMaxFormatter(this.valueRange.max, chartOptions.labels.precision),
           minValueString = chartOptions.yMinFormatter(this.valueRange.min, chartOptions.labels.precision),
-          labelPos = chartOptions.scrollBackwards ? 0 : dimensions.width - context.measureText(maxValueString).width - 2;
+          maxLabelPos = chartOptions.scrollBackwards ? 0 : dimensions.width - context.measureText(maxValueString).width - 2,
+          minLabelPos = chartOptions.scrollBackwards ? 0 : dimensions.width - context.measureText(minValueString).width - 2;
       context.fillStyle = chartOptions.labels.fillStyle;
-      context.fillText(maxValueString, labelPos, chartOptions.labels.fontSize);
-      context.fillText(minValueString, labelPos, dimensions.height - 2);
+      context.fillText(maxValueString, maxLabelPos, chartOptions.labels.fontSize);
+      context.fillText(minValueString, minLabelPos, dimensions.height - 2);
     }
 
     // Display timestamps along x-axis at the bottom of the chart.
