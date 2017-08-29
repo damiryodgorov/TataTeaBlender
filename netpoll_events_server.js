@@ -47,6 +47,8 @@ class NetPollEvents{
 				{
 					self.parse_net_poll_event(e);
 				}
+				e = null;
+				rinfo = null;
 			}
 		});
 
@@ -84,7 +86,7 @@ class NetPollEvents{
 
 	parse_net_poll_event(buf){
 		var key = buf.readUInt16LE(0);
-	  var res = "";
+	  	var res = "";
 		var self = this;
 //	  console.log("packet received: " + buf.toString('hex'));
 //	  console.log("Key: " + "0x" + key.toString(16));
@@ -219,6 +221,7 @@ class NetPollEvents{
 				}
 			}
 	  }
+	  buf = null;
 //	  return event_info;
 	}
 
@@ -235,6 +238,7 @@ class NetPollEvents{
 	  var min = (fatfs_date_time>>5) & 0x3f;
 	  var sec = fatfs_date_time & 0x1f;
 	  var msec = data[4];
+	  data = null;
 	  return [year, month, day, hours, min, sec, msec];
 	}
 
@@ -565,6 +569,7 @@ class NetPollEvents{
 	      }
 	    }
 	  });
+	  buf = null;
 	  return event_info;
 	}
 

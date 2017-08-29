@@ -124,86 +124,81 @@ function getVdef(ip, callback){
 }
 
 function processParam(e, Vdef, nVdf, pVdef, ip) {
-  // body...
- // console.log(e)
- // var data = new Uint8Array(e.data);
- // var dv = new DataView(toArrayBuffer(e))
-  //console.log(e.data)
-  //console.log(dv)
-  var dv = e
-  var rec_type = dv.readUInt8(0)
+
+  var rec_type = e.readUInt8(0)
   //  console.log(rec_type)
   var n = e.length
   var array = []
   for(var i = 0; i<((n-1)/2); i++ ){
-    array[i] = dv.readUInt16BE(i*2 + 1);
+    array[i] = e.readUInt16BE(i*2 + 1);
   }
   var pack;
+  var rec = {};
   if(rec_type == 0){
-    var sysRec = {}
     nVdf[0].forEach(function (p) {
-      sysRec[p] = getVal(array, 0, p, pVdef)
+      rec[p] = getVal(array, 0, p, pVdef)
       // body...
     })
     for(var p in Vdef["@deps"]){
       if(Vdef["@deps"][p]["@rec"] == 0){
-        sysRec[p] = getVal(array,5, p, pVdef);
+        rec[p] = getVal(array,5, p, pVdef);
       }
     }
 
-    pack = {type:0, rec:sysRec}
+    pack = {type:0, rec:rec}
     //system
   }else if(rec_type == 1){
-    var prodRec = {}
     nVdf[1].forEach(function (p) {
-      prodRec[p] = getVal(array, 1, p, pVdef)
+      rec[p] = getVal(array, 1, p, pVdef)
       // body...
     })
     for(var p in Vdef["@deps"]){
       if(Vdef["@deps"][p]["@rec"] == 1){
-        prodRec[p] = getVal(array,5, p, pVdef);
+        rec[p] = getVal(array,5, p, pVdef);
       }
     }
-     pack = {type:1, rec:prodRec}
+     pack = {type:1, rec:rec}
   }else if(rec_type == 2){
-    var dynRec = {}
     nVdf[2].forEach(function (p) {
-      dynRec[p] = getVal(array, 2, p, pVdef)
+      rec[p] = getVal(array, 2, p, pVdef)
       // body...
     })
 
-    pack = {type:2, rec:dynRec}
+    pack = {type:2, rec:rec}
     
   }else if(rec_type == 3){
-    var framRec = {}
-    nVdf[3].forEach(function (p) {
-      framRec[p] = getVal(array, 3, p, pVdef)
+     nVdf[3].forEach(function (p) {
+      rec[p] = getVal(array, 3, p, pVdef)
       // body...
     })
 
-    pack = {type:3, rec:framRec}
+    pack = {type:3, rec:rec}
     
   }else if(rec_type == 4){
-    var testRec = {}
     nVdf[4].forEach(function (p) {
-      testRec[p] = getVal(array, 4, p, pVdef)
+      rec[p] = getVal(array, 4, p, pVdef)
       // body...
     })
 
-    pack = {type:4, rec:testRec}
+    pack = {type:4, rec:rec}
   }
  // data = null;
-  dv = null;
+  relayParamMsg2({det:{ip:ip}, data:pack});
+ 
+  nVdf = null;
+  pVdef = null;
   array = null;
   e = null;
+  rec = null;
  // pack.det = {ip:ip}
-  relayParamMsg2({det:{ip:ip}, data:pack});
+  pack = null;
+
 }
 function getVal(arr, rec, key, pVdef){
     //console.log([rec,key])
     var param = pVdef[rec][key]
     if(param['@bit_len']>16){
-
+      pVdef = null;
       return wordValue(arr, param)
     }else{
       var val;
@@ -217,6 +212,9 @@ function getVal(arr, rec, key, pVdef){
       if(param["@bit_len"] < 16){
         val = (val >> param["@bit_pos"]) & ((1<<param["@bit_len"])-1)
       }
+      param = null;
+      arr = null;
+      pVdef = null;
       return val;
     }
 }
@@ -224,12 +222,15 @@ function wordValue(arr, p){
 
     var n = Math.floor(p["@bit_len"]/16);
     var sa = arr.slice(p["@i_var"], p["@i_var"]+n)
+    arr = null;
     if(p['@type']){
       return Params[p['@type']](sa)
     }else{
       var str = sa.map(function(e){
       return (String.fromCharCode((e>>8),(e%256)));
     }).join("");
+      sa = null;
+      p = null;
     return str; 
     }
     
@@ -739,13 +740,7 @@ io.on('connection', function(socket){
   var fileVer = 0;
   socket.on('disconnect',function(){
     console.log('destroy socket')
-   // console.log(socket)
   socket.removeAllListeners();
-  //passocs[socket.id] = null;
-  //rassocs[socket.id] = null;
-  //nassocs[socket.id] = null;
-  //socket = null;
- // clients = null;
   })
   function getProdList(ip) {
   // body...
@@ -853,10 +848,6 @@ function getProdName(ip, list, ind, callback, arr){
       rassocs[socket.id] = {relay:relayRpcFunc}
       nassocs[socket.id] = {relay:relayNetFunc}
 
-//console.log(socket)
-//var client = new WebSocketClient();
-
-//client.connect('ws://192.168.10.2/panel');
 
   socket.on('reset', function (argument) {
     // body...

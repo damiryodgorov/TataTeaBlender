@@ -8,18 +8,42 @@
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/app.css" />
     <script src="scripts/fastclick.js"></script>
-   <script type="text/javascript" src="scripts/socket.io.min.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/socket.io.min.js"></script>
   </head>
   <body onload="initFastButtons();">
   <span id="fastclick">
     <div id="content"></div>
   </span>
     <script>
-/*$(function () {
-    $(document).on('focus', 'input[type=text]', function () {
-        this.select();
+var $burnGuard = $('<div>').attr('id','burnGuard').css({
+    'background-color':'#FF00FF',
+    'width':'1px',
+    'height':$(document).height()+'px',
+    'position':'absolute',
+    'top':'0px',
+    'left':'0px',
+    'display':'none'
+}).appendTo('body');
+
+var colors = ['#FF0000','#00FF00','#0000FF'], color = 0, delay = 5000, scrollDelay = 1000;
+function burnGuardAnimate()
+{
+    color = ++color % 3;
+    var rColor = colors[color];
+    $burnGuard.css({
+        'left':'0px',
+        'background-color':rColor,
+        'z-index':9999
+    }).show().animate({
+        'left':$(window).width()+'px'
+    },scrollDelay,function(){
+        $(this).hide();
     });
-});*/
+    
+}
+setInterval(burnGuardAnimate,delay);
+
 const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CIP','PROD_SEL1', 'PROD_SEL2', 'PROD_SEL3','PROD_SEL4']
 const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 

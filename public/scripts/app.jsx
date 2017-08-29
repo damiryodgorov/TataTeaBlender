@@ -183,11 +183,6 @@ var LandingPage = React.createClass({
 			self.setState({dets:e, detL:dets, macList:macs, netpolls:nps})
 		});
 		
-		socket.on('paramMsg', function(data) {
-
-			self.onParamMsg(data.data,data.det) 
-			data = null;
-		})
 		socket.on('paramMsg2', function(data) {
 		//	console.log('on param msg')
 			self.onParamMsg2(data.data,data.det) 
@@ -205,6 +200,26 @@ var LandingPage = React.createClass({
 		socket.on('logOut', function(){
 			self.setState({curUser:'', level:0})
 		})
+		setTimeout(function (argument) {
+			// body...
+			if(self.state.mbunits.length == 1){
+				if(self.state.currentPage == 'landing'){
+					if(self.state.mbunits[0].banks.length == 1){
+						if(vdefByIp[self.state.mbunits[0].banks[0].ip]){
+							self.switchUnit(self.state.mbunits[0].banks[0])
+						}else{
+							setTimeout(function () {
+								// body...
+								if(vdefByIp[self.state.mbunits[0].banks[0].ip]){
+									self.switchUnit(self.state.mbunits[0].banks[0])
+								}
+							},2000)
+						}
+					}
+					
+				}	
+			}
+		},800)
 	},
 	onNetpoll: function(e,d){
 		////console.log([e,d])
@@ -260,12 +275,10 @@ var LandingPage = React.createClass({
 		d = null;
 	},
 	onParamMsg2: function (e,d) {
-		//console.log(['263',e,d])
 		if(vdefByIp[d.ip]){
-			
-				if(this.refs[d.ip]){
-					this.refs[d.ip].onParamMsg2(e);
-				}else{
+			if(this.refs[d.ip]){
+				this.refs[d.ip].onParamMsg2(e);
+			}else{
   				var ind = -1;
   				this.state.mbunits.forEach(function(m,i){
   					m.banks.forEach(function (b) {
@@ -277,47 +290,19 @@ var LandingPage = React.createClass({
   				if(ind != -1){
   					if(this.refs['mbu' + ind]){
   						this.refs['mbu'+ind].onParamMsg2(e,d);
-  						}
   					}
   				}
+  			}
   			
 		
-		if(this.refs.dv){
-			this.refs.dv.onParamMsg2(e,d)
+			if(this.refs.dv){
+				this.refs.dv.onParamMsg2(e,d)
 			}
 		}
 		e = null;
 		d = null;
 	},
-	onParamMsg: function (e,d) {
-		if(vdefByIp[d.ip]){
-			
-				if(this.refs[d.ip]){
-					this.refs[d.ip].onParamMsg(e);
-				}else{
-  				var ind = -1;
-  				this.state.mbunits.forEach(function(m,i){
-  					m.banks.forEach(function (b) {
-  						if(b.ip == d.ip){
-  							ind = i;
-  						}
-  					})
-  				}) 
-  				if(ind != -1){
-  					if(this.refs['mbu' + ind]){
-  						this.refs['mbu'+ind].onParamMsg(e,d);
-  						}
-  					}
-  				}
-  			
-		
-		if(this.refs.dv){
-			this.refs.dv.onParamMsg(e,d)
-			}
-		}
-		e = null;
-		d = null;
-	},
+	
 	ipChanged: function (e) {
 		e.preventDefault();
 		this.setState({ipToAdd:e.target.value})
@@ -1305,49 +1290,11 @@ var SettingsDisplay2 = React.createClass({
 			nav = (<div className='setNav'>
 					{nodes}
 				</div>)
-			//if(this.props.mode == 'config'){
-				//backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>Settings</label></div>)
-	
-			//}else{
-			//	backBut = '';
-			//}
 			
 		}
 
-		/*else if(lvl == 2){
-			////console.log(['lvl 2', data])
-			nodes=[]
-			console.log(['1572',data])
-			if(data[1]){
-				if(typeof data[lvl - 1][0] == 'object'){
-					////console.log(['1058',data])
-					lab = data[1][0].cat//catMap[data[0]+'/'+data[2]]['@translations']['english']
-					console.log(['1578',data])
-					data[1][0].params.forEach(function(p,i){
-						console.log(['1580',p])
-						var d = self.props.cob2[data[0][2]].subCats[data[1][1]].params[i]
-						var ch = d['@children']
-						nodes.push(<SettingItem2 onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={self.state.data} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
-							children={[[vMapV2][p['@name']].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={self.props.accLevel>=accLevel} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec}/>)
-					
-					})
-				
-					backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'blue', fontSize:ft}}>{data[0][0]}</label></div>)
-
-			nav = (<div className='setNav'>
-					{nodes}
-				</div>	)
-				}
-			}
-			
-		}*/
-			 
-	     var className = "menuCategory expanded";
-	    
-	    ////console.log(lab)
-	   
-
-	    var tstl = {display:'inline-block', textAlign:'center'}
+		var className = "menuCategory expanded";
+	   	var tstl = {display:'inline-block', textAlign:'center'}
 	    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
 	    if (this.state.font == 1){
 	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
@@ -1804,8 +1751,6 @@ var MultiEditControl = React.createClass({
 					if(self.props.ioBits[inputSrcArr[d]] == 0){
 						st.color = '#818a90'
 					}
-					//val = val + '*'
-					
 				}else if((self.props.param[i]['@labels'] == 'OutputSrc')){
 					//console.log(['1582', self.props.param[i]['@labels']])
 					if(self.props.ioBits[outputSrcArr[d]] == 0){
@@ -2316,16 +2261,6 @@ var MultiBankUnit = React.createClass({
 	
 		}
 	},
-	onParamMsg:function(e,d){
-		if(this.refs[d.ip]){
-			//////console.log(d)
-			this.refs[d.ip].onParamMsg(e,d)
-	
-		}
-		e = null;
-		d = null;
-
-	},
 	onParamMsg2:function(e,d){
 		if(this.refs[d.ip]){
 			//////console.log(d)
@@ -2467,56 +2402,6 @@ var StatBarMB = React.createClass({
 		d = null;
 
 	},
-	onParamMsg: function(e){
-		var self = this;
-   		var msg = e.data;
-   		var data = new Uint8Array(msg);
-   		var dv = new DataView(msg);
-		var lcd_type = dv.getUint8(0);
-  	    var n = data.length;
-  	    data = null
-		var prodArray = [];
-		var res = vdefByIp[this.props.unit.ip]
-		for(var i = 0; i<((n-1)/2); i++){
-			prodArray[i] = dv.getUint16(i*2 + 1);	
-		}
-		if(res){
-			var pVdef = res[1]
-			if(lcd_type == 1){
-				if(!this.state.interceptor){
-					this.setProdVars(getVal(prodArray, 1, 'ProdName', pVdef),getVal(prodArray, 1, 'Sens', pVdef),getVal(prodArray,1,'PhaseMode', pVdef))
-					
-				}else{
-					this.setProdVarsInt(getVal(prodArray, 1, 'ProdName', pVdef),getVal(prodArray, 1, 'Sens_A', pVdef),getVal(prodArray, 1, 'Sens_B', pVdef),getVal(prodArray,1,'PhaseMode_A', pVdef),getVal(prodArray,1,'PhaseMode_B', pVdef))
-					
-				}
-				
-
-			}else if(lcd_type == 2){
-				var faultArray = [];
-				pVdef[7].forEach(function(f){
-					if(getVal(prodArray,2,f, pVdef) != 0){
-						faultArray.push(f)
-					}
-				});
-				if(!this.state.interceptor){
-					this.setDyn(uintToInt(getVal(prodArray,2,'PhaseAngleAuto',pVdef),16),getVal(prodArray,2,'Peak',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray)
-					this.updateMeter(uintToInt(getVal(prodArray,2,'DetectSignal',pVdef),16))
-					this.setLEDS(getVal(prodArray,2,'Reject_LED', pVdef),getVal(prodArray,2,'Prod_LED',pVdef),getVal(prodArray,2,'Prod_HI_LED',pVdef))
-				}else{
-					this.updateMeterInt(uintToInt(getVal(prodArray,2,'DetectSignal_A',pVdef),16),uintToInt(getVal(prodArray,2,'DetectSignal_B',pVdef),16))
-					this.setDynInt(uintToInt(getVal(prodArray,2,'PhaseAngleAuto_A',pVdef),16),getVal(prodArray,2,'Peak_A',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray, uintToInt(getVal(prodArray,2,'PhaseAngleAuto_B',pVdef),16),getVal(prodArray,2,'Peak_B',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray)
-					this.setLEDSInt(getVal(prodArray,2,'Reject_LED_A', pVdef),getVal(prodArray,2,'Prod_LED_A',pVdef),getVal(prodArray,2,'Prod_HI_LED_A',pVdef),getVal(prodArray,2,'Reject_LED_B', pVdef),getVal(prodArray,2,'Prod_LED_B',pVdef),getVal(prodArray,2,'Prod_HI_LED_B',pVdef))
-				}
-				faultArray = null;
-			}
-		}
-		msg = null;
-		dv = null;
-		prodArray = null;
-		e = null;
-
-	},
 	onParamMsg2: function(e){
 		
 
@@ -2530,12 +2415,8 @@ var StatBarMB = React.createClass({
 			if(lcd_type == 1){
 				if(!this.state.interceptor){
 					this.setProdVars(rec['ProdName'],rec['Sens'],rec['PhaseMode'])
-				
-					
 				}else{
 					this.setProdVarsInt(rec['ProdName'],rec['Sens_A'],rec['PhaseMode_A'],rec['Sens_B'],rec['PhaseMode_B'])
-					//this.setProdVarsInt(getVal(prodArray, 1, 'ProdName', pVdef),getVal(prodArray, 1, 'Sens_A', pVdef),getVal(prodArray, 1, 'Sens_B', pVdef),getVal(prodArray,1,'PhaseMode_A', pVdef),getVal(prodArray,1,'PhaseMode_B', pVdef))
-					
 				}
 				
 
@@ -2547,9 +2428,9 @@ var StatBarMB = React.createClass({
 					}
 				});
 				if(!this.state.interceptor){
-					this.setDyn(uintToInt(getVal(prodArray,2,'PhaseAngleAuto',pVdef),16),getVal(prodArray,2,'Peak',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray)
+					this.setDyn(uintToInt(rec['PhaseAngleAuto'],16),rec['Peak'], rec['RejCount'], faultArray)
 					this.updateMeter(uintToInt(rec['DetectSignal'],16))
-					this.setLEDS(getVal(prodArray,2,'Reject_LED', pVdef),getVal(prodArray,2,'Prod_LED',pVdef),getVal(prodArray,2,'Prod_HI_LED',pVdef))
+					this.setLEDS(getVal(prodArray,2,'Reject_LED', pVdef),rec['Prod_LED'],rec['Prod_HI_LED'])
 				}else{
 					this.updateMeterInt(uintToInt(rec['DetectSignal_A'],16),uintToInt(rec['DetectSignal_B'],16))
 					this.setDynInt(uintToInt(rec['PhaseAngleAuto_A'],16),rec['Peak_A'], rec['RejCount'], faultArray, uintToInt(rec['PhaseAngleAuto_B'],16),rec['Peak_B'], rec['RejCount'], faultArray)
@@ -2558,9 +2439,7 @@ var StatBarMB = React.createClass({
 				faultArray = null;
 			}
 		}
-		//msg = null;
-		//dv = null;
-		//prodArray = null;
+		
 		e = null;
 
 	},
@@ -2711,54 +2590,6 @@ var SingleUnit = React.createClass({
 	onRMsg: function (e,d) {
 		clearInterval(myTimers[this.props.unit.ip]);
 		this.setState({rpcResp:true})
-	},
-	onParamMsg: function(e){
-		var self = this;
-   		var msg = e.data;
-   		var data = new Uint8Array(msg);
-   		var dv = new DataView(msg);
-		var lcd_type = dv.getUint8(0);
-  	    var n = data.length;
-  	    data = null
-		var prodArray = [];
-		var res = vdefByIp[this.props.unit.ip]
-		for(var i = 0; i<((n-1)/2); i++){
-			prodArray[i] = dv.getUint16(i*2 + 1);	
-		}
-		dv = null;
-		if(res){
-			var pVdef = res[1]
-			if(lcd_type == 1){
-				if(!this.state.interceptor){
-					this.setProdVars(getVal(prodArray, 1, 'ProdName', pVdef),getVal(prodArray, 1, 'Sens', pVdef),getVal(prodArray,1,'PhaseMode', pVdef))
-					
-				}else{
-					this.setProdVarsInt(getVal(prodArray, 1, 'ProdName', pVdef),getVal(prodArray, 1, 'Sens_A', pVdef),getVal(prodArray, 1, 'Sens_B', pVdef),getVal(prodArray,1,'PhaseMode_A', pVdef),getVal(prodArray,1,'PhaseMode_B', pVdef))
-					
-				}
-				
-
-			}else if(lcd_type == 2){
-				var faultArray = [];
-				pVdef[7].forEach(function(f){
-					if(getVal(prodArray,2,f, pVdef) != 0){
-						faultArray.push(f)
-					}
-				});
-				if(!this.state.interceptor){
-					this.setDyn(uintToInt(getVal(prodArray,2,'PhaseAngleAuto',pVdef),16),getVal(prodArray,2,'Peak',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray)
-					this.updateMeter(uintToInt(getVal(prodArray,2,'DetectSignal',pVdef),16))
-					this.setLEDS(getVal(prodArray,2,'Reject_LED', pVdef),getVal(prodArray,2,'Prod_LED',pVdef),getVal(prodArray,2,'Prod_HI_LED',pVdef))
-				}else{
-					this.updateMeterInt(uintToInt(getVal(prodArray,2,'DetectSignal_A',pVdef),16),uintToInt(getVal(prodArray,2,'DetectSignal_B',pVdef),16))
-					this.setDynInt(uintToInt(getVal(prodArray,2,'PhaseAngleAuto_A',pVdef),16),getVal(prodArray,2,'Peak_A',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray, uintToInt(getVal(prodArray,2,'PhaseAngleAuto_B',pVdef),16),getVal(prodArray,2,'Peak_B',pVdef), getVal(prodArray,2,'RejCount',pVdef), faultArray)
-					this.setLEDSInt(getVal(prodArray,2,'Reject_LED_A', pVdef),getVal(prodArray,2,'Prod_LED_A',pVdef),getVal(prodArray,2,'Prod_HI_LED_A',pVdef),getVal(prodArray,2,'Reject_LED_B', pVdef),getVal(prodArray,2,'Prod_LED_B',pVdef),getVal(prodArray,2,'Prod_HI_LED_B',pVdef))
-				}
-			}
-		}
-		msg = null;
-		prodArray = null;
-		e = null;
 	},
 	onParamMsg2: function(e){
 		var self = this;
@@ -3141,7 +2972,6 @@ var DetectorView = React.createClass({
 			if(vdefByIp[d.ip]){
 				var Vdef = vdefByIp[d.ip][0]
 				var pVdef = vdefByIp[d.ip][1]
-				var nVdf = vdefByIp[d.ip][2]
 				var _cvdf = JSON.parse(JSON.stringify(vdefByIp[d.ip][4]))
 				var _vmap = vdefByIp[d.ip][5]
 				var _pages = JSON.parse(JSON.stringify(vdefByIp[d.ip][6]))
@@ -3167,11 +2997,13 @@ var DetectorView = React.createClass({
 				}
     
     		}  
+    		pVdef = null;
+    		_vmap = null;
+    		Vdef = null;
 		}else if(lcd_type == 1){
 			if(vdefByIp[d.ip]){
 				var Vdef = vdefByIp[d.ip][0]
 				var pVdef = vdefByIp[d.ip][1]
-				var nVdf = vdefByIp[d.ip][2]
 				var _cvdf = JSON.parse(JSON.stringify(vdefByIp[d.ip][4]))
 				var _vmap = vdefByIp[d.ip][5]
 				var _pages = JSON.parse(JSON.stringify(vdefByIp[d.ip][6]))
@@ -3199,14 +3031,15 @@ var DetectorView = React.createClass({
 				if(isDiff(prodRec,this.state.prodSettings)){
 					this.setState({prodSettings:prodRec, cob2:cob2, pages:pages})
 				}
-			}			
+			}	
+			Vdef = null;
+			pVdef = null;
+			_vmap = null;		
 		}else if(lcd_type==2){
 			if(vdefByIp[d.ip])
 			{
-
-				var Vdef = vdefByIp[d.ip][0]
-				var pVdef = vdefByIp[d.ip][1]
-				var nVdf = vdefByIp[d.ip][2]
+					var pVdef = vdefByIp[d.ip][1]
+			
 					var prodRec = e.rec
 					if(_ioBits){
     						var iobits = {}
@@ -3285,39 +3118,24 @@ var DetectorView = React.createClass({
   						faultArray = null;	
 			}
 			
+			pVdef = null;
 
    		}else if(lcd_type == 3){
-   			if(vdefByIp[d.ip]){
-				var Vdef = vdefByIp[d.ip][0]
-				var pVdef = vdefByIp[d.ip][1]
-				var nVdf = vdefByIp[d.ip][2]
-					
-					var prodRec = e.rec
-				}
+   					
+			var prodRec = e.rec
 		}else if(lcd_type == 4){
-   			console.log('test rec')
-   			if(vdefByIp[d.ip]){
-				var Vdef = vdefByIp[d.ip][0]
-				var nVdf = vdefByIp[d.ip][2]
-				var pVdef = vdefByIp[d.ip][1]
-				var testRec = e.rec
+   				var testRec = e.rec
 					
     			if(isDiff(testRec, this.state.testRec)){
     				this.setState({testRec:testRec})
     			}
     			testRec = null;
 
-				}
-
    		}
 
    		prodRec = null;	
    		sysRec = null;
-   		Vdef = null;
-   		_vmap = null;
-   		pVdef = null;
    		faultArray = null;	
-   		nVdf = null;
    		e = null;
    		d = null;
    		combinedSettings = null;
@@ -3326,283 +3144,6 @@ var DetectorView = React.createClass({
 		
 	},
 
-	onParamMsg: function (e,d) {
-		// body...
-		
-		if(this.props.det.ip != d.ip){
-			return;
-		}
-		var sysSettings =  null;//this.state.sysSettings;
-		var prodSettings = null;//this.state.prodSettings;
-		var combinedSettings = null;
-		var self = this;
-   		var msg = e.data;
-   		var data = new Uint8Array(msg);
-		var dv = new DataView(msg);
-		var lcd_type = dv.getUint8(0);
-  	    var n = data.length;
- 		if(lcd_type== 0){
- 			console.log('sys')
-			if(vdefByIp[d.ip]){
-				var Vdef = vdefByIp[d.ip][0]
-				var pVdef = vdefByIp[d.ip][1]
-				var nVdf = vdefByIp[d.ip][2]
-				var _cvdf = JSON.parse(JSON.stringify(vdefByIp[d.ip][4]))
-				var _vmap = vdefByIp[d.ip][5]
-				var _pages = JSON.parse(JSON.stringify(vdefByIp[d.ip][6]))
-				var sysArray = [];
-				for(var i = 0; i<((n-1)/2); i++){
-					sysArray[i] = dv.getUint16(i*2 + 1);	
-				}
-				var sysRec = {}
-				nVdf[0].forEach(function (p) {
-				
-					sysRec[p] = getVal(sysArray, 0, p, pVdef);
-				})
-    			/*Vdef["@params"].forEach(function(p){
-    				if(p["@rec"] == 0){
-    				//	var setting 
-    					
-    				}
-    			})*/
-    			for(var p in Vdef["@deps"]){
-    				if(Vdef["@deps"][p]["@rec"] == 0){
-    					sysRec[p] = getVal(sysArray,5, p, pVdef);
-    				}
-    			}
-    			sysSettings = sysRec;
-    			var pages = {}
-    			var cob2 = iterateCats(_cvdf[0], pVdef, sysRec, this.state.prodSettings, _vmap)
-   
-    			for(var pg in _pages){
-    				pages[pg] = iterateCats(_pages[pg], pVdef,sysRec, this.state.prodSettings, _vmap);
-
-    			}
-    		
-    				if(this.refs.sd){
-						this.refs.sd.parseInfo(sysRec, this.state.prodSettings)	
-					}
-					
-					if(this.refs.im){
-						this.refs.im.parseInfo(sysRec, this.state.prodSettings)
-					}	
-				if(isDiff(sysSettings,this.state.sysSettings)){
-					this.setState({sysSettings:sysSettings,cob2:cob2, pages:pages})
-				}
-    
-    		}  
-		}else if(lcd_type == 1){
-			if(vdefByIp[d.ip]){
-				var Vdef = vdefByIp[d.ip][0]
-				var pVdef = vdefByIp[d.ip][1]
-				var nVdf = vdefByIp[d.ip][2]
-				var _cvdf = JSON.parse(JSON.stringify(vdefByIp[d.ip][4]))
-				var _vmap = vdefByIp[d.ip][5]
-				var _pages = JSON.parse(JSON.stringify(vdefByIp[d.ip][6]))
-			
-				
-				var prodArray = [];
-				for(var i = 0; i<((n-1)/2); i++){
-					prodArray[i] = dv.getUint16(i*2 + 1);	
-				}
-				var prodRec = {}
-				nVdf[1].forEach(function(p){
-					prodRec[p] = getVal(prodArray, 1,p, pVdef);
-				})
-    			/*Vdef["@params"].forEach(function(p){
-    				if(p["@rec"] == 1){
-    					
-    				}
-    			})*/
-   				for(var p in Vdef["@deps"]){
-   					if(Vdef["@deps"][p]["@rec"] == 1){
-    					prodRec[p]= getVal(prodArray,5, p, pVdef)
-    				}
-    			}
-				prodSettings = prodRec;
-				var cob2 = iterateCats(_cvdf[0], pVdef, this.state.sysSettings, prodSettings, _vmap)
-    			var pages = {}
-
-    			for(var pg in _pages){
-    				pages[pg] = iterateCats(_pages[pg], pVdef,this.state.sysSettings, prodRec, _vmap);
-    			}
-    			var phaseMode = prodSettings['PhaseMode']
-				var phaseSpeed = Vdef['@labels']['PhaseSpeed']['english'][prodSettings['PhaseSpeed']]
-			
-					if(this.refs.sd){
-						this.refs.sd.parseInfo(this.state.sysSettings, prodRec)	
-					}
-					if(this.refs.im){
-						this.refs.im.parseInfo(this.state.sysSettings, prodRec)
-					}
-				if(isDiff(prodRec,this.state.prodSettings)){
-					this.setState({prodSettings:prodRec, cob2:cob2, pages:pages})
-				}
-			}			
-		}else if(lcd_type==2){
-			if(vdefByIp[d.ip])
-			{
-
-				var Vdef = vdefByIp[d.ip][0]
-				var pVdef = vdefByIp[d.ip][1]
-				var nVdf = vdefByIp[d.ip][2]
-				var prodArray = [];
-					for(var i = 0; i<((n-1)/2); i++){
-						prodArray[i] = dv.getUint16(i*2 + 1);	
-					}
-					var prodRec = {}
-					nVdf[2].forEach(function(p){
-						prodRec[p] = getVal(prodArray, 2,p, pVdef);
-					});
-    				/*Vdef["@params"].forEach(function(p){
-    					if(p["@rec"] == 2){
-    						
-    					}
-    				})*/
-    				for(var p in Vdef["@deps"]){
-    					if(Vdef["@deps"][p]["@rec"] == 2){
-    						prodRec[p] = getVal(prodArray,5, p, pVdef)
-    					}
-    				}
-					if(_ioBits){
-    						var iobits = {}
-    						_ioBits.forEach(function(b){
-    							if(typeof prodRec[b] != 'undefined'){
-    								iobits[b] = prodRec[b]
-    							}
-    						})
-    						if(isDiff(iobits,this.state.ioBITs)){
-    							this.setState({ioBITs:iobits})
-    						}
-    					}
-    				if(this.state.interceptor){
-						var pka = prodRec['Peak_A'];
-						var pkb = prodRec['Peak_B'];
-						var siga = uintToInt(prodRec['DetectSignal_A'],16)
-						var sigb = uintToInt(prodRec['DetectSignal_B'],16)
-						var phaseA = (uintToInt(prodRec['PhaseAngleAuto_A'],16)/100).toFixed(2)
-						var phaseB = (uintToInt(prodRec['PhaseAngleAuto_B'],16)/100).toFixed(2)
-						var phaseSpeedA = prodRec['PhaseFastBit_A']
-						var phaseSpeedB = prodRec['PhaseFastBit_B']
-						var rpka = prodRec['ProdPeakR_A']
-						var xpka = prodRec['ProdPeakX_A']
-						var rpkb = prodRec['ProdPeakR_B']
-						var xpkb = prodRec['ProdPeakX_B']
-						var rej = prodRec['RejCount']
-					
-
-						if((this.refs.im.state.peak !=pka)||(this.refs.im.state.rpeak != rpka)||(this.refs.im.state.xpeak != xpka)||(this.refs.im.state.rej != rej)
-							||(this.refs.im.state.phase != phaseA)||(this.refs.im.state.peakb !=pkb)||(this.refs.im.state.rpeakb != rpkb)||(this.refs.im.state.xpeakb != xpkb)
-							||(this.refs.im.state.phaseb != phaseB)||(this.refs.im.state.phaseFast != phaseSpeedA)||(this.refs.im.state.phaseFastB != phaseSpeedB)){
-							this.refs.im.setState({peak:pka,peakb:pkb,rpeak:rpka,rpeakb:rpkb,xpeak:xpka,xpeakb:xpkb,rej:rej,phase:phaseA,phaseb:phaseB,phaseFast:phaseSpeedA,phaseFastB:phaseSpeedB})		
-						}
-						this.refs.im.update(siga,sigb)
-  						pka = null;
-  						pkb = null;
-  						siga = null;
-  						sigb = null;
-  						phaseA = null;
-  						phaseB = null;
-  						phaseSpeedA = null;
-  						phaseSpeedB = null;
-  						rpka = null;
-  						xpkb = null;
-  						rej = null;
-
-					}else{
-						var peak = prodRec['Peak']
-						var rej = prodRec['RejCount']
-						var sig = uintToInt(prodRec['DetectSignal'],16)
-						var phase = (uintToInt(prodRec['PhaseAngleAuto'],16)/100).toFixed(2)
-						var phaseSpeed = prodRec['PhaseFastBit'];
-						var rpeak = prodRec['ProdPeakR']
-						var xpeak = prodRec['ProdPeakX']
-		
-					}
-				  	var faultArray = [];
-					pVdef[7].forEach(function(f){
-					if(getVal(prodArray,2,f,pVdef) != 0){
-						faultArray.push(f)
-						}
-					});
-  					if(this.state.faultArray.length != faultArray.length){
-  						this.setState({faultArray:faultArray})
-  					}else{
-  						var diff = false;
-  						faultArray.forEach(function (f) {
-  							if(self.state.faultArray.indexOf(f) == -1){
-  								diff = true;
-  							}
-  						})
-  						if(diff){
-  							this.setState({faultArray:faultArray})
-  							}
-  						}
-  						faultArray = null;	
-			}
-			
-
-   		}else if(lcd_type == 3){
-   			if(vdefByIp[d.ip]){
-				var Vdef = vdefByIp[d.ip][0]
-				var pVdef = vdefByIp[d.ip][1]
-				var nVdf = vdefByIp[d.ip][2]
-					var prodArray = [];
-					for(var i = 0; i<((n-1)/2); i++){
-						prodArray[i] = dv.getUint16(i*2 + 1);	
-					}
-					var prodRec = {}
-					nVdf[3].forEach(function (p) {
-						prodRec[p] = getVal(prodArray, 3,p,pVdef)
-    				})
-
-    				for(var p in Vdef["@deps"]){
-    					if(Vdef["@deps"][p]["@rec"] == 3){
-    						var setting = getVal(prodArray,5, p, pVdef)
-    						prodRec[p] = setting;
-    					}
-    				}
-				}
-   		}else if(lcd_type == 4){
-   			console.log('test rec')
-   			if(vdefByIp[d.ip]){
-				var Vdef = vdefByIp[d.ip][0]
-				var nVdf = vdefByIp[d.ip][2]
-				var pVdef = vdefByIp[d.ip][1]
-					var prodArray = [];
-					for(var i = 0; i<((n-1)/2); i++){
-						prodArray[i] = dv.getUint16(i*2 + 1);	
-					}
-					var testRec = {}
-					nVdf[4].forEach(function (p) {
-						testRec[p] = getVal(prodArray, 4,p,pVdef)
-					});
-    				if(isDiff(testRec, this.state.testRec)){
-    					this.setState({testRec:testRec})
-    				}
-    				testRec = null;
-
-				}
-
-   		}
-
-   		data = null;
-   		msg = null;
-   		dv = null;
-   		prodArray = null;
-   		prodRec = null;	
-   		sysRec = null;
-   		Vdef = null;
-   		_vmap = null;
-   		pVdef = null;
-   		faultArray = null;	
-   		nVdf = null;
-   		e = null;
-   		d = null;
-   		combinedSettings = null;
-   		cob2 = null;
-   		
-	},
 	setLEDS: function(det_a,prod_a,prodhi_a){
 			var pled_a = 0
 		if(prodhi_a == 1){
@@ -4713,8 +4254,6 @@ var TestItem = React.createClass({
 					}
 			})
 			return <TestPassRow sendChange={self.sendChange} mc={mc} conf={self.props.conf[j]} />
-
-			//return(<tr><td style={{marginRight:10, width:100, display:'inline-block'}}>Metal:<select >{metDrop}</select></td><td>Count:{mc.count}</td></tr>)
 		})
 		var testStr = ['Prompt', 'Manual', 'Halo', 'Manual2', 'Halo2']
 		return(<div>
@@ -5042,6 +4581,7 @@ var InterceptorMainPageUI = React.createClass({
 		this.refs.pedit.toggle()
 		setTimeout(function () {
 			// body...
+			self.setState({peditMode:false})
 			socket.emit('getProdList', self.props.det.ip)
 		//	self.props.sendPacket('getProdList')
 		},100)
@@ -5193,18 +4733,9 @@ var InterceptorMainPageUI = React.createClass({
 			// body...
 		var self = this;
 		this.setState({prodList:prodList, curInd:0})
-	//	prodList.forEach(function (p) {
-			// body...
-			// body...
 		setTimeout(function () {
-			// body...
 			self.getProdName(prodList[0],self.setProdName,0)
 		},100)
-		
-
-		
-			//	})
-
 	},
 	getProdName:function (p,cb,i) {
 		// body...
@@ -5269,9 +4800,7 @@ var InterceptorMainPageUI = React.createClass({
 		var self = this;
 		setTimeout(function (argument) {
 			socket.emit('getProdList', self.props.det.ip)
-			//self.props.sendPacket('getProdList',99)
 		},100)
-		// body...
 	},
 	editName: function (name) {
 		// body...
@@ -5279,7 +4808,6 @@ var InterceptorMainPageUI = React.createClass({
 		var self = this;
 		setTimeout(function (argument) {
 			socket.emit('getProdList', self.props.det.ip)
-			//self.props.sendPacket('getProdList',99)
 		},100)
 	},
 	onCalFocus: function () {
@@ -5731,11 +5259,6 @@ var InterceptorCalibrateUI = React.createClass({
 		this.props.onRequestClose();
 	},
 	render:function () {
-		// body...
-		//		return(<div className='customSelect' style={{width:150}}><select onChange={this.onChange}>{opts}</select></div>)
-
-		//		<InterceptorCalibrateUI int={true} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.calB} calibA={this.calA} 
-		//phase={[this.state.phase, this.state.prodRec['PhaseMode_A'], ps]} phaseB={[this.state.phaseb, this.state.prodRec['PhaseMode_B'], psb]} peaks={[this.state.rpeak,this.state.xpeak, this.state.rpeakb,this.state.xpeakb]}/>
 		var ls = {display:'inline-block', width:120}
 		var self = this;
 		var modes = ['dry','wet','DSA']
