@@ -5,7 +5,6 @@ var dgram = require('dgram');
 
 const KAPI_RPC_UDPWEBPARMS = 104;
 const KAPI_RPC_REJ_DEL_CLOCK_READ = 70;
-
 const DRPC_NUMBER = 19;
 const WP_RPC = 13;
 

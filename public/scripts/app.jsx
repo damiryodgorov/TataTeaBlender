@@ -711,7 +711,6 @@ var LogView = React.createClass({
 			</TreeNode>)
 			dets.push(node)
 		}
-		//if(dets.length == 0)
 		return( <div>
 			<div>Logs for all detectors</div>
 			{dets}
@@ -1213,7 +1212,7 @@ var SettingsDisplay2 = React.createClass({
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem2 onFocus={this.onFocus} onRequestClose={this.onRequestClose}  ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec}/>)
+				nodes.push(<SettingItem2 onFocus={this.onFocus} onRequestClose={this.onRequestClose} faultBits={this.props.faultBits}  ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec}/>)
 			}
 			nav = nodes;
 		}else{
@@ -1221,11 +1220,8 @@ var SettingsDisplay2 = React.createClass({
 			var cat = data[lvl - 1 ][0].cat;
 			var pathString = ''
 			lab = cat//catMap[cat]['@translations']['english']
-			//var list = this.props.combinedSettings[cat]
-			////console.log(list)
 			if(lvl == 1){
-		    	console.log(['1255',data[0], this.props.mode])
-		    	//
+		    	
 		    	if(this.props.mode == 'config'){
 		    		label == 'Settings'
 		    	}else{
@@ -1264,10 +1260,8 @@ var SettingsDisplay2 = React.createClass({
 		    	
 		    }
 			nodes = []
-			console.log(['1551',data])
 			data[lvl - 1 ][0].subCats.forEach(function(sc,i){
-				//var d = self.props.cob2[data[0][2]].subCats[i];
-				nodes.push(<SettingItem2 onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+			nodes.push(<SettingItem2 onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 					data={[sc,i]} onItemClick={handler} hasContent={true} acc={self.props.accLevel>=accLevel} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec}/>)
 			})
 			data[lvl - 1 ][0].params.forEach(function (p,i) {
@@ -1283,7 +1277,7 @@ var SettingsDisplay2 = React.createClass({
 					var d = prms[i]
 					var ch = d['@children']
 				
-					nodes.push(<SettingItem2 onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
+					nodes.push(<SettingItem2 onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
 							children={[vMapV2[p['@name']].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={self.props.accLevel>=accLevel} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec}/>)
 					
 			})
@@ -1363,8 +1357,6 @@ var SettingItem2 = React.createClass({
 					if(pram["@dep"]){
 						deps = pram["@dep"].map(function(d){
 							if(pVdef[5][d]["@rec"] == 0){
-								console.log(d)
-								////console.log(['1205',self.props.sysSettings])
 								return self.props.sysSettings[d];
 							}else{
 								console.log(d)
@@ -1390,14 +1382,8 @@ var SettingItem2 = React.createClass({
 					if(pram["@dep"]){
 						deps = pram["@dep"].map(function(d){
 							if(pVdef[5][d]["@rec"] == 0){
-								console.log(d)
-								////console.log(['1230',self.props.sysSettings])
-								
 								return self.props.sysSettings[d];
 							}else{
-								console.log(d)
-								////console.log(['1233',self.props.prodSettings])
-								
 								return self.props.prodSettings[d];
 							}
 						});
@@ -1413,7 +1399,6 @@ var SettingItem2 = React.createClass({
 			}else{
 				val = rval
 			}
-			//self = null;
 			return val;
 	},
 	onFocus: function () {
@@ -1534,7 +1519,7 @@ var SettingItem2 = React.createClass({
 				}
 			}
 			
-				var edctrl = <EditControl ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={this.props.lkey}/>
+				var edctrl = <EditControl faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={this.props.lkey}/>
 				return (<div className='sItem'> {edctrl}
 					</div>)
 			
@@ -1758,6 +1743,10 @@ var MultiEditControl = React.createClass({
 					}
 					//val = val + '*'
 					
+				}else if((self.props.param[i]['@labels'] == 'FaultMaskBit')){
+					if(self.props.faultBits.indexOf(self.props.param[i]['@name'].slice(0,-4)) != -1){
+						st.color= '#ffa500'
+					}
 				}
 			}
 			
@@ -1972,11 +1961,11 @@ var EditControl = React.createClass({
 		if(this.props.data.length > 0	){
 			if(Array.isArray(this.props.data[0])){
 				////console.log('1728')
-				return (<NestedEditControl ioBits={this.props.ioBits} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
+				return (<NestedEditControl faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}else{
 				////console.log('1732')
-				return (<MultiEditControl ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
+				return (<MultiEditControl faultBits={this.props.faultBits} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}	
 		}
@@ -2005,10 +1994,16 @@ var EditControl = React.createClass({
 							return (<option value={i}>{e}</option>)
 						}
 					})
+					var lvst = this.props.lvst
+					if((this.props.param[0]['@labels'] == 'FaultMaskBit')){
+						if(this.props.faultBits.indexOf(this.props.param[0]['@name'].slice(0,-4)) != -1){
+							lvst.color= '#ffa500'
+						}
+					}
 					return(
 						<div>
 						<div onClick={this.switchMode}>
-							<label style={this.props.lvst}>{namestring + ': '}</label><label style={this.props.vst}> {dval}</label>
+							<label style={lvst}>{namestring + ': '}</label><label style={this.props.vst}> {dval}</label>
 							</div>
 							<div style={{marginLeft:this.props.lvst.width, width:this.props.vst.width}} className='customSelect'>
 							<select onChange={this.valChangedl}>
@@ -3774,7 +3769,7 @@ var DetectorView = React.createClass({
 			lstyle = { height: 60, marginRight: 15, marginLeft: 10}
 		}
 		
-			SD = (<SettingsDisplay2 mode={'config'} setOverride={this.setOverride} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' 
+			SD = (<SettingsDisplay2 mode={'config'} setOverride={this.setOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' 
 				data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.cob2]} cvdf={vdefByIp[this.props.det.ip][4]} sendPacket={this.sendPacket}/>)
 			MD = ""; 
 		
@@ -3817,16 +3812,18 @@ var DetectorView = React.createClass({
 		}
 		var tescont = <TestReq ip={this.props.ip} toggle={this.showTestModal}/>
 		var showPropmt = "Show Test Settings"
+		var tbklass = 'expandButton'
 ;
 		if (this.state.showTest){
 			var dt;
 			if(this.state.data.length == 0){
 				dt = []
 			}
-			tescont = 	<SettingsDisplay2 setOverride={this.setTOverride} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Test']]} cvdf={vdefByIp[this.props.det.ip][6]['Test']} sendPacket={this.sendPacket}/>
-			showPropmt = "< Back"
+			tescont = 	<SettingsDisplay2 setOverride={this.setTOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Test']]} cvdf={vdefByIp[this.props.det.ip][6]['Test']} sendPacket={this.sendPacket}/>
+			showPropmt = "Back"
+			tbklass='collapseButton'
 		}
-		var snsCont = <SettingsDisplay2 setOverride={this.setSOverride} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Sens']]} cvdf={vdefByIp[this.props.det.ip][6]['Sens']} sendPacket={this.sendPacket}/>
+		var snsCont = <SettingsDisplay2 setOverride={this.setSOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Sens']]} cvdf={vdefByIp[this.props.det.ip][6]['Sens']} sendPacket={this.sendPacket}/>
 		
 		var testprompt = this.renderTest();
 		return(<div>
@@ -3847,7 +3844,7 @@ var DetectorView = React.createClass({
 				
 				</Modal>
 				<Modal ref='teModal'>
-				<button onClick={this.toggleTestSettings}>{showPropmt}</button>
+				<button className={tbklass} onClick={this.toggleTestSettings}>{showPropmt}</button>
 					{tescont}
 				</Modal>
 				<Modal ref='snModal'>
@@ -3981,11 +3978,11 @@ var ProductItem = React.createClass({
 	render: function () {
 		// body...
 		var st = {color:'#818a90', padding:7, display:'inline-block', width:200}
-		var buttons = <button onClick={this.deleteProd}>Delete</button>
+		var buttons = <button className='deleteButton' onClick={this.deleteProd}></button>
 		if(this.props.selected){
 			st = {color:'green', padding:7, display:'inline-block', width:200}
-			buttons = <div style={{display:'inline-block'}}><button onClick={this.copyProd}>Copy</button>
-			<button onClick={this.editName}>Edit Name</button><div style={{display:'none'}}><KeyboardInput onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='nameinput' onInput={this.onChange} value={this.state.name}/></div></div>
+			buttons = <div style={{display:'inline-block'}}><button className='copyButton' onClick={this.copyProd}></button>
+			<button className='editButton' onClick={this.editName}></button><div style={{display:'none'}}><KeyboardInput onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='nameinput' onInput={this.onChange} value={this.state.name}/></div></div>
 		}
 		var name = 'Product '+this.props.p
 		if(this.props.name.length > 0){
@@ -4482,7 +4479,7 @@ var StealthNavContent = React.createClass({
 	},
 	render: function () {
 		// body...
-		var style = {width:345,height:220,background:'white',marginLeft:'auto',marginRight:'auto'}
+		var style = {width:345,height:220,background:'rgb(225,225,225)',marginLeft:'auto',marginRight:'auto'}
 		var wrapper = {width:430, height:220}
 		return (<div className='interceptorNavContent' style={wrapper}>
 			<table className='noPadding'>
@@ -4852,7 +4849,7 @@ var InterceptorMainPageUI = React.createClass({
 			}
 		var	CB = <CalibInterface int={true} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.calB} calibA={this.calA} phase={[this.state.phase, this.state.prodRec['PhaseMode_A'], ps]} phaseB={[this.state.phaseb, this.state.prodRec['PhaseMode_B'], psb]} peaks={[this.state.rpeak,this.state.xpeak, this.state.rpeakb,this.state.xpeakb]} ref='ci'/>
 		var peditCont = (<div>
-				<div><button style={{float:'right'}} onClick={this.changeProdEditMode}>Edit Products</button></div>
+				<div><button style={{float:'right'}} className='editButton' onClick={this.changeProdEditMode}>Edit Products</button></div>
 				<div style={{display:'inline-block', width:600, maxHeight:400, overflowY:'scroll'}}>{prodList}</div><div style={{float:'right'}}></div>
 			</div>)
 		return (<div className='interceptorMainPageUI' style={style}>
@@ -4953,7 +4950,7 @@ var InterceptorNavContent = React.createClass({
 	},
 	render: function () {
 		// body...
-		var style = {width:345,height:220,background:'white',marginLeft:'auto',marginRight:'auto'}
+		var style = {width:345,height:220,background:'rgb(225,225,225)',marginLeft:'auto',marginRight:'auto'}
 		var wrapper = {width:430, height:220}
 		return (<div className='interceptorNavContent' style={wrapper}>
 			<table className='noPadding'>
@@ -4998,15 +4995,15 @@ var InterceptorDynamicViewV2 = React.createClass({
 	render: function () {
 		// body...
 			// body...
-		var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'white', textAlign:'start'}
+		var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'start'}
 
-		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'white', textAlign:'end'}
+		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'end'}
 		var contb = {position:'relative', display:'inline-block'} 
 		var conta = {position:'relative', display: 'inline-block'}
 		//linear-gradient(90deg, #362c66, rgba(128,128,128,0.5))
 		return (
 			<div style={{marginTop:2}}>
-			<div style={{padding:10, borderRadius:20, border:'5px black solid', display:'block', width:940, marginLeft:'auto',marginRight:'auto',background:'white', boxShadow:'0px 0px 0px 10px #818a90'}}>
+			<div style={{padding:10, borderRadius:20, border:'5px black solid', display:'block', width:940, marginLeft:'auto',marginRight:'auto',background:'rgb(225,225,225)', boxShadow:'0px 0px 0px 10px #818a90'}}>
 			<div className='interceptorDynamicView' style={{overflow:'hidden', display:'block', width:940, marginLeft:'auto', marginRight:'auto', textAlign:'center', borderRadius:10, border:'2px solid black'}}>
 				<table  style={{borderSpacing:0,background:'linear-gradient(55deg,#818a90, #818a90 49.5%,black 50%, #362c66 50.5%, #362c66)'}}><tbody>
 				<tr><td style={{display:'inline-block', padding:0,width:336,overflow:'hidden'}}><div style={{width:356,height:36}}></div></td><td colSpan={2} style={{padding:0,display:'inline-block',overflow:'hidden', width:604}}><div style={{padding:10, display:'block', width:500,marginLeft:70,paddingLeft:20}}><TickerBox ref='tba'/></div></td></tr>
@@ -5022,7 +5019,7 @@ var InterceptorDynamicViewV2 = React.createClass({
 				<td style={{padding:0, height:160, overflow:'hidden', display:'inline-block'}}>
 				<div style={{display:'inline-block', width:280, height:160}}>
 				<div style={{textAlign:'center', display:'block', width:260, marginTop:50}}><div><KeyboardInputButton  isEditable={false} onClick={this.onRej} value={this.props.rej} inverted={false}/></div>
-				<div style={{color:'white'}}>rejects</div>
+				<div style={{color:'rgb(225,225,225)'}}>rejects</div>
 				</div>
 
 				</div>
@@ -5046,15 +5043,15 @@ var InterceptorDynamicViewV2 = React.createClass({
 var InterceptorDynamicView = React.createClass({
 	render: function () {
 		// body...
-		var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'white', textAlign:'start'}
+		var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'#e1e1e1', textAlign:'start'}
 
-		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'white', textAlign:'end'}
+		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'#e1e1e1', textAlign:'end'}
 		var contb = {position:'relative', display:'inline-block'} 
 		var conta = {position:'relative', display: 'inline-block'}
 
 		return (
 			<div>
-			<div style={{padding:10, borderRadius:20, border:'2px black solid', borderBottom:'none', display:'block', width:940, marginLeft:'auto',marginRight:'auto',background:'white', boxShadow:'0px 0px 0px 8px black'}}>
+			<div style={{padding:10, borderRadius:20, border:'2px black solid', borderBottom:'none', display:'block', width:940, marginLeft:'auto',marginRight:'auto',background:'#e1e1e1', boxShadow:'0px 0px 0px 8px black'}}>
 			<div className='interceptorDynamicView' style={{overflow:'hidden', display:'block', width:940, marginLeft:'auto', marginRight:'auto', textAlign:'center', borderRadius:10}}>
 				<div></div><div style={{padding:10,borderRadius:10,background:'#362c66', display:'block', width:920,marginRight:-10,paddingRight:20}}><TickerBox ref='tbb'/></div>
 				<table style={{borderSpacing:0}}><tbody><tr>
@@ -5066,9 +5063,9 @@ var InterceptorDynamicView = React.createClass({
 				</div>
 				</td>
 				<td style={{padding:0, height:160, overflow:'hidden', display:'inline-block'}}>
-				<div style={{display:'inline-block', width:280, height:160, backgroundImage:'linear-gradient(to top right, #818a90, #818a90 49%,white 49%,white 51%,#362c66 51%, #362c66)'}}>
+				<div style={{display:'inline-block', width:280, height:160, backgroundImage:'linear-gradient(to top right, #818a90, #818a90 49%,#e1e1e1 49%,#e1e1e1 51%,#362c66 51%, #362c66)'}}>
 				<div style={{textAlign:'center', display:'block', width:260, marginTop:50}}><div><KeyboardInputButton isEditable={false} value={100} inverted={false}/></div>
-				<div style={{color:'white'}}>rejects</div>
+				<div style={{color:'#e1e1e1'}}>rejects</div>
 				</div>
 
 				</div>
@@ -5291,7 +5288,7 @@ var InterceptorCalibrateUI = React.createClass({
 						<div><CircularButton lab={'Calibrate'} isTransparent={true} inverted={false} onClick={this.onCalA}/></div>
 					</td>
 					<td  style={{width:220,textAlign:'center', background:'linear-gradient(to top right, #818a90, #818a90 49%,black 49%,black 51%,#362c66 51%, #362c66)'}}>
-						<button onClick={this.calibrateAll}>Calibrate All</button>
+						<button className='compassButton' onClick={this.calibrateAll}>Calibrate All</button>
 					</td><td  style={{width:340, textAlign:'center', background:'#362c66'}}>
 						<div><label>Channel B</label></div>
 						<div><KeyboardInputButton  onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.phaseB[0]} onInput={this.onPhaseB} inverted={true}/></div>
