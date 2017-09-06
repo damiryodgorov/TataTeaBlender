@@ -424,7 +424,7 @@ li {
     position: relative;
     border: 0px solid gray;
     box-shadow: inset 0 0 29px 14px rgba(128, 128, 128, 0.3);
-    max-height: 500px;
+    max-height: 485px;
     overflow-y: scroll;
 
     /* z-index: -1;/* Could be more or less, depending on screen size */

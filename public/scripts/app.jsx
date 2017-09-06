@@ -18,7 +18,7 @@ var TestSetupPage = React.createClass({
 
 })
 
-function getParams(cat, pVdef, sysRec, prodRec, _vmap){
+function getParams(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
 	var params = []
 	cat.params.forEach(function(p) {
     	var _p = {'@name':p, '@children':[]}
@@ -26,6 +26,8 @@ function getParams(cat, pVdef, sysRec, prodRec, _vmap){
    			_p = {'@name':p, '@data':sysRec[p], '@children':[]}
    		}else if(typeof pVdef[1][p] != 'undefined'){
     		_p = {'@name':p, '@data':prodRec[p], '@children':[]}
+    	}else if(typeof pVdef[2][p] != 'undefined'){
+    		_p = {'@name':p, '@type':'dyn','@data':dynRec[p], '@children':[]}
     	}
 
     	_vmap[p].children.forEach(function (ch) {
@@ -34,6 +36,8 @@ function getParams(cat, pVdef, sysRec, prodRec, _vmap){
     			_ch = sysRec[ch]
     		}else if(typeof pVdef[1][ch] != 'undefined'){
     			_ch = prodRec[ch]
+    		}else if(typeof pVdef[2][ch] != 'undefined'){
+    			_ch = dynRec[p]
     		}
     		_p['@children'].push(_ch)	
     	})
@@ -43,12 +47,12 @@ function getParams(cat, pVdef, sysRec, prodRec, _vmap){
 	return params
 }
 //var cat = _cvdf.slice(0)
-function iterateCats(cat, pVdef, sysRec, prodRec, _vmap){
+function iterateCats(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
 
-	cat.params = getParams(cat, pVdef, sysRec, prodRec, _vmap)
+	cat.params = getParams(cat, pVdef, sysRec, prodRec, _vmap, dynRec)
 	var subCats = cat.subCats.map(function (sc) {
 
-		return iterateCats(sc, pVdef, sysRec, prodRec, _vmap)
+		return iterateCats(sc, pVdef, sysRec, prodRec, _vmap, dynRec)
 	})
 	cat.subCats = subCats;
 	return cat
@@ -1471,6 +1475,8 @@ var SettingItem2 = React.createClass({
 					pram = [pVdef[0][this.props.lkey]]
 				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
 					pram = [pVdef[1][this.props.lkey]]
+				}else if(typeof pVdef[2][this.props.lkey] != 'undefined'){
+					pram = [pVdef[2][this.props.lkey]]
 				}
 
 				if(this.props.data['@children']){
@@ -1481,6 +1487,8 @@ var SettingItem2 = React.createClass({
 							pram.push(pVdef[0][this.props.children[0][i]])
 						}else if(typeof pVdef[1][this.props.children[0][i]] != 'undefined'){
 							pram.push(pVdef[1][this.props.children[0][i]])
+						}else if(typeof pVdef[2][this.props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[2][this.props.children[0][i]])
 						}
 					}
 				}
@@ -1499,8 +1507,8 @@ var SettingItem2 = React.createClass({
 					pram = [pVdef[0][this.props.lkey]]
 				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
 					pram = [pVdef[1][this.props.lkey]]
-				}else{
-
+				}else if(typeof pVdef[2][this.props.lkey] != 'undefined'){
+					pram = [pVdef[2][this.props.lkey]]
 				}
 				if(this.props.data['@children']){
 					////console.log(['1346', this.props.data.children])
@@ -1510,6 +1518,8 @@ var SettingItem2 = React.createClass({
 							pram.push(pVdef[0][ch])
 						}else if(typeof pVdef[1][ch] != 'undefined'){
 							pram.push(pVdef[1][ch])
+						}else if(typeof pVdef[2][ch] != 'undefined'){
+							pram.push(pVdef[2][ch])
 						}
 					}
 				}
@@ -2404,7 +2414,6 @@ var StatBarMB = React.createClass({
    		var res = vdefByIp[this.props.unit.ip]
 		var lcd_type = e.type
 		var rec = e.rec
-		console.log(['2526',e])
 		if(res){
 			var pVdef = res[1]
 			if(lcd_type == 1){
@@ -2436,6 +2445,8 @@ var StatBarMB = React.createClass({
 		}
 		
 		e = null;
+		rec = null;
+		res = null;
 
 	},
 	render: function(){
@@ -2628,6 +2639,8 @@ var SingleUnit = React.createClass({
 	//	msg = null;
 		//dv = null;
 	//	prodArray = null;
+		rec = null;
+		res = null;
 		e = null;
 
 	},
@@ -2857,8 +2870,10 @@ var DetectorView = React.createClass({
 		minMq.addListener(this.listenToMq);
 		var interceptor = this.props.det.interceptor//(vdefByIp[this.props.det.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.det.board_id == 5);
 		return {
-		callback:null,	showTest:false,faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, prodSettings:{}, sysSettings:{}, combinedSettings:[],cob2:[], pages:{},
-		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{}}
+		callback:null, rec:{},	showTest:false,faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, 
+		prodSettings:{}, sysSettings:{}, combinedSettings:[],cob2:[], pages:{},
+		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, 
+		peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{}}
 	},
 	componentDidMount: function () {
 		/*var packet = dsp_rpc_paylod_for(19,[102,0,0])
@@ -2869,7 +2884,7 @@ var DetectorView = React.createClass({
 		var packet = dsp_rpc_paylod_for(19,[102,0,0])
 		var buf =  new Uint8Array(packet)
 		socket.emit('rpc',{ip:this.props.det.ip, data:buf.buffer})
-		this.setState({netpoll:newProps.netpolls})
+		this.setState({netpoll:newProps.netpolls, update:true})
 	},
 	toggleAttention: function () {
 		this.refs.fModal.toggle();
@@ -2933,7 +2948,7 @@ var DetectorView = React.createClass({
 			nps.splice(1,-1);
 		}
 		nps.unshift(e);
-		this.setState({netpoll:nps})
+		this.setState({netpoll:nps, update:true})
 
 	},
 	listenToMq: function () {
@@ -2948,12 +2963,33 @@ var DetectorView = React.createClass({
 			////console.log(4)
 		}
 		
-		this.setState({minW:this.state.minMq.matches})
+		this.setState({minW:this.state.minMq.matches, update:true})
 		
+	},
+	getCob: function (sys,prod,dyn) {
+		// body...
+		var vdef = vdefByIp[this.props.det.ip]
+		var _cvdf = JSON.parse(JSON.stringify(vdef[4][0]))
+		var cob =  iterateCats(_cvdf, vdef[1],sys,prod, vdef[5],dyn)
+		vdef = null;
+		_cvdf = null;
+		return cob
+	},
+	getPages: function (sys,prod,dyn) {
+		// body...
+		var vdef = vdefByIp[this.props.det.ip]
+		var _pages = JSON.parse(JSON.stringify(vdef[6]))
+		for(var pg in _pages){
+			pages[pg] = iterateCats(_pages[pg], vdef[1],sys,prod, vdef[5],dyn)
+		}
+		vdef = null;
+		_pages = null;
+		return pages
 	},
 	onParamMsg2: function (e,d) {
 		// body...
 		
+
 		if(this.props.det.ip != d.ip){
 			return;
 		}
@@ -2965,21 +3001,10 @@ var DetectorView = React.createClass({
   	    if(lcd_type== 0){
  			console.log('sys')
 			if(vdefByIp[d.ip]){
-				var Vdef = vdefByIp[d.ip][0]
-				var pVdef = vdefByIp[d.ip][1]
-				var _cvdf = JSON.parse(JSON.stringify(vdefByIp[d.ip][4]))
-				var _vmap = vdefByIp[d.ip][5]
-				var _pages = JSON.parse(JSON.stringify(vdefByIp[d.ip][6]))
-				var sysRec = e.rec
-    			sysSettings = sysRec;
-    			var pages = {}
-    			var cob2 = iterateCats(_cvdf[0], pVdef, sysRec, this.state.prodSettings, _vmap)
+				var sysSettings = e.rec
+    			var pages;// = {}
+    			var cob2;// = iterateCats(_cvdf[0], pVdef, sysRec, this.state.prodSettings, _vmap, this.state.rec)
    
-    			for(var pg in _pages){
-    				pages[pg] = iterateCats(_pages[pg], pVdef,sysRec, this.state.prodSettings, _vmap);
-
-    			}
-    		
     				if(this.refs.sd){
 						this.refs.sd.parseInfo(sysRec, this.state.prodSettings)	
 					}
@@ -2988,35 +3013,28 @@ var DetectorView = React.createClass({
 						this.refs.im.parseInfo(sysRec, this.state.prodSettings)
 					}	
 				if(isDiff(sysSettings,this.state.sysSettings)){
-					this.setState({sysSettings:sysSettings,cob2:cob2, pages:pages})
+					cob2 = this.getCob(sysSettings, this.state.prodSettings, this.state.rec);
+					pages = this.getPages(sysSettings, this.state.prodSettings, this.state.rec);
+					this.setState({sysSettings:sysSettings,cob2:cob2, pages:pages, update:true})
+					//this.refs.store.setState()
 				}
+			/*	if(isDiff(sysSettings,this.refs.store.state.sysSettings)){
+					cob2 = this.getCob(sysSettings, this.refs.store.state.prodSettings, this.refs.store.state.rec);
+					pages = this.getPages(sysSettings, this.refs.store.state.prodSettings, this.refs.store.state.rec);
+					this.refs.store.setState({sysSettings:sysSettings,cob2:cob2, pages:pages, update:true})
+					
+				}*/
     
     		}  
-    		pVdef = null;
-    		_vmap = null;
-    		Vdef = null;
+    		sysSettings = null;
 		}else if(lcd_type == 1){
 			if(vdefByIp[d.ip]){
-				var Vdef = vdefByIp[d.ip][0]
-				var pVdef = vdefByIp[d.ip][1]
-				var _cvdf = JSON.parse(JSON.stringify(vdefByIp[d.ip][4]))
-				var _vmap = vdefByIp[d.ip][5]
-				var _pages = JSON.parse(JSON.stringify(vdefByIp[d.ip][6]))
 			
 				
 				
-				var prodRec = e.rec
-				
-				prodSettings = prodRec;
-				var cob2 = iterateCats(_cvdf[0], pVdef, this.state.sysSettings, prodSettings, _vmap)
-    			var pages = {}
-
-    			for(var pg in _pages){
-    				pages[pg] = iterateCats(_pages[pg], pVdef,this.state.sysSettings, prodRec, _vmap);
-    			}
-    			var phaseMode = prodSettings['PhaseMode']
-				var phaseSpeed = Vdef['@labels']['PhaseSpeed']['english'][prodSettings['PhaseSpeed']]
-			
+				var prodRec = e.rec;
+				var cob2;// = iterateCats(_cvdf[0], pVdef, this.state.sysSettings, prodSettings, _vmap, this.state.rec)
+    			var pages;// = {}    		
 					if(this.refs.sd){
 						this.refs.sd.parseInfo(this.state.sysSettings, prodRec)	
 					}
@@ -3024,12 +3042,18 @@ var DetectorView = React.createClass({
 						this.refs.im.parseInfo(this.state.sysSettings, prodRec)
 					}
 				if(isDiff(prodRec,this.state.prodSettings)){
-					this.setState({prodSettings:prodRec, cob2:cob2, pages:pages})
+					cob2 = this.getCob(this.state.sysSettings, prodRec, this.state.rec)
+					pages = this.getPages(this.state.sysSettings, prodRec, this.state.rec)
+				
+					this.setState({prodSettings:prodRec, cob2:cob2, pages:pages, update:true})
 				}
+				/*	if(isDiff(prodRec,this.refs.store.state.prodSettings)){
+					cob2 = this.getCob(this.refs.store.state.sysSettings, prodRec, this.refs.store.state.rec);
+					pages = this.getPages(this.refs.store.state.sysSettings, prodRec, this.refs.store.state.rec);
+					this.refs.store.setState({prodSettings:prodRec,cob2:cob2, pages:pages, update:true})
+					
+				}*/
 			}	
-			Vdef = null;
-			pVdef = null;
-			_vmap = null;		
 		}else if(lcd_type==2){
 			if(vdefByIp[d.ip])
 			{
@@ -3044,7 +3068,7 @@ var DetectorView = React.createClass({
     							}
     						})
     						if(isDiff(iobits,this.state.ioBITs)){
-    							this.setState({ioBITs:iobits})
+    							this.setState({ioBITs:iobits, update:true})
     						}
     					}
     				if(this.state.interceptor){
@@ -3098,7 +3122,7 @@ var DetectorView = React.createClass({
 						}
 					});
   					if(this.state.faultArray.length != faultArray.length){
-  						this.setState({faultArray:faultArray})
+  						this.setState({faultArray:faultArray, update:true})
   					}else{
   						var diff = false;
   						faultArray.forEach(function (f) {
@@ -3107,29 +3131,38 @@ var DetectorView = React.createClass({
   							}
   						})
   						if(diff){
-  							this.setState({faultArray:faultArray})
+  							this.setState({faultArray:faultArray, update:true})
   							}
   						}
   						faultArray = null;	
+  						var shouldUpdate = false
+  						if(prodRec['DateTime'] != this.state.rec['DateTime']){
+  							if(this.refs.sModal.state.show || this.refs.snModal.state.show || this.refs.teModal.state.show){
+  								shouldUpdate = true
+  							}
+  							
+  						}
+  						this.setState({rec:prodRec, update:shouldUpdate})
 			}
 			
 			pVdef = null;
+			iobits = null;
 
    		}else if(lcd_type == 3){
    					
 			var prodRec = e.rec
+
 		}else if(lcd_type == 4){
    				var testRec = e.rec
 					
     			if(isDiff(testRec, this.state.testRec)){
-    				this.setState({testRec:testRec})
+    				this.setState({testRec:testRec, update:true})
     			}
     			testRec = null;
 
    		}
 
    		prodRec = null;	
-   		sysRec = null;
    		faultArray = null;	
    		e = null;
    		d = null;
@@ -3138,7 +3171,13 @@ var DetectorView = React.createClass({
    			
 		
 	},
-
+	shouldComponentUpdate:function (nextProps, nextState) {
+		if(nextState.update !== false){
+			return true;
+		}else{
+			return false
+		}
+	},
 	setLEDS: function(det_a,prod_a,prodhi_a){
 			var pled_a = 0
 		if(prodhi_a == 1){
@@ -3165,27 +3204,27 @@ var DetectorView = React.createClass({
 		this.refs.lv.setLEDs(pled_a,det_a,pled_b,det_b)
 	},
 	showSettings: function () {
-		//var data = [];
-		//data.push([this.state.cob2,0]);
+		var data = [];
+		data.push([this.state.cob2,0]);
 		this.refs.sModal.toggle();
-		this.setState({data:[[this.state.cob2,0]]})
+		this.setState({data:[[this.state.cob2,0]], update:true})
 		
 	},
 	showSens: function () {
-		// body...
 		this.refs.snModal.toggle()
-		this.setState({data:[[this.state.pages['Sens'],0]], stack:[]})
+		this.setState({data:[[this.state.pages['Sens'],0]], stack:[], update:true})
+		//this.refs.store.
 	},
 	showTestModal: function () {
 		console.log('show settings')
 		if(this.state.settings){
 			var st = [];
 			var currentView = 'MainDisplay';
-			this.setState({currentView:currentView, stack:[], data:[], settings:false,showTest:false});
+			this.setState({currentView:currentView, stack:[], data:[], settings:false,showTest:false, update:true});
 			this.refs.teModal.toggle();
 		}
 		else{
-			this.setState({settings:true,showTest:false, stack:[], data:[]});
+			this.setState({settings:true,showTest:false, stack:[], data:[], update:true});
 			var SettingArray = ['SettingsDisplay',[]]
 			this.changeView(SettingArray);
 			this.refs.teModal.toggle();
@@ -3198,14 +3237,14 @@ var DetectorView = React.createClass({
 		if(this.state.stack.length > 0){
 			var stack = this.state.stack;
 			var d = stack.pop();
-			setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack, settings:(d[0] == 'SettingsDisplay') }),100);
+			setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack, settings:(d[0] == 'SettingsDisplay'), update:true }),100);
 			
 		}
 	},
 	changeView: function (d) {
 		var st = this.state.stack;
 		st.push([this.state.currentView, this.state.data]);
-		this.setState({currentView:d[0], data:d[1]})
+		this.setState({currentView:d[0], data:d[1], update:true})
 	},
 	settingClick: function (s,n) {
 		var set = this.state.data.slice(0)
@@ -3612,7 +3651,7 @@ var DetectorView = React.createClass({
 		// body...
 			var st = [];
 			var currentView = 'MainDisplay';
-			this.setState({currentView:currentView, stack:[], data:[], settings:false})
+			this.setState({currentView:currentView, stack:[], data:[], settings:false, update:true})
 
 	},
 	renderTest: function () {
@@ -3723,9 +3762,9 @@ var DetectorView = React.createClass({
 	toggleTestSettings: function () {
 		// body...
 		if(this.state.showTest){
-			this.setState({showTest:false, data:[], stack:[]})
+			this.setState({showTest:false, data:[], stack:[], update:true})
 		}else{
-			this.setState({showTest:true, data:[[this.state.pages['Test'],0]], stack:[]})
+			this.setState({showTest:true, data:[[this.state.pages['Test'],0]], stack:[], update:true})
 		}
 		
 	},
@@ -3811,7 +3850,7 @@ var DetectorView = React.createClass({
 			ov = 1;
 		}
 		var tescont = <TestReq ip={this.props.ip} toggle={this.showTestModal}/>
-		var showPropmt = "Show Test Settings"
+		var showPropmt = "Settings"
 		var tbklass = 'expandButton'
 ;
 		if (this.state.showTest){
@@ -3823,13 +3862,15 @@ var DetectorView = React.createClass({
 			showPropmt = "Back"
 			tbklass='collapseButton'
 		}
-		var snsCont = <SettingsDisplay2 setOverride={this.setSOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Sens']]} cvdf={vdefByIp[this.props.det.ip][6]['Sens']} sendPacket={this.sendPacket}/>
+		var snsCont = <SettingsDisplay2 setOverride={this.setSOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'snspage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Sens']]} cvdf={vdefByIp[this.props.det.ip][6]['Sens']} sendPacket={this.sendPacket}/>
 		
 		var testprompt = this.renderTest();
 		return(<div>
 			<div hidden>
 				{lmtable}
+
 			</div>
+
 				<InterceptorMainPageUI toggleTestModal={this.showTestModal} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
 				<Modal ref='sModal' onClose={this.settingsClosed}>
 					<div style={{height:500, overflowY:'scroll'}}>
@@ -3844,14 +3885,93 @@ var DetectorView = React.createClass({
 				
 				</Modal>
 				<Modal ref='teModal'>
-				<button className={tbklass} onClick={this.toggleTestSettings}>{showPropmt}</button>
+				<button style={{float:'right', color:'blue'}}className={tbklass} onClick={this.toggleTestSettings}>{showPropmt}</button>
 					{tescont}
 				</Modal>
 				<Modal ref='snModal'>
 					{snsCont}
 				</Modal>
 				<SnackbarNotification faults={this.state.faultArray} onClear={this.clearFaults} vmap={vMapV2}/>
+				<Storage ref='str'/>
 				</div>)
+	}
+})
+var Storage = React.createClass({
+	getInitialState:function () {
+		// body...
+		return({cob:{},pages:{},faultArray:[],ioBITs:[]})
+	},
+	parseRec: function () {
+		// body...
+	},
+	showSettings: function () {
+		//var data = [];
+		//data.push([this.state.cob2,0]);
+		this.refs.sModal.toggle();
+		this.setState({data:[[this.state.cob2,0]], update:true})
+		
+	},
+	showSens: function () {
+		// body...
+		this.refs.snModal.toggle()
+		this.setState({data:[[this.state.pages['Sens'],0]], stack:[], update:true})
+	},
+	setOverride: function (ov) {
+		// body...
+		this.refs.sModal.setState({keyboardVisible:ov})
+	},
+	setTOverride: function (ov) {
+		// body...
+		this.refs.teModal.setState({keyboardVisible:ov})
+	},
+	setSOverride: function (ov) {
+		// body...
+		this.refs.snModal.setState({keyboardVisible:ov})
+	},
+	sendPacket:function (n,v) {
+		// body...
+		this.props.sendPacket(n,v)
+	},
+	render: function () {
+		// body...
+		var ov = 0
+		if(this.state.testRec['TestRecOnFlag']){
+			ov = 1;
+		}
+		var tescont = <TestReq ip={this.props.ip} toggle={this.showTestModal}/>
+		var showPropmt = "Settings"
+		var tbklass = 'expandButton'
+;
+		if (this.state.showTest){
+			var dt;
+			if(this.state.data.length == 0){
+				dt = []
+			}
+			tescont = 	<SettingsDisplay2 setOverride={this.setTOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Test']]} cvdf={vdefByIp[this.props.det.ip][6]['Test']} sendPacket={this.sendPacket}/>
+			showPropmt = "Back"
+			tbklass='collapseButton'
+		}
+		var snsCont = <SettingsDisplay2 setOverride={this.setSOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'snspage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Sens']]} cvdf={vdefByIp[this.props.det.ip][6]['Sens']} sendPacket={this.sendPacket}/>
+
+		var	SD = (<SettingsDisplay2 mode={'config'} setOverride={this.setOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' 
+				data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.props.interceptor} cob2={[this.state.cob2]} cvdf={vdefByIp[this.props.det.ip][4]} sendPacket={this.sendPacket}/>)
+	
+		return <div>
+			<Modal ref='sModal'>
+				{SD}
+			</Modal>
+
+			<Modal ref='fModal'></Modal>
+
+			<Modal ref='tModal'>
+				{tescont}
+			</Modal>
+
+
+			<Modal ref='snModal'>
+				{snsCont}
+			</Modal>
+		</div>
 	}
 })
 var NetPollView = React.createClass({
