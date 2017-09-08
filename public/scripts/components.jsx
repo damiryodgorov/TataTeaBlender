@@ -598,7 +598,7 @@ var CanvasElem = React.createClass({
 			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
 		
 		}else{
-			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#000000'});
+			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#ff00ff'});
 	
 		}
 	},

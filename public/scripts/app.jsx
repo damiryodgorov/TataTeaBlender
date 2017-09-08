@@ -29,7 +29,8 @@ function getParams(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
     	}else if(typeof pVdef[2][p] != 'undefined'){
     		_p = {'@name':p, '@type':'dyn','@data':dynRec[p], '@children':[]}
     	}
-
+    	console.log(_vmap[p])
+    	console.log(p)
     	_vmap[p].children.forEach(function (ch) {
     		var _ch;
     		if(typeof pVdef[0][ch] != 'undefined'){
@@ -89,7 +90,7 @@ var Container = React.createClass({
 	render: function (){
 		return (<div>
 		<LandingPage/>	
-			<Notifications/>	
+			<Notifications/>
 		</div>)
 	}
 });
@@ -204,6 +205,7 @@ var LandingPage = React.createClass({
 		socket.on('logOut', function(){
 			self.setState({curUser:'', level:0})
 		})
+		if(_buildVersion != 'MegaTron'){
 		setTimeout(function (argument) {
 			// body...
 			if(self.state.mbunits.length == 1){
@@ -224,6 +226,8 @@ var LandingPage = React.createClass({
 				}	
 			}
 		},800)
+	}
+
 	},
 	onNetpoll: function(e,d){
 		////console.log([e,d])
@@ -1282,7 +1286,7 @@ var SettingsDisplay2 = React.createClass({
 					var ch = d['@children']
 				
 					nodes.push(<SettingItem2 onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
-							children={[vMapV2[p['@name']].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={self.props.accLevel>=accLevel} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec}/>)
+							children={[vdefByIp[self.props.dsp][5][p['@name']].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={self.props.accLevel>=accLevel} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec}/>)
 					
 			})
 			nav = (<div className='setNav'>
@@ -1529,7 +1533,7 @@ var SettingItem2 = React.createClass({
 				}
 			}
 			
-				var edctrl = <EditControl faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={this.props.lkey}/>
+				var edctrl = <EditControl ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={this.props.lkey}/>
 				return (<div className='sItem'> {edctrl}
 					</div>)
 			
@@ -1706,9 +1710,9 @@ var MultiEditControl = React.createClass({
 	render:function() {
 		var namestring = this.props.name
 	//	////console.log(['1548', namestring])
-			if(typeof vMapV2[this.props.name] != 'undefined'){
-				if(vMapV2[this.props.name]['@translations']['english']['name'] != ''){
-					namestring = vMapV2[this.props.name]['@translations']['english']['name']
+			if(typeof vdefByIp[this.props.ip][5][this.props.name] != 'undefined'){
+				if(vdefByIp[this.props.ip][5][this.props.name]['@translations']['english']['name'] != ''){
+					namestring = vdefByIp[this.props.ip][5][this.props.name]['@translations']['english']['name']
 				}
 			}
 	//	////console.log(['1554', namestring])
@@ -1971,11 +1975,11 @@ var EditControl = React.createClass({
 		if(this.props.data.length > 0	){
 			if(Array.isArray(this.props.data[0])){
 				////console.log('1728')
-				return (<NestedEditControl faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
+				return (<NestedEditControl ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}else{
 				////console.log('1732')
-				return (<MultiEditControl faultBits={this.props.faultBits} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
+				return (<MultiEditControl ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}	
 		}
@@ -2211,7 +2215,7 @@ var Modal = React.createClass({
 		}
 
 		return(<div className={this.state.className} hidden={h}>
-			<div className='modal-x'>
+			<div className='modal-x' onClick={this.toggle}>
 			 	 <svg viewbox="0 0 40 40">
     				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
   				</svg>
@@ -2979,6 +2983,7 @@ var DetectorView = React.createClass({
 		// body...
 		var vdef = vdefByIp[this.props.det.ip]
 		var _pages = JSON.parse(JSON.stringify(vdef[6]))
+		var pages = {}
 		for(var pg in _pages){
 			pages[pg] = iterateCats(_pages[pg], vdef[1],sys,prod, vdef[5],dyn)
 		}
@@ -3006,11 +3011,11 @@ var DetectorView = React.createClass({
     			var cob2;// = iterateCats(_cvdf[0], pVdef, sysRec, this.state.prodSettings, _vmap, this.state.rec)
    
     				if(this.refs.sd){
-						this.refs.sd.parseInfo(sysRec, this.state.prodSettings)	
+						this.refs.sd.parseInfo(sysSettings, this.state.prodSettings)	
 					}
 					
 					if(this.refs.im){
-						this.refs.im.parseInfo(sysRec, this.state.prodSettings)
+						this.refs.im.parseInfo(sysSettings, this.state.prodSettings)
 					}	
 				if(isDiff(sysSettings,this.state.sysSettings)){
 					cob2 = this.getCob(sysSettings, this.state.prodSettings, this.state.rec);
@@ -3113,6 +3118,18 @@ var DetectorView = React.createClass({
 						var phaseSpeed = prodRec['PhaseFastBit'];
 						var rpeak = prodRec['ProdPeakR']
 						var xpeak = prodRec['ProdPeakX']
+						if((this.refs.im.state.peak !=peak)||(this.refs.im.state.rpeak != rpeak)||(this.refs.im.state.xpeak != xpeak)||(this.refs.im.state.rej != rej)
+							||(this.refs.im.state.phase != phase)||(this.refs.im.state.phaseFast != phaseSpeed)){
+							this.refs.im.setState({peak:peak,rpeak:rpeak,xpeak:xpeak,rej:rej,phase:phase,phaseFast:phaseSpeed})		
+						}
+						this.refs.im.update(sig)
+						peak = null;
+						sig = null;
+						phase = null;
+						phaseSpeed = null;
+						rpeak = null;
+						xpeak = null;
+
 		
 					}
 				  	var faultArray = [];
@@ -3167,9 +3184,7 @@ var DetectorView = React.createClass({
    		e = null;
    		d = null;
    		combinedSettings = null;
-   		cob2 = null;
-   			
-		
+   		cob2 = null;	
 	},
 	shouldComponentUpdate:function (nextProps, nextState) {
 		if(nextState.update !== false){
@@ -3263,6 +3278,7 @@ var DetectorView = React.createClass({
 		
 	},
 	clear: function (param) {
+		console.log(['3277',param])
 		var packet = dsp_rpc_paylod_for(param['@rpcs']['clear'][0],param['@rpcs']['clear'][1],param['@rpcs']['clear'][2] ) 
 		var buf = new Uint8Array(packet);
 		socket.emit('rpc', {ip:this.props.ip, data:buf.buffer})
@@ -3850,9 +3866,8 @@ var DetectorView = React.createClass({
 			ov = 1;
 		}
 		var tescont = <TestReq ip={this.props.ip} toggle={this.showTestModal}/>
-		var showPropmt = "Settings"
-		var tbklass = 'expandButton'
-;
+		var showPropmt = "Settings";
+		var tbklass = 'expandButton';
 		if (this.state.showTest){
 			var dt;
 			if(this.state.data.length == 0){
@@ -3863,7 +3878,11 @@ var DetectorView = React.createClass({
 			tbklass='collapseButton'
 		}
 		var snsCont = <SettingsDisplay2 setOverride={this.setSOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'snspage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Sens']]} cvdf={vdefByIp[this.props.det.ip][6]['Sens']} sendPacket={this.sendPacket}/>
-		
+		var mpui = 	<StealthMainPageUI toggleTestModal={this.showTestModal} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
+			if(this.props.det.interceptor){
+				mpui = 	<InterceptorMainPageUI toggleTestModal={this.showTestModal} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
+			
+			}
 		var testprompt = this.renderTest();
 		return(<div>
 			<div hidden>
@@ -3871,8 +3890,7 @@ var DetectorView = React.createClass({
 
 			</div>
 
-				<InterceptorMainPageUI toggleTestModal={this.showTestModal} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
-				<Modal ref='sModal' onClose={this.settingsClosed}>
+			{mpui}	<Modal ref='sModal' onClose={this.settingsClosed}>
 					<div style={{height:500, overflowY:'scroll'}}>
 					{SD}
 					</div>
@@ -3891,11 +3909,11 @@ var DetectorView = React.createClass({
 				<Modal ref='snModal'>
 					{snsCont}
 				</Modal>
-				<SnackbarNotification faults={this.state.faultArray} onClear={this.clearFaults} vmap={vMapV2}/>
-				<Storage ref='str'/>
+				<SnackbarNotification faults={this.state.faultArray} onClear={this.clearFaults} vmap={vdefByIp[this.props.ip][5]}/>
 				</div>)
 	}
 })
+
 var Storage = React.createClass({
 	getInitialState:function () {
 		// body...
@@ -3939,9 +3957,8 @@ var Storage = React.createClass({
 			ov = 1;
 		}
 		var tescont = <TestReq ip={this.props.ip} toggle={this.showTestModal}/>
-		var showPropmt = "Settings"
-		var tbklass = 'expandButton'
-;
+		var showPropmt = "Settings";
+		var tbklass = 'expandButton';
 		if (this.state.showTest){
 			var dt;
 			if(this.state.data.length == 0){
@@ -4432,19 +4449,11 @@ var DummyGraph = React.createClass({
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
 		}
-		return({width:375, height:260, mqls:mqls})
+		return({width:480, height:230, mqls:mqls})
 	},
 	listenToMq: function () {
 		// body...
-		if(this.state.mqls[3].matches){
-			this.setState({width:375})
-		}else if(this.state.mqls[2].matches){
-			this.setState({width:558})
-		}else if(this.state.mqls[1].matches){
-			this.setState({width:375})
-		}else{
-			this.setState({width:280})
-		}
+		
 	},
 	componentDidMount: function () {
 		this.listenToMq()
@@ -4517,19 +4526,340 @@ var StealthMainPageUI = React.createClass({
 		var res = null;
 		return ({rpeak:0,xpeak:0,peak:0,phase:0,rej:0, sysRec:{},prodRec:{},tmp:'',prodList:[],phaseFast:0,pVdef:pVdef})
 	},
+	sendPacket: function (n,v) {
+		// body...
+		this.props.sendPacket(n,v)
+	},
+	parseInfo: function(sys, prd){
+		//////console.log('parseInfo')
+		if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
+		//	////console.log([sys,prd])
+			
+				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens']})
+			
+		}
+	},
+	componentDidMount: function(){
+		var self = this;
+		this.sendPacket('refresh','')
+		socket.on('prodNames', function (pack) {
+			// body...
+			console.log(['5369', pack])
+			if(self.props.det.ip == pack.ip){
+				self.setState({prodList:pack.list, prodNames:pack.names})
+			}
+		})
+	},
+	clearRej: function () {
+		// body...
+		var param = this.state.pVdef[2]['RejCount']
+		this.props.clear(param )
+	},
+	switchProd: function (p) {
+		// body...
+		this.props.sendPacket('ProdNo',p)
+		//this.props.sendPacket('LOCF_PROD_NAME_READ',p)
+
+	},
+	clearPeak: function () {
+		// body...
+		var p = 'Peak'
+		
+		var param = this.state.pVdef[2][p]
+		this.props.clear(param) 
+	},
+	update: function (sig) {
+		var dat = {t:Date.now(),val:sig}
+		this.refs.nv.streamTo(dat)
+		this.refs.dv.update(sig)
+	},
+		refresh: function () {
+		this.props.sendPacket('refresh')
+	},
+	cancel:function () {
+		this.refs.sensEdit.toggle()
+		this.setState({tmp:''})
+	},
+	showEditor: function () {
+		//this.setState({prodNames:[],curInd:0})
+		var self = this;
+		this.refs.pedit.toggle()
+		setTimeout(function () {
+			// body...
+			self.setState({peditMode:false})
+			socket.emit('getProdList', self.props.det.ip)
+		//	self.props.sendPacket('getProdList')
+		},100)
+		
+		
+	},
+	calibrate: function () {
+		this.refs.calibModal.toggle()
+	},
+	_handleKeyPress: function (e) {
+		if(e.key === 'Enter'){
+			this.submitTmpSns();
+		}
+	},
+	sensFocus: function(){
+		this.refs.sensEdit.setState({override:true})
+	},
+	sensClose: function(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.sensEdit.setState({override:false})	
+		}, 100)
+	},
+	gohome: function () {
+		// body...
+		this.props.gohome();
+	},
+	toggleNetpoll:function () {
+		// body...
+		this.refs.netpolls.toggle();
+	},
+	onButton: function (f) {
+		// body...
+		console.log(f)
+			
+		if(f == 'test'){
+			if(typeof this.state.prodRec['TestMode'] != 'undefined'){
+			if(this.state.prodRec['TestMode'] != 0){
+				this.props.sendPacket('test', this.state.prodRec['TestMode'] - 1)
+			}else{
+				//this.toggleTestModal()
+				this.props.toggleTestModal();
+			}
+			
+		}	
+		}else if(f == 'log'){
+			this.toggleNetpoll();
+		}else if(f == 'config'){
+			this.props.toggleConfig();
+		}else if(f == 'prod'){
+			this.showEditor();
+		}else if(f == 'cal'){
+			this.calibrate();
+		}else if(f=='sig'){
+			this.clearPeak();
+		}else if(f=='rej'){
+			this.clearRej();
+		}else if(f=='sens'){
+			this.props.toggleSens();
+		}
+	},
+	onSens: function (e,s) {
+		// body...
+		this.props.sendPacket(s,e);
+	},
+	setProdList: function (prodList) {
+			// body...
+		var self = this;
+		this.setState({prodList:prodList, curInd:0})
+		setTimeout(function () {
+			self.getProdName(prodList[0],self.setProdName,0)
+		},100)
+	},
+	getProdName:function (p,cb,i) {
+		// body...
+		console.log(['5889',p])
+		this.props.getProdName(p,cb,i)
+	},
+	setProdName: function (name, ind) {
+		// body...
+		var sa = []
+		name.slice(3,23).forEach(function (i) {
+			// body...
+			sa.push(i)
+		})
+		var self = this;
+		var str = sa.map(function(ch){
+			return String.fromCharCode(ch)
+		}).join("").replace("\u0000","").trim();
+		console.log(['5888',str])
+		var prodNames = this.state.prodNames;
+		prodNames[ind] = str
+		if(ind + 1 < this.state.prodList.length){
+			var i = self.state.prodList[ind+1]
+			self.setState({prodNames:prodNames})
+			setTimeout(function () {
+				// body...
+				
+				self.getProdName(i, self.setProdName, ind+1)
+				
+			},100)
+			
+		}else{
+			this.setState({prodNames:prodNames})
+		}
+
+	},
+	prodFocus: function(){
+		this.refs.pedit.setState({override:true})
+	},
+	prodClose: function(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.pedit.setState({override:false})	
+		}, 100)
+	},
+	changeProdEditMode:function () {
+		// body...
+		this.setState({peditMode:!this.state.peditMode})
+	},
+	copyCurrentProd: function () {
+		// body...
+		var nextNum = this.state.prodList[this.state.prodList.length - 1] + 1;
+		this.sendPacket('copyCurrentProd', nextNum);
+		var self = this;
+		setTimeout(function (argument) {
+			socket.emit('getProdList', self.props.det.ip)
+		//	self.props.sendPacket('getProdList',99)
+		},100)
+	},
+	deleteProd: function (p) {
+		this.sendPacket('deleteProd',p)
+		var self = this;
+		setTimeout(function (argument) {
+			socket.emit('getProdList', self.props.det.ip)
+		},100)
+	},
+	editName: function (name) {
+		// body...
+		this.sendPacket('ProdName',name)
+		var self = this;
+		setTimeout(function (argument) {
+			socket.emit('getProdList', self.props.det.ip)
+		},100)
+	},
+	onCalFocus: function () {
+		// body...
+		this.refs.calibModal.setState({override:true})
+	},
+	onCalClose: function () {
+		// body...
+		var self = this;
+		setTimeout(function () {
+			// body...
+				self.refs.calibModal.setState({override:false})
+		},100)
+	
+	},
 	render: function () {
 		// body...
-		return(<div className='stealthMainPageUI'>
-			<StealthNav/>
+		var home = 'home'
+		var style = {background:'#362c66', width:'100%',display:'block', height:'-webkit-fill-available'}
+		var lstyle = {height: 50,marginRight: 20, marginLeft:10}
+		var self = this;
+		var prodNames = this.state.prodNames
+		console.log(self.state.sysRec)
+		var prodList = this.state.prodList.map(function(p, i){
+			var sel = false
+			if(p==self.state.sysRec['ProdNo']){
+				sel = true;
+			}
+			var name = ""
+			if(typeof prodNames[i] != 'undefined'){
+				name = prodNames[i]
+			}
+			return (<ProductItem onFocus={self.prodFocus} onRequestClose={self.prodClose} selected={sel} p={p} name={name} editName={self.editName} editMode={self.state.peditMode} copy={self.copyCurrentProd} delete={self.deleteProd} switchProd={self.switchProd}/>)
+		})
+		var ps = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed']]
+		if(this.state.phaseFast == 1){
+			ps = 'fast'
+		}
+			var peditCont = (<div>
+				<div><button style={{float:'right'}} className='editButton' onClick={this.changeProdEditMode}>Edit Products</button></div>
+				<div style={{display:'inline-block', width:600, maxHeight:400, overflowY:'scroll'}}>{prodList}</div><div style={{float:'right'}}></div>
+			</div>)
+		return(<div className='stealthMainPageUI' style={style}>
+			<table className='landingMenuTable' style={{marginBottom:-8, marginTop:-7}}>
+						<tbody>
+							<tr>
+								<td><img style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
+								<td className="buttCell" style={{height:60}}><button onClick={this.gohome} className={home}/></td>
+							</tr>
+						</tbody>
+					</table>
+			<StealthDynamicView onButton={this.onButton} onSens={this.onSens} ref='dv' prodName={this.state.prodRec['ProdName']} sens={[this.state.prodRec['Sens']]} sig={[this.state.peak]} rej={this.state.rej}/>
+			<StealthNav onButton={this.onButton} ref='nv' prodName={this.state.prodRec['ProdName']}/>
+			<Modal ref='testModal'>
+					<TestReq ip={this.props.det.ip} toggle={this.toggleTestModal}/>
+				</Modal>
+				<Modal ref='pedit'>
+				{peditCont}
+				</Modal>
+				<Modal ref='calibModal'>
+				<StealthCalibrateUI onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.cal} phase={[this.state.phase, this.state.prodRec['PhaseMode'], ps]} peaks={[this.state.rpeak,this.state.xpeak]}/>
+				{/*CB*/}
+				</Modal>
+				<Modal ref='netpolls'>
+					<NetPollView ref='np' eventCount={15} events={this.props.netpoll} ip={this.props.det.ip}/>
+				</Modal>
+				<Modal ref='configs'>
+				</Modal>
 			</div>)
 	}
 })
 var StealthDynamicView = React.createClass({
+	update: function (sig) {
+		// body...
+
+		this.refs.tb.update(sig)
+		//this.refs.tbb.update(sigb)
+	},
+	onSens: function (e) {
+		// body...
+		this.props.onSens(e, 'Sens')
+	},
+	onSig: function () {
+		// body...
+		this.props.onButton('sig')
+	},
+	onRej:function () {
+		// body...
+		this.props.onButton('rej')
+	},
 	render:function () {
 		// body...
-		return(<div className='stealthDynamicView'></div>)
+			var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'start'}
+			var centerLab = {textAlign:'center', marginRight:'auto', marginLeft:'auto', color:"#000"}
+		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'end'}
+		var contb = {position:'relative', display:'inline-block'} 
+		var conta = {position:'relative', display: 'inline-block'}
+		return(
+			<div style={{marginTop:2}}>
+			<div style={{padding:10, borderRadius:20, border:'5px black solid', display:'block', width:940, marginLeft:'auto',marginRight:'auto',background:'rgb(225,225,225)', boxShadow:'0px 0px 0px 10px #818a90'}}>
+			<div className='stealthDynamicView'  style={{overflow:'hidden', display:'block', width:940,height:232, marginLeft:'auto', marginRight:'auto', textAlign:'center', borderRadius:10, border:'2px solid black'}}>
+			<div style={{background:'#818a90', height:232}}>
+				<div><TickerBox ref='tb'/></div>
+						<table style={{marginLeft:'auto', marginRight:'auto', marginTop:5}}><tbody><tr><td style={{borderColor:'#e1e1e1',borderStyle:'solid',borderWidth:10,borderRadius:20,height:75,background:'#818a90', width:330}}>
+						
+						<div style={{display:'block', height:34, width:470}}>Product Info</div>
+				<div style={{display:'block', height:34, width:470, fontSize:24}}>{this.props.prodName}</div>
+
+				</td></tr>
+				</tbody></table>
+				<div><div style={{display:'inline-block'}}>
+				<div style={{textAlign:'center', display:'block', width:260, marginTop:3, marginBottom:7}}><div style={centerLab} >Sensitivity</div><div ><KeyboardInputButton num={true} isEditable={true} value={this.props.sens[0]} onInput={this.onSens} inverted={false}/></div></div>
+				
+				</div>
+				<div style={{display:'inline-block'}}>
+				<div style={{textAlign:'center', display:'block', width:260, marginTop:3, marginBottom:7}}><div style={centerLab} >Signal</div><div ><KeyboardInputButton onClick={this.onSig} isEditable={false} value={this.props.sig[0]} inverted={false}/></div></div>
+				
+				</div>
+				<div style={{display:'inline-block'}}>
+				<div style={{textAlign:'center', display:'block', width:260, marginTop:3}}><div style={centerLab}>Reject</div><div><KeyboardInputButton  isEditable={false} onClick={this.onRej} value={this.props.rej} inverted={false}/></div></div>
+				
+				</div></div>
+
+			</div>
+			</div>
+			</div>
+			</div>)
 	}
 })
+
 var StealthNav = React.createClass({
 	onConfig: function () {
 		// body...
@@ -4554,6 +4884,7 @@ var StealthNav = React.createClass({
 	onProd: function () {
 		// body...
 		this.props.onButton('prod')
+
 	},
 	streamTo: function (dat) {
 		// body...
@@ -4575,10 +4906,10 @@ var StealthNav = React.createClass({
 					</div>
 				</div>
 				</td><td>
-				<div style={{display:'inline-block', width:430, height:220, borderBottom:'20px solid #C1',position:'relative', borderBottomLeftRadius:'100px 402px', borderBottomRightRadius:'100px 402px'}}>
+				<div style={{display:'inline-block', width:430, height:220, borderBottom:'20px solid #818a90',position:'relative', borderBottomLeftRadius:'100px 402px', borderBottomRightRadius:'100px 402px'}}>
 						
 				
-				<StealthNavContent ref='nv' prodName={this.props.prodName}><SlimGraph int={false} ref='sg' canvasId={'sgcanvas2'}/>	</StealthNavContent>
+				<StealthNavContent ref='nv' prodName={this.props.prodName}><DummyGraph int={false} ref='sg' canvasId={'sgcanvas2'}/>	</StealthNavContent>
 				</div></td><td>
 				<div className='slantedLeft'><div style={{background:'#362c66', borderTopLeftRadius:'30px 40px', height:240, textAlign:'center'}}>
 				<CircularButton lab={'Sensitivity'} inverted={true} onClick={this.onSens}/>
@@ -4600,13 +4931,11 @@ var StealthNavContent = React.createClass({
 	render: function () {
 		// body...
 		var style = {width:345,height:220,background:'rgb(225,225,225)',marginLeft:'auto',marginRight:'auto'}
-		var wrapper = {width:430, height:220}
+		var wrapper = {width:480, height:230, marginTop: -20,marginLeft:-20}
 		return (<div className='interceptorNavContent' style={wrapper}>
 			<table className='noPadding'>
-				<tbody><tr><td style={{width:40,background:'linear-gradient(80deg,black,black 47%,#818a90 51%,#818a90)'}}></td><td style={{height:75,background:'#818a90', width:330}}><div style={{display:'block', height:34, width:330}}>Product Info</div>
-				<div style={{display:'block', height:34, width:330}}>{this.props.prodName}</div>
-				</td><td style={{width:40,background:'linear-gradient(100deg,#818a90,#818a90 49%,black 53%,black)'}}></td></tr>
-				<tr><td colSpan={3}>
+				<tbody>
+				<tr><td>
 				{this.props.children}
 				
 				</td></tr>
@@ -4944,8 +5273,8 @@ var InterceptorMainPageUI = React.createClass({
 	render:function () {
 		// body...
 		var home = 'home'
-		var style = {background:'#362c66', width:'100%',display:'block', height:602}
-		var lstyle = {height: 56,marginRight: 20, marginLeft:10}
+		var style = {background:'#362c66', width:'100%',display:'block', height:'-webkit-fill-available'}
+		var lstyle = {height: 50,marginRight: 20, marginLeft:10}
 		var self = this;
 		var prodNames = this.state.prodNames
 		var prodList = this.state.prodList.map(function(p, i){
@@ -5416,6 +5745,72 @@ var InterceptorCalibrateUI = React.createClass({
 				
 						<div><CircularButton lab={'Calibrate'} isTransparent={true} inverted={true} onClick={this.onCalA}/></div>
 					</td>
+				</tr>
+			</tbody>
+		</table>
+			
+		</div>
+	
+		
+	}
+})
+
+var StealthCalibrateUI = React.createClass({
+	getInitialState: function () {
+		// body...
+		return({phaseSpeed:0,phase:0,phaseMode:0, tmpStr:'' })
+	},
+	componentWillReceiveProps: function (newProps) {
+		// body...
+	},
+	onCalA: function () {
+		// body...
+		this.props.calib()
+	},
+
+	onPhaseA: function (p) {
+		// body...
+		this.props.sendPacket('phaseEdit',p)
+	},
+
+	onModeA: function (m) {
+		// body...
+		console.log(['6087', m.target.value])
+		this.props.sendPacket('phaseMode',parseInt(m.target.value))
+	},
+	onFocus: function () {
+		// body...
+		this.props.onFocus();
+	},
+	onRequestClose:function () {
+		// body...
+		this.props.onRequestClose();
+	},
+	render:function () {
+		var ls = {display:'inline-block', width:120}
+		var self = this;
+		var modes = ['dry','wet','DSA']
+
+		var opsA = modes.map(function (m,i) {
+			// body...
+			if(self.props.phase[1] == i){
+				return <option value={i} selected>{m}</option>
+			}else{
+				return <option value={i}>{m}</option>
+			}
+		})
+	
+		return	<div>
+		<table style={{borderSpacing:0}}>
+			<tbody>
+				<tr>
+					<td style={{width:880, background:'#818a90', textAlign:'center'}}>
+						<div><KeyboardInputButton onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.phase[0]} onInput={this.onPhaseA} inverted={false}/></div>
+						<div><div className='customSelect' style={{width:150}}><select onChange={this.onModeA}>{opsA}</select></div></div>
+				
+						<div><CircularButton lab={'Calibrate'} isTransparent={true} inverted={false} onClick={this.onCalA}/></div>
+					</td>
+					
 				</tr>
 			</tbody>
 		</table>
