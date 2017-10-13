@@ -62,3 +62,7 @@ p, ul {
 ul {
   padding-left: 0px;
 }
+button{
+  user-select: none;
+  outline: none;
+}

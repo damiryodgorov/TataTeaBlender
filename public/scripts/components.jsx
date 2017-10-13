@@ -90,11 +90,16 @@ var KeyboardInput = React.createClass({
 	onFocus: function(e){
 		if(ftiTouch){
 			console.log('74 components.jsx')
+			var self = this;
 
-			this.setState({open:true})
-			if(this.props.onFocus){
-				this.props.onFocus();
-			}
+			setTimeout(function () {
+				// body...
+				self.setState({open:true})
+				if(self.props.onFocus){
+					self.props.onFocus();
+				}
+			}, 100)
+		
 		}
 	},
 	onRequestClose:function(e){
@@ -589,7 +594,7 @@ var CanvasElem = React.createClass({
 	},
 	componentDidMount: function(){
 		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
-		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#000000'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
+		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#808a90'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
 		smoothie.setTargetFPS(24)
 		smoothie.streamTo(document.getElementById(this.props.canvasId));
 

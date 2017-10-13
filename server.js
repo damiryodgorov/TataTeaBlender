@@ -718,7 +718,7 @@ console.log('dirname:' + __dirname)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 app.get('/', function(req, res) {
-  res.render('index.html');
+  res.render('rpi.html');
 });
 app.use(helmet());
 
