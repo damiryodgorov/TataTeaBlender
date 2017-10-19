@@ -5,10 +5,10 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const http = require('http').Server(app);
+const http = require('http').createServer(app);
 const HTTP = require('http')
 const net = require('net')
-const io = require('socket.io')(http);
+//const io = require('socket.io')(http);
 const fti = require('./fti-flash-node/index.js');
 const arloc = fti.ArmFind;
 const flatfile = require('flat-file-db')
@@ -23,6 +23,8 @@ const PassThrough = require('stream').PassThrough;
 const UdpParamServer = require('./udpserver.js')
 const helmet = require('helmet');
 const cp = require('child_process')
+const WebSocket = require('ws')
+const wss = new WebSocket.Server({server:http})
 //const processor = cp.fork('./processor.js')
 
 var db = flatfile('./dbs/users.db')
@@ -39,9 +41,6 @@ db.on('open', function() {
   //relayParamMsg2(m)
 //})
 
-var WebSocket = require('websocket')
-var WebSocketClient = WebSocket.client
-var W3CWebSocket = WebSocket.w3cwebsocket;
 
 
 var prefs;
@@ -90,6 +89,7 @@ function getVdef(ip, callback){
       })
       get.on('end', ()=>{
       console.log('getting vdef tftp end')
+      console.log(ip)
                      // console.log(get.headers['content-encoding'])
       var buffer = Buffer.concat(rawVdef)
       zlib.unzip(buffer, function(er,b){
@@ -102,6 +102,13 @@ function getVdef(ip, callback){
           nvdf[p["@rec"]].push(p['@name'])
           pVdef[p['@rec']][p['@name']] = p
         })
+        for(var p in vdef['@deps']){
+          //console.log(p)
+         // console.log(vdef['@deps'][p]['@rec'])
+          nvdf[vdef['@deps'][p]['@rec']].push(p)
+          pVdef[vdef['@deps'][p]['@rec']][p] = vdef['@deps'][p]
+
+        }
         pVdef[5] = vdef["@deps"]
 
         nVdfs[ip] = nvdf
@@ -139,11 +146,11 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
       rec[p] = getVal(array, 0, p, pVdef)
       // body...
     })
-    for(var p in Vdef["@deps"]){
+    /*for(var p in Vdef["@deps"]){
       if(Vdef["@deps"][p]["@rec"] == 0){
         rec[p] = getVal(array,5, p, pVdef);
       }
-    }
+    }*/
 
     pack = {type:0, rec:rec}
     //system
@@ -152,18 +159,22 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
       rec[p] = getVal(array, 1, p, pVdef)
       // body...
     })
-    for(var p in Vdef["@deps"]){
+    /*for(var p in Vdef["@deps"]){
       if(Vdef["@deps"][p]["@rec"] == 1){
         rec[p] = getVal(array,5, p, pVdef);
       }
-    }
+    }*/
      pack = {type:1, rec:rec}
   }else if(rec_type == 2){
     nVdf[2].forEach(function (p) {
       rec[p] = getVal(array, 2, p, pVdef)
       // body...
     })
-
+    /*for(var p in Vdef["@deps"]){
+      if(Vdef["@deps"][p]["@rec"] == 2){
+        rec[p] = getVal(array,5, p, pVdef);
+      }
+    }*/
     pack = {type:2, rec:rec}
     
   }else if(rec_type == 3){
@@ -718,7 +729,7 @@ console.log('dirname:' + __dirname)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 app.get('/', function(req, res) {
-  res.render('rpi.html');
+  res.render('test.html');
 });
 app.use(helmet());
 
@@ -734,14 +745,91 @@ let vdefs = {};
 let nVdfs = {};
 let pVdefs = {};
 let nphandlers = {}
-io.on('connection', function(socket){ 
+
+class FtiSockIOServer{
+  constructor(sock){
+    this.sock = sock
+    this.open = false;
+    //console.log(sock)
+    this.handlers = {}
+    var self = this;
+    sock.on('message',function (message) {
+      // body...
+      //if(message.data){
+        try{
+           var msg = JSON.parse(message)
+
+      //sock.send(JSON.stringify({event:'wtf',data:msg}));
+     // console.log(JSON.stringify(message))
+      //console.log(msg.event)
+       // console.log(msg)
+        self.handle(msg.event, msg.data);
+       // msg = null;
+     }catch(e){
+        console.log(message)
+        console.log(e)
+     }
+     /*sock.once('open', function (argument) {
+       // body...
+       self.open = true;
+
+     })*/
+   
+      
+      message = null;
+     // msg = null;
+    })
+    sock.on('close', function () {
+       // body..
+       sock.removeAllListeners();
+     //  self.destroy();
+    }) 
+    this.id = Date.now();
+
+  }
+  handle(ev,data){
+    if(this.handlers[ev]){
+        this.handlers[ev].handler(data)
+    }
+  }
+  on(handle, func){
+    this.handlers[handle] = {}
+    this.handlers[handle].handler = func
+  }
+  emit(handle,data){
+    if(this.sock.readyState == 1){
+      this.sock.send(JSON.stringify({event:handle,data:data}));
+      data = null;
+    }
+  }
+  destroy(){
+   // this.handlers = {}
+  // this.handlers = null;
+   //this.sock = null;
+   //this = null;
+  }
+}
+//wss.on('')
+wss.on('connection', function(scket, req){ 
   let loginLevel = 0;
   let curUser = '';
   var fileVer = 0;
-  socket.on('disconnect',function(){
+  var socket = new FtiSockIOServer(scket)
+
+  socket.on('close',function(){
     console.log('destroy socket')
-  socket.removeAllListeners();
+    //socket.removeAllListeners();
+    socket = null;  
   })
+ // console.log(wss.clients)
+  /*socket.on('message', function (argument) {
+    // body...
+    if(argument.event == 'reset'){
+      resetListner(argument.msg)
+    }else if(argument.event == 'getUsers'){
+      getUsersListener(argument.msg)
+    }
+  })*/
   function getProdList(ip) {
   // body...
   console.log('get Prod List')
@@ -965,11 +1053,11 @@ socket.on('getProdList', function (ip) {
             socket.emit('vdefDone','done')
           });
           socket.on('rpc', function(pack){
-            console.log(pack)
+           // console.log(new Buffer(pack.data))
 
             if(udpClients[pack.ip]){
               
-              udpClients[pack.ip].send_rpc(pack.data, function(e){
+              udpClients[pack.ip].send_rpc(new Buffer(pack.data), function(e){
                 console.log('Ack from ' + pack.ip)
 
                 relayRpcMsg({det:{ip:pack.ip},data:{data:toArrayBuffer(e)}});
@@ -1004,11 +1092,7 @@ socket.on('getProdList', function (ip) {
     console.log('connect!! '+ ip)
     udpConSing(ip)
   })
-    /*   var vdef_script_tag = document.createElement('script');
-          vdef_script_tag.src = "http://"+d.ip+"/vdef"; // can change the ip here
-          vdef_script_tag.type = "application/javascript";
-          document.body.appendChild(vdef_script_tag); 
-          console.log(vdef_script_tag)*/
+
       
 
   socket.on('initTestStream', function(f){

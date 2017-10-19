@@ -25,6 +25,7 @@
     "material-ui": "^0.16.7",
     "minifyify": "^7.3.3",
     "netmask": "^1.0.6",
+    "primus": "^7.1.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-material-ui-keyboard": "^6.2.0",
@@ -39,8 +40,10 @@
     "socket.io": "^1.7.3",
     "tftp": "^0.1.2",
     "unzip-response": "^2.0.1",
+    "uws": "^8.14.1",
     "virtual-keyboard": "^1.26.11",
-    "websocket": "^1.0.23"
+    "websocket": "^1.0.23",
+    "ws": "^3.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.21.0",
