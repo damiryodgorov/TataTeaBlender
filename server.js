@@ -1089,7 +1089,7 @@ socket.on('getProdList', function (ip) {
     })
   })
   socket.on('connectToUnit', function(ip){
-    console.log('connect!! '+ ip)
+    console.log('connect sing!! '+ ip)
     udpConSing(ip)
   })
 

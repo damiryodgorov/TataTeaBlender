@@ -1,11 +1,14 @@
 var React = require('react');
 var ReactDOM = require('react-dom')
-import {ConcreteElem,CanvasElem,KeyboardInput,TreeNode,SnackbarNotification} from './components.jsx';
-var injectTapEventPlugin = require('react-tap-event-plugin')
+//import {ConcreteElem,CanvasElem,TreeNode} from './components.jsx';
+var SmoothieChart = require('./smoothie.js').SmoothieChart;
+var TimeSeries = require('./smoothie.js').TimeSeries;
+
 var onClickOutside = require('react-onclickoutside');
+//var OnClickOutside = require('react-onclickoutside-es6')
 import Notifications, {notify} from 'react-notify-toast';
-//import scrollToComponent from 'react-scroll-to-component';
-/*************** from html *****************/
+var createReactClass = require('create-react-class')
+
 
 const _buildVersion = 'display';
 
@@ -302,6 +305,17 @@ class Params{
   }
 }
 
+function yRangeFunc(range){
+	var max = 200;
+	if(Math.abs(range.max) > max){
+		max = Math.abs(range.max)
+	}
+	if(Math.abs(range.min) > max){
+		max = Math.abs(range.min)
+	}
+	return({min:(0-max),max:max});
+}
+
 function toArrayBuffer(buffer) {
     var ab = new ArrayBuffer(buffer.length);
     var view = new Uint8Array(ab);
@@ -443,7 +457,7 @@ class FtiSockIo{
 	}
 }
 
-var _wsurl = 'ws://localhost:3300'
+var _wsurl = 'ws://' +location.host 
 var socket = new FtiSockIo(_wsurl);
 
 var liveTimer = {}
@@ -535,17 +549,17 @@ function _scrollById(id,distance) {
    
     elem.scrollTop = elem.scrollTop + distance
 }
-var TestSetupPage = React.createClass({
-	getInitialState: function(){
+class TestSetupPage extends React.Component {
+	getInitialState(){
 		return({})
-	},
-	render:function(){
+	}
+	render(){
 		return (<div>
 		
 	</div>)
 	}
 
-})
+}
 
 function getParams(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
 	var params = []
@@ -613,19 +627,20 @@ function noRecursion(cat, pVdef, sysRec, prodRec, _vmap) {
 	return ct;
 }
 
-var Container = React.createClass({
-	getInitialState:function(){
+class Container extends React.Component{
+	getInitialState(){
 		return({ data:[]})
-	},
-	render: function (){
+	}
+	render(){
 		return (<div>
 		<LandingPage/>	
 			<Notifications/>
 		</div>)
 	}
-});
-var LandingPage = React.createClass({
-	getInitialState: function () {
+}
+class LandingPage extends React.Component{
+	constructor(props) {
+		super(props)
 		var minMq = window.matchMedia("(min-width: 400px)");
 		var mq = window.matchMedia("(min-width: 850px)");
 		mq.addListener(this.listenToMq)
@@ -638,26 +653,56 @@ var LandingPage = React.createClass({
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
 		}
-		return ({currentPage:'landing',netpolls:{}, curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, 
+		this.state =  ({currentPage:'landing',netpolls:{}, curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, 
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:5,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]}})
-	},
-	listenToMq: function (argument) {
+		this.listenToMq = this.listenToMq.bind(this);
+		this.locateUnits = this.locateUnits.bind(this);
+		this.onNetpoll = this.onNetpoll.bind(this);
+		this.onRMsg = this.onRMsg.bind(this);
+		this.onParamMsg2 = this.onParamMsg2.bind(this);
+		this.ipChanged = this.ipChanged.bind(this);
+		this.renderDetectors = this.renderDetectors.bind(this);
+		this.showFinder = this.showFinder.bind(this);
+		this.switchUnit = this.switchUnit.bind(this);
+		this.addMBUnit = this.addMBUnit.bind(this);
+		this.editMb = this.editMb.bind(this);
+		this.addToTmp = this.addToTmp.bind(this);
+		this.removeFromTmpGroup = this.removeFromTmpGroup.bind(this);
+		this.cancel = this.cancel.bind(this);
+		this.submitMB = this.submitMB.bind(this);
+		this.submitMBe = this.submitMBe.bind(this);
+		this.move = this.move.bind(this)
+		this.removeMb = this.removeMb.bind(this)
+		this.renderModal = this.renderModal.bind(this);
+		this.changetMBName =this.changetMBName.bind(this);
+		this.editName =this.editName.bind(this);
+		this.renderMBGroup = this.renderMBGroup.bind(this)
+		this.logoClick = this.logoClick.bind(this);
+		this.save = this.save.bind(this);
+		this.addNewSingleUnit = this.addNewSingleUnit.bind(this);
+		this.addMBUnit = this.addMBUnit.bind(this);
+		//var self = this;
+		/*Object.getOwnPropertyNames(this).forEach(function(f){
+			this[f] = this[f].bind(this)
+		}).bind(this);*/
+	}
+	listenToMq(argument) {
 		// body...
 		if(this.refs.dv){
 			this.refs.dv.setState({br:this.state.mq.matches})
 		}
 		this.setState({brPoint:this.state.mq.matches})
-	},
-	locateUnits: function (callback) {
+	}
+	locateUnits(callback) {
 		located = false;
 		socket.emit('hello','landing')
 		this.refs.findDetModal.toggle();
-	},
-	locateB: function(){
+	}
+	locateB(){
 		socket.emit('locateReq', 'b')
-	},
-	componentDidMount: function () {
+	}
+	componentDidMount() {
 		var self = this;
 		this.loadPrefs();
 		socket.on('resetConfirm', function (r) {
@@ -758,10 +803,8 @@ var LandingPage = React.createClass({
 				}	
 			}
 		},800)
-	
-
-	},
-	onNetpoll: function(e,d){
+	}
+	onNetpoll(e,d){
 		////console.log([e,d])
 		var nps = this.state.netpolls
 		if(nps[d.ip]){
@@ -784,8 +827,8 @@ var LandingPage = React.createClass({
 			this.setState({netpolls:nps})
 		}
 		
-	},
-	onRMsg: function (e,d) {
+	}
+	onRMsg(e,d) {
 		////console.log([e,d])
 		var msg = e.data
 		var data = new Uint8Array(msg);
@@ -813,8 +856,8 @@ var LandingPage = React.createClass({
 		data = null;
 		e = null;
 		d = null;
-	},
-	onParamMsg2: function (e,d) {
+	}
+	onParamMsg2(e,d) {
 		if(vdefByIp[d.ip]){
 			if(this.refs[d.ip]){
 				this.refs[d.ip].onParamMsg2(e);
@@ -841,27 +884,24 @@ var LandingPage = React.createClass({
 		}
 		e = null;
 		d = null;
-	},
-	
-	ipChanged: function (e) {
+	}	
+	ipChanged(e) {
 		e.preventDefault();
 		this.setState({ipToAdd:e.target.value})
-	},
-	renderDetectors: function () {
+	}
+	renderDetectors () {
 		var self = this;
 		var units = this.state.detectors.map(function (u) {
 			return <SingleUnit ref={u.ip} onSelect={self.switchUnit} unit={u}/>
 		})
 		return units;
-	},
-	showFinder: function () {
+	}
+	showFinder() {
 		this.refs.findDetModal.toggle();
 		this.locateB()
-	},
-	logoClick: function () {
-		this.setState({currentPage:'landing'})
-	},
-	switchUnit: function (u) {
+	}
+	logoClick() {this.setState({currentPage:'landing'})}
+	switchUnit(u) {
 		////console.log(u)
 		var self = this;
 		setTimeout(function () {
@@ -869,26 +909,24 @@ var LandingPage = React.createClass({
 			if(self.state.currentPage == 'landing'){
 				self.setState({curDet:u, currentPage:'detector'})
 			}
-		},100)
-		
-	},
-	addNewMBUnit:function () {
+		},100)	
+	}
+	addNewMBUnit(){
 		var self = this;
 		setTimeout(function (argument) {
 			// body...
 		
 		self.setState({curModal:'newMB', tmpMB:{name:'NEW', type:'mb', banks:[]}})
 		},100)
-	}, 
-	addNewSingleUnit: function () {
+	}
+	addNewSingleUnit() {
 		var self = this;
 		setTimeout(function (argument) {
 			// body...
 			self.setState({curModal:'newSingle', tmpMB:{name:'NEW', type:'single', banks:[]}})
-		},100)
-		
-	},
-	addMBUnit: function (mb) {
+		},100)	
+	}
+	addMBUnit(mb) {
 		var mbunits = this.state.mbunits
 		var nps = this.state.netpolls
 		mbunits.push(mb)
@@ -898,8 +936,8 @@ var LandingPage = React.createClass({
 			}
 		})
 		this.setState({mbunits:mbunits, netpolls:nps})
-	},
-	editMb:function (i) {
+	}
+	editMb(i) {
 		
 		var mbunits = this.state.mbunits;
 
@@ -908,8 +946,8 @@ var LandingPage = React.createClass({
 		mbunit.name = mbunits[i].name;
 		mbunit.banks = mbunits[i].banks;
 		this.setState({curIndex:i, curModal:'edit', tmpMB:mbunit})
-	},
-	addToTmp:function(e, type){
+	}
+	addToTmp(e, type){
 		var cont;
 		var dsps = this.state.dets
 		var detL = this.state.detL
@@ -932,16 +970,15 @@ var LandingPage = React.createClass({
 		cont.push(tmpdsp)
 		detL[dsps[e].mac] = null;
 		mbUnits.banks = cont;
-		this.setState({tmpMB:mbUnits, detL:detL})
-		
-	},
-	addToTmpGroup: function (e) {
+		this.setState({tmpMB:mbUnits, detL:detL})	
+	}
+	addToTmpGroup(e) {
 		this.addToTmp(e,'multi')
-	},
-	addToTmpSingle: function (e) {
+	}
+	addToTmpSingle(e) {
 		this.addToTmp(e,'single')
-	},
-	removeFromTmpGroup: function (e) {
+	}
+	removeFromTmpGroup(e) {
 		var cont = this.state.tmpMB.banks;
 		var dsps = this.state.dets;
 		var detL = this.state.detL
@@ -950,32 +987,32 @@ var LandingPage = React.createClass({
 		var mbUnits = this.state.tmpMB;
 		mbUnits.banks = cont;
 		this.setState({tmpMB:mbUnits, detL:detL})
-	},
-	cancel: function () {
+	}
+	cancel() {
 		////console.log(['268', 'cancel'])
 		var detL = this.state.detL;
 		this.state.tmpMB.banks.forEach(function (b) {
 			detL[b.mac]= b
 		})
 		this.setState({curModal:'add',detL:detL, tmpMB:{name:'NEW',type:'mb',banks:[]}})
-	},
-	submitMB: function(){
+	}
+	submitMB(){
 		var mbunits = this.state.mbunits;
 		mbunits.push(this.state.tmpMB)
 
 		this.saveSend(mbunits);
 		this.setState({curModal:'add', tmpMB:{name:'NEW',type:'mb',banks:[]}})
-	},
-	submitMBe: function(){
+	}
+	submitMBe(){
 		var mbunits = this.state.mbunits;
 		mbunits[this.state.curIndex]= this.state.tmpMB 
 		this.saveSend(mbunits);
 		this.setState({curModal:'add', tmpMB:{name:'NEW',type:'mb',banks:[]}})
-	},
-	changeModalMode: function () {
+	}
+	changeModalMode() {
 		this.setState({curModal:'add'})
-	},
-	move: function (i,d) {
+	}
+	move(i,d) {
 		var mbunits = this.state.mbunits
 		if(d == 'up'){
 			if(i != 0){
@@ -993,21 +1030,21 @@ var LandingPage = React.createClass({
 			}
 		}
 		this.setState({mbunits:mbunits});
-	},
-	saveSend: function (mbunits) {
+	}
+	saveSend(mbunits) {
 		socket.emit('savePrefs', mbunits)
-	},
-	save: function () {
+	}
+	save() {
 		socket.emit('savePrefs', this.state.mbunits)
-	},
-	loadPrefs: function () {
+	}
+	loadPrefs() {
 		////console.log('load prefs')
 		if(socket.sock.readyState  ==1){
 			socket.emit('locateReq');
 			socket.emit('getPrefs');
 		}
-	},
-	removeMb: function (i) {
+	}
+	removeMb(i) {
 		var mbunits = this.state.mbunits;
 		var detL = this.state.detL
 		mbunits[i].banks.forEach(function(b){
@@ -1016,11 +1053,11 @@ var LandingPage = React.createClass({
 		mbunits.splice(i,1);
 		this.saveSend(mbunits)
 		this.setState({mbunits:mbunits, detL:detL})
-	},
-	reset: function () {
+	}
+	reset() {
 		socket.emit('reset', 'reset requested')
-	},
-	renderModal: function () {
+	}
+	renderModal() {
 		var self = this;
 		var mbSetup = this.state.mbunits.map(function(mb,ind) {
 			////console.log(ind)
@@ -1059,8 +1096,8 @@ var LandingPage = React.createClass({
 						</div>
 						</div>)
 		}
-	},
-	changetMBName: function (e) {
+	}
+	changetMBName(e) {
 		e.preventDefault();
 		if(this.state.mbunits)
 		var MB = this.state.tmpMB
@@ -1071,8 +1108,11 @@ var LandingPage = React.createClass({
 		
 		}
 		this.setState({tmpMB:MB})
-	},
-	renderMBGroup: function (mode) {
+	}
+	editName(){
+		this.refs.an.toggle();
+	}
+	renderMBGroup(mode) {
 		var self = this;
 		var submit;
 		if(mode == 0){
@@ -1092,8 +1132,8 @@ var LandingPage = React.createClass({
 			var banks = MB.banks.map(function (b,i) {
 					return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)	
 			})
-			var	nameEdit = (<KeyboardInput onFocus={this.addFocus} onRequestClose={this.addClose} onChange={this.changetMBName} tid='mbtname' value={MB.name}/>)
-			return (<div><label>Name:</label>{nameEdit}
+			var nameEdit = 	<CustomKeyboard onFocus={this.addFocus} onRequestClose={this.addClose} onChange={this.changetMBName} ref='an' value={MB.name} onChange={this.onChange} num={false} label={'AlphaNumeric Keyboard - Hello'}/>
+			return (<div><label>Name:</label><CustomLabel onClick={this.editName}>{MB.name}</CustomLabel>
 					<table><tbody><tr>
 					<th>Available Detectors</th><th>Banks</th>
 					</tr><tr>
@@ -1103,24 +1143,22 @@ var LandingPage = React.createClass({
 						{banks}
 					</td><td><div style={{height:30}}/></td></tr></tbody></table>
 					{submit}<button onClick={this.cancel}>Cancel</button>
+					{nameEdit}
 					</div>)
-	},
-	showLogin: function(){
+	}
+	showLogin(){
 		this.refs.logIn.toggle();
-	},
-	showLogs: function () {
+	}
+	showLogs() {
 		// body...
 		this.refs.logModal.toggle()
-	},
-	showNKeyboard:function () {
-		// body...
-		this.refs.num.toggle();
-	},
-	onChange:function (argument) {
+	}
+	
+	onChange(argument) {
 		// body...
 		console.log(argument)
-	},
-	renderLanding: function () {
+	}
+	renderLanding() {
 		var self = this;
 		var detectors = this.renderDetectors()
 		var config = 'config'
@@ -1167,74 +1205,61 @@ var LandingPage = React.createClass({
 				<CustomKeyboard ref='an' value={"Hello"} onChange={this.onChange} num={false} label={'AlphaNumeric Keyboard - Hello'}/>
 			
 			</div>)	
-	},
-	renderDetector: function () {
-		return (<DetectorView br={this.state.brPoint} ref='dv' acc={this.state.level} logoClick={this.logoClick} det={this.state.curDet} ip={this.state.curDet.ip} netpolls={this.state.netpolls[this.state.curDet.ip]}/>)
-	},
-	renderAccounts: function(){
+	}
+	renderDetector() {
 		
-		if(this.state.level == 5){
-			return <AccountControlView showLogin={this.showLogin} minW={this.state.minW} ref='acc' active={true} logoClick={this.logoClick}/>
-		}else{
-			return <AccountControlView showLogin={this.showLogin} minW={this.state.minW} ref='acc' active={false} logoClick={this.logoClick}/>
-		}
-	},
-	configAccounts: function(){
-		this.setState({currentPage:'userSetup'})
-	},
-	onLoginFocus: function(){
+		return (<DetectorView br={this.state.brPoint} ref='dv' acc={this.state.level} logoClick={this.logoClick} det={this.state.curDet} ip={this.state.curDet.ip} netpolls={this.state.netpolls[this.state.curDet.ip]}/>)
+		
+	}
+	
+	
+	onLoginFocus(){
 		this.refs.logIn.setState({override:true})
-	},
-	onLoginClose: function(){
+	}
+	onLoginClose(){
 		var self = this;
 		setTimeout(function(){
 			self.refs.logIn.setState({override:false})	
 		}, 100)
 		
-	},
-	addFocus: function(){
+	}
+	addFocus(){
 		this.refs.findDetModal.setState({override:true})
-	},
-	addClose: function(){
+	}
+	addClose(){
 		var self = this;
 		setTimeout(function(){
 			self.refs.findDetModal.setState({override:false})	
 		}, 100)
-	},
-	dummy: function () {
+	}
+	dummy() {
 		// body...
 		console.log('dummy')
-	},
-	render: function () {
+	}
+	render() {
 		var cont;
 		if(this.state.currentPage == 'landing'){
 			////console.log('here')
 			cont = this.renderLanding();
 		}else if(this.state.currentPage == 'detector'){
 			cont = this.renderDetector();
-		}else if(this.state.currentPage == 'userSetup'){
-			cont = this.renderAccounts();
 		}
 		return (<div>
-			<Modal ref='logIn'>
-				<LogInControl onKeyFocus={this.onLoginFocus} onRequestClose={this.onLoginClose} level={this.state.level} userName={this.state.curUser}/>
-				<button onClick={this.configAccounts}>Configure Accounts</button>
-			</Modal>
-
+		
 			{cont}
 			
 		</div>)
 	}
-})
-var LogView = React.createClass({
-	getInitialState: function () {
-		// body...
-		return({netpolls:this.props.netpolls})
-	},
-	componentWillReceiveProps: function (newProps) {
+}
+class LogView extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = {netpolls:this.props.netpolls}
+	}
+	componentWillReceiveProps(newProps) {
 		this.setState({netpolls:newProps.netpolls})	// body...
-	},
-	render:function () {
+	}
+	render() {
 		// body...
 		var dets = [];
 		for(var d in this.state.netpolls){
@@ -1271,38 +1296,38 @@ var LogView = React.createClass({
 			{dets}
 		</div>)
 	}
-})
-var AccountControlView = React.createClass({
-	getInitialState: function(){
+}
+/*class AccountControlView extends React.Component{
+	getInitialState(){
 		return ({userList:[], newuser:'',password:'',level:0})
-	},
-	logoClick: function(){
+	}
+	logoClick(){
 		this.props.logoClick();
-	},
-	showLogin: function(){
+	}
+	showLogin(){
 		this.props.showLogin();
-	},
-	componentDidMount: function(){
+	}
+	componentDidMount(){
 		var self = this;
 		socket.emit('getUsers','data');
 		socket.on('userList', function(data){
 			self.setState({userList:data})
 		})
-	},
-	addNew:function(){
+	}
+	addNew(){
 		socket.emit('addUser', {id:this.state.newuser, pw:this.state.password, level:parseInt(this.state.level)})
 		this.setState({newuser:'', password:'', level:0})
-	},
-	userNameChange:function(e){
+	}
+	userNameChange(e){
 		this.setState({newuser:e.target.value});
-	},
-	passwordChange:function(e){
+	}
+	passwordChange(e){
 		this.setState({password:e.target.value});
-	},
-	levelChange: function(e){
+	}
+	levelChange(e){
 		this.setState({level:e.target.value})
-	},
-	render: function(){
+	}
+	render(){
 		var cont = '';
 		var login = 'login';
 		var lstyle = {height: 72,marginRight: 20}
@@ -1340,28 +1365,28 @@ var AccountControlView = React.createClass({
 					{cont}
 			</div>)	
 	}
-})
+}*/
 
-var UserObj = React.createClass({
-	delete:function(){
+/*class UserObj extends React.Component{
+	delete(){
 		socket.emit('delUser', this.props.user.id)
-	},
-	render: function(){
+	}
+	render(){
 		var u = this.props.user
 		return(<div><label>{'Username:' + u.id + '  Level:' + u.level}</label><button onClick={this.delete}>Delete This user</button></div>)
 	}
-})
-var LogInControl = React.createClass({
-	getInitialState: function(){
+}
+class LogInControl extends React.Component{
+	getInitialState(){
 		return ({userName:'',password:'',alert:''})
-	},
-	componentDidMount: function(){
+	}
+	componentDidMount(){
 		var self = this;
 		socket.on('access denied', function(alert){
 			self.setState({alert:alert})
 		})
-	},
-	userNameChange: function(e){
+	}
+	userNameChange(e){
 		////console.log(e)
 		if(typeof e == 'string'){
 
@@ -1371,14 +1396,14 @@ var LogInControl = React.createClass({
 				this.setState({userName:e.target.value})
 			}
 		}
-	},
-	onFocus: function(){
+	}
+	onFocus(){
 		this.props.onKeyFocus();
-	},
-	onRequestClose: function(){
+	}
+	onRequestClose(){
 		this.props.onRequestClose();
-	},
-	passwordChange: function(e){
+	}
+	passwordChange(e){
 		if(typeof e == 'string'){
 
 			this.setState({password:e})
@@ -1387,15 +1412,15 @@ var LogInControl = React.createClass({
 				this.setState({password:e.target.value})
 			}
 		}
-	},
-	loginSubmit: function(){
+	}
+	loginSubmit(){
 		socket.emit('login',{id:this.state.userName, pw:this.state.password})
 		this.setState({password:'', alert:''})
-	},
-	logOut:function(){
+	}
+	logOut(){
 		socket.emit('logOut')
-	},
-	render:function(){
+	}
+	render(){
 		if(this.props.level>0){
 			return (<div>
 				<label>{'Logged In as ' + this.props.userName}</label>
@@ -1414,16 +1439,18 @@ var LogInControl = React.createClass({
 		</div>)
 		}
 	}
-})
-
-var TickerBox = React.createClass({
-	getInitialState: function(){
-		return{ticks:0}
-	},
-	update:function (data) {
+}
+*/
+class TickerBox extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = {ticks:0}
+		this.update = this.update.bind(this);
+	}
+	update(data) {
 		this.setState({ticks:data})
-	},
-	render: function(){
+	}
+	render(){
 		var tickerVal= this.state.ticks;
 		if(Math.abs(tickerVal)<50){
 			tickerVal = 0;
@@ -1458,18 +1485,20 @@ var TickerBox = React.createClass({
 			</div>
 		)
 	}
-});
+}
 
-var LEDBar = React.createClass({
-	getInitialState: function(){
-		return ({pled:0, dled:0})
-	},
-	update:function (p,d) {
+class LEDBar extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({pled:0, dled:0})
+		this.update = this.update.bind(this)
+	}
+	update(p,d) {
 		if((this.state.pled != p) || (this.state.dled != d)){
 			this.setState({pled:p, dled:d})
 		}
-	},
-	render: function(){
+	}
+	render(){
 		var rej = 'black';
 		var prod = 'black';
 		var fault = 'black';
@@ -1486,18 +1515,21 @@ var LEDBar = React.createClass({
 			</div>
 			)
 	}
-});
-var LEDBarInt = React.createClass({
-	getInitialState: function(){
-		return ({pled_a:0, dled_a:0,pled_b:0, dled_b:0})
-	},
-	update:function (pa,pb,da,db) {
+}
+class LEDBarInt extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({pled_a:0, dled_a:0,pled_b:0, dled_b:0})
+		this.update = this.update.bind(this)
+	
+	}
+	update(pa,pb,da,db) {
 		// body...
 		if((this.state.pled_a != pa) || (this.state.dled_a != da)||(this.state.pled_b != pb) || (this.state.dled_b != db)){
 			this.setState({pled_a:pa, dled_a:da,pled_b:pb, dled_b:db})
 		}
-	},
-	render: function(){
+	}
+	render(){
 		var rej_a = 'black';
 		var rej_b = 'black';
 		
@@ -1526,15 +1558,24 @@ var LEDBarInt = React.createClass({
 			</div>
 			)
 	}
-});
-var LEDi = React.createClass({
-	render: function(){
+}
+class LEDi extends React.Component{
+	constructor(props) {
+		super(props)
+	}
+	render(){
 		return(<div className='ledi' style={{ backgroundColor:this.props.color}}/>)
 	}
-})
+}
 
-var MobLiveBar = React.createClass({
-	setLEDs: function (a,b,c,d) {
+class MobLiveBar extends React.Component{
+	constructor(props) {
+		super(props)
+		this.update = this.update.bind(this)
+		this.setLEDs = this.setLEDs.bind(this)
+	
+	}
+	setLEDs(a,b,c,d) {
 		if(this.props.int){
 			this.refs.st.setLEDs(a,c,b,d)
 
@@ -1543,31 +1584,35 @@ var MobLiveBar = React.createClass({
 			this.refs.st.setLEDs(a,b)
 			// body...
 		}
-	},
-	update: function (a,b) {
+	}
+	update(a,b) {
 		this.refs.st.update(a,b)
-	},
-	render: function () {
+	}
+	render() {
 		var st=<StatBar ref='st' />
 		if(this.props.int){
 			st = <StatBarInt style={{marginTop:12}} ref='st'/>
 		}
 		return(<div className="mobLiveBar">{st}</div>)
 	}
-})
+}
 
 
-var FaultItem = React.createClass({
-	render: function(){
+class FaultItem extends React.Component{
+	constructor(props) {
+		super(props)
+	}
+	render(){
 		var type = this.props.fault
 		return <div><label>{"Fault type: " + type}</label>
 		</div>
 	}
-})
+}
 
 
-var SettingsDisplay2 = React.createClass({
-	getInitialState: function(){
+class SettingsDisplay2 extends React.Component{
+	constructor(props) {
+		super(props)
 		var mqls = [
 			window.matchMedia('(min-width: 300px)'),
 			window.matchMedia('(min-width: 467px)'),
@@ -1583,14 +1628,24 @@ var SettingsDisplay2 = React.createClass({
 			font = 1
 		}
 
-		return({
+		this.state = ({
 		 sysRec:this.props.sysSettings, prodRec:this.props.prodSettings, dynRec:this.props.dynSettings, mqls:mqls, font:font, data:this.props.data, cob2:this.props.cob2
 		});
-	},
-	componentWillReceiveProps: function(newProps){
+		this.handleItemclick = this.handleItemclick.bind(this);
+		this.scrollUp = this.scrollUp.bind(this);
+		this.scrollDown = this.scrollDown.bind(this);
+		this.handleScroll = this.handleScroll.bind(this);
+		this.sendPacket = this.sendPacket.bind(this);
+		this.parseInfo = this.parseInfo.bind(this);
+		this.activate = this.activate.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+		//this.componentDidMount = this.component
+	}
+	componentWillReceiveProps(newProps){
 		this.setState({data:newProps.data, cob2:newProps.cob2, sysRec:newProps.sysSettings, prodRec:newProps.prodSettings, dynRec:newProps.dynSettings})
-	},
-	listenToMq:function () {
+	}
+	listenToMq() {
 		if(this.state.mqls[2].matches){
 			this.setState({font:2})
 		}else if(this.state.mqls[1].matches){
@@ -1599,28 +1654,24 @@ var SettingsDisplay2 = React.createClass({
 		}else if(this.state.mqls[0].matches){
 			this.setState({font:0})
 		}
-	},
-	handleItemclick: function(dat, n){
+	}
+	handleItemclick(dat, n){
 
 		this.props.onHandleClick(dat, n);
-	},
-	parseInfo: function(sys, prd){
+	}
+	parseInfo(sys, prd){
 		if((typeof sys != 'undefined') && (typeof prd != 'undefined')){
 			if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
 				this.setState({sysRec:sys, prodRec:prd})
 			}
 		}
-	},
-	componentDidMount: function () {
+	}
+	componentDidMount() {
 		this.props.sendPacket('refresh',0);
 		//window.addEventListener('scroll', this.handleScroll)
-	},
-	componentWillUnmount: function () {
-		// body...
-		//window.removeEventListener('scroll', this.handleScroll);
-	},
-
-	handleScroll: function (ev) {
+	}
+	
+	handleScroll(ev) {
 		// body...
 		//console.log(ev.srcElement.body)
 		var lvl = this.props.data.length
@@ -1644,18 +1695,17 @@ var SettingsDisplay2 = React.createClass({
 			}
 		}
 		//console.log(document.getElementById(this.props.Id));
-	},
-	scrollUp: function () {
+	}
+	scrollUp() {
 		// body...
 		_scrollById(this.props.Id,-260,300);
-	},
-	scrollDown:function () {
+	}
+	scrollDown() {
 		// body...
 		_scrollById(this.props.Id,260,300);
 		//setScrollTop(this.props.Id, document.getElementById(this.props.Id).scrollTop + 200)
-	},
-
-	sendPacket: function (n,v) {
+	}
+	sendPacket(n,v) {
 		var self = this;
 		console.log([n,v])
 		if(n['@rpcs']['toggle']){
@@ -1725,8 +1775,8 @@ var SettingsDisplay2 = React.createClass({
 				
 			socket.emit('rpc', {ip:this.props.dsp, data:packet})
 		}
-	},
-	activate: function (n) {
+	}
+	activate(n) {
 		// body...
 		var self = this;
 		console.log(['1466',n,this.props.cob2,this.props.data])
@@ -1744,27 +1794,21 @@ var SettingsDisplay2 = React.createClass({
 				}
 			}
 		});
-
-
-	},
-	onFocus: function () {
+	}
+	onFocus() {
 		// body...
-		if(ftiTouch){
 			this.props.setOverride(true)
-		}
-	},
-	onRequestClose: function () {
+	}
+	onRequestClose() {
 		// body...
 		var self = this;
-		if(ftiTouch){
 			setTimeout(function () {
 				// body...
 				self.props.setOverride(false)
 			},100)
 			
-		}
-	},
-	render: function (){
+	}
+	render(){
 		var self = this;
 		var data = this.props.data
 		//var catMap = vdefByIp[this.props.dsp][]
@@ -1787,15 +1831,7 @@ var SettingsDisplay2 = React.createClass({
 		var backBut = ''
 
 		var catList = [	]
-		//////console.log(['1030', combinedSettings])
-	//	console.log(['1515',lvl])
-		for(var cb in this.props.combinedSettings){
-			//catList.push(cb)
-		}
-		if(categoriesV2){
-			//sthis.props.cvdf
 
-		}
 		var accLevel = 0;
 		var accMap = {'Sensitivity':'PassAccSens', 'Calibration':'PassAccCal', 'Other':'PassAccProd', 
 			'Faults':'PassAccClrFaults','Rej Setup':'PassAccClrRej'}
@@ -1911,37 +1947,41 @@ var SettingsDisplay2 = React.createClass({
 			<ScrollArrow ref='arrowBot' width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
 			</div>
 		);
-	},
+	}
 	
-})
-var ScrollArrow = React.createClass({
-	getInitialState:function () {
+}
+class ScrollArrow extends React.Component{
+	constructor(props) {
+		super(props)
 		// body...
 		if(this.props.mode == 'top'){
-			return{visible:false}
+			this.state = {visible:false}
 		}else{
-			return{visible:true}
+			this.state = {visible:true}
 		}
-	},
-	hide:function () {
+		this.hide = this.hide.bind(this)
+		this.show = this.show.bind(this)
+		this.onClick = this.onClick.bind(this);
+	}
+	hide() {
 		// body...
 		if(this.state.visible){
 			this.setState({visible:false})
 		}
-	},
-	show:function () {
+	}
+	show () {
 		// body...
 		if(!this.state.visible){
 			this.setState({visible:true})
 		}
-	},
-	onClick:function () {
+	}
+	onClick () {
 		// body...
 		if(this.props.onClick){
 			this.props.onClick();
 		}
-	},
-	render:function () {
+	}
+	render () {
 		// body...
 		if(this.props.mode == 'top'){
 			return <div className='scrollArrow' hidden={!(this.props.active && this.state.visible)}>
@@ -1953,38 +1993,45 @@ var ScrollArrow = React.createClass({
 		</div>
 	}
 		
-})
+}
 /*Input Controls Begin*/
-var SettingItem2 = React.createClass({
-	getInitialState: function(){
-		return({mode:0,font:this.props.font})
-	},
-	sendPacket: function(n,v){
-		this.props.sendPacket(n,v)
-		
-	},
-	componentWillReceiveProps: function (newProps) {
+class SettingItem2 extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({mode:0,font:this.props.font})
+		this.sendPacket = this.sendPacket.bind(this);
+		this.onItemClick = this.onItemClick.bind(this);
+		this.activate = this.activate.bind(this);
+		this.deactivate = this.deactivate.bind(this);
+		this.getValue = this.getValue.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose =this.onRequestClose.bind(this);
+	}
+
+	sendPacket(n,v) {
+		//
+		this.props.sendPacket(n,v)	
+	}
+	componentWillReceiveProps (newProps) {
 		// body...
 		this.setState({font:newProps.font})
-	},
-	onItemClick: function(){
+	}
+	onItemClick(){
 		if(this.props.hasChild || typeof this.props.data == 'object'){
 			console.log([this.props.data])
 			this.props.onItemClick(this.props.data, this.props.name)	
-		}
-		
-	},
-	activate: function () {
-			this.props.activate(this.props.data)
-	},
-	deactivate: function () {
+		}		
+	}
+	activate () {
+		this.props.activate(this.props.data)
+	}
+	deactivate () {
 		// body...
 		if(this.refs.ed){
 			this.refs.ed.deactivate()
-		}
-		
-	},
-	getValue: function(rval, pname){
+		}		
+	}
+	getValue(rval, pname){
 		var pram;
 			var val;
 			var label = false
@@ -2081,16 +2128,16 @@ var SettingItem2 = React.createClass({
 				val = rval
 			}
 			return val;
-	},
-	onFocus: function () {
+	}
+	onFocus () {
 		// body...
 		this.props.onFocus();
-	},
-	onRequestClose: function () {
+	}
+	onRequestClose () {
 		// body...
 		this.props.onRequestClose();
-	},
-	render: function(){
+	}
+	render(){
 		var ft = [16,20,24];
 		var wd = [150,260,297]
 		var vwd = [75,125,169]
@@ -2211,19 +2258,19 @@ var SettingItem2 = React.createClass({
 			
 		}
 	}
-})
-var KeyboardInputWrapper = React.createClass({
-	getInitialState: function () {
+}
+/*var KeyboardInputWrapper = createReactClass({
+	getInitialState () {
 		// body...
 		return({value:this.props.value})
 	},
-	componentWillReceiveProps:function (newProps) {
+	componentWillReceiveProps (newProps) {
 		// body...
 		if(this.state.value != newProps.value){
 			this.setState({value:newProps.value})
 		}
 	},
-	onChange: function(e){
+	onChange(e){
 		console.log(['1412',e])
 		if(this.props.onChange){
 			this.props.onChange(e, this.props.Id)
@@ -2237,43 +2284,43 @@ var KeyboardInputWrapper = React.createClass({
 		}
 		
 	},
-	onInput: function(e){
+	onInput(e){
 		console.log(['1425',e])
 		this.props.onInput(e, this.props.Id)
 	},
-	onFocus: function () {
+	onFocus () {
 		// body...
 		if(this.props.onFocus){
 			this.props.onFocus();
 		}
 		
 	},	
-	onRequestClose: function () {
+	onRequestClose () {
 		// body...
 		if(this.props.onRequestClose){
 			this.props.onRequestClose()
 		}
 	},	
-	render: function(){
+	render(){
 		console.log('render key input wrapper..	')
 		return(<div style={this.props.Style}><KeyboardInput onFocus={this.onFocus} onRequestClose={this.onRequestClose} onInput={this.onInput} onChange={this.onChange} value={this.state.value} tid={this.props.tid} Style={this.props.Style} num={this.props.num}/></div>)
 	},
 })
-var NestedEditControl = React.createClass({
-	getInitialState: function(){
+var NestedEditControl = createReactClass({
+	getInitialState(){
 		return ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size})
 	},
-	componentWillReceiveProps:function(newProps){
+	componentWillReceiveProps(newProps){
 		this.setState({val:newProps.data.slice(0)})
 	},
-	selectChanged: function(v,i,j){
+	selectChanged(v,i,j){
 		var data = this.state.val;
 		data[i][j] = v;
 		this.setState({val:data})
 		this.props.sendPacket(this.props.param[i][j],v)
 	},
 
-	switchMode: function () {
+	switchMode () {
 		// body...
 		if(this.props.acc){
 			if(this.props.param[0][0]['@rpcs']){
@@ -2285,7 +2332,7 @@ var NestedEditControl = React.createClass({
 			}
 		}	
 	},
-	render:function() {
+	render() {
 			var namestring = this.props.name
 			if(vMap[this.props.name]){
 				if(vMap[this.props.name]['@translations']['english']['name'] != ''){
@@ -2323,15 +2370,25 @@ var NestedEditControl = React.createClass({
 		}
 		
 	}
-})
-var MultiEditControl = React.createClass({
-	getInitialState: function(){
-		return ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size})
-	},
-	componentWillReceiveProps:function(newProps){
+})*/
+class MultiEditControl extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size})
+		this.switchMode = this.switchMode.bind(this)
+		this.deactivate = this.deactivate.bind(this)
+		this.selectChanged = this.selectChanged.bind(this);
+		this.valChanged = this.valChanged.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+		this.onClick = this.onClear.bind(this);
+		this.openSelector = this.openSelector.bind(this);
+		this.valClick = this.valClick.bind(this);
+	}
+	componentWillReceiveProps(newProps){
 		this.setState({val:newProps.data.slice(0)})
-	},
-	switchMode: function () {
+	}
+	switchMode () {
 		// body...
 		if(this.props.acc){
 			if(this.props.param[0]['@rpcs']){
@@ -2342,62 +2399,51 @@ var MultiEditControl = React.createClass({
 				}
 			}
 		}	
-	},
-	deactivate:function () {
-		// body...
+	}
+	deactivate () {
 		this.setState({mode:0})
-	},
-	selectChanged:function(v,i){
+	}
+	selectChanged(v,i){
 		var val = v//e.target.value//e.target.value;
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
 		}
-			//////console.log(val)
-			this.props.sendPacket(this.props.param[i], parseInt(val));
+		this.props.sendPacket(this.props.param[i], parseInt(val));
 		var value = this.state.val;
 		value[i] = v// e.target.value
-		////console.log(this.props.data)
-		//this.setState({val:value})
-	},
-	valChanged: function(v,i){
+	}
+	valChanged(v,i){
 		var val = v
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
 		}
 		var value = this.state.val;	
-		////console.log(['1404',v,i])
 		value[i] = val;
 		this.setState({val:value})
 		if(!Number.isNaN(val)){
 			this.props.sendPacket(this.props.param[i], parseInt(val));
 		}
-	},
-	onFocus: function () {
-		// body...
+	}
+	onFocus () {
 		this.props.onFocus();
-	},
-	onRequestClose:function () {
-		// body...
+	}
+	onRequestClose () {
 		this.props.onRequestClose();
-	},
-	onClear:function (id) {
-		// body...
+	}
+	onClear (id) {
 		this.props.sendPacket(this.props.param[id])
-	},
-	openSelector: function () {
-		// body...
+	}
+	openSelector () {
 		var self = this;
 		if(this.refs.pw){
 			setTimeout(function () {
-				// body...
 				self.refs.pw.toggleCont();
 			},100)
 			
 		}
 		
-	},
-	valClick: function (ind) {
-		//var self = this;
+	}
+	valClick (ind) {
 		if(this.refs['input' + ind]){
 			this.refs['input' + ind].toggle();
 		}else if(this.props.param[ind]['@rpcs']){
@@ -2405,18 +2451,18 @@ var MultiEditControl = React.createClass({
 				this.onClear(ind)
 			}
 		}
-	},
-	render:function() {
+	}
+	render() {
 		var namestring = this.props.name
-	//	////console.log(['1548', namestring])
 			if(typeof vdefByIp[this.props.ip][5][this.props.name] != 'undefined'){
 				if(vdefByIp[this.props.ip][5][this.props.name]['@translations'][this.props.language]['name'] != ''){
 					namestring = vdefByIp[this.props.ip][5][this.props.name]['@translations'][this.props.language]['name']
 				}
 			}
-	//	////console.log(['1554', namestring])
 			
 		var self = this;
+		let lvst = {display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee',lineHeight:'51px'}
+	
 		var isInt = false
 		var colors = ['#000','#eee']
 		var regexA = /_A$/
@@ -2431,8 +2477,7 @@ var MultiEditControl = React.createClass({
 			}
 		}
 		var labWidth = (536/this.state.val.length)
-		var lvst = {display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee',lineHeight:'51px'}
-		var vLabels = this.state.val.map(function(d,i){
+			var vLabels = this.state.val.map(function(d,i){
 			var val = d;
 			var st = {textAlign:'center',lineHeight:'51px', height:51}
 			st.width = labWidth
@@ -2474,7 +2519,7 @@ var MultiEditControl = React.createClass({
 			acc = true
 		}}}
 		if(!acc){
-			return(<div><label style={lvst}>{namestring + ': '}</label>
+			return(<div><label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee',lineHeight:'51px'}}>{namestring + ': '}</label>
 				<div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>)
 
 		}else{
@@ -2497,7 +2542,7 @@ var MultiEditControl = React.createClass({
 					})
 					options = <PopoutWheel vMap={this.props.vMap}   interceptor={isInt} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
-					return(<div><div onClick={this.openSelector}><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
+					return(<div><div onClick={this.openSelector}><label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee',lineHeight:'51px'}}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
 					<div style={{paddingLeft:this.props.lvst.width}}>
 						{options}
 					</div></div>)
@@ -2516,11 +2561,6 @@ var MultiEditControl = React.createClass({
 							})
 
 							return <PopoutWheel vMap={self.props.vMap}  interceptor={isInt} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[6][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
-							//<PopoutSelect val={v} index={i} onChange={self.selectChanged} options={} Style={{width:self.props.vst.width, display:'inline-block'}}/>
-					
-						//return <SelectForMulti val={v} index={i} onChange={self.selectChanged} list={_pVdef[6][self.props.param[i]["@labels"]]['english']} Style={{width:self.props.vst.width, display:'inline-block'}}/>
-						//}else if(self.props.param[i]['@rpcs']['clear']){
-						//	return <ButtonWrapper style={{width:self.props.vst.width, display:'inline-block'}} onClick={self.onClear} ID={i}>{'clear'}</ButtonWrapper>
 						}else{
 							var num = true
 							if(self.props.param[i]['@name'] == 'ProdName'){
@@ -2532,12 +2572,9 @@ var MultiEditControl = React.createClass({
 							}
 							
 							return <CustomKeyboard vMap={self.props.vMap}  onFocus={self.onFocus} ref={'input'+i} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
-							//return(<KeyboardInputWrapper onFocus={self.onFocus} onRequestClose={self.onRequestClose} tid={namestring+'_kia'} onInput={self.valChanged} Id={i} value={v} onKeyPress={self._handleKeyPress} num={num} Style={{width:self.props.vst.width, display:'inline-block'}}/>)
-							///<div style={{paddingLeft:this.props.lvst.width}}>
-					
 						}
 					})
-					return(<div><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>
+					return(<div><label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee',lineHeight:'51px'}}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>
 						
 					)
 				}
@@ -2546,33 +2583,38 @@ var MultiEditControl = React.createClass({
 		}
 		
 	}
-})
-var CustomLabel = React.createClass({
-	onClick:function () {
+}
+class CustomLabel extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onClick = this.onClick.bind(this);
+	}
+	onClick () {
 		// body...
 		if(this.props.onClick){
 			this.props.onClick(this.props.index)
 		}
 		
-	},
-	render:function () {
-		// body...
+	}
+	render () {
 		var style = this.props.style || {}
 		return <label onClick={this.onClick} style={style}>{this.props.children}</label>
 	}
-})
-var SelectForMulti = React.createClass({
-	getInitialState: function(){
-		return({val: this.props.val})
-	},
-	onChange: function(e){
+}
+class SelectForMulti extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({val: this.props.val})
+		this.onChange = this.onChange.bind(this);
+	}
+	onChange(e){
 		this.setState({val:parseInt(e.target.value)})
 		this.props.onChange(parseInt(e.target.value), this.props.index, this.props.index2)
-	},
-	componentWillReceiveProps:function(newProps){
+	}
+	componentWillReceiveProps(newProps){
 		this.setState({val:newProps.val})
-	},
-	render:function(){
+	}
+	render(){
 		var val = this.state.val
 		var opts = this.props.list.map(function(e,i){
 			if(i == val){
@@ -2583,9 +2625,15 @@ var SelectForMulti = React.createClass({
 		})
 		return(<div className='customSelect' style={{width:150}}><select onChange={this.onChange}>{opts}</select></div>)
 	}
-})
-var PopoutWheel = React.createClass({
-	onChange: function (v,i,i2) {
+}
+class PopoutWheel extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onChange = this.onChange.bind(this);
+		this.toggle = this.toggle.bind(this);
+		this.toggleCont =this.toggleCont.bind(this);
+	}
+	onChange (v,i,i2) {
 		// body...
 		if(typeof this.props.index != 'undefined'){
 			this.props.onChange(v,this.props.index)
@@ -2593,33 +2641,36 @@ var PopoutWheel = React.createClass({
 			this.props.onChange(v,i,i2)
 		}
 		
-	},
-	toggleCont: function () {
+	}
+	toggleCont () {
 		// body...
 		this.refs.md.toggle();
-	},
-	toggle: function () {
+	}
+	toggle () {
 		// body...
 		this.refs.md.toggle();
-	},
-	render:function () {
+	}
+	render () {
 		// body...
 		var value = "placeholder"
 		//return(<div  className='customSelect' style={{width:170,   background: 'rgba(255,255,255,0.4)'	}}><div style={{padding:5}}  onClick={this.toggleCont}><div  className='popoutCustomSelect'>{value}</div><div style={{display:'inline-block'}}><img src='assets/dropdown.png' style={{width:30, height:30, marginBottom:-10}}/></div></div>
 		return	<PopoutWheelModal vMap={this.props.vMap}  interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
 		//	</div>)
 	}
-})
-var PopoutWheelModal = React.createClass({
-	getInitialState:function () {
+}
+class PopoutWheelModal extends React.Component{
+	constructor(props) {
+		super(props)
 		// body...
-		return {show:false}
-	},
-	toggle: function () {
+		this.state = {show:false}
+		this.toggle = this.toggle.bind(this);
+		this.close = this.close.bind(this);
+	}
+	toggle () {
 		// body...
 		this.setState({show:true})
-	},
-	close: function () {
+	}
+	close () {
 		// body...
 		var self = this;
 		setTimeout(function () {
@@ -2627,8 +2678,8 @@ var PopoutWheelModal = React.createClass({
 			self.setState({show:false})
 		},80)
 		
-	},
-	render: function () {
+	}
+	render () {
 		var	cont = ""
 		if(this.state.show){
 			//		console.log(['2126', this.props.vMap])
@@ -2643,41 +2694,42 @@ var PopoutWheelModal = React.createClass({
 			{cont}
 		</div>
 	}
-})
-var PopoutWheelModalCont= onClickOutside(React.createClass({
-	getInitialState: function () {
-		// body...
-		return({value:this.props.value})
-	},
-	componentDidMount: function () {
+}
+class PopoutWheelModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {value:this.props.value}
+		this.handleClickOutside = this.handleClickOutside.bind(this)
+		this.close = this.close.bind(this);
+		this.select = this.select.bind(this);
+		this.accept = this.accept.bind(this);
+		this.help = this.help.bind(this);
+	}
+	componentDidMount() {
 		// body...
 		this.setState({value:this.props.value})
-	},
-	handleClickOutside: function (e) {
+	}
+	handleClickOutside(e) {
 		// body...
 		if(this.props.show){
-			this.close();
+			this.props.close();
 		}
 		
-	},
-	close: function () {
+	}
+	close() {
 		// body...
-		this.props.close();
-	},
-	select: function (v, i) {
+		if(this.props.show){
+			this.props.close();
+		}
+	}
+	select(v, i) {
 		// body...
 		var values = this.state.value
 		values[i] = v;
 		this.setState({value:values})
 		//this.props.onChange(v,i)
-	},
-	accept: function () {
-		// body...
-		/*for(var i; i<this.props.values.length; i++){
-			if(this.props.value[i] != this.state.value[i]){
-				this.props.onChange
-			}
-		}*/
+	}
+	accept() {
 		var self = this;
 		if(this.props.value[0] != this.state.value[0]){
 			this.props.onChange(this.state.value[0], 0)
@@ -2738,12 +2790,12 @@ var PopoutWheelModalCont= onClickOutside(React.createClass({
 		}
 		
 
-	},
-	help: function () {
+	}
+	help () {
 		// body...
 		this.refs.helpModal.toggle();
-	},
-	render:function () {
+	}
+	render () {
 		// body...
 		var self = this;
 		var hs = this.props.options.map(function(op) {
@@ -2785,18 +2837,28 @@ var PopoutWheelModalCont= onClickOutside(React.createClass({
 	  </div>)
 
 	}
-}))
-var PopoutWheelSelector = React.createClass({
-	select: function (i) {
+}
+var PopoutWheelModalCont =  onClickOutside(PopoutWheelModalC);
+
+class PopoutWheelSelector extends React.Component{
+	constructor(props) {
+		super(props)
+		this.select = this.select.bind(this);
+		this.handleScroll = this.handleScroll.bind(this);
+		this.scrollUp = this.scrollUp.bind(this);
+		this.scrollDown = this.scrollDown.bind(this);
+
+	}
+	select (i) {
 		// body...
 		this.props.onChange(i, this.props.index)
-	},
-	componentDidMount: function () {
+	}
+	componentDidMount () {
 		// body...
 		//scrollToComponent(this.refs[this.props.options[this.props.value].toString()], { offset: 0, align: 'top', duration: 500})
 		setScrollTop(this.props.Id,45*this.props.value)
-	},
-	handleScroll:function () {
+	}
+	handleScroll () {
 		// body...
 		if(this.props.options.length > 8){
 			if(document.getElementById(this.props.Id).scrollTop > 5){
@@ -2810,17 +2872,17 @@ var PopoutWheelSelector = React.createClass({
 				this.refs.arrowBot.hide();
 			}
 		}
-	},
-	scrollUp: function () {
+	}
+	scrollUp () {
 		// body...
 		_scrollById(this.props.Id,-225,200);
-	},
-	scrollDown:function () {
+	}
+	scrollDown () {
 		// body...
 		_scrollById(this.props.Id,225,200);
 		//setScrollTop(this.props.Id, document.getElementById(this.props.Id).scrollTop + 200)
-	},
-	render:function () {
+	}
+	render () {
 		// body...
 		var self = this;
 		var sa = this.props.options.length > 8
@@ -2856,20 +2918,20 @@ var PopoutWheelSelector = React.createClass({
 		
 	
 	}
-})
-var PopoutSelect = React.createClass({
-	getInitialState: function () {
-		// body...
-		return({val: this.props.val})
-	},
-	onChange: function(e){
+}
+class PopoutSelect extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({val: this.props.val})
+	}
+	onChange(e){
 		this.setState({val:parseInt(e)})
 		this.props.onChange(parseInt(e), this.props.index, this.props.index2)
-	},
-	componentWillReceiveProps:function(newProps){
+	}
+	componentWillReceiveProps(newProps){
 		this.setState({val:newProps.val})
-	},
-	toggleCont: function () {
+	}
+	toggleCont () {
 		// body...
 		var self = this;
 		setTimeout(function () {
@@ -2877,8 +2939,8 @@ var PopoutSelect = React.createClass({
 			self.refs.md.toggle()
 		},100)
 		
-	},
-	render: function () {
+	}
+	render () {
 		// body...
 		var value = this.props.options[this.props.val]
 		return(
@@ -2887,25 +2949,25 @@ var PopoutSelect = React.createClass({
 			</div>
 		)
 	}
-})
-var PopoutSelectModal = React.createClass({
-	getInitialState: function () {
-		// body...
-		return ({show:false})
-	},
-	toggle: function () {
+}
+class PopoutSelectModal extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = {show:false}
+	}
+	toggle () {
 		// body...
 		console.log(['1882',this.props.options[this.props.value]])
 		
 		this.setState({show:true})
-	},
-	close: function () {
+	}
+	close () {
 		// body...
 		console.log(['1882',this.props.options[this.props.value]])
 		
 		this.setState({show:false})
-	},
-	render: function () {
+	}
+	render () {
 		// body...
 		var	cont = ""
 		if(this.state.show){
@@ -2920,20 +2982,20 @@ var PopoutSelectModal = React.createClass({
 			{cont}
 		</div>
 	}	
-})
-var PopoutSelectModalCont = onClickOutside(React.createClass({
-	handleClickOutside: function (e) {
+}
+var PopoutSelectModalCont = onClickOutside(createReactClass({
+	handleClickOutside:function (e) {
 		// body...
 		if(this.props.show){
 			this.close();
 		}
 		
 	},
-	close: function () {
+	close:function () {
 		// body...
 		this.props.close();
 	},
-	select: function (i) {
+	select:function (i) {
 		// body...
 		this.props.onChange(i)
 	},
@@ -2957,16 +3019,19 @@ var PopoutSelectModalCont = onClickOutside(React.createClass({
 		</div>
 	}
 }))
-var SelectModalRow = React.createClass({
-	onClick: function () {
+class SelectModalRow extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onClick = this.onClick.bind(this);
+	}
+	onClick () {
 		// body...
 		if(!this.props.selected){
 			this.props.onClick(this.props.index)
 		}
 		
-	},
-
-	render: function () {
+	}
+	render () {
 		// body...
 		var check= ""
 		var style = {textAlign:'center'}
@@ -2976,17 +3041,20 @@ var SelectModalRow = React.createClass({
 		}
 		return (<tr onClick={this.onClick} style={style}><td style={{width:22}}>{check}</td><td style={{width:130}}>{this.props.value}</td><td style={{width:22}}></td></tr>)
 	}
-})
-var SelectSCModalRow = React.createClass({
-	onClick: function () {
+}
+class SelectSCModalRow extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onClick = this.onClick.bind(this);
+	}
+	onClick () {
 		// body...
 		if(!this.props.selected){
 			this.props.onClick(this.props.index)
 		}
 		
-	},
-
-	render: function () {
+	}
+	render () {
 		// body...
 		var check= ""
 		var style = {textAlign:'center'}
@@ -2996,12 +3064,23 @@ var SelectSCModalRow = React.createClass({
 		}
 		return (<div onClick={this.onClick} style={style}><div style={{width:22, display:'table-cell'}}>{check}</div><div style={{width:170, display:'table-cell'}}>{this.props.value}</div><div style={{width:22, display:'table-cell'}}></div></div>)
 	}
-})
-var EditControl = React.createClass({
-	getInitialState: function(){
-		return({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size})
-	},
-	sendPacket: function(){
+}
+class EditControl extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size})
+		this.sendPacket = this.sendPacket.bind(this);
+		this.valChanged = this.valChanged.bind(this);
+		this.valChangedl = this.valChangedl.bind(this);
+		this.valChangedb = this.valChangedb.bind(this);
+		this.deactivate = this.deactivate.bind(this);
+		this.valChangedlb = this.valChangedlb.bind(this);
+		this.switchMode = this.switchMode.bind(this);
+		this.onSubmit = this.onSubmit.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+	}
+	sendPacket(){
 		var self = this;
 		this.props.sendPacket(this.props.param[0], this.state.val[0])
 		if(this.props.int){
@@ -3012,8 +3091,8 @@ var EditControl = React.createClass({
 			
 		}
 		this.setState({mode:0})
-	},
-	valChanged: function(e){
+	}
+	valChanged(e){
 		
 		var val = e//e.target.value;
 		if(this.props.bitLen == 16){
@@ -3021,10 +3100,12 @@ var EditControl = React.createClass({
 		}
 		var value = this.state.val;
 		value[0] = e
+		this.props.sendPacket(this.props.param[0], parseInt(val));
+	
 		////console.log(this.props.data)
 		this.setState({val:value})
-	},
-	valChangedl: function(e){
+	}
+	valChangedl(e){
 		
 		var val = e.target.value//e.target.value;
 		if(this.props.bitLen == 16){
@@ -3036,8 +3117,8 @@ var EditControl = React.createClass({
 		value[0] = e.target.value
 		////console.log(this.props.data)
 		this.setState({val:value})
-	},
-	valChangedb: function(e){
+	}
+	valChangedb(e){
 		////console.log(e)
 		var val = e;
 		if(this.props.bitLen == 16){
@@ -3047,8 +3128,8 @@ var EditControl = React.createClass({
 		value[1] = e
 		////console.log(this.props.data)
 		this.setState({val:value})
-	},
-	valChangedlb: function(e){
+	}
+	valChangedlb(e){
 	//	////console.log(e)
 		var val = e.target.value;
 		if(this.props.bitLen == 16){
@@ -3059,27 +3140,26 @@ var EditControl = React.createClass({
 		value[1] = e.target.value
 		////console.log(this.props.data)
 		this.setState({val:value})
-	},
-	componentWillReceiveProps: function (newProps) {
+	}
+	componentWillReceiveProps (newProps) {
 		this.setState({size:newProps.size, val:newProps.data.slice(0)})
-	},
-	deactivate:function () {
+	}
+	deactivate () {
 		// body...
 		if(this.refs.ed){
 			////console.log(['1511', 'this the prob'])
 			this.refs.ed.setState({mode:0})
 		}else{
 			this.setState({mode:0})	
-		}
-		
-	},
-	_handleKeyPress: function (e) {
+		}		
+	}
+	_handleKeyPress (e) {
 		// body...
 		if(e.key === 'Enter'){
 			this.sendPacket();
 		}
-	},
-	switchMode: function () {
+	}
+	switchMode () {
 		// body...
 		if(this.props.acc){
 			if(this.props.param[0]['@rpcs']){
@@ -3090,8 +3170,8 @@ var EditControl = React.createClass({
 				}
 			}
 		}	
-	},
-	onSubmit:function(e){
+	}
+	onSubmit(e){
 		e.preventDefault();
 		var valA = this.state.value[0];
 		var valB = this.state.value[1];
@@ -3107,15 +3187,15 @@ var EditControl = React.createClass({
 			
 		}, 100)
 		this.setState({editMode:false})
-	},
-	onFocus: function () {
+	}
+	onFocus () {
 		// body...
 		this.props.onFocus();
-	},
-	onRequestClose: function () {
+	}
+	onRequestClose () {
 		this.props.onRequestClose()	
-	},
-	render: function(){
+	}
+	render(){
 		var lab = (<label>{this.state.val}</label>)
 		var num = true;
 		var style = {display:'inline-block',fontSize:24}
@@ -3202,38 +3282,42 @@ var EditControl = React.createClass({
 
 				}else{
 					/*<input width={10} onKeyPress={this._handleKeyPress} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val[0]}></input>*/
-					var input = (<KeyboardInput tid={namestring+'_ki'} onInput={this.valChanged} value={this.state.val[0].toString()} num={num} onKeyPress={this._handleKeyPress} onFocus={this.onFocus} onRequestClose={this.onRequestClose} Style={{width:this.props.vst.width}}/>)//
+					var input = (<CustomKeyboard ref={'keyboard'} onInput={this.valChanged} label={this.state.val[0].toString()} value={this.state.val[0].toString()} num={num} onKeyPress={this._handleKeyPress} onFocus={this.onFocus} onRequestClose={this.onRequestClose} />)//
+					
 					return (<div> <div onClick={this.switchMode}><label style={lvst}>{namestring + ": "}</label><label style={this.props.vst}>{dval}</label></div>
-						<div style={{marginLeft:250, display:'inline-block',width:200,marginRight:10}}>{input}</div>
-						<label style={{fontSize:16,marginLeft:20, border:'1px solid #818a90',padding:2, paddingLeft:5,paddingRight:5, background:'#e6e6e6',borderRadius:10}} onClick={this.sendPacket}>Submit</label></div>)	
+					{input}
+					</div>)	
 			}
 		}
 	
 	}
-})
+}
 /*Input Controls End*/
-var FRamView =React.createClass({
-	getInitialState: function(){
-		return({dspName:'',XPortIp:'',internalIp:'',haloIp:'',ioIp:''})
-	},
-	render:function(){
+class FRamView extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({dspName:'',XPortIp:'',internalIp:'',haloIp:'',ioIp:''})
+	}	
+	render(){
 		return(<div></div>)
 	}
 	
-})
+}
 
-var LiveView = React.createClass({
-	getInitialState: function(){
-		return ({rejects:0, mode:0, phase:90,pled:0,dled:0})
-	},
-	update: function (data) {
+class LiveView extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({rejects:0, mode:0, phase:90,pled:0,dled:0})
+		this.update = this.update.bind(this);
+		this.setLEDs = this.setLEDs.bind(this);
+	}
+	update (data) {
 		this.refs.st.update(data)
-	},
-	setLEDs: function (p,d) {
+	}
+	setLEDs (p,d) {
 		this.refs.st.setLEDs(p,d)
-	},
-	render: function(){
-		////console.log('rendering st')
+	}
+	render(){
 		var style = {fontSize:20}
 		if(this.props.layout =='mobile'){
 			style = {fontSize:16}
@@ -3254,20 +3338,21 @@ var LiveView = React.createClass({
 			</div>
 			)
 	}
-})
-var LiveViewInt = React.createClass({
-	getInitialState: function(){
-		return ({rejects:0, mode:0, phase:90,pled:0,dled:0})
-	},
-	update: function (a,b) {
-		
+}
+class LiveViewInt extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state =  ({rejects:0, mode:0, phase:90,pled:0,dled:0})
+		this.update = this.update.bind(this);
+		this.setLEDs = this.setLEDs.bind(this);
+	}
+	update (a,b) {
 		this.refs.st.update(a,b)
-	},
-	setLEDs: function (pa,da,pb,db) {
+	}
+	setLEDs (pa,da,pb,db) {
 		this.refs.st.setLEDs(pa,pb,da,db)
-	},
-	render: function(){
-		////console.log('rendering int')
+	}
+	render(){
 		var style = {fontSize:20}
 		if(this.props.layout =='mobile'){
 			style = {fontSize:16}
@@ -3288,17 +3373,21 @@ var LiveViewInt = React.createClass({
 			</div>
 			)
 	}
-})
+}
 
-
-var FaultDiv = React.createClass({
-	clearFaults: function () {
+class FaultDiv extends React.Component{
+	constructor(props) {
+		super(props)
+		this.clearFaults = this.clearFaults.bind(this)
+		this.maskFault = this.maskFault.bind(this)
+	}
+	clearFaults () {
 	this.props.clearFaults()
-	},
-	maskFault: function (f) {
+	}
+	maskFault (f) {
 		this.props.maskFault(f)
-	},
-	render:function () {
+	}
+	render () {
 		var self = this;
 		var cont;
 		var clButton;
@@ -3315,17 +3404,22 @@ var FaultDiv = React.createClass({
 			{clButton}
 		</div>)
 	}
-})
+}
 
-var Modal = React.createClass({
-	getInitialState: function () {
+class Modal extends React.Component{
+	constructor(props) {
+		super(props)
 		var klass = 'custom-modal'
 		if(this.props.className){
 			klass = this.props.className
 		}
-		return({className:klass, show:false, override:false ,keyboardVisible:false})
-	},
-	toggle: function () {
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false});
+		this.toggle = this.toggle.bind(this);
+		this.updateMeter =this.updateMeter.bind(this);
+		this.updateSig = this.updateSig.bind(this);
+		this.clear = this.clear.bind(this);
+	}
+	toggle () {
 		var self = this;
 		if(this.state.keyboardVisible){
 			return
@@ -3356,19 +3450,19 @@ var Modal = React.createClass({
 		}
 
 		
-	},
-	updateMeter: function (a,b) {
+	}
+	updateMeter (a,b) {
 		// body...
 		if(this.state.show){
 			this.refs.mb.update(a,b)
 		}
 		
-	},
-	clear: function (c) {
+	}
+	clear (c) {
 		// body...
 		this.props.clear(c)
-	},
-	updateSig: function (a,b) {
+	}
+	updateSig (a,b) {
 		// body...
 		if(this.state.show){
 				if(typeof b != 'undefined'){
@@ -3382,8 +3476,8 @@ var Modal = React.createClass({
 			}
 		}
 		
-	},
-	render: function () {
+	}
+	render () {
 		var cont = '';
 		var h = !this.state.show
 		if(typeof this.props.override != 'undefined'){
@@ -3415,22 +3509,23 @@ var Modal = React.createClass({
 			{cont}
 	</div>)
 	}
-})
-var ModalCont = onClickOutside(React.createClass({
-	getInitialState: function(){
-		return({keyboardVisible:false})
-	},
-	toggle: function(){
-		this.props.toggle();
-	},
-	handleClickOutside: function(e){
-		console.log('2136 handleClickOutside')
+}
+class ModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {keyboardVisible:false}
+		this.toggle = this.toggle.bind(this);
+		this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+	toggle(){
+		this.props.toggle()
+	}
+	handleClickOutside(e){
 		if(!this.state.keyboardVisible){
 			this.props.toggle();	
-		}
-		
-	},
-	render: function(){
+		}	
+	}
+	render() {
 		var style= this.props.Style || {}
 		var cs = this.props.innerStyle || {}
 		var button = 	<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
@@ -3441,60 +3536,73 @@ var ModalCont = onClickOutside(React.createClass({
 				</div>
 				</div>)
 	
-	},
+	}
+}
+var ModalCont = onClickOutside(ModalC);
 
-}));
-
-var StatBar = React.createClass({
-	update: function (data) {
+class StatBar extends React.Component{
+	constructor(props) {
+		super(props)
+		this.update = this.update.bind(this)
+		this.setLEDs = this.setLEDs.bind(this)
+	}
+	update (data) {
 		this.refs.tb.update(data)
-	},
-	setLEDs: function (p,d) {
+	}
+	setLEDs (p,d) {
 		this.refs.lb.update(p,d)
-	},
-	render: function(){
+	}
+	render(){
 		return (<div className='statBar'>
 			<TickerBox ref='tb' int={false}/>
 			<LEDBar ref='lb'/>
 			</div>)
 	}
-})
-var StatBarInt = React.createClass({
-	update: function (a,b) {
+}
+class StatBarInt extends React.Component{
+	constructor(props) {
+		super(props)
+			this.update = this.update.bind(this)
+		this.setLEDs = this.setLEDs.bind(this)
+	
+	}
+	update (a,b) {
 		this.refs.ta.update(a)
 		this.refs.tb.update(b)
-	},
-	setLEDs: function (pa,pb,da,db) {
+	}
+	setLEDs (pa,pb,da,db) {
 		this.refs.lb.update(pa,pb,da,db)
-	},
-	render: function(){
+	}
+	render(){
 		return (<div className='statBar'>
 			<TickerBox ref='ta' int={true} color='#800080'/>
 			<TickerBox ref='tb' int={true} color='#008080'/>
 			<LEDBarInt ref='lb'/>
 			</div>)
 	}
-})
+}
 	
-var MultiBankUnit = React.createClass({
-	getInitialState: function () {
-		// body...
+class MultiBankUnit extends React.Component{
+	constructor(props) {
+		super(props)
 		var dat = []
 		if(this.props.data.length >0){
 			dat = this.props.data
 			////console.log(dat)
 		}
-		return ({banks:dat})
-	},
-	onRMsg: function (e,d) {
+		this.state =  ({banks:dat})
+		this.onRMsg = this.onRMsg.bind(this);
+		this.onParamMsg2 = this.onParamMsg2.bind(this);
+	}
+	onRMsg (e,d) {
 		// body...
 		if(this.refs[d.ip]){
 			////console.log(d)
 			this.refs[d.ip].onRMsg(e,d)
 	
 		}
-	},
-	onParamMsg2:function(e,d){
+	}
+	onParamMsg2(e,d){
 		if(this.refs[d.ip]){
 			//////console.log(d)
 			this.refs[d.ip].onParamMsg2(e,d)
@@ -3503,21 +3611,17 @@ var MultiBankUnit = React.createClass({
 		e = null;
 		d = null;
 
-	},
-	componentWillReceiveProps: function (nextProps) {
+	}
+	componentWillReceiveProps (nextProps) {
 		this.setState({banks:nextProps.data})
-	},
-	switchUnit: function (u) {
-		// body...
-		////console.log('switch mb')
+	}
+	switchUnit (u) {
 		this.props.onSelect(u)
-	},
-	render: function (argument) {
+	}
+	render (argument) {
 		var self = this;
 		var banks = this.state.banks.map(function (b,i) {
-			////console.log(b)
 			return <StatBarMB unit={b} onSelect={self.switchUnit} ref={b.ip} name={b.name}/>
-		
 		})
 		return (<div className='multiBankUnit'>
 			<div className='nameLabel'>
@@ -3526,39 +3630,51 @@ var MultiBankUnit = React.createClass({
 	
 
 	}
-})
-var StatBarMB = React.createClass({
-	getInitialState: function () {
+}
+class StatBarMB extends React.Component{
+	constructor(props) {
+		super(props)
 		var br = window.matchMedia('(min-width:600px)')
 		br.addListener(this.listenToMq)
 		var interceptor = this.props.unit.interceptor;//(vdefByIp[this.props.unit.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.unit.board_id == 5)
-		return({pn:'',phase_A:9000, phase_B:9000, phasemode_A:0, phasemode_B:0,sens_A:100,sens_B:100, peak_A:0,peak_B:0,br:br, mobile:br.matches, interceptor:interceptor, rejs:2, fault:false, live:false, pled_A:0,dled_A:0,pled_B:0,dled_B:0, rpcResp:false})
-	},
-	listenToMq: function () {
+		this.state = ({pn:'',phase_A:9000, phase_B:9000, phasemode_A:0, phasemode_B:0,sens_A:100,sens_B:100, peak_A:0,peak_B:0,br:br, mobile:br.matches, interceptor:interceptor, rejs:2, fault:false, live:false, pled_A:0,dled_A:0,pled_B:0,dled_B:0, rpcResp:false})
+		this.update = this.update.bind(this)
+		this.updateMeter = this.updateMeter.bind(this)
+		this.setLEDSInt = this.setLEDSInt.bind(this)
+		this.setLEDS = this.setLEDS.bind(this)
+		this.setDyn = this.setDyn.bind(this)
+		this.listenToMq = this.listenToMq.bind(this)
+		this.setDynInt =this.setDynInt.bind(this);
+		this.setProdVars = this.setProdVars.bind(this);
+		this.setProdVarsInt = this.setProdVarsInt.bind(this);
+		this.onRMsg = this.onRMsg.bind(this)
+		this.switchUnit = this.switchUnit.bind(this);
+		this.onParamMsg2 = this.onParamMsg2.bind(this)
+	}
+	listenToMq () {
 		this.setState({mobile:this.state.br.matches});
-	},
-	 update: function (data) {
+	}
+	update (data) {
 		liveTimer[this.props.unit.ip] = Date.now();
 		if(!this.state.live){
 			this.setState({live:true})
 		}
 		this.refs.lv.update(data)
-	},
-	setDyn: function(phase,pk,rc,fa){
+	}
+	setDyn(phase,pk,rc,fa){
 		var faults = (fa.length != 0);
 		if((phase!=this.state.phase_A)||(this.state.peak_A != pk) || (this.state.rejs != rc)||(faults != this.state.fault)){
 			this.setState({phase_A:phase,peak_A:pk,rejs:rc,fault:faults})
 		}
-	},
-	updateMeter: function (dat) {
-		// body...
+	}
+	updateMeter (dat) {
 		liveTimer[this.props.unit.ip] = Date.now();
 		if(!this.state.live){
 			this.setState({live:true})
 		}
 		this.refs.lv.update(dat)
-	},
-	setLEDSInt:function(det_a,prod_a,prodhi_a,det_b,prod_b,prodhi_b){
+	}
+	setLEDSInt(det_a,prod_a,prodhi_a,det_b,prod_b,prodhi_b){
 		var pled_a = 0
 		if(prodhi_a == 1){
 			pled_a = 2
@@ -3572,24 +3688,24 @@ var StatBarMB = React.createClass({
 			pled_b = 1
 		}
 		this.refs.lv.setLEDs(pled_a,det_a,pled_b,det_b)
-	},
-	setDynInt: function(phase,pk,rc,fa,phase_b,pk_b){
+	}
+	setDynInt(phase,pk,rc,fa,phase_b,pk_b){
 		var faults = (fa.length != 0);
 		if((phase!=this.state.phase_A)||(this.state.peak_A != pk)||(phase_b!=this.state.phase_B)||(this.state.peak_B != pk_b) || (this.state.rejs != rc)||(faults != this.state.fault)){
 			this.setState({phase_A:phase,peak_A:pk,rejs:rc,fault:faults, phase_B:phase_b,peak_B:pk_b})
 		}
-	},
-	setProdVars: function(pn,sns,pm){
+	}
+	setProdVars(pn,sns,pm){
 		if((this.state.pn != pn) || (this.state.sens_A != sns)||(this.state.phasemode_A != pm)){
 			this.setState({pn:pn, sens_A:sns, phasemode_A:pm})
 		}
-	},
-	setProdVarsInt: function(pn,sns, snsb,pm, pmb){
+	}
+	setProdVarsInt(pn,sns, snsb,pm, pmb){
 		if((this.state.pn != pn) || (this.state.sens_A != sns)||(this.state.sens_B != snsb)||(this.state.phasemode_A != pm)||(this.state.phasemode_B != pmb)){
 			this.setState({pn:pn, sens_A:sns,sens_B:snsb, phasemode_A:pm,phasemode_B:pmb})
 		}
-	},
-	setLEDS:function(det,prod,prodhi){
+	}
+	setLEDS(det,prod,prodhi){
 		var pled = 0
 		if(prodhi == 1){
 			pled = 2
@@ -3597,15 +3713,15 @@ var StatBarMB = React.createClass({
 			pled = 1
 		}
 		this.refs.lv.setLEDs(pled,det)
-	},
-	switchUnit: function () {
+	}
+	switchUnit () {
 		// body...
 		if(this.state.live){
 			this.props.onSelect(this.props.unit)	
 		}
 		
-	},
-	componentDidMount: function () {
+	}
+	componentDidMount () {
 		// body...
 		var self = this;
 		var packet = dsp_rpc_paylod_for(19,[102,0,0])
@@ -3619,11 +3735,11 @@ var StatBarMB = React.createClass({
 			
 		},1000)
 			
-	},
-	componentWillUnmount: function () {
+	}
+	componentWillUnmount () {
 		clearInterval(myTimers[this.props.unit.ip]);
-	},
-	onRMsg: function (e,d) {
+	}
+	onRMsg (e,d) {
 		// body...
 		if(d.ip = this.props.unit.ip){
 			clearInterval(myTimers[this.props.unit.ip]);
@@ -3632,8 +3748,8 @@ var StatBarMB = React.createClass({
 		e = null;
 		d = null;
 
-	},
-	onParamMsg2: function(e){
+	}
+	onParamMsg2(e){
 		
 
 		var self = this;
@@ -3674,8 +3790,8 @@ var StatBarMB = React.createClass({
 		rec = null;
 		res = null;
 
-	},
-	render: function(){
+	}
+	render(){
 
 		if(!this.state.mobile){
 			return this.renderMob();
@@ -3683,8 +3799,8 @@ var StatBarMB = React.createClass({
 			return this.renderTab();
 		}
 	
-	},
-	renderTab: function () {
+	}
+	renderTab () {
 		// body...
 		var klass =''
 		if(this.state.fault){
@@ -3719,8 +3835,8 @@ var StatBarMB = React.createClass({
 		}
 	
 
-	},
-	renderMob: function () {
+	}
+	renderMob () {
 		var klass =''
 		if(this.state.fault){
 			klass = 'faultactive'
@@ -3755,9 +3871,10 @@ var StatBarMB = React.createClass({
 		}
 		
 	}
-})
-var SingleUnit = React.createClass({
-	getInitialState: function () {
+}
+class SingleUnit extends React.Component{
+	constructor(props) {
+		super(props)
 		// body...
 		var mobMqs = [
 			window.matchMedia('(min-width:321px)'),
@@ -3778,16 +3895,29 @@ var SingleUnit = React.createClass({
 			font = 0
 		} 
 		var interceptor =  this.props.unit.interceptor//(vdefByIp[this.props.unit.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.unit.board_id == 5)
-		return ({font:font,mq:mobMqs,phasemode_A:0,live:false, fault:false, pn:'', sens_A:0,peak_A:0,rejs_A:0,phase_A:0,pled_A:0,dled_A:0,
+		this.state = ({font:font,mq:mobMqs,phasemode_A:0,live:false, fault:false, pn:'', sens_A:0,peak_A:0,rejs_A:0,phase_A:0,pled_A:0,dled_A:0,
 			sens_B:0,peak_B:0,rejs_B:0,phase_B:0,pled_B:0,dled_B:0,rpcResp:false, interceptor:interceptor})
-	},
-	onClick: function () {
+		this.onClick = this.onClick.bind(this);
+		this.listenToMq = this.listenToMq.bind(this);
+		this.updateMeter = this.updateMeter.bind(this);
+		this.updateMeterInt = this.updateMeterInt.bind(this);
+		this.onRMsg = this.onRMsg.bind(this);
+		this.onParamMsg2 = this.onParamMsg2.bind(this);
+		this.onFault = this.onFault.bind(this);
+		this.setProdVars = this.setProdVars.bind(this);
+		this.setProdVarsInt = this.setProdVarsInt.bind(this);
+		this.setLEDS = this.setLEDS.bind(this);
+		this.setDyn = this.setDyn.bind(this);
+		this.setLEDSInt = this.setLEDSInt.bind(this);
+		this.setDynInt = this.setDynInt.bind(this);
+	}
+	onClick () {
 		if(this.state.live){
 			this.props.onSelect(this.props.unit)
 	
 		}
-	},
-	listenToMq: function () {
+	}
+	listenToMq () {
 		// body...
 		var mobMqs = this.state.mq
 			var font;
@@ -3801,28 +3931,28 @@ var SingleUnit = React.createClass({
 			font = 0
 		} 
 		this.setState({font:font})
-	},
-	updateMeter: function (dat) {
+	}
+	updateMeter (dat) {
 		// body...
 		liveTimer[this.props.unit.ip] = Date.now();
 		if(!this.state.live){
 			this.setState({live:true})
 		}
 		this.refs.lv.update(dat)
-	},
-	updateMeterInt: function(a,b){
+	}
+	updateMeterInt(a,b){
 		liveTimer[this.props.unit.ip] = Date.now();
 		if(!this.state.live){
 			this.setState({live:true})
 		}
 		//////console.log([a,b])
 		this.refs.lv.update(a,b)	
-	},
-	onRMsg: function (e,d) {
+	}
+	onRMsg (e,d) {
 		clearInterval(myTimers[this.props.unit.ip]);
 		this.setState({rpcResp:true})
-	},
-	onParamMsg2: function(e){
+	}
+	onParamMsg2(e){
 		var self = this;
    		var res = vdefByIp[this.props.unit.ip]
 		var lcd_type = e.type
@@ -3861,19 +3991,15 @@ var SingleUnit = React.createClass({
 				faultArray = null;
 			}
 		}
-	//	msg = null;
-		//dv = null;
-	//	prodArray = null;
 		rec = null;
 		res = null;
 		e = null;
-
-	},
-	onFault: function () {
+	}
+	onFault () {
+		//
 		this.setState({fault:!this.state.fault})
-
-	},
-	componentDidMount: function () {
+	}
+	componentDidMount () {
 		var self = this;
 		this._isMounted = true;
 		myTimers[this.props.unit.ip] = setInterval(function(){
@@ -3885,22 +4011,21 @@ var SingleUnit = React.createClass({
 				socket.emit('rpc',{ip:self.props.unit.ip, data:packet})
 			}
 		}, 1000)
-	},
-	componentWillUnmount: function () {
+	}
+	componentWillUnmount () {
 		clearInterval(myTimers[this.props.unit.ip]);
-	},
-	setProdVars: function(pn,sns,pm){
+	}
+	setProdVars(pn,sns,pm){
 		if((this.state.pn != pn) || (this.state.sens_A != sns)||(this.state.phasemode_A != pm)){
 			this.setState({pn:pn, sens_A:sns, phasemode_A:pm})
 		}
-	},
-	setProdVarsInt: function(pn,sns, snsb,pm, pmb){
+	}
+	setProdVarsInt(pn,sns, snsb,pm, pmb){
 		if((this.state.pn != pn) || (this.state.sens_A != sns)||(this.state.sens_B != snsb)||(this.state.phasemode_A != pm)||(this.state.phasemode_B != pmb)){
 			this.setState({pn:pn, sens_A:sns,sens_B:snsb, phasemode_A:pm,phasemode_B:pmb})
 		}
-	},
-	
-	setLEDS:function(det,prod,prodhi){
+	}
+	setLEDS(det,prod,prodhi){
 		var pled = 0
 		if(prodhi == 1){
 			pled = 2
@@ -3908,14 +4033,14 @@ var SingleUnit = React.createClass({
 			pled = 1
 		}
 		this.refs.lv.setLEDs(pled,det)
-	},
-	setDyn: function(phase,pk,rc,fa){
+	}
+	setDyn(phase,pk,rc,fa){
 		var faults = (fa.length != 0);
 		if((phase!=this.state.phase_A)||(this.state.peak_A != pk) || (this.state.rejs_A != rc)||(faults != this.state.fault)){
 			this.setState({phase_A:phase,peak_A:pk,rejs_A:rc,fault:faults})
 		}
-	},
-	setLEDSInt:function(det_a,prod_a,prodhi_a,det_b,prod_b,prodhi_b){
+	}
+	setLEDSInt(det_a,prod_a,prodhi_a,det_b,prod_b,prodhi_b){
 		var pled_a = 0
 		if(prodhi_a == 1){
 			pled_a = 2
@@ -3929,14 +4054,14 @@ var SingleUnit = React.createClass({
 			pled_b = 1
 		}
 		this.refs.lv.setLEDs(pled_a,det_a,pled_b,det_b)
-	},
-	setDynInt: function(phase,pk,rc,fa,phase_b,pk_b){
+	}
+	setDynInt(phase,pk,rc,fa,phase_b,pk_b){
 		var faults = (fa.length != 0);
 		if((phase!=this.state.phase_A)||(this.state.peak_A != pk)||(phase_b!=this.state.phase_B)||(this.state.peak_B != pk_b) || (this.state.rejs_A != rc)||(faults != this.state.fault)){
 			this.setState({phase_A:phase,peak_A:pk,rejs_A:rc,fault:faults, phase_B:phase_b,peak_B:pk_b})
 		}
-	},
-	render: function(){
+	}
+	render(){
 		var classname = 'multiScanUnit'
 		if(!this.state.live){
 			classname = 'multiScanUnit inactive'
@@ -3956,8 +4081,8 @@ var SingleUnit = React.createClass({
 		}else{
 			return this.renderST(classname, st)
 		}
-	},
-	renderInt:function(classname,st){
+	}
+	renderInt(classname,st){
 
 		var list = ['dry','wet','DSA']
 		return(<div className={classname}>
@@ -3977,8 +4102,8 @@ var SingleUnit = React.createClass({
 			</div>
 			</LiveViewInt>
 			</div>)
-	},
-	renderST: function (classname,st) {
+	}
+	renderST (classname,st) {
 		
 		var list = ['dry','wet','DSA']
 		return(<div className={classname}>
@@ -3998,13 +4123,17 @@ var SingleUnit = React.createClass({
 			</LiveView>
 		</div>)
 	}
-})
-var DetItemView = React.createClass({
-	addClick: function () {
+}
+class DetItemView extends React.Component{
+	constructor(props) {
+		super(props)
+		this.addClick = this.addClick.bind(this)
+	}
+	addClick () {
 		// body...
 		this.props.addClick(this.props.i)
-	},
-	render: function () {
+	}
+	render () {
 		var addText = 'Add'
 		if(this.props.type == 1){
 			addText = 'Remove'
@@ -4013,14 +4142,14 @@ var DetItemView = React.createClass({
 				<label onClick={this.addClick}>{this.props.det.name}</label>
 			</div>)
 	}
-})
-var MBGroupView = React.createClass({
-	getInitialState: function () {
-		// body...
-		return ({font:2})
-	},
+}
+class MBGroupView extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state =  {font:2}
+	}
 
-	render: function() {
+	render() {
 		var banks = this.props.unit.banks;
 		var lab = "Config Multibank Unit"
 		var tstl = {display:'inline-block', textAlign:'center'}
@@ -4039,28 +4168,34 @@ var MBGroupView = React.createClass({
 			</div>
 		</div>)
 	}
-})
-var MbSetup = React.createClass({
-		getInitialState: function () {
-			return({mode:false})
-		},
-		editMb:function () {
+}
+class MbSetup extends React.Component{
+		constructor(props) {
+			super(props)
+			this.state = ({mode:false})
+			this.editMb = this.editMb.bind(this);
+			this.remove = this.remove.bind(this);
+			this.moveUp = this.moveUp.bind(this);
+			this.moveDown = this.moveDown.bind(this);
+			this.toggleOptions = this.toggleOptions.bind(this);
+		}
+		editMb () {
 			////console.log(this.props.index)
 			this.props.edit(this.props.index)
-		},
-		remove:function () {
+		}
+		remove () {
 			this.props.remove(this.props.index)
-		},
-		moveUp: function () {
+		}
+		moveUp () {
 			this.props.move(this.props.index,'up')
-		},
-		moveDown: function (){
+		}
+		moveDown (){
 			this.props.move(this.props.index,'down')
-		},
-		toggleOptions: function () {
+		}
+		toggleOptions () {
 			this.setState({mode:!this.state.mode})
-		},
-		render:function () {
+		}
+		render () {
 			var editRow;
 			if(this.state.mode){
 				editRow = (<div>
@@ -4075,11 +4210,44 @@ var MbSetup = React.createClass({
 						{editRow}
 					</div>)	
 		}
-})
-
-var DetectorView = React.createClass({
-	getInitialState: function () {
+}
+/*	sendAck  () {
+		var packet = dsp_rpc_paylod_for(19,[644,0,0])
+		socket.emit('rpc', {ip:this.props.ip, data:packet})
+	}
+	testMan () {
+		var packet = dsp_rpc_paylod_for(19,[608,0,0])
+		socket.emit('rpc', {ip:this.props.ip, data:packet})
+	}
+	testMan2 () {
+		var packet = dsp_rpc_paylod_for(19,[610,0,0])
+		socket.emit('rpc', {ip:this.props.ip, data:packet})
+	}
+	testHalo () {
+		var packet = dsp_rpc_paylod_for(19,[604,0,0])
+		socket.emit('rpc', {ip:this.props.ip, data:packet})
+	}
+	testHalo2 () {
+		var packet = dsp_rpc_paylod_for(19,[606,0,0])
+		socket.emit('rpc', {ip:this.props.ip, data:packet})
+	}
+	sendOp () {
 		// body...
+		var packet = dsp_rpc_paylod_for(21,[14,0,0])
+		socket.emit('rpc', {ip:this.props.ip, data:packet})
+		
+	}
+	quitTest () {
+		// body...
+		var packet = dsp_rpc_paylod_for(21,[15,0,0])
+		socket.emit('rpc', {ip:this.props.ip, data:packet})
+		
+	}*/
+class DetectorView extends React.Component{
+	constructor(props) {
+		super(props)
+		// body...
+		console.log(['4070',this.props])
 		var mqls = [
 			window.matchMedia('(min-width: 300px)'),
 			window.matchMedia('(min-width: 467px)'),
@@ -4091,23 +4259,54 @@ var DetectorView = React.createClass({
 		}
 		minMq.addListener(this.listenToMq);
 		var interceptor = this.props.det.interceptor//(vdefByIp[this.props.det.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.det.board_id == 5);
-		return {
-		callback:null, rec:{},	showTest:false,faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, 
-		prodSettings:{}, sysSettings:{}, combinedSettings:[],cob2:[], pages:{}, showCal:false,
-		minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, 
-		peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{}, updateCount:0, language:0}
-	},
-	componentDidMount: function () {
-	},
-	componentWillReceiveProps: function (newProps) {
+		this.state =  {callback:null, rec:{},	showTest:false,faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, 
+			prodSettings:{}, sysSettings:{}, combinedSettings:[],cob2:[], pages:{}, showCal:false,
+			minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, 
+			peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{}, updateCount:0, language:0}
+		this.sendPacket = this.sendPacket.bind(this);
+		this.onRMsg = this.onRMsg.bind(this);
+		this.toggleAttention = this.toggleAttention.bind(this);
+		this.onNetpoll = this.onNetpoll.bind(this);
+		this.listenToMq = this.listenToMq.bind(this);
+		this.getCob = this.getCob.bind(this);
+		this.getPages = this.getPages.bind(this);
+		this.getPage = this.getPage.bind(this);
+		this.onParamMsg2 = this.onParamMsg2.bind(this);
+		this.setLEDS = this.setLEDS.bind(this);
+		this.setLEDSInt = this.setLEDSInt.bind(this);
+		this.showSettings = this.showSettings.bind(this);
+		this.showSens = this.showSens.bind(this);
+		this.showTestModal = this.showTestModal.bind(this);
+		this.logoClick = this.logoClick.bind(this);
+		this.changeView = this.changeView.bind(this);
+		this.settingClick = this.settingClick.bind(this);
+		this.goBack = this.goBack.bind(this);
+		this.clear = this.clear.bind(this);
+		this.settingsClosed = this.settingsClosed.bind(this);
+		this.onCalFocus = this.onCalFocus.bind(this);
+		this.onCalClose = this.onCalClose.bind(this);
+		this.clearSig = this.clearSig.bind(this);
+		this.setOverride = this.setOverride.bind(this);
+		this.setTOverride = this.setTOverride.bind(this);
+		this.setCOverride = this.setCOverride.bind(this);
+		this.setSOverride = this.setSOverride.bind(this);
+		this.toggleTestSettings = this.toggleTestSettings.bind(this);
+		this.toggleCalSettings = this.toggleCalSettings.bind(this);
+		this.getProdName = this.getProdName.bind(this);
+		this.setLanguage = this.setLanguage.bind(this);
+		this.showCalibModal = this.showCalibModal.bind(this);
+		
+	}
+	componentWillReceiveProps (newProps) {
 		var packet = dsp_rpc_paylod_for(19,[102,0,0])
-		socket.emit('rpc',{ip:this.props.det.ip, data:packet})
+		socket.emit('rpc',{ip:newProps.det.ip, data:packet})
 		this.setState({netpoll:newProps.netpolls, update:true})
-	},
-	toggleAttention: function () {
+	}
+
+	toggleAttention () {
 		this.refs.fModal.toggle();
-	},
-	onRMsg:function (e,d) {
+	}
+	onRMsg (e,d) {
 		// body...
 		//////console.log([e,d])
 		if(this.props.det.ip != d.ip){
@@ -4143,8 +4342,8 @@ var DetectorView = React.createClass({
 		data = null;
 		dat = null;
 		prodbits = null;
-	},
-	onNetpoll: function(e,d){
+	}
+	onNetpoll(e,d){
 		if(this.props.det.ip != d.ip){
 			return;	
 		}
@@ -4155,24 +4354,11 @@ var DetectorView = React.createClass({
 		}
 		nps.unshift(e);
 		this.setState({netpoll:nps, update:true})
-
-	},
-	listenToMq: function () {
-		// body...
-		if(this.state.mqls[2].matches){
-			////console.log(1)
-		}else if(this.state.mqls[1].matches){
-			////console.log(2)
-		}else if(this.state.mqls[0].matches){
-			////console.log(3)
-		}else{
-			////console.log(4)
-		}
-		
-		this.setState({minW:this.state.minMq.matches, update:true})
-		
-	},
-	getCob: function (sys,prod,dyn) {
+	}
+	listenToMq () {
+		this.setState({minW:this.state.minMq.matches, update:true})	
+	}
+	getCob (sys,prod,dyn) {
 		// body...
 		var vdef = vdefByIp[this.props.det.ip]
 		var _cvdf = JSON.parse(JSON.stringify(vdef[4][0]))
@@ -4180,8 +4366,8 @@ var DetectorView = React.createClass({
 		vdef = null;
 		_cvdf = null;
 		return cob
-	},
-	getPages: function (sys,prod,dyn) {
+	}
+	getPages (sys,prod,dyn) {
 		// body...
 		var vdef = vdefByIp[this.props.det.ip]
 		var _pages = JSON.parse(JSON.stringify(vdef[6]))
@@ -4192,8 +4378,8 @@ var DetectorView = React.createClass({
 		vdef = null;
 		_pages = null;
 		return pages
-	},
-	getPage: function (pg,sys,prod,dyn) {
+	}
+	getPage (pg,sys,prod,dyn) {
 		// body...
 		var vdef = vdefByIp[this.props.det.ip]
 		var _page = JSON.parse(JSON.stringify(vdef[6][pg]))
@@ -4203,11 +4389,8 @@ var DetectorView = React.createClass({
 		vdef = null;
 		_page = null;
 		return page
-	},
-	onParamMsg2: function (e,d) {
-		// body...
-		
-
+	}
+	onParamMsg2 (e,d) {
 		if(this.props.det.ip != d.ip){
 			return;
 		}
@@ -4234,16 +4417,12 @@ var DetectorView = React.createClass({
 					cob2 = this.getCob(sysSettings, this.state.prodSettings, this.state.rec);
 					pages = this.getPages(sysSettings, this.state.prodSettings, this.state.rec);
 					this.setState({sysSettings:sysSettings,cob2:cob2, pages:pages, updateCount:0,update:true})
-					//this.refs.store.setState()
 				}
 			
     		}  
     		sysSettings = null;
 		}else if(lcd_type == 1){
 			if(vdefByIp[d.ip]){
-			
-				
-				
 				var prodRec = e.rec;
 				var cob2;// = iterateCats(_cvdf[0], pVdef, this.state.sysSettings, prodSettings, _vmap, this.state.rec)
     			var pages;// = {}    		
@@ -4294,7 +4473,6 @@ var DetectorView = React.createClass({
 						var phaseWet = prodRec['PhaseWetBit_A']
 
 						var phaseWetB = prodRec['PhaseWetBit_B']
-						//var 
 						var prod_a = prodRec['Prod_LED_A'];
 
 						var pled_a = 0
@@ -4303,7 +4481,6 @@ var DetectorView = React.createClass({
 						}else if(prodRec['Prod_LED_A'] == 1){
 							pled_a = 1
 						}
-						
 						var pled_b = 0
 						if(prodRec['Prod_HI_LED_B'] == 1){
 							pled_b = 2
@@ -4399,7 +4576,6 @@ var DetectorView = React.createClass({
   						if(this.state.updateCount ==3){
   							if((this.refs.sModal.state.show && !this.refs.sModal.state.keyboardVisible) || (this.refs.snModal.state.show && !this.refs.snModal.state.keyboardVisible)
   								|| (this.refs.teModal.state.show && !this.refs.teModal.state.keyboardVisible)|| (this.refs.calibModal.state.show && this.state.showCal && !this.refs.calibModal.state.keyboardVisible)){
-  								//console.log('should update menu')
   								shouldUpdate = true
   							}
   							
@@ -4436,13 +4612,6 @@ var DetectorView = React.createClass({
   								cal = null;
   								pages = null;
   							}
-  							//var	cob2 = this.getCob(this.state.sysSettings, this.state.prodSettings, prodRec)
-							//var	pages = this.getPages(this.state.sysSettings,this.state.prodSettings, prodRec)
-				
-					//this.setState({prodSettings:prodRec, cob2:cob2, pages:pages, update:true})
-							//console.log('updating ')
-  							
-  							//pages = null;
   						}else{
   							this.setState({rec:prodRec, updateCount:(this.state.updateCount+1)%6, update:shouldUpdate})
   						}
@@ -4472,15 +4641,15 @@ var DetectorView = React.createClass({
    		d = null;
    		combinedSettings = null;
    		cob2 = null;	
-	},
-	shouldComponentUpdate:function (nextProps, nextState) {
+	}
+	shouldComponentUpdate (nextProps, nextState) {
 		if(nextState.update !== false){
 			return true;
 		}else{
 			return false
 		}
-	},
-	setLEDS: function(det_a,prod_a,prodhi_a){
+	}
+	setLEDS(det_a,prod_a,prodhi_a){
 			var pled_a = 0
 		if(prodhi_a == 1){
 			pled_a = 2
@@ -4489,8 +4658,8 @@ var DetectorView = React.createClass({
 		}
 		this.refs.lv.setLEDs(pled_a,det_a)
 	
-	},
-	setLEDSInt:function(det_a,prod_a,prodhi_a,det_b,prod_b,prodhi_b){
+	}
+	setLEDSInt(det_a,prod_a,prodhi_a,det_b,prod_b,prodhi_b){
 		var pled_a = 0
 		if(prodhi_a == 1){
 			pled_a = 2
@@ -4504,21 +4673,15 @@ var DetectorView = React.createClass({
 			pled_b = 1
 		}
 		this.refs.lv.setLEDs(pled_a,det_a,pled_b,det_b)
-	},
-	showSettings: function () {
+	}
+	showSettings () {
 		var self = this;
-		//this.refs.sModal.toggle();
-		//this.sendPacket('refresh')
 		this.setState({data:[[this.state.cob2,0]], update:true})
 		setTimeout(function () {
-			// body...
-			console.log(['3307',self.state.data])
-			self.refs.sModal.toggle()
+				self.refs.sModal.toggle()
 		}, 100)
-	
-		
-	},
-	showSens: function () {
+	}
+	showSens () {
 		var self = this;
 		this.setState({data:[[this.state.pages['Sens'],0]], stack:[], update:true})
 
@@ -4526,12 +4689,8 @@ var DetectorView = React.createClass({
 			// body...
 			self.refs.snModal.toggle()
 		}, 100)
-		
-		
-		//this.refs.store.
-	},
-	showTestModal: function () {
-		console.log('show settings')
+	}
+	showTestModal () {
 		var self = this;
 		if(this.state.settings){
 			var st = [];
@@ -4547,26 +4706,25 @@ var DetectorView = React.createClass({
 			// body...
 			self.refs.teModal.toggle()
 		}, 100)
-	},
-	logoClick: function () {
+	}
+	logoClick () {
 		this.props.logoClick();
-	},
-	goBack: function () {
+	}
+	goBack () {
 		if(this.state.stack.length > 0){
 			var stack = this.state.stack;
 			var d = stack.pop();
 			setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack, settings:(d[0] == 'SettingsDisplay'), update:true }),100);
 			
 		}
-	},
-	changeView: function (d) {
+	}
+	changeView (d) {
 		var st = this.state.stack;
 		st.push([this.state.currentView, this.state.data]);
 		this.setState({currentView:d[0], data:d[1], update:true})
-	},
-	settingClick: function (s,n) {
+	}
+	settingClick (s,n) {
 		var set = this.state.data.slice(0)
-		////console.log(['set', s,n])
 		if(Array.isArray(s)){
 			set.push(s)
 		}else{
@@ -4575,19 +4733,17 @@ var DetectorView = React.createClass({
 		}
 		var self = this;
 		setTimeout(function () {
-			// body...
 			self.changeView(['SettingsDisplay',set]);
 		},100)
 		
-	},
-	clear: function (param) {
+	}
+	clear (param) {
 		console.log(['3277',param])
 		var packet = dsp_rpc_paylod_for(param['@rpcs']['clear'][0],param['@rpcs']['clear'][1],param['@rpcs']['clear'][2] ) 
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	},
-	sendPacket: function (n,v) {
-		//fsendpacket
-
+		packet = null;
+	}	
+	sendPacket (n,v) {
 		var vdef = vdefByIp[this.props.ip]
 		var self = this;
 		if(typeof n == 'string'){
@@ -4898,55 +5054,25 @@ var DetectorView = React.createClass({
 		
 		
 		}else if(n['@rpcs']['clear']){
+			var packet;
 			this.clear(n)
 		}
 		}
-	},
-	sendAck :function () {
-		// body...
-		var packet = dsp_rpc_paylod_for(19,[644,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	},
-	testMan:function () {
-		var packet = dsp_rpc_paylod_for(19,[608,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	},
-	testMan2:function () {
-		var packet = dsp_rpc_paylod_for(19,[610,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	},
-	testHalo:function () {
-		var packet = dsp_rpc_paylod_for(19,[604,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	},
-	testHalo2:function () {
-		var packet = dsp_rpc_paylod_for(19,[606,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	},
-	sendOp: function () {
-		// body...
-		var packet = dsp_rpc_paylod_for(21,[14,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-		
-	},
-	quitTest: function () {
-		// body...
-		var packet = dsp_rpc_paylod_for(21,[15,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-		
-	},
-	settingsClosed: function () {
+			packet = null;
+	}
+
+	settingsClosed () {
 		// body...
 			var st = [];
 			var currentView = 'MainDisplay';
 			this.setState({currentView:currentView,data:[], stack:[], settings:false, update:true})
 
-	},
-	onCalFocus: function () {
+	}
+	onCalFocus () {
 		// body...
 		this.refs.calibModal.setState({override:true})
-	},
-	onCalClose: function () {
+	}
+	onCalClose () {
 		// body...
 		var self = this;
 		setTimeout(function () {
@@ -4954,15 +5080,14 @@ var DetectorView = React.createClass({
 				self.refs.calibModal.setState({override:false})
 		},100)
 	
-	},
-	clearSig: function (a) {
+	}
+	clearSig (a) {
 		// body...
 		var packet= dsp_rpc_paylod_for(19,[36,0,0],[a])
-		//dsp_rpc_paylod_for(vdefByIp[this.props.ip][0]['@rpc_map']['KAPI_PEAK_CLEAR'][0],vdefByIp[this.props.ip][0]['@rpc_map']['KAPI_PEAK_CLEAR'][1],a);
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
 		
-	},
-	_renderTest: function () {
+	}
+	_renderTest () {
 		// body...
 		var testModes = ['Manual','Halo','Manual 2', 'Halo 2']
 		var activeModes = [];
@@ -4974,8 +5099,8 @@ var DetectorView = React.createClass({
 		if(activeModes.length == 0){
 			return <div>No Tests Configured</div>
 		}
-	},
-	renderTest: function () {
+	}
+	renderTest () {
 		// body...
 		var testcont = ''
 		var ack = ''
@@ -5013,10 +5138,8 @@ var DetectorView = React.createClass({
 			}else{
 				var cn = this.state.testRec['TestRecConfig']
 				var mode = testModes[this.state.testRec['TestRecConfig']]
-		//		var config = this.state.pages['Test'].subCats[_tcats[this.state.testRec['TestRecConfig']]].params
 				var testcount = 3
 				var cfs = []
-				//var dst = {display:'inline-block'}
 				if(this.props.det.interceptor){
 					testcount = 6
 				}
@@ -5067,92 +5190,68 @@ var DetectorView = React.createClass({
 
 		 </div>)
 		return testprompt
-	},
-	setOverride: function (ov) {
-		// body...
+	}
+	setOverride (ov) {
 		this.refs.sModal.setState({keyboardVisible:ov})
-
-	},
-	setTOverride: function (ov) {
-		// body...
+	}
+	setTOverride (ov) {
 		this.refs.teModal.setState({keyboardVisible:ov})
-	},
-	setCOverride: function (ov) {
-		// body...
+	}
+	setCOverride (ov) {
 		this.refs.calibModal.setState({keyboardVisible:ov})
-	},
-	setSOverride: function (ov) {
-		// body...
+	}
+	setSOverride (ov) {
 		this.refs.snModal.setState({keyboardVisible:ov})
-	},
-	toggleTestSettings: function () {
-		// body...
+	}
+	toggleTestSettings () {
 		if(this.state.showTest){
 			this.setState({showTest:false, data:[], stack:[], update:true})
 		}else{
 			this.setState({showTest:true, data:[[this.state.pages['Test'],0]], stack:[], update:true})
 		}
-		
-	},
-	toggleCalSettings: function () {
-		// body...
+	}
+	toggleCalSettings () {
 		if(this.state.showCal){
 			this.setState({showCal:false, data:[], stack:[], update:true})
 		}else{
 			this.setState({showCal:true, data:[[this.state.pages['Calibration'],0]], stack:[], update:true})
 		}
-		
-	},
-
-	getProdName: function (n, cb,i) {
-		// body...
+	}
+	getProdName (n, cb,i) {
 		var self = this;
 		this.setState({callback:cb, pind:i})
 		setTimeout(function () {
-			// body...
 			self.sendPacket('getProdName',n)
 		},50)
-		
-	
-	},
-	clearFaults: function () {
-		// body...
+	}
+	clearFaults () {
 		this.sendPacket('clearFaults',0)
-		
-	},
-	calClosed: function () {
-		// body...
+	}
+	calClosed () {
 		this.setState({showCal:false, update:true})
-	},
-	showCalibModal: function () {
-		// body...
+	}
+	showCalibModal () {
 		var self = this;
 		this.setState({showCal:false, update:true})
 		setTimeout(function (argument) {
-			// body...
 			self.refs.calibModal.toggle();
 		
 		},100)
-	},
-		
-	calB: function () {
+	}
+	calB () {
 		this.sendPacket('cal',[0])
-	},
-	calA:function () {
-		// body...
+	}
+	calA () {
 		this.sendPacket('cal',[1])
-	},
-	cal:function () {
-		// body...
+	}
+	cal () {
 		this.sendPacket('cal')
-	},
-	setLanguage: function (i) {
-		// body...
+	}
+	setLanguage (i) {
 		var langs = ['english', 'korean']
 		this.setState({language:i, update:true})
-	}, 
-	render: function () {
-		// body...
+	} 
+	render () {
 		var attention = 'attention'
 		if(this.state.faultArray.length != 0){
 			attention = 'attention_clear'
@@ -5253,15 +5352,7 @@ var DetectorView = React.createClass({
 
 		var totest = <svg style={{position:'absolute',left: 840, marginTop:5}} onClick={this.toggleTestSettings} xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPropmt}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
 					
-		
-		//	<SnackbarNotification faults={this.state.faultArray} onClear={this.clearFaults} vmap={vdefByIp[this.props.ip][5]}/>
-	
-		
-/*
-<div style={{height:32, marginTop:-9}}>
-				<button style={{float:'right', color:'#cccccc'}}className={tbklass} onClick={this.toggleCalSettings}>{showPrompt}</button>
-				</div>
-*/
+
 		return(<div>
 			<div hidden>
 				{lmtable}
@@ -5295,46 +5386,37 @@ var DetectorView = React.createClass({
 				</Modal>
 				</div>)
 	} 
-})
+}
 
-var Storage = React.createClass({
-	getInitialState:function () {
+class Storage extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({cob:{},pages:{},faultArray:[],ioBITs:[]})
+	}
+	parseRec () {
 		// body...
-		return({cob:{},pages:{},faultArray:[],ioBITs:[]})
-	},
-	parseRec: function () {
-		// body...
-	},
-	showSettings: function () {
-		//var data = [];
-		//data.push([this.state.cob2,0]);
+	}
+	showSettings () {
 		this.refs.sModal.toggle();
 		this.setState({data:[[this.state.cob2,0]], update:true})
-		
-	},
-	showSens: function () {
-		// body...
+	}
+	showSens () {
 		this.refs.snModal.toggle()
 		this.setState({data:[[this.state.pages['Sens'],0]], stack:[], update:true})
-	},
-	setOverride: function (ov) {
-		// body...
+	}
+	setOverride (ov) {
 		this.refs.sModal.setState({keyboardVisible:ov})
-	},
-	setTOverride: function (ov) {
-		// body...
+	}
+	setTOverride (ov) {
 		this.refs.teModal.setState({keyboardVisible:ov})
-	},
-	setSOverride: function (ov) {
-		// body...
+	}
+	setSOverride (ov) {
 		this.refs.snModal.setState({keyboardVisible:ov})
-	},
-	sendPacket:function (n,v) {
-		// body...
+	}
+	sendPacket (n,v) {
 		this.props.sendPacket(n,v)
-	},
-	render: function () {
-		// body...
+	}
+	render () {
 		var ov = 0
 		if(this.state.testRec['TestRecOnFlag']){
 			ov = 1;
@@ -5373,15 +5455,19 @@ var Storage = React.createClass({
 			</Modal>
 		</div>
 	}
-})
-var NetPollView = React.createClass({
-	getInitialState: function () {
-		return({events:[]})
-	},
-	onNetpoll: function(e){
+}
+
+class NetPollView extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state =({events:[]})
+		this.pushEvent = this.pushEvent.bind(this);
+		this.onNetpoll = this.onNetpoll.bind(this);
+	}
+	onNetpoll(e){
 		this.pushEvent(e)
-	},
-	pushEvent: function (e) {
+	}
+	pushEvent (e) {
 		// body...
 		var events = this.state.events
 		if(events.length == this.props.eventCount){
@@ -5390,12 +5476,10 @@ var NetPollView = React.createClass({
 		////console.log(['3280',e])
 		events.unshift(e);
 		this.setState({events:events})
-	},
-	dummyEvent: function () {
-		// body...
-		//this.pushEvent({string:(new Date(Date.now())).toUTCString() + 'Reject - dummy'})
-	},
-	render:function () {
+	}
+	dummyEvent () {
+	}
+	render () {
 		var self = this;
 		var events = this.props.events.map(function(e){
 			var ev = e.net_poll_h;
@@ -5451,51 +5535,49 @@ var NetPollView = React.createClass({
 
 		</div>)
 	}
-})
-var ProductItem = React.createClass({
-	getInitialState: function () {
-		// body...
-		return{name:this.props.name}
-	},
-	componentWillReceiveProps:function (newProps) {
-		// body...
+}
+class ProductItem extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = {name:this.props.name}
+		this.switchProd = this.switchProd.bind(this);
+		this.copyProd = this.copyProd.bind(this);
+		this.deleteProd = this.deleteProd.bind(this);
+		this.editName = this.editName.bind(this);
+		this.onChange = this.onChange.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+	}
+	componentWillReceiveProps (newProps) {
 		this.setState({name:newProps.name})
-	},
-	switchProd:function () {
+	}
+	switchProd () {
 		this.props.switchProd(this.props.p)
-	},
-	copyProd:function () {
-		// body...
+	}
+	copyProd () {
 		this.props.copy();
-	},
-	deleteProd: function () {
-		// body...
+	}
+	deleteProd () {
 		this.props.delete(this.props.p)
-	},
-	editName: function () {
-		// body...
+	}
+	editName () {
 		var self = this;
 		setTimeout(function () {
-				// body...
-			
 		self.refs.nameinput.toggle()
 	},100)
-		//this.props.editName(this.state.name)
-	},
-	onChange: function (v) {
-		// body...
+	}
+	onChange (v) {
 		this.setState({name:v})
 		this.props.editName(v)
-	},
-	onFocus: function () {
-		// body...
+	}
+	onFocus () {
 		this.props.onFocus();
-	},
-	onRequestClose: function() {
+	}
+	onRequestClose() {
 		// body...
 		this.props.onRequestClose();
-	},
-	render: function () {
+	}
+	render () {
 		// body...
 		var check= ""
 		var ds = {paddingLeft:7, display:'inline-block', width:250, background:"#d1d1d1"}
@@ -5520,143 +5602,38 @@ var ProductItem = React.createClass({
 		}
 		return (<div style={{background:"#362c66", color:"#000"}}><div style={ds} ><div style={{display:'inline-block', width:22}}>{check}</div><label onClick={this.switchProd} style={st}>{this.props.p + '.  ' +name}</label></div>{editRow}</div>)
 	}
-})
-var CalibInterface = React.createClass({
-	getInitialState: function () {
-		// body...
-		return({phaseSpeed:0,phase:0,phaseMode:0, edit:false, tmpStr:'', tmpStrB:''})
-	},
-	calibrate: function () {
-		// body...
-		this.props.calib()
-	},
-	calibrateA: function () {
-		// body...
-		this.props.calibA()
-	},  
-	editPhase: function () {
-		// body...
-		this.setState({edit:!this.state.edit})
-	},
+}
 
-	refresh: function () {
-		// body...
-		this.props.refresh()
-	},
-	onChangePhase: function (e) {
-		this.setState({tmpStr:e})
-	},
-	onChangePhaseB: function (e) {
-		// body...
-		this.setState({tmpStrB:e})
-	},
-	clearR: function () {
-		// body...	
-		this.props.sendPacket('rpeak','clear')
-	},
-	clearRB: function () {
-		// body...
-		this.props.sendPacket('rpeakb','clear')
-	},
-	submitPhase: function () {
-		// body...
-		this.props.sendPacket('phaseEdit',this.state.tmpStr)
-	},
-	submitPhaseb: function () {
-		// body...
-		this.props.sendPacket('phaseEditb',this.state.tmpStrB)
-	},
-	clearX: function(){
-		this.props.sendPacket('xpeak','clear')
-	},
-	clearXB: function(){
-		this.props.sendPacket('xpeakb','clear')
-	},
-	_handleKeyPress: function (e) {
-		// body...
-		if(e.key === 'Enter'){
-			this.submitPhase();
-		}
-	},
-	render: function () {
-		// body...
-		var list = ['dry', 'wet', 'DSA']
-		var phase = (<div onClick={this.editPhase}> {this.props.phase[0] + '-' + list[this.props.phase[1]]}</div>)
-		var tdstyle = {background:'linear-gradient(135deg, rgba(128, 128, 128, 0.3), transparent 67%)'	}
-		
-		var tdstyleintA = { background:'linear-gradient(315deg, transparent 33%, rgba(128,0,128,0.4))', width:170}
-		var tdstyleintB = { background:'linear-gradient(135deg, rgba(0,128,128,0.4),transparent 67%', width:170}
-		
 
-		if(this.state.edit){
-			phase = (<div><div onClick={this.editPhase}> {this.props.phase[0] + '-' + list[this.props.phase[1]]}</div>
-					<div><KeyboardInputWrapper num={true} onKeyPress={this._handleKeyPress} onInput={this.onChangePhase} value={this.state.tmpStr}/> <button onClick={this.submitPhase}>Submit</button></div>
-				</div>)
-		}
-		if(this.props.int){
-			var phaseb =  <div onClick={this.editPhase}> {this.props.phaseB[0] + '-' + list[this.props.phaseB[1]]}</div>
-			if(this.state.edit){
-				phaseb =  <div><div onClick={this.editPhase}> {this.props.phaseB[0] + '-' + list[this.props.phaseB[1]]}</div>
-						<div><KeyboardInputWrapper num={true} value = {this.state.tmpStrB} onInput={this.onChangePhaseB}/>
-						<button onClick={this.submitPhaseb}>Submit</button>
-						</div>
-						</div>
-			}
-			return (<div className='calib'>
-				<label>
-					Calibration Menu
-				</label>
-				<table><tbody>
-					<tr><td style={tdstyle}>Phase Speed:</td><td style={tdstyleintA}>{this.props.phase[2]}</td><td  style={tdstyleintB}>{this.props.phaseB[2]}</td></tr>
-					<tr><td style={tdstyle}>Phase:</td><td style={tdstyleintA}>{phase}</td><td style={tdstyleintB}>{phaseb}</td></tr>
-					<tr><td style={tdstyle}>R Peak:</td><td style={tdstyleintA} onClick={this.clearR}>{this.props.peaks[0]}</td><td style={tdstyleintB} onClick={this.clearRB}>{this.props.peaks[2]}</td></tr>
-					<tr><td style={tdstyle}>X Peak:</td><td style={tdstyleintA} onClick={this.clearX}>{this.props.peaks[1]}</td><td style={tdstyleintB} onClick={this.clearXB}>{this.props.peaks[3]}</td></tr>
-					<tr><td/><td style={tdstyle} onClick={this.calibrateA}>Calibrate</td><td style={tdstyle} onClick={this.calibrate}>Calibrate</td></tr>
-				
-				</tbody></table>
-				<div></div>
-							</div>)
-		}
-		return (<div className='calib'>
-				<label>
-					Calibration Menu
-				</label>
-				<table><tbody>
-					<tr><td style={tdstyle} >Phase Speed:</td><td style={tdstyleintA}>{this.props.phase[2]}</td></tr>
-					<tr><td  style={tdstyle}>Phase:</td><td style={tdstyleintA}>{phase}</td></tr>
-					<tr><td  style={tdstyle}>R Peak:</td><td onClick={this.clearR}>{this.props.peaks[0]}</td></tr>
-					<tr><td style={tdstyle}>X Peak:</td><td onClick={this.clearX}>{this.props.peaks[1]}</td></tr>
-					<tr><td/><td style={tdstyle} onClick={this.calibrate}>Calibrate</td></tr>
-				
-				</tbody></table>
-				<button onClick={this.calibrate}>Calibrate</button>
-				</div>)
+class TestReq extends React.Component{
+	constructor(props) {
+		super(props)
 	}
-})
-
-var TestReq = React.createClass({
-	testMan:function () {
+	testMan () {
 		var packet = dsp_rpc_paylod_for(19,[32,0,0])
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
+		packet = null;
 		this.props.toggle()
-	},
-	testMan2:function () {
+	}
+	testMan2 () {
 		var packet = dsp_rpc_paylod_for(19,[32,2,0])
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
+		packet = null;
 		this.props.toggle()
-	},
-	testHalo:function () {
+	}
+	testHalo () {
 		var packet = dsp_rpc_paylod_for(19,[32,1,0])
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
+		packet = null;
 		this.nextProps.toggle()
-	},
-	testHalo2:function () {
+	}
+	testHalo2 () {
 		var packet = dsp_rpc_paylod_for(19,[32,3,0])
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
+		packet = null;
 		this.props.toggle()
-	},
-	render: function () {
-		// body...
+	}
+	render () {
 		var testcont = ''
 		var ack = ''
 		var tdstyle = {background:'rgba(128, 128, 128, 0.3)', fontSize:25, width:170	}
@@ -5685,147 +5662,11 @@ var TestReq = React.createClass({
 		var testprompt = <div>{testcont} </div>
 		return testprompt
 	}
-})
-var TestInterface = React.createClass({
-	getInitialState: function () {
-		// body...
-		return {prodRec:this.props.prodRec}
-	},
-	componentWillReceiveProps: function (newProps) {
-		this.setState({prodRec:newProps.prodRec})
-		this.render();
-	},
-	sendPacket: function(e,c){
-		this.props.sendPacket(this.props.pVdef[1][c],e)
-	},
-	sendTest: function(){
-		if(this.props.prodRec['TestMode'] > 0){
-			this.props.sendPacket('test',this.props.prodRec['TestMode'] - 1)
+}
 
-		}
-	},
-	modeChanged: function(e){
-		this.props.sendPacket(this.props.pVdef[1]['TestMode'],e.target.value)
-
-	},
-	render: function () {
-		var prod = this.state.prodRec;
-		//////console.log(prod)
-		var self = this;
-		var testConfigs = _testMap.map(function(_test, i){
-			var test = _test.map(function(conf){
-		//		////console.log(conf)
-				return ({count:prod[conf.count], metal:prod[conf.metal]})
-			})	
-			//////console.log(test)
-			return <TestItem sendChange={self.sendPacket} conf={_test} metalCounts={test} ind={i+1} pVdef={self.props.pVdef}/>
-		}) 
-		var op = ''
-		//console.log('testmode: ' + prod['TestMode']);
-		if(prod['TestMode']){
-			var testConfigs = testConfigs[prod['TestMode']- 1]
-		//	console.log(prod['TestConfigOperator'+(prod['TestMode'] - 1).toString()])
-			if(prod['TestConfigOperator'+(prod['TestMode'] - 1).toString()]){
-				//prompt
-				op = <div><KeyboardInputWrapper onInput={this.onOp} num={true}/></div>
-			}
-		} 
-
-		var testModes = ['Prompt', 'Manual', 'Halo', 'Manual2', 'Halo2'];
-		var testSelectOptions = testModes.map(function(m,i){
-			if(i == prod['TestMode']){
-				return <option selected value={i}>{m}</option>
-			}else{
-				return <option  value={i}>{m}</option>
-			}
-		})
-
-		//var selectTestMode
-	//	////console.log(testConfigs)
-		return(<div className='testInt'>
-			{op}
-			{testConfigs}
-		
-
-				<select onChange={this.modeChanged}>
-				{testSelectOptions}
-				</select>
-					<button onClick={this.sendTest}>Test</button>
-			</div>)
-	}
-})
-var TestItem = React.createClass({
-	sendChange: function(e,c){
-		////console.log('received change')
-		////console.log(e)
-		////console.log(c)
-		this.props.sendChange(e,c)
-	},
-	render:function(){
-		var metList = ['FE','NFE', 'SS']
-		var self = this;
-		
-		var tests = this.props.metalCounts.map(function(mc, j){
-			var metDrop = metList.map(function(m,i){
-					if(i==mc.metal){
-							return (<option value={i} selected>{m}</option>)
-					}else{
-							return (<option value={i}>{m}</option>)
-					}
-			})
-			return <TestPassRow sendChange={self.sendChange} mc={mc} conf={self.props.conf[j]} />
-		})
-		var testStr = ['Prompt', 'Manual', 'Halo', 'Manual2', 'Halo2']
-		return(<div>
-			<TreeNode nodeName={'Test ' + testStr[this.props.ind]}>
-			<table><tbody>
-			{tests}
-			</tbody></table>
-			</TreeNode>
-		</div>)
-	}
-})
-var TestPassRow = React.createClass({
-	getInitialState: function(){
-		return ({mc:this.props.mc})
-	},
-	componentWillReceiveProps: function(np){
-		this.setState({mc:np.mc})
-	},
-	onChangeMet: function(e){
-		var mc = this.state.mc;
-		mc.metal = parseInt(e.target.value);
-		this.props.sendChange(mc.metal, this.props.conf.metal)
-		this.setState({mc:mc})
-
-	},
-	valChanged: function(e){
-		var mc = this.state.mc
-		if(typeof e == 'string'){
-			mc.count = parseInt(e);
-		}else{
-			mc.count = parseInt(e.target.value)
-		}
-		this.props.sendChange(mc.count, this.props.conf.count)
-		this.setState({mc:mc})
-	},
-	render:function(){
-		var metList = ['FE','NFE', 'SS']
-		var self = this;
-		var metDrop = metList.map(function(m,i){
-					if(i==self.props.mc.metal){
-							return (<option value={i} selected>{m}</option>)
-					}else{
-							return (<option value={i}>{m}</option>)
-					}
-			})
-		return (<tr><td style={{marginRight:10, width:100, display:'inline-block'}}>Metal:<select onChange={this.onChangeMet}>{metDrop}</select></td><td>Count:
-			<KeyboardInput tid={this.props.conf.count+'_test'} onInput={this.valChanged} value={this.state.mc.count}  num={true} Style={{width:150}}/>
-	</td></tr>)
-	}
-})
-var DummyGraph = React.createClass({
-	getInitialState: function () {
+class DummyGraph extends React.Component{
+	constructor(props) {
+		super(props)
 		var mqls = [
 			window.matchMedia('(min-width: 300px)'),
 			window.matchMedia('(min-width: 444px)'),
@@ -5835,31 +5676,30 @@ var DummyGraph = React.createClass({
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
 		}
-		return({width:480, height:230, mqls:mqls})
-	},
-	listenToMq: function () {
-		// body...
-		
-	},
-	componentDidMount: function () {
+		this.state = ({width:480, height:230, mqls:mqls})
+	}
+	listenToMq () {
+	}
+	componentDidMount () {
 		this.listenToMq()
-	},
-	renderCanv: function () {
+	}
+	renderCanv () {
 		return(<CanvasElem canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int}/>)
-	},
-	stream:function (dat) {
+	}
+	stream (dat) {
 		this.refs.cv.stream(dat)
-	},
-	render: function () {
+	}
+	render () {
 		var cv = this.renderCanv()
 		return (<div className='detGraph'>
 			{cv}
 			</div>)
 	}
 
-})
-var SlimGraph = React.createClass({
-	getInitialState: function () {
+}
+class SlimGraph extends React.Component{
+	constructor(props) {
+		super(props)
 		var mqls = [
 			window.matchMedia('(min-width: 300px)'),
 			window.matchMedia('(min-width: 444px)'),
@@ -5869,9 +5709,9 @@ var SlimGraph = React.createClass({
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
 		}
-		return({width:480, height:215, mqls:mqls})
-	},
-	listenToMq: function () {
+		this.state = ({width:480, height:215, mqls:mqls})
+	}
+	listenToMq () {
 		// body...
 		if(this.state.mqls[3].matches){
 			this.setState({width:480})
@@ -5882,26 +5722,27 @@ var SlimGraph = React.createClass({
 		}else{
 			this.setState({width:280})
 		}
-	},
-	componentDidMount: function () {
+	}
+	componentDidMount () {
 		this.listenToMq()
-	},
-	renderCanv: function () {
+	}
+	renderCanv () {
 		return(<CanvasElem canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int}/>)
-	},
-	stream:function (dat) {
+	}
+	stream (dat) {
 		this.refs.cv.stream(dat)
-	},
-	render: function () {
+	}
+	render () {
 		var cv = this.renderCanv()
 		return (<div className='detGraph'>
 			{cv}
 			</div>)
 	}
 
-})
-var StealthMainPageUI = React.createClass({
-	getInitialState: function () {
+}
+class StealthMainPageUI extends React.Component{
+	constructor(props) {
+		super(props)
 		// body...
 		var res = vdefByIp[this.props.det.ip]
 		var pVdef = _pVdef;
@@ -5910,22 +5751,42 @@ var StealthMainPageUI = React.createClass({
 
 		}
 		var res = null;
-		return ({rpeak:0,xpeak:0,peak:0,phase:0,rej:0, sysRec:{},prodRec:{},tmp:'',prodList:[],phaseFast:0,pVdef:pVdef})
-	},
-	sendPacket: function (n,v) {
-		// body...
+		this.state ({rpeak:0,xpeak:0,peak:0,phase:0,rej:0, sysRec:{},prodRec:{},tmp:'',prodList:[],phaseFast:0,pVdef:pVdef})
+				this.keyboardOpen = this.keyboardOpen.bind(this);
+		this.keyboardClose = this.keyboardClose.bind(this);
+		this.onSens = this.onSens.bind(this);
+		this.onButton = this.onButton.bind(this);
+		this.clearRej = this.clearRej.bind(this);
+		this.switchProd = this.switchProd.bind(this);
+		this.clearPeak = this.clearPeak.bind(this);
+		this.sendPacket = this.sendPacket.bind(this);
+		this.parseInfo = this.parseInfo.bind(this);
+		this.showEditor = this.showEditor.bind(this);
+		this.calibrate = this.calibrate.bind(this);
+		this.setTest = this.setTest.bind(this);
+		this.updateTmp = this.updateTmp.bind(this);
+		this.submitTmpSns = this.submitTmpSns.bind(this);
+		this.refresh = this.refresh.bind(this);
+		this.gohome = this.gohome.bind(this);
+		this.setProdList = this.setProdList.bind(this);
+		this.getProdName = this.getProdName.bind(this);
+		this.prodFocus = this.prodFocus.bind(this);
+		this.prodClose = this.prodClose.bind(this);
+		this.changeProdEditMode = this.changeProdEditMode.bind(this);
+		this.copyCurrentProd = this.copyCurrentProd.bind(this);
+		this.deleteProd = this.deleteProd.bind(this);
+		this.editName = this.editName.bind(this);
+	}
+	sendPacket (n,v) {
+		//
 		this.props.sendPacket(n,v)
-	},
-	parseInfo: function(sys, prd){
-		//////console.log('parseInfo')
+	}
+	parseInfo(sys, prd){
 		if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
-		//	////console.log([sys,prd])
-			
-				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens']})
-			
+			this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens']})
 		}
-	},
-	componentDidMount: function(){
+	}
+	componentDidMount(){
 		var self = this;
 		this.sendPacket('refresh','')
 		socket.on('prodNames', function (pack) {
@@ -5935,39 +5796,35 @@ var StealthMainPageUI = React.createClass({
 				self.setState({prodList:pack.list, prodNames:pack.names})
 			}
 		})
-	},
-	clearRej: function () {
-		// body...
+	}
+	clearRej () {
 		var param = this.state.pVdef[2]['RejCount']
 		this.props.clear(param )
-	},
-	switchProd: function (p) {
-		// body...
+	}
+	switchProd (p) {
+		//
 		this.props.sendPacket('ProdNo',p)
-		//this.props.sendPacket('LOCF_PROD_NAME_READ',p)
-
-	},
-	clearPeak: function () {
-		// body...
+	}
+	clearPeak () {
 		var p = 'Peak'
 		
 		var param = this.state.pVdef[2][p]
 		this.props.clear(param) 
-	},
-	update: function (sig) {
+	}
+	update (sig) {
 		var dat = {t:Date.now(),val:sig}
 		this.refs.nv.streamTo(dat)
 		this.refs.dv.update(sig)
-	},
-		refresh: function () {
+	}
+	refresh () {
+		//
 		this.props.sendPacket('refresh')
-	},
-	cancel:function () {
+	}
+	cancel () {
 		this.refs.sensEdit.toggle()
 		this.setState({tmp:''})
-	},
-	showEditor: function () {
-		//this.setState({prodNames:[],curInd:0})
+	}
+	showEditor () {
 		var self = this;
 		this.refs.pedit.toggle()
 		setTimeout(function () {
@@ -5975,38 +5832,37 @@ var StealthMainPageUI = React.createClass({
 			self.setState({peditMode:false})
 			socket.emit('getProdList', self.props.det.ip)
 		//	self.props.sendPacket('getProdList')
-		},100)
-		
-		
-	},
-	calibrate: function () {
+		},100)		
+	}
+	calibrate () {
+		//
 		this.refs.calibModal.toggle()
-	},
-	_handleKeyPress: function (e) {
+	}
+	_handleKeyPress (e) {
 		if(e.key === 'Enter'){
 			this.submitTmpSns();
 		}
-	},
-	sensFocus: function(){
+	}
+	sensFocus(){
+		//
 		this.refs.sensEdit.setState({override:true})
-	},
-	sensClose: function(){
+	}
+	sensClose(){
+		//
 		var self = this;
 		setTimeout(function(){
 			self.refs.sensEdit.setState({override:false})	
 		}, 100)
-	},
-	gohome: function () {
-		// body...
+	}
+	gohome () {
+		//
 		this.props.gohome();
-	},
-	toggleNetpoll:function () {
-		// body...
+	}
+	toggleNetpoll () {
+		//
 		this.refs.netpolls.toggle();
-	},
-	onButton: function (f) {
-		// body...
-		console.log(f)
+	}
+	onButton (f) {
 			
 		if(f == 'test'){
 			if(typeof this.state.prodRec['TestMode'] != 'undefined'){
@@ -6033,29 +5889,23 @@ var StealthMainPageUI = React.createClass({
 		}else if(f=='sens'){
 			this.props.toggleSens();
 		}
-	},
-	onSens: function (e,s) {
-		// body...
+	}
+	onSens (e,s) {
 		this.props.sendPacket(s,e);
-	},
-	setProdList: function (prodList) {
-			// body...
+	}
+	setProdList (prodList) {
 		var self = this;
 		this.setState({prodList:prodList, curInd:0})
 		setTimeout(function () {
 			self.getProdName(prodList[0],self.setProdName,0)
 		},100)
-	},
-	getProdName:function (p,cb,i) {
-		// body...
-		console.log(['5889',p])
+	}
+	getProdName (p,cb,i) {
 		this.props.getProdName(p,cb,i)
-	},
-	setProdName: function (name, ind) {
-		// body...
+	}
+	setProdName (name, ind) {
 		var sa = []
 		name.slice(3,23).forEach(function (i) {
-			// body...
 			sa.push(i)
 		})
 		var self = this;
@@ -6069,8 +5919,6 @@ var StealthMainPageUI = React.createClass({
 			var i = self.state.prodList[ind+1]
 			self.setState({prodNames:prodNames})
 			setTimeout(function () {
-				// body...
-				
 				self.getProdName(i, self.setProdName, ind+1)
 				
 			},100)
@@ -6078,67 +5926,59 @@ var StealthMainPageUI = React.createClass({
 		}else{
 			this.setState({prodNames:prodNames})
 		}
-
-	},
-	prodFocus: function(){
+	}
+	prodFocus(){
 		this.refs.pedit.setState({override:true})
-	},
-	prodClose: function(){
+	}
+	prodClose(){
 		var self = this;
 		setTimeout(function(){
 			self.refs.pedit.setState({override:false})	
 		}, 100)
-	},
-	changeProdEditMode:function () {
-		// body...
+	}
+	changeProdEditMode () {
 		this.setState({peditMode:!this.state.peditMode})
-	},
-	copyCurrentProd: function () {
-		// body...
+	}
+	copyCurrentProd () {
 		var nextNum = this.state.prodList[this.state.prodList.length - 1] + 1;
 		this.sendPacket('copyCurrentProd', nextNum);
 		var self = this;
 		setTimeout(function (argument) {
 			socket.emit('getProdList', self.props.det.ip)
-		//	self.props.sendPacket('getProdList',99)
 		},100)
-	},
-	deleteProd: function (p) {
+	}
+	deleteProd (p) {
 		this.sendPacket('deleteProd',p)
 		var self = this;
 		setTimeout(function (argument) {
 			socket.emit('getProdList', self.props.det.ip)
 		},100)
-	},
-	editName: function (name) {
-		// body...
+	}
+	editName (name) {
 		this.sendPacket('ProdName',name)
 		var self = this;
 		setTimeout(function (argument) {
 			socket.emit('getProdList', self.props.det.ip)
 		},100)
-	},
-	onCalFocus: function () {
-		// body...
+	}
+	onCalFocus () {
 		this.refs.calibModal.setState({override:true})
-	},
-	onCalClose: function () {
-		// body...
+	}
+	onCalClose () {
 		var self = this;
 		setTimeout(function () {
 			// body...
 				self.refs.calibModal.setState({override:false})
 		},100)
 	
-	},
-	render: function () {
+	}
+	render () {
 		// body...
 		var home = 'home'
 		var style = {background:'#362c66', width:'100%',display:'block', height:'-webkit-fill-available'}
 		var lstyle = {height: 50,marginRight: 20, marginLeft:10}
 		var self = this;
 		var prodNames = this.state.prodNames
-		//console.log(self.state.sysRec)
 		var prodList = this.state.prodList.map(function(p, i){
 			var sel = false
 			if(p==self.state.sysRec['ProdNo']){
@@ -6181,36 +6021,29 @@ var StealthMainPageUI = React.createClass({
 				<Modal ref='configs'>
 				</Modal>
 			</div>)
-
-		/*
-	<Modal ref='calibModal'>
-				<StealthCalibrateUI onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.cal} phase={[this.state.phase, this.state.prodRec['PhaseMode'], ps]} peaks={[this.state.rpeak,this.state.xpeak]}/>
-					</Modal>
-			
-		*/
 	}
-})
-var StealthDynamicView = React.createClass({
-	update: function (sig) {
-		// body...
-
+}
+class StealthDynamicView extends React.Component{
+	constructor(props) {
+		super(props)
+		this.update = this.update.bind(this);
+		this.onSens = this.onSens.bind(this);
+		this.onSig = this.onSig.bind(this);
+		this.onRej = this.onRej.bind(this);
+	}
+	update (sig) {
 		this.refs.tb.update(sig)
-		//this.refs.tbb.update(sigb)
-	},
-	onSens: function (e) {
-		// body...
+	}
+	onSens (e) {
 		this.props.onSens(e, 'Sens')
-	},
-	onSig: function () {
-		// body...
+	}
+	onSig () {
 		this.props.onButton('sig')
-	},
-	onRej:function () {
-		// body...
+	}
+	onRej () {
 		this.props.onButton('rej')
-	},
-	render:function () {
-		// body...
+	}
+	render () {
 			var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'start'}
 			var centerLab = {textAlign:'center', marginRight:'auto', marginLeft:'auto', color:"#000"}
 		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'end'}
@@ -6247,41 +6080,40 @@ var StealthDynamicView = React.createClass({
 			</div>
 			</div>)
 	}
-})
+}
 
-var StealthNav = React.createClass({
-	onConfig: function () {
-		// body...
+class StealthNav extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onConfig = this.onConfig.bind(this);
+		this.onTest = this.onTest.bind(this);
+		this.onLog = this.onLog.bind(this);
+		this.onSens = this.onSens.bind(this);
+		this.onProd = this.onProd.bind(this);
+		this.streamTo = this.streamTo.bind(this);
+	}
+	onConfig () {
 		this.props.onButton('config')
-	},
-	onTest:function () {
-		// body...
+	}
+	onTest () {
 		this.props.onButton('test')
-	},
-	onLog: function () {
-		// body...
+	}
+	onLog () {
 		this.props.onButton('log')
-	},
-	onSens: function () {
-		// body...
+	}
+	onSens () {
 		this.props.onButton('sens')
-	},
-	onCal: function () {
-		// body...
+	}
+	onCal () {
 		this.props.onButton('cal')
-	},
-	onProd: function () {
-		// body...
+	}
+	onProd () {
 		this.props.onButton('prod')
-
-	},
-	streamTo: function (dat) {
-		// body...
+	}
+	streamTo (dat) {
 		this.refs.sg.stream(dat);
-		//console.log('streaming')
-	},
-	render: function () {
-		// body...
+	}
+	render () {
 		return (<div className='interceptorNav' style={{display:'block', width:930, marginLeft:'auto',marginRight:'auto', background:'black'}}>
 				
 				<div style={{overflow:'hidden',width:930,height:250}}>
@@ -6307,18 +6139,15 @@ var StealthNav = React.createClass({
 				</div>	</div></td></tr></tbody></table></div>
 			</div>)
 	}
-})
-var StealthNavContent = React.createClass({
-	getInitialState: function () {
-		// body...
-		return {prodName:'PRODUCT 1'}
-	},
-	stream:function (dat) {
-		// body...
-		//this.refs.sg.stream(dat)
-	},
-	render: function () {
-		// body...
+}
+class StealthNavContent extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = {prodName:'PRODUCT 1'}
+	}
+	stream (dat) {
+	}
+	render () {
 		var style = {width:345,height:220,background:'rgb(225,225,225)',marginLeft:'auto',marginRight:'auto'}
 		var wrapper = {width:480, height:230, marginTop: -20,marginLeft:-20}
 		return (<div className='interceptorNavContent' style={wrapper}>
@@ -6332,12 +6161,12 @@ var StealthNavContent = React.createClass({
 			</table>
 				</div>)
 	}
-})
+}
 
-var InterceptorMainPageUI = React.createClass({
-	getInitialState: function () {
-		// body...
-		var res = vdefByIp[this.props.det.ip]
+class InterceptorMainPageUI extends React.Component{
+	constructor(props) {
+		super(props)
+			var res = vdefByIp[this.props.det.ip]
 		var pVdef = _pVdef;
 		if(res){
 			pVdef = res[1];
@@ -6346,69 +6175,85 @@ var InterceptorMainPageUI = React.createClass({
 		var tmpB = '';
 		var res = null;
 
-		return({peditMode:false,lang:0,rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0,curInd:0, sysRec:{},prodRec:{}, tmp:'', tmpB:'', prodList:[],prodNames:[], phaseFast:0, phaseFastB:0, pVdef:pVdef, keyboardVisible:false,pled_a:0,pled_b:0})
-	},
-	shouldComponentUpdate:function (nextProps, nextState) {
+		this.state = ({peditMode:false,lang:0,rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0,curInd:0, sysRec:{},prodRec:{}, tmp:'', tmpB:'', prodList:[],prodNames:[], phaseFast:0, phaseFastB:0, pVdef:pVdef, keyboardVisible:false,pled_a:0,pled_b:0})
+		this.keyboardOpen = this.keyboardOpen.bind(this);
+		this.keyboardClose = this.keyboardClose.bind(this);
+		this.onSens = this.onSens.bind(this);
+		this.onButton = this.onButton.bind(this);
+		this.clearRej = this.clearRej.bind(this);
+		this.switchProd = this.switchProd.bind(this);
+		this.clearPeak = this.clearPeak.bind(this);
+		this.clearPeakB = this.clearPeakB.bind(this);
+		this.sendPacket = this.sendPacket.bind(this);
+		this.parseInfo = this.parseInfo.bind(this);
+		this.showEditor = this.showEditor.bind(this);
+		this.calibrate = this.calibrate.bind(this);
+		this.setTest = this.setTest.bind(this);
+		this.updateTmp = this.updateTmp.bind(this);
+		this.updateTmpB = this.updateTmpB.bind(this);
+		this.submitTmpSns = this.submitTmpSns.bind(this);
+		this.submitTmpSnsB = this.submitTmpSnsB.bind(this);
+		this.refresh = this.refresh.bind(this);
+		this.gohome = this.gohome.bind(this);
+		this.calA = this.calA.bind(this);
+		this.calB = this.calB.bind(this);
+		this.setProdList = this.setProdList.bind(this);
+		this.getProdName = this.getProdName.bind(this);
+		this.prodFocus = this.prodFocus.bind(this);
+		this.prodClose = this.prodClose.bind(this);
+		this.changeProdEditMode = this.changeProdEditMode.bind(this);
+		this.copyCurrentProd = this.copyCurrentProd.bind(this);
+		this.deleteProd = this.deleteProd.bind(this);
+		this.editName = this.editName.bind(this);
+		this.languageChange = this.languageChange.bind(this);	
+	}
+	shouldComponentUpdate (nextProps, nextState) {
 		if(this.state.keyboardVisible){
 			return false;
 		}else{
 			return true;
 		}
-	},
-	sendPacket: function (n,v) {
-		// body...
+	}
+	sendPacket (n,v) {
 		this.props.sendPacket(n,v);
-	},
+	}
 	update(siga, sigb) {
-		// body...
 		var dat = {t:Date.now(),val:siga,valb:sigb}
 		this.refs.nv.streamTo(dat)
 		this.refs.dv.update(siga,sigb)
-	},
-	componentDidMount: function(){
+	}
+	componentDidMount(){
 		var self = this;
 		this.sendPacket('refresh','')
 		socket.on('prodNames', function (pack) {
-			// body...
-			console.log(['5369', pack])
 			if(self.props.det.ip == pack.ip){
 				self.setState({prodList:pack.list, prodNames:pack.names})
 			}
 		})
-	},
-	clearRej: function () {
-		// body...
+	}
+	clearRej () {
 		var param = this.state.pVdef[2]['RejCount']
 		this.props.clear(param )
-	},
-	switchProd: function (p) {
-		// body...
+	}
+	switchProd (p) {
 		this.props.sendPacket('ProdNo',p)
-		//this.props.sendPacket('LOCF_PROD_NAME_READ',p)
-
-	},
-	clearPeak: function () {
-		// body...
+	}
+	clearPeak () {
 		var p = 'Peak_A'
-		
 		var param = this.state.pVdef[2][p]
 		this.props.clear(param) 
-	},
-	clearPeakB: function () {
-		// body...
+	}
+	clearPeakB () {
 		var p = 'Peak_B'
-		
 		var param = this.state.pVdef[2][p]
 		this.props.clear(param) 
 		param = null;
-	},
-	calibrate: function () {
+	}
+	calibrate () {
 		this.refs.calibModal.toggle()
-	},
-	parseInfo: function(sys, prd){
-		//////console.log('parseInfo')
+	}
+	parseInfo(sys, prd){
 		if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
-		//	////console.log([sys,prd])
 			if(this.props.int){
 				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens_A'], tmpB:prd['Sens_B']})
 			}else{
@@ -6416,24 +6261,19 @@ var InterceptorMainPageUI = React.createClass({
 			}
 			
 		}
-	},
-	showEditor: function () {
-		//this.setState({prodNames:[],curInd:0})
+	}
+	showEditor () {
 		var self = this;
 		this.refs.pedit.toggle()
 		setTimeout(function () {
-			// body...
 			self.setState({peditMode:false})
 			socket.emit('getProdList', self.props.det.ip)
-		//	self.props.sendPacket('getProdList')
 		},100)
-		
-		
-	},
-	editSens: function () {
+	}
+	editSens () {
 		this.refs.sensEdit.toggle()
-	},
-	setTest: function () {
+	}
+	setTest () {
 		if(typeof this.state.prodRec['TestMode'] != 'undefined'){
 			if(this.state.prodRec['TestMode'] != 0){
 				this.props.sendPacket('test', this.state.prodRec['TestMode'] - 1)
@@ -6442,15 +6282,12 @@ var InterceptorMainPageUI = React.createClass({
 			}
 			
 		}
-		//
-
-	},
-	toggleTestModal: function () {
+	}
+	toggleTestModal () {
 		// body...
 		this.refs.testModal.toggle()
-	},
-	updateTmp:function (e) {
-		//e.preventDefault();
+	}
+	updateTmp (e) {
 		if(typeof e == 'string'){
 			if(this.props.int){
 				this.props.sendPacket(this.state.pVdef[1]['Sens_A'], e)
@@ -6467,9 +6304,8 @@ var InterceptorMainPageUI = React.createClass({
 			this.setState({tmp:e.target.value})	
 		}
 		
-	},
-	updateTmpB:function (e) {
-		//e.preventDefault();
+	}
+	updateTmpB (e) {
 		if(typeof e == 'string'){
 			this.props.sendPacket(this.state.pVdef[1]['Sens_B'], e)
 			this.setState({tmpB:e})
@@ -6478,8 +6314,8 @@ var InterceptorMainPageUI = React.createClass({
 			this.setState({tmpB:e.target.value})	
 		}
 		
-	},
-	submitTmpSns:function () {
+	}
+	submitTmpSns () {
 		if(!isNaN(this.state.tmp)){
 			if(this.props.int){
 				this.props.sendPacket('Sens_A', this.state.tmp)
@@ -6488,8 +6324,8 @@ var InterceptorMainPageUI = React.createClass({
 			}
 			this.cancel()
 		}
-	},
-	submitTmpSnsB:function () {
+	}
+	submitTmpSnsB () {
 		if(!isNaN(this.state.tmp)){
 			if(this.props.int){
 				this.props.sendPacket('Sens_B', this.state.tmpB)
@@ -6498,44 +6334,44 @@ var InterceptorMainPageUI = React.createClass({
 			}
 			this.cancel()
 		}
-	},
-	refresh: function () {
+	}
+	refresh () {
 		this.props.sendPacket('refresh')
-	},
-	cancel:function () {
+	}
+	cancel () {
 		this.refs.sensEdit.toggle()
 		this.setState({tmp:''})
-	},
-	calB: function () {
+	}
+	calB () {
 		this.props.sendPacket('cal',[0])
-	},
-	calA:function () {
+	}
+	calA () {
 		// body...
 		this.props.sendPacket('cal',[1])
-	},
-	_handleKeyPress: function (e) {
+	}
+	_handleKeyPress (e) {
 		if(e.key === 'Enter'){
 			this.submitTmpSns();
 		}
-	},
-	sensFocus: function(){
+	}
+	sensFocus(){
 		this.refs.sensEdit.setState({override:true})
-	},
-	sensClose: function(){
+	}
+	sensClose(){
 		var self = this;
 		setTimeout(function(){
 			self.refs.sensEdit.setState({override:false})	
 		}, 100)
-	},
-	gohome: function () {
+	}
+	gohome () {
 		// body...
 		this.props.gohome();
-	},
-	toggleNetpoll:function () {
+	}
+	toggleNetpoll () {
 		// body...
 		this.refs.netpolls.toggle();
-	},
-	onButton: function (f) {
+	}
+	onButton (f) {
 		// body...
 		console.log(f)
 		var self = this;
@@ -6545,15 +6381,6 @@ var InterceptorMainPageUI = React.createClass({
 				self.props.toggleTestModal();
 			},100)
 			
-			/*if(typeof this.state.prodRec['TestMode'] != 'undefined'){
-			if(this.state.prodRec['TestMode'] != 0){
-				this.props.sendPacket('test', this.state.prodRec['TestMode'] - 1)
-			}else{
-				//this.toggleTestModal()
-			
-			}
-			
-		}	*/
 		}else if(f == 'log'){
 			setTimeout(function () {
 			
@@ -6590,44 +6417,35 @@ var InterceptorMainPageUI = React.createClass({
 				self.props.toggleSens();
 			},100)
 		}
-	},
-	onSens: function (e,s) {
-		// body...
+	}
+	onSens (e,s) {
 		this.props.sendPacket(s,e);
-	},
-	setProdList: function (prodList) {
-			// body...
+	}
+	setProdList (prodList) {
 		var self = this;
 		this.setState({prodList:prodList, curInd:0})
 		setTimeout(function () {
 			self.getProdName(prodList[0],self.setProdName,0)
 		},100)
-	},
-	getProdName:function (p,cb,i) {
-		// body...
-		console.log(['5889',p])
+	}
+	getProdName (p,cb,i) {
 		this.props.getProdName(p,cb,i)
-	},
-	setProdName: function (name, ind) {
-		// body...
+	}
+	setProdName (name, ind) {
 		var sa = []
 		name.slice(3,23).forEach(function (i) {
-			// body...
 			sa.push(i)
 		})
 		var self = this;
 		var str = sa.map(function(ch){
 			return String.fromCharCode(ch)
 		}).join("").replace("\u0000","").trim();
-		console.log(['5888',str])
 		var prodNames = this.state.prodNames;
 		prodNames[ind] = str
 		if(ind + 1 < this.state.prodList.length){
 			var i = self.state.prodList[ind+1]
 			self.setState({prodNames:prodNames})
 			setTimeout(function () {
-				// body...
-				
 				self.getProdName(i, self.setProdName, ind+1)
 				
 			},100)
@@ -6636,73 +6454,61 @@ var InterceptorMainPageUI = React.createClass({
 			this.setState({prodNames:prodNames})
 		}
 
-	},
-
-	prodFocus: function(){
+	}
+	prodFocus(){
 		this.refs.pedit.setState({override:true})
-	},
-	prodClose: function(){
+	}
+	prodClose(){
 		var self = this;
 		setTimeout(function(){
 			self.refs.pedit.setState({override:false})	
 		}, 100)
-	},
-	changeProdEditMode:function () {
-		// body...
+	}
+	changeProdEditMode () {
 		this.setState({peditMode:!this.state.peditMode})
-	},
-	copyCurrentProd: function () {
-		// body...
+	}
+	copyCurrentProd () {
 		var nextNum = this.state.prodList[this.state.prodList.length - 1] + 1;
 		this.sendPacket('copyCurrentProd', nextNum);
 		var self = this;
 		setTimeout(function (argument) {
 			socket.emit('getProdList', self.props.det.ip)
-		//	self.props.sendPacket('getProdList',99)
 		},100)
-	},
-	deleteProd: function (p) {
+	}
+	deleteProd (p) {
 		this.sendPacket('deleteProd',p)
 		var self = this;
 		setTimeout(function (argument) {
 			socket.emit('getProdList', self.props.det.ip)
 		},100)
-	},
-	editName: function (name) {
-		// body...
+	}
+	editName (name) {
 		this.sendPacket('ProdName',name)
 		var self = this;
 		setTimeout(function (argument) {
 			socket.emit('getProdList', self.props.det.ip)
 		},100)
-	},
-	onCalFocus: function () {
-		// body...
+	}
+	onCalFocus () {
 		this.refs.calibModal.setState({override:true})
-	},
-	onCalClose: function () {
-		// body...
+	}
+	onCalClose () {
 		var self = this;
 		setTimeout(function () {
-			// body...
 				self.refs.calibModal.setState({override:false})
 		},100)
 	
-	},
-	keyboardOpen: function () {
-		// body...
+	}
+	keyboardOpen () {
 		this.setState({keyboardVisible:true})
-	},
-	keyboardClose: function () {
-		// body...
+	}
+	keyboardClose () {
 		this.setState({keyboardVisible:false})
-	},
-	languageChange: function (i) {
-		// body...
-		console.log('lang')
+	}
+	languageChange (i) {
 		this.props.setLang(i)
-	},
-	render:function () {
+	}
+	render () {
 		// body...
 		var home = 'home'
 		var style = {background:'#362c66', width:'100%',display:'block', height:'-webkit-fill-available'}
@@ -6730,6 +6536,8 @@ var InterceptorMainPageUI = React.createClass({
 			if(this.state.phaseFastB == 1){
 				psb = 'fast'
 			}
+			//					<PopoutSelect val={this.props.language} index={0} onChange={this.languageChange} options={['english','korean']} />
+			
 		var peditCont = (<div>
 				<div style={{color:'#f1f1f1', fontSize:35, textAlign:'center'}}>Products
 				<button style={{float:'right',color:"#f1f1f1", fontSize:20}} className='editButton' onClick={this.changeProdEditMode} >Edit</button>
@@ -6742,8 +6550,7 @@ var InterceptorMainPageUI = React.createClass({
 						<tbody>
 							<tr>
 								<td><img style={lstyle}  src='assets/Interceptor-white-01.svg'/></td>
-								<td hidden style={{width:200}}> 
-								<PopoutSelect val={this.props.language} index={0} onChange={this.languageChange} options={['english','korean']} />
+								<td >
 					</td><td className="buttCell" style={{height:60}}><button onClick={this.gohome} className={home}/></td>
 							</tr>
 						</tbody>
@@ -6763,42 +6570,48 @@ var InterceptorMainPageUI = React.createClass({
 				<Modal ref='configs'>
 				</Modal>
 		</div>)
-		/*<Modal ref='calibModal'>
-		<StealthCalibrateUI onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.cal} phase={[this.state.phase, this.state.prodRec['PhaseMode'], ps]} peaks={[this.state.rpeak,this.state.xpeak]}/>
-				</Modal>*/
 	}
-})
-var InterceptorNav = React.createClass({
-	onConfig: function () {
-		// body...
+}
+class InterceptorNav extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onConfig = this.onConfig.bind(this);
+		this.onTest = this.onTest.bind(this);
+		this.onLog = this.onLog.bind(this);
+		this.onSens = this.onSens.bind(this);
+		this.onCal = this.onCal.bind(this);
+		this.onProd = this.onProd.bind(this);
+		this.streaTo = this.streamTo.bind(this);
+	}
+	onConfig () {
 		this.props.onButton('config')
-	},
-	onTest:function () {
+	}
+	onTest () {
 		// body...
 		this.props.onButton('test')
-	},
-	onLog: function () {
+	}
+	onLog () {
 		// body...
 		this.props.onButton('log')
-	},
-	onSens: function () {
+	}
+	onSens () {
 		// body...
 		this.props.onButton('sens')
-	},
-	onCal: function () {
+	}
+	onCal () {
 		// body...
 		this.props.onButton('cal')
-	},
-	onProd: function () {
+	}
+	onProd () {
 		// body...
 		this.props.onButton('prod')
-	},
-	streamTo: function (dat) {
+	}
+	streamTo (dat) {
 		// body...
 		this.refs.sg.stream(dat);
 		//console.log('streaming')
-	},
-	render: function () {
+	}
+	render () {
 		// body...
 		var labels = {'Settings':{'english':'Settings','korean':'설정'},
 		'Test':{'english':'Test','korean':'테스트'},
@@ -6838,27 +6651,25 @@ var InterceptorNav = React.createClass({
 				</div>	</div></td></tr></tbody></table></div>
 			</div>)
 	}
-})
-var InterceptorNavContent = React.createClass({
-	getInitialState: function () {
-		// body...
-		return {prodName:'PRODUCT 1'}
-	},
-	stream:function (dat) {
-		// body...
-		//this.refs.sg.stream(dat)
-	},
-	clearFaults:function(){
+}
+class InterceptorNavContent extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state =  {prodName:'PRODUCT 1'}
+		this.clearFaults = this.clearFaults.bind(this);
+		this.onClick = this.onClick.bind(this);
+	}
+	stream (dat) {
+	}
+	clearFaults(){
 		this.props.clearFaults()
-	},
-	onClick: function () {
-		// body...
+	}
+	onClick () {
 		if(this.props.faultArray.length>0){
 			this.refs.fModal.toggle();
 		}
-	},
-	render: function () {
-		// body...
+	}
+	render () {
 		var fActive = (this.props.faultArray.length > 0)
 		var left = 'navTabLeft'
 		var center = 'navTabCent'
@@ -6881,13 +6692,9 @@ var InterceptorNavContent = React.createClass({
 			center = 'navTabCent_f'
 			right = 'navTabRight_f'
 			fCont = <div style={{color:"#e1e1e1"}}>{this.props.faultArray.map(function (f) {
-				// body...
 				return <div>{f}</div>
 			})}<button onClick={this.clearFaults}>Clear Faults</button></div>
 		}
-		//style={{width:40,background:'linear-gradient(80deg,transparent,transparent 47%,' +bgColor+ ' 51%,'+bgColor+')'}}
-		// style={{height:75,background:bgColor, width:330}}
-		// style={{width:40,background:'linear-gradient(100deg,' +bgColor+ ' ,' +bgColor+ '  49%,transparent 53%,transparent)'}}		
 		return (<div className='interceptorNavContent' style={wrapper}>
 			<div style={{   position: 'fixed',marginTop: 0,marginLeft: 35, color:'#eee'}}>
 			<table className='noPadding' onClick={this.onClick}>
@@ -6907,36 +6714,37 @@ var InterceptorNavContent = React.createClass({
 				</div>)
 			
 	}
-})
-var InterceptorDynamicViewV2 = React.createClass({
-	update: function (siga, sigb) {
-		// body...
-
+}
+class InterceptorDynamicViewV2 extends React.Component{
+	constructor(props) {
+		super(props)
+		this.update = this.update.bind(this)
+		this.onSens = this.onSens.bind(this)
+		this.onSensB = this.onSensB.bind(this);
+		this.onSigA = this.onSigA.bind(this);
+		this.onSigB = this.onSigB.bind(this);
+		this.onRej = this.onRej.bind(this);
+	}
+	update (siga, sigb) {
 		this.refs.tba.update(siga)
 		this.refs.tbb.update(sigb)
-	},
-	onSens: function (e) {
-		// body...
+	}
+	onSens (e) {
 		this.props.onSens(e, 'Sens_A')
-	},
-	onSensB: function(e){
+	}
+	onSensB(e){
 		this.props.onSens(e, 'Sens_B')
-	},
-	onSigA: function () {
-		// body...
+	}
+	onSigA () {
 		this.props.onButton('sig_a')
-	},
-	onSigB: function () {
-		// body...
+	}
+	onSigB () {
 		this.props.onButton('sig_b')
-	},
-	onRej:function () {
-		// body...
+	}
+	onRej () {
 		this.props.onButton('rej')
-	},
-	render: function () {
-		// body...
-			// body...
+	}
+	render () {
 		var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'start'}
 
 		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'end'}
@@ -6947,10 +6755,7 @@ var InterceptorDynamicViewV2 = React.createClass({
 		if(this.props.faultArray.length >0){
 			klass = 'interceptorDynamicView_f'
 		}
-		//linear-gradient(90deg, #362c66, rgba(128,128,128,0.5))	<div style={labstyleb}>sens</div><div style={contb}><KeyboardInputButton num={true} isEditable={true} value={this.props.sens[0]} onInput={this.onSens} onFocus={this.props.onKeyboardOpen} onRequestClose={this.props.onKeyboardClose} inverted={false}/></div></div>
-		//<div style={{padding:0, borderRadius:20, border:'5px black solid', display:'block', width:960, marginLeft:'auto',marginRight:'auto',background:'black', boxShadow:'0px 0px 0px 12px #818a90'}}>
-		
-
+	
 		return (
 			<div style={{marginTop:2}}>
 			<div className={klass} style={{overflow:'hidden', display:'block', width:956, marginLeft:'auto', marginRight:'auto', textAlign:'center', borderRadius:20, border:'7px solid black',boxShadow:'0px 0px 0px 12px #818a90'}}>
@@ -6991,34 +6796,37 @@ var InterceptorDynamicViewV2 = React.createClass({
 				</div>
 				</div>)
 	}
-})
+}
 
-var ButtonWrapper = React.createClass({
-	onClick: function () {
+class ButtonWrapper extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onClick = this.onClick.bind(this);
+	}
+	onClick () {
 		// body...
 		this.props.onClick(this.props.ID)
-	},
-	render: function () {
+	}
+	render () {
 		// body...
 		var style = this.props.style || {}
 		return <button onClick={this.onClick} style={style}>{this.props.children}</button>
 	}
-})
-var CircularButton = React.createClass({
-	onClick: function () {
-		// body...
+}
+class CircularButton extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onClick = this.onClick.bind(this)
+	}
+	onClick () {
 		this.props.onClick();
-	},
-	render: function () {
+	}
+	render () {
 		var bg = '#818a90'
 		var gr = '#484074'
 		var mr = 'auto'
 		var ml = 'auto'
 		var border = '8px solid rgb(129, 138, 144)'
-			//'linear-gradient(90deg, #362c66, rgba(128,128,128,0.7) 50%)'
-		//if(this.props.inverted){
-		//	gr = 'linear-gradient(90deg, rgba(128,18,128,0.7) 50%,#362c66)'
-		//}
 		 
 		if(this.props.isTransparent){
 			ml = 'auto'
@@ -7027,11 +6835,9 @@ var CircularButton = React.createClass({
 
 			}else{
 				gr = '#484074'
-			//	border = '8px solid rgb(54,44,102)'
 			}
 		}
 		
-		// body...
 		var style = {height:55,top:-6,left:-6}
 		var divstyle = {overflow:'hidden',background:bg,height:50,width:50,borderRadius:25}
 		var bstyle = this.props.style || {} //{width:191,border:border,position:'relative',marginTop:8,height:50,overflow:'hidden', borderRadius:32, background:gr, padding:3, marginLeft:mr, marginRight:ml}
@@ -7046,43 +6852,46 @@ var CircularButton = React.createClass({
 			</div>)
 		}
 	}
-})
-var KeyboardInputButton = React.createClass({
-	getInitialState: function () {
-		// body...
-		return {}
-	},
-	onInput: function (e) {
+}
+class KeyboardInputButton extends React.Component{
+	constructor(props) {
+		super(props)
+		this.editValue = this.editValue.bind(this)
+		this.onInput = this.onInput.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+	}
+	onInput (e) {
 		// body...
 		this.props.onInput(e)
-	},
-	onFocus: function () {
+	}
+	onFocus () {
 		// body...
 		if(this.props.onFocus){
 			this.props.onFocus()
 		}
-	},
-	onRequestClose: function () {
+	}
+	onRequestClose () {
 		// body...
 		if(this.props.onRequestClose){
 			this.props.onRequestClose();
 		}
-	},
-	editValue: function () {
+	}
+	editValue () {
 		// body...
 		var self = this;
 		if(this.props.isEditable){
 			setTimeout(function () {
 				// body...
-				self.refs.input.onFocus()
+				self.refs.input.toggle()
 			},100)
 			
 		}else{
 			this.props.onClick()
 		}
 		
-	},
-	render: function () {
+	}
+	render () {
 		// body...
 
 		var bgColor='rgba(200,200,200,1)'
@@ -7094,11 +6903,12 @@ var KeyboardInputButton = React.createClass({
 		}
 		var boxShadow = '0px 0px 0px 50px '+bgColor
 
-		var kb = <KeyboardInput onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} Style={{fontSize:25, textAlign:'center', width:100}} onInput={this.onInput} ref='input' value={this.props.value}/>
-		if(!this.props.isEditable){
+		//var kb = <KeyboardInput onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} Style={{fontSize:25, textAlign:'center', width:100}} onInput={this.onInput} ref='input' value={this.props.value}/>
+		var ckb = <CustomKeyboard ref='input' onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.value}/>
+		//var kb = <KeyboardInput onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} Style={{fontSize:25, textAlign:'center', width:75}} onInput={this.onInput} ref='input' value={this.props.value}/>
+		
 			kb = <label style={{fontSize:25, textAlign:'center', width:100, display:'inline-block', lineHeight:2}} onClick={this.editValue}>{this.props.value}</label>
-		}
-
+		
 		if(this.props.inverted){
 		var before = {position: 'absolute',height:'100%',display: 'inline-block',top:0,width:44,left:0,backgroundColor:bgColor,borderRadius:30, height:50}
 		var after = {position:'absolute',height:'100%',display:'inline-block',top:0,width:44,left:126,backgroundColor:'transparent',boxShadow:boxShadow,  borderRadius:50, height:50}
@@ -7115,6 +6925,7 @@ var KeyboardInputButton = React.createClass({
 				<button className='playButtonInv' onClick={this.editValue}/>
 				</div>
 				</div>
+				{ckb}
 				</div>)
 		}else{
 
@@ -7133,30 +6944,38 @@ var KeyboardInputButton = React.createClass({
 				<div style={after}/>
 				</div>
 			</div>
+			{ckb}
 			</div>)
 		}
 	}
-})
+}
 
-var InterceptorCalibrateUI = React.createClass({
-	getInitialState: function () {
+class InterceptorCalibrateUI extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({rpeak:0,xpeak:0,phaseb:0,phaseSpeedB:0, phaseModeB:0, phaseSpeed:0,phase:0,phaseMode:0, tmpStr:'', tmpStrB:'', pled_a:0, pled_b:0})
+		this.onCalA = this.onCalA.bind(this);
+		this.onCalB = this.onCalB.bind(this);
+		this.calibrateAll = this.calibrateAll.bind(this);
+		this.onPhaseA = this.onPhaseA.bind(this);
+		this.onPhaseB = this.onPhaseB.bind(this);
+		this.onModeA = this.onModeA.bind(this);
+		this.onModeB = this.onModeB.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+	}
+	componentWillReceiveProps (newProps) {
 		// body...
-		return({rpeak:0,xpeak:0,phaseb:0,phaseSpeedB:0, phaseModeB:0, phaseSpeed:0,phase:0,phaseMode:0, tmpStr:'', tmpStrB:'', pled_a:0, pled_b:0})
-		//		this.refs.cb.setState({rpeak:rpka, xpeak:xpka, phase:phaseA, rpeakb:rpkb, xpeakb:xpkb, phaseb:phaseB,phaseFast:phaseSpeedA,phaseFastB:phaseSpeedB})
-					
-	},
-	componentWillReceiveProps: function (newProps) {
-		// body...
-	},
-	onCalA: function () {
+	}
+	onCalA () {
 		// body...
 		this.props.calibA()
-	},
-	onCalB: function () {
+	}
+	onCalB () {
 		// body...
 		this.props.calibB()
-	},
-	calibrateAll:function () {
+	}
+	calibrateAll () {
 		// body...
 		var self = this;
 		this.props.calibA()
@@ -7165,33 +6984,28 @@ var InterceptorCalibrateUI = React.createClass({
 			self.props.calibB()
 		},100)
 
-	},
-	onPhaseA: function (p) {
+	}
+	onPhaseA (p) {
 		// body...
 		this.props.sendPacket('phaseEdit',p)
-	},
-	onPhaseB: function (p) {
+	}
+	onPhaseB (p) {
 		// body...
 		this.props.sendPacket('phaseEditb',p)
-	},
-	onModeA: function (m) {
-		// body...
-		console.log(['6087', m.target.value])
+	}
+	onModeA (m) {
 		this.props.sendPacket('phaseMode',parseInt(m.target.value))
-	},
-	onModeB: function (m) {
-		// body...
+	}
+	onModeB (m) {
 		this.props.sendPacket('phaseModeb',parseInt(m.target.value))
-	},
-	onFocus: function () {
-		// body...
+	}
+	onFocus () {
 		this.props.onFocus();
-	},
-	onRequestClose:function () {
-		// body...
+	}
+	onRequestClose () {
 		this.props.onRequestClose();
-	},
-	render:function () {
+	}
+	render () {
 		var ls = {display:'inline-block', width:120}
 		var self = this;
 		var modes = ['dry','wet','DSA']
@@ -7241,40 +7055,39 @@ var InterceptorCalibrateUI = React.createClass({
 	
 		
 	}
-})
+}
 
-var StealthCalibrateUI = React.createClass({
-	getInitialState: function () {
-		// body... 
-		return({phaseSpeed:0,phase:0,phaseMode:0, tmpStr:'' })
-	},
-	componentWillReceiveProps: function (newProps) {
+class StealthCalibrateUI extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({phaseSpeed:0,phase:0,phaseMode:0, tmpStr:'' })
+		this.onCalA = this.onCalA.bind(this);
+		this.onPhaseA = this.onPhaseA.bind(this);
+		this.onModeA = this.onModeA.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+	}
+	componentWillReceiveProps (newProps) {
 		// body...
-	},
-	onCalA: function () {
+	}
+	onCalA () {
 		// body...
 		this.props.calib()
-	},
-
-	onPhaseA: function (p) {
+	}
+	onPhaseA (p) {
 		// body...
 		this.props.sendPacket('phaseEdit',p)
-	},
-
-	onModeA: function (m) {
-		// body...
-		console.log(['6087', m.target.value])
+	}
+	onModeA (m) {
 		this.props.sendPacket('phaseMode',parseInt(m.target.value))
-	},
-	onFocus: function () {
-		// body...
+	}
+	onFocus () {
 		this.props.onFocus();
-	},
-	onRequestClose:function () {
-		// body...
+	}
+	onRequestClose () {
 		this.props.onRequestClose();
-	},
-	render:function () {
+	}
+	render () {
 		var ls = {display:'inline-block', width:120}
 		var self = this;
 		var modes = ['dry','wet','DSA']
@@ -7308,30 +7121,27 @@ var StealthCalibrateUI = React.createClass({
 		</div>
 		
 	}
-})
+}
 
-var InterceptorMeterBar = React.createClass({
-	getInitialState: function () {
-		// body...
-		return ({sig:0,sigB:0})
-	},
-	update: function (a,b) {
-		// body...
+class InterceptorMeterBar extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state =  ({sig:0,sigB:0})
+		this.update = this.update.bind(this);
+		this.onSigB = this.onSigB.bind(this);
+		this.onSigA = this.onSigA.bind(this);
+	}
+	update (a,b) {
 		this.refs.tba.update(a);
 		this.refs.tbb.update(b)
-	},
-	onSigB: function () {
-		// body...
-		console.log('on sig b')
+	}
+	onSigB () {
 		this.props.clear(0)
-	},
-	onSigA: function () {
-		// body...
+	}
+	onSigA () {
 		this.props.clear(1)
-	},
-	
-	
-	render:function () {
+	}
+	render () {
 		// body...
 		var tbstyle = {display:'inline-block', width:333, padding:5}
 		return(<div style={{background: 'linear-gradient(75deg, rgb(129, 138, 144), rgb(129, 138, 144) 49.9%,rgb(54, 44, 102) 50.1%, rgb(54, 44, 102))', borderRadius:15,border:'5px solid #818a90', boxShadow:'0 0 14px black'}}><div style={{display:'inline-block'}}>
@@ -7343,30 +7153,33 @@ var InterceptorMeterBar = React.createClass({
 				
 				</div>)
 	}
-})
+}
 
-var KeyboardInputTextButton = React.createClass({
-	getInitialState: function () {
-		// body...
-		return {}
-	},
-	onInput: function (e) {
+class KeyboardInputTextButton extends React.Component{
+	constructor(props) {
+		super(props)
+		this.editValue = this.editValue.bind(this)
+		this.onFocus = this.onFocus.bind(this);
+		this.onInput = this.onInput.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+	}
+	onInput (e) {
 		// body...
 		this.props.onInput(e)
-	},
-	onFocus: function () {
+	}
+	onFocus () {
 		// body...
 		if(this.props.onFocus){
 			this.props.onFocus()
 		}
-	},
-	onRequestClose: function () {
+	}
+	onRequestClose () {
 		// body...
 		if(this.props.onRequestClose){
 			this.props.onRequestClose();
 		}
-	},
-	editValue: function () {
+	}
+	editValue () {
 		// body...
 		var self = this;
 		if(this.props.isEditable){
@@ -7379,7 +7192,7 @@ var KeyboardInputTextButton = React.createClass({
 			this.props.onClick()
 		}
 		
-	},
+	}
 	render() {
 		var bgColor='rgba(200,200,200,1)'
 		var rstyle = {}
@@ -7438,28 +7251,29 @@ var KeyboardInputTextButton = React.createClass({
 		);
 		}
 	}
-})
+}
 
-var CustomKeyboard = React.createClass({
-	getInitialState:function () {
-		// body...
-		return {show:false}
-	},
-	toggle: function () {
-		// body...
+class CustomKeyboard extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = {show:false}
+		this.toggle = this.toggle.bind(this)
+		this.close = this.close.bind(this)
+		//this.onClick = this.onClick.bind(this)
+		this.onChange = this.onChange.bind(this);
+	}
+	toggle () {
 		var self   = this;
 		setTimeout(function () {
-			// body...
 			self.setState({show:true})
 			if(self.props.onFocus){
 				self.props.onFocus()
 			}
 		},100)
 		
-	},
-	close: function () {
+	}
+	close () {
 		var self = this;
-		// body...
 		if(self.state.show){
 			setTimeout(function (argument) {
 				self.setState({show:false})	
@@ -7469,14 +7283,12 @@ var CustomKeyboard = React.createClass({
 			},80)
 		}
 		
-	},
-	onChange: function (value) {
-		// body...
+	}
+	onChange (value) {
 		this.props.onChange(value, this.props.index, this.props.index2);
 		this.close();
-	},
-	render:function () {
-		// body...
+	}
+	render () {
 		var cont = "";
 		if(this.state.show){
 			cont = <CustomKeyboardCont onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
@@ -7488,28 +7300,28 @@ var CustomKeyboard = React.createClass({
 			{cont}
 		</div>
 	}
-})
-var CustomKeyboardCont = onClickOutside(React.createClass({
-	getInitialState: function () {
+}
+var CustomKeyboardCont = onClickOutside(createReactClass({
+	getInitialState:function () {
 		// body...
 		return{value:"", shift:false}
 	},
-	componentDidMount: function () {
+	componentDidMount:function () {
 		// body...
 		this.setState({value:"", shift:false})
 	},
-	handleClickOutside: function (e) {
+	handleClickOutside:function (e) {
 		// body...
 		if(this.props.show){
 			this.props.close();
 		}
 		
 	},
-	close: function () {
+	close:function () {
 		// body...
 		this.props.close();
 	},
-	onKeyPress: function (char) {
+	onKeyPress:function (char) {
 		// body...
 		if(char == 'clear'){
 			this.clear();
@@ -7545,11 +7357,11 @@ var CustomKeyboardCont = onClickOutside(React.createClass({
 		// body...
 		this.setState({value:""})
 	},
-	onShift:function () {
+	onShift :function() {
 		// body...
 		this.setState({shift:!this.state.shift})
 	},
-	render: function () {
+	render:function () {
 		// body...
 		var self = this;
 		var NumericKeyset = [['cancel','-','del'],['7','8','9'],['4','5','6'],['1','2','3'],['0','.','enter']]
@@ -7596,12 +7408,16 @@ var CustomKeyboardCont = onClickOutside(React.createClass({
 		</div>
 	}
 }))
-var CustomKey = React.createClass({
-	onPress: function () {
+class CustomKey extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onPress = this.onPress.bind(this)
+	}
+	onPress () {
 		// body...
 		this.props.onPress(this.props.Key)
-	},
-	render: function () {
+	}
+	render () {
 		// body...
 		if(this.props.Key == 'space'){
 			return	<td onClick={this.onPress} className='customKey' colSpan={5}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
@@ -7628,7 +7444,75 @@ var CustomKey = React.createClass({
 		}
 		
 	}
-})
-injectTapEventPlugin();
+}
+class TreeNode extends React.Component{
+	constructor(props){		
+		super(props) 
+		this.state = ({hidden:true})
+		this.toggle = this.toggle.bind(this)
+	}
+	toggle(){
+		var hidden = !this.state.hidden
+		this.setState({hidden:hidden});
+	}
+	render(){
+		////console.log("render")
+		var cName = "collapsed"
+		if(!this.state.hidden){
+			cName = "expanded"
+		}
+		return (
+			<div hidden={this.props.hide} className="treeNode">
+				<div onClick={this.toggle} />
+				<div className="nodeName">
+					<label className={cName} onClick={this.toggle}>{this.props.nodeName}</label>
+				</div>
+				<div className="innerDiv" hidden={this.state.hidden}>
+				{this.props.children}
+				</div>
+			</div>
+		)
+	}
+}
+class CanvasElem extends React.Component{
+	constructor(props){	
+		super(props)
+		var l1 = new TimeSeries();
+		var l2 = new TimeSeries();
+		this.state =  ({line:l1, line_b:l2})
+		this.stream = this.stream.bind(this);
+	}
+	componentDidMount(){
+		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
+		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#808a90'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
+		smoothie.setTargetFPS(24)
+		smoothie.streamTo(document.getElementById(this.props.canvasId));
+
+		if(this.props.int){
+			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
+			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
+		
+		}else{
+			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#ff00ff'});
+	
+		}
+	}
+	stream(dat) {
+		this.state.line.append(dat.t, dat.val);
+		this.state.line.dropOldData(1000, 3000)
+		if(this.props.int){
+			this.state.line_b.append(dat.t, dat.valb)
+			this.state.line_b.dropOldData(1000, 3000)
+		
+		}
+	}
+	render(){
+		return(
+			<div className="canvElem">
+				<canvas id={this.props.canvasId} height={this.props.h} width={this.props.w}></canvas>
+			</div>
+		);
+	}
+}
 ReactDOM.render(<Container/>,document.getElementById('content'))
 

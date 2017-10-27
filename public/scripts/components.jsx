@@ -1,226 +1,23 @@
 var React = require('react');
+var ReactDom = require('react-dom')
 var SmoothieChart = require('./smoothie.js').SmoothieChart;
 var TimeSeries = require('./smoothie.js').TimeSeries;
-import Keyboard from 'react-material-ui-keyboard';
-import TextField from 'material-ui/TextField';
-import { extendedKeyboard, alphaNumericKeyboard,numericKeyboard } from 'react-material-ui-keyboard/layouts';
-import Snackbar from 'react-toolbox/lib/snackbar/Snackbar.js'
+var createReactClass = require('create-react-class');
 
-//var Concrete = require('./concrete.min.js').Concrete
 
-var SnackbarNotification = React.createClass({
-	getInitialState:function(){
-		return{faults:this.props.faults, vmap:this.props.vmap}
-	},
-	componentWillReceiveProps:function (newProps) {
-		// body...
-		this.setState({faults:newProps.faults})
-	},
-	handleSnackbarClick: function () {
-		// body...
-		this.props.onClear();
-	}, 
-	render: function () {
-		// body...
-		var active = (this.state.faults.length > 0)
-		var cont;
-		var self = this;
-		if(this.state.faults.length < 4){
-			cont = this.state.faults.map(function (f) {
-				return <div style={{display:'inline-block', marginLeft:15}}>{self.props.vmap[f+'Mask']['@translations']['english']['name']}</div>
 
-				// body...
-			})
-		}
-		else{
-			cont = <div>{this.state.faults.length} Faults</div>
-		}
-		
-		return <Snackbar 
-				action='Clear Faults'
-				active={active}
-				timeout={0}
-				onClick={this.handleSnackbarClick}
-				type='warning'
-				className='faultSnackbar'
-				>
-				<div style={{display:'inline-block'}}>{cont}</div>
-				</Snackbar>
+
+class TreeNode extends React.Component{
+	constructor(props){		
+		super(props) 
+		this.state = ({hidden:true})
+		this.toggle = this.toggle.bind(this)
 	}
-})
-
-
-var KeyboardInput = React.createClass({
-	getInitialState: function(){
-		var value = ""
-		 if(typeof this.props.value != 'undefined'){
-		 	value = this.props.value.toString()
-		 }
-		return {textarea:value, open:false}
-	},
-	componentWillReceiveProps: function(newProps){
-		
-		if(typeof newProps.value != 'undefined'){
-			this.setState( {textarea:newProps.value.toString()})
-		}
-		
-	},
-	onTextareaChanged: function(e,v){
-		console.log('onTextareaChanged')
-		this.setState({textarea:v})
-		if(this.props.onInput){
-			this.props.onInput(v)
-		}
-		if(this.props.onChange){
-			this.props.onChange(e)
-		}
-		
-	},
-	onInput: function(e){
-		console.log('onInput')
-		this.setState({textarea:e})
-		if(this.props.onInput){
-			this.props.onInput(e)
-		}
-		if(this.props.onChange){
-			this.props.onChange(e)
-		}
-		
-	},
-	onFocus: function(e){
-		if(ftiTouch){
-			console.log('74 components.jsx')
-			var self = this;
-
-			setTimeout(function () {
-				// body...
-				self.setState({open:true})
-				if(self.props.onFocus){
-					self.props.onFocus();
-				}
-			}, 100)
-		
-		}
-	},
-	onRequestClose:function(e){
-		if(ftiTouch){
-
-
-			console.log(['79 comp'])
-			this.setState({open:false})
-			if(this.props.onRequestClose){
-				this.props.onRequestClose();
-			}
-		}
-	},
-	onOutside: function(e){
-		if(this.state.open){
-			console.log('keyboard should close')
-
-			//this.setState({open:false})
-			this.onRequestClose()
-		}
-		
-	},
-	render:function () {
-		////console.log($('#keyboardinput'))
-		/*<Keyboard value={this.state.textarea} name='thetextareaname'
-			 options={{type:'textarea',layout:'qwerty', autoAccept: true, alwaysOpen: false, appendLocally: true, color:'light', class:'sxcycx', updateOnChange: true }} onChange={this.onTextareaChanged} /> 
-*/
-		// body...
-		var layout = [extendedKeyboard];
-		if(this.props.num){
-			layout = [numericKeyboard]
-		}
-		var style =  this.props.Style || {width:'100%'} 
-		var textfield = ( <TextField
-          	style = {style}
-            id={this.props.tid}
-            value={this.state.textarea}
-            onChange={this.onTextareaChanged}
-            onFocus={this.onFocus}
-          />)
-		if(ftiTouch){
-			//console.log(ftiTouch)
-
-		return (
-			<div style={{style}}>
-			      <Keyboard textField={textfield}    keyboardKeyHeight={65}
-                        keyboardKeyWidth={105}
-                        keyboardKeySymbolSize={35}  open={this.state.open} onRequestClose={this.onRequestClose} onInput={this.onInput} layouts={layout} handleClickOutside={this.onOutside}/>
-                        </div>
-			 )
-			}else{
-				//console.log(ftiTouch)
-				return(
-						<div style={{style}}>
-		
-			      <Keyboard textField={textfield} open={false} onInput={this.onInput} layouts={layout} handleClickOutside={this.onOutside}/>
-			      </div>)
-			}
-    
-	}
-})
-
-var Panel = React.createClass({
-	handleItemclick: function(dat){
-		this.props.onHandleClick(dat);
-	},
-	toggle: function(e){
-		e.preventDefault();
-		this.setState({isHidden: !this.state.isHidden} );
-	},
-	
-	getInitialState: function(){
-		var t1 = '                    '
-		var ws;
-
-		return{hide:true, prodRec:{}, sysRec:{}, prodvar:0, prodArray:[], sysvar:0, sysArray:[], dspip:"192.168.10.51", 
-		tickerVal:0, cursor:0, type:'',n:0,text:'', t1:t1,t2:'                    ', leds:0, lcd:0, ws:ws, isDesktop:true, isHidden:false}
-
-	},
-	handleMsg: function(msg){
-		////console.log(msg)
-		var dv = new DataView(msg);
-			var lcd_type = dv.getUint8(0);
-			////console.log(lcd_type)
-    		var lcd_leds = dv.getUint8(1);
-    		var lcd_bits = dv.getUint8(2);
-    		var lcd_cur  = dv.getUint8(3);
-    		var lcd_len  = dv.getUint8(4); // text-size
-    		if (lcd_len > 72) return; // packet is screwed up -> not necessarily!! need to grab info from vdef for packet size
-    		var line1 = String.fromCharCode.apply(null, new Uint8Array(msg,5,lcd_len/2))
-    		var line2 = String.fromCharCode.apply(null, new Uint8Array(msg,5+lcd_len/2,lcd_len/2));
-    		if(!((this.refs.pd.state.cursor == lcd_cur)&&(this.refs.pd.state.t1 == line1)&&(this.refs.pd.state.t2 == line2))){
-    			this.refs.pd.setState({cursor:lcd_cur, t1:line1, t2:line2});
-    		}
-	},
-	render: function(){
-		var ih = this.state.isHidden;
-		var handler = this.handleItemclick;
-		
-		 var className = "menuCategory expanded";
-	   
-
-		return (<div className={className}>
-			<span  onClick={this.toggle}><h2 >{"Panel"}</h2></span>
-			<div hidden ={ih}>
-				<PanelDisplay ws={this.props.ws} ref={'pd'} isDesktop={this.state.isDesktop} minFont={this.state.minFont} maxFont={this.state.maxFont} />
-				<PanelControls ws={this.props.ws} isDesktop={this.state.isDesktop}/>
-				</div>
-			</div>)
-	}
-})
-
-var TreeNode = React.createClass({
-	getInitialState: function(){
-		return ({hidden:true})
-	},
-	toggle: function(){
+	toggle(){
 		var hidden = !this.state.hidden
 		this.setState({hidden:hidden});
-	},
-	render: function(){
+	}
+	render(){
 		////console.log("render")
 		var cName = "collapsed"
 		if(!this.state.hidden){
@@ -238,341 +35,11 @@ var TreeNode = React.createClass({
 			</div>
 		)
 	}
-})
-var MenuCategory = React.createClass({
-	handleItemclick: function(dat){
-		this.props.onHandleClick(dat);
-	},
-	toggle: function(e){
-		e.preventDefault();
-		this.setState({isHidden: !this.state.isHidden} );
-	},
-	getInitialState: function(){
-		return({
-			 isHidden: false
-			
-		});
-	},
-	render: function(){
-		var ih = this.state.isHidden;
-		var handler = this.handleItemclick;
-		//var hasContent = this.props.data
-	    //console.log(this.props.data)
-		var menuNodes = ""
-		var mNodes = []
-		if(Array.isArray(this.props.data)){
-			menuNodes = this.props.data.map(function (item) {
-	        //console.log(item)
-	        if(item.length == 2){
-	        	//console.log(item.length)
-	        	return (
-	      	<MenuItem lkey={item[0]} name={item[0]} isHidden={ih} hasChild={false} 
-	      	data={item} onItemClick={handler} hasContent={true}/>)	
-	        }else{
-	        	//console.log(item)
-	        	for(var it in item){
-	        		//console.log(it)
-	        		//console.log(item[it])
-	        		var vit = (<MenuItem lkey={it} name={it} isHidden={ih} hasChild={false} data={item[it]} onItemClick={handler} hasContent={true}/>)
-	        		mNodes.push(vit)
-	        	}
-	        //	//console.log(mNodes)
-	      	}	
-	        	
-	        });
-	    
-		}else{
-			menuNodes = <MenuItem isHidden={ih} onItemClick={handler} name={this.props.data} data={this.props.data}/>
-		}
-		
-	    var className = "menuCategory";
-	    if (ih){
-	    	className = "menuCategory collapsed";
-	    }
-	    else{
-	    	className = "menuCategory expanded";
-	    }
-		return(
-			<div className={className}>
-			<span  onClick={this.toggle}><h2 >{this.props.name}</h2></span>
-				{menuNodes}
-				{mNodes}
-			</div>
-		);
-	}
-})
-var SearchBox = React.createClass({
-	render: function() {
-		return (
-			<div></div>
-		);
-	}
-})
-var MenuItem = React.createClass({
-	getInitialState: function(){
-		return ({mode:0})
-	},
-	onItemClick: function(){
-		if(Array.isArray(this.props.data)&&(this.props.data.length > 1)){
-			this.props.onItemClick(this.props.data)	
-		}else{
-			//console.log(this.props.data)
-		}
-		
-	},
-	sendPacket: function(){
-
-	},
-	render: function(){
-		if(this.state.mode == 1){
-			return <EditControl name={this.props.name} data={this.props.data} sendPacket={this.sendPacket}/>
-		}
-		if(Array.isArray(this.props.data)&&(this.props.data.length > 1)){
-		return (<div className='menuItem' hidden={this.props.isHidden} onClick={this.onItemClick}>{this.props.name}</div>)
-		}else{
-			var pram;
-			var val;
-			if(typeof pVdef[0][this.props.name] != 'undefined'){
-				pram = pVdef[0][this.props.name]
-				//console.log(pram)
-				var deps = []
-				val = this.props.data
-				if(pram["@type"]){
-					var f =	pram["@type"]["s"]
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(d){
-							////console.log(d)
-							if(pVdef[2][d]["@rec"] == 0){
-								return sysSettings[d];
-							}else{
-								return prodSettings[d];
-							}
-						});
-					}
-					val = Params[f].apply(this, [].concat.apply([], [val, deps]));
-				}
-
-				if(pram["@labels"]){
-					val = pVdef[3][pram["@labels"]]["english"][val]
-				}
-			}else if(typeof pVdef[1][this.props.name] != 'undefined'){
-				pram = pVdef[1][this.props.name]
-				//console.log(pram)
-				var deps = []
-				val = this.props.data
-				if(pram["@type"]){
-					var f =	pram["@type"]["s"]
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(d){
-							////console.log(d)
-							if(pVdef[2][d]["@rec"] == 0){
-								return sysSettings[d];
-							}else{
-								return prodSettings[d];
-							}
-						});
-					}
-					val = Params[f].apply(this, [].concat.apply([], [val, deps]));
-				}
-
-				if(pram["@labels"]){
-					val = pVdef[3][pram["@labels"]]["english"][val]
-				}
-			}else{
-				val = this.props.data
-			}
-			return (<div className='menuItem' hidden={this.props.isHidden} onClick={this.onItemClick}>{this.props.name + ": " + val}</div>)
-		}
-	}
-})
-var NavButton = React.createClass({
-	handleClick: function(){
-		//send DSP call to update panel accordingly
-		var data = new Uint8Array(1);
-		data[0] = this.props.keyMap & 0xff;
-		//console.log(this.props.ws)
-		this.props.ws.send(data.buffer);
-		
-	},
-	render: function(){
-		return(<button className={this.props.klass} onClick={this.handleClick}></button>)
-	}
-})
-
-var PanelControls = React.createClass({
-	
-	render: function(){
-		var self = this;
-		if(!this.props.isDesktop){
-			return(
-			<div className="panelControls-mobile">
-			<PanelNav flat={true}/>
-			<table><tr>
-			<td>
-				<PanelButton ws={self.props.ws} label="Enter" keyMap={50}/>
-				<PanelButton ws={self.props.ws} label="Exit" keyMap={49}/>
-				<PanelButton ws={self.props.ws} label="Menu" keyMap={66}/>
-				
-			</td><td>
-				<PanelButton ws={self.props.ws} label="Sensitivity" keyMap={55}/>
-				<PanelButton ws={self.props.ws} label="Product" keyMap={68}/>
-				<PanelButton ws={self.props.ws} label="Calibrate" keyMap={35}/>
-				<PanelButton ws={self.props.ws} label="Test" keyMap={48}/>
-				<PanelButton ws={self.props.ws} label="Unit" keyMap={42}/>
-			</td>
-			</tr>
-			</table>
-			</div>
-			)
-		}
-		return(
-			<div className="panelControls">
-			<table><tr>
-			<td>
-				<PanelButton ws={self.props.ws} label="Enter" keyMap={50}/>
-				<PanelButton ws={self.props.ws} label="Exit" keyMap={49}/>
-				<PanelButton ws={self.props.ws} label="Menu" keyMap={66}/>
-			</td><td>
-				<PanelNav ws={self.props.ws}/>
-			</td>
-			<td>
-				<PanelButton ws={self.props.ws} label="Sensitivity" keyMap={55}/>
-				<PanelButton ws={self.props.ws} label="Product" keyMap={68}/>
-				<PanelButton ws={self.props.ws} label="Calibrate" keyMap={35}/>
-				<PanelButton ws={self.props.ws} label="Test" keyMap={48}/>
-				<PanelButton ws={self.props.ws} label="Unit" keyMap={42}/>
-			</td>
-			</tr>
-			</table>
-			</div>
-		)
-	}
-});
-
-var PanelButton = React.createClass({
-	handleClick: function(){
-		//send DSP call to update panel accordingly
-		var data = new Uint8Array(1);
-		data[0] = this.props.keyMap & 0xff;
-		this.props.ws.send(data.buffer);
-		
-	},
-	render: function(){
-		return(
-			<div>
-			<button className='panelButton' onClick={this.handleClick}>
-				{this.props.label}
-				</button>
-			</div>)
-	}
-});
-var PanelNav = React.createClass({
-	render: function(){
-		var self = this;
-		if(this.props.flat){
-			return(
-				<div className='panelNav'>
-				<table><tr>
-				<td><NavButton ws={self.props.ws} klass='pButton' keyMap={67}/></td>
-				<td><NavButton ws={self.props.ws} klass='lButton' keyMap={54}/></td>
-				<td><NavButton ws={self.props.ws} klass='rButton' keyMap={52}/></td>
-				<td><NavButton ws={self.props.ws} klass='mButton' keyMap={53}/></td>
-				</tr></table>
-				</div>
-				)
-		}else{
-		return(<div className='panelNav'>
-				<table>
-				<tr><td></td><td>
-					<NavButton ws={self.props.ws} klass='pButton' keyMap={67}/>
-	
-				</td><td></td></tr>
-				<tr><td>
-					<NavButton ws={self.props.ws} klass='lButton' keyMap={54}/>
-	
-				</td><td></td><td>
-					<NavButton ws={self.props.ws} klass='rButton' keyMap={52}/>
-
-				</td></tr>
-				<tr><td></td><td>
-					<NavButton ws={self.props.ws} klass='mButton' keyMap={53}/>
-
-				</td><td></td></tr>
-				</table>
-			</div>)
-	}
-	}
-});
+}
 
 var placeholder = document.createElement("li");
 placeholder.className = "placeholder";
 
-var List = React.createClass({
-  getInitialState: function() {
-    return {data: this.props.data};
-  },
-  componentWillReceiveProps: function (newProps) {
-  	// body...
-  	//console.log(newProps)
-  	this.setState({data:newProps.data})
-  },
-  dragStart: function(e) {
-    this.dragged = e.currentTarget;
-    e.dataTransfer.effectAllowed = 'move';
-    // Firefox requires dataTransfer data to be set
-    e.dataTransfer.setData("text/html", e.currentTarget);
-  },
-  dragEnd: function(e) {
-
-    this.dragged.style.display = "block";
-    this.dragged.parentNode.removeChild(placeholder);
-    // Update data
-    var data = this.state.data;
-    var from = Number(this.dragged.dataset.id);
-    var to = Number(this.over.dataset.id);
-    if(from < to) to--;
-    if(this.nodePlacement == "after") to++;
-    data.splice(to, 0, data.splice(from, 1)[0]);
-    this.setState({data: data});
-  },
-  dragOver: function(e) {
-    e.preventDefault();
-    this.dragged.style.display = "none";
-    if(e.target.className == "placeholder") return;
-    this.over = e.target;
-    // Inside the dragOver method
-    var relY = e.clientY - this.over.offsetTop;
-    var height = this.over.offsetHeight / 2;
-    var parent = e.target.parentNode;
-    
-    if(relY > height) {
-      this.nodePlacement = "after";
-      parent.insertBefore(placeholder, e.target.nextElementSibling);
-    }
-    else if(relY < height) {
-      this.nodePlacement = "before"
-      parent.insertBefore(placeholder, e.target);
-    }
-  },
-  render: function() {
-  	//console.log(this.state.data)
-    return <ul onDragOver={this.dragOver}>
-    	{this.state.data.map(function(item, i) {
-      	return (
-        	<li
-		        data-id={i}
-            key={i}
-            draggable="true"
-            onDragEnd={this.dragEnd}
-            onDragStart={this.dragStart}
-          >
-       			{item}
-          </li>
-        )
-   	 	}, this)}
-    </ul>
-  }
-});
 
 
 function yRangeFunc(range){
@@ -586,13 +53,15 @@ function yRangeFunc(range){
 	return({min:(0-max),max:max});
 }
 
-var CanvasElem = React.createClass({
-	getInitialState: function () {
+class CanvasElem extends React.Component{
+	constructor(props){	
+		super(props)
 		var l1 = new TimeSeries();
 		var l2 = new TimeSeries();
-		return ({line:l1, line_b:l2})
-	},
-	componentDidMount: function(){
+		this.state =  ({line:l1, line_b:l2})
+		this.stream = this.stream.bind(this);
+	}
+	componentDidMount(){
 		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
 		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#808a90'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
 		smoothie.setTargetFPS(24)
@@ -606,8 +75,8 @@ var CanvasElem = React.createClass({
 			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#ff00ff'});
 	
 		}
-	},
-	stream:function (dat) {
+	}
+	stream(dat) {
 		this.state.line.append(dat.t, dat.val);
 		this.state.line.dropOldData(1000, 3000)
 		if(this.props.int){
@@ -615,17 +84,18 @@ var CanvasElem = React.createClass({
 			this.state.line_b.dropOldData(1000, 3000)
 		
 		}
-	},
-	render: function(){
+	}
+	render(){
 		return(
 			<div className="canvElem">
 				<canvas id={this.props.canvasId} height={this.props.h} width={this.props.w}></canvas>
 			</div>
 		);
 	}
-});
-var ConcreteElem = React.createClass({
-	getInitialState: function(){
+}
+class ConcreteElem extends React.Component{
+	constructor(props){
+		super(props)
 		var axisLayer = new Concrete.Layer();
 		var gridLayer = new Concrete.Layer();
 		var plotLayers = [];
@@ -635,9 +105,9 @@ var ConcreteElem = React.createClass({
 
 		var x = this.props.w/2
 		var y = this.props.h/2
-		return({wrapper:null,gridLayer:gridLayer, plotLayers:plotLayers, axisLayer:axisLayer, axis:{x:[(0-x),x], r:[(0-y),y]}, Xscale:1, Rscale:1, packs:[[],[],[],[],[]], curPack:0, redraw:true})
-	},
-	componentDidMount: function(){
+		this.state = ({wrapper:null,gridLayer:gridLayer, plotLayers:plotLayers, axisLayer:axisLayer, axis:{x:[(0-x),x], r:[(0-y),y]}, Xscale:1, Rscale:1, packs:[[],[],[],[],[]], curPack:0, redraw:true})
+	}
+	componentDidMount(){
 		var concreteContainer = document.getElementById(this.props.concreteId);
 
 		var wrapper = new Concrete.Wrapper({width:this.props.w, height:this.props.h, container:concreteContainer})
@@ -677,19 +147,19 @@ var ConcreteElem = React.createClass({
 		})
 		this.setState({wrapper:wrapper});
 		this.drawAxis()
-	},
-	getSampleStream: function(){
+	}
+	getSampleStream(){
 		this.onSwitchPack();
 		socket.emit('initTestStream')
-	},
-	onSwitchPack: function(){
+	}
+	onSwitchPack(){
 		var nextPack = (this.state.curPack+ 1)%5
 		var packs = this.state.packs;
 		packs[nextPack] = []
 		this.setState({curPack:nextPack,packs:packs, redraw:true})
 
-	},
-	parseXR: function(xr){
+	}
+	parseXR(xr){
 		var packs = this.state.packs
 		packs[this.state.curPack].push(xr)
 		var minX = this.state.axis.x[0]
@@ -711,8 +181,8 @@ var ConcreteElem = React.createClass({
 		var Rscale = (maxR-minR)/this.props.h;
 		this.setState({ axis:{x:[minX,maxX],r:[minR,maxR]},Xscale:Xscale,Rscale:Rscale, redraw:redraw, packs:packs})
 		this.drawPacksSim();
-	},
-	drawPacks: function(){
+	}
+	drawPacks(){
 		var ctx = this.state.plotLayers[this.state.curPack].sceneCanvas.context;
 		var strokeStyles = ['#FF0000', '#d8bab3', '#aa938d', '#7a6965', '493f3d']
 		var alpha = [1.0,0.8,0.7,0.6,0.5,0.4]
@@ -755,8 +225,8 @@ var ConcreteElem = React.createClass({
 			}
 			ctx.stroke();
 		}
-	},
-	clear: function(){
+	}
+	clear(){
 		this.state.plotLayers.forEach(function(p) {
 			p.sceneCanvas.clear();
 		})
@@ -764,8 +234,8 @@ var ConcreteElem = React.createClass({
 		var y = this.props.h/2
 		this.setState({axis:{x:[(0-x),x], r:[(0-y),y]}, Xscale:1, Rscale:1, packs:[[],[],[],[],[]], curPack:0, redraw:true})
 		this.toggleGrid();
-	},
-	drawPacksSim: function(){
+	}
+	drawPacksSim(){
 		var self = this;
 		var strokeStyles = ['#FF0000', '#d8bab3', '#aa938d', '#7a6965', '493f3d']
 		var alpha = [1.0,0.8,0.7,0.6,0.5,0.4]
@@ -808,9 +278,9 @@ var ConcreteElem = React.createClass({
 				}				
 			}
 		}
-	},
+	}
 
-	drawAxis: function(){
+	drawAxis(){
 		var ctx = this.state.axisLayer.sceneCanvas.context
 			ctx.beginPath();
 			ctx.strokeStyle = 'black'
@@ -822,8 +292,8 @@ var ConcreteElem = React.createClass({
 		ctx.lineTo(this.props.w,(this.state.axis.r[1])/this.state.Rscale)
 		ctx.stroke();
 		this.toggleGrid();
-	},
-	toggleGrid:function(){
+	}
+	toggleGrid(){
 		var ctx = this.state.gridLayer.sceneCanvas.context
 		var hctx = this.state.gridLayer.hitCanvas.context;
 		hctx.fillRect(0,0,400,400)
@@ -857,8 +327,8 @@ var ConcreteElem = React.createClass({
 			ctx.lineTo(xlim/this.state.Xscale + 5,((100)*(j+1)*rfactor + rlim)/this.state.Rscale)
 		}
 		ctx.stroke();
-	},
-	render:function(){
+	}
+	render(){
 		return(<div className='prefInterface'>
 			<div><label>X Range:[ {this.state.axis.x[0] + ' ~ ' + this.state.axis.x[1]}]</label></div>
 			<div><label>R Range:[ {this.state.axis.r[0] + ' ~ ' + this.state.axis.r[1]}]</label></div>
@@ -869,7 +339,7 @@ var ConcreteElem = React.createClass({
 			<button onClick={this.clear}>Clear</button>
 			</div>)
 	}
-});
+}
 /*
 	drawStream:function(){
 		var canv = document.getElementById(this.props.canvasId)
@@ -957,7 +427,7 @@ var ConcreteElem = React.createClass({
 		
 	},
 */
-/*var DetMainInfo = React.createClass({
+/*var DetMainInfo = createReactClass({
 	getInitialState: function () {
 		// body...
 		var res = vdefByIp[this.props.det.ip]
@@ -1238,6 +708,6 @@ var ConcreteElem = React.createClass({
 module.exports = {}
 module.exports.ConcreteElem =  ConcreteElem;
 module.exports.CanvasElem = CanvasElem;
-module.exports.KeyboardInput = KeyboardInput;
+//module.exports.KeyboardInput = KeyboardInput;
 module.exports.TreeNode = TreeNode
-module.exports.SnackbarNotification = SnackbarNotification;
+//module.exports.SnackbarNotification = SnackbarNotification;
