@@ -8,7 +8,6 @@ const app = express();
 const http = require('http').createServer(app);
 const HTTP = require('http')
 const net = require('net')
-//const io = require('socket.io')(http);
 const fti = require('./fti-flash-node/index.js');
 const arloc = fti.ArmFind;
 const flatfile = require('flat-file-db')
@@ -25,9 +24,11 @@ const helmet = require('helmet');
 const cp = require('child_process')
 const WebSocket = require('ws')
 const wss = new WebSocket.Server({server:http})
-//const processor = cp.fork('./processor.js')
-
+const stream = require('stream')
+//var usb = require('usb')
+//var drivelist = require('drivelist')
 var db = flatfile('./dbs/users.db')
+var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
 
 
@@ -37,12 +38,63 @@ db.on('open', function() {
   //db.put('admin',{level:5,pw:hs})
   console.log(db.keys())
 });
-//processor.on('message',(m)=>{
-  //relayParamMsg2(m)
-//})
+
+var funcJSON ={
+  "@func":{"frac_value":"(function(int){return (int/(1<<15));})",
+      "mm":"(function(dist,metric){if(metric==0){return (dist/25.4).toFixed(1) + ' in'}else{ return dist + ' mm'}})",
+      "prod_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+      "dsp_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+      "dsp_serno_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+      "rec_date":"(function(val){var dd = val & 0x1f; var mm = (val >> 5) & 0xf; var yyyy = ((val>>9) & 0x7f) + 1996; return yyyy.toString() + '/' + mm.toString() + '/' + dd.toString()})",
+      "phase_spread":"(function(val){return Math.round((val/(1<<15))*45)})",
+      "phase":"(function(val,wet){ if(wet == 0){if((((val/(1<<15))*45)+90) <= 135){return (((val/(1<<15))*45)+90).toFixed(2); }else{ return ((val/(1<<15))*45).toFixed(2); }}else{ return ((val/(1<<15))*45).toFixed(2);}})",
+      "rej_del":"(function(ticks,tack) { if(tack==0){return (ticks/231.0).toFixed(2);}else{return ticks;}})",
+      "belt_speed":"(function(tpm,metric,tack){if(tack!=0){return tpm;} var speed= (231.0/tpm)*60; if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}})",
+      "password8":"(function(words){return words.map(function(w){return((w&0xffff).toString(16))}).join(',');})",
+      "rej_chk":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+      "rej_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+      "rej_latch":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+      "prod_name":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+      "peak_mode":"(function(eye,time){if(eye == 0){return(time*2;)}else{return 1;}})",
+      "phase_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+      "eye_rej":"(function(photo,lead,width){if(photo == 0){return 3;}else{if(lead==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})",
+      "bit_array":"(function(val){if(val == 0){return 0;}else{ var i = 0; while(i<16 && ((val>>i) & 1) == 0){ i++; } i++;  return i; } })",
+      "patt_frac":"(function(val){return (val/10.0).toFixed(1)})",
+      "eye_rej_mode":"(function(val,photo,width){if(photo == 0){return 3;}else{if(val==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})",
+      "ipv4_address":"(function(words){return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');})"
+      }
+  }
 
 
+//lets just keep it here for now
+var accounts = {"operator":{"acc":1,"password":"0123"},"engineer":{"acc":2,"password":"0123"},"fortress":{"acc":3,"password":"0123"}}
+/*
+usb.on('attach', function(dev){
+  console.log('usb attached');
+  console.log(dev)
+  console.log('drivelist:')
+  setTimeout(function(){
+     drivelist.list((error, drives) => {
+  if (error) {
+    throw error;
+  }
 
+  drives.forEach((drive) => {
+    console.log(drive);
+    if(drive.description == 'Flash Drive'){
+      if(drive.mountpoints.length > 0){
+        fs.writeFile(drive.mountpoints[0].path + '/test.txt', Date.now().toString())
+      }
+    }  });
+});
+   }, 5000)
+  
+})
+usb.on('detach', function(dev){
+  console.log('usb detached');
+  console.log(dev)
+})
+*/
 var prefs;
 
 var cur = Date.now()
@@ -52,6 +104,16 @@ let rassocs = {}
 let nassocs = {}
 let rconns = {}
 let dsp_ips = []
+let clients = {};
+let udpClients = {};
+let vdefs = {};
+let nVdfs = {};
+let pVdefs = {};
+let nphandlers = {};
+let accountJSONs = {};
+let networking = new NetworkInfo();
+
+networking.listInterfaces().then(console.log).catch(console.error);
 
 function load_vdef_parameters(json){
  // console.log(json)
@@ -67,7 +129,7 @@ function write_netpoll_events(message, ip){
   message = null;
 }
 
-function initSocks(arr){
+function initSocks(arr, cb){
   dsp_ips = []
   console.log('dsp_ips')
   for(var i = 0; i<arr.length; i++){
@@ -77,11 +139,13 @@ function initSocks(arr){
   console.log('initiating sockets')
   console.log(dsp_ips.length)
  // setTimeout(function(){nextSock('init');},300);
- udpCon('init')
-
+ udpCon('init', cb)
+//accounts/db
 }
 function getVdef(ip, callback){
   var tclient = tftp.createClient({host:ip ,retries:10, timeout:1000})
+  console.log('start getting vdef from ' + ip)
+  //var put = tclient.createPutStream()
   var get = tclient.createGetStream('/flash/vdef.json')
       var rawVdef = [];
       get.on('data', (chnk)=>{
@@ -114,12 +178,16 @@ function getVdef(ip, callback){
         nVdfs[ip] = nvdf
         pVdefs[ip] = pVdef
         callback(ip,vdef) 
-        get.abort()              
+
+        get.abort()     
+        tclient = null;         
       })
-      get.on('error',(e)=>{
-        console.log(e)
-      })
+     
     })
+     get.on('error',(e)=>{
+        console.log(e)
+        tclient = null;
+      })
     /*
     fs.readFile(__dirname + '/json/170429.json',(err, data) => {
       // body...
@@ -128,6 +196,35 @@ function getVdef(ip, callback){
       
       callback(ip,vdef)
     })*/
+}
+function getBinarySize(string) {
+    return Buffer.byteLength(string, 'utf8');
+}
+function putJSONStringTftp(ip, string, filename){
+  var tclient = tftp.createClient({host:ip ,retries:10, timeout:1000})
+  var rs = new stream.Readable();
+  rs.push(string)
+  rs.push(null);
+  var put = tclient.createPutStream(filename, {size:getBinarySize(string)})
+  rs.pipe(put);
+}
+function getJSONStringTftp(ip, filename, callBack){
+  var tclient = tftp.createClient({host:ip,retries:10, timeout:1000})
+ 
+  var get = tclient.createGetStream(filename) 
+  var chunks = [];
+  get.on('data', function(chnk){
+    chunks.push(chnk.toString())
+  })
+  get.on('end',function(){
+    callBack(chunks.join(''));
+  })
+}
+function getAccountsJSON(ip, callback){
+  getJSONStringTftp(ip, '/accounts.json', function(str){
+    accountJSONs[ip] = JSON.parse(str)
+    callback(JSON.parse(str))
+  })
 }
 
 function processParam(e, Vdef, nVdf, pVdef, ip) {
@@ -235,7 +332,9 @@ function wordValue(arr, p){
     var sa = arr.slice(p["@i_var"], p["@i_var"]+n)
     arr = null;
     if(p['@type']){
+      //funcJSON['@func'][p['@type']].apply(this, sa)
       return Params[p['@type']](sa)
+    //  return eval(funcJSON['@func'][p['@type']])(sa)
     }else{
       var str = sa.map(function(e){
       return (String.fromCharCode((e>>8),(e%256)));
@@ -497,10 +596,7 @@ class Params{
     //todo
     //console.log(ip)
     //return ip
-    var str_Words = words.map(function(w){
-      return [(w>>8)&0xff,w&0xff].join('.')
-    })
-    return str_Words.join('.')
+   return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');
   }
 }
 function udpConSing(ip){
@@ -532,10 +628,35 @@ function udpConSing(ip){
 
     })
 
+  }else{
+    console.log('else!')
+    udpClients[ip] = null;
+         udpClients[ip] = new UdpParamServer(ip , function(_ip,e){
+      if(e){
+     //   var ab = toArrayBuffer(e.data)
+      //  console.log(ab)
+      if(vdefs[_ip]){
+        processParam(e,vdefs[_ip],nVdfs[_ip],pVdefs[_ip],ip)
+        //processor.send({e:e,vdef:vdefs[_ip],nVdf:nVdfs[_ip],pVdef:pVdefs[_ip],ip:_ip})
+      }
+       // 
+      //  relayParamMsg({det:{ip:_ip},data:{data:ab}})
+      }
+      _ip = null;
+      e = null;
+      //ab = null;
+    })
+    getVdef(ip, function(__ip,vdef){
+      if(typeof nphandlers[__ip] == 'undefined'){
+        nphandlers[__ip] = new NetPollEvents(__ip,vdef,write_netpoll_events)
+      }
+
+    })
+
   }
   
 }
-function udpCon(ip){
+function udpCon(ip, cb){
   if(ip == 'init'){
     if(dsp_ips.length != 0){
       /*console.log('udp://'+ dsp_ips[0])
@@ -548,8 +669,9 @@ function udpCon(ip){
         
       })*/
       getVdef(dsp_ips[0], function(_ip,vdef){
+        console.log('this is the first one')
      //   nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
-        udpCon(_ip)
+        udpCon(_ip, cb)
       })
       
 
@@ -570,9 +692,11 @@ function udpCon(ip){
       })*/
       getVdef(dsp_ips[ind+1], function(_ip,vdef){
      //   nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
-        udpCon(_ip)
+        udpCon(_ip, cb)
       })
       
+    }else{
+      cb();
     }
    
   }
@@ -739,12 +863,7 @@ http.listen(app.get('port'), function(){
 	console.log('Server started: http://localhost:' + app.get('port') + '/');
 
 });
-let clients = {};
-let udpClients = {};
-let vdefs = {};
-let nVdfs = {};
-let pVdefs = {};
-let nphandlers = {}
+
 
 class FtiSockIOServer{
   constructor(sock){
@@ -821,15 +940,7 @@ wss.on('connection', function(scket, req){
     //socket.removeAllListeners();
     socket = null;  
   })
- // console.log(wss.clients)
-  /*socket.on('message', function (argument) {
-    // body...
-    if(argument.event == 'reset'){
-      resetListner(argument.msg)
-    }else if(argument.event == 'getUsers'){
-      getUsersListener(argument.msg)
-    }
-  })*/
+
   function getProdList(ip) {
   // body...
   console.log('get Prod List')
@@ -943,19 +1054,23 @@ function getProdName(ip, list, ind, callback, arr){
     clients = {};
     socket.emit('resetConfirm','locate now')
   })
-  socket.on('getUsers', function(arg){
-    var keys = db.keys();
+  socket.on('resetReq', function(argument){
+
+  })
+  socket.on('getUsers', function(ip){
+ /*   var keys = db.keys();
     var users = []
     keys.forEach(function(k){
       users.push({id:k, level:db.get(k).level});
     })
     console.log(users)
     console.log(keys)
-    socket.emit('userList', users)
+    socket.emit('userList', users)*/
+
   })
   socket.on('login', function(arg){
 
-    if(db.has(arg.id)){
+    /*if(db.has(arg.id)){
       if(crypto.createHash('sha256').update(arg.pw).digest('base64') == db.get(arg.id).pw){
         loginLevel = db.get(arg.id).level
         socket.emit('loggedIn', {id:arg.id,level:db.get(arg.id).level})
@@ -965,6 +1080,9 @@ function getProdName(ip, list, ind, callback, arr){
       }
     }else{
       socket.emit('access denied', 'username invalid')
+    }*/
+    if(arg.password == accounts[arg.user].password){
+      socket.emit('loginSucess', {user:arg.user})
     }
   })
   socket.on('logOut', function(arg){
@@ -1005,19 +1123,16 @@ function getProdName(ip, list, ind, callback, arr){
     //dsp not visible
     console.log('dsp not visible')
    
+    }else if(e[i].ver == '20.17.4.27'){
+      //Hack, seeing a 170427 on the network seems to cause this to crash. should actually check for versions properly in the future to ignore incompatible version.
+      console.log('ignore this version')
     }else{
       console.log('dsp visible')
       dspip = ip.join('.');
      
      // console.log(dspip);
       dspips.push(e[i]);
-
-    
-    
-
-
-
-     }
+    }
    }
  }
 
@@ -1032,9 +1147,11 @@ for(var i = 0; i < dspips.length;i++){
   }
   console.log('dsp ips')
  // console.log(dspips)
-  initSocks(dsps);
-       socket.emit('locatedResp', dspips)
+  initSocks(dsps, function(){
+         socket.emit('locatedResp', dspips)
 
+  });
+    
  
 });
 });
@@ -1091,6 +1208,45 @@ socket.on('getProdList', function (ip) {
   socket.on('connectToUnit', function(ip){
     console.log('connect sing!! '+ ip)
     udpConSing(ip)
+    getAccountsJSON(ip,function(json){
+      socket.emit('accounts', {data:json,ip:ip})
+    })
+  })
+  socket.on('authenticate', function(packet){
+    console.log('authenticate this packet')
+    console.log(packet)
+    if(accountJSONs[packet.ip][packet.user].password == packet.pswd){
+      console.log('success')
+      socket.emit('authResp', {user:packet.user, level:accountJSONs[packet.ip][packet.user].acc})
+    }else{
+      console.log('fail')
+      socket.emit('authFail')
+    }
+  })
+  socket.on('addAccount', function(pack){
+
+    console.log(pack)
+    var accJson = JSON.parse(JSON.stringify(accountJSONs[pack.ip]));
+    accJson[pack.user.user] = pack.user
+    accountJSONs[pack.ip] = accJson
+    console.log(accJson)
+    putJSONStringTftp(pack.ip, JSON.stringify(accJson), '/accounts.json')
+    setTimeout(function(){
+        getAccountsJSON(pack.ip,function(json){
+      socket.emit('accounts', {data:json,ip:pack.ip})
+    })
+    },500)
+  })
+  socket.on('removeAccount', function(pack){
+    var accJson = JSON.parse(JSON.stringify(accountJSONs[pack.ip]));
+    delete accJson[pack.user]
+    accountJSONs[pack.ip] = accJson
+     putJSONStringTftp(pack.ip, JSON.stringify(accJson), '/accounts.json')
+      setTimeout(function(){
+        getAccountsJSON(pack.ip,function(json){
+      socket.emit('accounts', {data:json,ip:pack.ip})
+    })
+    },500)
   })
 
       
@@ -1126,4 +1282,18 @@ socket.on('getProdList', function (ip) {
   socket.on('hello', function(f){
     socket.emit('connected', "CONNECTION");
   });
+  socket.on('nifip', function(addr){
+    //need to figure out how to determine interface gracefully. maybe specify from onset? 
+    console.log(addr)
+    networking.applySettings('eth0', {active:true, ipv4:{address:'0.0.0.0'}})
+    setTimeout(function(){
+        networking.applySettings('eth0', {active:true, ipv4:{address:addr, netmask:'255.255.255.0'}})
+        socket.emit('onReset')
+        setTimeout(function(){
+      socket.emit('resetConfirm')
+    },300)
+    },300)
+  
+   
+  })
 });

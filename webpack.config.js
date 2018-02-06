@@ -1,6 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
- 
+process.noDeprecation = true;
 /*module.exports = {
   entry: './public/testindex.js',
   output: { path: __dirname, filename: './public/bundletest.js' },

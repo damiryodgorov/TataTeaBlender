@@ -324,7 +324,7 @@
             function(callback) {
               return window.setTimeout(function() {
                 callback(new Date().getTime());
-              }, 16);
+              }, 40);
             };
           return requestAnimationFrame.call(window, callback, element);
         },

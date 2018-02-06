@@ -1,5 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom')
+var ifvisible = require('ifvisible');
 //import {ConcreteElem,CanvasElem,TreeNode} from './components.jsx';
 var SmoothieChart = require('./smoothie.js').SmoothieChart;
 var TimeSeries = require('./smoothie.js').TimeSeries;
@@ -16,29 +17,46 @@ const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'R
 const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 
 var vdefMapV2 ={
-	"@categories":{"cat":"@root","params":["Language"],"subCats":[{"cat":"Reject","params":["RejDelSec","RejDelSec2","RejDurSec","RejDurSec2","RejMode"],"subCats":[{"cat":"Additional Settings","params":[],"subCats":[{"cat":"Distances","params":["RejExitDist","RejExitWin","AppUnitDist"],"subCats":[]},{"cat":"Belt Speed","params":["BeltSpeed"],"subCats":[]},{"cat":"Latch","params":["FaultLatch","RejLatchMode","Rej2Latch"],"subCats":[]},{"cat":"Clocks","params":["RejBinDoorTime","CIPCycleTime","CIPDwellTime","FaultClearTime","EyeBlockTime","RejCheckTime","ExcessRejTime","RejDelClock"],"subCats":[]}]}]},{"cat":"Password","params":["PW1","PW2","PW3","PW4","PassAccSens","PassAccProd","PassAccCal","PassAccTest","PassAccSelUnit","PassAccClrFaults","PassAccClrRej","PassAccClrLatch","PassAccTime","PassAccSync"],"subCats":[]},{"cat":"IO","params":[],"subCats":[{"cat":"Inputs","params":["INPUT_TACH","INPUT_EYE","INPUT_RC_1","INPUT_RC_2","INPUT_REJ_EYE","INPUT_AIR_PRES","INPUT_REJ_LATCH","INPUT_BIN_FULL","INPUT_REJ_PRESENT","INPUT_DOOR1_OPEN","INPUT_DOOR2_OPEN","INPUT_CLEAR_FAULTS","INPUT_CIP","INPUT_PROD_SEL1","INPUT_PROD_SEL2","INPUT_PROD_SEL3","INPUT_PROD_SEL4","INPUT_TEST"],"subCats":[]},{"cat":"Outputs","params":["OUT_PHY_PL3_1","OUT_PHY_PL11_1A2","OUT_PHY_PL11_3A4","OUT_PHY_PL11_5A6","OUT_PHY_PL4_1","OUT_PHY_PL4_2","OUT_PHY_PL4_3","OUT_PHY_PL4_5","OUT_PHY_IO_PL3_R1","OUT_PHY_IO_PL3_R2","OUT_PHY_IO_PL3_O1","OUT_PHY_IO_PL3_O2","OUT_PHY_IO_PL3_O3","OUT_PHY_IO_PL4_02","OUT_PHY_IO_PL4_03","OUT_PHY_IO_PL4_04","OUT_PHY_IO_PL4_05"],"subCats":[]}]},{"cat":"System","params":["SRecordDate","ProdNo","Unit"],"subCats":[]},{"cat":"Fault","params":["RefFaultMask","BalFaultMask","ProdMemFaultMask","RejConfirmFaultMask","PhaseFaultMask","TestSigFaultMask","PeyeBlockFaultMask","RejBinFullFaultMask","AirFaultMask","ExcessRejFaultMask","BigMetalFaultMask","NetBufferFaultMask","RejMemoryFaultMask","RejectExitFaultMask","TachometerFaultMask","PatternFaultMask","ExitNoPackFaultMask","ExitNewPackFaultMask","InterceptorFaultMask","RtcLowBatFaultMask","RtcTimeFaultMask","IntUsbFaultMask","IoBoardFaultMask","HaloFaultMask","SignalFaultMask"],"subCats":[]}]},"@vMap":{"Sens_A":{"@parent":"","@translations":{"english":{"name":"Sensitivity","description":""},"korean":{"name":"민감도","description":""},"spanish":{"name":"Sensitivity","description":""},"french":{"name":"Sensitivity","description":""}},"children":["Sens_B"],"@labels":["Channel A","Channel B"]},"DetThresh_A":{"@parent":"","@translations":{"english":{"name":"Detection Threshold","description":""},"korean":{"name":"검출역치 ","description":""},"spanish":{"name":"Detection Threshold","description":""},"french":{"name":"Detection Threshold","description":""}},"children":["DetThresh_B"],"@labels":["Channel A","Channel B"]},"ThresProdHi_A":{"@parent":"","@translations":{"english":{"name":"Product High Threshold","description":""},"korean":{"name":"교정한계치","description":""},"spanish":{"name":"Product High Threshold","description":""},"french":{"name":"Product High Threshold","description":""}},"children":["ThresProdHi_B"],"@labels":["Channel A","Channel B"]},"ThresX_A":{"@parent":"","@translations":{"english":{"name":"X Threshold","description":""},"korean":{"name":"X 역치","description":""},"spanish":{"name":"X Threshold","description":""},"french":{"name":"X Threshold","description":""}},"children":["ThresX_B"],"@labels":["Channel A","Channel B"]},"ThresR_A":{"@parent":"","@translations":{"english":{"name":"R Threshold","description":""},"korean":{"name":"R 역치","description":""},"spanish":{"name":"R Threshold","description":""},"french":{"name":"R Threshold","description":""}},"children":["ThresR_B"],"@labels":["Channel A","Channel B"]},"BigMetThres_A":{"@parent":"","@translations":{"english":{"name":"Large Metal Threshold","description":""},"korean":{"name":"대량금속 역치","description":""},"spanish":{"name":"Large Metal Threshold","description":""},"french":{"name":"Large Metal Threshold","description":""}},"children":["BigMetThres_B"],"@labels":["Channel A","Channel B"]},"DetMode_A":{"@parent":"","@translations":{"english":{"name":"Detection Mode","description":""},"korean":{"name":"검출방식","description":""},"spanish":{"name":"Detection Mode","description":""},"french":{"name":"Detection Mode","description":""}},"children":["DetMode_B"],"@labels":["Channel A","Channel B"]},"NoiseR_A":{"@parent":"","@translations":{"english":{"name":"R Channel Noise","description":""},"korean":{"name":"R 채널 노이즈","description":""},"spanish":{"name":"R Channel Noise","description":""},"french":{"name":"R Channel Noise","description":""}},"children":["NoiseR_B"],"@labels":["Channel A","Channel B"]},"NoiseX_A":{"@parent":"","@translations":{"english":{"name":"X Channel Noise","description":""},"korean":{"name":"X 채널 노이즈","description":""},"spanish":{"name":"X Channel Noise","description":""},"french":{"name":"X Channel Noise","description":""}},"children":["NoiseX_B"],"@labels":["Channel A","Channel B"]},"DetThEst_A":{"@parent":"","@translations":{"english":{"name":"Detection Threshold Est","description":""},"korean":{"name":"검출역치 추정값","description":""},"spanish":{"name":"Detection Threshold Est","description":""},"french":{"name":"Detection Threshold Est","description":""}},"children":["DetThEst_B"],"@labels":["Channel A","Channel B"]},"FilterNoise_A":{"@parent":"","@translations":{"english":{"name":"Filter Noise","description":""},"korean":{"name":"필터 노이즈","description":""},"spanish":{"name":"Filter Noise","description":""},"french":{"name":"Filter Noise","description":""}},"children":["FilterNoise_B"],"@labels":["Channel A","Channel B"]},"OscPower_A":{"@parent":"","@translations":{"english":{"name":"Oscillation Power","description":""},"korean":{"name":"진동 출력","description":""},"spanish":{"name":"Oscillation Power","description":""},"french":{"name":"Oscillation Power","description":""}},"children":["OscPower_B"],"@labels":["Channel A","Channel B"]},"FmInput_A":{"@parent":"","@translations":{"english":{"name":"FM Input ","description":""},"korean":{"name":"FM 입력","description":""},"spanish":{"name":"FM Input ","description":""},"french":{"name":"FM Input ","description":""}},"children":["FmInput_B"],"@labels":["Channel A","Channel B"]},"TestTime":{"@parent":"","@translations":{"english":{"name":"Test Interval","description":""},"korean":{"name":"테스트 간격","description":""},"spanish":{"name":"Test Interval","description":""},"french":{"name":"Test Interval","description":""}},"children":[],"@labels":["Test Interval"]},"TestDeferTime":{"@parent":"","@translations":{"english":{"name":"Test Defer TIme","description":""},"korean":{"name":"테스트 지연 시간","description":""},"spanish":{"name":"Test Defer TIme","description":""},"french":{"name":"Test Defer TIme","description":""}},"children":[],"@labels":["Test Defer TIme"]},"TestMode":{"@parent":"","@translations":{"english":{"name":"Test Mode","description":""},"korean":{"name":"테스트 방식","description":""},"spanish":{"name":"Test Mode","description":""},"french":{"name":"Test Mode","description":""}},"children":[],"@labels":["Test Mode"]},"TestConfigCount0_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":"Count is number of passes. Select Metal Type to test on the specified signal chain"},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":"Count is number of passes. Select Metal Type to test on the specified signal chain"},"french":{"name":"Test 1","description":"Count is number of passes. Select Metal Type to test on the specified signal chain"}},"children":["TestConfigMetal0_0","TestConfigFreq0_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_1":{"@parent":"","@translations":{"english":{"name":"Test 2","description":""},"korean":{"name":"Test 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Test 2","description":""}},"children":["TestConfigMetal0_1","TestConfigFreq0_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_2":{"@parent":"","@translations":{"english":{"name":"Test 3","description":""},"korean":{"name":"Test 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Test 3","description":""}},"children":["TestConfigMetal0_2","TestConfigFreq0_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_3":{"@parent":"","@translations":{"english":{"name":"Test 4","description":""},"korean":{"name":"Test 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Test 4","description":""}},"children":["TestConfigMetal0_3","TestConfigFreq0_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_4":{"@parent":"","@translations":{"english":{"name":"Test 5","description":""},"korean":{"name":"Test 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Test 5","description":""}},"children":["TestConfigMetal0_4","TestConfigFreq0_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_5":{"@parent":"","@translations":{"english":{"name":"Test 6","description":""},"korean":{"name":"Test 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Test 6","description":""}},"children":["TestConfigMetal0_5","TestConfigFreq0_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck0":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"확인","description":""},"spanish":{"name":"Acknowledge","description":""},"french":{"name":"Acknowledge","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator0":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"Operator","description":""},"spanish":{"name":"Operator","description":""},"french":{"name":"Operator","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode0":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"Halo Mode","description":""},"spanish":{"name":"Halo Mode","description":""},"french":{"name":"Halo Mode","description":""}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount1_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal1_0","TestConfigFreq1_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_1":{"@parent":"","@translations":{"english":{"name":"Test 2","description":""},"korean":{"name":"Test 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Test 2","description":""}},"children":["TestConfigMetal1_1","TestConfigFreq1_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_2":{"@parent":"","@translations":{"english":{"name":"Test 3","description":""},"korean":{"name":"Test 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Test 3","description":""}},"children":["TestConfigMetal1_2","TestConfigFreq1_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_3":{"@parent":"","@translations":{"english":{"name":"Test 4","description":""},"korean":{"name":"Test 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Test 4","description":""}},"children":["TestConfigMetal1_3","TestConfigFreq1_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_4":{"@parent":"","@translations":{"english":{"name":"Test 5","description":""},"korean":{"name":"Test 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Test 5","description":""}},"children":["TestConfigMetal1_4","TestConfigFreq1_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_5":{"@parent":"","@translations":{"english":{"name":"Test 6","description":""},"korean":{"name":"Test 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Test 6","description":""}},"children":["TestConfigMetal1_5","TestConfigFreq1_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck1":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"Acknowledge","description":""},"spanish":{"name":"Acknowledge","description":""},"french":{"name":"Acknowledge","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator1":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"Operator","description":""},"spanish":{"name":"Operator","description":""},"french":{"name":"Operator","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode1":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"Halo Mode","description":""},"spanish":{"name":"Halo Mode","description":""},"french":{"name":"Halo Mode","description":""}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount2_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_0","TestConfigFreq2_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_1":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_1","TestConfigFreq2_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_2":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_2","TestConfigFreq2_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_3":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_3","TestConfigFreq2_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_4":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_4","TestConfigFreq2_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_5":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_5","TestConfigFreq2_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck2":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"Acknowledge","description":""},"spanish":{"name":"Acknowledge","description":""},"french":{"name":"Acknowledge","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator2":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"Operator","description":""},"spanish":{"name":"Operator","description":""},"french":{"name":"Operator","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode2":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"Halo Mode","description":""},"spanish":{"name":"Halo Mode","description":""},"french":{"name":"Halo Mode","description":""}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount3_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_0","TestConfigFreq3_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_1":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_1","TestConfigFreq3_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_2":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_2","TestConfigFreq3_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_3":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_3","TestConfigFreq3_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_4":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_4","TestConfigFreq3_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_5":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_5","TestConfigFreq3_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck3":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"Acknowledge","description":""},"spanish":{"name":"Acknowledge","description":""},"french":{"name":"Acknowledge","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator3":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"Operator","description":""},"spanish":{"name":"Operator","description":""},"french":{"name":"Operator","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode3":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"Halo Mode","description":""},"spanish":{"name":"Halo Mode","description":""},"french":{"name":"Halo Mode","description":""}},"children":[],"@labels":["Halo Mode"]},"HaloPeakRFe_A":{"@parent":"","@translations":{"english":{"name":"Ferrous R Peak","description":""},"korean":{"name":"Ferrous R Peak","description":""},"spanish":{"name":"Ferrous R Peak","description":""},"french":{"name":"Ferrous R Peak","description":""}},"children":["HaloPeakRFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakXFe_A":{"@parent":"","@translations":{"english":{"name":"Ferrous X Peak","description":""},"korean":{"name":"Ferrous X Peak","description":""},"spanish":{"name":"Ferrous X Peak","description":""},"french":{"name":"Ferrous X Peak","description":""}},"children":["HaloPeakXFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakRNFe_A":{"@parent":"","@translations":{"english":{"name":"Non-Ferrous R Peak","description":""},"korean":{"name":"Non-Ferrous R Peak","description":""},"spanish":{"name":"Non-Ferrous R Peak","description":""},"french":{"name":"Non-Ferrous R Peak","description":""}},"children":["HaloPeakRNFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakXNFe_A":{"@parent":"","@translations":{"english":{"name":"Non-Ferrous X Peak","description":""},"korean":{"name":"Non-Ferrous X Peak","description":""},"spanish":{"name":"Non-Ferrous X Peak","description":""},"french":{"name":"Non-Ferrous X Peak","description":""}},"children":["HaloPeakXNFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakRSs_A":{"@parent":"","@translations":{"english":{"name":"Stainless R Peak","description":""},"korean":{"name":"Stainless R Peak","description":""},"spanish":{"name":"Stainless R Peak","description":""},"french":{"name":"Stainless R Peak","description":""}},"children":["HaloPeakRSs_B"],"@labels":["Channel A","Channel B"]},"HaloPeakXSs_A":{"@parent":"","@translations":{"english":{"name":"Stainless X Peak","description":""},"korean":{"name":"Stainless X Peak","description":""},"spanish":{"name":"Stainless X Peak","description":""},"french":{"name":"Stainless X Peak","description":""}},"children":["HaloPeakXSs_B"],"@labels":["Channel A","Channel B"]},"PhaseAngle_A":{"@parent":"","@translations":{"english":{"name":"Phase Angle","description":""},"korean":{"name":"Phase Angle","description":""},"spanish":{"name":"Phase Angle","description":""},"french":{"name":"Phase Angle","description":""}},"children":["PhaseAngle_B"],"@labels":["Channel A","Channel B"]},"PhaseMode_A":{"@parent":"","@translations":{"english":{"name":"Phase Mode","description":""},"korean":{"name":"Phase Mode","description":""},"spanish":{"name":"Phase Mode","description":""},"french":{"name":"Phase Mode","description":""}},"children":["PhaseMode_B"],"@labels":["Channel A","Channel B"]},"PhaseSpeed_A":{"@parent":"","@translations":{"english":{"name":"Phase Speed","description":""},"korean":{"name":"Phase Speed","description":""},"spanish":{"name":"Phase Speed","description":""},"french":{"name":"Phase Speed","description":""}},"children":["PhaseSpeed_B"],"@labels":["Channel A","Channel B"]},"PhaseModeHold_A":{"@parent":"","@translations":{"english":{"name":"Phase Limit Hold","description":""},"korean":{"name":"","description":""},"spanish":{"name":"Phase Limit Hold","description":""},"french":{"name":"Phase Limit Hold","description":""}},"children":["PhaseModeHold_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitDry_A":{"@parent":"","@translations":{"english":{"name":"Dry Phase Limit","description":""},"korean":{"name":"","description":""},"spanish":{"name":"Dry Phase Limit","description":""},"french":{"name":"Dry Phase Limit","description":""}},"children":["PhaseLimitDry_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitDrySpread_A":{"@parent":"","@translations":{"english":{"name":"Dry Phase Limit Spread","description":""},"korean":{"name":"","description":""},"spanish":{"name":"Dry Phase Limit Spread","description":""},"french":{"name":"Dry Phase Limit Spread","description":""}},"children":["PhaseLimitDrySpread_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitWet_A":{"@parent":"","@translations":{"english":{"name":"Wet Phase Limit","description":""},"korean":{"name":"","description":""},"spanish":{"name":"Wet Phase Limit","description":""},"french":{"name":"Wet Phase Limit","description":""}},"children":["PhaseLimitWet_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitWetSpread_A":{"@parent":"","@translations":{"english":{"name":"Wet Phase Limit Spread","description":""},"korean":{"name":"","description":""},"spanish":{"name":"Wet Phase Limit Spread","description":""},"french":{"name":"Wet Phase Limit Spread","description":""}},"children":["PhaseLimitWetSpread_B"],"@labels":["Channel A","Channel B"]},"PhaseAngleAuto_A":{"@parent":"","@translations":{"english":{"name":"Auto Phase Angle","description":""},"korean":{"name":"Auto Phase Angle","description":""},"spanish":{"name":"Auto Phase Angle","description":""},"french":{"name":"Auto Phase Angle","description":""}},"children":["PhaseAngleAuto_B"],"@labels":["Channel A","Channel B"]},"PhaseFastBit_A":{"@parent":"","@translations":{"english":{"name":"Phase Speed","description":""},"korean":{"name":"Phase Speed","description":""},"spanish":{"name":"Phase Speed","description":""},"french":{"name":"Phase Speed","description":""}},"children":["PhaseFastBit_B"],"@labels":["Channel A","Channel B"]},"PhaseWetBit_A":{"@parent":"","@translations":{"english":{"name":"Phase Wet","description":""},"korean":{"name":"Phase Wet","description":""},"spanish":{"name":"Phase Wet","description":""},"french":{"name":"Phase Wet","description":""}},"children":["PhaseWetBit_B"],"@labels":["Channel A","Channel B"]},"PhaseDSALearn_A":{"@parent":"","@translations":{"english":{"name":"Phase DSA Learn","description":""},"korean":{"name":"Phase DSA Learn","description":""},"spanish":{"name":"Phase DSA Learn","description":""},"french":{"name":"Phase DSA Learn","description":""}},"children":["PhaseDSALearn_B"],"@labels":["Channel A","Channel B"]},"MPhaseOrder_A":{"@parent":"","@translations":{"english":{"name":"M Phase Order","description":""},"korean":{"name":"M Phase Order","description":""},"spanish":{"name":"M Phase Order","description":""},"french":{"name":"M Phase Order","description":""}},"children":["MPhaseOrder_B"],"@labels":["Channel A","Channel B"]},"MPhaseDD_A":{"@parent":"","@translations":{"english":{"name":"M Phase DD","description":""},"korean":{"name":"M Phase DD","description":""},"spanish":{"name":"M Phase DD","description":""},"french":{"name":"M Phase DD","description":""}},"children":["MPhaseDD_B"],"@labels":["Channel A","Channel B"]},"MPhaseRD_A":{"@parent":"","@translations":{"english":{"name":"M Phase RD","description":""},"korean":{"name":"M Phase RD","description":""},"spanish":{"name":"M Phase RD","description":""},"french":{"name":"M Phase RD","description":""}},"children":["MPhaseRD_A"],"@labels":["Channel A","Channel B"]},"Language":{"@parent":"","@translations":{"english":{"name":"Language","description":"This is a description of f the language"},"korean":{"name":"Language","description":"This is a description of f the language"},"spanish":{"name":"Language","description":"This is a description of f the language"},"french":{"name":"Language","description":"This is a description of f the language"}},"children":[],"@labels":["Language"]},"RejDelSec":{"@parent":"","@translations":{"english":{"name":"Main Reject Delay","description":""},"korean":{"name":"Main Reject Delay","description":""},"spanish":{"name":"Main Reject Delay","description":""},"french":{"name":"Main Reject Delay","description":""}},"children":[],"@labels":["Main Reject Delay"]},"RejDelSec2":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Delay","description":""},"korean":{"name":"Alternate Reject Delay","description":""},"spanish":{"name":"Alternate Reject Delay","description":""},"french":{"name":"Alternate Reject Delay","description":""}},"children":[],"@labels":["Alternate Reject Delay"]},"RejDurSec":{"@parent":"","@translations":{"english":{"name":"Main Reject Duration","description":""},"korean":{"name":"Main Reject Duration","description":""},"spanish":{"name":"Main Reject Duration","description":""},"french":{"name":"Main Reject Duration","description":""}},"children":[],"@labels":["Main Reject Duration"]},"RejDurSec2":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Duration","description":""},"korean":{"name":"Alternate Reject Duration","description":""},"spanish":{"name":"Alternate Reject Duration","description":""},"french":{"name":"Alternate Reject Duration","description":""}},"children":[],"@labels":["Alternate Reject Duration"]},"RejMode":{"@parent":"","@translations":{"english":{"name":"Reject Mode","description":""},"korean":{"name":"Reject Mode","description":""},"spanish":{"name":"Reject Mode","description":""},"french":{"name":"Reject Mode","description":""}},"children":[],"@labels":["Reject Mode"]},"RejExitDist":{"@parent":"","@translations":{"english":{"name":"Reject Exit Distance","description":""},"korean":{"name":"Reject Exit Distance","description":""},"spanish":{"name":"Reject Exit Distance","description":""},"french":{"name":"Reject Exit Distance","description":""}},"children":[],"@labels":["Reject Exit Distance"]},"RejExitWin":{"@parent":"","@translations":{"english":{"name":"Reject Exit Window","description":""},"korean":{"name":"Reject Exit Window","description":""},"spanish":{"name":"Reject Exit Window","description":""},"french":{"name":"Reject Exit Window","description":""}},"children":[],"@labels":["Reject Exit Window"]},"AppUnitDist":{"@parent":"","@translations":{"english":{"name":"Units ","description":""},"korean":{"name":"단위 ","description":""},"spanish":{"name":"Units ","description":""},"french":{"name":"Units ","description":""}},"children":[],"@labels":["Units "]},"BeltSpeed":{"@parent":"","@translations":{"english":{"name":"Belt Speed","description":""},"korean":{"name":"Belt Speed","description":""},"spanish":{"name":"Belt Speed","description":""},"french":{"name":"Belt Speed","description":""}},"children":[],"@labels":["Belt Speed"]},"FaultLatch":{"@parent":"","@translations":{"english":{"name":"Fault Latch","description":""},"korean":{"name":"Fault Latch","description":""},"spanish":{"name":"Fault Latch","description":""},"french":{"name":"Fault Latch","description":""}},"children":[],"@labels":["Fault Latch"]},"RejLatchMode":{"@parent":"","@translations":{"english":{"name":"Reject Latch","description":""},"korean":{"name":"Reject Latch","description":""},"spanish":{"name":"Reject Latch","description":""},"french":{"name":"Reject Latch","description":""}},"children":[],"@labels":["Reject Latch"]},"Rej2Latch":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Latch","description":""},"korean":{"name":"Alternate Reject Latch","description":""},"spanish":{"name":"Alternate Reject Latch","description":""},"french":{"name":"Alternate Reject Latch","description":""}},"children":[],"@labels":["Alternate Reject Latch"]},"RejBinDoorTime":{"@parent":"","@translations":{"english":{"name":"Reject Bin Door Time","description":""},"korean":{"name":"Reject Bin Door Time","description":""},"spanish":{"name":"Reject Bin Door Time","description":""},"french":{"name":"Reject Bin Door Time","description":""}},"children":[],"@labels":["Reject Bin Door Time"]},"CIPCycleTime":{"@parent":"","@translations":{"english":{"name":"CIP Cycle Time","description":""},"korean":{"name":"CIP Cycle Time","description":""},"spanish":{"name":"CIP Cycle Time","description":""},"french":{"name":"CIP Cycle Time","description":""}},"children":[],"@labels":["CIP Cycle Time"]},"CIPDwellTime":{"@parent":"","@translations":{"english":{"name":"CIP Dwell Time","description":""},"korean":{"name":"CIP Dwell Time","description":""},"spanish":{"name":"CIP Dwell Time","description":""},"french":{"name":"CIP Dwell Time","description":""}},"children":[],"@labels":["CIP Dwell Time"]},"FaultClearTime":{"@parent":"","@translations":{"english":{"name":"Fault Clear Time","description":""},"korean":{"name":"Fault Clear Time","description":""},"spanish":{"name":"Fault Clear Time","description":""},"french":{"name":"Fault Clear Time","description":""}},"children":[],"@labels":["Fault Clear Time"]},"EyeBlockTime":{"@parent":"","@translations":{"english":{"name":"Eye Block Time","description":""},"korean":{"name":"Eye Block Time","description":""},"spanish":{"name":"Eye Block Time","description":""},"french":{"name":"Eye Block Time","description":""}},"children":[],"@labels":["Eye Block Time"]},"RejCheckTime":{"@parent":"","@translations":{"english":{"name":"Reject Check Time","description":""},"korean":{"name":"Reject Check Time","description":""},"spanish":{"name":"Reject Check Time","description":""},"french":{"name":"Reject Check Time","description":""}},"children":[],"@labels":["Reject Check Time"]},"ExcessRejTime":{"@parent":"","@translations":{"english":{"name":"Excess Reject Time","description":""},"korean":{"name":"Excess Reject Time","description":""},"spanish":{"name":"Excess Reject Time","description":""},"french":{"name":"Excess Reject Time","description":""}},"children":[],"@labels":["Excess Reject Time"]},"RejDelClock":{"@parent":"","@translations":{"english":{"name":"Reject Delay Clock","description":""},"korean":{"name":"Reject Delay Clock","description":""},"spanish":{"name":"Reject Delay Clock","description":""},"french":{"name":"Reject Delay Clock","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"PW1":{"@parent":"","@translations":{"english":{"name":"Password 1","description":""},"korean":{"name":"Password 1","description":""},"spanish":{"name":"Password 1","description":""},"french":{"name":"Password 1","description":""}},"children":[],"@labels":["Password 1"]},"PW2":{"@parent":"","@translations":{"english":{"name":"Password 2","description":""},"korean":{"name":"Password 2","description":""},"spanish":{"name":"Password 2","description":""},"french":{"name":"Password 2","description":""}},"children":[],"@labels":["Password 2"]},"PW3":{"@parent":"","@translations":{"english":{"name":"Password 3","description":""},"korean":{"name":"Password 3","description":""},"spanish":{"name":"Password 3","description":""},"french":{"name":"Password 3","description":""}},"children":[],"@labels":["Password 3"]},"PW4":{"@parent":"","@translations":{"english":{"name":"Password 4","description":""},"korean":{"name":"Password 4","description":""},"spanish":{"name":"Password 4","description":""},"french":{"name":"Password 4","description":""}},"children":[],"@labels":["Password 4"]},"PassAccSens":{"@parent":"","@translations":{"english":{"name":"Sensitivity Access Level","description":""},"korean":{"name":"Sensitivity Access Level","description":""},"spanish":{"name":"Sensitivity Access Level","description":""},"french":{"name":"Sensitivity Access Level","description":""}},"children":[],"@labels":["Sensitivity Access Level"]},"PassAccProd":{"@parent":"","@translations":{"english":{"name":"Product Access Level","description":""},"korean":{"name":"Product Access Level","description":""},"spanish":{"name":"Product Access Level","description":""},"french":{"name":"Product Access Level","description":""}},"children":[],"@labels":["Product Access Level"]},"PassAccCal":{"@parent":"","@translations":{"english":{"name":"Calibrate Access Level","description":""},"korean":{"name":"Calibrate Access Level","description":""},"spanish":{"name":"Calibrate Access Level","description":""},"french":{"name":"Calibrate Access Level","description":""}},"children":[],"@labels":["Calibrate Access Level"]},"PassAccTest":{"@parent":"","@translations":{"english":{"name":"Test Access Level","description":""},"korean":{"name":"Test Access Level","description":""},"spanish":{"name":"Test Access Level","description":""},"french":{"name":"Test Access Level","description":""}},"children":[],"@labels":["Test Access Level"]},"PassAccSelUnit":{"@parent":"","@translations":{"english":{"name":"Select Unit Access Level","description":""},"korean":{"name":"Select Unit Access Level","description":""},"spanish":{"name":"Select Unit Access Level","description":""},"french":{"name":"Select Unit Access Level","description":""}},"children":[],"@labels":["Select Unit Access Level"]},"PassAccClrFaults":{"@parent":"","@translations":{"english":{"name":"Fault Clear Access Level","description":""},"korean":{"name":"Fault Clear Access Level","description":""},"spanish":{"name":"Fault Clear Access Level","description":""},"french":{"name":"Fault Clear Access Level","description":""}},"children":[],"@labels":["Fault Clear Access Level"]},"PassAccClrRej":{"@parent":"","@translations":{"english":{"name":"Reject Clear Access Level","description":""},"korean":{"name":"Reject Clear Access Level","description":""},"spanish":{"name":"Reject Clear Access Level","description":""},"french":{"name":"Reject Clear Access Level","description":""}},"children":[],"@labels":["Reject Clear Access Level"]},"PassAccClrLatch":{"@parent":"","@translations":{"english":{"name":"Latch Clear Access Level","description":""},"korean":{"name":"Latch Clear Access Level","description":""},"spanish":{"name":"Latch Clear Access Level","description":""},"french":{"name":"Latch Clear Access Level","description":""}},"children":[],"@labels":["Latch Clear Access Level"]},"PassAccTime":{"@parent":"","@translations":{"english":{"name":"Time Access Level","description":""},"korean":{"name":"Time Access Level","description":""},"spanish":{"name":"Time Access Level","description":""},"french":{"name":"Time Access Level","description":""}},"children":[],"@labels":["Time Access Level"]},"PassAccSync":{"@parent":"","@translations":{"english":{"name":"Sync Access Level","description":""},"korean":{"name":"Sync Access Level","description":""},"spanish":{"name":"Sync Access Level","description":""},"french":{"name":"Sync Access Level","description":""}},"children":[],"@labels":["Sync Access Level"]},"INPUT_TACH":{"@parent":"","@translations":{"english":{"name":"Tachometer","description":""},"korean":{"name":"Tachometer","description":""},"spanish":{"name":"Tachometer","description":""},"french":{"name":"Tachometer","description":""}},"children":["INPUT_POL_TACH"],"@labels":["Source","Polarity"]},"INPUT_EYE":{"@parent":"","@translations":{"english":{"name":"Photo Eye","description":""},"korean":{"name":"Photo Eye","description":""},"spanish":{"name":"Photo Eye","description":""},"french":{"name":"Photo Eye","description":""}},"children":["INPUT_POL_EYE"],"@labels":["Source","Polarity"]},"INPUT_RC_1":{"@parent":"","@translations":{"english":{"name":"Reject Check 1","description":""},"korean":{"name":"Reject Check 1","description":""},"spanish":{"name":"Reject Check 1","description":""},"french":{"name":"Reject Check 1","description":""}},"children":["INPUT_POL_RC_1"],"@labels":["Source","Polarity"]},"INPUT_RC_2":{"@parent":"","@translations":{"english":{"name":"Reject Check 2","description":""},"korean":{"name":"Reject Check 2","description":""},"spanish":{"name":"Reject Check 2","description":""},"french":{"name":"Reject Check 2","description":""}},"children":["INPUT_POL_RC_2"],"@labels":["Source","Polarity"]},"INPUT_REJ_EYE":{"@parent":"","@translations":{"english":{"name":"Reject Eye","description":""},"korean":{"name":"Reject Eye","description":""},"spanish":{"name":"Reject Eye","description":""},"french":{"name":"Reject Eye","description":""}},"children":["INPUT_POL_REJ_EYE"],"@labels":["Source","Polarity"]},"INPUT_AIR_PRES":{"@parent":"","@translations":{"english":{"name":"Air Pressure","description":""},"korean":{"name":"Air Pressure","description":""},"spanish":{"name":"Air Pressure","description":""},"french":{"name":"Air Pressure","description":""}},"children":["INPUT_POL_AIR_PRES"],"@labels":["Source","Polarity"]},"INPUT_REJ_LATCH":{"@parent":"","@translations":{"english":{"name":"Reject Latch","description":""},"korean":{"name":"Reject Latch","description":""},"spanish":{"name":"Reject Latch","description":""},"french":{"name":"Reject Latch","description":""}},"children":["INPUT_POL_REJ_LATCH"],"@labels":["Source","Polarity"]},"INPUT_BIN_FULL":{"@parent":"","@translations":{"english":{"name":"Bin Full","description":""},"korean":{"name":"Bin Full","description":""},"spanish":{"name":"Bin Full","description":""},"french":{"name":"Bin Full","description":""}},"children":["INPUT_POL_BIN_FULL"],"@labels":["Source","Polarity"]},"INPUT_REJ_PRESENT":{"@parent":"","@translations":{"english":{"name":"Reject Present","description":""},"korean":{"name":"Reject Present","description":""},"spanish":{"name":"Reject Present","description":""},"french":{"name":"Reject Present","description":""}},"children":["INPUT_POL_REJ_PRESENT"],"@labels":["Source","Polarity"]},"INPUT_DOOR1_OPEN":{"@parent":"","@translations":{"english":{"name":"Door 1 Open","description":""},"korean":{"name":"Door 1 Open","description":""},"spanish":{"name":"Door 1 Open","description":""},"french":{"name":"Door 1 Open","description":""}},"children":["INPUT_POL_DOOR1_OPEN"],"@labels":["Source","Polarity"]},"INPUT_DOOR2_OPEN":{"@parent":"","@translations":{"english":{"name":"Door 2 Open","description":""},"korean":{"name":"Door 2 Open","description":""},"spanish":{"name":"Door 2 Open","description":""},"french":{"name":"Door 2 Open","description":""}},"children":["INPUT_POL_DOOR2_OPEN"],"@labels":["Source","Polarity"]},"INPUT_CLEAR_FAULTS":{"@parent":"","@translations":{"english":{"name":"Clear Faults","description":""},"korean":{"name":"Clear Faults","description":""},"spanish":{"name":"Clear Faults","description":""},"french":{"name":"Clear Faults","description":""}},"children":["INPUT_POL_CLEAR_FAULTS"],"@labels":["Source","Polarity"]},"INPUT_CIP":{"@parent":"","@translations":{"english":{"name":"CIP","description":""},"korean":{"name":"CIP","description":""},"spanish":{"name":"CIP","description":""},"french":{"name":"CIP","description":""}},"children":["INPUT_POL_CIP"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL1":{"@parent":"","@translations":{"english":{"name":"Product Select 1","description":""},"korean":{"name":"Product Select 1","description":""},"spanish":{"name":"Product Select 1","description":""},"french":{"name":"Product Select 1","description":""}},"children":["INPUT_POL_PROD_SEL1"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL2":{"@parent":"","@translations":{"english":{"name":"Product Select 2","description":""},"korean":{"name":"Product Select 2","description":""},"spanish":{"name":"Product Select 2","description":""},"french":{"name":"Product Select 2","description":""}},"children":["INPUT_POL_PROD_SEL2"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL3":{"@parent":"","@translations":{"english":{"name":"Product Select 3","description":""},"korean":{"name":"Product Select 3","description":""},"spanish":{"name":"Product Select 3","description":""},"french":{"name":"Product Select 3","description":""}},"children":["INPUT_POL_PROD_SEL3"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL4":{"@parent":"","@translations":{"english":{"name":"Product Select 4","description":""},"korean":{"name":"Product Select 4","description":""},"spanish":{"name":"Product Select 4","description":""},"french":{"name":"Product Select 4","description":""}},"children":["INPUT_POL_PROD_SEL4"],"@labels":["Source","Polarity"]},"INPUT_TEST":{"@parent":"","@translations":{"english":{"name":"Test","description":""},"korean":{"name":"Test","description":""},"spanish":{"name":"Test","description":""},"french":{"name":"Test","description":""}},"children":["INPUT_POL_TEST"],"@labels":["Source","Polarity"]},"OUT_PHY_PL3_1":{"@parent":"","@translations":{"english":{"name":"PL3 1","description":""},"korean":{"name":"PL3 1","description":""},"spanish":{"name":"PL3 1","description":""},"french":{"name":"PL3 1","description":""}},"children":["OUT_POL_PL3_1"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_1A2":{"@parent":"","@translations":{"english":{"name":"PL11 1A2","description":""},"korean":{"name":"PL11 1A2","description":""},"spanish":{"name":"PL11 1A2","description":""},"french":{"name":"PL11 1A2","description":""}},"children":["OUT_POL_PL11_1A2"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_3A4":{"@parent":"","@translations":{"english":{"name":"PL11 3A4","description":""},"korean":{"name":"PL11 3A4","description":""},"spanish":{"name":"PL11 3A4","description":""},"french":{"name":"PL11 3A4","description":""}},"children":["OUT_POL_PL11_3A4"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_5A6":{"@parent":"","@translations":{"english":{"name":"PL11 5A6","description":""},"korean":{"name":"PL11 5A6","description":""},"spanish":{"name":"PL11 5A6","description":""},"french":{"name":"PL11 5A6","description":""}},"children":["OUT_POL_PL11_5A6"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_1":{"@parent":"","@translations":{"english":{"name":"PL4 1","description":""},"korean":{"name":"PL4 1","description":""},"spanish":{"name":"PL4 1","description":""},"french":{"name":"PL4 1","description":""}},"children":["OUT_POL_PL4_1"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_2":{"@parent":"","@translations":{"english":{"name":"PL4 2","description":""},"korean":{"name":"PL4 2","description":""},"spanish":{"name":"PL4 2","description":""},"french":{"name":"PL4 2","description":""}},"children":["OUT_POL_PL4_2"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_3":{"@parent":"","@translations":{"english":{"name":"PL4 3","description":""},"korean":{"name":"PL4 3","description":""},"spanish":{"name":"PL4 3","description":""},"french":{"name":"PL4 3","description":""}},"children":["OUT_POL_PL4_3"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_5":{"@parent":"","@translations":{"english":{"name":"PL4 5","description":""},"korean":{"name":"PL4 5","description":""},"spanish":{"name":"PL4 5","description":""},"french":{"name":"PL4 5","description":""}},"children":["OUT_POL_PL4_5"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_R1":{"@parent":"","@translations":{"english":{"name":"IO PL3 R1","description":""},"korean":{"name":"IO PL3 R1","description":""},"spanish":{"name":"IO PL3 R1","description":""},"french":{"name":"IO PL3 R1","description":""}},"children":["OUT_POL_IO_PL3_R1"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_R2":{"@parent":"","@translations":{"english":{"name":"IO PL3 R2","description":""},"korean":{"name":"IO PL3 R2","description":""},"spanish":{"name":"IO PL3 R2","description":""},"french":{"name":"IO PL3 R2","description":""}},"children":["OUT_POL_IO_PL3_R2"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O1":{"@parent":"","@translations":{"english":{"name":"IO PL3 O1","description":""},"korean":{"name":"IO PL3 O1","description":""},"spanish":{"name":"IO PL3 O1","description":""},"french":{"name":"IO PL3 O1","description":""}},"children":["OUT_POL_IO_PL3_O1"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O2":{"@parent":"","@translations":{"english":{"name":"IO PL3 O2","description":""},"korean":{"name":"IO PL3 O2","description":""},"spanish":{"name":"IO PL3 O2","description":""},"french":{"name":"IO PL3 O2","description":""}},"children":["OUT_PHY_IO_PL3_O2"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O3":{"@parent":"","@translations":{"english":{"name":"IO PL3 O3","description":""},"korean":{"name":"IO PL3 O3","description":""},"spanish":{"name":"IO PL3 O3","description":""},"french":{"name":"IO PL3 O3","description":""}},"children":["OUT_POL_IO_PL3_O3"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_02":{"@parent":"","@translations":{"english":{"name":"IO PL4 02","description":""},"korean":{"name":"IO PL4 02","description":""},"spanish":{"name":"IO PL4 02","description":""},"french":{"name":"IO PL4 02","description":""}},"children":["OUT_POL_IO_PL4_02"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_03":{"@parent":"","@translations":{"english":{"name":"IO PL4 03","description":""},"korean":{"name":"IO PL4 03","description":""},"spanish":{"name":"IO PL4 03","description":""},"french":{"name":"IO PL4 03","description":""}},"children":["OUT_POL_IO_PL4_03"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_04":{"@parent":"","@translations":{"english":{"name":"IO PL4 04","description":""},"korean":{"name":"IO PL4 04","description":""},"spanish":{"name":"IO PL4 04","description":""},"french":{"name":"IO PL4 04","description":""}},"children":["OUT_POL_IO_PL4_04"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_05":{"@parent":"","@translations":{"english":{"name":"IO PL4 05","description":""},"korean":{"name":"IO PL4 05","description":""},"spanish":{"name":"IO PL4 05","description":""},"french":{"name":"IO PL4 05","description":""}},"children":["OUT_POL_IO_PL4_05"],"@labels":["Source","Polarity"]},"SRecordDate":{"@parent":"","@translations":{"english":{"name":"System Record Date","description":""},"korean":{"name":"System Record Date","description":""},"spanish":{"name":"System Record Date","description":""},"french":{"name":"System Record Date","description":""}},"children":[],"@labels":["System Record Date"]},"ProdNo":{"@parent":"","@translations":{"english":{"name":"Product Number","description":""},"korean":{"name":"Product Number","description":""},"spanish":{"name":"Product Number","description":""},"french":{"name":"Product Number","description":""}},"children":[],"@labels":["Product Number"]},"Unit":{"@parent":"","@translations":{"english":{"name":"Unit","description":""},"korean":{"name":"Unit","description":""},"spanish":{"name":"Unit","description":""},"french":{"name":"Unit","description":""}},"children":[],"@labels":["Unit"]},"RefFaultMask":{"@parent":"","@translations":{"english":{"name":"Reference Fault","description":""},"korean":{"name":"Reference Fault","description":""},"spanish":{"name":"Reference Fault","description":""},"french":{"name":"Reference Fault","description":""}},"children":[],"@labels":["Reference Fault"]},"BalFaultMask":{"@parent":"","@translations":{"english":{"name":"Balance Fault","description":""},"korean":{"name":"Balance Fault","description":""},"spanish":{"name":"Balance Fault","description":""},"french":{"name":"Balance Fault","description":""}},"children":[],"@labels":["Balance Fault"]},"ProdMemFaultMask":{"@parent":"","@translations":{"english":{"name":"Product Memory Fault","description":""},"korean":{"name":"Product Memory Fault","description":""},"spanish":{"name":"Product Memory Fault","description":""},"french":{"name":"Product Memory Fault","description":""}},"children":[],"@labels":["Product Memory Fault"]},"RejConfirmFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Confirm Fault","description":""},"korean":{"name":"Reject Confirm Fault","description":""},"spanish":{"name":"Reject Confirm Fault","description":""},"french":{"name":"Reject Confirm Fault","description":""}},"children":[],"@labels":["Reject Confirm Fault"]},"PhaseFaultMask":{"@parent":"","@translations":{"english":{"name":"Phase Fault","description":""},"korean":{"name":"Phase Fault","description":""},"spanish":{"name":"Phase Fault","description":""},"french":{"name":"Phase Fault","description":""}},"children":[],"@labels":["Phase Fault"]},"TestSigFaultMask":{"@parent":"","@translations":{"english":{"name":"Test Signal Fault","description":""},"korean":{"name":"Test Signal Fault","description":""},"spanish":{"name":"Test Signal Fault","description":""},"french":{"name":"Test Signal Fault","description":""}},"children":[],"@labels":["Test Signal Fault"]},"PeyeBlockFaultMask":{"@parent":"","@translations":{"english":{"name":"Photoeye Block Fault","description":""},"korean":{"name":"Photoeye Block Fault","description":""},"spanish":{"name":"Photoeye Block Fault","description":""},"french":{"name":"Photoeye Block Fault","description":""}},"children":[],"@labels":["Photoeye Block Fault"]},"RejBinFullFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Bin Full Fault","description":""},"korean":{"name":"Reject Bin Full Fault","description":""},"spanish":{"name":"Reject Bin Full Fault","description":""},"french":{"name":"Reject Bin Full Fault","description":""}},"children":[],"@labels":["Reject Bin Full Fault"]},"AirFaultMask":{"@parent":"","@translations":{"english":{"name":"Air Fault","description":""},"korean":{"name":"Air Fault","description":""},"spanish":{"name":"Air Fault","description":""},"french":{"name":"Air Fault","description":""}},"children":[],"@labels":["Air Fault"]},"ExcessRejFaultMask":{"@parent":"","@translations":{"english":{"name":"Excess Rejects Fault","description":""},"korean":{"name":"Excess Rejects Fault","description":""},"spanish":{"name":"Excess Rejects Fault","description":""},"french":{"name":"Excess Rejects Fault","description":""}},"children":[],"@labels":["Excess Rejects Fault"]},"BigMetalFaultMask":{"@parent":"","@translations":{"english":{"name":"Large Metal Fault","description":""},"korean":{"name":"Large Metal Fault","description":""},"spanish":{"name":"Large Metal Fault","description":""},"french":{"name":"Large Metal Fault","description":""}},"children":[],"@labels":["Large Metal Fault"]},"NetBufferFaultMask":{"@parent":"","@translations":{"english":{"name":"Net Buffer Fault","description":""},"korean":{"name":"Net Buffer Fault","description":""},"spanish":{"name":"Net Buffer Fault","description":""},"french":{"name":"Net Buffer Fault","description":""}},"children":[],"@labels":["Net Buffer Fault"]},"RejMemoryFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Memory Fault","description":""},"korean":{"name":"Reject Memory Fault","description":""},"spanish":{"name":"Reject Memory Fault","description":""},"french":{"name":"Reject Memory Fault","description":""}},"children":[],"@labels":["Reject Memory Fault"]},"RejectExitFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Exit Fault","description":""},"korean":{"name":"Reject Exit Fault","description":""},"spanish":{"name":"Reject Exit Fault","description":""},"french":{"name":"Reject Exit Fault","description":""}},"children":[],"@labels":["Reject Exit Fault"]},"TachometerFaultMask":{"@parent":"","@translations":{"english":{"name":"Tachometer Fault","description":""},"korean":{"name":"Tachometer Fault","description":""},"spanish":{"name":"Tachometer Fault","description":""},"french":{"name":"Tachometer Fault","description":""}},"children":[],"@labels":["Tachometer Fault"]},"PatternFaultMask":{"@parent":"","@translations":{"english":{"name":"Pattern Fault","description":""},"korean":{"name":"Pattern Fault","description":""},"spanish":{"name":"Pattern Fault","description":""},"french":{"name":"Pattern Fault","description":""}},"children":[],"@labels":["Pattern Fault"]},"ExitNoPackFaultMask":{"@parent":"","@translations":{"english":{"name":"Exit No Pack Fault","description":""},"korean":{"name":"Exit No Pack Fault","description":""},"spanish":{"name":"Exit No Pack Fault","description":""},"french":{"name":"Exit No Pack Fault","description":""}},"children":[],"@labels":["Exit No Pack Fault"]},"ExitNewPackFaultMask":{"@parent":"","@translations":{"english":{"name":"Exit New Pack Fault","description":""},"korean":{"name":"Exit New Pack Fault","description":""},"spanish":{"name":"Exit New Pack Fault","description":""},"french":{"name":"Exit New Pack Fault","description":""}},"children":[],"@labels":["Exit New Pack Fault"]},"InterceptorFaultMask":{"@parent":"","@translations":{"english":{"name":"Interceptor Fault","description":""},"korean":{"name":"Interceptor Fault","description":""},"spanish":{"name":"Interceptor Fault","description":""},"french":{"name":"Interceptor Fault","description":""}},"children":[],"@labels":["Interceptor Fault"]},"RtcLowBatFaultMask":{"@parent":"","@translations":{"english":{"name":"Rtc Low Batter Fault","description":""},"korean":{"name":"Rtc Low Batter Fault","description":""},"spanish":{"name":"Rtc Low Batter Fault","description":""},"french":{"name":"Rtc Low Batter Fault","description":""}},"children":[],"@labels":["Rtc Low Batter Fault"]},"RtcTimeFaultMask":{"@parent":"","@translations":{"english":{"name":"Rtc Time Fault","description":""},"korean":{"name":"Rtc Time Fault","description":""},"spanish":{"name":"Rtc Time Fault","description":""},"french":{"name":"Rtc Time Fault","description":""}},"children":[],"@labels":["Rtc Time Fault"]},"IntUsbFaultMask":{"@parent":"","@translations":{"english":{"name":"Int Usb Fault","description":""},"korean":{"name":"Int Usb Fault","description":""},"spanish":{"name":"Int Usb Fault","description":""},"french":{"name":"Int Usb Fault","description":""}},"children":[],"@labels":["Int Usb Fault"]},"IoBoardFaultMask":{"@parent":"","@translations":{"english":{"name":"IO Board Fault","description":""},"korean":{"name":"IO Board Fault","description":""},"spanish":{"name":"IO Board Fault","description":""},"french":{"name":"IO Board Fault","description":""}},"children":[],"@labels":["IO Board Fault"]},"HaloFaultMask":{"@parent":"","@translations":{"english":{"name":"Halo Fault","description":""},"korean":{"name":"Halo Fault","description":""},"spanish":{"name":"Halo Fault","description":""},"french":{"name":"Halo Fault","description":""}},"children":[],"@labels":["Halo Fault"]},"SignalFaultMask":{"@parent":"","@translations":{"english":{"name":"Signal Fault","description":""},"korean":{"name":"Signal Fault","description":""},"spanish":{"name":"Signal Fault","description":""},"french":{"name":"Signal Fault","description":""}},"children":[],"@labels":["Signal Fault"]}},"@netpollsmap":{"NET_POLL_PROTOCOL_VERSION":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_KEY_CLASS_MASK":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_PROD_REC_VAR":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_PROD_SYS_VAR":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_REJECT":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_REJECT2":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_REJ_CNT":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_FAULT":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_CONTROL":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_POWERUP":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_OPERATOR_NO":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_TEST_REQ_PASS":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_REJECT_ID":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_REJECT_CLEAR":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_EYE_PROD_PEAK":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_EYE_PROD_PHASE":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_FAULT_CLEAR":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_SYNC_MENU":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_PWD_ENTRY_1":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_PWD_ENTRY_2":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_SEL_UNIT":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_RESERVED":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_CLEAR_SCOPE":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_REJECT_PHASE":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_FLASH_WRITE":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_INTCPTR_SWITCH":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_PREC_DELETE":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_PREC_DEL_ALL":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_PREC_BACKUP_SAVE":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_PREC_BACKUP_RESTORE":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_PREC_DEAULTS":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_PREC_COPY":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_REJECT2_ID":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}},"NET_POLL_REJECT2_CLEAR":{"@translations":{"english":{"name":{"name":""}},"korean":{"name":{"name":""}},"spanish":{"name":{"name":""}},"french":{"name":{"name":""}}}}},"@pages":{"Sens":{"cat":"Sens","params":["Sens_A","DetThresh_A","ThresProdHi_A","ThresX_A","ThresR_A","BigMetThres_A","DetMode_A","NoiseR_A","NoiseX_A","DetThEst_A"],"subCats":[{"cat":"Filter","params":["NoiseR_A","NoiseX_A","FilterNoise_A"],"subCats":[]},{"cat":"Oscillation Power","params":["OscPower_A"],"subCats":[]},{"cat":"FM Setup","params":["FmInput_A"],"subCats":[]}]},"Test":{"cat":"Test","params":["TestTime","TestDeferTime","TestMode"],"subCats":[{"cat":"Manual","params":["TestConfigCount0_0","TestConfigCount0_1","TestConfigCount0_2","TestConfigCount0_3","TestConfigCount0_4","TestConfigCount0_5","TestConfigAck0","TestConfigOperator0","TestConfigHaloMode0"],"subCats":[]},{"cat":"Halo","params":["TestConfigCount1_0","TestConfigCount1_1","TestConfigCount1_2","TestConfigCount1_3","TestConfigCount1_4","TestConfigCount1_5","TestConfigAck1","TestConfigOperator1","TestConfigHaloMode1"],"subCats":[]},{"cat":"Manual2","params":["TestConfigCount2_0","TestConfigCount2_1","TestConfigCount2_2","TestConfigCount2_3","TestConfigCount2_4","TestConfigCount2_5","TestConfigAck2","TestConfigOperator2","TestConfigHaloMode2"],"subCats":[]},{"cat":"Halo2","params":["TestConfigCount3_0","TestConfigCount3_1","TestConfigCount3_2","TestConfigCount3_3","TestConfigCount3_4","TestConfigCount3_5","TestConfigAck3","TestConfigOperator3","TestConfigHaloMode3"],"subCats":[]},{"cat":"HaloConf","params":["HaloPeakRFe_A","HaloPeakXFe_A","HaloPeakRNFe_A","HaloPeakXNFe_A","HaloPeakRSs_A","HaloPeakXSs_A"],"subCats":[]}]},"Calibration":{"cat":"Calibration","params":[],"subCats":[{"cat":"Phase","params":["PhaseAngle_A","PhaseAngleAuto_A","PhaseMode_A","PhaseSpeed_A","PhaseFastBit_A","PhaseWetBit_A","PhaseDSALearn_A"],"subCats":[]},{"cat":"MPhase","params":["MPhaseOrder_A","MPhaseDD_A","MPhaseRD_A"],"subCats":[]}]}},"@catmap":{"Reject":{"@translations":{"english":"Reject","korean":"거부","spanish":"Reject","french":"Reject"}},"Password":{"@translations":{"english":"Password","korean":"암호","spanish":"Password","french":"Password"}},"IO":{"@translations":{"english":"I/O","korean":"입출력","spanish":"I/O","french":"I/O"}},"System":{"@translations":{"english":"System","korean":"시스템","spanish":"System","french":"System"}},"Fault":{"@translations":{"english":"Faults","korean":"오류","spanish":"Faults","french":"Faults"}},"Reject/Additional Settings":{"@translations":{"english":"Additional Settings","korean":"추가 설정","spanish":"Additional Settings","french":"Additional Settings"}},"Reject/Additional Settings/Distances":{"@translations":{"english":"Distances","korean":"거리","spanish":"Distances","french":"Distances"}},"Reject/Additional Settings/Belt Speed":{"@translations":{"english":"Belt Speed","korean":"벨트 속도","spanish":"Belt Speed","french":"Belt Speed"}},"Reject/Additional Settings/Latch":{"@translations":{"english":"Latches","korean":"Latches","spanish":"Latches","french":"Latches"}},"Reject/Additional Settings/Clocks":{"@translations":{"english":"Clocks","korean":"Clocks","spanish":"Clocks","french":"Clocks"}},"IO/Inputs":{"@translations":{"english":"Inputs","korean":"입력","spanish":"Inputs","french":"Inputs"}},"IO/Outputs":{"@translations":{"english":"Outputs","korean":"출력","spanish":"Outputs","french":"Outputs"}},"Sens":{"@translations":{"english":"Sensitivity","korean":"민감도","spanish":"Sensitivity","french":"Sensitivity"}},"Test":{"@translations":{"english":"Test","korean":"테스트","spanish":"Test","french":"Test"}},"Test/Manual":{"@translations":{"english":"Manual Test 1","korean":"Manual Test 1","spanish":"Manual Test 1","french":"Manual Test 1"}},"Test/Halo":{"@translations":{"english":"Halo Test 1","korean":"Halo Test 1","spanish":"Halo Test 1","french":"Halo Test 1"}},"Test/Manual2":{"@translations":{"english":"Manual Test 2","korean":"Manual Test 2","spanish":"Manual Test 2","french":"Manual Test 2"}},"Test/Halo2":{"@translations":{"english":"Halo Test 2","korean":"Halo Test 2","spanish":"Halo Test 2","french":"Halo Test 2"}},"Test/HaloConf":{"@translations":{"english":"Test Configuration","korean":"Test Configuration","spanish":"Test Configuration","french":"Test Configuration"}},"Sens/Filter":{"@translations":{"english":"Filter Noise","korean":"Filter Noise","spanish":"Filter Noise","french":"Filter Noise"}},"Sens/Oscillation Power":{"@translations":{"english":"Oscillation Power","korean":"Oscillation Power","spanish":"Oscillation Power","french":"Oscillation Power"}},"Sens/FM Setup":{"@translations":{"english":"FM Setup","korean":"FM Setup","spanish":"FM Setup","french":"FM Setup"}},"Calibration":{"@translations":{"english":"Calibration","korean":"Calibration","spanish":"Calibration","french":"Calibration"}},"Calibration/Phase":{"@translations":{"english":"Phase","korean":"Phase","spanish":"Phase","french":"Phase"}},"Calibration/MPhase":{"@translations":{"english":"M Phase","korean":"M Phase","spanish":"M Phase","french":"M Phase"}}},"@languages":["english","korean","spanish","french"],"@labels":{"Channel A":{"english":{"name":"Channel A"},"korean":{"name":"Channel A"},"spanish":{"name":"Channel A"},"french":{"name":"chaîne A"}},"Channel B":{"english":{"name":"Channel B"},"korean":{"name":"Channel B"},"spanish":{"name":"Channel B"},"french":{"name":"chaîne B"}},"Count":{"english":{"name":"Count"},"korean":{"name":"Count"},"spanish":{"name":"Count"},"french":{"name":"nombre"}},"Metal Type":{"english":{"name":"Metal Type"},"korean":{"name":"Metal Type"},"spanish":{"name":"Metal Type"},"french":{"name":"type de métal"}},"Signal Chain":{"english":{"name":"Signal Chain"},"korean":{"name":"Signal Chain"},"spanish":{"name":"Signal Chain"},"french":{"name":"chaîne de signal"}},"Source":{"english":{"name":"Source"},"korean":{"name":"Source"},"spanish":{"name":"Source"},"french":{"name":"source"}},"Polarity":{"english":{"name":"Polarity"},"korean":{"name":"Polarity"},"spanish":{"name":"Polarity"},"french":{"name":"polarité"}},"Sensitivity":{"english":{"name":"Sensitivity"},"korean":{"name":"민감도"},"spanish":{"name":"sensibildad"},"french":{"name":" sensibilité"}},"Signal":{"english":{"name":"Signal"},"korean":{"name":"신호"},"spanish":{"name":"señal"},"french":{"name":"signal"}},"Rejects":{"english":{"name":"Rejects"},"korean":{"name":"거부"},"spanish":{"name":"rechaza"},"french":{"name":"rejet"}},"Settings":{"english":{"name":"Settings"},"korean":{"name":"설정"},"spanish":{"name":"ajustes"},"french":{"name":" paramètres"}},"Test":{"english":{"name":"Test"},"korean":{"name":"테스트"},"spanish":{"name":"Test"},"french":{"name":"test"}},"Log":{"english":{"name":"Log"},"korean":{"name":"기록"},"spanish":{"name":"Log"},"french":{"name":"le registre"}},"Calibrate":{"english":{"name":"Calibrate"},"korean":{"name":"조정"},"spanish":{"name":"Calibrate"},"french":{"name":"calibrer"}},"Product":{"english":{"name":"Product"},"korean":{"name":"품목"},"spanish":{"name":"producto"},"french":{"name":"produit"}},"Running Product":{"english":{"name":"Running Product"},"korean":{"name":"현 품목"},"spanish":{"name":"Running Product"},"french":{"name":"produit courant"}},"Select Test":{"english":{"name":"Select Test"},"korean":{"name":"테스트 선택"},"spanish":{"name":"Select Test"},"french":{"name":"Select Test"}},"Currently Running":{"english":{"name":"Currently Running"},"korean":{"name":"실행중"},"spanish":{"name":"Currently Running"},"french":{"name":"Currently Running"}},"Quit Test":{"english":{"name":"Quit Test"},"korean":{"name":"테스트 중단"},"spanish":{"name":"Quit Test"},"french":{"name":"Quit Test"}},"activate":{"english":{"name":"activate"},"korean":{"name":"activate"},"spanish":{"name":"activate"},"french":{"name":"activate"}},"Clear Faults":{"english":{"name":"Clear Faults"},"korean":{"name":"Clear Faults"},"spanish":{"name":"Clear Faults"},"french":{"name":"Clear Faults"}},"No Faults":{"english":{"name":"No Faults"},"korean":{"name":"No Faults"},"spanish":{"name":"No Faults"},"french":{"name":"No Faults"}},"Calibrate All":{"english":{"name":"Calibrate All"},"korean":{"name":"전부 조정"},"spanish":{"name":"Calibrate All"},"french":{"name":"Calibrate All"}}}
+	"@acc":{"SensEdit":[1,2,3],"Calib":[1,2,3],"TestButton":[1,2,3],"ProductButton":[1,2,3],"ProductEdit":[2,3]},"@categories":{"acc":[2,3],"cat":"@root","params":[{"type":1,"val":{"cat":"Reject","params":[{"type":1,"val":{"cat":"Additional Settings","params":[{"type":1,"val":{"cat":"Distances","params":[{"type":0,"val":"RejExitDist","acc":[0]},{"type":0,"val":"RejExitWin","acc":[0]},{"type":0,"val":"AppUnitDist","acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"Belt Speed","params":[{"type":0,"val":"BeltSpeed","acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"Latch","params":[{"type":0,"val":"FaultLatch","acc":[0]},{"type":0,"val":"RejLatchMode","acc":[0]},{"type":0,"val":"Rej2Latch","acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"Clocks","params":[{"type":0,"val":"RejBinDoorTime","acc":[0]},{"type":0,"val":"CIPCycleTime","acc":[0]},{"type":0,"val":"CIPDwellTime","acc":[0]},{"type":0,"val":"FaultClearTime","acc":[0]},{"type":0,"val":"EyeBlockTime","acc":[0]},{"type":0,"val":"RejCheckTime","acc":[0]},{"type":0,"val":"ExcessRejTime","acc":[0]},{"type":0,"val":"RejDelClock","acc":[0]}]},"acc":[0]}]},"acc":[0]},{"type":0,"val":"RejDelSec","acc":[0]},{"type":0,"val":"RejDelSec2","acc":[0]},{"type":0,"val":"RejDurSec","acc":[0]},{"type":0,"val":"RejDurSec2","acc":[0]},{"type":0,"val":"RejMode","acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"Fault","params":[{"type":0,"val":"RefFaultMask","acc":[0]},{"type":0,"val":"BalFaultMask","acc":[0]},{"type":0,"val":"ProdMemFaultMask","acc":[0]},{"type":0,"val":"RejConfirmFaultMask","acc":[0]},{"type":0,"val":"PhaseFaultMask","acc":[0]},{"type":0,"val":"TestSigFaultMask","acc":[0]},{"type":0,"val":"PeyeBlockFaultMask","acc":[0]},{"type":0,"val":"RejBinFullFaultMask","acc":[0]},{"type":0,"val":"AirFaultMask","acc":[0]},{"type":0,"val":"ExcessRejFaultMask","acc":[0]},{"type":0,"val":"BigMetalFaultMask","acc":[0]},{"type":0,"val":"NetBufferFaultMask","acc":[0]},{"type":0,"val":"RejMemoryFaultMask","acc":[0]},{"type":0,"val":"RejectExitFaultMask","acc":[0]},{"type":0,"val":"TachometerFaultMask","acc":[0]},{"type":0,"val":"PatternFaultMask","acc":[0]},{"type":0,"val":"ExitNoPackFaultMask","acc":[0]},{"type":0,"val":"ExitNewPackFaultMask","acc":[0]},{"type":0,"val":"InterceptorFaultMask","acc":[0]},{"type":0,"val":"RtcLowBatFaultMask","acc":[0]},{"type":0,"val":"RtcTimeFaultMask","acc":[0]},{"type":0,"val":"IntUsbFaultMask","acc":[0]},{"type":0,"val":"IoBoardFaultMask","acc":[0]},{"type":0,"val":"HaloFaultMask","acc":[0]},{"type":0,"val":"SignalFaultMask","acc":[0]}]},"acc":[1,2,3]},{"type":1,"val":{"cat":"IO","params":[{"type":1,"val":{"cat":"Inputs","params":[{"type":0,"val":"INPUT_TACH","acc":[0]},{"type":0,"val":"INPUT_EYE","acc":[0]},{"type":0,"val":"INPUT_RC_1","acc":[0]},{"type":0,"val":"INPUT_RC_2","acc":[0]},{"type":0,"val":"INPUT_REJ_EYE","acc":[0]},{"type":0,"val":"INPUT_AIR_PRES","acc":[0]},{"type":0,"val":"INPUT_REJ_LATCH","acc":[0]},{"type":0,"val":"INPUT_BIN_FULL","acc":[0]},{"type":0,"val":"INPUT_REJ_PRESENT","acc":[0]},{"type":0,"val":"INPUT_DOOR1_OPEN","acc":[0]},{"type":0,"val":"INPUT_DOOR2_OPEN","acc":[0]},{"type":0,"val":"INPUT_CLEAR_FAULTS","acc":[0]},{"type":0,"val":"INPUT_CIP","acc":[0]},{"type":0,"val":"INPUT_PROD_SEL1","acc":[0]},{"type":0,"val":"INPUT_PROD_SEL2","acc":[0]},{"type":0,"val":"INPUT_PROD_SEL3","acc":[0]},{"type":0,"val":"INPUT_PROD_SEL4","acc":[0]},{"type":0,"val":"INPUT_TEST","acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"Outputs","params":[{"type":0,"val":"OUT_PHY_PL3_1","acc":[0]},{"type":0,"val":"OUT_PHY_PL11_1A2","acc":[0]},{"type":0,"val":"OUT_PHY_PL11_3A4","acc":[0]},{"type":0,"val":"OUT_PHY_PL11_5A6","acc":[0]},{"type":0,"val":"OUT_PHY_PL4_1","acc":[0]},{"type":0,"val":"OUT_PHY_PL4_2","acc":[0]},{"type":0,"val":"OUT_PHY_PL4_3","acc":[0]},{"type":0,"val":"OUT_PHY_PL4_5","acc":[0]},{"type":0,"val":"OUT_PHY_IO_PL3_R1","acc":[0]},{"type":0,"val":"OUT_PHY_IO_PL3_R2","acc":[0]},{"type":0,"val":"OUT_PHY_IO_PL3_O1","acc":[0]},{"type":0,"val":"OUT_PHY_IO_PL3_O2","acc":[0]},{"type":0,"val":"OUT_PHY_IO_PL3_O3","acc":[0]},{"type":0,"val":"OUT_PHY_IO_PL4_02","acc":[0]},{"type":0,"val":"OUT_PHY_IO_PL4_03","acc":[0]},{"type":0,"val":"OUT_PHY_IO_PL4_04","acc":[0]},{"type":0,"val":"OUT_PHY_IO_PL4_05","acc":[0]}]},"acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"System","params":[{"type":0,"val":"SRecordDate","acc":[0]},{"type":0,"val":"ProdNo","acc":[0]},{"type":0,"val":"Unit","acc":[0]},{"type":0,"val":"DspName","acc":[2,3]},{"val":{"cat":"FRAM","params":[{"type":0,"val":"InternalIP","acc":[2,3]},{"type":0,"val":"InternalNM","acc":[2,3]},{"type":0,"val":"XPortIP","acc":[2,3]},{"type":0,"val":"XPortGW","acc":[2,3]},{"type":0,"val":"XPortNM","acc":[2,3]},{"val":{"cat":"IO Board Settings","params":[{"type":0,"val":"IOBoardLocate","acc":[2,3]},{"type":0,"val":"IOBoardIP","acc":[2,3]},{"type":0,"val":"IOBoardType","acc":[2,3]}]},"type":1,"acc":[0]},{"val":{"cat":"Halo Board Settings","params":[{"type":0,"val":"HaloLocate","acc":[2,3]},{"type":0,"val":"HaloIP","acc":[2,3]}]},"type":1,"acc":[0]},{"val":{"cat":"Display Settings","params":[{"type":0,"val":"Nif_ip","acc":[2,3]}]},"type":1,"acc":[0]}]},"type":1,"acc":[0]}]},"acc":[0]},{"type":0,"val":"Language","acc":[0]}]},"@vMap":{"Sens_A":{"@parent":"","@translations":{"english":{"name":"Sensitivity","description":""},"korean":{"name":"민감도","description":""},"spanish":{"name":"Sensibilidad","description":""},"french":{"name":"Sensitivity","description":""},"portuguese":{"name":"Sensibilidade","description":""}},"children":["Sens_B"],"@labels":["Channel A","Channel B"]},"DetThresh_A":{"@parent":"","@translations":{"english":{"name":"Detection Threshold","description":""},"korean":{"name":"검출역치 ","description":""},"spanish":{"name":"Umbral Detección","description":""},"french":{"name":"Detection Threshold","description":""},"portuguese":{"name":"Limite Detecção","description":""}},"children":["DetThresh_B"],"@labels":["Channel A","Channel B"]},"ThresProdHi_A":{"@parent":"","@translations":{"english":{"name":"Product High Threshold","description":""},"korean":{"name":"교정한계치","description":""},"spanish":{"name":"Umbral Superior Producto","description":""},"french":{"name":"Product High Threshold","description":""},"portuguese":{"name":"Limite Produto Alto","description":""}},"children":["ThresProdHi_B"],"@labels":["Channel A","Channel B"]},"ThresX_A":{"@parent":"","@translations":{"english":{"name":"X Threshold","description":""},"korean":{"name":"X 역치","description":""},"spanish":{"name":"Umbral X","description":""},"french":{"name":"X Threshold","description":""},"portuguese":{"name":"Limite de X","description":""}},"children":["ThresX_B"],"@labels":["Channel A","Channel B"]},"ThresR_A":{"@parent":"","@translations":{"english":{"name":"R Threshold","description":""},"korean":{"name":"R 역치","description":""},"spanish":{"name":"Umbral R","description":""},"french":{"name":"R Threshold","description":""},"portuguese":{"name":"Limite de R","description":""}},"children":["ThresR_B"],"@labels":["Channel A","Channel B"]},"BigMetThres_A":{"@parent":"","@translations":{"english":{"name":"Large Metal Threshold","description":""},"korean":{"name":"대량금속 역치","description":""},"spanish":{"name":"Umbral Metal Grande","description":""},"french":{"name":"Large Metal Threshold","description":""},"portuguese":{"name":"Limite Metal Grande","description":""}},"children":["BigMetThres_B"],"@labels":["Channel A","Channel B"]},"DetMode_A":{"@parent":"","@translations":{"english":{"name":"Detection Mode","description":""},"korean":{"name":"검출방식","description":""},"spanish":{"name":"Modo Detección","description":""},"french":{"name":"Detection Mode","description":""},"portuguese":{"name":"Modo de Detecção","description":""}},"children":["DetMode_B"],"@labels":["Channel A","Channel B"]},"NoiseR_A":{"@parent":"","@translations":{"english":{"name":"R Channel Noise","description":""},"korean":{"name":"R 채널 노이즈","description":""},"spanish":{"name":"Ruido Canal R","description":""},"french":{"name":"R Channel Noise","description":""},"portuguese":{"name":"Ruído do Canal R","description":""}},"children":["NoiseR_B"],"@labels":["Channel A","Channel B"]},"NoiseX_A":{"@parent":"","@translations":{"english":{"name":"X Channel Noise","description":""},"korean":{"name":"X 채널 노이즈","description":""},"spanish":{"name":"Ruido Canal X","description":""},"french":{"name":"X Channel Noise","description":""},"portuguese":{"name":"Ruído do canal X","description":""}},"children":["NoiseX_B"],"@labels":["Channel A","Channel B"]},"DetThEst_A":{"@parent":"","@translations":{"english":{"name":"Detection Threshold Est","description":""},"korean":{"name":"검출역치 추정값","description":""},"spanish":{"name":"Umbral Detección Estimado","description":""},"french":{"name":"Detection Threshold Est","description":""},"portuguese":{"name":"Est do Limite de Detecção","description":""}},"children":["DetThEst_B"],"@labels":["Channel A","Channel B"]},"FilterNoise_A":{"@parent":"","@translations":{"english":{"name":"Filter Noise","description":""},"korean":{"name":"필터 노이즈","description":""},"spanish":{"name":"Filtro Ruido","description":""},"french":{"name":"Filter Noise","description":""},"portuguese":{"name":"Filtro do Ruído","description":""}},"children":["FilterNoise_B"],"@labels":["Channel A","Channel B"]},"OscPower_A":{"@parent":"","@translations":{"english":{"name":"Oscillation Power","description":""},"korean":{"name":"진동 출력","description":""},"spanish":{"name":"Potencia Oscilación","description":""},"french":{"name":"Oscillation Power","description":""},"portuguese":{"name":"Potência","description":""}},"children":["OscPower_B"],"@labels":["Channel A","Channel B"]},"FmInput_A":{"@parent":"","@translations":{"english":{"name":"FM Input ","description":""},"korean":{"name":"FM 입력","description":""},"spanish":{"name":"Entrada FM ","description":""},"french":{"name":"FM Input ","description":""},"portuguese":{"name":"Input do FM ","description":""}},"children":["FmInput_B"],"@labels":["Channel A","Channel B"]},"TestTime":{"@parent":"","@translations":{"english":{"name":"Test Interval","description":""},"korean":{"name":"테스트 간격","description":""},"spanish":{"name":"Intervalo Test","description":""},"french":{"name":"Test Interval","description":""},"portuguese":{"name":"Intervalo de Teste","description":""}},"children":[],"@labels":["Test Interval"]},"TestDeferTime":{"@parent":"","@translations":{"english":{"name":"Test Defer TIme","description":""},"korean":{"name":"테스트 지연 시간","description":""},"spanish":{"name":"Tiempo Aplazamiento Test","description":""},"french":{"name":"Test Defer TIme","description":""},"portuguese":{"name":"Deferir Tempo de Teste","description":""}},"children":[],"@labels":["Test Defer TIme"]},"TestMode":{"@parent":"","@translations":{"english":{"name":"Test Mode","description":""},"korean":{"name":"테스트 방식","description":""},"spanish":{"name":"Modo Test","description":""},"french":{"name":"Test Mode","description":""},"portuguese":{"name":"Modo do Teste","description":""}},"children":[],"@labels":["Test Mode"]},"TestConfigCount0_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":"Count is number of passes. Select Metal Type to test on the specified signal chain"},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":"Cuenta es el número de pasadas. Selecciona el Tipo de Metal para testear en el cadena de señal específico"},"french":{"name":"Test 1","description":"Count is number of passes. Select Metal Type to test on the specified signal chain"},"portuguese":{"name":"Teste 1","description":"Count is number of passes. Select Metal Type to test on the specified signal chain"}},"children":["TestConfigMetal0_0","TestConfigFreq0_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_1":{"@parent":"","@translations":{"english":{"name":"Test 2","description":""},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Test 2","description":""},"portuguese":{"name":"Teste 2","description":""}},"children":["TestConfigMetal0_1","TestConfigFreq0_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_2":{"@parent":"","@translations":{"english":{"name":"Test 3","description":""},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Test 3","description":""},"portuguese":{"name":"Teste 3","description":""}},"children":["TestConfigMetal0_2","TestConfigFreq0_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_3":{"@parent":"","@translations":{"english":{"name":"Test 4","description":""},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Test 4","description":""},"portuguese":{"name":"Teste 4","description":""}},"children":["TestConfigMetal0_3","TestConfigFreq0_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_4":{"@parent":"","@translations":{"english":{"name":"Test 5","description":""},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Test 5","description":""},"portuguese":{"name":"Teste 5","description":""}},"children":["TestConfigMetal0_4","TestConfigFreq0_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_5":{"@parent":"","@translations":{"english":{"name":"Test 6","description":""},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Test 6","description":""},"portuguese":{"name":"Teste 6","description":""}},"children":["TestConfigMetal0_5","TestConfigFreq0_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck0":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Acknowledge","description":""},"portuguese":{"name":"Reconhecer","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator0":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Operator","description":""},"portuguese":{"name":"Operador","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode0":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Halo Mode","description":""},"portuguese":{"name":"Modo Halo","description":""}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount1_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""},"portuguese":{"name":"Teste 1","description":""}},"children":["TestConfigMetal1_0","TestConfigFreq1_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_1":{"@parent":"","@translations":{"english":{"name":"Test 2","description":""},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Test 2","description":""},"portuguese":{"name":"Teste 2","description":""}},"children":["TestConfigMetal1_1","TestConfigFreq1_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_2":{"@parent":"","@translations":{"english":{"name":"Test 3","description":""},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Test 3","description":""},"portuguese":{"name":"Teste 3","description":""}},"children":["TestConfigMetal1_2","TestConfigFreq1_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_3":{"@parent":"","@translations":{"english":{"name":"Test 4","description":""},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Test 4","description":""},"portuguese":{"name":"Teste 4","description":""}},"children":["TestConfigMetal1_3","TestConfigFreq1_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_4":{"@parent":"","@translations":{"english":{"name":"Test 5","description":""},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Test 5","description":""},"portuguese":{"name":"Teste 5","description":""}},"children":["TestConfigMetal1_4","TestConfigFreq1_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_5":{"@parent":"","@translations":{"english":{"name":"Test 6","description":""},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Test 6","description":""},"portuguese":{"name":"Teste 6","description":""}},"children":["TestConfigMetal1_5","TestConfigFreq1_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck1":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Acknowledge","description":""},"portuguese":{"name":"Reconhecer","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator1":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Operator","description":""},"portuguese":{"name":"Operador","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode1":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Halo Mode","description":""},"portuguese":{"name":"Modo Halo","description":""}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount2_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""},"portuguese":{"name":"Teste 1","description":""}},"children":["TestConfigMetal2_0","TestConfigFreq2_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_1":{"@parent":"","@translations":{"english":{"name":"Test 2","description":""},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Test 2","description":""},"portuguese":{"name":"Teste 2","description":""}},"children":["TestConfigMetal2_1","TestConfigFreq2_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_2":{"@parent":"","@translations":{"english":{"name":"Test 3","description":""},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Test 3","description":""},"portuguese":{"name":"Teste 3","description":""}},"children":["TestConfigMetal2_2","TestConfigFreq2_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_3":{"@parent":"","@translations":{"english":{"name":"Test 4","description":""},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Test 4","description":""},"portuguese":{"name":"Teste 4","description":""}},"children":["TestConfigMetal2_3","TestConfigFreq2_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_4":{"@parent":"","@translations":{"english":{"name":"Test 5","description":""},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Test 5","description":""},"portuguese":{"name":"Teste 5","description":""}},"children":["TestConfigMetal2_4","TestConfigFreq2_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_5":{"@parent":"","@translations":{"english":{"name":"Test 6","description":""},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Test 6","description":""},"portuguese":{"name":"Teste 6","description":""}},"children":["TestConfigMetal2_5","TestConfigFreq2_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck2":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Acknowledge","description":""},"portuguese":{"name":"Reconhecer","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator2":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Operator","description":""},"portuguese":{"name":"Operador","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode2":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Halo Mode","description":""},"portuguese":{"name":"Modo Halo","description":""}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount3_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Test 1","description":""},"portuguese":{"name":"Teste 1","description":""}},"children":["TestConfigMetal3_0","TestConfigFreq3_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_1":{"@parent":"","@translations":{"english":{"name":"Test 2","description":""},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Test 2","description":""},"portuguese":{"name":"Teste 2","description":""}},"children":["TestConfigMetal3_1","TestConfigFreq3_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_2":{"@parent":"","@translations":{"english":{"name":"Test 3","description":""},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Test 3","description":""},"portuguese":{"name":"Teste 3","description":""}},"children":["TestConfigMetal3_2","TestConfigFreq3_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_3":{"@parent":"","@translations":{"english":{"name":"Test 4","description":""},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Test 4","description":""},"portuguese":{"name":"Teste 4","description":""}},"children":["TestConfigMetal3_3","TestConfigFreq3_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_4":{"@parent":"","@translations":{"english":{"name":"Test 5","description":""},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Test 5","description":""},"portuguese":{"name":"Teste 5","description":""}},"children":["TestConfigMetal3_4","TestConfigFreq3_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_5":{"@parent":"","@translations":{"english":{"name":"Test 6","description":""},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Test 6","description":""},"portuguese":{"name":"Teste 6","description":""}},"children":["TestConfigMetal3_5","TestConfigFreq3_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck3":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Acknowledge","description":""},"portuguese":{"name":"reconhecer","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator3":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Operator","description":""},"portuguese":{"name":"Operador","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode3":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Halo Mode","description":""},"portuguese":{"name":"Modo Halo","description":""}},"children":[],"@labels":["Halo Mode"]},"HaloPeakRFe_A":{"@parent":"","@translations":{"english":{"name":"Ferrous Peak A","description":""},"korean":{"name":"철분 피크 A","description":""},"spanish":{"name":"Pico Ferrorso A","description":""},"french":{"name":"Ferrous Peak A","description":""},"portuguese":{"name":"Pico Ferroso A","description":""}},"children":["HaloPeakXFe_A"],"@labels":["Channel R","Channel X"]},"HaloPeakRFe_B":{"@parent":"","@translations":{"english":{"name":"Ferrous Peak B","description":""},"korean":{"name":"철분 피크 B","description":""},"spanish":{"name":"Pico Ferroso B","description":""},"french":{"name":"Ferrous Peak B","description":""},"portuguese":{"name":"Pico Ferroso B","description":""}},"children":["HaloPeakXFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakRNFe_A":{"@parent":"","@translations":{"english":{"name":"Non-Ferrous Peak A","description":""},"korean":{"name":"비철금속 피크 A","description":""},"spanish":{"name":"Pico No Ferroso A","description":""},"french":{"name":"Non-Ferrous Peak A","description":""},"portuguese":{"name":"Pico Não-Ferroso A","description":""}},"children":["HaloPeakXNFe_A"],"@labels":["Channel A","Channel B"]},"HaloPeakRNFe_B":{"@parent":"","@translations":{"english":{"name":"Non-Ferrous Peak B","description":""},"korean":{"name":"비철금속 피크 B","description":""},"spanish":{"name":"Pico No Ferroso B","description":""},"french":{"name":"Non-Ferrous Peak B","description":""},"portuguese":{"name":"Pico Não-Ferroso B","description":""}},"children":["HaloPeakXNFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakRSs_A":{"@parent":"","@translations":{"english":{"name":"Stainless Peak A","description":""},"korean":{"name":"스테인리스 피크 A","description":""},"spanish":{"name":"Pico Inoxidable A","description":""},"french":{"name":"Stainless Peak A","description":""},"portuguese":{"name":"Pico R Aço Inoxidável","description":""}},"children":["HaloPeakXSs_A"],"@labels":["Channel A","Channel B"]},"HaloPeakRSs_B":{"@parent":"","@translations":{"english":{"name":"Stainless Peak B","description":""},"korean":{"name":"스테인리스 피크 B","description":""},"spanish":{"name":"Pico Inoxidable B","description":""},"french":{"name":"Stainless Peak B","description":""},"portuguese":{"name":"Pico Aço Inoxidável B","description":""}},"children":["HaloPeakXSs_B"],"@labels":["Channel A","Channel B"]},"PhaseAngle_A":{"@parent":"","@translations":{"english":{"name":"Phase Angle","description":""},"korean":{"name":"페이즈","description":""},"spanish":{"name":"Ángulo de Fase","description":""},"french":{"name":"Phase Angle","description":""},"portuguese":{"name":"Ángulo de Fase","description":""}},"children":["PhaseAngle_B"],"@labels":["Channel A","Channel B"]},"PhaseMode_A":{"@parent":"","@translations":{"english":{"name":"Phase Mode","description":""},"korean":{"name":"페이즈 모드","description":""},"spanish":{"name":"Modo Fase","description":""},"french":{"name":"Phase Mode","description":""},"portuguese":{"name":"Modo da Fase","description":""}},"children":["PhaseMode_B"],"@labels":["Channel A","Channel B"]},"PhaseSpeed_A":{"@parent":"","@translations":{"english":{"name":"Phase Speed","description":""},"korean":{"name":"페이즈 학습","description":""},"spanish":{"name":"Velocidad Fase","description":""},"french":{"name":"Phase Speed","description":""},"portuguese":{"name":"Velocidade da Fase","description":""}},"children":["PhaseSpeed_B"],"@labels":["Channel A","Channel B"]},"PhaseModeHold_A":{"@parent":"","@translations":{"english":{"name":"Phase Limit Hold","description":""},"korean":{"name":"페이즈 모드 홀드","description":""},"spanish":{"name":"Retención Límite Fase","description":""},"french":{"name":"Phase Limit Hold","description":""},"portuguese":{"name":"Trava do Limite da Fase","description":""}},"children":["PhaseModeHold_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitDry_A":{"@parent":"","@translations":{"english":{"name":"Dry Phase Limit","description":""},"korean":{"name":"건식 페이즈 극치","description":""},"spanish":{"name":"Límite Fase Seco","description":""},"french":{"name":"Dry Phase Limit","description":""},"portuguese":{"name":"Limite Fase Seco","description":""}},"children":["PhaseLimitDry_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitDrySpread_A":{"@parent":"","@translations":{"english":{"name":"Dry Phase Limit Spread","description":""},"korean":{"name":"건식 페이즈 극치 범위","description":""},"spanish":{"name":"Límite Propagación Fase Seco","description":""},"french":{"name":"Dry Phase Limit Spread","description":""},"portuguese":{"name":"Limite de Propagação da Fase Seco","description":""}},"children":["PhaseLimitDrySpread_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitWet_A":{"@parent":"","@translations":{"english":{"name":"Wet Phase Limit","description":""},"korean":{"name":"습식 페이즈","description":""},"spanish":{"name":"Límite Fase Húmedo","description":""},"french":{"name":"Wet Phase Limit","description":""},"portuguese":{"name":"Limite Fase Humido","description":""}},"children":["PhaseLimitWet_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitWetSpread_A":{"@parent":"","@translations":{"english":{"name":"Wet Phase Limit Spread","description":""},"korean":{"name":"습식 페이즈 극치 범위","description":""},"spanish":{"name":"Límite Propagación Fase Húmedo","description":""},"french":{"name":"Wet Phase Limit Spread","description":""},"portuguese":{"name":"Limite de Propagação da Fase Humido ","description":""}},"children":["PhaseLimitWetSpread_B"],"@labels":["Channel A","Channel B"]},"PhaseAngleAuto_A":{"@parent":"","@translations":{"english":{"name":"Auto Phase Angle","description":""},"korean":{"name":"자동 페이즈","description":""},"spanish":{"name":"Ángulo Fase Auto","description":""},"french":{"name":"Auto Phase Angle","description":""},"portuguese":{"name":"Ángulo da Fase Áuto","description":""}},"children":["PhaseAngleAuto_B"],"@labels":["Channel A","Channel B"]},"PhaseFastBit_A":{"@parent":"","@translations":{"english":{"name":"Phase Speed","description":""},"korean":{"name":"페이즈 속도","description":""},"spanish":{"name":"Velocidad Fase","description":""},"french":{"name":"Phase Speed","description":""},"portuguese":{"name":"Velocidade da Fase","description":""}},"children":["PhaseFastBit_B"],"@labels":["Channel A","Channel B"]},"PhaseWetBit_A":{"@parent":"","@translations":{"english":{"name":"Phase Wet","description":""},"korean":{"name":"습식 페이즈","description":""},"spanish":{"name":"Fase Húmedo","description":""},"french":{"name":"Phase Wet","description":""},"portuguese":{"name":"Fase Humido","description":""}},"children":["PhaseWetBit_B"],"@labels":["Channel A","Channel B"]},"PhaseDSALearn_A":{"@parent":"","@translations":{"english":{"name":"Phase DSA Learn","description":""},"korean":{"name":"DSA 페이즈 학습","description":""},"spanish":{"name":"Aprender Fase DSA","description":""},"french":{"name":"Phase DSA Learn","description":""},"portuguese":{"name":"Aprender Fase DSA","description":""}},"children":["PhaseDSALearn_B"],"@labels":["Channel A","Channel B"]},"MPhaseOrder_A":{"@parent":"","@translations":{"english":{"name":"Multiple Phase Order","description":""},"korean":{"name":"다중 페이즈 오더","description":""},"spanish":{"name":"Orden Fase Múltiple","description":""},"french":{"name":"M Phase Order","description":""},"portuguese":{"name":"Ordem da Fase M","description":""}},"children":["MPhaseOrder_B"],"@labels":["Channel A","Channel B"]},"MPhaseDD_A":{"@parent":"","@translations":{"english":{"name":"Multiple Phase Detection","description":""},"korean":{"name":"다중 페이즈 감지","description":""},"spanish":{"name":"Detección Fase Múltiple","description":""},"french":{"name":"M Phase DD","description":""},"portuguese":{"name":"DD da Fase M","description":""}},"children":["MPhaseDD_B"],"@labels":["Channel A","Channel B"]},"MPhaseRD_A":{"@parent":"","@translations":{"english":{"name":"Multiple Phase Reference","description":""},"korean":{"name":"다중 페이즈 레퍼런스","description":""},"spanish":{"name":"Referencia Fase Múltiple","description":""},"french":{"name":"M Phase RD","description":""},"portuguese":{"name":"RD da Fase M","description":""}},"children":["MPhaseRD_A"],"@labels":["Channel A","Channel B"]},"Language":{"@parent":"","@translations":{"english":{"name":"Language","description":"This is a description of f the language"},"korean":{"name":"언어","description":"This is a description of f the language"},"spanish":{"name":"Idioma","description":"Esto es una descripción del idioma"},"french":{"name":"Language","description":"This is a description of f the language"},"portuguese":{"name":"Língua","description":"This is a description of f the language"}},"children":[],"@labels":["Language"]},"RejDelSec":{"@parent":"","@translations":{"english":{"name":"Main Reject Delay","description":""},"korean":{"name":"주 리젝트 딜레이","description":""},"spanish":{"name":"Retardo Rechazo Principal","description":""},"french":{"name":"Main Reject Delay","description":""},"portuguese":{"name":"Atraso Relé Geral","description":""}},"children":[],"@labels":["Main Reject Delay"]},"RejDelSec2":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Delay","description":""},"korean":{"name":"보조 리젝트 딜레이","description":""},"spanish":{"name":"Retardo Rechazo Alternativo","description":""},"french":{"name":"Alternate Reject Delay","description":""},"portuguese":{"name":"Atraso Relé Alternativo","description":""}},"children":[],"@labels":["Alternate Reject Delay"]},"RejDurSec":{"@parent":"","@translations":{"english":{"name":"Main Reject Duration","description":""},"korean":{"name":"주 리젝트 유지시간","description":""},"spanish":{"name":"Duración Rechazo Principal","description":""},"french":{"name":"Main Reject Duration","description":""},"portuguese":{"name":"Duração Relé Geral","description":""}},"children":[],"@labels":["Main Reject Duration"]},"RejDurSec2":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Duration","description":""},"korean":{"name":"보조 리젝트 유지시간","description":""},"spanish":{"name":"Duración Rechazo Alternativo","description":""},"french":{"name":"Alternate Reject Duration","description":""},"portuguese":{"name":"Duração Relé Alternativo","description":""}},"children":[],"@labels":["Alternate Reject Duration"]},"RejMode":{"@parent":"","@translations":{"english":{"name":"Reject Mode","description":""},"korean":{"name":"리젝트 모드","description":""},"spanish":{"name":"Modo Rechazo","description":""},"french":{"name":"Reject Mode","description":""},"portuguese":{"name":"Modo de Rejeção","description":""}},"children":[],"@labels":["Reject Mode"]},"RejExitDist":{"@parent":"","@translations":{"english":{"name":"Reject Exit Distance","description":""},"korean":{"name":"리젝트 퇴장 거리","description":""},"spanish":{"name":"Distancia Salida Rechazo","description":""},"french":{"name":"Reject Exit Distance","description":""},"portuguese":{"name":"Distancia da Saida de Rejeção","description":""}},"children":[],"@labels":["Reject Exit Distance"]},"RejExitWin":{"@parent":"","@translations":{"english":{"name":"Reject Exit Window","description":""},"korean":{"name":"리젝트 퇴장 범위","description":""},"spanish":{"name":"Ventana Salida Rechazo","description":""},"french":{"name":"Reject Exit Window","description":""},"portuguese":{"name":"Janela da Saida de Rejeção","description":""}},"children":[],"@labels":["Reject Exit Window"]},"AppUnitDist":{"@parent":"","@translations":{"english":{"name":"Units ","description":""},"korean":{"name":"단위 ","description":""},"spanish":{"name":"Unidades ","description":""},"french":{"name":"Units ","description":""},"portuguese":{"name":"Unidades","description":""}},"children":[],"@labels":["Units "]},"BeltSpeed":{"@parent":"","@translations":{"english":{"name":"Belt Speed","description":""},"korean":{"name":"벨트 속도","description":""},"spanish":{"name":"Velocidad Cinta","description":""},"french":{"name":"Belt Speed","description":""},"portuguese":{"name":"Velocidade da Esteira","description":""}},"children":[],"@labels":["Belt Speed"]},"FaultLatch":{"@parent":"","@translations":{"english":{"name":"Fault Latch","description":""},"korean":{"name":"폴트 래치","description":""},"spanish":{"name":"Retención Fallo","description":""},"french":{"name":"Fault Latch","description":""},"portuguese":{"name":"Trava Falha","description":""}},"children":[],"@labels":["Fault Latch"]},"RejLatchMode":{"@parent":"","@translations":{"english":{"name":"Reject Latch","description":""},"korean":{"name":"리젝트 래치","description":""},"spanish":{"name":"Retención Rechazo","description":""},"french":{"name":"Reject Latch","description":""},"portuguese":{"name":"Trava Rejeção","description":""}},"children":[],"@labels":["Reject Latch"]},"Rej2Latch":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Latch","description":""},"korean":{"name":"보조 리젝트 래치","description":""},"spanish":{"name":"Retención Rechazo Alternativo","description":""},"french":{"name":"Alternate Reject Latch","description":""},"portuguese":{"name":"Trava Rejeção Alternativa","description":""}},"children":[],"@labels":["Alternate Reject Latch"]},"RejBinDoorTime":{"@parent":"","@translations":{"english":{"name":"Reject Bin Door Time","description":""},"korean":{"name":"리젝트 빈 도어 시간","description":""},"spanish":{"name":"Tiempo Puerta Contenedor","description":""},"french":{"name":"Reject Bin Door Time","description":""},"portuguese":{"name":"Tempo Falha Porta Caixa de rejeção","description":""}},"children":[],"@labels":["Reject Bin Door Time"]},"CIPCycleTime":{"@parent":"","@translations":{"english":{"name":"CIP Cycle Time","description":""},"korean":{"name":"CIP 사이클 시간","description":""},"spanish":{"name":"Tiempo Ciclo Limpieza","description":""},"french":{"name":"CIP Cycle Time","description":""},"portuguese":{"name":"Tempo Ciclo Limpeza CIP","description":""}},"children":[],"@labels":["CIP Cycle Time"]},"CIPDwellTime":{"@parent":"","@translations":{"english":{"name":"CIP Dwell Time","description":""},"korean":{"name":"CIP 유지 시간","description":""},"spanish":{"name":"Tiempo Actuación CIP","description":""},"french":{"name":"CIP Dwell Time","description":""},"portuguese":{"name":"Tempo de Atuação CIP","description":""}},"children":[],"@labels":["CIP Dwell Time"]},"FaultClearTime":{"@parent":"","@translations":{"english":{"name":"Fault Clear Time","description":""},"korean":{"name":"폴트 클리어 시간","description":""},"spanish":{"name":"Tiempo Borrado Fallo","description":""},"french":{"name":"Fault Clear Time","description":""},"portuguese":{"name":"Tempo Limpar Falhas","description":""}},"children":[],"@labels":["Fault Clear Time"]},"EyeBlockTime":{"@parent":"","@translations":{"english":{"name":"Eye Block Time","description":""},"korean":{"name":"아이 차단 시간","description":""},"spanish":{"name":"Tiempo Bloqueo Fotocélula","description":""},"french":{"name":"Eye Block Time","description":""},"portuguese":{"name":"Tempo Fotocélula Bloqueado","description":""}},"children":[],"@labels":["Eye Block Time"]},"RejCheckTime":{"@parent":"","@translations":{"english":{"name":"Reject Check Time","description":""},"korean":{"name":"리젝트 확인 시간","description":""},"spanish":{"name":"Tiempo Comprobación Rechazo","description":""},"french":{"name":"Reject Check Time","description":""},"portuguese":{"name":"Tempo Confirmação de Rejeção","description":""}},"children":[],"@labels":["Reject Check Time"]},"ExcessRejTime":{"@parent":"","@translations":{"english":{"name":"Excess Reject Time","description":""},"korean":{"name":"초과 리젝트 시간","description":""},"spanish":{"name":"Tiempo Rechazo Excedente","description":""},"french":{"name":"Excess Reject Time","description":""},"portuguese":{"name":"Tempo de Rejeção Ultrapassado","description":""}},"children":[],"@labels":["Excess Reject Time"]},"RejDelClock":{"@parent":"","@translations":{"english":{"name":"Reject Delay Clock","description":""},"korean":{"name":"리텍트 딜레이 시간","description":""},"spanish":{"name":"Retardo Rechazo","description":""},"french":{"name":"Reject Delay Clock","description":""},"portuguese":{"name":"Relógio Atrazo de Rejeção","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"PW1":{"@parent":"","@translations":{"english":{"name":"Password 1","description":""},"korean":{"name":"암호 1","description":""},"spanish":{"name":"Contraseña 1","description":""},"french":{"name":"Password 1","description":""},"portuguese":{"name":"Senha 1","description":""}},"children":[],"@labels":["Password 1"]},"PW2":{"@parent":"","@translations":{"english":{"name":"Password 2","description":""},"korean":{"name":"암호 2","description":""},"spanish":{"name":"Contraseña 2","description":""},"french":{"name":"Password 2","description":""},"portuguese":{"name":"Senha 2","description":""}},"children":[],"@labels":["Password 2"]},"PW3":{"@parent":"","@translations":{"english":{"name":"Password 3","description":""},"korean":{"name":"암호 3","description":""},"spanish":{"name":"Contraseña 3","description":""},"french":{"name":"Password 3","description":""},"portuguese":{"name":"Senha 3","description":""}},"children":[],"@labels":["Password 3"]},"PW4":{"@parent":"","@translations":{"english":{"name":"Password 4","description":""},"korean":{"name":"암호 4","description":""},"spanish":{"name":"Contraseña 4","description":""},"french":{"name":"Password 4","description":""},"portuguese":{"name":"Senha 4","description":""}},"children":[],"@labels":["Password 4"]},"PassAccSens":{"@parent":"","@translations":{"english":{"name":"Sensitivity Access Level","description":""},"korean":{"name":"민감도 접근 레벨","description":""},"spanish":{"name":"Nivel Acesso Sensibilidad","description":""},"french":{"name":"Sensitivity Access Level","description":""},"portuguese":{"name":"Nível de Acesso à Sensibilidade ","description":""}},"children":[],"@labels":["Sensitivity Access Level"]},"PassAccProd":{"@parent":"","@translations":{"english":{"name":"Product Access Level","description":""},"korean":{"name":"품목 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Producto","description":""},"french":{"name":"Product Access Level","description":""},"portuguese":{"name":"Nível de Acesso ao Produto","description":""}},"children":[],"@labels":["Product Access Level"]},"PassAccCal":{"@parent":"","@translations":{"english":{"name":"Calibrate Access Level","description":""},"korean":{"name":"캘리브레이션 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Calibración","description":""},"french":{"name":"Calibrate Access Level","description":""},"portuguese":{"name":"Nível de Acesso à Calibração","description":""}},"children":[],"@labels":["Calibrate Access Level"]},"PassAccTest":{"@parent":"","@translations":{"english":{"name":"Test Access Level","description":""},"korean":{"name":"테스트 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Test","description":""},"french":{"name":"Test Access Level","description":""},"portuguese":{"name":"Nível de Accesso à Teste","description":""}},"children":[],"@labels":["Test Access Level"]},"PassAccSelUnit":{"@parent":"","@translations":{"english":{"name":"Select Unit Access Level","description":""},"korean":{"name":"유닛선택 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Unidad","description":""},"french":{"name":"Select Unit Access Level","description":""},"portuguese":{"name":"Nível de Acesso das Unidades","description":""}},"children":[],"@labels":["Select Unit Access Level"]},"PassAccClrFaults":{"@parent":"","@translations":{"english":{"name":"Fault Clear Access Level","description":""},"korean":{"name":"폴트클리어 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Borrado Fallo","description":""},"french":{"name":"Fault Clear Access Level","description":""},"portuguese":{"name":"Nível de Acesso à Limpar Falha","description":""}},"children":[],"@labels":["Fault Clear Access Level"]},"PassAccClrRej":{"@parent":"","@translations":{"english":{"name":"Reject Clear Access Level","description":""},"korean":{"name":"리젝트클리어 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Borrado Rechazo","description":""},"french":{"name":"Reject Clear Access Level","description":""},"portuguese":{"name":"Nível de Acesso à Rejeção","description":""}},"children":[],"@labels":["Reject Clear Access Level"]},"PassAccClrLatch":{"@parent":"","@translations":{"english":{"name":"Latch Clear Access Level","description":""},"korean":{"name":"래치클리어 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Borrado Retención","description":""},"french":{"name":"Latch Clear Access Level","description":""},"portuguese":{"name":"Nível de Acesso à Reset Trava","description":""}},"children":[],"@labels":["Latch Clear Access Level"]},"PassAccTime":{"@parent":"","@translations":{"english":{"name":"Time Access Level","description":""},"korean":{"name":"시간 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Hora","description":""},"french":{"name":"Time Access Level","description":""},"portuguese":{"name":"Nível de Acesso Tempo","description":""}},"children":[],"@labels":["Time Access Level"]},"PassAccSync":{"@parent":"","@translations":{"english":{"name":"Sync Access Level","description":""},"korean":{"name":"동기화 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Sync","description":""},"french":{"name":"Sync Access Level","description":""},"portuguese":{"name":"Nível de Acesso Sync","description":""}},"children":[],"@labels":["Sync Access Level"]},"INPUT_TACH":{"@parent":"","@translations":{"english":{"name":"Tachometer","description":""},"korean":{"name":"타코미터","description":""},"spanish":{"name":"Tacómetro","description":""},"french":{"name":"Tachometer","description":""},"portuguese":{"name":"Tacômetro","description":""}},"children":["INPUT_POL_TACH"],"@labels":["Source","Polarity"]},"INPUT_EYE":{"@parent":"","@translations":{"english":{"name":"Photo Eye","description":""},"korean":{"name":"포토아이","description":""},"spanish":{"name":"Fotocélula","description":""},"french":{"name":"Photo Eye","description":""},"portuguese":{"name":"Fotocélula","description":""}},"children":["INPUT_POL_EYE"],"@labels":["Source","Polarity"]},"INPUT_RC_1":{"@parent":"","@translations":{"english":{"name":"Reject Check 1","description":""},"korean":{"name":"리젝트 체크 1","description":""},"spanish":{"name":"Comprobación Rechazo 1","description":""},"french":{"name":"Reject Check 1","description":""},"portuguese":{"name":"Confirmação Rejeççao 1","description":""}},"children":["INPUT_POL_RC_1"],"@labels":["Source","Polarity"]},"INPUT_RC_2":{"@parent":"","@translations":{"english":{"name":"Reject Check 2","description":""},"korean":{"name":"리젝트 체크 2","description":""},"spanish":{"name":"Comprobación Rechazo 2","description":""},"french":{"name":"Reject Check 2","description":""},"portuguese":{"name":"Comfirmação Rejeção 2","description":""}},"children":["INPUT_POL_RC_2"],"@labels":["Source","Polarity"]},"INPUT_REJ_EYE":{"@parent":"","@translations":{"english":{"name":"Reject Eye","description":""},"korean":{"name":"리젝트 아이","description":""},"spanish":{"name":"Fotocélula de Rechazo","description":""},"french":{"name":"Reject Eye","description":""},"portuguese":{"name":"Fotocélula de Rejeção","description":""}},"children":["INPUT_POL_REJ_EYE"],"@labels":["Source","Polarity"]},"INPUT_AIR_PRES":{"@parent":"","@translations":{"english":{"name":"Air Pressure","description":""},"korean":{"name":"공기압","description":""},"spanish":{"name":"Presión Aire","description":""},"french":{"name":"Air Pressure","description":""},"portuguese":{"name":"Pressão do Ar","description":""}},"children":["INPUT_POL_AIR_PRES"],"@labels":["Source","Polarity"]},"INPUT_REJ_LATCH":{"@parent":"","@translations":{"english":{"name":"Reject Latch","description":""},"korean":{"name":"리젝트 래치","description":""},"spanish":{"name":"Retención Rechazo","description":""},"french":{"name":"Reject Latch","description":""},"portuguese":{"name":"Trava da Rejeção","description":""}},"children":["INPUT_POL_REJ_LATCH"],"@labels":["Source","Polarity"]},"INPUT_BIN_FULL":{"@parent":"","@translations":{"english":{"name":"Bin Full","description":""},"korean":{"name":"보관함 용량초과","description":""},"spanish":{"name":"Contenedor Lleno","description":""},"french":{"name":"Bin Full","description":""},"portuguese":{"name":"Caixa Cheia","description":""}},"children":["INPUT_POL_BIN_FULL"],"@labels":["Source","Polarity"]},"INPUT_REJ_PRESENT":{"@parent":"","@translations":{"english":{"name":"Reject Present","description":""},"korean":{"name":"리젝트 유효","description":""},"spanish":{"name":"Rechazo Presente","description":""},"french":{"name":"Reject Present","description":""},"portuguese":{"name":"Rejeção Presente","description":""}},"children":["INPUT_POL_REJ_PRESENT"],"@labels":["Source","Polarity"]},"INPUT_DOOR1_OPEN":{"@parent":"","@translations":{"english":{"name":"Door 1 Open","description":""},"korean":{"name":"문 1 열림","description":""},"spanish":{"name":"Puerta 1 Abierta","description":""},"french":{"name":"Door 1 Open","description":""},"portuguese":{"name":"Porta 1 Aberta","description":""}},"children":["INPUT_POL_DOOR1_OPEN"],"@labels":["Source","Polarity"]},"INPUT_DOOR2_OPEN":{"@parent":"","@translations":{"english":{"name":"Door 2 Open","description":""},"korean":{"name":"문 2 열림","description":""},"spanish":{"name":"Puerta 2 Abierta","description":""},"french":{"name":"Door 2 Open","description":""},"portuguese":{"name":"Porta 2 Aberta","description":""}},"children":["INPUT_POL_DOOR2_OPEN"],"@labels":["Source","Polarity"]},"INPUT_CLEAR_FAULTS":{"@parent":"","@translations":{"english":{"name":"Clear Faults","description":""},"korean":{"name":"폴트 클리어","description":""},"spanish":{"name":"Borrar Fallos","description":""},"french":{"name":"Clear Faults","description":""},"portuguese":{"name":"Limpar Falhas","description":""}},"children":["INPUT_POL_CLEAR_FAULTS"],"@labels":["Source","Polarity"]},"INPUT_CIP":{"@parent":"","@translations":{"english":{"name":"CIP","description":""},"korean":{"name":"CIP","description":""},"spanish":{"name":"Limpieza CIP","description":""},"french":{"name":"CIP","description":""},"portuguese":{"name":"Limpeza CIP","description":""}},"children":["INPUT_POL_CIP"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL1":{"@parent":"","@translations":{"english":{"name":"Product Select 1","description":""},"korean":{"name":"품목 선택 1","description":""},"spanish":{"name":"Selección Producto 1","description":""},"french":{"name":"Product Select 1","description":""},"portuguese":{"name":"Seleção Produto 1","description":""}},"children":["INPUT_POL_PROD_SEL1"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL2":{"@parent":"","@translations":{"english":{"name":"Product Select 2","description":""},"korean":{"name":"품목 선택 2","description":""},"spanish":{"name":"Selección Producto 2","description":""},"french":{"name":"Product Select 2","description":""},"portuguese":{"name":"Seleção Produto 2","description":""}},"children":["INPUT_POL_PROD_SEL2"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL3":{"@parent":"","@translations":{"english":{"name":"Product Select 3","description":""},"korean":{"name":"품목 선택 3","description":""},"spanish":{"name":"Selección Producto 3","description":""},"french":{"name":"Product Select 3","description":""},"portuguese":{"name":"Seleção Produto 3","description":""}},"children":["INPUT_POL_PROD_SEL3"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL4":{"@parent":"","@translations":{"english":{"name":"Product Select 4","description":""},"korean":{"name":"품목 선택 4","description":""},"spanish":{"name":"Selección Producto 4","description":""},"french":{"name":"Product Select 4","description":""},"portuguese":{"name":"Seleção Produto 4","description":""}},"children":["INPUT_POL_PROD_SEL4"],"@labels":["Source","Polarity"]},"INPUT_TEST":{"@parent":"","@translations":{"english":{"name":"Test","description":""},"korean":{"name":"테스트","description":""},"spanish":{"name":"Test","description":""},"french":{"name":"Test","description":""},"portuguese":{"name":"Teste","description":""}},"children":["INPUT_POL_TEST"],"@labels":["Source","Polarity"]},"OUT_PHY_PL3_1":{"@parent":"","@translations":{"english":{"name":"PL3 1","description":""},"korean":{"name":"PL3 1","description":""},"spanish":{"name":"PL3 1","description":""},"french":{"name":"PL3 1","description":""},"portuguese":{"name":"PL3 1","description":""}},"children":["OUT_POL_PL3_1"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_1A2":{"@parent":"","@translations":{"english":{"name":"PL11 1A2","description":""},"korean":{"name":"PL11 1A2","description":""},"spanish":{"name":"PL11 1A2","description":""},"french":{"name":"PL11 1A2","description":""},"portuguese":{"name":"PL11 1A2","description":""}},"children":["OUT_POL_PL11_1A2"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_3A4":{"@parent":"","@translations":{"english":{"name":"PL11 3A4","description":""},"korean":{"name":"PL11 3A4","description":""},"spanish":{"name":"PL11 3A4","description":""},"french":{"name":"PL11 3A4","description":""},"portuguese":{"name":"PL11 3A4","description":""}},"children":["OUT_POL_PL11_3A4"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_5A6":{"@parent":"","@translations":{"english":{"name":"PL11 5A6","description":""},"korean":{"name":"PL11 5A6","description":""},"spanish":{"name":"PL11 5A6","description":""},"french":{"name":"PL11 5A6","description":""},"portuguese":{"name":"PL11 5A6","description":""}},"children":["OUT_POL_PL11_5A6"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_1":{"@parent":"","@translations":{"english":{"name":"PL4 1","description":""},"korean":{"name":"PL4 1","description":""},"spanish":{"name":"PL4 1","description":""},"french":{"name":"PL4 1","description":""},"portuguese":{"name":"PL4 1","description":""}},"children":["OUT_POL_PL4_1"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_2":{"@parent":"","@translations":{"english":{"name":"PL4 2","description":""},"korean":{"name":"PL4 2","description":""},"spanish":{"name":"PL4 2","description":""},"french":{"name":"PL4 2","description":""},"portuguese":{"name":"PL4 2","description":""}},"children":["OUT_POL_PL4_2"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_3":{"@parent":"","@translations":{"english":{"name":"PL4 3","description":""},"korean":{"name":"PL4 3","description":""},"spanish":{"name":"PL4 3","description":""},"french":{"name":"PL4 3","description":""},"portuguese":{"name":"PL4 3","description":""}},"children":["OUT_POL_PL4_3"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_5":{"@parent":"","@translations":{"english":{"name":"PL4 5","description":""},"korean":{"name":"PL4 5","description":""},"spanish":{"name":"PL4 5","description":""},"french":{"name":"PL4 5","description":""},"portuguese":{"name":"PL4 5","description":""}},"children":["OUT_POL_PL4_5"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_R1":{"@parent":"","@translations":{"english":{"name":"IO PL3 R1","description":""},"korean":{"name":"IO PL3 R1","description":""},"spanish":{"name":"IO PL3 R1","description":""},"french":{"name":"IO PL3 R1","description":""},"portuguese":{"name":"IO PL3 R1","description":""}},"children":["OUT_POL_IO_PL3_R1"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_R2":{"@parent":"","@translations":{"english":{"name":"IO PL3 R2","description":""},"korean":{"name":"IO PL3 R2","description":""},"spanish":{"name":"IO PL3 R2","description":""},"french":{"name":"IO PL3 R2","description":""},"portuguese":{"name":"IO PL3 R2","description":""}},"children":["OUT_POL_IO_PL3_R2"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O1":{"@parent":"","@translations":{"english":{"name":"IO PL3 O1","description":""},"korean":{"name":"IO PL3 O1","description":""},"spanish":{"name":"IO PL3 O1","description":""},"french":{"name":"IO PL3 O1","description":""},"portuguese":{"name":"IO PL3 O1","description":""}},"children":["OUT_POL_IO_PL3_O1"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O2":{"@parent":"","@translations":{"english":{"name":"IO PL3 O2","description":""},"korean":{"name":"IO PL3 O2","description":""},"spanish":{"name":"IO PL3 O2","description":""},"french":{"name":"IO PL3 O2","description":""},"portuguese":{"name":"IO PL3 O2","description":""}},"children":["OUT_PHY_IO_PL3_O2"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O3":{"@parent":"","@translations":{"english":{"name":"IO PL3 O3","description":""},"korean":{"name":"IO PL3 O3","description":""},"spanish":{"name":"IO PL3 O3","description":""},"french":{"name":"IO PL3 O3","description":""},"portuguese":{"name":"IO PL3 O3","description":""}},"children":["OUT_POL_IO_PL3_O3"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_02":{"@parent":"","@translations":{"english":{"name":"IO PL4 02","description":""},"korean":{"name":"IO PL4 02","description":""},"spanish":{"name":"IO PL4 02","description":""},"french":{"name":"IO PL4 02","description":""},"portuguese":{"name":"IO PL4 02","description":""}},"children":["OUT_POL_IO_PL4_02"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_03":{"@parent":"","@translations":{"english":{"name":"IO PL4 03","description":""},"korean":{"name":"IO PL4 03","description":""},"spanish":{"name":"IO PL4 03","description":""},"french":{"name":"IO PL4 03","description":""},"portuguese":{"name":"IO PL4 03","description":""}},"children":["OUT_POL_IO_PL4_03"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_04":{"@parent":"","@translations":{"english":{"name":"IO PL4 04","description":""},"korean":{"name":"IO PL4 04","description":""},"spanish":{"name":"IO PL4 04","description":""},"french":{"name":"IO PL4 04","description":""},"portuguese":{"name":"IO PL4 04","description":""}},"children":["OUT_POL_IO_PL4_04"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_05":{"@parent":"","@translations":{"english":{"name":"IO PL4 05","description":""},"korean":{"name":"IO PL4 05","description":""},"spanish":{"name":"IO PL4 05","description":""},"french":{"name":"IO PL4 05","description":""},"portuguese":{"name":"IO PL4 05","description":""}},"children":["OUT_POL_IO_PL4_05"],"@labels":["Source","Polarity"]},"SRecordDate":{"@parent":"","@translations":{"english":{"name":"System Record Date","description":""},"korean":{"name":"시스템 기록일","description":""},"spanish":{"name":"Fecha Registro Sistema","description":""},"french":{"name":"System Record Date","description":""},"portuguese":{"name":"Data do Registro do Sistema","description":""}},"children":[],"@labels":["System Record Date"]},"ProdNo":{"@parent":"","@translations":{"english":{"name":"Product Number","description":""},"korean":{"name":"품목 번호","description":""},"spanish":{"name":"Número Producto","description":""},"french":{"name":"Product Number","description":""},"portuguese":{"name":"Numero do Produto","description":""}},"children":[],"@labels":["Product Number"]},"Unit":{"@parent":"","@translations":{"english":{"name":"Unit","description":""},"korean":{"name":"유닛","description":""},"spanish":{"name":"Unidad","description":""},"french":{"name":"Unit","description":""},"portuguese":{"name":"Unidade","description":""}},"children":[],"@labels":["Unit"]},"RefFaultMask":{"@parent":"","@translations":{"english":{"name":"Reference Fault","description":""},"korean":{"name":"참조 폴트","description":""},"spanish":{"name":"Fallo Referencia","description":""},"french":{"name":"Reference Fault","description":""},"portuguese":{"name":"Falha de Refêrencia","description":""}},"children":[],"@labels":["Reference Fault"]},"BalFaultMask":{"@parent":"","@translations":{"english":{"name":"Balance Fault","description":""},"korean":{"name":"발란스 폴트","description":""},"spanish":{"name":"Fallo Balanceo","description":""},"french":{"name":"Balance Fault","description":""},"portuguese":{"name":"Falha do Balance","description":""}},"children":[],"@labels":["Balance Fault"]},"ProdMemFaultMask":{"@parent":"","@translations":{"english":{"name":"Product Memory Fault","description":""},"korean":{"name":"품목 메모리 폴트","description":""},"spanish":{"name":"Fallo Memoria Producto","description":""},"french":{"name":"Product Memory Fault","description":""},"portuguese":{"name":"Falha Memoria do produto","description":""}},"children":[],"@labels":["Product Memory Fault"]},"RejConfirmFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Confirm Fault","description":""},"korean":{"name":"리젝트 컨펌 폴트","description":""},"spanish":{"name":"Fallo Confirmación Rechazo","description":""},"french":{"name":"Reject Confirm Fault","description":""},"portuguese":{"name":"Falha Comfirmação de Rejeção","description":""}},"children":[],"@labels":["Reject Confirm Fault"]},"PhaseFaultMask":{"@parent":"","@translations":{"english":{"name":"Phase Fault","description":""},"korean":{"name":"페이즈 폴트","description":""},"spanish":{"name":"Fallo Fase","description":""},"french":{"name":"Phase Fault","description":""},"portuguese":{"name":"Falha da Fase","description":""}},"children":[],"@labels":["Phase Fault"]},"TestSigFaultMask":{"@parent":"","@translations":{"english":{"name":"Test Signal Fault","description":""},"korean":{"name":"테스트 시그널 폴트","description":""},"spanish":{"name":"Fallo Señal Test","description":""},"french":{"name":"Test Signal Fault","description":""},"portuguese":{"name":"Falha do Sinal do Teste","description":""}},"children":[],"@labels":["Test Signal Fault"]},"PeyeBlockFaultMask":{"@parent":"","@translations":{"english":{"name":"Photoeye Block Fault","description":""},"korean":{"name":"포토아이 차단 폴트","description":""},"spanish":{"name":"Fallo Bloqueo Fotocélula","description":""},"french":{"name":"Photoeye Block Fault","description":""},"portuguese":{"name":"Falha Fotocélula Bloqueado","description":""}},"children":[],"@labels":["Photoeye Block Fault"]},"RejBinFullFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Bin Full Fault","description":""},"korean":{"name":"리젝트 보관함 용량초과 폴트","description":""},"spanish":{"name":"Fallo Contenedor Rechazo Lleno","description":""},"french":{"name":"Reject Bin Full Fault","description":""},"portuguese":{"name":"Falha Caixa Cheia","description":""}},"children":[],"@labels":["Reject Bin Full Fault"]},"AirFaultMask":{"@parent":"","@translations":{"english":{"name":"Air Fault","description":""},"korean":{"name":"공기 폴트","description":""},"spanish":{"name":"Fallo Presión Aire","description":""},"french":{"name":"Air Fault","description":""},"portuguese":{"name":"Fala Pressão de AR","description":""}},"children":[],"@labels":["Air Fault"]},"ExcessRejFaultMask":{"@parent":"","@translations":{"english":{"name":"Excess Rejects Fault","description":""},"korean":{"name":"리젝트 초과 폴트","description":""},"spanish":{"name":"Fallo Exceso Rechazos","description":""},"french":{"name":"Excess Rejects Fault","description":""},"portuguese":{"name":"Falha excesso de Rejeçoes","description":""}},"children":[],"@labels":["Excess Rejects Fault"]},"BigMetalFaultMask":{"@parent":"","@translations":{"english":{"name":"Large Metal Fault","description":""},"korean":{"name":"대량금속 폴트","description":""},"spanish":{"name":"Fallo Metal Grande","description":""},"french":{"name":"Large Metal Fault","description":""},"portuguese":{"name":"Falha Metal Grande","description":""}},"children":[],"@labels":["Large Metal Fault"]},"NetBufferFaultMask":{"@parent":"","@translations":{"english":{"name":"Net Buffer Fault","description":""},"korean":{"name":"넷 버퍼 폴트","description":""},"spanish":{"name":"Fallo Buffer Red","description":""},"french":{"name":"Net Buffer Fault","description":""},"portuguese":{"name":"Falha Net Buffer ","description":""}},"children":[],"@labels":["Net Buffer Fault"]},"RejMemoryFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Memory Fault","description":""},"korean":{"name":"리젝트 메모리 폴트","description":""},"spanish":{"name":"Fallo Memoria Rechazo","description":""},"french":{"name":"Reject Memory Fault","description":""},"portuguese":{"name":"Falha Memoria de Rejeção","description":""}},"children":[],"@labels":["Reject Memory Fault"]},"RejectExitFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Exit Fault","description":""},"korean":{"name":"리젝트 퇴장 폴트","description":""},"spanish":{"name":"Fallo Salida Rechazo","description":""},"french":{"name":"Reject Exit Fault","description":""},"portuguese":{"name":"Falha Saida de rejeção","description":""}},"children":[],"@labels":["Reject Exit Fault"]},"TachometerFaultMask":{"@parent":"","@translations":{"english":{"name":"Tachometer Fault","description":""},"korean":{"name":"타코미터 폴트","description":""},"spanish":{"name":"Fallo Tacómetro","description":""},"french":{"name":"Tachometer Fault","description":""},"portuguese":{"name":"Falha Tacômetro","description":""}},"children":[],"@labels":["Tachometer Fault"]},"PatternFaultMask":{"@parent":"","@translations":{"english":{"name":"Pattern Fault","description":""},"korean":{"name":"패턴 폴트","description":""},"spanish":{"name":"Fallo Patrón","description":""},"french":{"name":"Pattern Fault","description":""},"portuguese":{"name":"Pattern Fault","description":""}},"children":[],"@labels":["Pattern Fault"]},"ExitNoPackFaultMask":{"@parent":"","@translations":{"english":{"name":"Exit No Pack Fault","description":""},"korean":{"name":"퇴장 팩 없음 폴트","description":""},"spanish":{"name":"Fallo Salida sin Producto","description":""},"french":{"name":"Exit No Pack Fault","description":""},"portuguese":{"name":"Falha Saida Sem Produto","description":""}},"children":[],"@labels":["Exit No Pack Fault"]},"ExitNewPackFaultMask":{"@parent":"","@translations":{"english":{"name":"Exit New Pack Fault","description":""},"korean":{"name":"퇴장 새 팩 폴트","description":""},"spanish":{"name":"Fallo Salida Nuevo Paquete","description":""},"french":{"name":"Exit New Pack Fault","description":""},"portuguese":{"name":"Exit New Pack Fault","description":""}},"children":[],"@labels":["Exit New Pack Fault"]},"InterceptorFaultMask":{"@parent":"","@translations":{"english":{"name":"Interceptor Fault","description":""},"korean":{"name":"인터셉터 폴트","description":""},"spanish":{"name":"Fallo Interceptor","description":""},"french":{"name":"Interceptor Fault","description":""},"portuguese":{"name":"Falha Interceptor","description":""}},"children":[],"@labels":["Interceptor Fault"]},"RtcLowBatFaultMask":{"@parent":"","@translations":{"english":{"name":"Rtc Low Battery Fault","description":""},"korean":{"name":"Rtc 로우 배터리 폴트","description":""},"spanish":{"name":"Fallo Batería RTC","description":""},"french":{"name":"Rtc Low Batter Fault","description":""},"portuguese":{"name":"Falha Bateria","description":""}},"children":[],"@labels":["Rtc Low Batter Fault"]},"RtcTimeFaultMask":{"@parent":"","@translations":{"english":{"name":"Rtc Time Fault","description":""},"korean":{"name":"Rtc 시간 폴트","description":""},"spanish":{"name":"Fallo Hora","description":""},"french":{"name":"Rtc Time Fault","description":""},"portuguese":{"name":"Falha Horario","description":""}},"children":[],"@labels":["Rtc Time Fault"]},"IntUsbFaultMask":{"@parent":"","@translations":{"english":{"name":"Internal Usb Fault","description":""},"korean":{"name":"내부 Usb 폴트","description":""},"spanish":{"name":"Fallo USB Interno","description":""},"french":{"name":"Int Usb Fault","description":""},"portuguese":{"name":"Falha USB Interno","description":""}},"children":[],"@labels":["Int Usb Fault"]},"IoBoardFaultMask":{"@parent":"","@translations":{"english":{"name":"IO Board Fault","description":""},"korean":{"name":"IO 보드 폴트","description":""},"spanish":{"name":"Fallo Placa IO","description":""},"french":{"name":"IO Board Fault","description":""},"portuguese":{"name":"Falha Placa IO","description":""}},"children":[],"@labels":["IO Board Fault"]},"HaloFaultMask":{"@parent":"","@translations":{"english":{"name":"Halo Fault","description":""},"korean":{"name":"헤일로 폴트","description":""},"spanish":{"name":"Fallo Halo","description":""},"french":{"name":"Halo Fault","description":""},"portuguese":{"name":"Falha Halo","description":""}},"children":[],"@labels":["Halo Fault"]},"SignalFaultMask":{"@parent":"","@translations":{"english":{"name":"Signal Fault","description":""},"korean":{"name":"시그널 폴트","description":""},"spanish":{"name":"Fallo Señal","description":""},"french":{"name":"Signal Fault","description":""},"portuguese":{"name":"Falha Sinal","description":""}},"children":[],"@labels":["Signal Fault"]},"IOBoardLocate":{"@parent":"","@translations":{"english":{"name":"IO Board Locate","description":""},"korean":{"name":"IO 보드 추적","description":""},"spanish":{"name":"IO Board Locate","description":""},"french":{"name":"IO Board Locate","description":""},"portuguese":{"name":"IO Board Locate","description":""}},"children":[],"@labels":["Locate"]},"InternalIP":{"@parent":"","@translations":{"english":{"name":"Internal IP","description":""},"korean":{"name":"내부 IP","description":""},"spanish":{"name":"Internal IP","description":""},"french":{"name":"Internal IP","description":""},"portuguese":{"name":"Internal IP","description":""}},"children":[],"@labels":["IP"]},"InternalNM":{"@parent":"","@translations":{"english":{"name":"Internal Netmask","description":""},"korean":{"name":"내부 Netmask","description":""},"spanish":{"name":"Internal Netmask","description":""},"french":{"name":"Internal Netmask","description":""},"portuguese":{"name":"Internal Netmask","description":""}},"children":[],"@labels":["IP"]},"InternalGW":{"@parent":"","@translations":{"english":{"name":"Internal Gateway","description":""},"korean":{"name":"내부 Gateway","description":""},"spanish":{"name":"Internal Gateway","description":""},"french":{"name":"Internal Gateway","description":""},"portuguese":{"name":"Internal Gateway","description":""}},"children":[],"@labels":["IP"]},"HaloIP":{"@parent":"","@translations":{"english":{"name":"Halo IP","description":""},"korean":{"name":"Halo IP","description":""},"spanish":{"name":"Halo IP","description":""},"french":{"name":"Halo IP","description":""},"portuguese":{"name":"Halo IP","description":""}},"children":[],"@labels":["IP"]},"HaloLocate":{"@parent":"","@translations":{"english":{"name":"Halo Locate","description":""},"korean":{"name":"Halo 추적","description":""},"spanish":{"name":"Halo Locate","description":""},"french":{"name":"Halo Locate","description":""},"portuguese":{"name":"Halo Locate","description":""}},"children":[],"@labels":["Locations"]},"IOBoardIP":{"@parent":"","@translations":{"english":{"name":"IO Board IP","description":""},"korean":{"name":"IO Board IP","description":""},"spanish":{"name":"IO Board IP","description":""},"french":{"name":"IO Board IP","description":""},"portuguese":{"name":"IO Board IP","description":""}},"children":[],"@labels":["IP"]},"IOBoardType":{"@parent":"","@translations":{"english":{"name":"IO Board Type","description":""},"korean":{"name":"IO Board Type","description":""},"spanish":{"name":"IO Board Type","description":""},"french":{"name":"IO Board Type","description":""},"portuguese":{"name":"IO Board Type","description":""}},"children":[],"@labels":["IP"]},"DspName":{"@parent":"","@translations":{"english":{"name":"Detector Name","description":""},"korean":{"name":"Detector Name","description":""},"spanish":{"name":"Internal IP","description":""},"french":{"name":"Detector Name","description":""},"portuguese":{"name":"Detector Name","description":""}},"children":[],"@labels":["Name"]},"XPortIP":{"@parent":"","@translations":{"english":{"name":"External IP","description":""},"korean":{"name":"외부 IP","description":""},"spanish":{"name":"External IP","description":""},"french":{"name":"External IP","description":""},"portuguese":{"name":"External IP","description":""}},"children":[],"@labels":["IP"]},"Nif_ip":{"@parent":"","@translations":{"english":{"name":"Display IP","description":""},"korean":{"name":"디스플레이 IP","description":""},"spanish":{"name":"Display IP","description":""},"french":{"name":"Display IP","description":""},"portuguese":{"name":"Display IP","description":""}},"children":[],"@labels":["IP"]},"XPortNM":{"@parent":"","@translations":{"english":{"name":"External Netmask","description":""},"korean":{"name":"외부 Netmask","description":""},"spanish":{"name":"External Netmask","description":""},"french":{"name":"External Netmask","description":""},"portuguese":{"name":"External Netmask","description":""}},"children":[],"@labels":["IP"]},"XPortGW":{"@parent":"","@translations":{"english":{"name":"External Gateway","description":""},"korean":{"name":"외부 Gateway","description":""},"spanish":{"name":"External Gateway","description":""},"french":{"name":"External Gateway","description":""},"portuguese":{"name":"External Gateway","description":""}},"children":[],"@labels":["IP"]}},"@netpollsmap":{"NET_POLL_PROTOCOL_VERSION":{"@translations":{"english":{"name":"Version"},"korean":{"name":"버젼"},"spanish":{"name":"Versión Protocolo"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_KEY_CLASS_MASK":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_PROD_REC_VAR":{"@translations":{"english":{"name":"Product Record"},"korean":{"name":"품목 설정"},"spanish":{"name":"Registro Producto"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_PROD_SYS_VAR":{"@translations":{"english":{"name":"System Record"},"korean":{"name":"시스템 설정"},"spanish":{"name":"Registro Sistema"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_REJECT":{"@translations":{"english":{"name":"Reject"},"korean":{"name":"리젝트"},"spanish":{"name":"Rechazo"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_REJECT2":{"@translations":{"english":{"name":"Reject 2"},"korean":{"name":"리젝트 2"},"spanish":{"name":"Rechazo 2"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_REJ_CNT":{"@translations":{"english":{"name":"Reject Count"},"korean":{"name":"리젝스 횟수"},"spanish":{"name":"Cuenta Rechazos"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_FAULT":{"@translations":{"english":{"name":"Fault"},"korean":{"name":"폴트"},"spanish":{"name":"Fallo"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_CONTROL":{"@translations":{"english":{"name":"Control"},"korean":{"name":"제어"},"spanish":{"name":"Control"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_POWERUP":{"@translations":{"english":{"name":"Power Up"},"korean":{"name":"시작"},"spanish":{"name":"Arranque"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_OPERATOR_NO":{"@translations":{"english":{"name":"Operator Number"},"korean":{"name":"승인번호"},"spanish":{"name":"Número Operador"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_TEST_REQ_PASS":{"@translations":{"english":{"name":"Test Request Pass"},"korean":{"name":"테스트 패스"},"spanish":{"name":"Solicitud Test Aprobada"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_REJECT_ID":{"@translations":{"english":{"name":"Reject ID"},"korean":{"name":"리젝트 ID"},"spanish":{"name":"Identificación Rechazo"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_REJECT_CLEAR":{"@translations":{"english":{"name":"Reject Clear"},"korean":{"name":"리젝트 클리어"},"spanish":{"name":"Borrado Rechazo"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_EYE_PROD_PEAK":{"@translations":{"english":{"name":"Product Signal Peak"},"korean":{"name":""},"spanish":{"name":"Señal Producto"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_EYE_PROD_PHASE":{"@translations":{"english":{"name":"Eye Product Phase"},"korean":{"name":""},"spanish":{"name":"Fase Producto"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_FAULT_CLEAR":{"@translations":{"english":{"name":"Clear Fault"},"korean":{"name":""},"spanish":{"name":"Fallo Borrado"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_SYNC_MENU":{"@translations":{"english":{"name":"Sync Menu"},"korean":{"name":""},"spanish":{"name":"Menú Sincronización"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_PWD_ENTRY_1":{"@translations":{"english":{"name":"Password Entry 1"},"korean":{"name":""},"spanish":{"name":"Entrada Password 1"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_PWD_ENTRY_2":{"@translations":{"english":{"name":"Password Entry 2"},"korean":{"name":""},"spanish":{"name":"Entrada Password 2"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_SEL_UNIT":{"@translations":{"english":{"name":"Select Unit"},"korean":{"name":""},"spanish":{"name":"Seleccionar Unidad"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_RESERVED":{"@translations":{"english":{"name":"Reserved"},"korean":{"name":""},"spanish":{"name":"Reservado"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_CLEAR_SCOPE":{"@translations":{"english":{"name":"Clear Scope"},"korean":{"name":""},"spanish":{"name":"Borrar Scope"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_REJECT_PHASE":{"@translations":{"english":{"name":"Reject Phase"},"korean":{"name":""},"spanish":{"name":"Rechazo Fase"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_FLASH_WRITE":{"@translations":{"english":{"name":"Flash Write"},"korean":{"name":""},"spanish":{"name":"Escritura Flash"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_INTCPTR_SWITCH":{"@translations":{"english":{"name":"Interceptor Switch"},"korean":{"name":""},"spanish":{"name":"Conmutación Interceptor"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_PREC_DELETE":{"@translations":{"english":{"name":"Product Record Delete"},"korean":{"name":""},"spanish":{"name":"Eliminar Registro Producto"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_PREC_DEL_ALL":{"@translations":{"english":{"name":"Product Records Delete All"},"korean":{"name":""},"spanish":{"name":"Eliminar Todo Registro Producto"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_PREC_BACKUP_SAVE":{"@translations":{"english":{"name":"Product Record Backup Save"},"korean":{"name":""},"spanish":{"name":"Guardar Copia Registro Producto"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_PREC_BACKUP_RESTORE":{"@translations":{"english":{"name":"Product Record Restore"},"korean":{"name":""},"spanish":{"name":"Restaurar Registro Producto"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_PREC_DEAULTS":{"@translations":{"english":{"name":"Product Record Defaults"},"korean":{"name":""},"spanish":{"name":"Registro Producto Defecto"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_PREC_COPY":{"@translations":{"english":{"name":"Product Record Copy"},"korean":{"name":""},"spanish":{"name":"Copiar Registro Producto"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_REJECT2_ID":{"@translations":{"english":{"name":"Reject 2 ID"},"korean":{"name":""},"spanish":{"name":"Identificación Rechazo 2"},"french":{"name":""},"portuguese":{"name":""}}},"NET_POLL_REJECT2_CLEAR":{"@translations":{"english":{"name":"Reject 2 Clear"},"korean":{"name":""},"spanish":{"name":"Borrar Rechazo 2"},"french":{"name":""},"portuguese":{"name":""}}}},"@pages":{"Sens":{"acc":[2,3],"cat":"Sens","params":[{"type":0,"val":"Sens_A","acc":[0]},{"type":0,"val":"DetThresh_A","acc":[0]},{"type":0,"val":"ThresProdHi_A","acc":[0]},{"type":0,"val":"ThresX_A","acc":[0]},{"type":0,"val":"ThresR_A","acc":[0]},{"type":0,"val":"BigMetThres_A","acc":[0]},{"type":0,"val":"DetMode_A","acc":[0]},{"type":1,"val":{"child":2,"cat":"Filter","params":[{"type":0,"val":"NoiseR_A","acc":[0]},{"type":0,"val":"NoiseX_A","acc":[0]},{"type":0,"val":"FilterNoise_A","acc":[0]}]},"acc":[0]},{"type":1,"val":{"child":0,"cat":"Oscillation Power","params":[{"type":0,"val":"OscPower_A","acc":[0]}]},"acc":[0]},{"type":1,"val":{"child":0,"cat":"FM Setup","params":[{"type":0,"val":"FmInput_A","acc":[0]}]},"acc":[0]},{"type":0,"val":"NoiseR_A","acc":[0]},{"type":0,"val":"NoiseX_A","acc":[0]},{"type":0,"val":"DetThEst_A","acc":[0]}]},"Test":{"acc":[0],"cat":"Test","params":[{"type":1,"val":{"cat":"Manual","params":[{"type":0,"val":"TestConfigCount0_0","acc":[0]},{"type":0,"val":"TestConfigCount0_1","acc":[0]},{"type":0,"val":"TestConfigCount0_2","acc":[0]},{"type":0,"val":"TestConfigCount0_3","acc":[0]},{"type":0,"val":"TestConfigCount0_4","acc":[0]},{"type":0,"val":"TestConfigCount0_5","acc":[0]},{"type":0,"val":"TestConfigAck0","acc":[0]},{"type":0,"val":"TestConfigOperator0","acc":[0]},{"type":0,"val":"TestConfigHaloMode0","acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"Manual2","params":[{"type":0,"val":"TestConfigCount2_0","acc":[0]},{"type":0,"val":"TestConfigCount2_1","acc":[0]},{"type":0,"val":"TestConfigCount2_2","acc":[0]},{"type":0,"val":"TestConfigCount2_3","acc":[0]},{"type":0,"val":"TestConfigCount2_4","acc":[0]},{"type":0,"val":"TestConfigCount2_5","acc":[0]},{"type":0,"val":"TestConfigAck2","acc":[0]},{"type":0,"val":"TestConfigOperator2","acc":[0]},{"type":0,"val":"TestConfigHaloMode2","acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"Halo","params":[{"type":0,"val":"TestConfigCount1_0","acc":[0]},{"type":0,"val":"TestConfigCount1_1","acc":[0]},{"type":0,"val":"TestConfigCount1_2","acc":[0]},{"type":0,"val":"TestConfigCount1_3","acc":[0]},{"type":0,"val":"TestConfigCount1_4","acc":[0]},{"type":0,"val":"TestConfigCount1_5","acc":[0]},{"type":0,"val":"TestConfigAck1","acc":[0]},{"type":0,"val":"TestConfigOperator1","acc":[0]},{"type":0,"val":"TestConfigHaloMode1","acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"Halo2","params":[{"type":0,"val":"TestConfigCount3_0","acc":[0]},{"type":0,"val":"TestConfigCount3_1","acc":[0]},{"type":0,"val":"TestConfigCount3_2","acc":[0]},{"type":0,"val":"TestConfigCount3_3","acc":[0]},{"type":0,"val":"TestConfigCount3_4","acc":[0]},{"type":0,"val":"TestConfigCount3_5","acc":[0]},{"type":0,"val":"TestConfigAck3","acc":[0]},{"type":0,"val":"TestConfigOperator3","acc":[0]},{"type":0,"val":"TestConfigHaloMode3","acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"HaloConf","params":[{"type":0,"val":"HaloPeakRFe_A","acc":[0]},{"type":0,"val":"HaloPeakRFe_B","acc":[0]},{"type":0,"val":"HaloPeakRNFe_A","acc":[0]},{"type":0,"val":"HaloPeakRNFe_B","acc":[0]},{"type":0,"val":"HaloPeakRSs_A","acc":[0]},{"type":0,"val":"HaloPeakRSs_B","acc":[0]}]},"acc":[0]},{"type":0,"val":"TestTime","acc":[0]},{"type":0,"val":"TestDeferTime","acc":[0]},{"type":0,"val":"TestMode","acc":[0]}]},"Calibration":{"acc":[0],"cat":"Calibration","params":[{"type":1,"val":{"cat":"Phase","params":[{"type":0,"val":"PhaseAngle_A","acc":[0]},{"type":0,"val":"PhaseAngleAuto_A","acc":[0]},{"type":0,"val":"PhaseMode_A","acc":[0]},{"type":0,"val":"PhaseSpeed_A","acc":[0]},{"type":0,"val":"PhaseFastBit_A","acc":[0]},{"type":0,"val":"PhaseWetBit_A","acc":[0]},{"type":0,"val":"PhaseDSALearn_A","acc":[0]}]},"acc":[0]},{"type":1,"val":{"cat":"MPhase","params":[{"type":0,"val":"MPhaseOrder_A","acc":[0]},{"type":0,"val":"MPhaseDD_A","acc":[0]},{"type":0,"val":"MPhaseRD_A","acc":[0]}]},"acc":[0]}]}},"@catmap":{"Reject":{"@translations":{"english":"Reject","korean":"거부","spanish":"Rechazo","french":"Reject","portuguese":"Reject"}},"Password":{"@translations":{"english":"Password","korean":"암호","spanish":"Contraseña","french":"Password","portuguese":"Password"}},"IO":{"@translations":{"english":"I/O","korean":"입출력","spanish":"I/O","french":"I/O","portuguese":"I/O"}},"System":{"@translations":{"english":"System","korean":"시스템","spanish":"Sistema","french":"System","portuguese":"System"}},"Fault":{"@translations":{"english":"Faults","korean":"오류","spanish":"Fallos","french":"Faults","portuguese":"Faults"}},"System/FRAM":{"@translations":{"english":"Network Settings","korean":"네트워크 설정","spanish":"Network Settings","french":"Network Settings","portuguese":"Network Settings"}},"System/FRAM/IO Board Settings":{"@translations":{"english":"IO Board Settings","korean":"IO Board 설정","spanish":"IO Board Settings","french":"IO Board Settings","portuguese":"IO Board Settings"}},"System/FRAM/Halo Board Settings":{"@translations":{"english":"Halo Board Settings","korean":"Halo Board 설정","spanish":"Halo Board Settings","french":"Halo Board Settings","portuguese":"Halo Board Settings"}},"System/FRAM/Display Settings":{"@translations":{"english":"Display Settings","korean":"Display 설정","spanish":"Display Settings","french":"Display Settings","portuguese":"Display Settings"}},"Reject/Additional Settings":{"@translations":{"english":"Additional Settings","korean":"추가 설정","spanish":"Ajustes Adicionales","french":"Additional Settings","portuguese":"Additional Settings"}},"Reject/Additional Settings/Distances":{"@translations":{"english":"Distances","korean":"거리","spanish":"Distancias","french":"Distances","portuguese":"Distances"}},"Reject/Additional Settings/Belt Speed":{"@translations":{"english":"Belt Speed","korean":"벨트 속도","spanish":"Velocidad de Cinta","french":"Belt Speed","portuguese":"Belt Speed"}},"Reject/Additional Settings/Latch":{"@translations":{"english":"Latches","korean":"래치","spanish":"Retenciones","french":"Latches","portuguese":"Latches"}},"Reject/Additional Settings/Clocks":{"@translations":{"english":"Clocks","korean":"시계","spanish":"Relojes","french":"Clocks","portuguese":"Clocks"}},"IO/Inputs":{"@translations":{"english":"Inputs","korean":"입력","spanish":"Entradas","french":"Inputs","portuguese":"Inputs"}},"IO/Outputs":{"@translations":{"english":"Outputs","korean":"출력","spanish":"Salidas","french":"Outputs","portuguese":"Outputs"}},"Sens":{"@translations":{"english":"Sensitivity","korean":"민감도","spanish":"Sensibilidad","french":"Sensitivity","portuguese":"Sensitivity"}},"Test":{"@translations":{"english":"Test","korean":"테스트","spanish":"Test","french":"Test","portuguese":"Test"}},"Test/Manual":{"@translations":{"english":"Manual Test 1","korean":"수동 테스트 1","spanish":"Test Manual 1","french":"Manual Test 1","portuguese":"Manual Test 1"}},"Test/Halo":{"@translations":{"english":"Halo Test 1","korean":"헤일로 테스트 1","spanish":"Test Halo 1","french":"Halo Test 1","portuguese":"Halo Test 1"}},"Test/Manual2":{"@translations":{"english":"Manual Test 2","korean":"수동 테스트 2","spanish":"Test Manual 2","french":"Manual Test 2","portuguese":"Manual Test 2"}},"Test/Halo2":{"@translations":{"english":"Halo Test 2","korean":"헤일로 테스트 2","spanish":"Test Halo 2","french":"Halo Test 2","portuguese":"Halo Test 2"}},"Test/HaloConf":{"@translations":{"english":"Test Configuration","korean":"테스트 설정","spanish":"Configuración Test","french":"Test Configuration","portuguese":"Test Configuration"}},"Sens/Filter":{"@translations":{"english":"Filter Noise","korean":"필터 노이즈","spanish":"Filtro Ruido","french":"Filter Noise","portuguese":"Filter Noise"}},"Sens/Oscillation Power":{"@translations":{"english":"Oscillation Power","korean":"오실레이션 파워","spanish":"Potencia Oscilación","french":"Oscillation Power","portuguese":"Oscillation Power"}},"Sens/FM Setup":{"@translations":{"english":"FM Setup","korean":"FM 설정","spanish":"Ajuste FM","french":"FM Setup","portuguese":"FM Setup"}},"Calibration":{"@translations":{"english":"Calibration","korean":"캘리브레이션","spanish":"Calibración","french":"Calibration","portuguese":"Calibration"}},"Calibration/Phase":{"@translations":{"english":"Phase","korean":"페이즈","spanish":"Fase","french":"Phase","portuguese":"Phase"}},"Calibration/MPhase":{"@translations":{"english":"Multiple Phase","korean":"다중 페이즈","spanish":"Fase Múltiple","french":"M Phase","portuguese":"M Phase"}}},"@languages":["english","korean","spanish","french","portuguese",""],"@labels":{"Channel A":{"english":{"name":"Channel A"},"korean":{"name":"채널 A"},"spanish":{"name":"Canal A"},"french":{"name":"chaîne A"},"portuguese":{"name":"Canal A"}},"Locate":{"english":{"name":"Locate"},"korean":{"name":"채널 A"},"spanish":{"name":"Canal A"},"french":{"name":"chaîne A"},"portuguese":{"name":"Canal A"}},"IP":{"english":{"name":"IP"},"korean":{"name":"IP"},"spanish":{"name":"IP"},"french":{"name":"IP"},"portuguese":{"name":"IP"}},"Name":{"english":{"name":"Name"},"korean":{"name":"Name"},"spanish":{"name":"Name"},"french":{"name":"Name"},"portuguese":{"name":"Name"}},"Channel B":{"english":{"name":"Channel B"},"korean":{"name":"채널 B"},"spanish":{"name":"Canal B"},"french":{"name":"chaîne B"},"portuguese":{"name":"Canal B"}},"Count":{"english":{"name":"Count"},"korean":{"name":"횟수"},"spanish":{"name":"Cuenta"},"french":{"name":"nombre"},"portuguese":{"name":"Quantidade"}},"Metal Type":{"english":{"name":"Metal Type"},"korean":{"name":"금속 종류"},"spanish":{"name":"Tipo Metal"},"french":{"name":"type de métal"},"portuguese":{"name":"Tipo de Metal"}},"Signal Chain":{"english":{"name":"Signal Chain"},"korean":{"name":"시그널 체인"},"spanish":{"name":"Cadena Señal"},"french":{"name":"chaîne de signal"},"portuguese":{"name":"Cadeia de Sinal"}},"Source":{"english":{"name":"Source"},"korean":{"name":"소스"},"spanish":{"name":"Fuente"},"french":{"name":"source"},"portuguese":{"name":"Fonte"}},"Polarity":{"english":{"name":"Polarity"},"korean":{"name":"폴래리티"},"spanish":{"name":"Polaridad"},"french":{"name":"polarité"},"portuguese":{"name":"Polaridade"}},"Sensitivity":{"english":{"name":"Sensitivity"},"korean":{"name":"민감도"},"spanish":{"name":"Sensibildad"},"french":{"name":" sensibilité"},"portuguese":{"name":"Sensibilidade"}},"Signal":{"english":{"name":"Signal"},"korean":{"name":"신호"},"spanish":{"name":"Señal"},"french":{"name":"signal"},"portuguese":{"name":"Sinal"}},"Rejects":{"english":{"name":"Rejects"},"korean":{"name":"거부"},"spanish":{"name":"Rechazo"},"french":{"name":"rejet"},"portuguese":{"name":"Rejeção"}},"Settings":{"english":{"name":"Settings"},"korean":{"name":"설정"},"spanish":{"name":"Ajustes"},"french":{"name":" paramètres"},"portuguese":{"name":"Parâmetros"}},"Test":{"english":{"name":"Test"},"korean":{"name":"테스트"},"spanish":{"name":"Test"},"french":{"name":"test"},"portuguese":{"name":"Teste"}},"Log":{"english":{"name":"Log"},"korean":{"name":"기록"},"spanish":{"name":"Log"},"french":{"name":"le registre"},"portuguese":{"name":"Log"}},"Calibrate":{"english":{"name":"Calibrate"},"korean":{"name":"조정"},"spanish":{"name":"Calibrar"},"french":{"name":"calibrer"},"portuguese":{"name":"Calibrar"}},"Product":{"english":{"name":"Product"},"korean":{"name":"품목"},"spanish":{"name":"Producto"},"french":{"name":"produit"},"portuguese":{"name":"Produto"}},"Products":{"english":{"name":"Products"},"korean":{"name":"품목"},"spanish":{"name":"Productos"},"french":{"name":"produits"},"portuguese":{"name":"Produtos"}},"Timestamp":{"english":{"name":"Timestamp"},"korean":{"name":"시간"},"spanish":{"name":"Marca Tiempo"},"french":{"name":"produit"},"portuguese":{"name":"Marca de Horário"}},"Edit":{"english":{"name":"Products"},"korean":{"name":"품목"},"spanish":{"name":"Productos"},"french":{"name":"produit"},"portuguese":{"name":"Produtos"}},"Event":{"english":{"name":"Event"},"korean":{"name":"이벤트"},"spanish":{"name":"Event"},"french":{"name":"Event"},"portuguese":{"name":"Event"}},"Events":{"english":{"name":"Events"},"korean":{"name":"이벤트"},"spanish":{"name":"Events"},"french":{"name":"Events"},"portuguese":{"name":"Events"}},"Details":{"english":{"name":"Details"},"korean":{"name":"세부사항"},"spanish":{"name":"Detalles"},"french":{"name":"produit"},"portuguese":{"name":"Detalhes"}},"Running Product":{"english":{"name":"Running Product"},"korean":{"name":"현 품목"},"spanish":{"name":"Producto en Ejecución"},"french":{"name":"produit courant"},"portuguese":{"name":"Produto Rodando"}},"Select Test":{"english":{"name":"Select Test"},"korean":{"name":"테스트 선택"},"spanish":{"name":"Selección Test"},"french":{"name":"Select Test"},"portuguese":{"name":"Seleção de Teste"}},"Currently Running":{"english":{"name":"Currently Running"},"korean":{"name":"실행중"},"spanish":{"name":"Actualmente en Ejecución"},"french":{"name":"Currently Running"},"portuguese":{"name":"Atualmente em Execução"}},"Quit Test":{"english":{"name":"Quit Test"},"korean":{"name":"테스트 중단"},"spanish":{"name":"Salir Test"},"french":{"name":"Quit Test"},"portuguese":{"name":"Sair do Teste"}},"activate":{"english":{"name":"activate"},"korean":{"name":"activate"},"spanish":{"name":"Activar"},"french":{"name":"activate"},"portuguese":{"name":"Ativar"}},"Clear Faults":{"english":{"name":"Clear Faults"},"korean":{"name":"폴트 클리어 "},"spanish":{"name":"Borrar Fallos"},"french":{"name":"Clear Faults"},"portuguese":{"name":"Limpar Falhas"}},"No Faults":{"english":{"name":"No Faults"},"korean":{"name":"No Faults"},"spanish":{"name":"Sin Fallos"},"french":{"name":"No Faults"},"portuguese":{"name":"Sem Falhas"}},"Calibrate All":{"english":{"name":"Calibrate All"},"korean":{"name":"전부 조정"},"spanish":{"name":"Calibrar Todo"},"french":{"name":"Calibrate All"},"portuguese":{"name":"Calibrar Tudo"}}}
 }
-/*var vdefMapV2 = {
-	"@categories":{"cat":"@root","params":["Language"],"subCats":[{"cat":"Reject","params":["RejDelSec","RejDelSec2","RejDurSec","RejDurSec2","RejMode"],"subCats":[{"cat":"Additional Settings","params":[],"subCats":[{"cat":"Distances","params":["RejExitDist","RejExitWin","AppUnitDist"],"subCats":[]},{"cat":"Belt Speed","params":["BeltSpeed"],"subCats":[]},{"cat":"Latch","params":["FaultLatch","RejLatchMode","Rej2Latch"],"subCats":[]},{"cat":"Clocks","params":["RejBinDoorTime","CIPCycleTime","CIPDwellTime","FaultClearTime","EyeBlockTime","RejCheckTime","ExcessRejTime","RejDelClock"],"subCats":[]}]}]},{"cat":"Password","params":["PW1","PW2","PW3","PW4","PassAccSens","PassAccProd","PassAccCal","PassAccTest","PassAccSelUnit","PassAccClrFaults","PassAccClrRej","PassAccClrLatch","PassAccTime","PassAccSync"],"subCats":[]},{"cat":"IO","params":[],"subCats":[{"cat":"Inputs","params":["INPUT_TACH","INPUT_EYE","INPUT_RC_1","INPUT_RC_2","INPUT_REJ_EYE","INPUT_AIR_PRES","INPUT_REJ_LATCH","INPUT_BIN_FULL","INPUT_REJ_PRESENT","INPUT_DOOR1_OPEN","INPUT_DOOR2_OPEN","INPUT_CLEAR_FAULTS","INPUT_CIP","INPUT_PROD_SEL1","INPUT_PROD_SEL2","INPUT_PROD_SEL3","INPUT_PROD_SEL4","INPUT_TEST"],"subCats":[]},{"cat":"Outputs","params":["OUT_PHY_PL3_1","OUT_PHY_PL11_1A2","OUT_PHY_PL11_3A4","OUT_PHY_PL11_5A6","OUT_PHY_PL4_1","OUT_PHY_PL4_2","OUT_PHY_PL4_3","OUT_PHY_PL4_5","OUT_PHY_IO_PL3_R1","OUT_PHY_IO_PL3_R2","OUT_PHY_IO_PL3_O1","OUT_PHY_IO_PL3_O2","OUT_PHY_IO_PL3_O3","OUT_PHY_IO_PL4_02","OUT_PHY_IO_PL4_03","OUT_PHY_IO_PL4_04","OUT_PHY_IO_PL4_05"],"subCats":[]}]},{"cat":"System","params":["SRecordDate","ProdNo","Unit"],"subCats":[]},{"cat":"Fault","params":["RefFaultMask","BalFaultMask","ProdMemFaultMask","RejConfirmFaultMask","PhaseFaultMask","TestSigFaultMask","PeyeBlockFaultMask","RejBinFullFaultMask","AirFaultMask","ExcessRejFaultMask","BigMetalFaultMask","NetBufferFaultMask","RejMemoryFaultMask","RejectExitFaultMask","TachometerFaultMask","PatternFaultMask","ExitNoPackFaultMask","ExitNewPackFaultMask","InterceptorFaultMask","RtcLowBatFaultMask","RtcTimeFaultMask","IntUsbFaultMask","IoBoardFaultMask","HaloFaultMask","SignalFaultMask"],"subCats":[]}]},"@vMap":{"Sens_A":{"@parent":"","@translations":{"english":{"name":"Sensitivity","description":""},"korean":{"name":"민감도","description":""},"spanish":{"name":"Sensitivity","description":""}},"children":["Sens_B"],"@labels":["Channel A","Channel B"]},"DetThresh_A":{"@parent":"","@translations":{"english":{"name":"Detection Threshold","description":""},"korean":{"name":"검출역치 ","description":""},"spanish":{"name":"Detection Threshold","description":""}},"children":["DetThresh_B"],"@labels":["Channel A","Channel B"]},"ThresProdHi_A":{"@parent":"","@translations":{"english":{"name":"Product High Threshold","description":""},"korean":{"name":"교정한계치","description":""},"spanish":{"name":"Product High Threshold","description":""}},"children":["ThresProdHi_B"],"@labels":["Channel A","Channel B"]},"ThresX_A":{"@parent":"","@translations":{"english":{"name":"X Threshold","description":""},"korean":{"name":"X 역치","description":""},"spanish":{"name":"X Threshold","description":""}},"children":["ThresX_B"],"@labels":["Channel A","Channel B"]},"ThresR_A":{"@parent":"","@translations":{"english":{"name":"R Threshold","description":""},"korean":{"name":"R 역치","description":""},"spanish":{"name":"R Threshold","description":""}},"children":["ThresR_B"],"@labels":["Channel A","Channel B"]},"BigMetThres_A":{"@parent":"","@translations":{"english":{"name":"Large Metal Threshold","description":""},"korean":{"name":"대량금속 역치","description":""},"spanish":{"name":"Large Metal Threshold","description":""}},"children":["BigMetThres_B"],"@labels":["Channel A","Channel B"]},"DetMode_A":{"@parent":"","@translations":{"english":{"name":"Detection Mode","description":""},"korean":{"name":"검출방식","description":""},"spanish":{"name":"Detection Mode","description":""}},"children":["DetMode_B"],"@labels":["Channel A","Channel B"]},"NoiseR_A":{"@parent":"","@translations":{"english":{"name":"R Channel Noise","description":""},"korean":{"name":"R 채널 노이즈","description":""},"spanish":{"name":"R Channel Noise","description":""}},"children":["NoiseR_B"],"@labels":["Channel A","Channel B"]},"NoiseX_A":{"@parent":"","@translations":{"english":{"name":"X Channel Noise","description":""},"korean":{"name":"X 채널 노이즈","description":""},"spanish":{"name":"X Channel Noise","description":""}},"children":["NoiseX_B"],"@labels":["Channel A","Channel B"]},"DetThEst_A":{"@parent":"","@translations":{"english":{"name":"Detection Threshold Est","description":""},"korean":{"name":"검출역치 추정값","description":""},"spanish":{"name":"Detection Threshold Est","description":""}},"children":["DetThEst_B"],"@labels":["Channel A","Channel B"]},"FilterNoise_A":{"@parent":"","@translations":{"english":{"name":"Filter Noise","description":""},"korean":{"name":"필터 노이즈","description":""},"spanish":{"name":"Filter Noise","description":""}},"children":["FilterNoise_B"],"@labels":["Channel A","Channel B"]},"OscPower_A":{"@parent":"","@translations":{"english":{"name":"Oscillation Power","description":""},"korean":{"name":"진동 출력","description":""},"spanish":{"name":"Oscillation Power","description":""}},"children":["OscPower_B"],"@labels":["Channel A","Channel B"]},"FmInput_A":{"@parent":"","@translations":{"english":{"name":"FM Input ","description":""},"korean":{"name":"FM 입력","description":""},"spanish":{"name":"FM Input ","description":""}},"children":["FmInput_B"],"@labels":["Channel A","Channel B"]},"TestTime":{"@parent":"","@translations":{"english":{"name":"Test Interval","description":""},"korean":{"name":"테스트 간격","description":""},"spanish":{"name":"Test Interval","description":""}},"children":[],"@labels":["Test Interval"]},"TestDeferTime":{"@parent":"","@translations":{"english":{"name":"Test Defer TIme","description":""},"korean":{"name":"테스트 지연 시간","description":""},"spanish":{"name":"Test Defer TIme","description":""}},"children":[],"@labels":["Test Defer TIme"]},"TestMode":{"@parent":"","@translations":{"english":{"name":"Test Mode","description":""},"korean":{"name":"테스트 방식","description":""},"spanish":{"name":"Test Mode","description":""}},"children":[],"@labels":["Test Mode"]},"TestConfigCount0_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":"Count is number of passes. Select Metal Type to test on the specified signal chain"},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":"Count is number of passes. Select Metal Type to test on the specified signal chain"}},"children":["TestConfigMetal0_0","TestConfigFreq0_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_1":{"@parent":"","@translations":{"english":{"name":"Test 2","description":""},"korean":{"name":"Test 2","description":""},"spanish":{"name":"Test 2","description":""}},"children":["TestConfigMetal0_1","TestConfigFreq0_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_2":{"@parent":"","@translations":{"english":{"name":"Test 3","description":""},"korean":{"name":"Test 3","description":""},"spanish":{"name":"Test 3","description":""}},"children":["TestConfigMetal0_2","TestConfigFreq0_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_3":{"@parent":"","@translations":{"english":{"name":"Test 4","description":""},"korean":{"name":"Test 4","description":""},"spanish":{"name":"Test 4","description":""}},"children":["TestConfigMetal0_3","TestConfigFreq0_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_4":{"@parent":"","@translations":{"english":{"name":"Test 5","description":""},"korean":{"name":"Test 5","description":""},"spanish":{"name":"Test 5","description":""}},"children":["TestConfigMetal0_4","TestConfigFreq0_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_5":{"@parent":"","@translations":{"english":{"name":"Test 6","description":""},"korean":{"name":"Test 6","description":""},"spanish":{"name":"Test 6","description":""}},"children":["TestConfigMetal0_5","TestConfigFreq0_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck0":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"확인","description":""},"spanish":{"name":"Acknowledge","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator0":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"Operator","description":""},"spanish":{"name":"Operator","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode0":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"Halo Mode","description":""},"spanish":{"name":"Halo Mode","description":""}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount1_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal1_0","TestConfigFreq1_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_1":{"@parent":"","@translations":{"english":{"name":"Test 2","description":""},"korean":{"name":"Test 2","description":""},"spanish":{"name":"Test 2","description":""}},"children":["TestConfigMetal1_1","TestConfigFreq1_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_2":{"@parent":"","@translations":{"english":{"name":"Test 3","description":""},"korean":{"name":"Test 3","description":""},"spanish":{"name":"Test 3","description":""}},"children":["TestConfigMetal1_2","TestConfigFreq1_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_3":{"@parent":"","@translations":{"english":{"name":"Test 4","description":""},"korean":{"name":"Test 4","description":""},"spanish":{"name":"Test 4","description":""}},"children":["TestConfigMetal1_3","TestConfigFreq1_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_4":{"@parent":"","@translations":{"english":{"name":"Test 5","description":""},"korean":{"name":"Test 5","description":""},"spanish":{"name":"Test 5","description":""}},"children":["TestConfigMetal1_4","TestConfigFreq1_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_5":{"@parent":"","@translations":{"english":{"name":"Test 6","description":""},"korean":{"name":"Test 6","description":""},"spanish":{"name":"Test 6","description":""}},"children":["TestConfigMetal1_5","TestConfigFreq1_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck1":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"Acknowledge","description":""},"spanish":{"name":"Acknowledge","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator1":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"Operator","description":""},"spanish":{"name":"Operator","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode1":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"Halo Mode","description":""},"spanish":{"name":"Halo Mode","description":""}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount2_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_0","TestConfigFreq2_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_1":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_1","TestConfigFreq2_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_2":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_2","TestConfigFreq2_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_3":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_3","TestConfigFreq2_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_4":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_4","TestConfigFreq2_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_5":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_5","TestConfigFreq2_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck2":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"Acknowledge","description":""},"spanish":{"name":"Acknowledge","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator2":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"Operator","description":""},"spanish":{"name":"Operator","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode2":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"Halo Mode","description":""},"spanish":{"name":"Halo Mode","description":""}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount3_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_0","TestConfigFreq3_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_1":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_1","TestConfigFreq3_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_2":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_2","TestConfigFreq3_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_3":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_3","TestConfigFreq3_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_4":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_4","TestConfigFreq3_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_5":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""},"korean":{"name":"Test 1","description":""},"spanish":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_5","TestConfigFreq3_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck3":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""},"korean":{"name":"Acknowledge","description":""},"spanish":{"name":"Acknowledge","description":""}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator3":{"@parent":"","@translations":{"english":{"name":"Operator","description":""},"korean":{"name":"Operator","description":""},"spanish":{"name":"Operator","description":""}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode3":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""},"korean":{"name":"Halo Mode","description":""},"spanish":{"name":"Halo Mode","description":""}},"children":[],"@labels":["Halo Mode"]},"HaloPeakRFe_A":{"@parent":"","@translations":{"english":{"name":"Ferrous R Peak","description":""},"korean":{"name":"Ferrous R Peak","description":""},"spanish":{"name":"Ferrous R Peak","description":""}},"children":["HaloPeakRFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakXFe_A":{"@parent":"","@translations":{"english":{"name":"Ferrous X Peak","description":""},"korean":{"name":"Ferrous X Peak","description":""},"spanish":{"name":"Ferrous X Peak","description":""}},"children":["HaloPeakXFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakRNFe_A":{"@parent":"","@translations":{"english":{"name":"Non-Ferrous R Peak","description":""},"korean":{"name":"Non-Ferrous R Peak","description":""},"spanish":{"name":"Non-Ferrous R Peak","description":""}},"children":["HaloPeakRNFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakXNFe_A":{"@parent":"","@translations":{"english":{"name":"Non-Ferrous X Peak","description":""},"korean":{"name":"Non-Ferrous X Peak","description":""},"spanish":{"name":"Non-Ferrous X Peak","description":""}},"children":["HaloPeakXNFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakRSs_A":{"@parent":"","@translations":{"english":{"name":"Stainless R Peak","description":""},"korean":{"name":"Stainless R Peak","description":""},"spanish":{"name":"Stainless R Peak","description":""}},"children":["HaloPeakRSs_B"],"@labels":["Channel A","Channel B"]},"HaloPeakXSs_A":{"@parent":"","@translations":{"english":{"name":"Stainless X Peak","description":""},"korean":{"name":"Stainless X Peak","description":""},"spanish":{"name":"Stainless X Peak","description":""}},"children":["HaloPeakXSs_B"],"@labels":["Channel A","Channel B"]},"PhaseAngle_A":{"@parent":"","@translations":{"english":{"name":"Phase Angle","description":""},"korean":{"name":"Phase Angle","description":""},"spanish":{"name":"Phase Angle","description":""}},"children":["PhaseAngle_B"],"@labels":["Channel A","Channel B"]},"PhaseMode_A":{"@parent":"","@translations":{"english":{"name":"Phase Mode","description":""},"korean":{"name":"Phase Mode","description":""},"spanish":{"name":"Phase Mode","description":""}},"children":["PhaseMode_B"],"@labels":["Channel A","Channel B"]},"PhaseSpeed_A":{"@parent":"","@translations":{"english":{"name":"Phase Speed","description":""},"korean":{"name":"Phase Speed","description":""},"spanish":{"name":"Phase Speed","description":""}},"children":["PhaseSpeed_B"],"@labels":["Channel A","Channel B"]},"PhaseModeHold_A":{"@parent":"","@translations":{"english":{"name":"Phase Limit Hold","description":""},"korean":{"name":"","description":""},"spanish":{"name":"Phase Limit Hold","description":""}},"children":["PhaseModeHold_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitDry_A":{"@parent":"","@translations":{"english":{"name":"Dry Phase Limit","description":""},"korean":{"name":"","description":""},"spanish":{"name":"Dry Phase Limit","description":""}},"children":["PhaseLimitDry_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitDrySpread_A":{"@parent":"","@translations":{"english":{"name":"Dry Phase Limit Spread","description":""},"korean":{"name":"","description":""},"spanish":{"name":"Dry Phase Limit Spread","description":""}},"children":["PhaseLimitDrySpread_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitWet_A":{"@parent":"","@translations":{"english":{"name":"Wet Phase Limit","description":""},"korean":{"name":"","description":""},"spanish":{"name":"Wet Phase Limit","description":""}},"children":["PhaseLimitWet_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitWetSpread_A":{"@parent":"","@translations":{"english":{"name":"Wet Phase Limit Spread","description":""},"korean":{"name":"","description":""},"spanish":{"name":"Wet Phase Limit Spread","description":""}},"children":["PhaseLimitWetSpread_B"],"@labels":["Channel A","Channel B"]},"PhaseAngleAuto_A":{"@parent":"","@translations":{"english":{"name":"Auto Phase Angle","description":""},"korean":{"name":"Auto Phase Angle","description":""},"spanish":{"name":"Auto Phase Angle","description":""}},"children":["PhaseAngleAuto_B"],"@labels":["Channel A","Channel B"]},"PhaseFastBit_A":{"@parent":"","@translations":{"english":{"name":"Phase Speed","description":""},"korean":{"name":"Phase Speed","description":""},"spanish":{"name":"Phase Speed","description":""}},"children":["PhaseFastBit_B"],"@labels":["Channel A","Channel B"]},"PhaseWetBit_A":{"@parent":"","@translations":{"english":{"name":"Phase Wet","description":""},"korean":{"name":"Phase Wet","description":""},"spanish":{"name":"Phase Wet","description":""}},"children":["PhaseWetBit_B"],"@labels":["Channel A","Channel B"]},"PhaseDSALearn_A":{"@parent":"","@translations":{"english":{"name":"Phase DSA Learn","description":""},"korean":{"name":"Phase DSA Learn","description":""},"spanish":{"name":"Phase DSA Learn","description":""}},"children":["PhaseDSALearn_B"],"@labels":["Channel A","Channel B"]},"MPhaseOrder_A":{"@parent":"","@translations":{"english":{"name":"M Phase Order","description":""},"korean":{"name":"M Phase Order","description":""},"spanish":{"name":"M Phase Order","description":""}},"children":["MPhaseOrder_B"],"@labels":["Channel A","Channel B"]},"MPhaseDD_A":{"@parent":"","@translations":{"english":{"name":"M Phase DD","description":""},"korean":{"name":"M Phase DD","description":""},"spanish":{"name":"M Phase DD","description":""}},"children":["MPhaseDD_B"],"@labels":["Channel A","Channel B"]},"MPhaseRD_A":{"@parent":"","@translations":{"english":{"name":"M Phase RD","description":""},"korean":{"name":"M Phase RD","description":""},"spanish":{"name":"M Phase RD","description":""}},"children":["MPhaseRD_A"],"@labels":["Channel A","Channel B"]},"Language":{"@parent":"","@translations":{"english":{"name":"Language","description":"This is a description of f the language"},"korean":{"name":"Language","description":"This is a description of f the language"},"spanish":{"name":"Language","description":"This is a description of f the language"}},"children":[],"@labels":["Language"]},"RejDelSec":{"@parent":"","@translations":{"english":{"name":"Main Reject Delay","description":""},"korean":{"name":"Main Reject Delay","description":""},"spanish":{"name":"Main Reject Delay","description":""}},"children":[],"@labels":["Main Reject Delay"]},"RejDelSec2":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Delay","description":""},"korean":{"name":"Alternate Reject Delay","description":""},"spanish":{"name":"Alternate Reject Delay","description":""}},"children":[],"@labels":["Alternate Reject Delay"]},"RejDurSec":{"@parent":"","@translations":{"english":{"name":"Main Reject Duration","description":""},"korean":{"name":"Main Reject Duration","description":""},"spanish":{"name":"Main Reject Duration","description":""}},"children":[],"@labels":["Main Reject Duration"]},"RejDurSec2":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Duration","description":""},"korean":{"name":"Alternate Reject Duration","description":""},"spanish":{"name":"Alternate Reject Duration","description":""}},"children":[],"@labels":["Alternate Reject Duration"]},"RejMode":{"@parent":"","@translations":{"english":{"name":"Reject Mode","description":""},"korean":{"name":"Reject Mode","description":""},"spanish":{"name":"Reject Mode","description":""}},"children":[],"@labels":["Reject Mode"]},"RejExitDist":{"@parent":"","@translations":{"english":{"name":"Reject Exit Distance","description":""},"korean":{"name":"Reject Exit Distance","description":""},"spanish":{"name":"Reject Exit Distance","description":""}},"children":[],"@labels":["Reject Exit Distance"]},"RejExitWin":{"@parent":"","@translations":{"english":{"name":"Reject Exit Window","description":""},"korean":{"name":"Reject Exit Window","description":""},"spanish":{"name":"Reject Exit Window","description":""}},"children":[],"@labels":["Reject Exit Window"]},"AppUnitDist":{"@parent":"","@translations":{"english":{"name":"Units ","description":""},"korean":{"name":"단위 ","description":""},"spanish":{"name":"Units ","description":""}},"children":[],"@labels":["Units "]},"BeltSpeed":{"@parent":"","@translations":{"english":{"name":"Belt Speed","description":""},"korean":{"name":"Belt Speed","description":""},"spanish":{"name":"Belt Speed","description":""}},"children":[],"@labels":["Belt Speed"]},"FaultLatch":{"@parent":"","@translations":{"english":{"name":"Fault Latch","description":""},"korean":{"name":"Fault Latch","description":""},"spanish":{"name":"Fault Latch","description":""}},"children":[],"@labels":["Fault Latch"]},"RejLatchMode":{"@parent":"","@translations":{"english":{"name":"Reject Latch","description":""},"korean":{"name":"Reject Latch","description":""},"spanish":{"name":"Reject Latch","description":""}},"children":[],"@labels":["Reject Latch"]},"Rej2Latch":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Latch","description":""},"korean":{"name":"Alternate Reject Latch","description":""},"spanish":{"name":"Alternate Reject Latch","description":""}},"children":[],"@labels":["Alternate Reject Latch"]},"RejBinDoorTime":{"@parent":"","@translations":{"english":{"name":"Reject Bin Door Time","description":""},"korean":{"name":"Reject Bin Door Time","description":""},"spanish":{"name":"Reject Bin Door Time","description":""}},"children":[],"@labels":["Reject Bin Door Time"]},"CIPCycleTime":{"@parent":"","@translations":{"english":{"name":"CIP Cycle Time","description":""},"korean":{"name":"CIP Cycle Time","description":""},"spanish":{"name":"CIP Cycle Time","description":""}},"children":[],"@labels":["CIP Cycle Time"]},"CIPDwellTime":{"@parent":"","@translations":{"english":{"name":"CIP Dwell Time","description":""},"korean":{"name":"CIP Dwell Time","description":""},"spanish":{"name":"CIP Dwell Time","description":""}},"children":[],"@labels":["CIP Dwell Time"]},"FaultClearTime":{"@parent":"","@translations":{"english":{"name":"Fault Clear Time","description":""},"korean":{"name":"Fault Clear Time","description":""},"spanish":{"name":"Fault Clear Time","description":""}},"children":[],"@labels":["Fault Clear Time"]},"EyeBlockTime":{"@parent":"","@translations":{"english":{"name":"Eye Block Time","description":""},"korean":{"name":"Eye Block Time","description":""},"spanish":{"name":"Eye Block Time","description":""}},"children":[],"@labels":["Eye Block Time"]},"RejCheckTime":{"@parent":"","@translations":{"english":{"name":"Reject Check Time","description":""},"korean":{"name":"Reject Check Time","description":""},"spanish":{"name":"Reject Check Time","description":""}},"children":[],"@labels":["Reject Check Time"]},"ExcessRejTime":{"@parent":"","@translations":{"english":{"name":"Excess Reject Time","description":""},"korean":{"name":"Excess Reject Time","description":""},"spanish":{"name":"Excess Reject Time","description":""}},"children":[],"@labels":["Excess Reject Time"]},"RejDelClock":{"@parent":"","@translations":{"english":{"name":"Reject Delay Clock","description":""},"korean":{"name":"Reject Delay Clock","description":""},"spanish":{"name":"Reject Delay Clock","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"PW1":{"@parent":"","@translations":{"english":{"name":"Password 1","description":""},"korean":{"name":"Password 1","description":""},"spanish":{"name":"Password 1","description":""}},"children":[],"@labels":["Password 1"]},"PW2":{"@parent":"","@translations":{"english":{"name":"Password 2","description":""},"korean":{"name":"Password 2","description":""},"spanish":{"name":"Password 2","description":""}},"children":[],"@labels":["Password 2"]},"PW3":{"@parent":"","@translations":{"english":{"name":"Password 3","description":""},"korean":{"name":"Password 3","description":""},"spanish":{"name":"Password 3","description":""}},"children":[],"@labels":["Password 3"]},"PW4":{"@parent":"","@translations":{"english":{"name":"Password 4","description":""},"korean":{"name":"Password 4","description":""},"spanish":{"name":"Password 4","description":""}},"children":[],"@labels":["Password 4"]},"PassAccSens":{"@parent":"","@translations":{"english":{"name":"Sensitivity Access Level","description":""},"korean":{"name":"Sensitivity Access Level","description":""},"spanish":{"name":"Sensitivity Access Level","description":""}},"children":[],"@labels":["Sensitivity Access Level"]},"PassAccProd":{"@parent":"","@translations":{"english":{"name":"Product Access Level","description":""},"korean":{"name":"Product Access Level","description":""},"spanish":{"name":"Product Access Level","description":""}},"children":[],"@labels":["Product Access Level"]},"PassAccCal":{"@parent":"","@translations":{"english":{"name":"Calibrate Access Level","description":""},"korean":{"name":"Calibrate Access Level","description":""},"spanish":{"name":"Calibrate Access Level","description":""}},"children":[],"@labels":["Calibrate Access Level"]},"PassAccTest":{"@parent":"","@translations":{"english":{"name":"Test Access Level","description":""},"korean":{"name":"Test Access Level","description":""},"spanish":{"name":"Test Access Level","description":""}},"children":[],"@labels":["Test Access Level"]},"PassAccSelUnit":{"@parent":"","@translations":{"english":{"name":"Select Unit Access Level","description":""},"korean":{"name":"Select Unit Access Level","description":""},"spanish":{"name":"Select Unit Access Level","description":""}},"children":[],"@labels":["Select Unit Access Level"]},"PassAccClrFaults":{"@parent":"","@translations":{"english":{"name":"Fault Clear Access Level","description":""},"korean":{"name":"Fault Clear Access Level","description":""},"spanish":{"name":"Fault Clear Access Level","description":""}},"children":[],"@labels":["Fault Clear Access Level"]},"PassAccClrRej":{"@parent":"","@translations":{"english":{"name":"Reject Clear Access Level","description":""},"korean":{"name":"Reject Clear Access Level","description":""},"spanish":{"name":"Reject Clear Access Level","description":""}},"children":[],"@labels":["Reject Clear Access Level"]},"PassAccClrLatch":{"@parent":"","@translations":{"english":{"name":"Latch Clear Access Level","description":""},"korean":{"name":"Latch Clear Access Level","description":""},"spanish":{"name":"Latch Clear Access Level","description":""}},"children":[],"@labels":["Latch Clear Access Level"]},"PassAccTime":{"@parent":"","@translations":{"english":{"name":"Time Access Level","description":""},"korean":{"name":"Time Access Level","description":""},"spanish":{"name":"Time Access Level","description":""}},"children":[],"@labels":["Time Access Level"]},"PassAccSync":{"@parent":"","@translations":{"english":{"name":"Sync Access Level","description":""},"korean":{"name":"Sync Access Level","description":""},"spanish":{"name":"Sync Access Level","description":""}},"children":[],"@labels":["Sync Access Level"]},"INPUT_TACH":{"@parent":"","@translations":{"english":{"name":"Tachometer","description":""},"korean":{"name":"Tachometer","description":""},"spanish":{"name":"Tachometer","description":""}},"children":["INPUT_POL_TACH"],"@labels":["Source","Polarity"]},"INPUT_EYE":{"@parent":"","@translations":{"english":{"name":"Photo Eye","description":""},"korean":{"name":"Photo Eye","description":""},"spanish":{"name":"Photo Eye","description":""}},"children":["INPUT_POL_EYE"],"@labels":["Source","Polarity"]},"INPUT_RC_1":{"@parent":"","@translations":{"english":{"name":"Reject Check 1","description":""},"korean":{"name":"Reject Check 1","description":""},"spanish":{"name":"Reject Check 1","description":""}},"children":["INPUT_POL_RC_1"],"@labels":["Source","Polarity"]},"INPUT_RC_2":{"@parent":"","@translations":{"english":{"name":"Reject Check 2","description":""},"korean":{"name":"Reject Check 2","description":""},"spanish":{"name":"Reject Check 2","description":""}},"children":["INPUT_POL_RC_2"],"@labels":["Source","Polarity"]},"INPUT_REJ_EYE":{"@parent":"","@translations":{"english":{"name":"Reject Eye","description":""},"korean":{"name":"Reject Eye","description":""},"spanish":{"name":"Reject Eye","description":""}},"children":["INPUT_POL_REJ_EYE"],"@labels":["Source","Polarity"]},"INPUT_AIR_PRES":{"@parent":"","@translations":{"english":{"name":"Air Pressure","description":""},"korean":{"name":"Air Pressure","description":""},"spanish":{"name":"Air Pressure","description":""}},"children":["INPUT_POL_AIR_PRES"],"@labels":["Source","Polarity"]},"INPUT_REJ_LATCH":{"@parent":"","@translations":{"english":{"name":"Reject Latch","description":""},"korean":{"name":"Reject Latch","description":""},"spanish":{"name":"Reject Latch","description":""}},"children":["INPUT_POL_REJ_LATCH"],"@labels":["Source","Polarity"]},"INPUT_BIN_FULL":{"@parent":"","@translations":{"english":{"name":"Bin Full","description":""},"korean":{"name":"Bin Full","description":""},"spanish":{"name":"Bin Full","description":""}},"children":["INPUT_POL_BIN_FULL"],"@labels":["Source","Polarity"]},"INPUT_REJ_PRESENT":{"@parent":"","@translations":{"english":{"name":"Reject Present","description":""},"korean":{"name":"Reject Present","description":""},"spanish":{"name":"Reject Present","description":""}},"children":["INPUT_POL_REJ_PRESENT"],"@labels":["Source","Polarity"]},"INPUT_DOOR1_OPEN":{"@parent":"","@translations":{"english":{"name":"Door 1 Open","description":""},"korean":{"name":"Door 1 Open","description":""},"spanish":{"name":"Door 1 Open","description":""}},"children":["INPUT_POL_DOOR1_OPEN"],"@labels":["Source","Polarity"]},"INPUT_DOOR2_OPEN":{"@parent":"","@translations":{"english":{"name":"Door 2 Open","description":""},"korean":{"name":"Door 2 Open","description":""},"spanish":{"name":"Door 2 Open","description":""}},"children":["INPUT_POL_DOOR2_OPEN"],"@labels":["Source","Polarity"]},"INPUT_CLEAR_FAULTS":{"@parent":"","@translations":{"english":{"name":"Clear Faults","description":""},"korean":{"name":"Clear Faults","description":""},"spanish":{"name":"Clear Faults","description":""}},"children":["INPUT_POL_CLEAR_FAULTS"],"@labels":["Source","Polarity"]},"INPUT_CIP":{"@parent":"","@translations":{"english":{"name":"CIP","description":""},"korean":{"name":"CIP","description":""},"spanish":{"name":"CIP","description":""}},"children":["INPUT_POL_CIP"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL1":{"@parent":"","@translations":{"english":{"name":"Product Select 1","description":""},"korean":{"name":"Product Select 1","description":""},"spanish":{"name":"Product Select 1","description":""}},"children":["INPUT_POL_PROD_SEL1"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL2":{"@parent":"","@translations":{"english":{"name":"Product Select 2","description":""},"korean":{"name":"Product Select 2","description":""},"spanish":{"name":"Product Select 2","description":""}},"children":["INPUT_POL_PROD_SEL2"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL3":{"@parent":"","@translations":{"english":{"name":"Product Select 3","description":""},"korean":{"name":"Product Select 3","description":""},"spanish":{"name":"Product Select 3","description":""}},"children":["INPUT_POL_PROD_SEL3"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL4":{"@parent":"","@translations":{"english":{"name":"Product Select 4","description":""},"korean":{"name":"Product Select 4","description":""},"spanish":{"name":"Product Select 4","description":""}},"children":["INPUT_POL_PROD_SEL4"],"@labels":["Source","Polarity"]},"INPUT_TEST":{"@parent":"","@translations":{"english":{"name":"Test","description":""},"korean":{"name":"Test","description":""},"spanish":{"name":"Test","description":""}},"children":["INPUT_POL_TEST"],"@labels":["Source","Polarity"]},"OUT_PHY_PL3_1":{"@parent":"","@translations":{"english":{"name":"PL3 1","description":""},"korean":{"name":"PL3 1","description":""},"spanish":{"name":"PL3 1","description":""}},"children":["OUT_POL_PL3_1"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_1A2":{"@parent":"","@translations":{"english":{"name":"PL11 1A2","description":""},"korean":{"name":"PL11 1A2","description":""},"spanish":{"name":"PL11 1A2","description":""}},"children":["OUT_POL_PL11_1A2"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_3A4":{"@parent":"","@translations":{"english":{"name":"PL11 3A4","description":""},"korean":{"name":"PL11 3A4","description":""},"spanish":{"name":"PL11 3A4","description":""}},"children":["OUT_POL_PL11_3A4"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_5A6":{"@parent":"","@translations":{"english":{"name":"PL11 5A6","description":""},"korean":{"name":"PL11 5A6","description":""},"spanish":{"name":"PL11 5A6","description":""}},"children":["OUT_POL_PL11_5A6"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_1":{"@parent":"","@translations":{"english":{"name":"PL4 1","description":""},"korean":{"name":"PL4 1","description":""},"spanish":{"name":"PL4 1","description":""}},"children":["OUT_POL_PL4_1"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_2":{"@parent":"","@translations":{"english":{"name":"PL4 2","description":""},"korean":{"name":"PL4 2","description":""},"spanish":{"name":"PL4 2","description":""}},"children":["OUT_POL_PL4_2"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_3":{"@parent":"","@translations":{"english":{"name":"PL4 3","description":""},"korean":{"name":"PL4 3","description":""},"spanish":{"name":"PL4 3","description":""}},"children":["OUT_POL_PL4_3"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_5":{"@parent":"","@translations":{"english":{"name":"PL4 5","description":""},"korean":{"name":"PL4 5","description":""},"spanish":{"name":"PL4 5","description":""}},"children":["OUT_POL_PL4_5"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_R1":{"@parent":"","@translations":{"english":{"name":"IO PL3 R1","description":""},"korean":{"name":"IO PL3 R1","description":""},"spanish":{"name":"IO PL3 R1","description":""}},"children":["OUT_POL_IO_PL3_R1"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_R2":{"@parent":"","@translations":{"english":{"name":"IO PL3 R2","description":""},"korean":{"name":"IO PL3 R2","description":""},"spanish":{"name":"IO PL3 R2","description":""}},"children":["OUT_POL_IO_PL3_R2"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O1":{"@parent":"","@translations":{"english":{"name":"IO PL3 O1","description":""},"korean":{"name":"IO PL3 O1","description":""},"spanish":{"name":"IO PL3 O1","description":""}},"children":["OUT_POL_IO_PL3_O1"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O2":{"@parent":"","@translations":{"english":{"name":"IO PL3 O2","description":""},"korean":{"name":"IO PL3 O2","description":""},"spanish":{"name":"IO PL3 O2","description":""}},"children":["OUT_PHY_IO_PL3_O2"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O3":{"@parent":"","@translations":{"english":{"name":"IO PL3 O3","description":""},"korean":{"name":"IO PL3 O3","description":""},"spanish":{"name":"IO PL3 O3","description":""}},"children":["OUT_POL_IO_PL3_O3"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_02":{"@parent":"","@translations":{"english":{"name":"IO PL4 02","description":""},"korean":{"name":"IO PL4 02","description":""},"spanish":{"name":"IO PL4 02","description":""}},"children":["OUT_POL_IO_PL4_02"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_03":{"@parent":"","@translations":{"english":{"name":"IO PL4 03","description":""},"korean":{"name":"IO PL4 03","description":""},"spanish":{"name":"IO PL4 03","description":""}},"children":["OUT_POL_IO_PL4_03"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_04":{"@parent":"","@translations":{"english":{"name":"IO PL4 04","description":""},"korean":{"name":"IO PL4 04","description":""},"spanish":{"name":"IO PL4 04","description":""}},"children":["OUT_POL_IO_PL4_04"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_05":{"@parent":"","@translations":{"english":{"name":"IO PL4 05","description":""},"korean":{"name":"IO PL4 05","description":""},"spanish":{"name":"IO PL4 05","description":""}},"children":["OUT_POL_IO_PL4_05"],"@labels":["Source","Polarity"]},"SRecordDate":{"@parent":"","@translations":{"english":{"name":"System Record Date","description":""},"korean":{"name":"System Record Date","description":""},"spanish":{"name":"System Record Date","description":""}},"children":[],"@labels":["System Record Date"]},"ProdNo":{"@parent":"","@translations":{"english":{"name":"Product Number","description":""},"korean":{"name":"Product Number","description":""},"spanish":{"name":"Product Number","description":""}},"children":[],"@labels":["Product Number"]},"Unit":{"@parent":"","@translations":{"english":{"name":"Unit","description":""},"korean":{"name":"Unit","description":""},"spanish":{"name":"Unit","description":""}},"children":[],"@labels":["Unit"]},"RefFaultMask":{"@parent":"","@translations":{"english":{"name":"Reference Fault","description":""},"korean":{"name":"Reference Fault","description":""},"spanish":{"name":"Reference Fault","description":""}},"children":[],"@labels":["Reference Fault"]},"BalFaultMask":{"@parent":"","@translations":{"english":{"name":"Balance Fault","description":""},"korean":{"name":"Balance Fault","description":""},"spanish":{"name":"Balance Fault","description":""}},"children":[],"@labels":["Balance Fault"]},"ProdMemFaultMask":{"@parent":"","@translations":{"english":{"name":"Product Memory Fault","description":""},"korean":{"name":"Product Memory Fault","description":""},"spanish":{"name":"Product Memory Fault","description":""}},"children":[],"@labels":["Product Memory Fault"]},"RejConfirmFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Confirm Fault","description":""},"korean":{"name":"Reject Confirm Fault","description":""},"spanish":{"name":"Reject Confirm Fault","description":""}},"children":[],"@labels":["Reject Confirm Fault"]},"PhaseFaultMask":{"@parent":"","@translations":{"english":{"name":"Phase Fault","description":""},"korean":{"name":"Phase Fault","description":""},"spanish":{"name":"Phase Fault","description":""}},"children":[],"@labels":["Phase Fault"]},"TestSigFaultMask":{"@parent":"","@translations":{"english":{"name":"Test Signal Fault","description":""},"korean":{"name":"Test Signal Fault","description":""},"spanish":{"name":"Test Signal Fault","description":""}},"children":[],"@labels":["Test Signal Fault"]},"PeyeBlockFaultMask":{"@parent":"","@translations":{"english":{"name":"Photoeye Block Fault","description":""},"korean":{"name":"Photoeye Block Fault","description":""},"spanish":{"name":"Photoeye Block Fault","description":""}},"children":[],"@labels":["Photoeye Block Fault"]},"RejBinFullFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Bin Full Fault","description":""},"korean":{"name":"Reject Bin Full Fault","description":""},"spanish":{"name":"Reject Bin Full Fault","description":""}},"children":[],"@labels":["Reject Bin Full Fault"]},"AirFaultMask":{"@parent":"","@translations":{"english":{"name":"Air Fault","description":""},"korean":{"name":"Air Fault","description":""},"spanish":{"name":"Air Fault","description":""}},"children":[],"@labels":["Air Fault"]},"ExcessRejFaultMask":{"@parent":"","@translations":{"english":{"name":"Excess Rejects Fault","description":""},"korean":{"name":"Excess Rejects Fault","description":""},"spanish":{"name":"Excess Rejects Fault","description":""}},"children":[],"@labels":["Excess Rejects Fault"]},"BigMetalFaultMask":{"@parent":"","@translations":{"english":{"name":"Large Metal Fault","description":""},"korean":{"name":"Large Metal Fault","description":""},"spanish":{"name":"Large Metal Fault","description":""}},"children":[],"@labels":["Large Metal Fault"]},"NetBufferFaultMask":{"@parent":"","@translations":{"english":{"name":"Net Buffer Fault","description":""},"korean":{"name":"Net Buffer Fault","description":""},"spanish":{"name":"Net Buffer Fault","description":""}},"children":[],"@labels":["Net Buffer Fault"]},"RejMemoryFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Memory Fault","description":""},"korean":{"name":"Reject Memory Fault","description":""},"spanish":{"name":"Reject Memory Fault","description":""}},"children":[],"@labels":["Reject Memory Fault"]},"RejectExitFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Exit Fault","description":""},"korean":{"name":"Reject Exit Fault","description":""},"spanish":{"name":"Reject Exit Fault","description":""}},"children":[],"@labels":["Reject Exit Fault"]},"TachometerFaultMask":{"@parent":"","@translations":{"english":{"name":"Tachometer Fault","description":""},"korean":{"name":"Tachometer Fault","description":""},"spanish":{"name":"Tachometer Fault","description":""}},"children":[],"@labels":["Tachometer Fault"]},"PatternFaultMask":{"@parent":"","@translations":{"english":{"name":"Pattern Fault","description":""},"korean":{"name":"Pattern Fault","description":""},"spanish":{"name":"Pattern Fault","description":""}},"children":[],"@labels":["Pattern Fault"]},"ExitNoPackFaultMask":{"@parent":"","@translations":{"english":{"name":"Exit No Pack Fault","description":""},"korean":{"name":"Exit No Pack Fault","description":""},"spanish":{"name":"Exit No Pack Fault","description":""}},"children":[],"@labels":["Exit No Pack Fault"]},"ExitNewPackFaultMask":{"@parent":"","@translations":{"english":{"name":"Exit New Pack Fault","description":""},"korean":{"name":"Exit New Pack Fault","description":""},"spanish":{"name":"Exit New Pack Fault","description":""}},"children":[],"@labels":["Exit New Pack Fault"]},"InterceptorFaultMask":{"@parent":"","@translations":{"english":{"name":"Interceptor Fault","description":""},"korean":{"name":"Interceptor Fault","description":""},"spanish":{"name":"Interceptor Fault","description":""}},"children":[],"@labels":["Interceptor Fault"]},"RtcLowBatFaultMask":{"@parent":"","@translations":{"english":{"name":"Rtc Low Batter Fault","description":""},"korean":{"name":"Rtc Low Batter Fault","description":""},"spanish":{"name":"Rtc Low Batter Fault","description":""}},"children":[],"@labels":["Rtc Low Batter Fault"]},"RtcTimeFaultMask":{"@parent":"","@translations":{"english":{"name":"Rtc Time Fault","description":""},"korean":{"name":"Rtc Time Fault","description":""},"spanish":{"name":"Rtc Time Fault","description":""}},"children":[],"@labels":["Rtc Time Fault"]},"IntUsbFaultMask":{"@parent":"","@translations":{"english":{"name":"Int Usb Fault","description":""},"korean":{"name":"Int Usb Fault","description":""},"spanish":{"name":"Int Usb Fault","description":""}},"children":[],"@labels":["Int Usb Fault"]},"IoBoardFaultMask":{"@parent":"","@translations":{"english":{"name":"IO Board Fault","description":""},"korean":{"name":"IO Board Fault","description":""},"spanish":{"name":"IO Board Fault","description":""}},"children":[],"@labels":["IO Board Fault"]},"HaloFaultMask":{"@parent":"","@translations":{"english":{"name":"Halo Fault","description":""},"korean":{"name":"Halo Fault","description":""},"spanish":{"name":"Halo Fault","description":""}},"children":[],"@labels":["Halo Fault"]},"SignalFaultMask":{"@parent":"","@translations":{"english":{"name":"Signal Fault","description":""},"korean":{"name":"Signal Fault","description":""},"spanish":{"name":"Signal Fault","description":""}},"children":[],"@labels":["Signal Fault"]}},"@netpollsmap":{"NET_POLL_PROTOCOL_VERSION":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_KEY_CLASS_MASK":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_PROD_REC_VAR":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_PROD_SYS_VAR":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_REJECT":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_REJECT2":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_REJ_CNT":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_FAULT":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_CONTROL":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_POWERUP":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_OPERATOR_NO":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_TEST_REQ_PASS":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_REJECT_ID":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_REJECT_CLEAR":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_EYE_PROD_PEAK":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_EYE_PROD_PHASE":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_FAULT_CLEAR":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_SYNC_MENU":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_PWD_ENTRY_1":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_PWD_ENTRY_2":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_SEL_UNIT":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_RESERVED":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_CLEAR_SCOPE":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_REJECT_PHASE":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_FLASH_WRITE":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_INTCPTR_SWITCH":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_PREC_DELETE":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_PREC_DEL_ALL":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_PREC_BACKUP_SAVE":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_PREC_BACKUP_RESTORE":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_PREC_DEAULTS":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_PREC_COPY":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_REJECT2_ID":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}},"NET_POLL_REJECT2_CLEAR":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""}}}},"@pages":{"Sens":{"cat":"Sens","params":["Sens_A","DetThresh_A","ThresProdHi_A","ThresX_A","ThresR_A","BigMetThres_A","DetMode_A","NoiseR_A","NoiseX_A","DetThEst_A"],"subCats":[{"cat":"Filter","params":["NoiseR_A","NoiseX_A","FilterNoise_A"],"subCats":[]},{"cat":"Oscillation Power","params":["OscPower_A"],"subCats":[]},{"cat":"FM Setup","params":["FmInput_A"],"subCats":[]}]},"Test":{"cat":"Test","params":["TestTime","TestDeferTime","TestMode"],"subCats":[{"cat":"Manual","params":["TestConfigCount0_0","TestConfigCount0_1","TestConfigCount0_2","TestConfigCount0_3","TestConfigCount0_4","TestConfigCount0_5","TestConfigAck0","TestConfigOperator0","TestConfigHaloMode0"],"subCats":[]},{"cat":"Halo","params":["TestConfigCount1_0","TestConfigCount1_1","TestConfigCount1_2","TestConfigCount1_3","TestConfigCount1_4","TestConfigCount1_5","TestConfigAck1","TestConfigOperator1","TestConfigHaloMode1"],"subCats":[]},{"cat":"Manual2","params":["TestConfigCount2_0","TestConfigCount2_1","TestConfigCount2_2","TestConfigCount2_3","TestConfigCount2_4","TestConfigCount2_5","TestConfigAck2","TestConfigOperator2","TestConfigHaloMode2"],"subCats":[]},{"cat":"Halo2","params":["TestConfigCount3_0","TestConfigCount3_1","TestConfigCount3_2","TestConfigCount3_3","TestConfigCount3_4","TestConfigCount3_5","TestConfigAck3","TestConfigOperator3","TestConfigHaloMode3"],"subCats":[]},{"cat":"HaloConf","params":["HaloPeakRFe_A","HaloPeakXFe_A","HaloPeakRNFe_A","HaloPeakXNFe_A","HaloPeakRSs_A","HaloPeakXSs_A"],"subCats":[]}]},"Calibration":{"cat":"Calibration","params":[],"subCats":[{"cat":"Phase","params":["PhaseAngle_A","PhaseAngleAuto_A","PhaseMode_A","PhaseSpeed_A","PhaseFastBit_A","PhaseWetBit_A","PhaseDSALearn_A"],"subCats":[]},{"cat":"MPhase","params":["MPhaseOrder_A","MPhaseDD_A","MPhaseRD_A"],"subCats":[]}]}},"@catmap":{"Reject":{"@translations":{"english":"Reject","korean":"거부","spanish":"Reject"}},"Password":{"@translations":{"english":"Password","korean":"암호","spanish":"Password"}},"IO":{"@translations":{"english":"I/O","korean":"입출력","spanish":"I/O"}},"System":{"@translations":{"english":"System","korean":"시스템","spanish":"System"}},"Fault":{"@translations":{"english":"Faults","korean":"오류","spanish":"Faults"}},"Reject/Additional Settings":{"@translations":{"english":"Additional Settings","korean":"추가 설정","spanish":"Additional Settings"}},"Reject/Additional Settings/Distances":{"@translations":{"english":"Distances","korean":"거리","spanish":"Distances"}},"Reject/Additional Settings/Belt Speed":{"@translations":{"english":"Belt Speed","korean":"벨트 속도","spanish":"Belt Speed"}},"Reject/Additional Settings/Latch":{"@translations":{"english":"Latches","korean":"Latches","spanish":"Latches"}},"Reject/Additional Settings/Clocks":{"@translations":{"english":"Clocks","korean":"Clocks","spanish":"Clocks"}},"IO/Inputs":{"@translations":{"english":"Inputs","korean":"입력","spanish":"Inputs"}},"IO/Outputs":{"@translations":{"english":"Outputs","korean":"출력","spanish":"Outputs"}},"Sens":{"@translations":{"english":"Sensitivity","korean":"민감도","spanish":"Sensitivity"}},"Test":{"@translations":{"english":"Test","korean":"테스트","spanish":"Test"}},"Test/Manual":{"@translations":{"english":"Manual Test 1","korean":"Manual Test 1","spanish":"Manual Test 1"}},"Test/Halo":{"@translations":{"english":"Halo Test 1","korean":"Halo Test 1","spanish":"Halo Test 1"}},"Test/Manual2":{"@translations":{"english":"Manual Test 2","korean":"Manual Test 2","spanish":"Manual Test 2"}},"Test/Halo2":{"@translations":{"english":"Halo Test 2","korean":"Halo Test 2","spanish":"Halo Test 2"}},"Test/HaloConf":{"@translations":{"english":"Test Configuration","korean":"Test Configuration","spanish":"Test Configuration"}},"Sens/Filter":{"@translations":{"english":"Filter Noise","korean":"Filter Noise","spanish":"Filter Noise"}},"Sens/Oscillation Power":{"@translations":{"english":"Oscillation Power","korean":"Oscillation Power","spanish":"Oscillation Power"}},"Sens/FM Setup":{"@translations":{"english":"FM Setup","korean":"FM Setup","spanish":"FM Setup"}},"Calibration":{"@translations":{"english":"Calibration","korean":"Calibration","spanish":"Calibration"}},"Calibration/Phase":{"@translations":{"english":"Phase","korean":"Phase","spanish":"Phase"}},"Calibration/MPhase":{"@translations":{"english":"M Phase","korean":"M Phase","spanish":"M Phase"}}},"@languages":["english","korean","spanish"],"@labels":{"Channel A":{"english":{"name":"Channel A"},"korean":{"name":"Channel A"},"spanish":{"name":""}},"Channel B":{"english":{"name":"Channel B"},"korean":{"name":"Channel B"},"spanish":{"name":""}},"Count":{"english":{"name":"Count"},"korean":{"name":"Count"},"spanish":{"name":""}},"Metal Type":{"english":{"name":"Metal Type"},"korean":{"name":"Metal Type"},"spanish":{"name":""}},"Signal Chain":{"english":{"name":"Signal Chain"},"korean":{"name":"Signal Chain"},"spanish":{"name":""}},"Source":{"english":{"name":"Source"},"korean":{"name":"Source"},"spanish":{"name":""}},"Polarity":{"english":{"name":"Polarity"},"korean":{"name":"Polarity"},"spanish":{"name":""}},"Sensitivity":{"english":{"name":"Sensitivity"},"korean":{"name":"민감도"},"spanish":{"name":"Sensibildad"}},"Signal":{"english":{"name":"Signal"},"korean":{"name":"신호"},"spanish":{"name":"Señal"}},"Rejects":{"english":{"name":"Rejects"},"korean":{"name":"거부"},"spanish":{"name":"rechaza"}},"Settings":{"english":{"name":"Settings"},"korean":{"name":"설정"},"spanish":{"name":"ajustes"}},"Test":{"english":{"name":"Test"},"korean":{"name":"테스트"},"spanish":{"name":"Test"}},"Log":{"english":{"name":"Log"},"korean":{"name":"기록"},"spanish":{"name":"Log"}},"Calibrate":{"english":{"name":"Calibrate"},"korean":{"name":"조정"},"spanish":{"name":"Calibrate"}},"Product":{"english":{"name":"Product"},"korean":{"name":"품목"},"spanish":{"name":"Prodct"}},"Running Product":{"english":{"name":"Running Product"},"korean":{"name":"현 품목"},"spanish":{"name":"Running Product"}},"Select Test":{"english":{"name":"Select Test"},"korean":{"name":"테스트 선택"},"spanish":{"name":"Select Test"}},"Currently Running":{"english":{"name":"Currently Running"},"korean":{"name":"실행중"},"spanish":{"name":"Currently Running"}},"Quit Test":{"english":{"name":"Quit Test"},"korean":{"name":"테스트 중단"},"spanish":{"name":"Quit Test"}},"activate":{"english":{"name":"activate"},"korean":{"name":"activate"},"spanish":{"name":"activate"}},"Clear Faults":{"english":{"name":"Clear Faults"},"korean":{"name":"Clear Faults"},"spanish":{"name":"Clear Faults"}},"No Faults":{"english":{"name":"No Faults"},"korean":{"name":"No Faults"},"spanish":{"name":"No Faults"}},"Calibrate All":{"english":{"name":"Calibrate All"},"korean":{"name":"전부 조정"},"spanish":{"name":"Calibrate All"}}}
-}*/
+var funcJSON ={
+	"@func":{"frac_value":"(function(int){return (int/(1<<15));})",
+			"mm":"(function(dist,metric){if(metric==0){return (dist/25.4).toFixed(1) + ' in'}else{ return dist + ' mm'}})",
+			"prod_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+			"dsp_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+			"dsp_serno_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+			"rec_date":"(function(val){var dd = val & 0x1f; var mm = (val >> 5) & 0xf; var yyyy = ((val>>9) & 0x7f) + 1996; return yyyy.toString() + '/' + mm.toString() + '/' + dd.toString()})",
+			"phase_spread":"(function(val){return Math.round((val/(1<<15))*45)})",
+			"phase":"(function(val,wet){ if(wet == 0){if((((val/(1<<15))*45)+90) <= 135){return (((val/(1<<15))*45)+90).toFixed(2); }else{ return ((val/(1<<15))*45).toFixed(2); }}else{ return ((val/(1<<15))*45).toFixed(2);}})",
+			"rej_del":"(function(ticks,tack) { if(tack==0){return (ticks/231.0).toFixed(2);}else{return ticks;}})",
+			"belt_speed":"(function(tpm,metric,tack){if(tack!=0){return tpm;} var speed= (231.0/tpm)*60; if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}})",
+			"password8":"(function(words){return words.map(function(w){return((w&0xffff).toString(16))}).join(',');})",
+			"rej_chk":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+			"rej_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+			"rej_latch":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+			"prod_name":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+			"peak_mode":"(function(eye,time){if(eye == 0){return(time*2;)}else{return 1;}})",
+			"phase_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+			"eye_rej":"(function(photo,lead,width){if(photo == 0){return 3;}else{if(lead==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})",
+			"bit_array":"(function(val){if(val == 0){return 0;}else{ var i = 0; while(i<16 && ((val>>i) & 1) == 0){ i++; } i++;  return i; } })",
+			"patt_frac":"(function(val){return (val/10.0).toFixed(1)})",
+			"eye_rej_mode":"(function(val,photo,width){if(photo == 0){return 3;}else{if(val==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})",
+			"ipv4_address":"(function(words){return words.map(function(w){return [('000'+((w>>8)&0xff).toString()).slice(-3),('000'+(w&0xff).toString()).slice(-3)].join('.')}).join('.');})"
+			}
+	}
+
+
 var vdefMapST = {
   "@categories":{"cat":"@root","params":["Language"],"subCats":[{"cat":"Reject","params":["RejDelSec","RejDelSec2","RejDurSec","RejDurSec2","RejMode"],"subCats":[{"cat":"Additional Settings","params":[],"subCats":[{"cat":"Distances","params":["RejExitDist","RejExitWin","AppUnitDist"],"subCats":[]},{"cat":"Belt Speed","params":["BeltSpeed"],"subCats":[]},{"cat":"Latch","params":["FaultLatch","RejLatchMode","Rej2Latch"],"subCats":[]},{"cat":"Clocks","params":["RejBinDoorTime","CIPCycleTime","CIPDwellTime","FaultClearTime","EyeBlockTime","RejCheckTime","ExcessRejTime","RejDelClock"],"subCats":[]}]}]},{"cat":"Password","params":["PW1","PW2","PW3","PW4","PassAccSens","PassAccProd","PassAccCal","PassAccTest","PassAccSelUnit","PassAccClrFaults","PassAccClrRej","PassAccClrLatch","PassAccTime","PassAccSync"],"subCats":[]},{"cat":"IO","params":[],"subCats":[{"cat":"Inputs","params":["INPUT_TACH","INPUT_EYE","INPUT_RC_1","INPUT_RC_2","INPUT_REJ_EYE","INPUT_AIR_PRES","INPUT_REJ_LATCH","INPUT_BIN_FULL","INPUT_REJ_PRESENT","INPUT_DOOR1_OPEN","INPUT_DOOR2_OPEN","INPUT_CLEAR_FAULTS","INPUT_CIP","INPUT_PROD_SEL1","INPUT_PROD_SEL2","INPUT_PROD_SEL3","INPUT_PROD_SEL4","INPUT_TEST"],"subCats":[]},{"cat":"Outputs","params":["OUT_PHY_PL3_1","OUT_PHY_PL11_1A2","OUT_PHY_PL11_3A4","OUT_PHY_PL11_5A6","OUT_PHY_PL4_1","OUT_PHY_PL4_2","OUT_PHY_PL4_3","OUT_PHY_PL4_5","OUT_PHY_IO_PL3_R1","OUT_PHY_IO_PL3_R2","OUT_PHY_IO_PL3_O1","OUT_PHY_IO_PL3_O2","OUT_PHY_IO_PL3_O3","OUT_PHY_IO_PL4_02","OUT_PHY_IO_PL4_03","OUT_PHY_IO_PL4_04","OUT_PHY_IO_PL4_05"],"subCats":[]}]},{"cat":"System","params":["SRecordDate","ProdNo","Unit"],"subCats":[]},{"cat":"Fault","params":["RefFaultMask","BalFaultMask","ProdMemFaultMask","RejConfirmFaultMask","PhaseFaultMask","TestSigFaultMask","PeyeBlockFaultMask","RejBinFullFaultMask","AirFaultMask","ExcessRejFaultMask","BigMetalFaultMask","NetBufferFaultMask","RejMemoryFaultMask","RejectExitFaultMask","TachometerFaultMask","PatternFaultMask","ExitNoPackFaultMask","ExitNewPackFaultMask","InterceptorFaultMask","RtcLowBatFaultMask","RtcTimeFaultMask","IntUsbFaultMask","IoBoardFaultMask","HaloFaultMask","SignalFaultMask"],"subCats":[]}]},"@vMap":{"Sens":{"@parent":"","@translations":{"english":{"name":"Sensitivity","description":""}},"children":[]},"DetThresh":{"@parent":"","@translations":{"english":{"name":"Detection Threshold","description":""}},"children":[]},"ThresProdHi":{"@parent":"","@translations":{"english":{"name":"Product High Threshold","description":""}},"children":[]},"ThresX":{"@parent":"","@translations":{"english":{"name":"X Threshold","description":""}},"children":[]},"ThresR":{"@parent":"","@translations":{"english":{"name":"R Threshold","description":""}},"children":[]},"BigMetThres":{"@parent":"","@translations":{"english":{"name":"Large Metal Threshold","description":""}},"children":[]},"DetMode":{"@parent":"","@translations":{"english":{"name":"Detection Mode","description":""}},"children":[]},"NoiseR":{"@parent":"","@translations":{"english":{"name":"R Channel Noise","description":""}},"children":[]},"DetThEst":{"@parent":"","@translations":{"english":{"name":"Detection Threshold Est","description":""}},"children":[]},"NoiseX":{"@parent":"","@translations":{"english":{"name":"X Channel Noise","description":""}},"children":[]},"TestTime":{"@parent":"","@translations":{"english":{"name":"Test Time","description":""}},"children":[]},"TestDeferTime":{"@parent":"","@translations":{"english":{"name":"Test Defer TIme","description":""}},"children":[]},"TestMode":{"@parent":"","@translations":{"english":{"name":"Test Mode","description":""}},"children":[]},"TestConfigCount0_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""}},"children":["TestConfigMetal0_0"]},"TestConfigCount0_1":{"@parent":"","@translations":{"english":{"name":"Test 2","description":""}},"children":["TestConfigMetal0_1"]},"TestConfigCount0_2":{"@parent":"","@translations":{"english":{"name":"Test 3","description":""}},"children":["TestConfigMetal0_2"]},"TestConfigAck0":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""}},"children":[]},"TestConfigOperator0":{"@parent":"","@translations":{"english":{"name":"Operator","description":""}},"children":[]},"TestConfigHaloMode0":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""}},"children":[]},"TestConfigCount1_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""}},"children":["TestConfigMetal1_0"]},"TestConfigCount1_1":{"@parent":"","@translations":{"english":{"name":"Test 2","description":""}},"children":["TestConfigMetal1_1"]},"TestConfigCount1_2":{"@parent":"","@translations":{"english":{"name":"Test 3","description":""}},"children":["TestConfigMetal1_2"]},"TestConfigAck1":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""}},"children":[]},"TestConfigOperator1":{"@parent":"","@translations":{"english":{"name":"Operator","description":""}},"children":[]},"TestConfigHaloMode1":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""}},"children":[]},"TestConfigCount2_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_0"]},"TestConfigCount2_1":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_1"]},"TestConfigCount2_2":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""}},"children":["TestConfigMetal2_2"]},"TestConfigAck2":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""}},"children":[]},"TestConfigOperator2":{"@parent":"","@translations":{"english":{"name":"Operator","description":""}},"children":[]},"TestConfigHaloMode2":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""}},"children":[]},"TestConfigCount3_0":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_0"]},"TestConfigCount3_1":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_1"]},"TestConfigCount3_2":{"@parent":"","@translations":{"english":{"name":"Test 1","description":""}},"children":["TestConfigMetal3_2"]},"TestConfigAck3":{"@parent":"","@translations":{"english":{"name":"Acknowledge","description":""}},"children":[]},"TestConfigOperator3":{"@parent":"","@translations":{"english":{"name":"Operator","description":""}},"children":[]},"TestConfigHaloMode3":{"@parent":"","@translations":{"english":{"name":"Halo Mode","description":""}},"children":[]},"HaloPeakRFe":{"@parent":"","@translations":{"english":{"name":"Ferrous R Peak","description":""}},"children":[]},"HaloPeakXFe":{"@parent":"","@translations":{"english":{"name":"Ferrous X Peak","description":""}},"children":[]},"HaloPeakRNFe":{"@parent":"","@translations":{"english":{"name":"Non-Ferrous R Peak","description":""}},"children":[]},"HaloPeakXNFe":{"@parent":"","@translations":{"english":{"name":"Non-Ferrous X Peak","description":""}},"children":[]},"HaloPeakRSs":{"@parent":"","@translations":{"english":{"name":"Stainless R Peak","description":""}},"children":[]},"HaloPeakXSs":{"@parent":"","@translations":{"english":{"name":"Stainless X Peak","description":""}},"children":[]},"PhaseAngle":{"@parent":"","@translations":{"english":{"name":"Phase Angle","description":""}},"children":[]},"PhaseMode":{"@parent":"","@translations":{"english":{"name":"Phase Mode","description":""}},"children":[]},"PhaseSpeed":{"@parent":"","@translations":{"english":{"name":"Phase Speed","description":""}},"children":[]},"PhaseModeHold":{"@parent":"","@translations":{"english":{"name":"","description":""}},"children":[]},"PhaseLimitDry":{"@parent":"","@translations":{"english":{"name":"","description":""}},"children":[]},"PhaseLimitDrySpread":{"@parent":"","@translations":{"english":{"name":"","description":""}},"children":[]},"PhaseLimitWet":{"@parent":"","@translations":{"english":{"name":"","description":""}},"children":[]},"PhaseLimitWetSpread":{"@parent":"","@translations":{"english":{"name":"","description":""}},"children":[]},"PhaseAngleAuto":{"@parent":"","@translations":{"english":{"name":"Auto Phase Angle","description":""}},"children":[]},"PhaseFastBit":{"@parent":"","@translations":{"english":{"name":"","description":""}},"children":[]},"PhaseWetBit":{"@parent":"","@translations":{"english":{"name":"","description":""}},"children":[]},"PhaseDSALearn":{"@parent":"","@translations":{"english":{"name":"","description":""}},"children":[]},"MPhaseOrder":{"@parent":"","@translations":{"english":{"name":"M Phase Order","description":""}},"children":[]},"MPhaseDD":{"@parent":"","@translations":{"english":{"name":"M Phase DD","description":""}},"children":[]},"MPhaseRD":{"@parent":"","@translations":{"english":{"name":"M Phase RD","description":""}},"children":[]},"Language":{"@parent":"","@translations":{"english":{"name":"Language","description":"This is a description of f the language"}},"children":[]},"RejDelSec":{"@parent":"","@translations":{"english":{"name":"Main Reject Delay","description":""}},"children":[]},"RejDelSec2":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Delay","description":""}},"children":[]},"RejDurSec":{"@parent":"","@translations":{"english":{"name":"Main Reject Duration","description":""}},"children":[]},"RejDurSec2":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Duration","description":""}},"children":[]},"RejMode":{"@parent":"","@translations":{"english":{"name":"Reject Mode","description":""}},"children":[]},"RejExitDist":{"@parent":"","@translations":{"english":{"name":"Reject Exit Distance","description":""}},"children":[]},"RejExitWin":{"@parent":"","@translations":{"english":{"name":"Reject Exit Window","description":""}},"children":[]},"AppUnitDist":{"@parent":"","@translations":{"english":{"name":"Units ","description":""}},"children":[]},"BeltSpeed":{"@parent":"","@translations":{"english":{"name":"Belt Speed","description":""}},"children":[]},"FaultLatch":{"@parent":"","@translations":{"english":{"name":"Fault Latch","description":""}},"children":[]},"RejLatchMode":{"@parent":"","@translations":{"english":{"name":"Reject Latch","description":""}},"children":[]},"Rej2Latch":{"@parent":"","@translations":{"english":{"name":"Alternate Reject Latch","description":""}},"children":[]},"RejBinDoorTime":{"@parent":"","@translations":{"english":{"name":"Reject Bin Door Time","description":""}},"children":[]},"CIPCycleTime":{"@parent":"","@translations":{"english":{"name":"CIP Cycle Time","description":""}},"children":[]},"CIPDwellTime":{"@parent":"","@translations":{"english":{"name":"CIP Dwell Time","description":""}},"children":[]},"FaultClearTime":{"@parent":"","@translations":{"english":{"name":"Fault Clear Time","description":""}},"children":[]},"EyeBlockTime":{"@parent":"","@translations":{"english":{"name":"Eye Block Time","description":""}},"children":[]},"RejCheckTime":{"@parent":"","@translations":{"english":{"name":"Reject Check Time","description":""}},"children":[]},"ExcessRejTime":{"@parent":"","@translations":{"english":{"name":"Excess Reject Time","description":""}},"children":[]},"RejDelClock":{"@parent":"","@translations":{"english":{"name":"Reject Delay Clock","description":""}},"children":[]},"PW1":{"@parent":"","@translations":{"english":{"name":"Password 1","description":""}},"children":[]},"PW2":{"@parent":"","@translations":{"english":{"name":"Password 2","description":""}},"children":[]},"PW3":{"@parent":"","@translations":{"english":{"name":"Password 3","description":""}},"children":[]},"PW4":{"@parent":"","@translations":{"english":{"name":"Password 4","description":""}},"children":[]},"PassAccSens":{"@parent":"","@translations":{"english":{"name":"Sensitivity Access Level","description":""}},"children":[]},"PassAccProd":{"@parent":"","@translations":{"english":{"name":"Product Access Level","description":""}},"children":[]},"PassAccCal":{"@parent":"","@translations":{"english":{"name":"Calibrate Access Level","description":""}},"children":[]},"PassAccTest":{"@parent":"","@translations":{"english":{"name":"Test Access Level","description":""}},"children":[]},"PassAccSelUnit":{"@parent":"","@translations":{"english":{"name":"Select Unit Access Level","description":""}},"children":[]},"PassAccClrFaults":{"@parent":"","@translations":{"english":{"name":"Fault Clear Access Level","description":""}},"children":[]},"PassAccClrRej":{"@parent":"","@translations":{"english":{"name":"Reject Clear Access Level","description":""}},"children":[]},"PassAccClrLatch":{"@parent":"","@translations":{"english":{"name":"Latch Clear Access Level","description":""}},"children":[]},"PassAccTime":{"@parent":"","@translations":{"english":{"name":"Time Access Level","description":""}},"children":[]},"PassAccSync":{"@parent":"","@translations":{"english":{"name":"Sync Access Level","description":""}},"children":[]},"INPUT_TACH":{"@parent":"","@translations":{"english":{"name":"Tachometer","description":""}},"children":["INPUT_POL_TACH"]},"INPUT_EYE":{"@parent":"","@translations":{"english":{"name":"Photo Eye","description":""}},"children":["INPUT_POL_EYE"]},"INPUT_RC_1":{"@parent":"","@translations":{"english":{"name":"Reject Check 1","description":""}},"children":["INPUT_POL_RC_1"]},"INPUT_RC_2":{"@parent":"","@translations":{"english":{"name":"Reject Check 2","description":""}},"children":["INPUT_POL_RC_2"]},"INPUT_REJ_EYE":{"@parent":"","@translations":{"english":{"name":"Reject Eye","description":""}},"children":["INPUT_POL_REJ_EYE"]},"INPUT_AIR_PRES":{"@parent":"","@translations":{"english":{"name":"Air Pressure","description":""}},"children":["INPUT_POL_AIR_PRES"]},"INPUT_REJ_LATCH":{"@parent":"","@translations":{"english":{"name":"Reject Latch","description":""}},"children":["INPUT_POL_REJ_LATCH"]},"INPUT_BIN_FULL":{"@parent":"","@translations":{"english":{"name":"Bin Full","description":""}},"children":["INPUT_POL_BIN_FULL"]},"INPUT_REJ_PRESENT":{"@parent":"","@translations":{"english":{"name":"Reject Present","description":""}},"children":["INPUT_POL_REJ_PRESENT"]},"INPUT_DOOR1_OPEN":{"@parent":"","@translations":{"english":{"name":"Door 1 Open","description":""}},"children":["INPUT_POL_DOOR1_OPEN"]},"INPUT_DOOR2_OPEN":{"@parent":"","@translations":{"english":{"name":"Door 2 Open","description":""}},"children":["INPUT_POL_DOOR2_OPEN"]},"INPUT_CLEAR_FAULTS":{"@parent":"","@translations":{"english":{"name":"Clear Faults","description":""}},"children":["INPUT_POL_CLEAR_FAULTS"]},"INPUT_CIP":{"@parent":"","@translations":{"english":{"name":"CIP","description":""}},"children":["INPUT_POL_CIP"]},"INPUT_PROD_SEL1":{"@parent":"","@translations":{"english":{"name":"Product Select 1","description":""}},"children":["INPUT_POL_PROD_SEL1"]},"INPUT_PROD_SEL2":{"@parent":"","@translations":{"english":{"name":"Product Select 2","description":""}},"children":["INPUT_POL_PROD_SEL2"]},"INPUT_PROD_SEL3":{"@parent":"","@translations":{"english":{"name":"Product Select 3","description":""}},"children":["INPUT_POL_PROD_SEL3"]},"INPUT_PROD_SEL4":{"@parent":"","@translations":{"english":{"name":"Product Select 4","description":""}},"children":["INPUT_POL_PROD_SEL4"]},"INPUT_TEST":{"@parent":"","@translations":{"english":{"name":"Test","description":""}},"children":["INPUT_POL_TEST"]},"OUT_PHY_PL3_1":{"@parent":"","@translations":{"english":{"name":"PL3 1","description":""}},"children":["OUT_POL_PL3_1"]},"OUT_PHY_PL11_1A2":{"@parent":"","@translations":{"english":{"name":"PL11 1A2","description":""}},"children":["OUT_POL_PL11_1A2"]},"OUT_PHY_PL11_3A4":{"@parent":"","@translations":{"english":{"name":"PL11 3A4","description":""}},"children":["OUT_POL_PL11_3A4"]},"OUT_PHY_PL11_5A6":{"@parent":"","@translations":{"english":{"name":"PL11 5A6","description":""}},"children":["OUT_POL_PL11_5A6"]},"OUT_PHY_PL4_1":{"@parent":"","@translations":{"english":{"name":"PL4 1","description":""}},"children":["OUT_POL_PL4_1"]},"OUT_PHY_PL4_2":{"@parent":"","@translations":{"english":{"name":"PL4 2","description":""}},"children":["OUT_POL_PL4_2"]},"OUT_PHY_PL4_3":{"@parent":"","@translations":{"english":{"name":"PL4 3","description":""}},"children":["OUT_POL_PL4_3"]},"OUT_PHY_PL4_5":{"@parent":"","@translations":{"english":{"name":"PL4 5","description":""}},"children":["OUT_POL_PL4_5"]},"OUT_PHY_IO_PL3_R1":{"@parent":"","@translations":{"english":{"name":"IO PL3 R1","description":""}},"children":["OUT_POL_IO_PL3_R1"]},"OUT_PHY_IO_PL3_R2":{"@parent":"","@translations":{"english":{"name":"IO PL3 R2","description":""}},"children":["OUT_POL_IO_PL3_R2"]},"OUT_PHY_IO_PL3_O1":{"@parent":"","@translations":{"english":{"name":"IO PL3 O1","description":""}},"children":["OUT_POL_IO_PL3_O1"]},"OUT_PHY_IO_PL3_O2":{"@parent":"","@translations":{"english":{"name":"IO PL3 O2","description":""}},"children":["OUT_POL_IO_PL3_O2"]},"OUT_PHY_IO_PL3_O3":{"@parent":"","@translations":{"english":{"name":"IO PL3 O3","description":""}},"children":["OUT_POL_IO_PL3_O3"]},"OUT_PHY_IO_PL4_02":{"@parent":"","@translations":{"english":{"name":"IO PL4 02","description":""}},"children":["OUT_POL_IO_PL4_02"]},"OUT_PHY_IO_PL4_03":{"@parent":"","@translations":{"english":{"name":"IO PL4 03","description":""}},"children":["OUT_POL_IO_PL4_03"]},"OUT_PHY_IO_PL4_04":{"@parent":"","@translations":{"english":{"name":"IO PL4 04","description":""}},"children":["OUT_POL_IO_PL4_04"]},"OUT_PHY_IO_PL4_05":{"@parent":"","@translations":{"english":{"name":"IO PL4 05","description":""}},"children":["OUT_POL_IO_PL4_05"]},"SRecordDate":{"@parent":"","@translations":{"english":{"name":"System Record Date","description":""}},"children":[]},"ProdNo":{"@parent":"","@translations":{"english":{"name":"Product Number","description":""}},"children":[]},"Unit":{"@parent":"","@translations":{"english":{"name":"Unit","description":""}},"children":[]},"RefFaultMask":{"@parent":"","@translations":{"english":{"name":"Reference Fault","description":""}},"children":[]},"BalFaultMask":{"@parent":"","@translations":{"english":{"name":"Balance Fault","description":""}},"children":[]},"ProdMemFaultMask":{"@parent":"","@translations":{"english":{"name":"Product Memory Fault","description":""}},"children":[]},"RejConfirmFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Confirm Fault","description":""}},"children":[]},"PhaseFaultMask":{"@parent":"","@translations":{"english":{"name":"Phase Fault","description":""}},"children":[]},"TestSigFaultMask":{"@parent":"","@translations":{"english":{"name":"Test Signal Fault","description":""}},"children":[]},"PeyeBlockFaultMask":{"@parent":"","@translations":{"english":{"name":"Photoeye Block Fault","description":""}},"children":[]},"RejBinFullFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Bin Full Fault","description":""}},"children":[]},"AirFaultMask":{"@parent":"","@translations":{"english":{"name":"Air Fault","description":""}},"children":[]},"ExcessRejFaultMask":{"@parent":"","@translations":{"english":{"name":"Excess Rejects Fault","description":""}},"children":[]},"BigMetalFaultMask":{"@parent":"","@translations":{"english":{"name":"Large Metal Fault","description":""}},"children":[]},"NetBufferFaultMask":{"@parent":"","@translations":{"english":{"name":"Net Buffer Fault","description":""}},"children":[]},"RejMemoryFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Memory Fault","description":""}},"children":[]},"RejectExitFaultMask":{"@parent":"","@translations":{"english":{"name":"Reject Exit Fault","description":""}},"children":[]},"TachometerFaultMask":{"@parent":"","@translations":{"english":{"name":"Tachometer Fault","description":""}},"children":[]},"PatternFaultMask":{"@parent":"","@translations":{"english":{"name":"Pattern Fault","description":""}},"children":[]},"ExitNoPackFaultMask":{"@parent":"","@translations":{"english":{"name":"Exit No Pack Fault","description":""}},"children":[]},"ExitNewPackFaultMask":{"@parent":"","@translations":{"english":{"name":"Exit New Pack Fault","description":""}},"children":[]},"InterceptorFaultMask":{"@parent":"","@translations":{"english":{"name":"Interceptor Fault","description":""}},"children":[]},"RtcLowBatFaultMask":{"@parent":"","@translations":{"english":{"name":"Rtc Low Batter Fault","description":""}},"children":[]},"RtcTimeFaultMask":{"@parent":"","@translations":{"english":{"name":"Rtc Time Fault","description":""}},"children":[]},"IntUsbFaultMask":{"@parent":"","@translations":{"english":{"name":"Int Usb Fault","description":""}},"children":[]},"IoBoardFaultMask":{"@parent":"","@translations":{"english":{"name":"IO Board Fault","description":""}},"children":[]},"HaloFaultMask":{"@parent":"","@translations":{"english":{"name":"Halo Fault","description":""}},"children":[]},"SignalFaultMask":{"@parent":"","@translations":{"english":{"name":"Signal Fault","description":""}},"children":[]}},"@netpollsmap":{"NET_POLL_PROTOCOL_VERSION":{"@translations":{"english":""}},"NET_POLL_KEY_CLASS_MASK":{"@translations":{"english":""}},"NET_POLL_PROD_REC_VAR":{"@translations":{"english":""}},"NET_POLL_PROD_SYS_VAR":{"@translations":{"english":""}},"NET_POLL_REJECT":{"@translations":{"english":""}},"NET_POLL_REJECT2":{"@translations":{"english":""}},"NET_POLL_REJ_CNT":{"@translations":{"english":""}},"NET_POLL_FAULT":{"@translations":{"english":""}},"NET_POLL_CONTROL":{"@translations":{"english":""}},"NET_POLL_POWERUP":{"@translations":{"english":""}},"NET_POLL_OPERATOR_NO":{"@translations":{"english":""}},"NET_POLL_TEST_REQ_PASS":{"@translations":{"english":""}},"NET_POLL_REJECT_ID":{"@translations":{"english":""}},"NET_POLL_REJECT_CLEAR":{"@translations":{"english":""}},"NET_POLL_EYE_PROD_PEAK":{"@translations":{"english":""}},"NET_POLL_EYE_PROD_PHASE":{"@translations":{"english":""}},"NET_POLL_FAULT_CLEAR":{"@translations":{"english":""}},"NET_POLL_SYNC_MENU":{"@translations":{"english":""}},"NET_POLL_PWD_ENTRY_1":{"@translations":{"english":""}},"NET_POLL_PWD_ENTRY_2":{"@translations":{"english":""}},"NET_POLL_SEL_UNIT":{"@translations":{"english":""}},"NET_POLL_RESERVED":{"@translations":{"english":""}},"NET_POLL_CLEAR_SCOPE":{"@translations":{"english":""}},"NET_POLL_REJECT_PHASE":{"@translations":{"english":""}},"NET_POLL_FLASH_WRITE":{"@translations":{"english":""}},"NET_POLL_INTCPTR_SWITCH":{"@translations":{"english":""}},"NET_POLL_PREC_DELETE":{"@translations":{"english":""}},"NET_POLL_PREC_DEL_ALL":{"@translations":{"english":""}},"NET_POLL_PREC_BACKUP_SAVE":{"@translations":{"english":""}},"NET_POLL_PREC_BACKUP_RESTORE":{"@translations":{"english":""}},"NET_POLL_PREC_DEAULTS":{"@translations":{"english":""}},"NET_POLL_PREC_COPY":{"@translations":{"english":""}},"NET_POLL_REJECT2_ID":{"@translations":{"english":""}},"NET_POLL_REJECT2_CLEAR":{"@translations":{"english":""}}},"@pages":{"Sens":{"cat":"Sens","params":["Sens","DetThresh","ThresProdHi","ThresX","ThresR","BigMetThres","DetMode","NoiseR","NoiseX","DetThEst"],"subCats":[]},"Calibration":{"cat":"Calibration","params":[],"subCats":[{"cat":"Phase","params":["PhaseAngle","PhaseAngleAuto","PhaseMode","PhaseSpeed","PhaseFastBit","PhaseWetBit","PhaseDSALearn"],"subCats":[]},{"cat":"MPhase","params":["MPhaseOrder","MPhaseDD","MPhaseRD"],"subCats":[]}]},"Test":{"cat":"Test","params":["TestTime","TestDeferTime","TestMode"],"subCats":[{"cat":"Manual","params":["TestConfigCount0_0","TestConfigCount0_1","TestConfigCount0_2","TestConfigAck0","TestConfigOperator0","TestConfigHaloMode0"],"subCats":[]},{"cat":"Halo","params":["TestConfigCount1_0","TestConfigCount1_1","TestConfigCount1_2","TestConfigAck1","TestConfigOperator1","TestConfigHaloMode1"],"subCats":[]},{"cat":"Manual2","params":["TestConfigCount2_0","TestConfigCount2_1","TestConfigCount2_2","TestConfigAck2","TestConfigOperator2","TestConfigHaloMode2"],"subCats":[]},{"cat":"Halo2","params":["TestConfigCount3_0","TestConfigCount3_1","TestConfigCount3_2","TestConfigAck3","TestConfigOperator3","TestConfigHaloMode3"],"subCats":[]},{"cat":"HaloConf","params":["HaloPeakRFe","HaloPeakXFe","HaloPeakRNFe","HaloPeakXNFe","HaloPeakRSs","HaloPeakXSs"],"subCats":[]}]}},"@catmap":{"Reject":{"@translations":{"english":"Reject"}},"Password":{"@translations":{"english":"Password"}},"IO":{"@translations":{"english":"I/O"}},"System":{"@translations":{"english":"System"}},"Fault":{"@translations":{"english":"Faults"}},"Reject/Additional Settings":{"@translations":{"english":"Additional Settings"}},"Reject/Additional Settings/Distances":{"@translations":{"english":"Distances"}},"Reject/Additional Settings/Belt Speed":{"@translations":{"english":"Belt Speed"}},"Reject/Additional Settings/Latch":{"@translations":{"english":"Latches"}},"Reject/Additional Settings/Clocks":{"@translations":{"english":"Clocks"}},"IO/Inputs":{"@translations":{"english":"Inputs"}},"IO/Outputs":{"@translations":{"english":"Outputs"}},"Sens":{"@translations":{"english":"Sensitivity"}},"Test":{"@translations":{"english":"Test"}},"Test/Manual":{"@translations":{"english":"Manual Test 1"}},"Test/Halo":{"@translations":{"english":"Halo Test 1"}},"Test/Manual2":{"@translations":{"english":"Manual Test 2"}},"Test/Halo2":{"@translations":{"english":"Halo Test 2"}},"Test/HaloConf":{"@translations":{"english":"Test Configuration"}},"Calibration":{"@translations":{"english":"Calibration"}},"Calibration/Phase":{"@translations":{"english":"Phase"}},"Calibration/MPhase":{"@translations":{"english":"M Phase"}}}
 }
-var vdefMap = {
-  "@vmap":{"SRecordDate":{"@category":"System","@parent":"*","@translations":{"english":{"name":"System Record Date","description":"The date code for the system record."},"portuguese":{"name":"Registro do Sistema","description":"Codigo do Registro do Sistema"}}},"ProdNo":{"@category":"Prod","@parent":"*","@translations":{"english":{"name":"Product Number","description":""},"portuguese":{"name":"Número do Produto","description":""}}},"INPUT_POL_TACH":{"@category":"*","@parent":"INPUT_TACH","@translations":{"english":{"name":"Tachometer Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_EYE":{"@category":"*","@parent":"INPUT_EYE","@translations":{"english":{"name":"Infeed Eye Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_RC_1":{"@category":"*","@parent":"INPUT_RC_1","@translations":{"english":{"name":"Reject Check 1 Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_RC_2":{"@category":"*","@parent":"INPUT_RC_2","@translations":{"english":{"name":"Reject Check 2 Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_REJ_EYE":{"@category":"*","@parent":"INPUT_REJ_EYE","@translations":{"english":{"name":"Reject Eye Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_AIR_PRES":{"@category":"*","@parent":"INPUT_AIR_PRES","@translations":{"english":{"name":"Air Pressure Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_REJ_LATCH":{"@category":"*","@parent":"INPUT_REJ_LATCH","@translations":{"english":{"name":"Reject Latch Clear Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_BIN_FULL":{"@category":"*","@parent":"INPUT_BIN_FULL","@translations":{"english":{"name":"Bin Full Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_REJ_PRESENT":{"@category":"*","@parent":"INPUT_REJ_PRESENT","@translations":{"english":{"name":"Reject Present Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_DOOR1_OPEN":{"@category":"*","@parent":"INPUT_DOOR1_OPEN","@translations":{"english":{"name":"Bin Door 1 Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_DOOR2_OPEN":{"@category":"*","@parent":"INPUT_DOOR2_OPEN","@translations":{"english":{"name":"Bin Door 2 Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_CLEAR_FAULTS":{"@category":"*","@parent":"INPUT_CLEAR_FAULTS","@translations":{"english":{"name":"Clear Faults Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_CIP":{"@category":"*","@parent":"INPUT_CIP","@translations":{"english":{"name":"CIP Polarity","description":"Clean In Place"},"portuguese":{"name":"","description":""}}},"INPUT_POL_PROD_SEL1":{"@category":"*","@parent":"INPUT_PROD_SEL1","@translations":{"english":{"name":"Product Select 1 Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_PROD_SEL2":{"@category":"*","@parent":"INPUT_PROD_SEL2","@translations":{"english":{"name":"Product Select 2 Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_PROD_SEL3":{"@category":"*","@parent":"INPUT_PROD_SEL3","@translations":{"english":{"name":"Product Select 3 Polarity","description":""},"portuguese":{"name":"","description":""}}},"INPUT_POL_PROD_SEL4":{"@category":"*","@parent":"INPUT_PROD_SEL4","@translations":{"english":{"name":"Product Select 4 Polarity","description":""},"portuguese":{"name":"","description":""}}},"Unit":{"@category":"System","@parent":"*","@translations":{"english":{"name":"Unit","description":""},"portuguese":{"name":"Unidade","description":""}}},"PW1":{"@category":"*","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PW2":{"@category":"*","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PW3":{"@category":"*","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PW4":{"@category":"*","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"HeadDepth":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"Head Depth","description":""},"portuguese":{"name":"Profundidade da Cabeça","description":""}}},"HeadCoilSp":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"Coil Spacing","description":""},"portuguese":{"name":"Espaçamento da Bobina","description":""}}},"EyeDist":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"Infeed Eye Distance","description":""},"portuguese":{"name":"Distânçia da Fotocélula Entrada","description":""}}},"RejExitDist":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"Exit Eye Disatnce","description":""},"portuguese":{"name":"Distânçia da Fotocélula de Saída","description":""}}},"RejExitWin":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"Exit Window","description":""},"portuguese":{"name":"Janela de Saída","description":""}}},"RejBinDoorTime":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Bin Door Timer","description":""},"portuguese":{"name":"Cronômetro do Portão de Rejecão","description":""}}},"HaloPeakRFe":{"@category":"Test/HaloConfig","@parent":"*","@translations":{"english":{"name":"Ferrous R Peak","description":""},"portuguese":{"name":"Pico R Ferroso","description":""}}},"HaloPeakXFe":{"@category":"Test/HaloConfig","@parent":"*","@translations":{"english":{"name":"Ferrous X Peak","description":""},"portuguese":{"name":"Pico X Ferroso","description":""}}},"HaloPeakRNFe":{"@category":"Test/HaloConfig","@parent":"*","@translations":{"english":{"name":"Non-Ferrous R Peak","description":""},"portuguese":{"name":"Pico R Não-Ferroso","description":""}}},"HaloPeakXNFe":{"@category":"Test/HaloConfig","@parent":"*","@translations":{"english":{"name":"Non-Ferrous X Peak","description":""},"portuguese":{"name":"Pico X Não-Ferroso","description":""}}},"HaloPeakRSs":{"@category":"Test/HaloConfig","@parent":"*","@translations":{"english":{"name":"Stainless Steel R Peak","description":""},"portuguese":{"name":"Pico R Aço Inoxidável","description":""}}},"HaloPeakXSs":{"@category":"Test/HaloConfig","@parent":"*","@translations":{"english":{"name":"Stainless Steel X Peak","description":""},"portuguese":{"name":"Pico X Aço Inoxidável","description":""}}},"CIPCycleTime":{"@category":"IOconf/CIP","@parent":"*","@translations":{"english":{"name":"CIP Cycle Time","description":""},"portuguese":{"name":"Tempo de Ciclo CIP","description":""}}},"CIPDwellTime":{"@category":"IOconf/CIP","@parent":"*","@translations":{"english":{"name":"CIP Dwell Time","description":""},"portuguese":{"name":"Tempo de Permanência CIP","description":""}}},"INPUT_TACH":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Tachometer","description":""},"portuguese":{"name":"Tacômetro","description":""}}},"INPUT_EYE":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Infeed Eye","description":""},"portuguese":{"name":"Fotocélula de Entrada","description":""}}},"INPUT_RC_1":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Reject Check 1","description":""},"portuguese":{"name":"Comfirmação de Rejeição 1","description":""}}},"INPUT_RC_2":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Reject Check 2 ","description":""},"portuguese":{"name":"Comfirmação de Rejeição 2","description":""}}},"INPUT_REJ_EYE":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Exit Eye","description":""},"portuguese":{"name":"Fotocélula de Saída","description":""}}},"INPUT_AIR_PRES":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Air Pressure","description":""},"portuguese":{"name":"Pressão do Ar","description":""}}},"INPUT_REJ_LATCH":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Latch Clear","description":""},"portuguese":{"name":"Reset do Latch","description":""}}},"INPUT_BIN_FULL":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Bin Full","description":""},"portuguese":{"name":"Caixa de Rejeção Cheia","description":""}}},"INPUT_REJ_PRESENT":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Reject Present","description":""},"portuguese":{"name":"Rejeção Presente","description":""}}},"INPUT_DOOR1_OPEN":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Door 1","description":""},"portuguese":{"name":"Portão 1","description":""}}},"INPUT_DOOR2_OPEN":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Door 2","description":""},"portuguese":{"name":"Portão 2","description":""}}},"INPUT_CLEAR_FAULTS":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Clear Faults","description":""},"portuguese":{"name":"Limpar Falhas","description":""}}},"INPUT_CIP":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Clean in Place","description":""},"portuguese":{"name":"Clean in Place","description":""}}},"INPUT_PROD_SEL1":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Product Select 1","description":""},"portuguese":{"name":"Selecionar Produto 1","description":""}}},"INPUT_PROD_SEL2":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Product Select 2","description":""},"portuguese":{"name":"Selecionar Produto 2","description":""}}},"INPUT_PROD_SEL3":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Product Select 3","description":""},"portuguese":{"name":"Selecionar Produto 3","description":""}}},"INPUT_PROD_SEL4":{"@category":"IOconf/Input","@parent":"*","@translations":{"english":{"name":"Product Select 4","description":""},"portuguese":{"name":"Selecionar Produto 4","description":""}}},"OUT_PHY_PL3_1":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"PL3","description":""},"portuguese":{"name":"PL3","description":""}}},"OUT_PHY_PL11_1A2":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"PL11-1/2","description":""},"portuguese":{"name":"PL11-1/2","description":""}}},"OUT_PHY_PL11_3A4":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"PL11-3/4","description":""},"portuguese":{"name":"PL11-3/4","description":""}}},"OUT_PHY_PL11_5A6":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"PL11-5/6","description":""},"portuguese":{"name":"PL11-5/6","description":""}}},"OUT_PHY_PL4_1":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"PL4-1","description":""},"portuguese":{"name":"PL4-1","description":""}}},"OUT_PHY_PL4_2":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"PL4-2","description":""},"portuguese":{"name":"PL4-2","description":""}}},"OUT_PHY_PL4_3":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"PL4-3","description":""},"portuguese":{"name":"PL4-3","description":""}}},"OUT_PHY_PL4_5":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"PL4-5","description":""},"portuguese":{"name":"PL4-5","description":""}}},"OUT_PHY_PL5_1A2":{"@category":"IOconf/Output","@translations":{"english":{"name":"PL5-1/2","description":""},"portuguese":{"name":"PL5-1/2","description":""}},"@parent":"*"},"OUT_PHY_PL5_3A4":{"@category":"IOconf/Output","@translations":{"english":{"name":"PL5-3/4","description":""},"portuguese":{"name":"PL5-3/4","description":""}},"@parent":"*"},"OUT_PHY_PL5_5A6":{"@category":"IOconf/Output","@translations":{"english":{"name":"PL5-5/6","description":""},"portuguese":{"name":"PL5-5/6","description":""}},"@parent":"*"},"OUT_PHY_IO_PL3_R1":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"IO Board - R1","description":""},"portuguese":{"name":"Placa I/O - R1","description":""}}},"OUT_PHY_IO_PL3_R2":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"IO Board - R2","description":""},"portuguese":{"name":"Placa I/O - R2","description":""}}},"OUT_PHY_IO_PL3_O1":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"IO Board - O1","description":""},"portuguese":{"name":"Placa I/O - O1","description":""}}},"OUT_PHY_IO_PL3_O2":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"IO Board - O2","description":""},"portuguese":{"name":"Placa I/O - O2","description":""}}},"OUT_PHY_IO_PL3_O3":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"IO Board - O3","description":""},"portuguese":{"name":"Placa I/O - O3","description":""}}},"OUT_PHY_IO_PL4_02":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"IO Board - PL4-2","description":""},"portuguese":{"name":"Placa I/O - PL4-2","description":""}}},"OUT_PHY_IO_PL4_03":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"IO Board - PL4-3","description":""},"portuguese":{"name":"Placa I/O - PL4-3","description":""}}},"OUT_PHY_IO_PL4_04":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"IO Board - PL4-4","description":""},"portuguese":{"name":"Placa I/O - PL4-4","description":""}}},"OUT_PHY_IO_PL4_05":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"IO Board - PL4-5","description":""},"portuguese":{"name":"Placa I/O - PL4-5","description":""}}},"Language":{"@category":"System","@parent":"*","@translations":{"english":{"name":"Language","description":""},"portuguese":{"name":"Lígua","description":""}}},"PassAccSens":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Sensitivity","description":""},"portuguese":{"name":"Sensibilidade","description":""}}},"PassAccProd":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Product","description":""},"portuguese":{"name":"Produto","description":""}}},"PassAccCal":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Calabration","description":""},"portuguese":{"name":"Calibração","description":""}}},"PassAccTest":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Test","description":""},"portuguese":{"name":"Teste","description":""}}},"PassAccSelUnit":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Select Unit","description":""},"portuguese":{"name":"Selecionar Unidade","description":""}}},"PassAccClrFaults":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Clear Faults","description":""},"portuguese":{"name":"Limpar Falhas","description":""}}},"PassAccClrRej":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Clear Rejects","description":""},"portuguese":{"name":"Limpar Rejeições","description":""}}},"PassAccClrLatch":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Clear Latch","description":""},"portuguese":{"name":"Limpar Latch","description":""}}},"PassAccTime":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Time","description":""},"portuguese":{"name":"Hora","description":""}}},"PassAccSync":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Sync Data","description":""},"portuguese":{"name":"Sincronizar Dados","description":""}}},"HaloBoard":{"@category":"Test/HaloConfig","@parent":"*","@translations":{"english":{"name":"Halo Board","description":""},"portuguese":{"name":"Placa Halo","description":""}}},"UnitMode":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Unit Mode","description":""},"portuguese":{"name":"Mode de Unidade","description":""}}},"PassOn":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Password Enabled","description":""},"portuguese":{"name":"Habilitar Senha","description":""}}},"AppUnitDist":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"Units","description":""},"portuguese":{"name":"Unidades","description":""}}},"FaultLatch":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Fault Latch","description":""},"portuguese":{"name":"Latch de Falhas","description":""}}},"BacklightOn":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Backlight","description":""},"portuguese":{"name":"Retroiluminaçao","description":""}}},"PowerupRej":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Reject on Powerup","description":""},"portuguese":{"name":"Rejeitar ao Ligar","description":""}}},"FaultStore":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Fault Store","description":""},"portuguese":{"name":"Armazenamento de Falhas","description":""}}},"BannerRejMode":{"@category":"IOconf/LtStk","@parent":"*","@translations":{"english":{"name":"Light Stack Mode","description":""},"portuguese":{"name":"Modo Torre de Luz","description":""}}},"BannerBuzzMode":{"@category":"IOconf/LtStk","@parent":"*","@translations":{"english":{"name":"Buzzer","description":""},"portuguese":{"name":"Campainha","description":""}}},"IOBoardType":{"@category":"IOconf","@parent":"*","@translations":{"english":{"name":"IO Board Type","description":""},"portuguese":{"name":"Tipo de Placa I/O","description":""}}},"FaultClearTime":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Fault Clear Time","description":""},"portuguese":{"name":"Tempo de limpeza de Falhas","description":""}}},"PRecordDate":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Product Record Date","description":""},"portuguese":{"name":"Data de Registro de Produto","description":""}}},"ProdName":{"@category":"Prod","@parent":"*","@translations":{"english":{"name":"Product Name","description":""},"portuguese":{"name":"Nome do Produto","description":""}}},"BeltSpeed":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Belt Speed","description":""},"portuguese":{"name":"Velocidade da Esteira","description":""}}},"RefFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Referance","description":""},"portuguese":{"name":"Referência","description":""}}},"BalFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Balance","description":""},"portuguese":{"name":"Balance","description":""}}},"ProdMemFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Product Memory","description":""},"portuguese":{"name":"Memoria do Produto","description":""}}},"RejConfirmFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Reject Confirm","description":""},"portuguese":{"name":"Comfirmaçao de Rejeição ","description":""}}},"PhaseFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Phase","description":""},"portuguese":{"name":"Fase","description":""}}},"TestSigFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Test","description":""},"portuguese":{"name":"Teste","description":""}}},"PeyeBlockFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Eye Block","description":""},"portuguese":{"name":"Fotocélula Bloqueado","description":""}}},"RejBinFullFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Reject Bin Full","description":""},"portuguese":{"name":"Caixa de Rejeção Cheia","description":""}}},"AirFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Air","description":""},"portuguese":{"name":"Ar","description":""}}},"ExcessRejFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Excess Rejects","description":""},"portuguese":{"name":"Excesso de Rejeição","description":""}}},"BigMetalFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Large Metal","description":""},"portuguese":{"name":"Metal Grande","description":""}}},"NetBufferFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Net Buffer","description":""},"portuguese":{"name":"Net Buffer","description":""}}},"RejMemoryFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Reject Memory","description":""},"portuguese":{"name":"Memória de Rejeçao","description":""}}},"RejBinDoorFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Bin Door","description":""},"portuguese":{"name":"Portão da Caixa","description":""}}},"RejectExitFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Exit","description":""},"portuguese":{"name":"Saída","description":""}}},"TachometerFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Tachometer","description":""},"portuguese":{"name":"Tacômetro","description":""}}},"PatternFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"DSA","description":""},"portuguese":{"name":"DSA","description":""}}},"ExitNoPackFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Exit - No Pack","description":""},"portuguese":{"name":"Saída - sem Produto","description":""}}},"ExitNewPackFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Exit - New Pack","description":""},"portuguese":{"name":"Saída - Novo Produto","description":""}}},"InterceptorFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Interceptor","description":""},"portuguese":{"name":"Interceptor","description":""}}},"RtcLowBatFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Low Battery","description":""},"portuguese":{"name":"Bateria Baixa","description":""}}},"RtcTimeFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Time","description":""},"portuguese":{"name":"Hora","description":""}}},"IntUsbFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Internal USB","description":""},"portuguese":{"name":"USB Interno","description":""}}},"IoBoardFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"IO Board","description":""},"portuguese":{"name":"Placa I/O","description":""}}},"HaloFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Halo","description":""},"portuguese":{"name":"Halo","description":""}}},"SignalFaultMask":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"","description":"Signal"},"portuguese":{"name":"Sinal","description":""}}},"AutoPhasePacks":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Auto Phase Packs","description":""},"portuguese":{"name":"Pacote Fase Auto","description":""}}},"PhaseTrigLimit":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Phase Trigger Limit","description":""},"portuguese":{"name":"Phase Trigger Limit","description":""}}},"PhaseTrigThres":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Phase Trigger Threshold","description":""},"portuguese":{"name":"Phase Tigger Threshhold","description":""}}},"EyePkgLength":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"Package Length","description":""},"portuguese":{"name":"Comprimento do Pacote","description":""}}},"EyeMinGapDist":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"Minimum Package Gap","description":""},"portuguese":{"name":"Gap Miníma entre Produtos","description":""}}},"EyeBlockTime":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Eye Block Time","description":""},"portuguese":{"name":"Tempo de Fotocélula Bloqueada","description":""}}},"RejTravDel":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Delay","description":""},"portuguese":{"name":"Atrazo","description":""}}},"RejTravDur":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Duration","description":""},"portuguese":{"name":"Duração","description":""}}},"RejDelSec":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Delay","description":""},"portuguese":{"name":"Atrazo","description":""}}},"RejDurSec":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Duration","description":""},"portuguese":{"name":"Duração","description":""}}},"RejDelSec2":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"Delay","description":""},"portuguese":{"name":"Atrazo","description":""}}},"RejDurSec2":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Duration","description":""},"portuguese":{"name":"Duração","description":""}}},"RejCheckTime":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Reject Check TIme","description":""},"portuguese":{"name":"Tempo de Comfirmação de Rejeição","description":""}}},"TestTime":{"@category":"Test","@parent":"*","@translations":{"english":{"name":"Test Time","description":""},"portuguese":{"name":"Teste de Tempo","description":""}}},"ExcessRejects":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Excess Rejects","description":""},"portuguese":{"name":"excesso de Rejeições","description":""}}},"ExcessRejTime":{"@category":"Faults","@parent":"*","@translations":{"english":{"name":"Excess Reject Time","description":""},"portuguese":{"name":"Excesso de Tempo de Rejeição","description":""}}},"OUT_POL_PL3_1":{"@category":"*","@parent":"OUT_PHY_PL3_1","@translations":{"english":{"name":"PL3 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_PL11_1A2":{"@category":"*","@parent":"OUT_PHY_PL11_1A2","@translations":{"english":{"name":"PL11-1/2  Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_PL11_3A4":{"@category":"*","@parent":"OUT_PHY_PL11_3A4","@translations":{"english":{"name":"PL11-3/4  Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_PL11_5A6":{"@category":"*","@parent":"OUT_PHY_PL11_5A6","@translations":{"english":{"name":"PL11-5/6  Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_PL4_1":{"@category":"*","@parent":"OUT_PHY_PL4_1","@translations":{"english":{"name":"PL4-1 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_PL4_2":{"@category":"*","@parent":"OUT_PHY_PL4_2","@translations":{"english":{"name":"PL4-2 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_PL4_3":{"@category":"*","@parent":"OUT_PHY_PL4_3","@translations":{"english":{"name":"PL4-3 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_PL4_5":{"@category":"*","@parent":"OUT_PHY_PL4_5","@translations":{"english":{"name":"PL4-5 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_PL5_1A2":{"@category":"*","@translations":{"english":{"name":"PL5-1/2","description":""},"portuguese":{"name":"","description":""}},"@parent":"OUT_PHY_PL5_1A2"},"OUT_POL_PL5_3A4":{"@category":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"OUT_PHY_PL5_3A4"},"OUT_POL_PL5_5A6":{"@category":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"OUT_PHY_PL5_5A6"},"OUT_POL_IO_PL3_R1":{"@category":"*","@parent":"OUT_PHY_IO_PL3_R1","@translations":{"english":{"name":"IO_PL3_R1 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_IO_PL3_R2":{"@category":"*","@parent":"OUT_PHY_IO_PL3_R2","@translations":{"english":{"name":"IO_PL3_R2 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_IO_PL3_O1":{"@category":"*","@parent":"OUT_PHY_IO_PL3_O1","@translations":{"english":{"name":"IO_PL3_O1 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_IO_PL3_O2":{"@category":"*","@parent":"OUT_PHY_IO_PL3_O2","@translations":{"english":{"name":"IO_PL3_O2 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_IO_PL3_O3":{"@category":"*","@parent":"OUT_PHY_IO_PL3_O3","@translations":{"english":{"name":"IO_PL3_03 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_IO_PL4_02":{"@category":"*","@parent":"OUT_PHY_IO_PL4_02","@translations":{"english":{"name":"IO_PL4_2 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_IO_PL4_03":{"@category":"*","@parent":"OUT_PHY_IO_PL4_03","@translations":{"english":{"name":"IO_PL4_3 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"OUT_POL_IO_PL4_04":{"@category":"*","@parent":"OUT_PHY_IO_PL4_04","@translations":{"english":{"name":"IO_PL4_4 Output Polarity","description":""},"portuguese":{"name":"","description":""}}},"FilterNoise":{"@category":"System","@parent":"*","@translations":{"english":{"name":"Filter","description":""},"portuguese":{"name":"Filtro","description":""}}},"Sens":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"Sensitivity","description":""},"portuguese":{"name":"Sensibilidade","description":""}}},"Sens_A":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"Sensitivity","description":""},"portuguese":{"name":"Sensibilidade","description":""}}},"Sens_B":{"@category":"Sens","@parent":"Sens_A","@translations":{"english":{"name":"Sensitivity","description":""},"portuguese":{"name":"","description":""}}},"DcCoeffNorm":{"@category":"System","@parent":"*","@translations":{"english":{"name":"DC Coeffecent","description":""},"portuguese":{"name":"Coeficiente CC","description":""}}},"DetThresh":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"Detection Threshold","description":""},"portuguese":{"name":"Limite de Detecçao","description":""}}},"ThresProdHi":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"Product High Threshold","description":""},"portuguese":{"name":"Limite Alto do produto","description":""}}},"ThresX":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"X Channel Threshold","description":""},"portuguese":{"name":"Limite do Canal X","description":""}}},"ThresR":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"R Channel Threshold","description":""},"portuguese":{"name":"Limite do Canal R","description":""}}},"BigMetThres":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"Large Metal Threshold","description":""},"portuguese":{"name":"Limite de Metal Grande","description":""}}},"PhaseLimitDry":{"@category":"Phase/lim","@parent":"*","@translations":{"english":{"name":"Dry Phase Limit","description":""},"portuguese":{"name":"Limite de Fase Seco","description":""}}},"PhaseLimitDrySpread":{"@category":"Phase/lim","@parent":"*","@translations":{"english":{"name":"Dry Phase Spread","description":""},"portuguese":{"name":"Espalhamento da Fase Seco","description":""}}},"PhaseLimitWet":{"@category":"Phase/lim","@parent":"*","@translations":{"english":{"name":"Wet Phase Limit","description":""},"portuguese":{"name":"Limite da Fase Úmido","description":""}}},"PhaseLimitWetSpread":{"@category":"Phase/lim","@parent":"*","@translations":{"english":{"name":"Wet Phase Spread","description":""},"portuguese":{"name":"Espalhamento da Fase Úmido","description":""}}},"PhaseAngle":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Phase","description":""},"portuguese":{"name":"Fase","description":""}}},"MPhaseOrder":{"@category":"Phase/MPhase","@parent":"*","@translations":{"english":{"name":"MPhase Order","description":""},"portuguese":{"name":"MPhase Order","description":""}}},"MPhaseDD":{"@category":"Phase/MPhase","@parent":"*","@translations":{"english":{"name":"MPhase Det","description":""},"portuguese":{"name":"MPhase Det","description":""}}},"MPhaseRD":{"@category":"Phase/MPhase","@parent":"*","@translations":{"english":{"name":"MPhase Ret","description":""},"portuguese":{"name":"MPhase Ret","description":""}}},"PhaseSpeed":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Phase Speed","description":""},"portuguese":{"name":"Velocidade da Fase","description":""}}},"OscPower":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Osclator Power","description":""},"portuguese":{"name":"Potêcia do Ocilador","description":""}}},"PhaseMode":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Phase Mode","description":""},"portuguese":{"name":"Modo da Fase","description":""}}},"PhaseModeHold":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Phase Mode Hold","description":""},"portuguese":{"name":"Segurar Modo da Fase","description":""}}},"DetMode":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Detection Mode","description":""},"portuguese":{"name":"Modo de Detecção","description":""}}},"TestConfigCount0_0":{"@category":"*","@parent":"TestConfigMetal0_0","@translations":{"english":{"name":"Test Count 1","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq0_0":{"@category":"*","@parent":"TestConfigMetal0_0","@translations":{"english":{"name":"Test Frequency 1","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal0_0":{"@category":"Test/Manual","@parent":"*","@translations":{"english":{"name":"Test Type 1","description":""},"portuguese":{"name":"Tipo de Teste 1","description":""}}},"TestConfigCount0_1":{"@category":"*","@parent":"TestConfigMetal0_1","@translations":{"english":{"name":"Test Count 2","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq0_1":{"@category":"*","@parent":"TestConfigMetal0_1","@translations":{"english":{"name":"Test Frequency 2","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal0_1":{"@category":"Test/Manual","@parent":"*","@translations":{"english":{"name":"Test Type 2","description":""},"portuguese":{"name":"Tipo de Teste 2","description":""}}},"TestConfigCount0_2":{"@category":"*","@parent":"TestConfigMetal0_2","@translations":{"english":{"name":"Test Count 3","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq0_2":{"@category":"*","@parent":"TestConfigMetal0_2","@translations":{"english":{"name":"Test Frequency 3","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount0_3":{"@category":"*","@parent":"TestConfigMetal0_3","@translations":{"english":{"name":"Test Count 4","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq0_3":{"@category":"*","@parent":"TestConfigMetal0_3","@translations":{"english":{"name":"Test Frequency 4","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount0_4":{"@category":"*","@parent":"TestConfigMetal0_4","@translations":{"english":{"name":"Test Count 5","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq0_4":{"@category":"*","@parent":"TestConfigMetal0_4","@translations":{"english":{"name":"Test Frequency 5","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount0_5":{"@category":"*","@parent":"TestConfigMetal0_5","@translations":{"english":{"name":"Test Count 6","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq0_5":{"@category":"*","@parent":"TestConfigMetal0_5","@translations":{"english":{"name":"Test Frequency 6","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal0_2":{"@category":"Test/Manual","@parent":"*","@translations":{"english":{"name":"Test Type 3","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigMetal0_3":{"@category":"Test/Manual","@parent":"*","@translations":{"english":{"name":"Test Type 4","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigMetal0_4":{"@category":"Test/Manual","@parent":"*","@translations":{"english":{"name":"Test Type 5","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigMetal0_5":{"@category":"Test/Manual","@parent":"*","@translations":{"english":{"name":"Test Type 6","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigAck0":{"@category":"Test/Manual","@parent":"*","@translations":{"english":{"name":"Acknowledge","description":""},"portuguese":{"name":"Comfirmação","description":""}}},"TestConfigOperator0":{"@category":"Test/Manual","@parent":"*","@translations":{"english":{"name":"Operator","description":""},"portuguese":{"name":"Operador","description":""}}},"TestConfigHaloMode0":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Halo Mode","description":""},"portuguese":{"name":"Modo Halo","description":""}}},"TestConfigCount1_0":{"@category":"*","@parent":"TestConfigMetal1_0","@translations":{"english":{"name":"Test Count 1","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq1_0":{"@category":"*","@parent":"TestConfigMetal1_0","@translations":{"english":{"name":"Test Frequency 1","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal1_0":{"@category":"Test/Halo","@parent":"*","@translations":{"english":{"name":"Test Type 1","description":""},"portuguese":{"name":"Tipo de Teste 1","description":""}}},"TestConfigCount1_1":{"@category":"*","@parent":"TestConfigMetal1_1","@translations":{"english":{"name":"Test Count 2","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq1_1":{"@category":"*","@parent":"TestConfigMetal1_1","@translations":{"english":{"name":"Test Count 2","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal1_1":{"@category":"Test/Halo","@parent":"*","@translations":{"english":{"name":"Test Type 2","description":""},"portuguese":{"name":"Tipo de teste 2","description":""}}},"TestConfigCount1_2":{"@category":"*","@parent":"TestConfigMetal1_2","@translations":{"english":{"name":"Test Count 3","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq1_2":{"@category":"*","@parent":"TestConfigMetal1_2","@translations":{"english":{"name":"Test Count 3","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount1_3":{"@category":"*","@parent":"TestConfigMetal1_3","@translations":{"english":{"name":"Test Count 4","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq1_3":{"@category":"*","@parent":"TestConfigMetal1_3","@translations":{"english":{"name":"Test Count 4","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount1_4":{"@category":"*","@parent":"TestConfigMetal1_4","@translations":{"english":{"name":"Test Count 5","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq1_4":{"@category":"*","@parent":"TestConfigMetal1_4","@translations":{"english":{"name":"Test Count 5","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount1_5":{"@category":"*","@parent":"TestConfigMetal1_5","@translations":{"english":{"name":"Test Count 6","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq1_5":{"@category":"*","@parent":"TestConfigMetal1_5","@translations":{"english":{"name":"Test Count 6","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal1_2":{"@category":"Test/Halo","@parent":"*","@translations":{"english":{"name":"Test Type 3","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigMetal1_3":{"@category":"Test/Halo","@parent":"*","@translations":{"english":{"name":"Test Type 4","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigMetal1_4":{"@category":"Test/Halo","@parent":"*","@translations":{"english":{"name":"Test Type 5","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigMetal1_5":{"@category":"Test/Halo","@parent":"*","@translations":{"english":{"name":"Test Type 6","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigAck1":{"@category":"Test/Halo","@parent":"*","@translations":{"english":{"name":"Acknowledge","description":""},"portuguese":{"name":"Comfirmação","description":""}}},"TestConfigOperator1":{"@category":"Test/Halo","@parent":"*","@translations":{"english":{"name":"Operator","description":""},"portuguese":{"name":"Operador","description":""}}},"TestConfigHaloMode1":{"@category":"Test/Halo","@parent":"*","@translations":{"english":{"name":"Halo Mode","description":""},"portuguese":{"name":"Modo Halo","description":""}}},"TestConfigCount2_0":{"@category":"*","@parent":"TestConfigMetal2_0","@translations":{"english":{"name":"Test Count 1","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq2_0":{"@category":"*","@parent":"TestConfigMetal2_0","@translations":{"english":{"name":"Test Count 1","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal2_0":{"@category":"Test/Manual2","@parent":"*","@translations":{"english":{"name":"Test Type 1","description":""},"portuguese":{"name":"Tipo de Teste 1","description":""}}},"TestConfigCount2_1":{"@category":"*","@parent":"TestConfigMetal2_1","@translations":{"english":{"name":"Test Count 2","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq2_1":{"@category":"*","@parent":"TestConfigMetal2_1","@translations":{"english":{"name":"Test Count 2","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal2_1":{"@category":"Test/Manual2","@parent":"*","@translations":{"english":{"name":"Test Type 2","description":""},"portuguese":{"name":"Tipo de Teste 2","description":""}}},"TestConfigCount2_2":{"@category":"*","@parent":"TestConfigMetal2_2","@translations":{"english":{"name":"Test Count 3","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq2_2":{"@category":"*","@parent":"TestConfigMetal2_2","@translations":{"english":{"name":"Test Count 3","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount2_3":{"@category":"*","@parent":"TestConfigMetal2_3","@translations":{"english":{"name":"Test Count 4","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq2_3":{"@category":"*","@parent":"TestConfigMetal2_3","@translations":{"english":{"name":"Test Count 4","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount2_4":{"@category":"*","@parent":"TestConfigMetal2_4","@translations":{"english":{"name":"Test Count 5","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq2_4":{"@category":"*","@parent":"TestConfigMetal2_4","@translations":{"english":{"name":"Test Count 5","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount2_5":{"@category":"*","@parent":"TestConfigMetal2_5","@translations":{"english":{"name":"Test Count 6","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq2_5":{"@category":"*","@parent":"TestConfigMetal2_5","@translations":{"english":{"name":"Test Count 6","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal2_2":{"@category":"Test/Manual2","@parent":"*","@translations":{"english":{"name":"Test Type 3","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigMetal2_3":{"@category":"Test/Manual2","@parent":"*","@translations":{"english":{"name":"Test Type 4","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigMetal2_4":{"@category":"Test/Manual2","@parent":"*","@translations":{"english":{"name":"Test Type 5","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigMetal2_5":{"@category":"Test/Manual2","@parent":"*","@translations":{"english":{"name":"Test Type 6","description":""},"portuguese":{"name":"Tipo de Teste 3","description":""}}},"TestConfigAck2":{"@category":"Test/Manual2","@parent":"*","@translations":{"english":{"name":"Acknowledge","description":""},"portuguese":{"name":"Comfirmação","description":""}}},"TestConfigOperator2":{"@category":"Test/Manual2","@parent":"*","@translations":{"english":{"name":"Operator","description":""},"portuguese":{"name":"Operador","description":""}}},"TestConfigHaloMode2":{"@category":"*","@parent":"*","@translations":{"english":{"name":"Halo Mode","description":""},"portuguese":{"name":"Modo Halo","description":""}}},"TestConfigCount3_0":{"@category":"*","@parent":"TestConfigMetal3_0","@translations":{"english":{"name":"Test Count 1","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq3_0":{"@category":"*","@parent":"TestConfigMetal3_0","@translations":{"english":{"name":"Test Count 1","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal3_0":{"@category":"Test/Halo2","@parent":"*","@translations":{"english":{"name":"Test Type 1","description":""},"portuguese":{"name":"Tipo de Teste 1","description":""}}},"TestConfigCount3_1":{"@category":"*","@parent":"TestConfigMetal3_1","@translations":{"english":{"name":"Test Count 2","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq3_1":{"@category":"*","@parent":"TestConfigMetal3_1","@translations":{"english":{"name":"Test Count 2","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal3_1":{"@category":"Test/Halo2","@parent":"*","@translations":{"english":{"name":"Test Type 2","description":""},"portuguese":{"name":"Tipo de Teste 2","description":""}}},"TestConfigCount3_2":{"@category":"*","@parent":"TestConfigMetal3_2","@translations":{"english":{"name":"Test Count 3","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq3_2":{"@category":"*","@parent":"TestConfigMetal3_2","@translations":{"english":{"name":"Test Count 3","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount3_3":{"@category":"*","@parent":"TestConfigMetal3_3","@translations":{"english":{"name":"Test Count 4","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq3_3":{"@category":"*","@parent":"TestConfigMetal3_3","@translations":{"english":{"name":"Test Count 4","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount3_4":{"@category":"*","@parent":"TestConfigMetal3_4","@translations":{"english":{"name":"Test Count 4","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq3_4":{"@category":"*","@parent":"TestConfigMetal3_4","@translations":{"english":{"name":"Test Count 4","description":""},"portuguese":{"name":"","description":""}}},"TestConfigCount3_5":{"@category":"*","@parent":"TestConfigMetal3_5","@translations":{"english":{"name":"Test Count 5","description":""},"portuguese":{"name":"","description":""}}},"TestConfigFreq3_5":{"@category":"*","@parent":"TestConfigMetal3_5","@translations":{"english":{"name":"Test Count 5","description":""},"portuguese":{"name":"","description":""}}},"TestConfigMetal3_2":{"@category":"Test/Halo2","@parent":"*","@translations":{"english":{"name":"Test Type 3","description":""},"portuguese":{"name":"Tipo de Test 3","description":""}}},"TestConfigMetal3_3":{"@category":"Test/Halo2","@parent":"*","@translations":{"english":{"name":"Test Type 4","description":""},"portuguese":{"name":"Tipo de Test 3","description":""}}},"TestConfigMetal3_4":{"@category":"Test/Halo2","@parent":"*","@translations":{"english":{"name":"Test Type 5","description":""},"portuguese":{"name":"Tipo de Test 3","description":""}}},"TestConfigMetal3_5":{"@category":"Test/Halo2","@parent":"*","@translations":{"english":{"name":"Test Type 6","description":""},"portuguese":{"name":"Tipo de Test 3","description":""}}},"TestConfigAck3":{"@category":"Test/Halo2","@parent":"*","@translations":{"english":{"name":"Acknowledge","description":""},"portuguese":{"name":"Comfirmação","description":""}}},"TestConfigOperator3":{"@category":"Test/Halo2","@parent":"*","@translations":{"english":{"name":"Operator","description":""},"portuguese":{"name":"Operador","description":""}}},"TestConfigHaloMode3":{"@category":"Test/Halo2","@parent":"*","@translations":{"english":{"name":"Halo Mode","description":""},"portuguese":{"name":"Modo Halo","description":""}}},"TestDeferTime":{"@category":"Test","@parent":"*","@translations":{"english":{"name":"Test Defer Time","description":""},"portuguese":{"name":"Tempo de Teste Diferente","description":""}}},"RejLatchMode":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Latch Mode","description":""},"portuguese":{"name":"Modo Latch","description":""}}},"EyeDetSwipe":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Eye Swipe","description":""},"portuguese":{"name":"Troca de Fotocélula","description":""}}},"Rej2Latch":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Alt Rject Latch","description":""},"portuguese":{"name":"Rejeição Alternativo","description":""}}},"Rej2Fault":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Reject ","description":""},"portuguese":{"name":"Rejeito","description":""}}},"Rej2Check":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Reject Check 2","description":""},"portuguese":{"name":"Verificação de Rejeição 2","description":""}}},"PeakMode":{"@category":"Prod","@parent":"*","@translations":{"english":{"name":"Peak Reset Mode","description":""},"portuguese":{"name":"Modo Reset do Pico","description":""}}},"RejOnProdHi":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Reject on Product High","description":""},"portuguese":{"name":"Rejeitar Sinal de produto Alto","description":""}}},"SplitPkgLength":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"Split Package Length","description":""},"portuguese":{"name":"Separar Comprimento do Pacote","description":""}}},"AutoLearn":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Auto Learn","description":""},"portuguese":{"name":"Auto Learn","description":""}}},"RejDelClock":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Reject Clock","description":""},"portuguese":{"name":"Reloj do Rejeito","description":""}}},"RejMode":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Reject Mode","description":""},"portuguese":{"name":"Modo de Rejeição","description":""}}},"EyeReject":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Eye","description":""},"portuguese":{"name":"Fotocélula","description":""}}},"RejCheckMode":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Reject Check Mode","description":""},"portuguese":{"name":"Modo Verificação de rejeição","description":""}}},"FaultRejMode":{"@category":"RejSys","@parent":"*","@translations":{"english":{"name":"Fault Reject Mode","description":""},"portuguese":{"name":"Modo Rejeição de Falhas","description":""}}},"TestMode":{"@category":"Test","@parent":"*","@translations":{"english":{"name":"Test Mode","description":""},"portuguese":{"name":"Modo Teste","description":""}}},"LightStackMode":{"@category":"IOconf/Output","@parent":"*","@translations":{"english":{"name":"Light Stack Mode","description":""},"portuguese":{"name":"Modo Torre de Luz","description":""}}},"ActiveProduct":{"@category":"Prod","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"RefFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"BalFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"ProdMemFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"RejConfirmFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"PhaseFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"TestSigFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"PeyeBlockFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"RejBinFullFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"AirFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"ExcessRejFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"BigMetalFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"NetBufferFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"RejMemoryFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"RejBinDoorFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"RejectExitFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"TachometerFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"PatternFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"ExitNoPackFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"ExitNewPackFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"InterceptorFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"RtcLowBatFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"RtcTimeFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"IntUsbFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"IoBoardFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"HaloFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"SignalFault":{"@category":"Faults","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"DateTime":{"@category":"System","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"PackCount":{"@category":"RejSys","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"BeltSpeedEst":{"@category":"RejSys","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"RejCount":{"@category":"System","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"EncFreq":{"@category":"System","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"DetectSignal":{"@category":"RejSys/Dsit","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"Peak":{"@category":"Prod","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"PhaseAngleAuto":{"@category":"Phase","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"ProdPeakR":{"@category":"Phase","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"ProdPeakX":{"@category":"Phase","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"NoiseR":{"@category":"Phase","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"NoiseX":{"@category":"Phase","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"DetThEst":{"@category":"Phase","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"SysFreq":{"@category":"System","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"SysBal":{"@category":"System","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"SysRef":{"@category":"System","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"Prod_LED":{"@category":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"Prod_HI_LED":{"@category":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"Reject_LED":{"@category":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"PhaseDSALearn":{"@category":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"PhaseWetBit":{"@category":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"PhaseFastBit":{"@category":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"IOBoardLocate":{"@category":"System","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"HaloLocate":{"@category":"System","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"XPortIP":{"@category":"System","@translations":{"english":{"name":"External IP","description":""},"portuguese":{"name":"IP Externo","description":""}},"@parent":"*"},"InternalIP":{"@category":"System","@translations":{"english":{"name":"Internal IP","description":""},"portuguese":{"name":"IP Interno","description":""}},"@parent":"*"},"IOBoardIP":{"@category":"System","@translations":{"english":{"name":"IO Board IP","description":""},"portuguese":{"name":"IP Placa I/O","description":""}},"@parent":"*"},"HaloIP":{"@category":"System","@translations":{"english":{"name":"Halo Board IP","description":""},"portuguese":{"name":"IP Placa Halo","description":""}},"@parent":"*"},"DspName":{"@category":"System","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"DspSerNo":{"@category":"System","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}},"@parent":"*"},"FilterNoise_A":{"@category":"System","@parent":"*","@translations":{"english":{"name":"Filter","description":""},"portuguese":{"name":"Filtro","description":""}}},"FilterNoise_B":{"@category":"System","@parent":"FilterNoise_A","@translations":{"english":{"name":"Filter","description":""},"portuguese":{"name":"","description":""}}},"DcCoeffNorm_A":{"@category":"System","@parent":"*","@translations":{"english":{"name":"DC Coeffecent","description":""},"portuguese":{"name":"Coeficiente CC","description":""}}},"DcCoeffNorm_B":{"@category":"System","@parent":"DcCoeffNorm_A","@translations":{"english":{"name":"DC Coeffecent","description":""},"portuguese":{"name":"","description":""}}},"DetThresh_A":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"Detection Threshold","description":""},"portuguese":{"name":"Limite de Detecção","description":""}}},"DetThresh_B":{"@category":"Sens","@parent":"DetThresh_A","@translations":{"english":{"name":"Detection Threshold","description":""},"portuguese":{"name":"","description":""}}},"ThresProdHi_A":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"Product High Threshold","description":""},"portuguese":{"name":"Limite do Sinal Alto do Produto","description":""}}},"ThresProdHi_B":{"@category":"Sens","@parent":"ThresProdHi_A","@translations":{"english":{"name":"Product High Threshold","description":""},"portuguese":{"name":"","description":""}}},"ThresX_A":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"X Channel Threshold","description":""},"portuguese":{"name":"Limite Canal X","description":""}}},"ThresX_B":{"@category":"Sens","@parent":"ThresX_A","@translations":{"english":{"name":"X Channel Threshold","description":""},"portuguese":{"name":"","description":""}}},"ThresR_A":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"R Channel Threshold","description":""},"portuguese":{"name":"Limite Canal R","description":""}}},"ThresR_B":{"@category":"Sens","@parent":"ThresR_A","@translations":{"english":{"name":"R Channel Threshold","description":""},"portuguese":{"name":"","description":""}}},"BigMetThres_A":{"@category":"Sens","@parent":"*","@translations":{"english":{"name":"Large Metal Threshold","description":""},"portuguese":{"name":"Limite Metal Grande","description":""}}},"BigMetThres_B":{"@category":"Sens","@parent":"BigMetThres_A","@translations":{"english":{"name":"Large Metal Threshold","description":""},"portuguese":{"name":"","description":""}}},"PhaseLimitDry_A":{"@category":"Phase/lim","@parent":"*","@translations":{"english":{"name":"Dry Phase Limit","description":""},"portuguese":{"name":"Limite da Fase Seco","description":""}}},"PhaseLimitDry_B":{"@category":"Phase","@parent":"PhaseLimitDry_A","@translations":{"english":{"name":"Dry Phase Limit","description":""},"portuguese":{"name":"","description":""}}},"PhaseLimitDrySpread_A":{"@category":"Phase/lim","@parent":"*","@translations":{"english":{"name":"Dry Phase Spread","description":""},"portuguese":{"name":"","description":""}}},"PhaseLimitDrySpread_B":{"@category":"Phase","@parent":"PhaseLimitDrySpread_A","@translations":{"english":{"name":"Dry Phase Spread","description":""},"portuguese":{"name":"","description":""}}},"PhaseLimitWet_A":{"@category":"Phase/lim","@parent":"*","@translations":{"english":{"name":"Wet Phase Limit","description":""},"portuguese":{"name":"Limite da Fase Úmido","description":""}}},"PhaseLimitWet_B":{"@category":"Phase","@parent":"PhaseLimitWet_A","@translations":{"english":{"name":"Wet Phase Limit","description":""},"portuguese":{"name":"","description":""}}},"PhaseLimitWetSpread_A":{"@category":"Phase/lim","@parent":"*","@translations":{"english":{"name":"Wet Phase Spread","description":""},"portuguese":{"name":"","description":""}}},"PhaseLimitWetSpread_B":{"@category":"Phase","@parent":"PhaseLimitWetSpread_A","@translations":{"english":{"name":"Wet Phase Spread","description":""},"portuguese":{"name":"","description":""}}},"PhaseAngle_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Phase","description":""},"portuguese":{"name":"Fase","description":""}}},"PhaseAngle_B":{"@category":"Phase","@parent":"PhaseAngle_A","@translations":{"english":{"name":"Phase","description":""},"portuguese":{"name":"","description":""}}},"MPhaseOrder_A":{"@category":"Phase/MPhase","@parent":"*","@translations":{"english":{"name":"MPhase Order","description":""},"portuguese":{"name":"MPhase Order","description":""}}},"MPhaseOrder_B":{"@category":"Phase/MPhase","@parent":"MPhaseOrder_A","@translations":{"english":{"name":"MPhase Order","description":""},"portuguese":{"name":"","description":""}}},"MPhaseDD_A":{"@category":"Phase/MPhase","@parent":"*","@translations":{"english":{"name":"MPhase Det","description":""},"portuguese":{"name":"MPhase Det","description":""}}},"MPhaseDD_B":{"@category":"Phase/MPhase","@parent":"MPhaseDD_A","@translations":{"english":{"name":"MPhase Det","description":""},"portuguese":{"name":"","description":""}}},"MPhaseRD_A":{"@category":"Phase/MPhase","@parent":"*","@translations":{"english":{"name":"MPhase Ret","description":""},"portuguese":{"name":"MPhase Ret","description":""}}},"MPhaseRD_B":{"@category":"Phase/MPhase","@parent":"MPhaseRD_A","@translations":{"english":{"name":"MPhase Ret","description":""},"portuguese":{"name":"","description":""}}},"PhaseSpeed_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Phase Speed","description":""},"portuguese":{"name":"Velocidade da Fase","description":""}}},"PhaseSpeed_B":{"@category":"Phase","@parent":"PhaseSpeed_A","@translations":{"english":{"name":"Phase Speed","description":""},"portuguese":{"name":"","description":""}}},"OscPower_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Osclator Power","description":""},"portuguese":{"name":"Potência do Oscilador","description":""}}},"OscPower_B":{"@category":"Phase","@parent":"OscPower_A","@translations":{"english":{"name":"Osclator Power","description":""},"portuguese":{"name":"","description":""}}},"PhaseMode_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Phase Mode","description":""},"portuguese":{"name":"Modo da Fase","description":""}}},"PhaseMode_B":{"@category":"Phase","@parent":"PhaseMode_A","@translations":{"english":{"name":"Phase Mode","description":""},"portuguese":{"name":"","description":""}}},"PhaseModeHold_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Phase Mode Hold","description":""},"portuguese":{"name":"Segurar Modo da Fase","description":""}}},"PhaseModeHold_B":{"@category":"Phase","@parent":"PhaseModeHold_A","@translations":{"english":{"name":"Phase Mode Hold","description":""},"portuguese":{"name":"","description":""}}},"DetMode_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Detection Mode","description":""},"portuguese":{"name":"Modo Detecção","description":""}}},"DetMode_B":{"@category":"Phase","@parent":"DetMode_A","@translations":{"english":{"name":"Detection Mode","description":""},"portuguese":{"name":"","description":""}}},"DetectSignal_A":{"@category":"RejSys/Dsit","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"DetectSignal_B":{"@category":"RejSys/Dsit","@parent":"DetectSignal_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"Peak_A":{"@category":"Prod","@parent":"*","@translations":{"english":{"name":"Peak","description":""},"portuguese":{"name":"Pico","description":""}}},"Peak_B":{"@category":"Prod","@parent":"Peak_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PhaseAngleAuto_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PhaseAngleAuto_B":{"@category":"Phase","@parent":"PhaseAngleAuto_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"ProdPeakR_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"ProdPeakR_B":{"@category":"Phase","@parent":"ProdPeakR_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"ProdPeakX_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"ProdPeakX_B":{"@category":"Phase","@parent":"ProdPeakX_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"NoiseR_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"R Noise","description":""},"portuguese":{"name":"Ruído R","description":""}}},"NoiseR_B":{"@category":"Phase","@parent":"NoiseR_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"NoiseX_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"C Noise","description":""},"portuguese":{"name":"Ruído C","description":""}}},"NoiseX_B":{"@category":"Phase","@parent":"NoiseX_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"DetThEst_A":{"@category":"Phase","@parent":"*","@translations":{"english":{"name":"Threshold Estimate","description":""},"portuguese":{"name":"Limite Estimado","description":""}}},"DetThEst_B":{"@category":"Phase","@parent":"DetThEst_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"SysFreq_A":{"@category":"System","@parent":"*","@translations":{"english":{"name":"Detector Frequency","description":""},"portuguese":{"name":"Frequência do Detector","description":""}}},"SysFreq_B":{"@category":"System","@parent":"SysFreq_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"SysBal_A":{"@category":"System","@parent":"*","@translations":{"english":{"name":"Balance Voltage","description":""},"portuguese":{"name":"Voltagem do Balance","description":""}}},"SysBal_B":{"@category":"System","@parent":"SysBal_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"SysRef_A":{"@category":"System","@parent":"*","@translations":{"english":{"name":"Reference Voltage","description":""},"portuguese":{"name":"Voltagem da Referência","description":""}}},"SysRef_B":{"@category":"System","@parent":"SysRef_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"Prod_LED_A":{"@category":"*","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"Prod_LED_B":{"@category":"*","@parent":"Prod_LED_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"Prod_HI_LED_A":{"@category":"*","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"Prod_HI_LED_B":{"@category":"*","@parent":"Prod_HI_LED_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"Reject_LED_A":{"@category":"*","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"Reject_LED_B":{"@category":"*","@parent":"Reject_LED_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PhaseDSALearn_A":{"@category":"*","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PhaseDSALearn_B":{"@category":"*","@parent":"PhaseDSALearn_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PhaseWetBit_A":{"@category":"*","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PhaseWetBit_B":{"@category":"*","@parent":"PhaseWetBit_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PhaseFastBit_A":{"@category":"*","@parent":"*","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}},"PhaseFastBit_B":{"@category":"*","@parent":"PhaseFastBit_A","@translations":{"english":{"name":"","description":""},"portuguese":{"name":"","description":""}}}},"@categories":["*","RejSys","RejSys/Dsit","System","IOconf","IOconf/Output","IOconf/Input","Test","Phase","Faults","Sens","Prod","Test/Halo","Test/Halo2","Test/Manual","Test/Manual2","Test/HaloConfig","Phase/MPhase","IOconf/LtStk","IOconf/CIP","Phase/lim",""],"@catmap":["*",{"@name":"RejSys","@translations":{"english":"Reject System","portuguese":"Sistema de Rejeição"}},{"@name":"RejSys/Dsit","@translations":{"english":"Distance","portuguese":"Distância"}},{"@name":"System","@translations":{"english":"System","portuguese":"Sistema"}},{"@name":"IOconf","@translations":{"english":"I/O Configuration","portuguese":"I/O Configuração"}},{"@name":"IOconf/Output","@translations":{"english":"Outputs","portuguese":"Outputs"}},{"@name":"IOconf/Input","@translations":{"english":"Inputs","portuguese":"Inputs"}},{"@name":"Test","@translations":{"english":"Test","portuguese":"Teste"}},{"@name":"Phase","@translations":{"english":"Phase","portuguese":"Fase"}},{"@name":"Faults","@translations":{"english":"Faults","portuguese":"Falhas"}},{"@name":"Sens","@translations":{"english":"Senstivity","portuguese":"Sensibilidade"}},{"@name":"Prod","@translations":{"english":"Product","portuguese":"Produto"}},{"@name":"Test/Halo","@translations":{"english":"Halo","portuguese":"Halo"}},{"@name":"Test/Halo2","@translations":{"english":"Halo 2","portuguese":"Halo 2"}},{"@name":"Test/Manual","@translations":{"english":"Manual","portuguese":"Manual"}},{"@name":"Test/Manual2","@translations":{"english":"Manual 2","portuguese":"Manual 2"}},{"@name":"Test/HaloConfig","@translations":{"english":"Halo Configuration","portuguese":"Configuração do Halo"}},{"@name":"Phase/MPhase","@translations":{"english":"M Phase","portuguese":"M Fase"}},{"@name":"IOconf/LtStk","@translations":{"english":"Light Stack Configuration","portuguese":"Configuração Torre de Luz"}},{"@name":"IOconf/CIP","@translations":{"english":"CIP Configuration","portuguese":"Configuração CIP"}},{"@name":"Phase/lim","@translations":{"english":"Limits","portuguese":"Limites"}},{"@name":"","@translations":{"english":"","portuguese":""}}],"@netpollsmap":{"NET_POLL_PROTOCOL_VERSION":{"@translations":{"english":"Version","portuguese":"Versão"}},"NET_POLL_KEY_CLASS_MASK":{"@translations":{"english":"","portuguese":""}},"NET_POLL_PROD_REC_VAR":{"@translations":{"english":"Product Record","portuguese":"Registro do Produto"}},"NET_POLL_PROD_SYS_VAR":{"@translations":{"english":"System Record","portuguese":"Registro do Sistema"}},"NET_POLL_REJECT":{"@translations":{"english":"Reject","portuguese":"Rejeicão"}},"NET_POLL_REJECT2":{"@translations":{"english":"Reject (low)","portuguese":"Rejeição (baixo)"}},"NET_POLL_REJ_CNT":{"@translations":{"english":"Reject Count","portuguese":"Contador de Rejeição"}},"NET_POLL_FAULT":{"@translations":{"english":"Fault","portuguese":"Falha"}},"NET_POLL_CONTROL":{"@translations":{"english":"","portuguese":""}},"NET_POLL_POWERUP":{"@translations":{"english":"Powered Up","portuguese":"Ligado"}},"NET_POLL_OPERATOR_NO":{"@translations":{"english":"Operator Number","portuguese":"Número do Operador"}},"NET_POLL_TEST_REQ_PASS":{"@translations":{"english":"Test Request Passed","portuguese":"Pedido de Teste Bem Sucedido"}},"NET_POLL_REJECT_ID":{"@translations":{"english":"Reject ID","portuguese":"ID de rejeição"}},"NET_POLL_REJECT_CLEAR":{"@translations":{"english":"Clear Reject","portuguese":"Limpar Rejeição"}},"NET_POLL_EYE_PROD_PEAK":{"@translations":{"english":"Peak","portuguese":"Pico"}},"NET_POLL_EYE_PROD_PHASE":{"@translations":{"english":"Phase","portuguese":"Fase"}},"NET_POLL_FAULT_CLEAR":{"@translations":{"english":"Fault Cleared","portuguese":"Limpar Falhas"}},"NET_POLL_SYNC_MENU":{"@translations":{"english":"Sync","portuguese":"Sincronizar"}},"NET_POLL_PWD_ENTRY_1":{"@translations":{"english":"","portuguese":""}},"NET_POLL_PWD_ENTRY_2":{"@translations":{"english":"","portuguese":""}},"NET_POLL_SEL_UNIT":{"@translations":{"english":"Select Unit","portuguese":"Selecionar Unidade"}},"NET_POLL_RESERVED":{"@translations":{"english":"","portuguese":""}},"NET_POLL_CLEAR_SCOPE":{"@translations":{"english":"","portuguese":""}},"NET_POLL_REJECT_PHASE":{"@translations":{"english":"Phase","portuguese":"Fase"}},"NET_POLL_FLASH_WRITE":{"@translations":{"english":"","portuguese":""}},"NET_POLL_INTCPTR_SWITCH":{"@translations":{"english":"","portuguese":""}},"NET_POLL_PREC_DELETE":{"@translations":{"english":"Product Deleted","portuguese":"Produto Excluido"}},"NET_POLL_PREC_DEL_ALL":{"@translations":{"english":"Delete All","portuguese":"Excluir todos"}},"NET_POLL_PREC_BACKUP_SAVE":{"@translations":{"english":"Product Backed Up","portuguese":"Produto Salvo"}},"NET_POLL_PREC_BACKUP_RESTORE":{"@translations":{"english":"Product Restored","portuguese":"Produto Restaurado"}},"NET_POLL_PREC_DEAULTS":{"@translations":{"english":"Product Defaults","portuguese":"Padrões do Produto"}},"NET_POLL_PREC_COPY":{"@translations":{"english":"Product Copied","portuguese":"Produto Copiado"}},"NET_POLL_REJECT2_ID":{"@translations":{"english":"ID","portuguese":"ID"}},"NET_POLL_REJECT2_CLEAR":{"@translations":{"english":"Reject Cleared","portuguese":"Rejeito Limpo"}}}
-}
-var vMap = vdefMap["@vmap"];
+
 var categories;
-var categoryMap = vdefMap["@catmap"]
-var netMap = vdefMap['@netpollsmap']
-var catMap = {}
-for(var i = 1; i<categoryMap.length; i++){
-  catMap[categoryMap[i]["@name"]] = categoryMap[i];
-}
+var netMap = vdefMapV2['@netpollsmap']
+
 var vMapV2 = vdefMapV2["@vMap"]
 var categoriesV2 = [vdefMapV2["@categories"]]
 var catMapV2 = vdefMapV2["@catmap"]
-console.log(catMap)
+
 
 let vdefList ={};
 let vdefByIp = {};
@@ -50,6 +68,18 @@ var _nVdf;
 
 const _ioBits = ['TACH','EYE','RC_1','RC_2','REJ_EYE','AIR_PRES','REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CIP','PROD_SEL1','PROD_SEL2','PROD_SEL3','PROD_SEL4',
                   'TEST','NONE','REJ_MAIN','REJ_ALT','FAULT','TEST_REQ','HALO_FE', 'HALO_SS', 'LS_RED','LS_YEL','LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
+
+Object.defineProperty(Array.prototype, 'chunk', {
+    value: function(chunkSize){
+        var temporal = [];
+        
+        for (var i = 0; i < this.length; i+= chunkSize){
+            temporal.push(this.slice(i,i+chunkSize));
+        }
+                
+        return temporal;
+    }
+});
 
 class Params{
   static frac_value(int){
@@ -66,30 +96,24 @@ class Params{
 
   }
   static prod_name_u16_le(sa){
-    //console.log(sa)
     var str = sa.map(function(e){
       return (String.fromCharCode((e>>8),(e%256)));
     }).join("");
     return str.replace("\u0000","").trim();
-    //return val
   }
   static dsp_name_u16_le(sa){
     var str = sa.map(function(e){
       return (String.fromCharCode((e>>8),(e%256)));
     }).join("");
     return str.replace("\u0000","").trim();
-    //return val
   }
   static dsp_serno_u16_le(sa){
     var str = sa.map(function(e){
       return (String.fromCharCode((e>>8),(e%256)));
     }).join("");
     return str.replace("\u0000","").trim();
-    //return val
   }
   static rec_date(val){
-    //needs to be swapped..
-    //0xac26 -> 0x26ac
     var dd = val & 0x1f;
     var mm = (val >> 5) & 0xf
     var yyyy = ((val>>9) & 0x7f) + 1996
@@ -112,7 +136,6 @@ class Params{
 
   }
   static phase(val, wet){
-    //console.log(wet);
     if(wet==0){
       return Params.phase_dry(val);
     }else{
@@ -127,7 +150,6 @@ class Params{
     }
   }
   static belt_speed(tpm, metric, tack){
-    //console.log(tpm);
     if(tack!=0){
 
       return tpm;
@@ -145,7 +167,6 @@ class Params{
     var res = words.map(function(w){
       return ((w & 0xffff).toString(16)) //hex format string
     }).join(',')
-  //  console.log(res);
     return(res)
 
   }
@@ -188,7 +209,6 @@ class Params{
       return (String.fromCharCode((e>>8),(e%256)));
     }).join("");
     return str.replace("\u0000","").trim();
-    //return val;
   }
 
 
@@ -221,7 +241,7 @@ class Params{
     }
   }
   static phase_mode(wet, patt){
-    //console.log(patt)
+    //////console.log(patt)
     if (patt==0){
       if (wet==0){
         return 0;
@@ -276,11 +296,11 @@ class Params{
     var b = new Buffer(byteArr)
     var length = byteArr.length/2;
     var wArray = []
-    //console.log(length)
+    //////console.log(length)
     for(var i = 0; i<length; i++){
       wArray.push(b.readUInt16BE(i*2));
     }
-    //console.log(wArray)
+    //////console.log(wArray)
     return wArray;
 
   }
@@ -289,22 +309,19 @@ class Params{
     var b = new Buffer(byteArr)
     var length = byteArr.length/2;
     var wArray = []
-    //console.log(length)
+    //////console.log(length)
     for(var i = 0; i<length; i++){
       wArray.push(b.readUInt16LE(i*2));
     }
-    //console.log(wArray)
+    //////console.log(wArray)
     return wArray;
 
   }
   static ipv4_address(words){
     //todo
-    //console.log(ip)
+    //////console.log(ip)
     //return ip
-    var str_Words = words.map(function(w){
-      return [(w>>8)&0xff,w&0xff].join('.')
-    })
-    return str_Words.join('.')
+    return words.map(function(w){return [('000'+((w>>8)&0xff).toString()).slice(-3),('000'+(w&0xff).toString()).slice(-3)].join('.')}).join('.');
   }
 }
 
@@ -318,7 +335,6 @@ function yRangeFunc(range){
 	}
 	return({min:(0-max),max:max});
 }
-
 function toArrayBuffer(buffer) {
     var ab = new ArrayBuffer(buffer.length);
     var view = new Uint8Array(ab);
@@ -330,7 +346,7 @@ function toArrayBuffer(buffer) {
 function uintToInt(uint, nbit) {
     nbit = +nbit || 32;
     if (nbit > 32) throw new RangeError('uintToInt only supports ints up to 32 bits');
-    uint <<= 32 - nbit;
+    uint <<= (32 - nbit);
     uint >>= 32 - nbit;
     return uint;
 }
@@ -359,7 +375,9 @@ function wordValue(arr, p){
     var n = Math.floor(p["@bit_len"]/16);
     var sa = arr.slice(p["@i_var"], p["@i_var"]+n)
     if(p['@type']){
-      return Params[p['@type']](sa)
+
+    	return	 eval(funcJSON['@func'][p['@type']])(sa)
+    //  return eval(funcJSON['@func'][p['@type']].apply(this, sa))
     }else{
       var str = sa.map(function(e){
       return (String.fromCharCode((e>>8),(e%256)));
@@ -444,14 +462,14 @@ class FtiSockIo{
 		data = null;
 	}
 	on(handle, func){
-		//console.log(handle)
+		//////console.log(handle)
 		this.handlers[handle] = func
 	}
 	emit(handle,data){
 		if(data){
-			console.log('data is present')
+			////console.log('data is present')
 		}else{
-			console.log('data null')
+			////console.log('data null')
 			data = 1
 		}
 		//data = data || 1
@@ -499,15 +517,15 @@ _Vdef = json
     res[7] = [];
    for(var par in res[2]){  
       if(par.indexOf('Fault') != -1){
-        console.log("fault found")
+        ////console.log("fault found")
         res[7].push(par)
       }
     }
 
     _pVdef = res;
     if(json['@defines']['INTERCEPTOR']){
-         vdefList[json['@version']] = [json, res, nVdf, categories, [vdefMapV2['@categories']], vdefMapV2['@vMap'], vdefMapV2['@pages']]
-        vdefByIp[vdf[1]] = [json, res, nVdf, categories, [vdefMapV2["@categories"]], vdefMapV2['@vMap'], vdefMapV2['@pages']]
+         vdefList[json['@version']] = [json, res, nVdf, categories, [vdefMapV2['@categories']], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
+        vdefByIp[vdf[1]] = [json, res, nVdf, categories, [vdefMapV2["@categories"]], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
 
     }else{
          vdefList[json['@version']] = [json, res, nVdf, categories, [vdefMapST['@categories']], vdefMapST['@vMap'], vdefMapST['@pages']]
@@ -564,6 +582,8 @@ class TestSetupPage extends React.Component {
 
 }
 
+
+
 function getParams(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
 	var params = []
 	cat.params.forEach(function(p) {
@@ -575,8 +595,8 @@ function getParams(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
     	}else if(typeof pVdef[2][p] != 'undefined'){
     		_p = {'@name':p, '@type':'dyn','@data':dynRec[p], '@children':[]}
     	}
-    	//console.log(_vmap[p])
-    	//console.log(p)
+    	//////console.log(_vmap[p])
+    	//////console.log(p)
     	_vmap[p].children.forEach(function (ch) {
     		var _ch;
     		if(typeof pVdef[0][ch] != 'undefined'){
@@ -594,6 +614,57 @@ function getParams(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
     })
 	return params
 }
+function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
+	var params = []
+	//////console.log(cat)
+	//////console.log(pVdef)
+	cat.params.forEach(function(par) {
+		if(par.type == 0){
+
+			var p = par.val
+			//////console.log(p)
+    		var _p = {'type':0, '@name':p, '@children':[], acc:par.acc}
+   			if(typeof pVdef[0][p] != 'undefined'){
+   				_p = {'type':0, '@name':p, '@data':sysRec[p], '@children':[], acc:par.acc}
+   			}else if(typeof pVdef[1][p] != 'undefined'){
+    			_p = {'type':0, '@name':p, '@data':prodRec[p], '@children':[], acc:par.acc}
+    		}else if(typeof pVdef[2][p] != 'undefined'){
+    			_p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc}
+    		}else if(typeof pVdef[3][p] != 'undefined'){
+    			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
+    		}else if(par.val == 'Nif_ip'){
+    			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
+    		}    	//////console.log(_vmap[p])
+    	//////console.log(p)
+    		_vmap[p].children.forEach(function (ch) {
+    			var _ch;
+    			if(typeof pVdef[0][ch] != 'undefined'){
+    			_ch = sysRec[ch]
+    			}else if(typeof pVdef[1][ch] != 'undefined'){
+    			_ch = prodRec[ch]
+    			}else if(typeof pVdef[2][ch] != 'undefined'){
+    			
+    				_ch = dynRec[ch]
+    			}else if(typeof pVdef[3][ch] != 'undefined'){
+    			
+    				_ch = fram[ch]
+    			}
+    			_p['@children'].push(_ch)	
+    		})
+    		params.push(_p)
+    	}else{
+    		if(typeof par.child != 'undefined'){
+    			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc, child:par.child})
+    		}else{
+
+
+    			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc})
+    		}
+    	}
+    					
+    })
+	return params
+}
 //var cat = _cvdf.slice(0)
 function iterateCats(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
 
@@ -603,6 +674,13 @@ function iterateCats(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
 		return iterateCats(sc, pVdef, sysRec, prodRec, _vmap, dynRec)
 	})
 	cat.subCats = subCats;
+	return cat
+	
+}
+function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
+	//////console.log(['684',pVdef])
+	cat.params = getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram)
+	
 	return cat
 	
 }
@@ -658,7 +736,7 @@ class LandingPage extends React.Component{
 		}
 		this.state =  ({currentPage:'landing',netpolls:{}, curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, 
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:5,
-			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]}})
+			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]}, accounts:['operator','engineer','Fortress']})
 		this.listenToMq = this.listenToMq.bind(this);
 		this.locateUnits = this.locateUnits.bind(this);
 		this.onNetpoll = this.onNetpoll.bind(this);
@@ -666,11 +744,14 @@ class LandingPage extends React.Component{
 		this.onParamMsg2 = this.onParamMsg2.bind(this);
 		this.ipChanged = this.ipChanged.bind(this);
 		this.renderDetectors = this.renderDetectors.bind(this);
+		this.renderDetector = this.renderDetector.bind(this);
 		this.showFinder = this.showFinder.bind(this);
 		this.switchUnit = this.switchUnit.bind(this);
 		this.addMBUnit = this.addMBUnit.bind(this);
 		this.editMb = this.editMb.bind(this);
 		this.addToTmp = this.addToTmp.bind(this);
+		this.addToTmpGroup = this.addToTmpGroup.bind(this);
+		this.addToTmpSingle = this.addToTmpSingle.bind(this);
 		this.removeFromTmpGroup = this.removeFromTmpGroup.bind(this);
 		this.cancel = this.cancel.bind(this);
 		this.submitMB = this.submitMB.bind(this);
@@ -685,6 +766,7 @@ class LandingPage extends React.Component{
 		this.save = this.save.bind(this);
 		this.addNewSingleUnit = this.addNewSingleUnit.bind(this);
 		this.addMBUnit = this.addMBUnit.bind(this);
+		this.setAuthAccount = this.setAuthAccount.bind(this);
 		//var self = this;
 		/*Object.getOwnPropertyNames(this).forEach(function(f){
 			this[f] = this[f].bind(this)
@@ -711,14 +793,20 @@ class LandingPage extends React.Component{
 		socket.on('resetConfirm', function (r) {
 			socket.emit('locateReq');
 		})
-		
+		socket.on('onReset', function(r){
+			/*if(self.state.currentPage != 'landing'){
+				self.setState({curDet:self.state.dets[self.state.curDet.mac]})
+			}*/
+			self.setState({currentPage:'landing', curDet:''});
+			
+		})
 		socket.on('netpoll', function(m){
-			//////console.log(['73',m])
+			//////////console.log(['73',m])
 			self.onNetpoll(m.data, m.det)
 			m = null;
 		})
 		socket.on('prefs', function(f) {
-			////console.log(f)
+			////////console.log(f)
 			var detL = self.state.detL
 			f.forEach(function (u) {
 				u.banks.forEach(function(b){
@@ -748,26 +836,44 @@ class LandingPage extends React.Component{
 					macs.push(d.mac)
 					dets[d.mac] = d
 				}
-				////console.log(d)
+				////////console.log(d)
 				socket.emit('vdefReq', d.ip);
 
 			})
-			////console.log(dets)
-			self.state.mbunits.forEach(function(u){
+			var mbunits = self.state.mbunits;
+			mbunits.forEach(function(u){
+				var banks = u.banks.map(function(b){
+					if(dets[b.mac]){
+						var _bank = dets[b.mac]
+						_bank.interceptor = b.interceptor
+						return dets[b.mac]
+					}else{
+						return b
+					}
+				})
+				console.log(['852',u.banks.slice(0), banks])
+				u.banks = banks;
+			})
+
+			////////console.log(dets)
+			mbunits.forEach(function(u){
 				u.banks.forEach(function(b) {
+
 					dets[b.mac] = null;
 					if(!nps[b.ip]){
 						nps[b.ip] = []
 					}
-					console.log('connectToUnit')
+					////console.log('connectToUnit')
 					socket.emit('connectToUnit', b.ip)
 				})
 			})
-			self.setState({dets:e, detL:dets, macList:macs, netpolls:nps})
+			socket.emit('savePrefs', mbunits)
+			self.setState({dets:e, detL:dets, mbunits:mbunits, macList:macs, netpolls:nps})
+
 		});
 		
 		socket.on('paramMsg2', function(data) {
-		//	console.log('on param msg')
+		//	////console.log('on param msg')
 			self.onParamMsg2(data.data,data.det) 
 			data = null;
 		})
@@ -782,6 +888,17 @@ class LandingPage extends React.Component{
 
 		socket.on('logOut', function(){
 			self.setState({curUser:'', level:0})
+		})
+		socket.on('accounts', function(data){
+			console.log(data)
+			self.setState({accounts:data.data})
+		})
+		socket.on('authResp', function(pack){
+			self.setAuthAccount(pack)
+		})
+		socket.on('authFail', function(){
+			notify.show('Authentication failed')
+			self.setAuthAccount({user:'Not Logged In', level:0})
 		})
 		setTimeout(function (argument) {
 			// body...
@@ -807,8 +924,13 @@ class LandingPage extends React.Component{
 			}
 		},800)
 	}
+	setAuthAccount(pack){
+		if(this.refs.dv){
+			this.refs.dv.setAuthAccount(pack)
+		}
+	}
 	onNetpoll(e,d){
-		////console.log([e,d])
+		////////console.log([e,d])
 		var nps = this.state.netpolls
 		if(nps[d.ip]){
 			if(nps[d.ip].length == 15){
@@ -821,9 +943,9 @@ class LandingPage extends React.Component{
 			
 			nps[d.ip].unshift(e)
 			if(e.net_poll_h == 'NET_POLL_OPERATOR_NO'){
-				console.log('test started: ' + d.ip)
+				////console.log('test started: ' + d.ip)
 			}else if(e.net_poll_h == 'NET_POLL_TEST_REQ_PASS'){
-				console.log('test passed: ' + d.ip)
+				////console.log('test passed: ' + d.ip)
 				//notify.show('Test Passed')
 			}
 
@@ -832,7 +954,7 @@ class LandingPage extends React.Component{
 		
 	}
 	onRMsg(e,d) {
-		////console.log([e,d])
+		////////console.log([e,d])
 		var msg = e.data
 		var data = new Uint8Array(msg);
 
@@ -887,6 +1009,9 @@ class LandingPage extends React.Component{
 		}
 		e = null;
 		d = null;
+	}
+	onAccounts(data){
+
 	}	
 	ipChanged(e) {
 		e.preventDefault();
@@ -905,7 +1030,7 @@ class LandingPage extends React.Component{
 	}
 	logoClick() {this.setState({currentPage:'landing'})}
 	switchUnit(u) {
-		////console.log(u)
+		////////console.log(u)
 		var self = this;
 		setTimeout(function () {
 			// body...
@@ -992,7 +1117,7 @@ class LandingPage extends React.Component{
 		this.setState({tmpMB:mbUnits, detL:detL})
 	}
 	cancel() {
-		////console.log(['268', 'cancel'])
+		////////console.log(['268', 'cancel'])
 		var detL = this.state.detL;
 		this.state.tmpMB.banks.forEach(function (b) {
 			detL[b.mac]= b
@@ -1041,7 +1166,7 @@ class LandingPage extends React.Component{
 		socket.emit('savePrefs', this.state.mbunits)
 	}
 	loadPrefs() {
-		////console.log('load prefs')
+		////////console.log('load prefs')
 		if(socket.sock.readyState  ==1){
 			socket.emit('locateReq');
 			socket.emit('getPrefs');
@@ -1063,7 +1188,7 @@ class LandingPage extends React.Component{
 	renderModal() {
 		var self = this;
 		var mbSetup = this.state.mbunits.map(function(mb,ind) {
-			////console.log(ind)
+			////////console.log(ind)
 			return <MbSetup remove={self.removeMb} move={self.move} mb={mb} edit={self.editMb} index={ind} singleUnits={self.state.single}/>	// body...
 		})
 		var detList = this.state.dets.map(function(d){
@@ -1159,7 +1284,7 @@ class LandingPage extends React.Component{
 	
 	onChange(argument) {
 		// body...
-		console.log(argument)
+		////console.log(argument)
 	}
 	renderLanding() {
 		var self = this;
@@ -1167,6 +1292,7 @@ class LandingPage extends React.Component{
 		var config = 'config'
 		var find = 'find'
 		var login = 'login'
+
 		var lstyle = {height: 72,marginRight: 20}
 		if(!this.state.minW){
 			lstyle = { height: 60, marginRight: 15}
@@ -1176,7 +1302,7 @@ class LandingPage extends React.Component{
 				return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/>	
 			}else{
 				if(mb.banks[0]){
-					////console.log('457')
+					////////console.log('457')
 					return <SingleUnit ref={mb.banks[0].ip} onSelect={self.switchUnit} unit={mb.banks[0]}/>	
 				}						
 			}
@@ -1211,7 +1337,8 @@ class LandingPage extends React.Component{
 	}
 	renderDetector() {
 		
-		return (<DetectorView br={this.state.brPoint} ref='dv' acc={this.state.level} logoClick={this.logoClick} det={this.state.curDet} ip={this.state.curDet.ip} netpolls={this.state.netpolls[this.state.curDet.ip]}/>)
+		
+		return (<DetectorView br={this.state.brPoint} ref='dv' acc={this.state.level} accounts={this.state.accounts} logoClick={this.logoClick} det={this.state.curDet} ip={this.state.curDet.ip} netpolls={this.state.netpolls[this.state.curDet.ip]}/>)
 		
 	}
 	
@@ -1237,12 +1364,12 @@ class LandingPage extends React.Component{
 	}
 	dummy() {
 		// body...
-		console.log('dummy')
+		////console.log('dummy')
 	}
 	render() {
 		var cont;
 		if(this.state.currentPage == 'landing'){
-			////console.log('here')
+			////////console.log('here')
 			cont = this.renderLanding();
 		}else if(this.state.currentPage == 'detector'){
 			cont = this.renderDetector();
@@ -1300,150 +1427,93 @@ class LogView extends React.Component{
 		</div>)
 	}
 }
-/*class AccountControlView extends React.Component{
-	getInitialState(){
-		return ({userList:[], newuser:'',password:'',level:0})
-	}
-	logoClick(){
-		this.props.logoClick();
-	}
-	showLogin(){
-		this.props.showLogin();
-	}
-	componentDidMount(){
-		var self = this;
-		socket.emit('getUsers','data');
-		socket.on('userList', function(data){
-			self.setState({userList:data})
-		})
-	}
-	addNew(){
-		socket.emit('addUser', {id:this.state.newuser, pw:this.state.password, level:parseInt(this.state.level)})
-		this.setState({newuser:'', password:'', level:0})
-	}
-	userNameChange(e){
-		this.setState({newuser:e.target.value});
-	}
-	passwordChange(e){
-		this.setState({password:e.target.value});
-	}
-	levelChange(e){
-		this.setState({level:e.target.value})
-	}
-	render(){
-		var cont = '';
-		var login = 'login';
-		var lstyle = {height: 72,marginRight: 20}
-		if(!this.props.minW){
-			lstyle = { height: 60, marginRight: 15}
-		}
-		var users = this.state.userList.map(function(u){
-			return(<UserObj user={u}/>)
-		})
-		if(this.props.active){
-			cont = <div><label>Users</label>
-				<div>
-					{users}
-				</div>
-				<table><tbody>
-				<tr><td>User</td><td><input type='text' onChange={this.userNameChange} value={this.state.newuser}/></td></tr>
-				<tr><td>Password</td><td><input type='text' onChange={this.passwordChange} value={this.state.password}/></td></tr>
-				<tr><td>level</td><td><input type='text' onChange={this.levelChange} value={this.state.level}/></td></tr>
-				<tr><td>test</td><td><KeyboardInput tid="test" value=''/></td></tr>
-				</tbody></table>
-				<button onClick={this.addNew}>Add User</button>
-			</div>
-		}else{
-			cont = <div><label>Log in as admin to access this page</label></div>
-		}
-		return(<div className = 'landingPage'>
-					<table className='landingMenuTable'>
-						<tbody>
-							<tr>
-								<td><img onClick={this.logoClick}style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
-								<td className="buttCell"><button onClick={this.showLogin} className={login}/></td>
-							</tr>
-						</tbody>
-					</table>
-					{cont}
-			</div>)	
-	}
-}*/
 
-/*class UserObj extends React.Component{
-	delete(){
-		socket.emit('delUser', this.props.user.id)
-	}
-	render(){
-		var u = this.props.user
-		return(<div><label>{'Username:' + u.id + '  Level:' + u.level}</label><button onClick={this.delete}>Delete This user</button></div>)
-	}
-}
+
 class LogInControl extends React.Component{
-	getInitialState(){
-		return ({userName:'',password:'',alert:''})
+	constructor(props){
+		super(props)
+		this.login = this.login.bind(this)
+		this.selectChanged = this.selectChanged.bind(this);
+		var list = Object.keys(this.props.accounts)
+		list.unshift('Not Logged In')
+		this.state = {val:0, list:list, showAcccountControl:false}
+		this.enterPIN = this.enterPIN.bind(this);
+		this.valChanged = this.valChanged.bind(this);
+		this.toggleAccountControl = this.toggleAccountControl.bind(this);
+	}
+	componentWillReceiveProps(props){
+		var list = Object.keys(props.accounts)
+		list.unshift('Not Logged In')
+		
+		this.setState({val:props.val, list:list})
 	}
 	componentDidMount(){
-		var self = this;
-		socket.on('access denied', function(alert){
-			self.setState({alert:alert})
-		})
+		this.setState({showAcccountControl:false})
 	}
-	userNameChange(e){
-		////console.log(e)
-		if(typeof e == 'string'){
-
-			this.setState({userName:e})
-		}else if(e.target){
-			if(e.target.value){
-				this.setState({userName:e.target.value})
-			}
+	login(){
+		var self = this;
+		setTimeout(function(){self.refs.pw.toggleCont()},100)
+		
+	}
+	selectChanged(v,i){
+		////console.log(['1531',v])
+		this.setState({val:v})
+		if(v != 0){
+			this.enterPIN()
+			
 		}
+
+
+		//this.props.login(v)
+	}
+	enterPIN(){
+		this.refs.psw.toggle();
 	}
 	onFocus(){
-		this.props.onKeyFocus();
+
 	}
 	onRequestClose(){
-		this.props.onRequestClose();
-	}
-	passwordChange(e){
-		if(typeof e == 'string'){
 
-			this.setState({password:e})
-		}else if(e.target){
-			if(e.target.value){
-				this.setState({password:e.target.value})
-			}
-		}
 	}
-	loginSubmit(){
-		socket.emit('login',{id:this.state.userName, pw:this.state.password})
-		this.setState({password:'', alert:''})
+	valChanged(v){
+		//console.log(v)
+		this.props.authenticate(this.state.list[this.state.val], v)
 	}
-	logOut(){
-		socket.emit('logOut')
+	toggleAccountControl(){
+//		return 	<AccountControl accounts={this.props.accounts} language={this.props.language} login={this.login} val={this.state.level}/>
+		this.setState({showAcccountControl:!this.state.showAcccountControl})
 	}
+
 	render(){
-		if(this.props.level>0){
-			return (<div>
-				<label>{'Logged In as ' + this.props.userName}</label>
-				<button onClick={this.logOut}>Log Out</button>
+		var list = this.state.list
+		var namestring = 'Choose User level'
+		var pw = <PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref='pw' val={[this.props.val]} options={[list]} onChange={this.selectChanged}/>
+		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+			var _st = {textAlign:'center',lineHeight:'51px', height:51, width:536, display:'table-cell', position:'relative'}
+
+		    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#eee"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
+		var clr = "#e1e1e1"
+		var actrl =  (<div className='sItem noChild' onClick={this.login}><label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{'User Group'}</label>
+			<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>{list[this.props.val]}</label></div></div>
 			</div>)
-		}else{
-		return (<div>
-			<table>
-				<tbody>
-					<tr><td>Username:</td><td><KeyboardInput onFocus={this.onFocus} onRequestClose={this.onRequestClose} onChange={this.userNameChange} tid='username' value={this.state.userName}/></td></tr>
-					<tr><td>Password:</td><td><KeyboardInput onFocus={this.onFocus} onRequestClose={this.onRequestClose} onChange={this.passwordChange} tid='password' value={this.state.password}/></td></tr>
-				</tbody>
-			</table>
-			<label style={{color:'red'}}>{this.state.alert}</label>
-			<button onClick={this.loginSubmit}>Log in</button>
-		</div>)
+		if(this.state.showAcccountControl){
+			actrl = <AccountControl accounts={this.props.accounts} ip={this.props.ip} language={this.props.language} login={this.login} val={this.state.level}/>
+			clr = 'orange'	
 		}
+		var tosns = <div  onClick={this.toggleAccountControl}  style={{position:'absolute', left:820, top:5}}><div style={{position:'absolute', left:-80, marginTop:5, color:clr}}> Settings </div> <div><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={clr}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div></div>
+		
+		return <div style={{position:'relative'}}>{pw}
+			<CustomKeyboard pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'psw'} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
+		<div>
+		{titlediv}
+		{tosns}
+		</div>
+			{actrl}
+		
+		</div> 
 	}
 }
-*/
 class TickerBox extends React.Component{
 	constructor(props) {
 		super(props)
@@ -1632,7 +1702,7 @@ class SettingsDisplay2 extends React.Component{
 		}
 
 		this.state = ({
-		 sysRec:this.props.sysSettings, prodRec:this.props.prodSettings, dynRec:this.props.dynSettings, mqls:mqls, font:font, data:this.props.data, cob2:this.props.cob2
+		 sysRec:this.props.sysSettings, prodRec:this.props.prodSettings, dynRec:this.props.dynSettings, mqls:mqls, font:font, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec
 		});
 		this.handleItemclick = this.handleItemclick.bind(this);
 		this.scrollUp = this.scrollUp.bind(this);
@@ -1646,7 +1716,7 @@ class SettingsDisplay2 extends React.Component{
 		//this.componentDidMount = this.component
 	}
 	componentWillReceiveProps(newProps){
-		this.setState({data:newProps.data, cob2:newProps.cob2, sysRec:newProps.sysSettings, prodRec:newProps.prodSettings, dynRec:newProps.dynSettings})
+		this.setState({data:newProps.data, cob2:newProps.cob2, sysRec:newProps.sysSettings, prodRec:newProps.prodSettings, dynRec:newProps.dynSettings, framRec:newProps.framRec})
 	}
 	listenToMq() {
 		if(this.state.mqls[2].matches){
@@ -1676,20 +1746,20 @@ class SettingsDisplay2 extends React.Component{
 	
 	handleScroll(ev) {
 		// body...
-		//console.log(ev.srcElement.body)
+		//////console.log(ev.srcElement.body)
 		var lvl = this.props.data.length
 		var len = 0;
 		if(lvl > 0){
-			len = this.props.data[lvl - 1 ][0].subCats.length + this.props.data[lvl - 1 ][0].params.length
+			len = this.props.data[lvl - 1 ][0].params.length
 		}
-		//	console.log(document.getElementById(this.props.Id).scrollTop)
+		//	////console.log(document.getElementById(this.props.Id).scrollTop)
 		if(len > 6){
 			if((document.getElementById(this.props.Id).scrollTop) + 390 < len*65){
 				this.refs.arrowBot.show();
-				//console.log(['show arrow',document.getElementById(this.props.Id).scrollTop])
+				//////console.log(['show arrow',document.getElementById(this.props.Id).scrollTop])
 			}else{
 				this.refs.arrowBot.hide();	
-				//console.log(document.getElementById(this.props.Id).scrollTop)
+				//////console.log(document.getElementById(this.props.Id).scrollTop)
 			} 
 			if(document.getElementById(this.props.Id).scrollTop > 5){
 				this.refs.arrowTop.show();
@@ -1697,7 +1767,7 @@ class SettingsDisplay2 extends React.Component{
 				this.refs.arrowTop.hide();
 			}
 		}
-		//console.log(document.getElementById(this.props.Id));
+		//////console.log(document.getElementById(this.props.Id));
 	}
 	scrollUp() {
 		// body...
@@ -1710,7 +1780,7 @@ class SettingsDisplay2 extends React.Component{
 	}
 	sendPacket(n,v) {
 		var self = this;
-		console.log([n,v])
+		////console.log([n,v])
 		if(n['@rpcs']['toggle']){
 
 			var arg1 = n['@rpcs']['toggle'][0];
@@ -1748,6 +1818,7 @@ class SettingsDisplay2 extends React.Component{
 			var arg1 = n['@rpcs']['write'][0];
 			var arg2 = [];
 			var strArg = null;
+			var flag = false
 			for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
 				if(!isNaN(n['@rpcs']['write'][1][i])){
 					arg2.push(n['@rpcs']['write'][1][i])
@@ -1759,6 +1830,7 @@ class SettingsDisplay2 extends React.Component{
 						arg2.push(0)
 						strArg=v
 					}
+					flag = true;
 				}else{
 					var dep = n['@rpcs']['write'][1][i]
 					if(dep.charAt(0) == '%'){
@@ -1767,8 +1839,18 @@ class SettingsDisplay2 extends React.Component{
 				}
 			}
 			if(n['@rpcs']['write'][2]){
-				strArg = n['@rpcs']['write'][2]
+				if(Array.isArray(n['@rpcs']['write'][2])){
+					strArg = n['@rpcs']['write'][2]
+				}
+				else if(typeof n['@rpcs']['write'][2] == 'string'){
+					strArg = v
+				}
+				flag = true;
 			}
+			if(!flag){
+				strArg = v;
+			}
+			console.log(['1917',arg1, arg2,strArg,v])
 		
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 				
@@ -1782,7 +1864,7 @@ class SettingsDisplay2 extends React.Component{
 	activate(n) {
 		// body...
 		var self = this;
-		console.log(['1466',n,this.props.cob2,this.props.data])
+		////console.log(['1466',n,this.props.cob2,this.props.data])
 		var list; 
 		if(this.props.data.length > 1){
 			list 	= this.props.data[this.props.data.length - 1][0].params
@@ -1815,13 +1897,13 @@ class SettingsDisplay2 extends React.Component{
 		var self = this;
 		var data = this.props.data
 		//var catMap = vdefByIp[this.props.dsp][]
-		////console.log(data)
+		////////console.log(data)
 		var lvl = data.length 
 		var handler = this.handleItemclick;
-		var lab = 'Settings'
+		var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
 		var cvdf = this.props.cvdf
-		////console.log(lvl)
-		var label = 'Settings'
+		////////console.log(lvl)
+		var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
 
 		var nodes;
 		var ft = 25;
@@ -1844,7 +1926,7 @@ class SettingsDisplay2 extends React.Component{
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem2 language={self.props.language} onFocus={this.onFocus} onRequestClose={this.onRequestClose} faultBits={this.props.faultBits}  ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec}/>)
+				nodes.push(<SettingItem2 language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} faultBits={this.props.faultBits}  ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			}
 			len = catList.length;
 			nav = nodes;
@@ -1856,7 +1938,7 @@ class SettingsDisplay2 extends React.Component{
 			if(lvl == 1){
 		    	
 		    	if(this.props.mode == 'config'){
-		    		label == 'Settings'
+		    		label = vdefMapV2['@labels']['Settings'][this.props.language]['name']
 		    		pathString = ''
 		    	}else{
 		    		label = catMapV2[data[0][0].cat]['@translations'][this.props.language]
@@ -1871,16 +1953,14 @@ class SettingsDisplay2 extends React.Component{
 		    		pathString = data.map(function (d) {return d[0].cat}).join('/')
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    	}
-		    	if(this.props.mode == 'config'){
-					backBut =(<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'#ccc', fontSize:ft}}>Settings</label></div>)
-		
-				}else{
-					backBut = (<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'#ccc', fontSize:ft}}>{catMapV2[data[0][0].cat]['@translations']['english']}</label></div>)
-				}
+		    
+					backBut = (<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return.svg'/><label style={{color:'#ccc', fontSize:ft}}>Back</label></div>)
+			
 		    }else{
 		    	var bblab = ''
 		    	if(this.props.mode == 'config'){
 		    		pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+		    		//console.log(pathString)
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    		bblab = catMapV2[data.slice(1,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
 		    	}else{
@@ -1888,34 +1968,68 @@ class SettingsDisplay2 extends React.Component{
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    		bblab = catMapV2[data.slice(0,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
 		    	}
-		    	backBut = (<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5}} src='assets/angle-left.svg'/><label style={{color:'#ccc', fontSize:ft}}>{bblab}</label></div>)
+		    	backBut = (<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return.svg'/><label style={{color:'#ccc', fontSize:ft}}>Back</label></div>)
 				
 		    	 
 		    	
 		    }
 			nodes = []
-			data[lvl - 1 ][0].subCats.forEach(function(sc,i){
+		/*	data[lvl - 1 ][0].subCats.forEach(function(sc,i){
 			nodes.push(<SettingItem2 language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 					data={[sc,i]} onItemClick={handler} hasContent={true} acc={self.props.accLevel>=accLevel} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
-			})
-			data[lvl - 1 ][0].params.forEach(function (p,i) {
+			})*/
+			data[lvl - 1 ][0].params.forEach(function (par,i) {
 				// body...
+			//	////console.log(['1986',par])
+				if(par.type == 0){
+			//		//console.log("Is this the problem")
+					var p = par
+
 					var ind = 0;
 					var prms = self.props.cob2[ind].params;
-					var sbc = self.props.cob2[ind].subCats;
+					//////console.log(['1991',prms,data])
+					//var sbc = self.props.cob2[ind].subCats;
 					while(ind < lvl - 1){
 						ind = ind + 1
-						prms = sbc[data[ind][1]].params
-						sbc = sbc[data[ind][1]].subCats;	
+						prms = prms[data[ind][1]]['@data'].params
+					//	////console.log(['1996',prms])
+					//	sbc = sbc[data[ind][1]].subCats;	
 					}
 					var d = prms[i]
 					var ch = d['@children']
-				
-					nodes.push(<SettingItem2 language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
-							children={[vdefByIp[self.props.dsp][5][p['@name']].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={self.props.accLevel>=accLevel} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
+				var	acc = false;
+				////console.log(p)
+					if(( p.acc.indexOf(0) != -1)||(self.props.level == 3) || (p.acc.indexOf(self.props.level) != -1)){
+						acc = true;
+					}
+				//	//console.log(['2063',d])
+			//		self.props.level accLevel
+					nodes.push(<SettingItem2 language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} 
+						ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
+							children={[vdefByIp[self.props.dsp][5][p['@name']].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
 					
+				}else{
+					var sc = par['@data']
+							var	acc = false;
+							////console.log(['2046',par])
+				
+					if(( par.acc.indexOf(0) != -1)||(self.props.level == 3) || (par.acc.indexOf(self.props.level) != -1)){
+						acc = true;
+					}
+					if(typeof sc['child'] != 'undefined'){
+						var spar = sc.params[sc.child]
+						var ch = spar['@children']
+							nodes.push(<SettingItem2 language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+					data={[sc,i]} children={[vdefByIp[self.props.dsp][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+			
+					}else{
+		
+						nodes.push(<SettingItem2 language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+					}
+				}
 			})
-			len = data[lvl - 1 ][0].subCats.length + data[lvl - 1 ][0].params.length;
+			len = data[lvl - 1 ][0].params.length;
 			var ph = ""
 			if(len > 6){
 				ph = <div style={{display:'block', width:500, height:20}}></div>
@@ -1940,14 +2054,14 @@ class SettingsDisplay2 extends React.Component{
 
 		return(
 			<div className='settingsDiv'>
-			<ScrollArrow ref='arrowTop' width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
+			<ScrollArrow ref='arrowTop' offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
 		
 			<div className={className}>
 							{titlediv}
 			
 							{nav}
 			</div>
-			<ScrollArrow ref='arrowBot' width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+			<ScrollArrow ref='arrowBot' offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
 			</div>
 		);
 	}
@@ -1988,11 +2102,11 @@ class ScrollArrow extends React.Component{
 		// body...
 		if(this.props.mode == 'top'){
 			return <div className='scrollArrow' hidden={!(this.props.active && this.state.visible)}>
-						<svg onClick={this.onClick} style={{position:'fixed',marginTop:this.props.marginTop,marginLeft:this.props.width/-2,marginRight:'auto',width:this.props.width,height:this.props.width, strokeWidth:'2%'}} xmlns="http://www.w3.org/2000/svg" fill="#e1e1e1" viewBox="0 0 24 24" ><path stroke="#000"  d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>								
+						<svg onClick={this.onClick} style={{position:'fixed',zIndex:2,marginTop:this.props.marginTop,marginLeft:this.props.width/-2,marginRight:'auto',width:this.props.width,height:this.props.width, strokeWidth:'2%'}} xmlns="http://www.w3.org/2000/svg" fill="#e1e1e1" viewBox="0 0 24 24" ><path stroke="#000"  d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>								
 					</div>
 		}
 		return <div className='scrollArrow' hidden={!(this.props.active && this.state.visible)}>
-			<svg onClick={this.onClick} style={{position:'fixed',marginTop:this.props.marginTop, marginLeft:this.props.width/-2,marginRight:'auto',width:this.props.width,height:this.props.width, strokeWidth:'2%'	}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#e1e1e1"><path stroke="#000"  d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"/></svg>								
+			<svg onClick={this.onClick} style={{position:'fixed',zIndex:2,marginTop:this.props.marginTop, marginLeft:this.props.width/-2,marginRight:'auto',width:this.props.width,height:this.props.width, strokeWidth:'2%'	}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#e1e1e1"><path stroke="#000"  d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"/></svg>								
 		</div>
 	}
 		
@@ -2013,17 +2127,36 @@ class SettingItem2 extends React.Component{
 
 	sendPacket(n,v) {
 		//
-		this.props.sendPacket(n,v)	
+		var val = v
+		if(n['@name'] == 'Nif_ip'){
+			console.log(v.toString())
+			socket.emit('nifip', v.toString())
+		}else{
+
+		//}
+		 if(n['@type'] == 'ipv4_address'){
+			val = v.split('.').map(function(ip){
+				return ("000"+ip).slice(-3);
+			}).join('.')
+		}
+		this.props.sendPacket(n,val)	
+		}
 	}
 	componentWillReceiveProps (newProps) {
 		// body...
 		this.setState({font:newProps.font})
 	}
 	onItemClick(){
+
 		if(this.props.hasChild || typeof this.props.data == 'object'){
-			console.log([this.props.data])
-			this.props.onItemClick(this.props.data, this.props.name)	
-		}		
+			////console.log([this.props.data])
+			if(this.props.acc){
+				this.props.onItemClick(this.props.data, this.props.name)	
+			}else{
+
+				notify.show('Access Denied')	
+				}		
+			}
 	}
 	activate () {
 		this.props.activate(this.props.data)
@@ -2056,14 +2189,16 @@ class SettingItem2 extends React.Component{
 							if(pVdef[5][d]["@rec"] == 0){
 								return self.props.sysSettings[d];
 							}else{
-								console.log(d)
-								////console.log(['1208',self.props.sysSettings])
+							//	////console.log(d)
+								////////console.log(['1208',self.props.sysSettings])
 								return self.props.prodSettings[d];
 							}
 						});
-					}
+					}	
 					if(pram['@bit_len']<=16){
-						val = Params[f].apply(this, [].concat.apply([], [val, deps]));
+					//	////console.log(f)
+						
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
 					
 				}
@@ -2088,7 +2223,8 @@ class SettingItem2 extends React.Component{
 						});
 					}
 					if(pram['@bit_len']<=16){
-						val = Params[f].apply(this, [].concat.apply([], [val, deps]));
+				//		////console.log(f)
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
 					
 				}
@@ -2113,13 +2249,52 @@ class SettingItem2 extends React.Component{
 							}else if(pVdef[5][d]["@rec"] == 1){
 								return self.props.prodSettings[d];
 							}else if(pVdef[5][d]["@rec"] == 2){
-							//		console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+							//		////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
 								return self.props.dynSettings[d];
 							}
 						});
 					}
 					if(pram['@bit_len']<=16){
-						val = Params[f].apply(this, [].concat.apply([], [val, deps]));
+					//	////console.log(f)
+						
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+				}
+					
+				}
+				if(pram["@labels"]){
+					label = true
+				}
+			}else if(typeof pVdef[3][pname] != 'undefined'){
+				
+				pram = pVdef[3][pname]
+				
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(f == 'phase'){
+						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+					}else{
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(d){
+							if(pVdef[5][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else if(pVdef[5][d]["@rec"] == 1){
+								return self.props.prodSettings[d];
+							}else if(pVdef[5][d]["@rec"] == 2){
+							//		////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+								return self.props.dynSettings[d];
+							}else if(pVdef[5][d]["@rec"] == 3){
+							//		////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+								return self.props.framSettings[d];
+							}
+						});
+					}
+					if(pram['@bit_len']<=16){
+					//	////console.log(f)
+						
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
 				}
 					
@@ -2147,7 +2322,11 @@ class SettingItem2 extends React.Component{
 		var st = {display:'inline-block', fontSize:ft[this.state.font], width:wd[this.state.font]}
 		var vst = {display:'inline-block', fontSize:ft[this.state.font], width:vwd[this.state.font]}
 		var self = this;
-			var res = vdefByIp[this.props.ip];
+		var fSize = 24;
+		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+	
+				var res = vdefByIp[this.props.ip];
 			var pVdef = _pVdef;
 			if(res){
 				pVdef = res[1];
@@ -2163,13 +2342,27 @@ class SettingItem2 extends React.Component{
 			}
 			
 			if(typeof catMapV2[path] != 'undefined'){
-				////console.log('1270')
+				////////console.log('1270')
 				namestring = catMapV2[path]['@translations'][this.props.language]
-				////console.log('1272')
+				////////console.log('1272')
 
 			}
-			//	console.log(namestring)		
-					
+			if(namestring.length > 28){
+				fSize = 18
+			}
+			else if(namestring.length > 24){
+				fSize= 20
+			}else if(namestring.length > 18){
+				fSize = 22
+			}
+			//	////console.log(namestring)		
+			//
+				var _st = {textAlign:'center',lineHeight:'51px', height:51, width:536, display:'table-cell', position:'relative'}
+
+		
+		//	return <div className='sItem noChild' onClick={this.onItemClick}><label style={{display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{namestring}</label>
+		//	<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>More...<img style={{position:'absolute', width:48}}/></label></div></div>
+		//	</div>		
 		return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{namestring}</label></div>)
 		}else{
 			var val, pram;
@@ -2188,27 +2381,85 @@ class SettingItem2 extends React.Component{
 			}
 			
 			if(typeof catMapV2[path] != 'undefined'){
-				////console.log('1270')
 				namestring = catMapV2[path]['@translations'][this.props.language]
-				////console.log('1272')
 			}
-				////console.log(['1195', this.props.name, this.props.data])
-			//		console.log(namestring)		
+			if(namestring.length > 28){
+				fSize = 18
+			}
+			else if(namestring.length > 24){
+				fSize= 20
+			}else if(namestring.length > 18){
+				fSize = 22
+			}
+			var _st = {textAlign:'center',lineHeight:'51px', height:51, width:536, display:'table-cell', position:'relative'}
+			if(typeof this.props.data[0]['child'] != 'undefined'){
+				var lkey = this.props.data[0].params[this.props.data[0].child]['@name']
+				val  = [this.getValue(this.props.data[0].params[this.props.data[0].child]['@data'], lkey)]
+				if(typeof pVdef[0][lkey] != 'undefined'){
+					pram = [pVdef[0][lkey]]
+				}else if(typeof pVdef[1][lkey] != 'undefined'){
+					pram = [pVdef[1][lkey]]
+				}else if(typeof pVdef[2][lkey] != 'undefined'){
+					pram = [pVdef[2][lkey]]
+				}else if(typeof pVdef[3][lkey] != 'undefined'){
+					pram = [pVdef[3][lkey]]
+				}else if(lkey == 'Nif_ip'){
+					pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+				}
+				if(this.props.data[0].params[this.props.data[0].child]['@children']){
+
+					for(var i=0;i<this.props.children[0].length; i++){
+						val.push(this.getValue(this.props.children[1][i], this.props.children[0][i]))
+				
+					
+						if(typeof pVdef[0][this.props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[0][this.props.children[0][i]])
+						}else if(typeof pVdef[1][this.props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[1][this.props.children[0][i]])
+						}else if(typeof pVdef[2][this.props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[2][this.props.children[0][i]])
+						}else if(typeof pVdef[3][this.props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[3][this.props.children[0][i]])
+						}
+					}
+				}
+
+			//	////console.log(['2409',pram])	<img style={{position:'absolute', width:75,top:0, left:800}} src='assets/angle-right.svg'/>
+				
+				if(pram[0]['@labels']){
+					label = true
+				}	
+
+				var edctrl = <EditControl ov={true} language={this.props.language} ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={lkey}/>
+				return (<div className='sItem noChild' onClick={this.onItemClick}> {edctrl}
+					<svg style={{position:'absolute', width:60,top:0, left:815, strokeWidth:'2%' }} xmlns="http://www.w3.org/2000/svg" fill="#e1e1e1" viewBox="0 0 24 24"  ><path stroke="#000" transform="rotate(90 12 12)" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>								
+			
+					</div>)
+			}
+		//	return <div className='sItem noChild' onClick={this.onItemClick}><label style={{display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{namestring}</label>
+		//	<div style={vlabelswrapperStyle}><div style={vlabelStyle}><div style={_st}>More...<img style={{position:'absolute', width:48}} src='assets/angle-right.svg'/></div></div></div>
+		//	</div>		
+					//if()
+		
 				return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{namestring}</label></div>)
 			}else{
 				val = [this.getValue(this.props.data['@data'], this.props.lkey)]
-				////console.log(['1250',this.props.lkey, typeof this.props.data['@data']])
-				////console.log(['1251', pVdef, pram])
+				////////console.log(['1250',this.props.lkey, typeof this.props.data['@data']])
+				////////console.log(['1251', pVdef, pram])
 				if(typeof pVdef[0][this.props.lkey] != 'undefined'){
 					pram = [pVdef[0][this.props.lkey]]
 				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
 					pram = [pVdef[1][this.props.lkey]]
 				}else if(typeof pVdef[2][this.props.lkey] != 'undefined'){
 					pram = [pVdef[2][this.props.lkey]]
+				}else if(typeof pVdef[3][this.props.lkey] != 'undefined'){
+					pram = [pVdef[3][this.props.lkey]]
+				}else if(this.props.lkey == 'Nif_ip'){
+					pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
 				}
 
 				if(this.props.data['@children']){
-					////console.log(['1346', this.props.data.children])
+		//			////console.log(['1346', this.props.data, this.props.children])
 					for(var i=0;i<this.props.children[0].length;i++){
 						val.push(this.getValue(this.props.children[1][i], this.props.children[0][i]))
 						if(typeof pVdef[0][this.props.children[0][i]] != 'undefined'){
@@ -2217,10 +2468,13 @@ class SettingItem2 extends React.Component{
 							pram.push(pVdef[1][this.props.children[0][i]])
 						}else if(typeof pVdef[2][this.props.children[0][i]] != 'undefined'){
 							pram.push(pVdef[2][this.props.children[0][i]])
+						}else if(typeof pVdef[3][this.props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[3][this.props.children[0][i]])
 						}
 					}
 				}
-				////console.log(['1252',pram])
+				////////console.log(['1252',pram])
+			//	console.log(this.props.lkey)
 				if(pram[0]['@labels']){
 					label = true
 				}	
@@ -2229,17 +2483,21 @@ class SettingItem2 extends React.Component{
 
 
 				val = [this.getValue(this.props.data['@data'], this.props.lkey)]
-				////console.log(['1250',this.props.lkey, typeof this.props.data])
-				////console.log(['1251', pVdef, pram])
+				////////console.log(['1250',this.props.lkey, typeof this.props.data])
+				////////console.log(['1251', pVdef, pram])
 				if(typeof pVdef[0][this.props.lkey] != 'undefined'){
 					pram = [pVdef[0][this.props.lkey]]
 				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
 					pram = [pVdef[1][this.props.lkey]]
 				}else if(typeof pVdef[2][this.props.lkey] != 'undefined'){
 					pram = [pVdef[2][this.props.lkey]]
-				}
+				}else if(typeof pVdef[3][this.props.lkey] != 'undefined'){
+					pram = [pVdef[3][this.props.lkey]]
+				}else if(lkey == 'Nif_ip'){
+						pram = [{'@name':'Nif_ip', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
+					}
 				if(this.props.data['@children']){
-					////console.log(['1346', this.props.data.children])
+					////////console.log(['1346', this.props.data.children])
 					for(var ch in this.props.data['@children']){
 						val.push(this.getValue(this.props.data['@children'][ch], ch))
 						if(typeof pVdef[0][ch] != 'undefined'){
@@ -2248,17 +2506,19 @@ class SettingItem2 extends React.Component{
 							pram.push(pVdef[1][ch])
 						}else if(typeof pVdef[2][ch] != 'undefined'){
 							pram.push(pVdef[2][ch])
+						}else if(typeof pVdef[3][ch] != 'undefined'){
+							pram.push(pVdef[3][ch])
 						}
 					}
 				}
-				////console.log(['1252',pram])
+				////////console.log(['1252',pram])
 				if(pram[0]['@labels']){
 					label = true
 				}
 			}
-		//		console.log(namestring)		
+		//		////console.log(namestring)		
 			
-				var edctrl = <EditControl language={this.props.language} ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={this.props.lkey}/>
+				var edctrl = <EditControl ov={false} language={this.props.language} ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={this.props.lkey}/>
 				return (<div className='sItem noChild'> {edctrl}
 					</div>)
 			
@@ -2277,7 +2537,7 @@ class SettingItem2 extends React.Component{
 		}
 	},
 	onChange(e){
-		console.log(['1412',e])
+		////console.log(['1412',e])
 		if(this.props.onChange){
 			this.props.onChange(e, this.props.Id)
 		}else{
@@ -2291,7 +2551,7 @@ class SettingItem2 extends React.Component{
 		
 	},
 	onInput(e){
-		console.log(['1425',e])
+		////console.log(['1425',e])
 		this.props.onInput(e, this.props.Id)
 	},
 	onFocus () {
@@ -2308,7 +2568,7 @@ class SettingItem2 extends React.Component{
 		}
 	},	
 	render(){
-		console.log('render key input wrapper..	')
+		////console.log('render key input wrapper..	')
 		return(<div style={this.props.Style}><KeyboardInput onFocus={this.onFocus} onRequestClose={this.onRequestClose} onInput={this.onInput} onChange={this.onChange} value={this.state.value} tid={this.props.tid} Style={this.props.Style} num={this.props.num}/></div>)
 	},
 })
@@ -2349,7 +2609,7 @@ var NestedEditControl = createReactClass({
 			return (<div onClick={this.switchMode}>{namestring}</div>);
 		}else{
 			var self = this;
-			////console.log('line 1264')
+			////////console.log('line 1264')
 			var rows = this.state.val.map(function(r,i){
 			var conts = r.map(function (v,j) {
 					// body...
@@ -2419,6 +2679,7 @@ class MultiEditControl extends React.Component{
 		value[i] = v// e.target.value
 	}
 	valChanged(v,i){
+		console.log(['2734',v,i,this.props.param[i]])
 		var val = v
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
@@ -2426,7 +2687,12 @@ class MultiEditControl extends React.Component{
 		var value = this.state.val;	
 		value[i] = val;
 		this.setState({val:value})
-		if(!Number.isNaN(val)){
+		if(this.props.param[i]['@bit_len'] > 16){
+			//val = v + "                    "
+
+			this.props.sendPacket(this.props.param[i], v)
+		}else if(!Number.isNaN(val)){
+			console.log('why')
 			this.props.sendPacket(this.props.param[i], parseInt(val));
 		}
 	}
@@ -2440,26 +2706,32 @@ class MultiEditControl extends React.Component{
 		this.props.sendPacket(this.props.param[id])
 	}
 	openSelector () {
-		var self = this;
-		if(this.refs.pw){
-			setTimeout(function () {
-				self.refs.pw.toggleCont();
-			},100)
-			
+		if(!this.props.ov){
+	
+			var self = this;
+			if(this.refs.pw){
+				setTimeout(function () {
+					self.refs.pw.toggleCont();
+				},100)
+				
+			}
 		}
 		
 	}
 	valClick (ind) {
-		if(this.refs['input' + ind]){
-			this.refs['input' + ind].toggle();
-		}else if(this.props.param[ind]['@rpcs']){
-			if(this.props.param[ind]['@rpcs']['clear']){
-				this.onClear(ind)
+		if(!this.props.ov){
+			if(this.refs['input' + ind]){
+				this.refs['input' + ind].toggle();
+			}else if(this.props.param[ind]['@rpcs']){
+				if(this.props.param[ind]['@rpcs']['clear']){
+					this.onClear(ind)
+				}
 			}
 		}
 	}
 	render() {
 		var namestring = this.props.name
+		//////console.log(['2692',namestring])
 			if(typeof vdefByIp[this.props.ip][5][this.props.name] != 'undefined'){
 				if(vdefByIp[this.props.ip][5][this.props.name]['@translations'][this.props.language]['name'] != ''){
 					namestring = vdefByIp[this.props.ip][5][this.props.name]['@translations'][this.props.language]['name']
@@ -2467,7 +2739,16 @@ class MultiEditControl extends React.Component{
 			}
 			
 		var self = this;
-		let lvst = {display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee',lineHeight:'51px'}
+		var fSize = 24;
+					if(namestring.length > 28){
+				fSize = 18
+			}
+			else if(namestring.length > 24){
+				fSize= 20
+			}else if(namestring.length > 18){
+				fSize = 22
+			}
+		let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}
 	
 		var isInt = false
 		var colors = ['#000','#eee']
@@ -2494,7 +2775,10 @@ class MultiEditControl extends React.Component{
 
 			if(typeof self.props.param[i]['@labels'] != 'undefined'){
 				
-				val = _pVdef[6][self.props.param[i]["@labels"]]['english'][d]
+				val = _pVdef[6][self.props.param[i]["@labels"]]['english'][d];
+				if((self.props.language != 'english')&&(typeof _pVdef[6][self.props.param[i]["@labels"]][self.props.language] != 'undefined')&&(typeof _pVdef[6][self.props.param[i]["@labels"]][self.props.language][d] == 'string') &&(_pVdef[6][self.props.param[i]["@labels"]][self.props.language][d].trim().length != 0)){
+					val = _pVdef[6][self.props.param[i]["@labels"]][self.props.language][d];
+				}
 				if((self.props.param[i]['@labels'] == 'InputSrc')){
 					if(self.props.ioBits[inputSrcArr[d]] == 0){
 						st.color = '#666'
@@ -2525,7 +2809,7 @@ class MultiEditControl extends React.Component{
 			acc = true
 		}}}
 		if(!acc){
-			return(<div><label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee',lineHeight:'51px'}}>{namestring + ': '}</label>
+			return(<div><label style={{display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{namestring + ': '}</label>
 				<div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>)
 
 		}else{
@@ -2537,18 +2821,29 @@ class MultiEditControl extends React.Component{
 				})
 			
 				var options;
+				
 				if(multiDropdown){
 					var lists = this.props.param.map(function (p) {
 						// body...
 						if(p['@name'].indexOf('TestConfigCount') != -1){
 							return [0,1,2,3,4,5,6,7,8,9]
 						}else{
-							return _pVdef[6][p["@labels"]]['english']
+							var list = _pVdef[6][p["@labels"]]['english'].slice(0);
+							if(self.props.language != 'english'){
+								if(typeof _pVdef[6][p["@labels"]][self.props.language] != 'undefined'){
+									list.forEach(function(lb,i){
+										if((typeof _pVdef[6][p["@labels"]][self.props.language][i] == 'string') &&(_pVdef[6][p["@labels"]][self.props.language][i].trim().length != 0)){
+											list[i] = _pVdef[6][p["@labels"]][self.props.language][i]
+										}
+									})
+								}
+							}
+							return list//_pVdef[6][p["@labels"]]['english']
 						}
 					})
 					options = <PopoutWheel vMap={this.props.vMap} language={this.props.language}  interceptor={isInt} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
-					return(<div><div onClick={this.openSelector}><label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee',lineHeight:'51px'}}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
+					return(<div><div onClick={this.openSelector}><label style={{display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
 					<div style={{paddingLeft:this.props.lvst.width}}>
 						{options}
 					</div></div>)
@@ -2569,7 +2864,7 @@ class MultiEditControl extends React.Component{
 							return <PopoutWheel vMap={self.props.vMap} language={this.props.language} interceptor={isInt} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[6][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
 						}else{
 							var num = true
-							if(self.props.param[i]['@name'] == 'ProdName'){
+							if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){
 								num = false
 							}
 							var lbl = namestring
@@ -2580,7 +2875,9 @@ class MultiEditControl extends React.Component{
 							return <CustomKeyboard vMap={self.props.vMap}  onFocus={self.onFocus} ref={'input'+i} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
 						}
 					})
-					return(<div><label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee',lineHeight:'51px'}}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>
+
+					return(<div><label style={{display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{namestring + ': '}</label>
+						<div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>
 						
 					)
 				}
@@ -2590,6 +2887,161 @@ class MultiEditControl extends React.Component{
 		
 	}
 }
+class CustomAlertClassedButton extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onClick = this.onClick.bind(this);
+		this.accept = this.accept.bind(this);
+	}
+	onClick () {
+		var self = this;
+		setTimeout(function(){
+			self.refs.cfmodal.show();
+		},100)	
+	}
+	accept (){
+		this.props.onClick()
+	}
+	render () {
+		var style = this.props.style || {}
+		var klass = 'customAlertButton'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		return	(<div style={style}><button className={klass} style={style} onClick={this.onClick} >{this.props.children}
+		
+		</button>
+			<AlertModal ref='cfmodal' accept={this.accept}>
+					<div style={{color:'#e1e1e1'}}>{this.props.alertMessage}</div>
+				</AlertModal>
+		</div>)
+	}
+}
+class CustomAlertButton extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onClick = this.onClick.bind(this);
+		this.accept = this.accept.bind(this);
+	}
+	onClick () {
+		var self = this;
+		setTimeout(function(){
+			self.refs.cfmodal.show();
+		},100)	
+	}
+	accept (){
+		this.props.onClick()
+	}
+	render () {
+		var style = this.props.style || {}
+		var klass = 'customAlertButton'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		return	(<div className={klass} style={style}><div onClick={this.onClick} >{this.props.children}
+		
+		</div>
+			<AlertModal ref='cfmodal' accept={this.accept}>
+					<div>{this.props.alertMessage}</div>
+				</AlertModal>
+		</div>)
+	}
+}
+class AlertModal extends React.Component{
+	constructor(props){
+		super(props)
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false});
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+		this.accept = this.accept.bind(this);
+	}
+	show () {
+		this.setState({show:true})
+	}
+	close () {
+		var self = this;
+		setTimeout(function () {
+			self.setState({show:false})
+		},100)
+		
+	}
+	accept(){
+		this.props.accept();
+	}
+	render () {
+		var	cont = ""
+		if(this.state.show){
+		cont =  <AlertModalCont vMap={this.props.vMap} accept={this.accept} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</AlertModalCont>
+		}
+		return <div hidden={!this.state.show} className= 'pop-modal'>
+		<div className='modal-x' onClick={this.close}>
+			 	 <svg viewbox="0 0 40 40">
+    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
+  				</svg>
+			</div>
+			{cont}
+		</div>
+	}
+}
+class AlertModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.handleClickOutside = this.handleClickOutside.bind(this)
+		this.close = this.close.bind(this);
+		this.accept = this.accept.bind(this);
+		this.cancel = this.cancel.bind(this);
+	}
+	componentDidMount() {
+		// body...
+	}
+	handleClickOutside(e) {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+		
+	}
+	close() {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+	}
+	accept(){
+		var self = this;
+		this.props.accept();
+		setTimeout(function(){
+			if(self.props.show){
+			self.props.close();
+			}
+		}, 100)
+		
+	}
+	cancel(){
+		var self = this;
+		setTimeout(function(){
+			self.close();
+			
+		}, 100)
+	}
+	render () {
+		// body...
+		var self = this;
+		
+	  return( <div className='alertmodal-outer'>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Confirm Action</div>
+	  			{this.props.children}
+				<div><button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.accept}>Confirm</button><button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1',background:'#5d5480', width:150, borderRadius:20}} onClick={this.close}>Cancel</button></div>
+	  		
+		  </div>)
+
+	}
+}
+var AlertModalCont =  onClickOutside(AlertModalC);
 class CustomLabel extends React.Component{
 	constructor(props) {
 		super(props)
@@ -2640,7 +3092,6 @@ class PopoutWheel extends React.Component{
 		this.toggleCont =this.toggleCont.bind(this);
 	}
 	onChange (v,i,i2) {
-		// body...
 		if(typeof this.props.index != 'undefined'){
 			this.props.onChange(v,this.props.index)
 		}else{
@@ -2649,47 +3100,41 @@ class PopoutWheel extends React.Component{
 		
 	}
 	toggleCont () {
-		// body...
 		this.refs.md.toggle();
 	}
 	toggle () {
-		// body...
 		this.refs.md.toggle();
 	}
 	render () {
-		// body...
 		var value = "placeholder"
-		//return(<div  className='customSelect' style={{width:170,   background: 'rgba(255,255,255,0.4)'	}}><div style={{padding:5}}  onClick={this.toggleCont}><div  className='popoutCustomSelect'>{value}</div><div style={{display:'inline-block'}}><img src='assets/dropdown.png' style={{width:30, height:30, marginBottom:-10}}/></div></div>
 		return	<PopoutWheelModal vMap={this.props.vMap} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
-		//	</div>)
 	}
 }
 class PopoutWheelModal extends React.Component{
 	constructor(props) {
 		super(props)
-		// body...
 		this.state = {show:false}
 		this.toggle = this.toggle.bind(this);
 		this.close = this.close.bind(this);
+		this.onChange = this.onChange.bind(this);
 	}
 	toggle () {
-		// body...
 		this.setState({show:true})
 	}
 	close () {
-		// body...
 		var self = this;
 		setTimeout(function () {
-			// body...
 			self.setState({show:false})
 		},80)
 		
 	}
+	onChange(v,i,i2){
+		this.props.onChange(v,i,i2)
+	}
 	render () {
 		var	cont = ""
 		if(this.state.show){
-			//		console.log(['2126', this.props.vMap])
-		cont =  <PopoutWheelModalCont vMap={this.props.vMap} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.props.onChange} close={this.close} value={this.props.value} options={this.props.options} />
+		cont =  <PopoutWheelModalCont vMap={this.props.vMap} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
 		<div className='modal-x' onClick={this.close}>
@@ -2704,7 +3149,7 @@ class PopoutWheelModal extends React.Component{
 class PopoutWheelModalC extends React.Component{
 	constructor(props){
 		super(props);
-		this.state = {value:this.props.value}
+		this.state = {value:this.props.value.slice(0)}
 		this.handleClickOutside = this.handleClickOutside.bind(this)
 		this.close = this.close.bind(this);
 		this.select = this.select.bind(this);
@@ -2713,7 +3158,7 @@ class PopoutWheelModalC extends React.Component{
 	}
 	componentDidMount() {
 		// body...
-		this.setState({value:this.props.value})
+		this.setState({value:this.props.value.slice(0)})
 	}
 	handleClickOutside(e) {
 		// body...
@@ -2733,11 +3178,13 @@ class PopoutWheelModalC extends React.Component{
 		var values = this.state.value
 		values[i] = v;
 		this.setState({value:values})
-		//this.props.onChange(v,i)
+		////console.log([2913,v])
 	}
 	accept() {
 		var self = this;
+		////console.log(['accept',this.props.value[0], this.state.value[0]])
 		if(this.props.value[0] != this.state.value[0]){
+			////console.log('wtf')
 			this.props.onChange(this.state.value[0], 0)
 			if(this.props.value.length > 1){
 				if(this.props.value[1] != this.state.value[1]){
@@ -2794,7 +3241,7 @@ class PopoutWheelModalC extends React.Component{
 		}else{
 			this.close();
 		}
-		
+
 
 	}
 	help () {
@@ -2809,8 +3256,8 @@ class PopoutWheelModalC extends React.Component{
 			return op.length*40
 		})
 		var height = hs.reduce(function(a,b){ return Math.max(a,b)});
-		if(height > 360){
-			height = 360;
+		if(height > 315){
+			height = 315;
 		}
 		var wheels;
 		if(this.state.value.length == 1){
@@ -2821,14 +3268,21 @@ class PopoutWheelModalC extends React.Component{
 		}else{
 			wheels  = this.state.value.map(function (m,i) {
 			// body...
-		//	console.log(['2258',self.props.vMap,i])
-			return <PopoutWheelSelector height={height} label={vdefMapV2['@labels'][self.props.vMap['@labels'][i]][this.props.language]} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
+		//	////console.log(['2258',self.props.vMap,i])
+		  	var lb = ''
+		  	if(typeof self.props.vMap != 'undefined'){
+		  		lb = 	vdefMapV2['@labels'][self.props.vMap['@labels'][i]][self.props.language]['name']
+				
+		  	}
+		  	return <PopoutWheelSelector height={height} label={lb} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
 			})
 		}
 		
 		var tooltiptext = 'This is a tooltip'
-		if(this.props.vMap['@translations']['english']['description'].length >0){
-			tooltiptext = this.props.vMap['@translations']['english']['description'];
+		if(typeof this.props.vMap != 'undefined'){
+			if(this.props.vMap['@translations']['english']['description'].length >0){
+				tooltiptext = this.props.vMap['@translations']['english']['description'];
+			}
 		}
 	  return( <div className='selectmodal-outer'>
 	  		<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{this.props.name}</div>
@@ -2866,13 +3320,13 @@ class PopoutWheelSelector extends React.Component{
 	}
 	handleScroll () {
 		// body...
-		if(this.props.options.length > 8){
+		if(this.props.options.length > 7){
 			if(document.getElementById(this.props.Id).scrollTop > 5){
 				this.refs.arrowTop.show();
 			}else{
 				this.refs.arrowTop.hide();
 			}
-			if(document.getElementById(this.props.Id).scrollTop+370 < this.props.options.length*45 ){
+			if(document.getElementById(this.props.Id).scrollTop+325 < this.props.options.length*45 ){
 				this.refs.arrowBot.show();
 			}else{
 				this.refs.arrowBot.hide();
@@ -2891,7 +3345,7 @@ class PopoutWheelSelector extends React.Component{
 	render () {
 		// body...
 		var self = this;
-		var sa = this.props.options.length > 8
+		var sa = this.props.options.length > 7
 		var options = this.props.options.map(function (o,i) {
 			// body...
 			if(i == self.props.value){
@@ -2914,11 +3368,11 @@ class PopoutWheelSelector extends React.Component{
 		return(
 			<div style={{display:'inline-block'}}>
 			{ul}
-			<ScrollArrow ref='arrowTop' active={sa} width={48} marginTop={-25}  mode={'top'} onClick={this.scrollUp}/>
+			<ScrollArrow ref='arrowTop' active={sa} offset={48} width={48} marginTop={-25}  mode={'top'} onClick={this.scrollUp}/>
 			<div id={this.props.Id} onScroll={this.handleScroll} style={{width:220, height:this.props.height, overflowY:'scroll', padding:5, marginLeft:5, marginRight:5, background:'rgba(200,200,200,1)'}}>
 				{options}
 			</div>
-			<ScrollArrow ref='arrowBot' active={sa} width={48} marginTop={-20} mode={'bot'} onClick={this.scrollDown}/>
+			<ScrollArrow ref='arrowBot' active={sa} offset={48} width={48} marginTop={-20} mode={'bot'} onClick={this.scrollDown}/>
 		
 			</div>)
 		
@@ -2963,13 +3417,13 @@ class PopoutSelectModal extends React.Component{
 	}
 	toggle () {
 		// body...
-		console.log(['1882',this.props.options[this.props.value]])
+		//////console.log(['1882',this.props.options[this.props.value]])
 		
 		this.setState({show:true})
 	}
 	close () {
 		// body...
-		console.log(['1882',this.props.options[this.props.value]])
+	//	////console.log(['1882',this.props.options[this.props.value]])
 		
 		this.setState({show:false})
 	}
@@ -3106,9 +3560,15 @@ class EditControl extends React.Component{
 		}
 		var value = this.state.val;
 		value[0] = e
-		this.props.sendPacket(this.props.param[0], parseInt(val));
+		if(this.props.param[0]['@type'] =='ipv4_address'){
+			this.props.sendPacket(this.props.param[0], val);
 	
-		////console.log(this.props.data)
+		}else{
+			this.props.sendPacket(this.props.param[0], parseInt(val));
+		
+		}
+		
+		////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	valChangedl(e){
@@ -3117,26 +3577,26 @@ class EditControl extends React.Component{
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
 		}
-			//////console.log(val)
+			//////////console.log(val)
 			this.props.sendPacket(this.props.param[0], parseInt(val));
 		var value = this.state.val;
 		value[0] = e.target.value
-		////console.log(this.props.data)
+		////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	valChangedb(e){
-		////console.log(e)
+		////////console.log(e)
 		var val = e;
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
 		}
 		var value = this.state.val;
 		value[1] = e
-		////console.log(this.props.data)
+		////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	valChangedlb(e){
-	//	////console.log(e)
+	//	////////console.log(e)
 		var val = e.target.value;
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
@@ -3144,7 +3604,7 @@ class EditControl extends React.Component{
 			this.props.sendPacket(this.props.param[1], parseInt(val));
 		var value = this.state.val;
 		value[1] = e.target.value
-		////console.log(this.props.data)
+		////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	componentWillReceiveProps (newProps) {
@@ -3153,7 +3613,7 @@ class EditControl extends React.Component{
 	deactivate () {
 		// body...
 		if(this.refs.ed){
-			////console.log(['1511', 'this the prob'])
+			////////console.log(['1511', 'this the prob'])
 			this.refs.ed.setState({mode:0})
 		}else{
 			this.setState({mode:0})	
@@ -3212,7 +3672,7 @@ class EditControl extends React.Component{
 		}
 		var namestring = this.props.name;
 		if(namestring.indexOf('INPUT_')!= -1){
-			////console.log(namestring)
+			////////console.log(namestring)
 			namestring = namestring.slice(6);
 		}else if(namestring.indexOf('OUT_')!=-1){
 			namestring = namestring.slice(4)
@@ -3223,7 +3683,7 @@ class EditControl extends React.Component{
 		if(this.props.param[0]["@name"].indexOf('ProdName')!=-1){
 			num = false
 		}
-		////console.log(['1720',this.props.name, this.props.data])
+		////////console.log(['1720',this.props.name, this.props.data])
 		if(typeof vMapV2[this.props.name] != 'undefined'){
 				if(vMapV2[this.props.name]['@translations'][this.props.language]['name'] != ''){
 					namestring = vMapV2[this.props.name]['@translations'][this.props.language]['name']
@@ -3231,35 +3691,52 @@ class EditControl extends React.Component{
 			}
 		if(this.props.data.length > 0	){
 			if(Array.isArray(this.props.data[0])){
-				////console.log('1728')
+				////////console.log('1728')
 				return (<NestedEditControl language={this.props.language}  ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}else{
-				////console.log('1732')
-				return (<MultiEditControl  vMap={vMapV2[this.props.name]} language={this.props.language} ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
+				////////console.log('1732')
+				return (<MultiEditControl ov={this.props.ov} vMap={vMapV2[this.props.name]} language={this.props.language} ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 			}	
 		}
-
-		var lvst = {display: 'inline-block',fontSize: 24,width: '310',background: '#5d5480',borderRadius: 20,textAlign: 'center', color: '#eee'}
+		var fSize = 24;
+			if(namestring.length > 28){
+				fSize = 18
+			}
+			else if(namestring.length > 24){
+				fSize= 20
+			}else if(namestring.length > 18){
+				fSize = 22
+			}
+		var lvst = {display: 'inline-block',fontSize: fSize,width: '310',background: '#5d5480',borderRadius: 20,textAlign: 'center', color: '#eee'}
+		var st = this.props.vst;
+			st.width = 536
 		
 		var dval = this.props.data[0]
 		if(this.props.label){
-			dval=_pVdef[6][this.props.param[0]["@labels"]]['english'][this.props.data[0]]
+			if(_pVdef[6][this.props.param[0]["@labels"]][this.props.language]){
+				if(_pVdef[6][this.props.param[0]["@labels"]][this.props.language][this.props.data[0]]){
+					dval = _pVdef[6][this.props.param[0]["@labels"]][this.props.language][this.props.data[0]]
+				}else{
+					dval=_pVdef[6][this.props.param[0]["@labels"]]['english'][this.props.data[0]]
+				}
+			}else{
+				dval=_pVdef[6][this.props.param[0]["@labels"]]['english'][this.props.data[0]]
+			}
 		}
 		
-			var st = this.props.vst;
-			st.width = 536
+			
 			if(this.state.mode == 0){
 				return <div onClick={this.switchMode}><label style={lvst}>{namestring + ": "}</label><label style={st}>{dval}</label></div>
 			}else{
 				if(this.props.label){
 					var selected = this.state.val[0];
-					////console.log(selected)
+					////////console.log(selected)
 					if (this.props.param[0]["@labels"] == 'InputSrc'){
-						console.log(['1795', 'Input Source bits'])
+			//			////console.log(['1795', 'Input Source bits'])
 					}else if(this.props.param[0]["@labels"] == 'OutputSrc'){
-						console.log(['1797', 'Output Source bits'])
+			//			////console.log(['1797', 'Output Source bits'])
 					}
 					var options = _pVdef[6][this.props.param[0]["@labels"]]['english'].map(function(e,i){
 						if(i==selected){
@@ -3424,6 +3901,35 @@ class Modal extends React.Component{
 		this.updateMeter =this.updateMeter.bind(this);
 		this.updateSig = this.updateSig.bind(this);
 		this.clear = this.clear.bind(this);
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+	}
+	componentWillReceiveProps (newProps){
+		if(typeof newProps.override != 'undefined'){
+			if(newProps.override == 0){
+				this.setState({show:false})
+			}else{
+				this.setState({show:true})
+			}
+			
+		}
+	}
+	show(){
+		this.setState({show:true})
+	
+	}
+	close(){
+		var self = this;
+	
+		this.setState({show:false})
+		setTimeout(function(){
+			//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
+			self.setState({override:false})
+			if(typeof self.props.onClose != 'undefined'){
+			
+				self.props.onClose();
+			}
+		},50)
 	}
 	toggle () {
 		var self = this;
@@ -3594,7 +4100,7 @@ class MultiBankUnit extends React.Component{
 		var dat = []
 		if(this.props.data.length >0){
 			dat = this.props.data
-			////console.log(dat)
+			////////console.log(dat)
 		}
 		this.state =  ({banks:dat})
 		this.onRMsg = this.onRMsg.bind(this);
@@ -3603,14 +4109,14 @@ class MultiBankUnit extends React.Component{
 	onRMsg (e,d) {
 		// body...
 		if(this.refs[d.ip]){
-			////console.log(d)
+			////////console.log(d)
 			this.refs[d.ip].onRMsg(e,d)
 	
 		}
 	}
 	onParamMsg2(e,d){
 		if(this.refs[d.ip]){
-			//////console.log(d)
+			//////////console.log(d)
 			this.refs[d.ip].onParamMsg2(e,d)
 	
 		}
@@ -3811,12 +4317,12 @@ class StatBarMB extends React.Component{
 		var klass =''
 		if(this.state.fault){
 			klass = 'faultactive'
-			////console.log(klass)
+			////////console.log(klass)
 		}
 		if(!this.state.live){
 
 			klass = 'inactive'
-			////console.log(klass)
+			////////console.log(klass)
 		}
 		var list = ['dry','wet','DSA']
 		var mtab = (	<table className='mtab'><tbody>
@@ -3951,7 +4457,7 @@ class SingleUnit extends React.Component{
 		if(!this.state.live){
 			this.setState({live:true})
 		}
-		//////console.log([a,b])
+		//////////console.log([a,b])
 		this.refs.lv.update(a,b)	
 	}
 	onRMsg (e,d) {
@@ -3963,7 +4469,7 @@ class SingleUnit extends React.Component{
    		var res = vdefByIp[this.props.unit.ip]
 		var lcd_type = e.type
 		var rec = e.rec
-		//console.log(['2767',e])
+		//////console.log(['2767',e])
 		if(res){
 			var pVdef = res[1]
 			if(lcd_type == 1){
@@ -3972,9 +4478,7 @@ class SingleUnit extends React.Component{
 				
 					
 				}else{
-					this.setProdVarsInt(rec['ProdName'],rec['Sens_A'],rec['PhaseMode_A'],rec['Sens_B'],rec['PhaseMode_B'])
-					//this.setProdVarsInt(getVal(prodArray, 1, 'ProdName', pVdef),getVal(prodArray, 1, 'Sens_A', pVdef),getVal(prodArray, 1, 'Sens_B', pVdef),getVal(prodArray,1,'PhaseMode_A', pVdef),getVal(prodArray,1,'PhaseMode_B', pVdef))
-					
+					this.setProdVarsInt(rec['ProdName'],rec['Sens_A'],rec['PhaseMode_A'],rec['Sens_B'],rec['PhaseMode_B'])	
 				}
 				
 
@@ -4186,7 +4690,7 @@ class MbSetup extends React.Component{
 			this.toggleOptions = this.toggleOptions.bind(this);
 		}
 		editMb () {
-			////console.log(this.props.index)
+			////////console.log(this.props.index)
 			this.props.edit(this.props.index)
 		}
 		remove () {
@@ -4217,43 +4721,10 @@ class MbSetup extends React.Component{
 					</div>)	
 		}
 }
-/*	sendAck  () {
-		var packet = dsp_rpc_paylod_for(19,[644,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	}
-	testMan () {
-		var packet = dsp_rpc_paylod_for(19,[608,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	}
-	testMan2 () {
-		var packet = dsp_rpc_paylod_for(19,[610,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	}
-	testHalo () {
-		var packet = dsp_rpc_paylod_for(19,[604,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	}
-	testHalo2 () {
-		var packet = dsp_rpc_paylod_for(19,[606,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-	}
-	sendOp () {
-		// body...
-		var packet = dsp_rpc_paylod_for(21,[14,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-		
-	}
-	quitTest () {
-		// body...
-		var packet = dsp_rpc_paylod_for(21,[15,0,0])
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
-		
-	}*/
+
 class DetectorView extends React.Component{
 	constructor(props) {
 		super(props)
-		// body...
-		console.log(['4070',this.props])
 		var mqls = [
 			window.matchMedia('(min-width: 300px)'),
 			window.matchMedia('(min-width: 467px)'),
@@ -4268,7 +4739,7 @@ class DetectorView extends React.Component{
 		this.state =  {callback:null, rec:{},	showTest:false, faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, 
 			prodSettings:{}, sysSettings:{}, combinedSettings:[],cob2:[], pages:{}, showCal:false,
 			minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, 
-			peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{}, updateCount:0, language:0,rejOn:0}
+			peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{},framRec:{}, updateCount:0, language:0,rejOn:0,showSens:false,level:0}
 		this.sendPacket = this.sendPacket.bind(this);
 		this.onRMsg = this.onRMsg.bind(this);
 		this.toggleAttention = this.toggleAttention.bind(this);
@@ -4305,30 +4776,63 @@ class DetectorView extends React.Component{
 		this.sendOp = this.sendOp.bind(this);
 		this.quitTest = this.quitTest.bind(this);
 		this.calClosed = this.calClosed.bind(this);
-		
+		this.tmClosed = this.tmClosed.bind(this);
+		this.snmClosed = this.snmClosed.bind(this);
+		this.showTestRModal = this.showTestRModal.bind(this);
+		this.getTestText = this.getTestText.bind(this);
+		this.onSens = this.onSens.bind(this);
+		this.toggleSensSettings = this.toggleSensSettings.bind(this);
+		this.toggleLogin = this.toggleLogin.bind(this);
+		this.login = this.login.bind(this);
+		this.logout = this.logout.bind(this);
+		this.authenticate = this.authenticate.bind(this);
+		this.setAuthAccount = this.setAuthAccount.bind(this);
+
+		ifvisible.setIdleDuration(300);
+		var self = this;
+		ifvisible.on("idle", function(){
+			self.logout()
+		});
 	}
 	componentWillReceiveProps (newProps) {
 		var packet = dsp_rpc_paylod_for(19,[102,0,0])
 		socket.emit('rpc',{ip:newProps.det.ip, data:packet})
 		this.setState({netpoll:newProps.netpolls, update:true})
 	}
+	setAuthAccount(pack){
+		console.log(['4780',pack])
+		this.setState({level:pack.level, username:pack.user, update:true	})
+	}
+	logout(){
+		this.refs.fModal.close();
+		this.refs.tModal.close();
+		this.refs.teModal.close();
+		this.refs.sModal.close();
+		this.refs.snModal.close();
+		this.refs.calibModal.close();
+		this.refs.im.refs.pedit.close();
+		this.refs.im.refs.netpolls.close();		
+		if(this.state.level != 0){
 
+			notify.show("Session timed out")
+			this.setState({level:0, username:'Not Logged In',update:true})
+
+		}
+	}
 	toggleAttention () {
 		this.refs.fModal.toggle();
 	}
 	onRMsg (e,d) {
-		// body...
-		//////console.log([e,d])
 		if(this.props.det.ip != d.ip){
 			return;
 		}
 		var msg = e.data
 		var data = new Uint8Array(msg);
-		console.log(['3489',data])
+	//	////console.log(['3489',data])
 		if(data[1] == 18){
 			//prodList
 
-			console.log('prodList')
+	//		////console.log('prodList')
 			var prodbits = data.slice(3)
 			var dat = []
 			for(var i = 0; i < 99; i++){
@@ -4357,7 +4861,7 @@ class DetectorView extends React.Component{
 		if(this.props.det.ip != d.ip){
 			return;	
 		}
-		////console.log(['2600',e])
+		////////console.log(['2600',e])
 		var nps = this.state.netpoll
 		if(nps.length == 15){
 			nps.splice(1,-1);
@@ -4368,33 +4872,37 @@ class DetectorView extends React.Component{
 	listenToMq () {
 		this.setState({minW:this.state.minMq.matches, update:true})	
 	}
-	getCob (sys,prod,dyn) {
+	getCob (sys,prod,dyn, fram) {
 		// body...
+
 		var vdef = vdefByIp[this.props.det.ip]
 		var _cvdf = JSON.parse(JSON.stringify(vdef[4][0]))
-		var cob =  iterateCats(_cvdf, vdef[1],sys,prod, vdef[5],dyn)
+		//////console.log(vdef[1])
+		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
 		vdef = null;
 		_cvdf = null;
+		//////console.log(cob)
 		return cob
+
 	}
-	getPages (sys,prod,dyn) {
+	getPages (sys,prod,dyn, fram) {
 		// body...
 		var vdef = vdefByIp[this.props.det.ip]
 		var _pages = JSON.parse(JSON.stringify(vdef[6]))
 		var pages = {}
 		for(var pg in _pages){
-			pages[pg] = iterateCats(_pages[pg], vdef[1],sys,prod, vdef[5],dyn)
+			pages[pg] = iterateCats2(_pages[pg], vdef[1],sys,prod, vdef[5],dyn, fram)
 		}
 		vdef = null;
 		_pages = null;
 		return pages
 	}
-	getPage (pg,sys,prod,dyn) {
+	getPage (pg,sys,prod,dyn, fram) {
 		// body...
 		var vdef = vdefByIp[this.props.det.ip]
 		var _page = JSON.parse(JSON.stringify(vdef[6][pg]))
 		var page = {}
-		page = iterateCats(_page, vdef[1],sys,prod, vdef[5],dyn)
+		page = iterateCats2(_page, vdef[1],sys,prod, vdef[5],dyn, fram)
 	
 		vdef = null;
 		_page = null;
@@ -4410,7 +4918,7 @@ class DetectorView extends React.Component{
 		var self = this;
    		var lcd_type = e.type;
   	    if(lcd_type== 0){
- 			console.log('sys')
+ 			////console.log('sys')
 			if(vdefByIp[d.ip]){
 				var sysSettings = e.rec
     			var pages;// = {}
@@ -4424,8 +4932,8 @@ class DetectorView extends React.Component{
 						this.refs.im.parseInfo(sysSettings, this.state.prodSettings)
 					}	
 				if(isDiff(sysSettings,this.state.sysSettings)){
-					cob2 = this.getCob(sysSettings, this.state.prodSettings, this.state.rec);
-					pages = this.getPages(sysSettings, this.state.prodSettings, this.state.rec);
+					cob2 = this.getCob(sysSettings, this.state.prodSettings, this.state.rec, this.state.framRec);
+					pages = this.getPages(sysSettings, this.state.prodSettings, this.state.rec, this.state.framRec);
 					//var langs = ['english','french','spanish','portuguese','german','italian','polish','turkish']
 					var lang = sysSettings['Language']
 					this.setState({sysSettings:sysSettings,cob2:cob2, pages:pages, updateCount:0,update:true,language:lang})
@@ -4445,8 +4953,8 @@ class DetectorView extends React.Component{
 						this.refs.im.parseInfo(this.state.sysSettings, prodRec)
 					}
 				if(isDiff(prodRec,this.state.prodSettings)){
-					cob2 = this.getCob(this.state.sysSettings, prodRec, this.state.rec)
-					pages = this.getPages(this.state.sysSettings, prodRec, this.state.rec)
+					cob2 = this.getCob(this.state.sysSettings, prodRec, this.state.rec, this.state.framRec)
+					pages = this.getPages(this.state.sysSettings, prodRec, this.state.rec, this.state.framRec)
 				
 					this.setState({prodSettings:prodRec, cob2:cob2, pages:pages, updateCount:0,update:true})
 				}
@@ -4503,10 +5011,10 @@ class DetectorView extends React.Component{
 							pled_b = 1
 						}
 
-						if((this.refs.im.state.peak !=pka)||(this.refs.im.state.rpeak != rpka)||(this.refs.im.state.xpeak != xpka)||(this.refs.im.state.rej != rej)
-							||(this.refs.im.state.phase != phaseA)||(this.refs.im.state.peakb !=pkb)||(this.refs.im.state.rpeakb != rpkb)||(this.refs.im.state.xpeakb != xpkb)
+						if((this.refs.im.state.rpeak != rpka)||(this.refs.im.state.xpeak != xpka)||(this.refs.im.state.rej != rej)
+							||(this.refs.im.state.phase != phaseA)||(this.refs.im.state.rpeakb != rpkb)||(this.refs.im.state.xpeakb != xpkb)
 							||(this.refs.im.state.phaseb != phaseB)||(this.refs.im.state.phaseFast != phaseSpeedA)||(this.refs.im.state.phaseFastB != phaseSpeedB)||(this.refs.im.state.pled_a !=pled_a)||(this.refs.im.state.pled_b !=pled_b)){
-							this.refs.im.setState({peak:pka,peakb:pkb,rpeak:rpka,rpeakb:rpkb,xpeak:xpka,xpeakb:xpkb,rej:rej,phase:phaseA,phaseb:phaseB,phaseFast:phaseSpeedA,phaseFastB:phaseSpeedB, pled_a:pled_a, pled_b:pled_b})		
+							this.refs.im.setState({rpeak:rpka,rpeakb:rpkb,xpeak:xpka,xpeakb:xpkb,rej:rej,phase:phaseA,phaseb:phaseB,phaseFast:phaseSpeedA,phaseFastB:phaseSpeedB, pled_a:pled_a, pled_b:pled_b})		
 						}
 						if(this.refs.cb){
 							if((this.refs.cb.state.rpeak != rpka)||(this.refs.cb.state.xpeak != xpka)||(this.refs.cb.state.phase != phaseA)||(this.refs.cb.state.rpeakb != rpkb)||(this.refs.cb.state.xpeakb != xpkb)
@@ -4515,6 +5023,7 @@ class DetectorView extends React.Component{
 							}
 						}
 						this.refs.im.update(siga,sigb)
+						this.refs.im.updatePeak(pka,pkb)
   						pka = null;
   						pkb = null;
   						siga = null;
@@ -4562,14 +5071,14 @@ class DetectorView extends React.Component{
 						faultArray.push(f)
 						}
 					});
-					console.log(rejOn)
+					//////console.log(rejOn)
 					
   					if(this.state.faultArray.length != faultArray.length){
   						shouldUpdate = true;
   						//this.setState({faultArray:faultArray, rejOn:rejOn, update:true})
   					}else if(this.state.rejOn != rejOn){
   						shouldUpdate = true
-  						//console.log(['4566', rejOn])
+  						//////console.log(['4566', rejOn])
   					}else{
   						//var diff = false;
   						faultArray.forEach(function (f) {
@@ -4584,6 +5093,7 @@ class DetectorView extends React.Component{
   					var siga = uintToInt(prodRec['DetectSignal_A'],16)
   					var sigb = uintToInt(prodRec['DetectSignal_B'],16)
 
+  					//todo - refactor modals?
   					this.refs.sModal.updateMeter(siga,sigb)
   					this.refs.sModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])
   					this.refs.snModal.updateMeter(siga,sigb)
@@ -4592,6 +5102,10 @@ class DetectorView extends React.Component{
   					this.refs.calibModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])
   					this.refs.teModal.updateMeter(siga,sigb)
   					this.refs.teModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])
+  					this.refs.tModal.updateMeter(siga,sigb)
+  					this.refs.tModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])
+  					this.refs.loginModal.updateMeter(siga,sigb)
+  					this.refs.loginModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])
   						
   					if(this.state.updateCount ==3){
   						if((this.refs.sModal.state.show && !this.refs.sModal.state.keyboardVisible) || (this.refs.snModal.state.show && !this.refs.snModal.state.keyboardVisible)
@@ -4603,13 +5117,13 @@ class DetectorView extends React.Component{
 
   						if(shouldUpdate){
   							if(this.refs.sModal.state.show){
-  								var	cob2 = this.getCob(this.state.sysSettings, this.state.prodSettings, prodRec)
+  								var	cob2 = this.getCob(this.state.sysSettings, this.state.prodSettings, prodRec, this.state.framRec)
   								this.setState({rec:prodRec,faultArray:faultArray, cob2:cob2, rejOn:rejOn, updateCount:0,update:shouldUpdate})
-  								//console.log(['3196',cob2])
+  								//////console.log(['3196',cob2])
   								
   								cob2 = null;
   							}else if(this.refs.snModal.state.show){
-  								var	sns = this.getPage('Sens',this.state.sysSettings,this.state.prodSettings, prodRec)
+  								var	sns = this.getPage('Sens',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Sens'] = sns
   								this.setState({rec:prodRec, pages:pages,faultArray:faultArray, rejOn:rejOn,updateCount:0,update:shouldUpdate})
@@ -4617,15 +5131,15 @@ class DetectorView extends React.Component{
   								pages = null;
 
   							}else if(this.refs.teModal.state.show){
-  								var	te = this.getPage('Test',this.state.sysSettings,this.state.prodSettings, prodRec)
+  								var	te = this.getPage('Test',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Test'] = te
   								this.setState({rec:prodRec, pages:pages,faultArray:faultArray,rejOn:rejOn, updateCount:0,update:shouldUpdate})
   								te = null;
   								pages = null;
   							}else if(this.state.showCal){
-  								//console.log(['3878',prodRec['PhaseAngleAuto_B']])
-  								var	cal = this.getPage('Calibration',this.state.sysSettings,this.state.prodSettings, prodRec)
+  								//////console.log(['3878',prodRec['PhaseAngleAuto_B']])
+  								var	cal = this.getPage('Calibration',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Calibration'] = cal
   								this.setState({rec:prodRec, pages:pages,faultArray:faultArray, rejOn:rejOn, updateCount:0,update:shouldUpdate})
@@ -4635,7 +5149,7 @@ class DetectorView extends React.Component{
   								this.setState({rec:prodRec,faultArray:faultArray, rejOn:rejOn, updateCount:0, update:shouldUpdate})
   							}
   						}else{
-  							//console.log(rejOn)
+  							//////console.log(rejOn)
   							this.setState({rec:prodRec, rejOn:rejOn,faultArray:faultArray, updateCount:(this.state.updateCount+1)%6, update:shouldUpdate})
   						}
   						faultArray = null;
@@ -4647,7 +5161,15 @@ class DetectorView extends React.Component{
 
    		}else if(lcd_type == 3){
    					
-			var prodRec = e.rec
+			var framRec = e.rec
+			framRec['Nif_ip'] = this.props.det.nif_ip
+			if(isDiff(framRec, this.state.framRec)){
+				var cob2 = this.getCob(this.state.sysSettings, this.state.prodSettings, this.state.rec, framRec)
+				
+				this.setState({framRec:framRec,cob2:cob2, update:true})
+			
+			}
+			framRec = null;
 
 		}else if(lcd_type == 4){
    				var testRec = e.rec
@@ -4699,22 +5221,35 @@ class DetectorView extends React.Component{
 		this.refs.lv.setLEDs(pled_a,det_a,pled_b,det_b)
 	}
 	showSettings () {
+		if((vdefByIp[this.props.det.ip][4][0].acc.indexOf(0) != -1) || (vdefByIp[this.props.det.ip][4][0].acc.indexOf(this.state.level) != -1)||(this.state.level == 3)){
+
 		var self = this;
 		this.setState({data:[[this.state.cob2,0]], update:true})
 		setTimeout(function () {
 				self.refs.sModal.toggle()
 		}, 100)
+		}else{
+			notify.show('Access Denied')
+		}
 	}
 	showSens () {
-		var self = this;
-		this.setState({data:[[this.state.pages['Sens'],0]], stack:[], update:true})
+		if((vdefByIp[this.props.det.ip][7]['SensEdit'].indexOf(0) != -1) || (vdefByIp[this.props.det.ip][7]['SensEdit'].indexOf(this.state.level) != -1)||(this.state.level == 3)){
 
-		setTimeout(function () {
+			var self = this;
+			this.setState({data:[[this.state.pages['Sens'],0]], stack:[], update:true})
+
+			setTimeout(function () {
 			// body...
-			self.refs.snModal.toggle()
-		}, 100)
+
+				self.refs.snModal.toggle()
+			}, 100)
+		}else{
+			notify.show('Access Denied')
+		}
 	}
 	showTestModal () {
+		if((vdefByIp[this.props.det.ip][7]['TestButton'].indexOf(0) != -1) || (vdefByIp[this.props.det.ip][7]['TestButton'].indexOf(this.state.level) != -1)||(this.state.level == 3)){
+
 		var self = this;
 		if(this.state.settings){
 			var st = [];
@@ -4728,8 +5263,36 @@ class DetectorView extends React.Component{
 		}
 		setTimeout(function () {
 			// body...
-			self.refs.teModal.toggle()
+			
+				self.refs.teModal.toggle()
 		}, 100)
+		}else{
+			notify.show('Access Denied')
+		}
+	
+	}
+	showTestRModal () {
+		if((vdefByIp[this.props.det.ip][7]['TestButton'].indexOf(0) != -1) || (vdefByIp[this.props.det.ip][7]['TestButton'].indexOf(this.state.level) != -1)||(this.state.level == 3)){
+
+		var self = this;
+		if(this.state.settings){
+			var st = [];
+			var currentView = 'MainDisplay';
+			this.setState({currentView:currentView, stack:[], data:[], settings:false,showTest:false, update:true});
+		}
+		else{
+			this.setState({settings:true,showTest:false, stack:[], data:[], update:true});
+			var SettingArray = ['SettingsDisplay',[]]
+			this.changeView(SettingArray);
+		}
+		setTimeout(function () {
+			// body...
+			self.refs.tModal.toggle()
+		}, 100)
+		}else{
+			notify.show('Access Denied')
+		}
+
 	}
 	logoClick () {
 		this.props.logoClick();
@@ -4762,7 +5325,7 @@ class DetectorView extends React.Component{
 		
 	}
 	clear (param) {
-		console.log(['3277',param])
+		////console.log(['3277',param])
 		var packet = dsp_rpc_paylod_for(param['@rpcs']['clear'][0],param['@rpcs']['clear'][1],param['@rpcs']['clear'][2] ) 
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
 		packet = null;
@@ -4817,7 +5380,7 @@ class DetectorView extends React.Component{
 				}
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[1]);
-			////console.log(packet)
+			////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			}else if(n == 'Sens'){
 			var rpc = vdef[0]['@rpc_map']['KAPI_SENS_WRITE']
@@ -4833,13 +5396,13 @@ class DetectorView extends React.Component{
 					}
 				}
 			})
-			////console.log(this.props.ip)
+			////////console.log(this.props.ip)
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-			////console.log(packet)
+			////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'Sens_B'){
-			////console.log(this.props.ip)
+			////////console.log(this.props.ip)
 			var rpc = vdef[0]['@rpc_map']['KAPI_SENS_WRITE']
 			var pkt = rpc[1].map(function (r) {
 				// body...
@@ -4854,7 +5417,7 @@ class DetectorView extends React.Component{
 				}			
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[0]);
-			////console.log(packet)
+			////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'ProdNo'){
@@ -4872,7 +5435,7 @@ class DetectorView extends React.Component{
 				}
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-					////console.log(packet)
+					////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 		}else if(n == 'ProdName'){
 			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NAME_APIWRITE']
@@ -5032,6 +5595,22 @@ class DetectorView extends React.Component{
 			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
 			socket.emit('rpc',{ip:this.props.det.ip, data:packet})	
 
+		}else if(n=='DefaultRestore'){
+			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_RESTORE']
+			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+			socket.emit('rpc',{ip:this.props.det.ip, data:packet})
+		}else if(n=='DeleteAll'){
+			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_DELETEALL']
+			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+			socket.emit('rpc',{ip:this.props.det.ip, data:packet})
+		}else if(n=='FactorySave'){
+			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_SAVE']
+			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+			socket.emit('rpc',{ip:this.props.det.ip, data:packet})
+		}else if(n=='FactoryRestore'){
+			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_RESTORE']
+			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+			socket.emit('rpc',{ip:this.props.det.ip, data:packet})
 		}
 		}else{
 		if(n['@rpcs']['toggle']){
@@ -5070,8 +5649,14 @@ class DetectorView extends React.Component{
 				}
 			}
 			if(n['@rpcs']['write'][2]){
-				strArg = n['@rpcs']['write'][2]
+				if(Array.isArray(n['@rpcs']['write'][2])){
+					strArg = n['@rpcs']['write'][2]
+				}
+				else if(typeof n['@rpcs']['write'][2] == 'string'){
+					strArg = v
+				}
 			}
+			//console.log(['5582', strArg])
 			
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
@@ -5084,6 +5669,7 @@ class DetectorView extends React.Component{
 		}
 			packet = null;
 	}
+
 
 	settingsClosed () {
 		// body...
@@ -5136,6 +5722,34 @@ class DetectorView extends React.Component{
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
 		
 	}
+	getTestText(){
+		var testModes = ['Manual','Halo','Manual 2', 'Halo 2']
+		var metTypes = ['Ferrous','Non-Ferrous','Stainless Steel']
+		var schain = ['B','A']
+		var cn = this.state.testRec['TestRecConfig']
+		var mode = testModes[this.state.testRec['TestRecConfig']]
+		var testcount = 3
+		var cfs = []
+		if(this.props.det.interceptor){
+			testcount = 6
+		}
+		if(this.state.testRec['TestRecPage'] == 3){
+			return "Enter Operator Number"
+		}
+		if(this.state.testRec['TestRecPage'] == 2){
+			return "Select Test to run"
+		}
+		if((this.state.testRec['TestRecAckMetalFlag'])&&(this.state.testRec['TestRecPassCnt'] == 0)){
+			return "Acknowledge required"
+		}else{
+			var i = this.state.testRec['TestRecOrder']
+			var cnt = this.state.prodSettings['TestConfigCount'+cn+'_'+i]
+			var cntString = cnt - this.state.testRec['TestRecPassCnt'] + ' of '+ cnt
+			var met = metTypes[this.state.prodSettings['TestConfigMetal'+cn+'_'+i]]
+			return cntString + ' Metal Type:' + met
+		}
+			
+	}
 	renderTest () {
 		// body...
 		var testcont = ''
@@ -5160,16 +5774,7 @@ class DetectorView extends React.Component{
 
 			}else if(this.state.testRec['TestRecPage'] == 2){
 				//prompt
-					testcont = <div>
-					<div>Select Test</div>
-					<table>
-						<tbody><tr>
-							<td style={nograd} onClick={this.testMan}>Manual</td><td style={nograd} onClick={this.testHalo}>Halo</td>
-						</tr><tr>
-							<td style={nograd} onClick={this.testMan2}>Manual 2</td><td style={nograd} onClick={this.testHalo2}>Halo 2</td> 
-						</tr></tbody>
-					</table>
-				</div>
+					testcont = <TestReq ip={this.props.ip} toggle={this.showTestRModal} settings={this.state.prodSettings}/>  
 
 			}else{
 				var cn = this.state.testRec['TestRecConfig']
@@ -5185,7 +5790,7 @@ class DetectorView extends React.Component{
 					var sigchain = ''
 
 					if(this.props.det.interceptor){
-						sigchain = <div style={{display:'inline-block', width:30}}>{schain[this.state.prodSettings['TestConfigFreq'+cn+'_'+i]]}</div>
+						sigchain = <div style={{display:'inline-block', width:50}}>{schain[this.state.prodSettings['TestConfigFreq'+cn+'_'+i]]}</div>
 					}
 					var lab = ''
 					if(i == this.state.testRec['TestRecOrder']){
@@ -5196,15 +5801,15 @@ class DetectorView extends React.Component{
 						}else{
 							ack = 'Currently Running'
 						}
-						lab = <div style={{background:'linear-gradient(315deg, transparent 33%, rgba(128,0,128,0.4))'}}><div style={{display:'inline-block', width:60}}>{cnt - this.state.testRec['TestRecPassCnt']} of {cnt}
-						</div><div style={{display:'inline-block', width:170}}>{met}</div>{sigchain}<div style={{display:'inline-block', width:250}}>{ack}</div></div>
+						lab = <div style={{background:'linear-gradient(315deg, transparent 33%, rgba(128,0,128,0.4))',fontSize:25}}><div style={{display:'inline-block', width:100}}>{cnt - this.state.testRec['TestRecPassCnt']} of {cnt}
+						</div><div style={{display:'inline-block', width:200}}>{met}</div>{sigchain}<div style={{display:'inline-block', width:300}}>{ack}</div></div>
 					}else if(i<this.state.testRec['TestRecOrder']){
-						lab = <div style={{background:'linear-gradient(315deg, transparent 33%, rgba(0,128,128,0.4))'}}><div style={{display:'inline-block', width:60}}>{cnt} of {cnt}
-						</div><div style={{display:'inline-block', width:170}}>{met}</div>{sigchain}<div style={{display:'inline-block', width:250}}>Done</div></div>
+						lab = <div style={{background:'linear-gradient(315deg, transparent 33%, rgba(0,128,128,0.4))',fontSize:25}}><div style={{display:'inline-block', width:100}}>{cnt} of {cnt}
+						</div><div style={{display:'inline-block', width:200}}>{met}</div>{sigchain}<div style={{display:'inline-block', width:300}}>Done</div></div>
 					
 					}else if(cnt != 0){
-						lab = <div style={{background:'linear-gradient(315deg, transparent 33%, rgba(128,128,128,0.4))'}}><div style={{display:'inline-block', width:60}}>0 of {cnt}
-						</div><div style={{display:'inline-block', width:170}}>{met}</div>{sigchain}<div style={{display:'inline-block', width:250}}></div></div>
+						lab = <div style={{background:'linear-gradient(315deg, transparent 33%, rgba(128,128,128,0.4))',fontSize:25}}><div style={{display:'inline-block', width:100}}>0 of {cnt}
+						</div><div style={{display:'inline-block', width:200}}>{met}</div>{sigchain}<div style={{display:'inline-block', width:300}}></div></div>
 					
 					}
 					cfs.push(lab)
@@ -5240,17 +5845,40 @@ class DetectorView extends React.Component{
 		this.refs.snModal.setState({keyboardVisible:ov})
 	}
 	toggleTestSettings () {
-		if(this.state.showTest){
-			this.setState({showTest:false, data:[], stack:[], update:true})
+		if((vdefByIp[this.props.det.ip][6]['Test'].acc.indexOf(0) != -1) || (vdefByIp[this.props.det.ip][6]['Test'].acc.indexOf(this.state.level) != -1)||(this.state.level == 3)){
+
+			if(this.state.showTest){
+				this.setState({showTest:false, data:[], stack:[], update:true})
+			}else{
+				this.setState({showTest:true, data:[[this.state.pages['Test'],0]], stack:[], update:true})
+			}
 		}else{
-			this.setState({showTest:true, data:[[this.state.pages['Test'],0]], stack:[], update:true})
+			notify.show("Access Denied")
 		}
 	}
 	toggleCalSettings () {
-		if(this.state.showCal){
-			this.setState({showCal:false, data:[], stack:[], update:true})
+		if((vdefByIp[this.props.det.ip][6]['Calibration'].acc.indexOf(0) != -1) || (vdefByIp[this.props.det.ip][6]['Calibration'].acc.indexOf(this.state.level) != -1)||(this.state.level == 3)){
+
+			if(this.state.showCal){
+				this.setState({showCal:false, data:[], stack:[], update:true})
+			}else{
+				this.setState({showCal:true, data:[[this.state.pages['Calibration'],0]], stack:[], update:true})
+			}
 		}else{
-			this.setState({showCal:true, data:[[this.state.pages['Calibration'],0]], stack:[], update:true})
+			notify.show("Access Denied")
+		}
+
+	}
+	toggleSensSettings () {
+		if((vdefByIp[this.props.det.ip][6]['Sens'].acc.indexOf(0) != -1) || (vdefByIp[this.props.det.ip][6]['Sens'].acc.indexOf(this.state.level) != -1)||(this.state.level == 3)){
+
+			if(this.state.showSens){
+				this.setState({showSens:false, data:[], stack:[], update:true})
+			}else{
+				this.setState({showSens:true, data:[[this.state.pages['Sens'],0]], stack:[], update:true})
+			}
+		}else{
+			notify.show("Access Denied")
 		}
 	}
 	getProdName (n, cb,i) {
@@ -5266,13 +5894,25 @@ class DetectorView extends React.Component{
 	calClosed () {
 		this.setState({showCal:false, update:true})
 	}
+	snmClosed () {
+		this.setState({showSens:false, update:true})
+	}
+	tmClosed () {
+		this.setState({showTest:false, update:true})
+	}
 	showCalibModal () {
-		var self = this;
-		this.setState({showCal:false, update:true})
-		setTimeout(function (argument) {
-			self.refs.calibModal.toggle();
-		
-		},100)
+		if((vdefByIp[this.props.det.ip][7]['Calib'].indexOf(0) != -1) || (vdefByIp[this.props.det.ip][7]['Calib'].indexOf(this.state.level) != -1)||(this.state.level == 3)){
+
+			var self = this;
+			this.setState({showCal:false, update:true})
+			setTimeout(function (argument) {
+				self.refs.calibModal.toggle();
+			
+			},100)
+		}else{
+			notify.show('Access Denied')
+		}
+
 	}
 	calB () {
 		this.sendPacket('cal',[0])
@@ -5283,10 +5923,22 @@ class DetectorView extends React.Component{
 	cal () {
 		this.sendPacket('cal')
 	}
+	onSens(s,c){
+		this.sendPacket(c,s)
+	}
 	setLanguage (i) {
 		var langs = ['english', 'korean']
 		this.setState({language:i, update:true})
 	} 
+	toggleLogin(){
+		this.refs.loginModal.toggle()
+	}
+	login(v){
+		this.setState({level:v,update:true})
+	}
+	authenticate(user,pswd){
+		socket.emit('authenticate',{user:user,pswd:pswd, ip:this.props.det.ip})
+	}
 	render () {
 		var attention = 'attention'
 		if(this.state.faultArray.length != 0){
@@ -5299,20 +5951,27 @@ class DetectorView extends React.Component{
 		var find = 'find'
 		var lgs = ['english','french','spanish','portuguese','german','italian','polish','turkish']
 		var lg = lgs[this.state.language]
-	//	console.log(lg)
+
+		if(lg == 'turkish'){
+			lg = 'korean'
+		}
+		if(vdefMapV2['@languages'].indexOf(lg) == -1){
+			lg = 'english'
+			//default to english
+		}
+	//	////console.log(lg)
 		var MD ="";
 		var dm = "";// <DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm' int={this.state.interceptor}/>
 		var dg = "";// <DummyGraph ref='dg' canvasId={'dummyCanvas'} int={this.state.interceptor}/>
 		var ce =""// <ConcreteElem h={400} w={400} concreteId={'concreteCanvas'} int={this.state.interceptor}/>
 	 	var lstyle = {height: 72,marginRight: 20, marginLeft:10}
-	 	var np = (<NetPollView ref='np' eventCount={15} events={this.state.netpoll}/>)
+	 	var np = (<NetPollView language={lg} ref='np' eventCount={15} events={this.state.netpoll}/>)
 		if(!this.state.minW){
 			lstyle = { height: 60, marginRight: 15, marginLeft: 10}
 		}
-		var SD = (<SettingsDisplay2 Id={this.props.ip+'SD'} language={lg} mode={'config'} setOverride={this.setOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.cob2]} cvdf={vdefByIp[this.props.det.ip][4]} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec}/>)
+		var SD = (<SettingsDisplay2 Id={this.props.ip+'SD'} language={lg} mode={'config'} setOverride={this.setOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.cob2]} cvdf={vdefByIp[this.props.det.ip][4]} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} framRec={this.state.framRec} level={this.state.level}/>)
 		MD = ""; 
-		var snsCont = <SettingsDisplay2 Id={this.props.ip+'SNSD'} language={lg} setOverride={this.setSOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'snspage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Sens']]} cvdf={vdefByIp[this.props.det.ip][6]['Sens']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec}/>
-		var mpui = 	<StealthMainPageUI  language={this.state.language} setLang={this.setLanguage}toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
+		var mpui = 	<StealthMainPageUI  language={this.state.language} setLang={this.setLanguage} toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
 		var cb = <StealthCalibrateUI  language={lg} ref='cb' onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.cal} />
 	
 		var lbut = (<td onClick={this.logoClick}><img style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>)
@@ -5348,28 +6007,43 @@ class DetectorView extends React.Component{
 					</div>)
 			}	
 		}
-		var ov = 0
+		//var ov = 0
+		var status = ''
+		var trec = 0;
 		if(this.state.testRec['TestRecOnFlag']){
-			ov = 1;
+			status = this.getTestText();
+			trec = 1
+			if(this.state.testRec['TestRecPage'] == 3){
+				trec = 2
+			}
+			if(this.state.testRec['TestRecPage'] == 2){
+				trec = 2
+			}
 		}
 		var tescont = <TestReq ip={this.props.ip} toggle={this.showTestModal} settings={this.state.prodSettings}/>
 		//var showPropmt = "Settings";
 		var showPrompt = "#e1e1e1";
+		var showPrompts = "#e1e1e1";
+		
 		var showPropmt = "#e1e1e1";
 		var tbklass = 'expandButton';
+
+		var sn = (<div>
+				<div style={{paddingTop:10, paddingBottom:4}}>
+					 <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5, fontWeight:500, color:"#eee"}} ><div style={{display:'inline-block', textAlign:'center'}}>Sensitivity</div></h2></span></div><InterceptorSensitivityUI language={lg} sensA={this.state.prodSettings['Sens_A']} sensB={this.state.prodSettings['Sens_B']} onFocus={this.onSensFocus} onRequestClose={this.onSensClose} sendPacket={this.sendPacket} refresh={this.refresh} onSens={this.onSens}/></div>)
 		if (this.state.showTest){
 			var dt;
 			if(this.state.data.length == 0){
 				dt = []
 			}
-			tescont = 	<SettingsDisplay2 Id={this.props.ip+'TESTD'} language={lg} setOverride={this.setTOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Test']]} cvdf={vdefByIp[this.props.det.ip][6]['Test']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec}/>
+			tescont = 	<SettingsDisplay2 Id={this.props.ip+'TESTD'} language={lg} setOverride={this.setTOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Test']]} cvdf={vdefByIp[this.props.det.ip][6]['Test']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} level={this.state.level} framRec={this.state.framRec}/>
 			showPropmt = "orange"
 			tbklass='collapseButton'
 		}
 				
 			if(this.props.det.interceptor){
-				mpui = 	<InterceptorMainPageUI rejOn={this.state.rejOn} language={this.state.language} setLang={this.setLanguage} toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal}
-				faultArray={this.state.faultArray} clearFaults={this.clearFaults} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
+				mpui = 	<InterceptorMainPageUI login={this.toggleLogin} toggleTestRModal={this.showTestRModal} testReq={trec} status={status} rejOn={this.state.rejOn} language={this.state.language} setLang={this.setLanguage} toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal}
+				faultArray={this.state.faultArray} clearFaults={this.clearFaults} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName} level={this.state.level} username={this.state.username}/>
 				cb = <div>
 				<div style={{paddingTop:10, paddingBottom:4}}>
 					 <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5, fontWeight:500, color:"#eee"}} ><div style={{display:'inline-block', textAlign:'center'}}>Calibration</div></h2></span></div>
@@ -5379,28 +6053,43 @@ class DetectorView extends React.Component{
 		var testprompt = this.renderTest();
 		var CB;
 		if(this.state.showCal){
-			CB = <SettingsDisplay2 Id={this.props.ip+'CALBD'} language={lg} setOverride={this.setCOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'calpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Calibration']]} cvdf={vdefByIp[this.props.det.ip][6]['Calibration']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec}/>
+			CB = <SettingsDisplay2 Id={this.props.ip+'CALBD'} language={lg} setOverride={this.setCOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'calpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Calibration']]} cvdf={vdefByIp[this.props.det.ip][6]['Calibration']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} level={this.state.level} framRec={this.state.framRec}/>
 			showPrompt = "orange"
 		}else{
 			CB = cb
 		}
-		var tocal = <svg style={{position:'absolute',left: 840, marginTop:2}} onClick={this.toggleCalSettings} xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPrompt}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
-					
+		var snsCont;
+		if(this.state.showSens){
 
-		var totest = <svg style={{position:'absolute',left: 840, marginTop:5}} onClick={this.toggleTestSettings} xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPropmt}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
-					
+			snsCont = <SettingsDisplay2 Id={this.props.ip+'SNSD'} language={lg} setOverride={this.setSOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'snspage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Sens']]} cvdf={vdefByIp[this.props.det.ip][6]['Sens']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} level={this.state.level} framRec={this.state.framRec}/>
+			showPrompts = "orange"
+		}else{
+			snsCont = sn;
+		}
+	
+		var tocal =  <div  onClick={this.toggleCalSettings}  style={{position:'absolute',left: 840, marginTop:2}}><div style={{position:'absolute', left:-80, marginTop:5, color:showPrompt}}> Settings </div> <div><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPrompt}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div></div>
+		var tosns = <div  onClick={this.toggleSensSettings}  style={{position:'absolute',left: 840, marginTop:2}}><div style={{position:'absolute', left:-80, marginTop:5, color:showPrompts}}> Settings </div> <div><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPrompts}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div></div>
+				
+
+		var totest =  <div  onClick={this.toggleTestSettings}  style={{position:'absolute',left: 840, marginTop:2}}><div style={{position:'absolute', left:-80, marginTop:5, color:showPropmt}}> Settings </div> <div><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPropmt}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div></div>
+		var tModal = (	<Modal ref='tModal' intMeter={true} clear={this.clearSig}>
+					{testprompt}
+				
+				</Modal>)
+		if(trec == 0){
+			tModal = 	<Modal ref='tModal' override={0} intMeter={true} clear={this.clearSig}>
+					{testprompt}
+				
+				</Modal>
+		}
+		//	<AccountControl accounts={this.props.accounts} language={'english'} login={this.login} val={this.state.level}/>
+				
 
 		return(<div>
-			<div hidden>
-				{lmtable}
-
-			</div>
-
 			{mpui}	
 			<Modal ref ='calibModal' onClose={this.calClosed} intMeter={true} clear={this.clearSig}>
 					{tocal}
 				<div>
-			
 				{CB}
 				</div>	
 			</Modal>
@@ -5410,21 +6099,194 @@ class DetectorView extends React.Component{
 					<Modal ref='fModal'>
 					<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.state.faultArray}/>
 				</Modal>
-				<Modal ref='tModal' override={ov} intMeter={true} clear={this.clearSig}>
-					{testprompt}
-				
-				</Modal>
-				<Modal ref='teModal' intMeter={true} clear={this.clearSig}>
+				{tModal}
+				<Modal ref='teModal' intMeter={true} clear={this.clearSig} onClose={this.tmClosed}>
 				{totest}	
 				{tescont}
 				</Modal>
-				<Modal ref='snModal' intMeter={true} clear={this.clearSig}>
+				<Modal ref='snModal' intMeter={true} clear={this.clearSig} onClose={this.snmClosed}>
+				{tosns}
+					<div>
 					{snsCont}
+					</div>
+				</Modal>
+				<Modal ref='loginModal' intMeter={true} clear={this.clearSig}>
+					<LogInControl ip={this.props.ip} accounts={this.props.accounts} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.level}/>
 				</Modal>
 				</div>)
 	} 
 }
 
+class AccountControl extends React.Component{
+	constructor(props){
+		super(props)
+		this.state = ({accounts:this.props.accounts, curlevel:0, username:'', pswd:'', newUser:false})
+		this.selectChanged = this.selectChanged.bind(this);
+		this.addAccount = this.addAccount.bind(this);
+		this.removeAccount = this.removeAccount.bind(this);
+		this.addNewUser = this.addNewUser.bind(this);
+
+	}
+	selectChanged(v){
+		this.setState({curlevel:v})
+	}
+	addAccount(){
+		socket.emit('addAccount', {user:{user:this.state.username, acc:this.state.curlevel, password:this.state.pswd}, ip:this.props.ip})
+	}
+	removeAccount(account){
+		socket.emit('removeAccount', {ip:this.props.ip, user:account})
+	}
+	onFocus(){
+
+	}
+	onUserChange(v){
+		this.setState({username:v})
+	}
+	onPswdChange(v){
+		this.setState({pswd:v})
+	}
+	onRequestClose(){
+
+	}
+	setLevel(){
+		this.refs.pw.toggle();
+	}
+	setUserName(){
+		this.refs.username.toggle();
+	}
+	setPassword(){
+		this.refs.pswd.toggle();
+	}
+	addNewUser(){
+		this.setState({newUser:true})
+	}
+	render(){
+		var levels = ['none','operator','engineer']
+		var pw = 	<PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref='pw' val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
+		var userkb =  <CustomKeyboard num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='user' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
+		var pswdkb =  <CustomKeyboard pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
+			var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+			var _st = {textAlign:'center',lineHeight:'51px', height:51, width:536, display:'table-cell', position:'relative'}
+
+		    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#eee"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
+		var st = {padding:7,display:'inline-block', width:180}
+		
+		console.log(this.props.accounts)
+		var accTableRows = [];
+		for(var ac in this.props.accounts){
+			accTableRows.push(<AccountRow username={ac} acc={this.props.accounts[ac].acc} password={this.props.accounts[ac].password} saved={true} ip={this.props.ip}/>)
+		}
+		if(this.state.newUser){
+			accTableRows.push(<AccountRow username={'new user'} acc={0} password={''} saved={false} ip={this.props.ip}/>)
+		}
+		return <div>
+			{userkb}
+			{pswdkb}
+			{pw}
+			<div className='sItem noChild' hidden onClick={this.login}><label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{'User Group'}</label>
+			<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>{levels[this.props.val]}</label></div></div>
+			</div>
+			<table style={{borderCollapse:'collapse',background:"#d1d1d1", width:860}}>
+			<tbody>
+			<tr ><th>Username</th><th>Passcode</th><th>Level</th></tr>
+			{accTableRows}
+			</tbody>
+			</table>	
+			<button onClick={this.addNewUser}>Add new User</button>
+		</div>
+	}
+}
+class AccountRow extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {username:this.props.username, acc:this.props.acc, password:this.props.password}
+		this.onUserChange = this.onUserChange.bind(this);
+		this.onPswdChange = this.onPswdChange.bind(this);
+		this.setLevel = this.setLevel.bind(this);
+		this.setUserName = this.setUserName.bind(this);
+		this.setPassword = this.setPassword.bind(this);
+		this.remove = this.remove.bind(this);
+		this.saveChanges = this.saveChanges.bind(this);
+		this.addAccount = this.addAccount.bind(this);
+		this.selectChanged = this.selectChanged.bind(this);
+	}
+
+	onUserChange(v){
+		this.setState({username:v})
+	}
+	onPswdChange(v){
+		this.setState({password:v})
+	}
+	setLevel(){
+		var self = this;
+		setTimeout(function(){
+		
+		self.refs.pw.toggleCont();
+		},80);
+	}
+	selectChanged(v){
+		this.setState({acc:v})
+	}
+	setUserName(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.username.toggle();
+		},80)
+		
+	}
+	setPassword(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.pswd.toggle();
+		},80)
+	}
+	remove(){
+		if(this.props.saved){
+			socket.emit('removeAccount', {ip:this.props.ip, user:this.state.username})
+		}else{
+			this.setState({username:this.props.username, acc:this.props.acc, password:this.props.password})
+		}
+	}
+	saveChanges(){
+		this.addAccount();
+	}
+	addAccount(){
+		socket.emit('addAccount', {user:{user:this.state.username, acc:this.state.acc, password:this.state.password}, ip:this.props.ip})
+	}
+	render(){
+		var levels = ['0','1','2']
+		var pw = 	<PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref='pw' val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+		var userkb =  <CustomKeyboard num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='username' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
+		var pswdkb =  <CustomKeyboard pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
+	
+			var check= ""
+		var dsW = 250;
+		var stW = 200;
+		if(this.props.editMode){
+			dsW = 380;
+			stW = 330;
+		}
+		var bg = "#d1d1d1"
+		var buttons = ""
+		if(this.props.saved){
+			buttons = <div style={{display:'inline-block'}}><button onClick={this.remove}>Remove</button><button onClick={this.saveChanges}>Save Changes</button></div>
+
+		}else{
+			bg = "#a1d1a1"
+			buttons = <div style={{display:'inline-block'}}><button onClick={this.remove}>Reset</button><button onClick={this.saveChanges}>Save Changes</button></div>
+		}
+		var ds = {paddingLeft:7, display:'inline-block', width:740, background:bg}
+		var st = {padding:7,display:'inline-block', width:180}
+		var mgl = -90
+		
+		var password = this.state.password.split("").map(function(c){return '*'}).join('');
+		/*return <div style={{background:"#362c66", color:"#000", position:'relative', textAlign:'left'}}>
+		{pw}{userkb}{pswdkb}
+		<div style={ds} ><label style={st} onClick={this.setUserName}>{this.state.username}</label><label onClick={this.setPassword} style={st}>{password}</label><label onClick={this.setLevel} style={{display:'inline-block', width:40, padding:7}}>{this.state.acc}</label>{buttons}</div></div>*/
+		return <tr style={{background:bg, textAlign:'center'}}><td style={{padding:7, width:200}} onClick={this.setUserName}>{this.state.username}</td><td onClick={this.setPassword} style={{padding:7, width:200}}>{password}</td><td onClick={this.setLevel} style={{padding:7, width:120}}>{this.state.acc}</td><td>{buttons}{pw}{pswdkb}{userkb}</td></tr>
+	}
+}
 class Storage extends React.Component{
 	constructor(props) {
 		super(props)
@@ -5497,9 +6359,11 @@ class Storage extends React.Component{
 class NetPollView extends React.Component{
 	constructor(props) {
 		super(props)
-		this.state =({events:[]})
+		this.state =({events:[], curFilter:0})
 		this.pushEvent = this.pushEvent.bind(this);
 		this.onNetpoll = this.onNetpoll.bind(this);
+		this.changeFilter = this.changeFilter.bind(this);
+		this.selectChanged = this.selectChanged.bind(this);
 	}
 	onNetpoll(e){
 		this.pushEvent(e)
@@ -5510,24 +6374,56 @@ class NetPollView extends React.Component{
 		if(events.length == this.props.eventCount){
 			events.splice(-1,1);
 		}
-		////console.log(['3280',e])
 		events.unshift(e);
 		this.setState({events:events})
 	}
 	dummyEvent () {
 	}
+	changeFilter(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.pw.toggleCont();
+		
+		},100);
+	}	
+	selectChanged(v){
+		this.setState({curFilter:v})
+	}
 	render () {
 		var self = this;
-		var events = this.props.events.map(function(e){
+		var eventArr = []
+		if(this.state.curFilter == 0){
+			eventArr = this.props.events.slice(0);
+		}else if(this.state.curFilter == 1){
+			this.props.events.forEach(function(ev){
+				if(ev.net_poll_h == "NET_POLL_REJECT_ID"){
+					eventArr.push(ev)
+				}
+			})
+		}else if(this.state.curFilter == 2){
+			this.props.events.forEach(function(ev){
+				if(ev.net_poll_h == "NET_POLL_FAULT"){
+					eventArr.push(ev)
+				}
+			})
+		}else if(this.state.curFilter == 3){
+			this.props.events.forEach(function(ev){
+				if(ev.net_poll_h == "NET_POLL_TEST_REQ_PASS"){
+					eventArr.push(ev)
+				}
+			})
+		}
+
+		var events = eventArr.map(function(e){
 			var ev = e.net_poll_h;
 			if(netMap[e.net_poll_h]){
-				ev = netMap[e.net_poll_h]['@translations']['english']	
+				ev = netMap[e.net_poll_h]['@translations']['english']['name']	
 			}
 			var dateTime = e.date_time.year + '/' + e.date_time.month + '/' + e.date_time.day + ' ' + e.date_time.hours+ ':' + e.date_time.min + ':' + e.date_time.sec;
 			var rejects = e.rejects
 			var faults = e.faults
 			var string = ""
-			console.log(['4163',e])
+			////console.log(['4163',e])
 			if(e.net_poll_h == "NET_POLL_REJECT_ID"){
 
 				string = 'rejects:' + rejects.number + ', signal:' + rejects.signal;
@@ -5556,14 +6452,21 @@ class NetPollView extends React.Component{
 			}
 
 
-			return (<tr><td style={{width:150}}>{dateTime}</td><td style={{width:150}}>{ev}</td><td style={{width:220}}>{string}</td></tr>)
+			return (<tr><td style={{width:150}}>{dateTime}</td><td style={{width:150}}>{ev}</td><td style={{width:250}}>{string}</td></tr>)
 		})
-		// body...
-		return (<div style={{color:'#e1e1e1'}}>
-			<label style={{display: 'inline-block',fontSize:26,width:100,float:'left',paddingLeft: 20}}>Events</label>
-			<div style={{display:'inline-block', height:260,width:600}}>
+		var filters = ['All', 'Reject', 'Fault', 'Test']
+		// body... 
+		return (<div>
+			<div style={{display: 'table-cell', width:250, height:360}}>
+			<div>
+			<label style={{fontSize:26,width:100,paddingLeft: 20,color:'#e1e1e1'}}>{vdefMapV2['@labels']['Events'][this.props.language]['name']}</label>
+			<div style={{position:'relative'}} onClick={this.changeFilter} ><label style={{color:'#e1e1e1'}}>Showing {filters[this.state.curFilter]} Events</label><img style={{width:25, top:5, marginLeft:2, position:'absolute'}} src='assets/dropdown.svg'/> </div>
+				<PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref='pw' val={[this.state.curFilter]} options={[filters]} onChange={this.selectChanged}/>	</div>
+				
+			</div>
+			<div style={{display:'table-cell', height:360,width:600,color:'#e1e1e1'}}>
 			<table className='npTable'>
-			<thead><tr><th style={{width:150}}>Timestamp</th><th style={{width:150}}>Event</th><th style={{width:220}}>Details</th></tr>
+			<thead><tr style={{background:'transparent'}}><th style={{width:150}}>{vdefMapV2['@labels']['Timestamp'][this.props.language]['name']}</th><th style={{width:150}}>{vdefMapV2['@labels']['Event'][this.props.language]['name']}</th><th style={{width:250}}>{vdefMapV2['@labels']['Details'][this.props.language]['name']}</th></tr>
 		</thead>
 			<tbody>
 				{events}
@@ -5595,7 +6498,11 @@ class ProductItem extends React.Component{
 		this.props.copy();
 	}
 	deleteProd () {
-		this.props.delete(this.props.p)
+		if(this.props.selected){
+			this.props.deleteCurrent(this.props.p);
+	
+		}
+		//this.props.delete(this.props.p)
 	}
 	editName () {
 		var self = this;
@@ -5617,16 +6524,25 @@ class ProductItem extends React.Component{
 	render () {
 		// body...
 		var check= ""
-		var ds = {paddingLeft:7, display:'inline-block', width:250, background:"#d1d1d1"}
-		var st = {padding:7,display:'inline-block', width:200}
-		var buttons = <button className='deleteButton' onClick={this.deleteProd}></button>
+		var dsW = 250;
+		var stW = 200;
+		if(this.props.editMode){
+			dsW = 380;
+			stW = 330;
+		}
+		var ds = {paddingLeft:7, display:'inline-block', width:dsW, background:"#d1d1d1"}
+		var st = {padding:7,display:'inline-block', width:stW}
+		var mgl = -90
+		var buttons// = <button className='deleteButton' onClick={this.deleteProd}/>
 		if(this.props.selected){
 			check = <img src="assets/Check_mark.svg"/>
-			ds = {paddingLeft:7,display:'inline-block', width:250,	 background:"#bbb"}
+			ds = {paddingLeft:7,display:'inline-block', width:dsW,	 background:"#999"}
 			//st = {color:'green', padding:7, display:'inline-block', width:200}
-			buttons = <div style={{display:'inline-block'}}><button className='copyButton' onClick={this.copyProd}></button>
-			<button className='editButton' onClick={this.editName}></button>
+			mgl = -150
+			buttons = <div style={{display:'inline-block'}}><CustomAlertClassedButton alertMessage={'Do you want to delete the current product?'} className='deleteButton' style={{display:'inline-block'}} onClick={this.deleteProd}/><button className='copyButton' style={{paddingLeft:0, paddingRight:0}} onClick={this.copyProd}></button>
+			<button className='editButton' style={{paddingLeft:0, paddingRight:0}} onClick={this.editName}></button>
 			<CustomKeyboard onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='nameinput' onChange={this.onChange} value={this.state.name} label={this.state.name}/>
+		
 			</div>
 		}
 		var name = 'Product '+this.props.p
@@ -5635,12 +6551,43 @@ class ProductItem extends React.Component{
 		}
 		var editRow ="";
 		if(this.props.editMode){
-			editRow = <div style={{display:'inline-block', marginLeft:10}}>{buttons}</div>
+			editRow = <div style={{display:'inline-block', marginLeft:mgl, position:'absolute'}}>{buttons}</div>
 		}
-		return (<div style={{background:"#362c66", color:"#000"}}><div style={ds} ><div style={{display:'inline-block', width:22}}>{check}</div><label onClick={this.switchProd} style={st}>{this.props.p + '.  ' +name}</label></div>{editRow}</div>)
+		return (<div style={{background:"#362c66", color:"#000", position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-block', width:22}}>{check}</div><label onClick={this.switchProd} style={st}>{this.props.p + '.  ' +name}</label></div>{editRow}</div>)
 	}
 }
+class ProdList extends React.Component{
+	constructor(props){
+		super(props)
+	}
+	render(){
+		var self = this;
+		var prodNames = this.props.prodNames
 
+		var splitArray = []
+		if(this.props.prodList.length > 8){
+
+		}
+
+		var prodList = this.props.prodList.map(function(p, i){
+			var sel = false
+			if(p==self.props.sysRec['ProdNo']){
+				sel = true;
+			}
+			var name = ""
+			if(typeof prodNames[i] != 'undefined'){
+				name = prodNames[i]
+			}
+			return (<ProductItem onFocus={self.prodFocus} onRequestClose={self.prodClose} selected={sel} p={p} name={name} editName={self.editName} editMode={self.state.peditMode} copy={self.copyCurrentProd} delete={self.deleteProd} switchProd={self.switchProd}/>)
+		})
+
+
+
+		return <div>
+			
+		</div>
+	}
+}
 
 class TestReq extends React.Component{
 	constructor(props) {
@@ -5689,25 +6636,51 @@ class TestReq extends React.Component{
 	render () {
 		var testcont = ''
 		var ack = ''
-		var tdstyle = {background:'rgba(128, 128, 128, 0.3)', fontSize:25, width:170}
+		var tdstyle = {width:220}
 
 		var tdstyleintA = { background:'linear-gradient(315deg, transparent 33%, rgba(128,0,128,0.4))'}
 		var testModes = ['Manual','Halo','Manual 2', 'Halo 2']
 		var _tcats = ['Manual','Halo','Manual2','Halo2']
 		var metTypes = ['Ferrous','Non-Ferrous','Stainless Steel']
 		var schain = ['B','A']
+		var opts = []
+		var cnt = 0;
+		var options = ""
+		var funcs = [this.testMan, this.testHalo, this.testMan2, this.testHalo2]
+		var fnames = ['Manual','Halo','Manual 2', 'Halo 2']
+		for(var i = 0; i<4;i++){
+			if(this.props.settings['TestConfigCount'+i+'_0']>0){
+				opts.push(	<CircularButton lab={fnames[i]} onClick={funcs[i]}/>)
+				cnt++;
+			}else{
+				opts.push(	<CircularButton lab={fnames[i]} disabled={true} onClick={funcs[i]}/>)
+			}
+		}
+		if(cnt == 0){
+			options = <div style={{fontSize:25}}>No Tests Configured</div>
+		}else{
+			options =<table>
+						<tbody><tr>
+							<td style={tdstyle}>{opts[0]}</td><td style={tdstyle}>{opts[1]}</td>
+						</tr><tr>
+							<td style={tdstyle}>{opts[2]}</td><td style={tdstyle}>{opts[3]}</td>	
+						</tr></tbody>
+					</table>
+		}
+
 			
 		
 		
 		testcont = <div  style={{color:'#e1e1e1'}}	>
-					<div>Select Test</div>
-					<table>
+					<div style={{fontSize:25}}>Select Test</div>
+					<table hidden>
 						<tbody><tr>
 							<td style={tdstyle} onClick={this.testMan}>Manual</td><td style={tdstyle} onClick={this.testHalo}>Halo</td>
 						</tr><tr>
 							<td style={tdstyle} onClick={this.testMan2}>Manual 2</td><td style={tdstyle} onClick={this.testHalo2}>Halo 2</td> 
 						</tr></tbody>
 					</table>
+					{options}
 				</div>
 
 			
@@ -5762,7 +6735,9 @@ class SlimGraph extends React.Component{
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
 		}
-		this.state = ({width:480, height:215, mqls:mqls})
+		this.state = ({width:480, height:215, mqls:mqls, popUp:false})
+		this.toggle = this.toggle.bind(this);
+		this.stream = this.stream.bind(this);
 	}
 	listenToMq () {
 		// body...
@@ -5780,19 +6755,130 @@ class SlimGraph extends React.Component{
 		this.listenToMq()
 	}
 	renderCanv () {
+		if(this.state.popUp){
+			return <GraphModal Style={{maxWidth:1000,width:1000,marginTop:100, background:'#000'}} innerStyle={{backgroundColor:'black'}} show={true} onClose={this.toggle}>
+				<CanvasElem canvasId={this.props.canvasId} ref='cv' w={950} h={400} int={this.props.int}/>
+			</GraphModal>
+		}
 		return(<CanvasElem canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int}/>)
 	}
 	stream (dat) {
 		this.refs.cv.stream(dat)
 	}
+	toggle(){
+		var self = this;
+		setTimeout(function(){
+			self.setState({popUp:!self.state.popUp})
+		},100)
+		
+	}
 	render () {
+		//img src='assets/fullscreen.svg'
 		var cv = this.renderCanv()
 		return (<div className='detGraph'>
+			<div  style={{position:'absolute', top:76,left:63, width:350,height:140}} onClick={this.toggle}/>
 			{cv}
 			</div>)
 	}
 
 }
+class GraphModal extends React.Component{
+	constructor(props) {
+		super(props)
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false});
+		this.toggle = this.toggle.bind(this);
+	}
+	toggle () {
+		var self = this;
+		if(!this.state.override){
+			if(this.props.show){
+			this.setState({show:false, override:true})
+
+		
+			setTimeout(function(){
+				//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
+				self.setState({override:false})
+				if(typeof self.props.onClose != 'undefined'){
+			
+					self.props.onClose();
+				}
+			},50)
+			}else{
+				this.setState({show:true, override:true})
+
+		
+				setTimeout(function(){
+				//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
+				self.setState({override:false})
+
+				},50)
+			}
+		}
+
+		
+	}
+	render () {
+		var cont = '';
+		var h = !this.props.show
+		if(typeof this.props.override != 'undefined'){
+			if(this.props.override == 1){
+				h = false
+			}else{
+				h = true
+			}
+		}
+
+
+		if(!h){
+			
+cont = (<GModalCont toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle}>
+				{this.props.children}
+		</GModalCont>)
+		}
+
+		return(<div className={this.state.className} hidden={h}>
+			<div className='modal-x' onClick={this.toggle}>
+			 	 <svg viewbox="0 0 40 40">
+    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
+  				</svg>
+			</div>
+			{cont}
+	</div>)
+	}
+}
+class GModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {keyboardVisible:false}
+		this.toggle = this.toggle.bind(this);
+		this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+	toggle(){
+		this.props.toggle()
+	}
+	handleClickOutside(e){
+		if(!this.state.keyboardVisible){
+			this.props.toggle();	
+		}	
+	}
+	render() {
+		var style= this.props.Style || {}
+		var cs = this.props.innerStyle || {}
+		var button = 	<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
+			
+				return (<div className='modal-outer' style={style}>
+				<div className='modal-content' style={cs}>
+					{this.props.children}
+				</div>
+				</div>)
+	
+	}
+}
+var GModalCont = onClickOutside(GModalC);
 class StealthMainPageUI extends React.Component{
 	constructor(props) {
 		super(props)
@@ -5844,7 +6930,7 @@ class StealthMainPageUI extends React.Component{
 		this.sendPacket('refresh','')
 		socket.on('prodNames', function (pack) {
 			// body...
-			console.log(['5369', pack])
+			////console.log(['5369', pack])
 			if(self.props.det.ip == pack.ip){
 				self.setState({prodList:pack.list, prodNames:pack.names})
 			}
@@ -5878,6 +6964,7 @@ class StealthMainPageUI extends React.Component{
 		this.setState({tmp:''})
 	}
 	showEditor () {
+
 		var self = this;
 		this.refs.pedit.toggle()
 		setTimeout(function () {
@@ -5965,7 +7052,7 @@ class StealthMainPageUI extends React.Component{
 		var str = sa.map(function(ch){
 			return String.fromCharCode(ch)
 		}).join("").replace("\u0000","").trim();
-		console.log(['5888',str])
+		////console.log(['5888',str])
 		var prodNames = this.state.prodNames;
 		prodNames[ind] = str
 		if(ind + 1 < this.state.prodList.length){
@@ -6014,6 +7101,12 @@ class StealthMainPageUI extends React.Component{
 			socket.emit('getProdList', self.props.det.ip)
 		},100)
 	}
+	defaultSave(){
+		this.sendPacket('DefaultSave')
+	}
+	defaultRestore(){
+		this.sendPacket('DefaultRestore')
+	}
 	onCalFocus () {
 		this.refs.calibModal.setState({override:true})
 	}
@@ -6032,6 +7125,7 @@ class StealthMainPageUI extends React.Component{
 		var lstyle = {height: 50,marginRight: 20, marginLeft:10}
 		var self = this;
 		var prodNames = this.state.prodNames
+		////console.log(this.state.prodList.chunk(8))
 		var prodList = this.state.prodList.map(function(p, i){
 			var sel = false
 			if(p==self.state.sysRec['ProdNo']){
@@ -6045,6 +7139,10 @@ class StealthMainPageUI extends React.Component{
 		})
 		var lgs = ['english','french','spanish','portuguese','german','italian','polish','turkish']// ['english','korean']
 		var lg = lgs[this.props.language]
+		if(vdefMapV2['@languages'].indexOf(lg) == -1){
+			lg = 'english'
+			//default to english
+		}
 		
 		var ps = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed']]
 		if(this.state.phaseFast == 1){
@@ -6113,10 +7211,10 @@ class StealthDynamicView extends React.Component{
 				<div><TickerBox ref='tb'/></div>
 						<table style={{marginLeft:'auto', marginRight:'auto', marginTop:5}}><tbody><tr><td style={{borderColor:'#e1e1e1',borderStyle:'solid',borderWidth:10,borderRadius:20,height:75,background:'#818a90', width:330}}>
 						
-						<div style={{display:'block', height:34, width:470}}>Product Info</div>
+						<div style={{display:'block', height:34, width:470}}>{vdefMapV2['@labels']['Running Product']['@translations'][this.props.language]['name']}</div>
 				<div style={{display:'block', height:34, width:470, fontSize:24}}>{this.props.prodName}</div>
 
-				</td></tr>
+				</td></tr> 
 				</tbody></table>
 				<div><div style={{display:'inline-block'}}>
 				<div style={{textAlign:'center', display:'block', width:260, marginTop:3, marginBottom:7}}><div style={centerLab} >Sensitivity</div><div ><KeyboardInputButton num={true} isEditable={true} value={this.props.sens[0]} onInput={this.onSens} inverted={false}/></div></div>
@@ -6262,6 +7360,15 @@ class InterceptorMainPageUI extends React.Component{
 		this.deleteProd = this.deleteProd.bind(this);
 		this.editName = this.editName.bind(this);
 		this.languageChange = this.languageChange.bind(this);	
+		this.updatePeak = this.updatePeak.bind(this);
+		this.clearSig = this.clearSig.bind(this);
+		this.handleProdScroll = this.handleProdScroll.bind(this);
+		this.deleteCurrentProd = this.deleteCurrentProd.bind(this);
+		this.login = this.login.bind(this);
+		this.defaultRestore = this.defaultRestore.bind(this);
+		this.deleteAll = this.deleteAll.bind(this);
+		this.factoryRestore = this.factoryRestore.bind(this);
+		this.factorySave = this.factorySave.bind(this);
 	}
 	shouldComponentUpdate (nextProps, nextState) {
 		if(this.state.keyboardVisible){
@@ -6277,6 +7384,14 @@ class InterceptorMainPageUI extends React.Component{
 		var dat = {t:Date.now(),val:siga,valb:sigb}
 		this.refs.nv.streamTo(dat)
 		this.refs.dv.update(siga,sigb)
+			this.refs.pedit.updateMeter(siga,sigb)
+			this.refs.netpolls.updateMeter(siga,sigb)
+	
+	}
+	updatePeak(pa,pb){
+		this.refs.dv.updatePeak(pa,pb);
+		this.refs.pedit.updateSig(pa,pb);
+		this.refs.netpolls.updateSig(pa,pb)
 	}
 	componentDidMount(){
 		var self = this;
@@ -6319,12 +7434,18 @@ class InterceptorMainPageUI extends React.Component{
 		}
 	}
 	showEditor () {
-		var self = this;
-		this.refs.pedit.toggle()
-		setTimeout(function () {
-			self.setState({peditMode:false})
-			socket.emit('getProdList', self.props.det.ip)
-		},100)
+		//7025
+		if((vdefByIp[this.props.det.ip][7]['ProductButton'].indexOf(0) != -1) || (vdefByIp[this.props.det.ip][7]['ProductButton'].indexOf(this.props.level) != -1)||(this.props.level == 3)){
+
+			var self = this;
+			this.refs.pedit.toggle()
+			setTimeout(function () {
+				self.setState({peditMode:false})
+				socket.emit('getProdList', self.props.det.ip)
+			},100)
+		}else{
+			notify.show('Access Denied')
+		}
 	}
 	editSens () {
 		this.refs.sensEdit.toggle()
@@ -6429,12 +7550,19 @@ class InterceptorMainPageUI extends React.Component{
 	}
 	onButton (f) {
 		// body...
-		console.log(f)
+		////console.log(f)
 		var self = this;
+
 		if(f == 'test'){
 			setTimeout(function () {
 				// body...
 				self.props.toggleTestModal();
+			},100)
+			
+		}else if(f == 'onTestReq'){
+			setTimeout(function () {
+				// body...
+				self.props.toggleTestRModal();
 			},100)
 			
 		}else if(f == 'log'){
@@ -6473,6 +7601,14 @@ class InterceptorMainPageUI extends React.Component{
 				self.props.toggleSens();
 			},100)
 		}
+	}
+	clearSig(a){
+		if(a == 1){
+			this.clearPeak()
+		}else{
+			this.clearPeakB()
+		}
+
 	}
 	onSens (e,s) {
 		this.props.sendPacket(s,e);
@@ -6521,7 +7657,12 @@ class InterceptorMainPageUI extends React.Component{
 		}, 100)
 	}
 	changeProdEditMode () {
-		this.setState({peditMode:!this.state.peditMode})
+		if((vdefByIp[this.props.det.ip][7]['ProductEdit'].indexOf(0) != -1) || (vdefByIp[this.props.det.ip][7]['ProductEdit'].indexOf(this.props.level) != -1)||(this.props.level == 3)){
+
+			this.setState({peditMode:!this.state.peditMode})
+		}else{
+			notify.show("Access Denied")
+		}
 	}
 	copyCurrentProd () {
 		var nextNum = this.state.prodList[this.state.prodList.length - 1] + 1;
@@ -6545,6 +7686,36 @@ class InterceptorMainPageUI extends React.Component{
 			socket.emit('getProdList', self.props.det.ip)
 		},100)
 	}
+	factorySave(){
+		this.sendPacket('FactorySave')
+		var self = this;
+		setTimeout(function (argument) {
+			socket.emit('getProdList', self.props.det.ip)
+		},100)
+	}
+
+	factoryRestore(){
+		this.sendPacket('FactoryRestore')
+		var self = this;
+		setTimeout(function (argument) {
+			socket.emit('getProdList', self.props.det.ip)
+		},100)
+	}
+	deleteAll(){
+		this.sendPacket('DeleteAll')
+		var self = this;
+		setTimeout(function (argument) {
+			socket.emit('getProdList', self.props.det.ip)
+		},100)	
+	}
+	defaultRestore(){
+		this.sendPacket('DefaultRestore')
+		var self = this;
+		setTimeout(function (argument) {
+			socket.emit('getProdList', self.props.det.ip)
+		},100)
+	}
+
 	onCalFocus () {
 		this.refs.calibModal.setState({override:true})
 	}
@@ -6564,26 +7735,107 @@ class InterceptorMainPageUI extends React.Component{
 	languageChange (i) {
 		this.props.setLang(i)
 	}
+	handleProdScroll(){
+		var chsize = 3;
+		if(this.state.peditMode){
+			chsize = 2
+		}
+		if(document.getElementById('prodList').scrollTop > 5){
+			this.refs.arrowTop.show();
+		}else{
+			this.refs.arrowTop.hide();
+		}
+		if((Math.ceil(this.state.prodList.length/chsize)*52 - document.getElementById('prodList').scrollTop) > 390){
+			this.refs.arrowBot.show();
+		}else{
+			this.refs.arrowBot.hide();
+		}
+	}
+	scrollDown(){
+
+	}
+	scrollUp(){
+
+	}
+	deleteCurrentProd(p){
+		if(this.state.prodList.length < 2){
+			return;
+		}
+		////console.log(['6923',p, this.state.prodList])
+		var self  = this;
+	
+		if(this.state.prodList.indexOf(p) != 0){
+			this.switchProd(this.state.prodList[this.state.prodList.indexOf(p) - 1])
+		}else{
+			this.switchProd(this.state.prodList[1])
+		}
+		setTimeout(function(){
+			self.sendPacket('deleteProd',p)
+			setTimeout(function (argument) {
+				socket.emit('getProdList', self.props.det.ip)
+			},100);
+		},200);
+	}
+	login (){
+		this.props.login()
+	}
 	render () {
 		// body...
 		var home = 'home'
+		var login = 'login'
+
 		var style = {background:'#362c66', width:'100%',display:'block', height:'-webkit-fill-available'}
 		var lstyle = {height: 50,marginRight: 20, marginLeft:10}
 		var self = this;
 		var lgs = ['english','french','spanish','portuguese','german','italian','polish','turkish']// ['english','korean']
 		var lg = lgs[this.props.language]
+		var levels = ['Not Logged In', 'Operator', 'Engineer', 'Fortress']
+		if(lg == 'turkish'){
+			lg = 'korean'
+		}
+		if(vdefMapV2['@languages'].indexOf(lg) == -1){
+			lg = 'english'
+			//default to english
+		}
 		var prodNames = this.state.prodNames
-		var prodList = this.state.prodList.map(function(p, i){
-			var sel = false
-			if(p==self.state.sysRec['ProdNo']){
-				sel = true;
-			}
-			var name = ""
-			if(typeof prodNames[i] != 'undefined'){
-				name = prodNames[i]
-			}
-			return (<ProductItem onFocus={self.prodFocus} onRequestClose={self.prodClose} selected={sel} p={p} name={name} editName={self.editName} editMode={self.state.peditMode} copy={self.copyCurrentProd} delete={self.deleteProd} switchProd={self.switchProd}/>)
+		var chSize = 8;
+		
+		var chsize = 3, maxHeight = 380;
+		var defRestore = '', factorySave = '', factoryRestore = '', editCont = '', showPropmt = "#e1e1e1";
+		if(this.state.peditMode){
+			chsize = 2
+			maxHeight = 330;
+			showPropmt = 'orange'
+			defRestore =  <CustomAlertButton alertMessage={'Restore this product to default settings?'} onClick={this.defaultRestore}  style={{display:'inline-block', marginLeft:10, marginRight:10, height: 40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}}> Default Restore</CustomAlertButton>
+			factorySave = <CustomAlertButton alertMessage={'Save this product to factory?'} onClick={this.factorySave}  style={{display:'inline-block', marginLeft:10, marginRight:10, height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:18}}>Factory Save</CustomAlertButton>
+			factoryRestore = <CustomAlertButton alertMessage={'Restore this product to factory settings?'}  onClick={this.factoryRestore}  style={{display:'inline-block', marginLeft:10, marginRight:10, height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}}>Factory Restore </CustomAlertButton>
+			editCont = <div style={{position:'relative', display:'block', height:50, width:785, marginLeft:'auto',marginRight:'auto', textAlign:'center'}}>
+				{factoryRestore}
+				{factorySave}
+				{defRestore}
+				 <CustomAlertButton alertMessage={'Delete all current products?'}  onClick={this.deleteAll}  style={{display:'inline-block', marginLeft:10, marginRight:10, height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:18}}>Delete All </CustomAlertButton>
+			</div>
+		}
+		var chpnames = this.state.prodNames.chunk(chsize);
+		var prList = this.state.prodList.chunk(chsize).map(function(a,i){
+			var cells = a.map(function(p,j){
+					var sel = false;
+				if(p==self.state.sysRec['ProdNo']){
+					sel = true;
+				}
+				var name = ""
+				if(typeof chpnames[i][j] != 'undefined'){
+					name = chpnames[i][j]
+				}
+				return <td><ProductItem onFocus={self.prodFocus} onRequestClose={self.prodClose} selected={sel} p={p} name={name} deleteCurrent={self.deleteCurrentProd} editName={self.editName} editMode={self.state.peditMode} copy={self.copyCurrentProd} delete={self.deleteProd} switchProd={self.switchProd}/></td>
+			})
+			return <tr>{cells}</tr>
 		})
+		
+
+		var prodList = <div id='prodList' onScroll={this.handleProdScroll} style={{display:'block', width:785,marginLeft:'auto',marginRight:'auto', maxHeight:maxHeight, overflowY:'scroll'}}><table><tbody>{prList}</tbody></table></div>
+
+
 		var ps = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed_A']]
 			var psb = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed_B']]
 			if(this.state.phaseFast == 1){
@@ -6592,35 +7844,58 @@ class InterceptorMainPageUI extends React.Component{
 			if(this.state.phaseFastB == 1){
 				psb = 'fast'
 			}
-			//					<PopoutSelect val={this.props.language} index={0} onChange={this.languageChange} options={['english','korean']} />
-			
+		
+		var SA = false;
+		if(this.state.prodList.length > 7*chsize){
+			SA = true;
+		}
+		var togglePedit =  <div  onClick={this.changeProdEditMode}  style={{position:'absolute',left: 840, top:80}}><div style={{position:'absolute', left:-80, marginTop:5, color:showPropmt}}> Settings </div> <div><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPropmt}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div></div>
+		//bookmark here
+			//Style={{width:450, background:"#362c66"}} innerStyle={{background:'transparent', boxShadow:'none'}}
 		var peditCont = (<div>
 				<div style={{color:'#f1f1f1', fontSize:35, textAlign:'center'}}>Products
-				<button style={{float:'right',color:"#f1f1f1", fontSize:20}} className='editButton' onClick={this.changeProdEditMode} >Edit</button>
+
 				</div>
-				<div></div>
-				<div style={{display:'inline-block', width:600, maxHeight:400, overflowY:'scroll'}}>{prodList}</div><div style={{float:'right'}}></div>
+				{togglePedit}
+				{editCont}
+				
+				<div style={{position:'relative',textAlign:'center', width:785, marginLeft:'auto', marginRight:'auto', display:'block'}}>
+					<ScrollArrow ref='arrowTop' width={72} marginTop={-35} active={SA} mode={'top'} onClick={this.scrollDown}/>
+		
+				{prodList}
+
+					<ScrollArrow ref='arrowBot' width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+				</div>
 			</div>)
+
+		var logincell = <td className="logbuttCell" style={{height:60}}><button className='login' style={{height:50}} onClick={this.login}/></td>
+		var logintext = ''
+		if(this.props.level > 0){
+			logincell = <td className="logbuttCell" style={{height:60}}><button className='logout' style={{height:50}} onClick={this.login}/></td>
+			logintext =	<td style={{height:60, width:100, color:'#eee'}}><label onClick={this.login}>{this.props.username}</label></td>
+		}
 		return (<div className='interceptorMainPageUI' style={style}>
 					<table className='landingMenuTable' style={{marginBottom:-8, marginTop:-7}}>
 						<tbody>
 							<tr>
 								<td><img style={lstyle}  src='assets/Interceptor-white-01.svg'/></td>
-								<td >
-					</td><td className="buttCell" style={{height:60}}><button onClick={this.gohome} className={home}/></td>
+							{logintext}	{logincell}
+				<td className="buttCell" style={{height:60}}><button onClick={this.gohome} className={home}/></td>
 							</tr>
 						</tbody>
 					</table>
-			<InterceptorDynamicViewV2 language={lg} onButton={this.onButton} onSens={this.onSens} rejOn={this.props.rejOn} faultArray={this.props.faultArray} ref='dv' sens={[this.state.prodRec['Sens_A'],this.state.prodRec['Sens_B']]} sig={[this.state.peak,this.state.peakb]} pleds={[this.state.pled_a,this.state.pled_b]} rej={this.state.rej} onKeyboardOpen={this.keyboardOpen} onKeyboardClose={this.keyboardClose}/>
-			<InterceptorNav language={lg} onButton={this.onButton} ref='nv' clearFaults={this.props.clearFaults} rejOn={this.props.rejOn}  faultArray={this.props.faultArray} prodName={this.state.prodRec['ProdName']} />
+			<InterceptorDynamicViewV2 testReq={this.props.testReq}  language={lg} onButton={this.onButton} onSens={this.onSens} rejOn={this.props.rejOn} faultArray={this.props.faultArray} ref='dv' sens={[this.state.prodRec['Sens_A'],this.state.prodRec['Sens_B']]} sig={[this.state.peak,this.state.peakb]} pleds={[this.state.pled_a,this.state.pled_b]} rej={this.state.rej} onKeyboardOpen={this.keyboardOpen} onKeyboardClose={this.keyboardClose}/>
+			<InterceptorNav testReq={this.props.testReq}  status={this.props.status} language={lg} onButton={this.onButton} ref='nv' clearFaults={this.props.clearFaults} rejOn={this.props.rejOn}  faultArray={this.props.faultArray} prodName={this.state.prodRec['ProdName']} />
 				<Modal ref='testModal'>
 					<TestReq ip={this.props.det.ip} toggle={this.toggleTestModal}/>
 				</Modal>
-				<Modal ref='pedit' Style={{width:450, background:"#362c66"}} innerStyle={{background:'transparent', boxShadow:'none'}}>
+				<Modal ref='pedit' intMeter={true} clear={this.clearSig}>
+				
+
 				{peditCont}
 				</Modal>
 				
-				<Modal ref='netpolls'>
+				<Modal ref='netpolls' intMeter={true} clear={this.clearSig}>
 					<NetPollView language={lg} ref='np' eventCount={15} events={this.props.netpoll} ip={this.props.det.ip}/>
 				</Modal>
 				<Modal ref='configs'>
@@ -6638,6 +7913,7 @@ class InterceptorNav extends React.Component{
 		this.onCal = this.onCal.bind(this);
 		this.onProd = this.onProd.bind(this);
 		this.streaTo = this.streamTo.bind(this);
+		this.onTestReq = this.onTestReq.bind(this);
 	}
 	onConfig () {
 		this.props.onButton('config')
@@ -6645,6 +7921,9 @@ class InterceptorNav extends React.Component{
 	onTest () {
 		// body...
 		this.props.onButton('test')
+	}
+	onTestReq(){
+		this.props.onButton('onTestReq')
 	}
 	onLog () {
 		// body...
@@ -6665,7 +7944,7 @@ class InterceptorNav extends React.Component{
 	streamTo (dat) {
 		// body...
 		this.refs.sg.stream(dat);
-		//console.log('streaming')
+		//////console.log('streaming')
 	}
 	render () {
 		// body...
@@ -6682,8 +7961,12 @@ class InterceptorNav extends React.Component{
 			klass = 'navWrapper_f'
 		}else if(this.props.rejOn == 1){
 			klass = 'navWrapper_r'
+		}else if(this.props.testReq == 1){
+			klass = 'navWrapper_t'
+		}else if(this.props.testReq == 2){
+			klass = 'navWrapper_tf'
 		}
-	//	console.log([vdefMapV2['@labels']['Settings'],this.props.language])
+	//	////console.log([vdefMapV2['@labels']['Settings'],this.props.language])
 		return (<div className='interceptorNav' style={{display:'block', width:950, marginLeft:'auto',marginRight:'auto', background:'black'}}>
 				
 				<div className={klass} style={{overflow:'hidden',width:950,height:250}}>
@@ -6700,7 +7983,7 @@ class InterceptorNav extends React.Component{
 				<div style={{display:'inline-block', width:480, height:220, borderBottom:'20px solid #818a90',position:'relative', borderBottomLeftRadius:'100px 402px', borderBottomRightRadius:'100px 402px'}}>
 						
 				
-				<InterceptorNavContent rejOn={this.props.rejOn} language={this.props.language} ref='nv' clearFaults={this.props.clearFaults} faultArray={this.props.faultArray} prodName={this.props.prodName}><SlimGraph int={true} ref='sg' canvasId={'sgcanvas2'}/>	</InterceptorNavContent>
+				<InterceptorNavContent status={this.props.status} testReq={this.props.testReq} toggleTest={this.onTestReq} rejOn={this.props.rejOn} language={this.props.language} ref='nv' clearFaults={this.props.clearFaults} faultArray={this.props.faultArray} prodName={this.props.prodName}><SlimGraph int={true} ref='sg' canvasId={'sgcanvas2'}/>	</InterceptorNavContent>
 				</div></td><td>
 				<div className='slantedLeft'><div style={{background:'#362c66', borderTopLeftRadius:'30px 40px', height:240, textAlign:'center'}}>
 				<CircularButton style={right} lab={vdefMapV2['@labels']['Sensitivity'][this.props.language]['name']} inverted={true} onClick={this.onSens}/>
@@ -6725,6 +8008,8 @@ class InterceptorNavContent extends React.Component{
 	onClick () {
 		if(this.props.faultArray.length>0){
 			this.refs.fModal.toggle();
+		}else if(this.props.testReq != 0){
+			this.props.toggleTest();
 		}
 	}
 	render () {
@@ -6756,6 +8041,18 @@ class InterceptorNavContent extends React.Component{
 			left = 'navTabLeft_r'
 			center = 'navTabCent_r'
 			right = 'navTabRight_r'
+		}else if(this.props.testReq == 1){
+			left = 'navTabLeft_t'
+			center = 'navTabCent_t'
+			right = 'navTabRight_t'
+			line1 = <div style={{display:'block', height:34, width:330, marginBottom:-3}}>Test in progress</div>
+			line2 =<div style={{display:'block', height:34, width:330, fontSize:25}}>{this.props.status}</div>
+		}else if(this.props.testReq == 2){
+			left = 'navTabLeft_tf'
+			center = 'navTabCent_tf'
+			right = 'navTabRight_tf'
+			line1 = <div style={{display:'block', height:34, width:330, marginBottom:-3}}>Test Request Active</div>
+			line2 =<div style={{display:'block', height:34, width:330, fontSize:25}}>{this.props.status}</div>
 		}
 		return (<div className='interceptorNavContent' style={wrapper}>
 			<div style={{   position: 'fixed',marginTop: 0,marginLeft: 35, color:'#eee'}}>
@@ -6780,16 +8077,23 @@ class InterceptorNavContent extends React.Component{
 class InterceptorDynamicViewV2 extends React.Component{
 	constructor(props) {
 		super(props)
+		this.state = {peaka:0,peakb:0}
 		this.update = this.update.bind(this)
 		this.onSens = this.onSens.bind(this)
 		this.onSensB = this.onSensB.bind(this);
 		this.onSigA = this.onSigA.bind(this);
 		this.onSigB = this.onSigB.bind(this);
 		this.onRej = this.onRej.bind(this);
+		this.updatePeak = this.updatePeak.bind(this);
 	}
 	update (siga, sigb) {
 		this.refs.tba.update(siga)
 		this.refs.tbb.update(sigb)
+	}
+	updatePeak(a,b){
+		if((this.state.peaka != a)||(this.state.peakb != b)){
+			this.setState({peaka:a, peakb:b})
+		}
 	}
 	onSens (e) {
 		this.props.onSens(e, 'Sens_A')
@@ -6821,6 +8125,11 @@ class InterceptorDynamicViewV2 extends React.Component{
 		}else if(this.props.rejOn == 1){
 			//bcolor = ''
 			klass = 'interceptorDynamicView_r'
+		}else if(this.props.testReq == 1){
+			//bcolor = ''
+			klass = 'interceptorDynamicView_t'
+		}else if(this.props.testReq == 2){
+			klass = 'interceptorDynamicView_tf'
 		}
 	
 		return (
@@ -6838,7 +8147,7 @@ class InterceptorDynamicViewV2 extends React.Component{
 					<div style={{position:'relative', marginTop:0, marginBottom:-7}}>
 					<KeyboardInputTextButton label={vdefMapV2['@labels']['Sensitivity'][this.props.language]['name']} lab2={' A'} num={true} isEditable={true} value={this.props.sens[0]} onInput={this.onSens} onFocus={this.props.onKeyboardOpen} onRequestClose={this.props.onKeyboardClose} inverted={false}/></div>
 				
-					<div style={{position:'relative',marginBottom:7}}><KeyboardInputTextButton overrideBG={true} rstyle={{backgroundColor:pled[this.props.pleds[0]]}} bgColor={'rgba(200,200,200,1)'} label={vdefMapV2['@labels']['Signal'][this.props.language]['name']} lab2={' A'} onClick={this.onSigA} isEditable={false} value={this.props.sig[0]} inverted={false}/></div>
+					<div style={{position:'relative',marginBottom:7}}><KeyboardInputTextButton overrideBG={true} rstyle={{backgroundColor:pled[this.props.pleds[0]]}} bgColor={'rgba(200,200,200,1)'} label={vdefMapV2['@labels']['Signal'][this.props.language]['name']} lab2={' A'} onClick={this.onSigA} isEditable={false} value={this.state.peaka} inverted={false}/></div>
 					
 				</div>
 				</td>
@@ -6852,7 +8161,7 @@ class InterceptorDynamicViewV2 extends React.Component{
 				<td style={{padding:0, height:160, overflow:'hidden', display:'inline-block'}}>
 				<div style={{display:'inline-block', width:330, height:160}}>
 					<div style={{position:'relative', marginTop:0, marginBottom:-7}}><KeyboardInputTextButton label={vdefMapV2['@labels']['Sensitivity'][this.props.language]['name']} lab2={' B'} onFocus={this.props.onKeyboardOpen} onRequestClose={this.props.onKeyboardClose} num={true} isEditable={true} value={this.props.sens[1]} onInput={this.onSensB} inverted={true}/></div>
-					<div style={{position:'relative',marginBottom:7}}><KeyboardInputTextButton overrideBG={true} bgColor={'rgba(200,200,200,1)'} rstyle={{backgroundColor:pled[this.props.pleds[1]]}} label={vdefMapV2['@labels']['Signal'][this.props.language]['name']} lab2={' B'} onClick={this.onSigB} isEditable={false} value={this.props.sig[1]} inverted={true}/></div>
+					<div style={{position:'relative',marginBottom:7}}><KeyboardInputTextButton overrideBG={true} bgColor={'rgba(200,200,200,1)'} rstyle={{backgroundColor:pled[this.props.pleds[1]]}} label={vdefMapV2['@labels']['Signal'][this.props.language]['name']} lab2={' B'} onClick={this.onSigB} isEditable={false} value={this.state.peakb} inverted={true}/></div>
 					
 				</div>
 				</td>
@@ -6886,7 +8195,12 @@ class CircularButton extends React.Component{
 		this.onClick = this.onClick.bind(this)
 	}
 	onClick () {
-		this.props.onClick();
+		if(!this.props.disabled){
+			this.props.onClick();
+		}else{
+			notify.show('Test is not configured')
+			//alert('Test is not configured!')
+		}
 	}
 	render () {
 		var bg = '#818a90'
@@ -6908,7 +8222,12 @@ class CircularButton extends React.Component{
 		var style = {height:55,top:-6,left:-6}
 		var divstyle = {overflow:'hidden',background:bg,height:50,width:50,borderRadius:25}
 		var bstyle = this.props.style || {} //{width:191,border:border,position:'relative',marginTop:8,height:50,overflow:'hidden', borderRadius:32, background:gr, padding:3, marginLeft:mr, marginRight:ml}
-	
+		if(this.props.disabled){
+			bstyle.background = '#818a90'
+			return(<div  className='circularButton' onClick={this.onClick} style={bstyle}>
+				<div style={{display:'inline-block', position:'relative',top:-2,width:180, color:"#bbb", fontSize:30}}>{this.props.lab}</div>
+			</div>)
+		}	
 		if(this.props.inverted){
 			return(<div  className='circularButton' onClick={this.onClick} style={bstyle}>
 				<div style={{display:'inline-block', position:'relative',top:-2,width:180, color:"#e1e1e1", fontSize:30}}>{this.props.lab}</div>
@@ -6969,12 +8288,9 @@ class KeyboardInputButton extends React.Component{
 			rstyle = this.props.rstyle || {}
 		}
 		var boxShadow = '0px 0px 0px 50px '+bgColor
-
-		//var kb = <KeyboardInput onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} Style={{fontSize:25, textAlign:'center', width:100}} onInput={this.onInput} ref='input' value={this.props.value}/>
 		var ckb = <CustomKeyboard ref='input' onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.value}/>
-		//var kb = <KeyboardInput onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} Style={{fontSize:25, textAlign:'center', width:75}} onInput={this.onInput} ref='input' value={this.props.value}/>
 		
-			kb = <label style={{fontSize:25, textAlign:'center', width:100, display:'inline-block', lineHeight:2}} onClick={this.editValue}>{this.props.value}</label>
+		var	kb = <label style={{fontSize:25, textAlign:'center', width:100, display:'inline-block', lineHeight:2}} onClick={this.editValue}>{this.props.value}</label>
 		
 		if(this.props.inverted){
 		var before = {position: 'absolute',height:'100%',display: 'inline-block',top:0,width:44,left:0,backgroundColor:bgColor,borderRadius:30, height:50}
@@ -7015,6 +8331,40 @@ class KeyboardInputButton extends React.Component{
 			</div>)
 		}
 	}
+}
+
+class InterceptorSensitivityUI extends React.Component{
+	constructor(props){
+		super(props);
+	//	this.state = 
+		this.onSensA = this.onSensA.bind(this);
+		this.onSensB = this.onSensB.bind(this);
+	}
+	onSensA(sens){
+		this.props.onSens(sens,'Sens_A');
+	}
+	onSensB(sens){
+		this.props.onSens(sens,'Sens_B')
+	}
+	render(){
+		return <div style={{ overflow: 'hidden',borderRadius: 20, border: '8px solid #818a90',boxShadow: '0 0 14px black'}}>
+		<table style={{borderSpacing:0}}>
+			<tbody><tr>
+					<td style={{width:340, background:'#818a90', textAlign:'center'}}>
+						<div style={{marginTop:15}}>
+						<KeyboardInputTextButton label={vdefMapV2['@labels']['Channel A'][this.props.language]['name']} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.sensA} onInput={this.onSensA} inverted={false} /></div>
+						</td>
+					<td  style={{width:220,textAlign:'center', background:'linear-gradient(55deg, #818a90, #818a90 49.9%,#362c66 50.1%, #362c66)'}}></td>
+					<td  style={{width:340, textAlign:'center', background:'#362c66'}}>
+						<div style={{marginTop:15}}>
+						<KeyboardInputTextButton label={vdefMapV2['@labels']['Channel B'][this.props.language]['name']}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.sensB} onInput={this.onSensB} inverted={true}/></div>
+					</td>
+				
+			</tr></tbody>
+		</table>
+		</div>
+	}
+
 }
 
 class InterceptorCalibrateUI extends React.Component{
@@ -7079,39 +8429,23 @@ class InterceptorCalibrateUI extends React.Component{
 		var colors = ['#c8c8c8',"#c8c800","#00c8c8", "#0000c8"]
 		var ledcolors = ["#ffffff","#00ff00","#ff0000"]
 
-		var opsA = modes.map(function (m,i) {
-			// body...
-			if(self.state.phaseMode == i){
-				return <option value={i} selected>{m}</option>
-			}else{
-				return <option value={i}>{m}</option>
-			}
-		})
-		var opsB = modes.map(function (m,i) {
-			// body...
-			if(self.state.phaseModeB == i){
-				return <option value={i} selected>{m}</option>
-			}else{
-				return <option value={i}>{m}</option>
-			}
-		})
-	  	console.log(vdefMapV2['@labels']['Channel A'])
-	  	console.log(this.props.language)
-		return	<div style={{ overflow: 'hidden',borderRadius: 20, border: '8px solid #818a90',boxShadow: '0 0 14px black'}}>
+		var opsA = modes[self.state.phaseMode]
+		var opsB = modes[self.state.phaseModeB]
+	 	return	<div style={{ overflow: 'hidden',borderRadius: 20, border: '8px solid #818a90',boxShadow: '0 0 14px black'}}>
 
 		<table style={{borderSpacing:0}}>
 			<tbody>
 				<tr>
 					<td style={{width:340, background:'#818a90', textAlign:'center'}}>
 						<div style={{marginTop:15}}><KeyboardInputTextButton label={vdefMapV2['@labels']['Channel A'][this.props.language]['name']} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phase} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.phaseSpeed]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
-						<div hidden><div className='customSelect' style={{width:150}}><select onChange={this.onModeA}>{opsA}</select></div></div>
+						<div ><div className='customSelect' style={{width:150, color:'#e1e1e1'}}><label>{opsA}</label></div></div>
 				
 						<div style={{marginBottom:15}}><CircularButton style={{width:228}} lab={vdefMapV2['@labels']['Calibrate'][this.props.language]['name']} isTransparent={true} inverted={false} onClick={this.onCalA}/></div>
 					</td>
 					<td  style={{width:220,textAlign:'center', background:'linear-gradient(55deg, #818a90, #818a90 49.9%,#362c66 50.1%, #362c66)'}}>
 					<CircularButton lab={vdefMapV2['@labels']['Calibrate All'][this.props.language]['name']} isTransparent={true} inverted={false} onClick={this.calibrateAll} /></td><td  style={{width:340, textAlign:'center', background:'#362c66'}}>
 						<div style={{marginTop:15}}><KeyboardInputTextButton label={vdefMapV2['@labels']['Channel B'][this.props.language]['name']}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phaseb} onInput={this.onPhaseB} inverted={true} bgColor={colors[this.state.phaseSpeedB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
-						<div hidden><div className='customSelect' style={{width:150}}><select onChange={this.onModeB}>{opsB}</select></div></div>
+						<div ><div className='customSelect' style={{width:150, color:'#e1e1e1'}}><label >{opsB}</label></div></div>
 				
 						<div style={{marginBottom:15}}><CircularButton style={{width:228}} lab={vdefMapV2['@labels']['Calibrate'][this.props.language]['name']} isTransparent={true} inverted={true} onClick={this.onCalB}/></div>
 					</td>
@@ -7269,11 +8603,16 @@ class KeyboardInputTextButton extends React.Component{
 			bgColor = this.props.bgColor || bgColor
 			rstyle = this.props.rstyle || rstyle
 		}
+		var tbst = {}
+		if(this.props.label.length>13){
+			tbst = {fontSize:20}
+		}else if(this.props.label.length > 10){
+   			tbst = {fontSize:22}
+   		}
 		rstyle.padding = 8;
 		var boxShadow = '0px 0px 0px 50px '+bgColor
 		var lab2 = this.props.lab2 || "";
 		var ckb = <CustomKeyboard ref='input' onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label + lab2 +': ' + this.props.value}/>
-		//var kb = <KeyboardInput onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} Style={{fontSize:25, textAlign:'center', width:75}} onInput={this.onInput} ref='input' value={this.props.value}/>
 		var	kb = <label style={{fontSize:25, textAlign:'center', width:75, display:'inline-block', lineHeight:'54px'}} onClick={this.editValue}>{this.props.value}</label>
 		
 		if(!this.props.isEditable){
@@ -7284,6 +8623,7 @@ class KeyboardInputTextButton extends React.Component{
 		var after = {position:'absolute',height:'100%',display:'inline-block',top:0,width:44,left:92,backgroundColor:'transparent',boxShadow:boxShadow,  borderRadius:22, height:54}
 		var contStyle= {display:'inline-block',width:75,position:'absolute',left:14,overflow:'hidden', height:54, backgroundColor:bgColor, zIndex:2, borderRadius:10}
    		
+		
 		return (
 			<div className='keyboardInputTextButton'>
 			<div className='round-bg' onClick={this.editValue} style={rstyle}>
@@ -7292,7 +8632,7 @@ class KeyboardInputTextButton extends React.Component{
 				<div style={contStyle}>{kb}</div>
 				<div style={after}/>
 				</div>
-				<div className='tbDiv'>{this.props.label}</div>
+				<div className='tbDiv' style={tbst}>{this.props.label}</div>
 					
 			</div>
 			{ckb}
@@ -7306,7 +8646,7 @@ class KeyboardInputTextButton extends React.Component{
 		return (
 			<div className='keyboardInputTextButton'>
 			<div className='round-bg' onClick={this.editValue} style={rstyle}>
-				<div className='tbDiv'>{this.props.label}</div>
+				<div className='tbDiv' style={tbst}>{this.props.label}</div>
 				<div className='pbContain' style={{display:'table-cell', width:105}}>
 				<div style={before}/>
 				<div style={contStyle}>{kb}</div>
@@ -7359,7 +8699,7 @@ class CustomKeyboard extends React.Component{
 	render () {
 		var cont = "";
 		if(this.state.show){
-			cont = <CustomKeyboardCont onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
+			cont = <CustomKeyboardCont pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
 		}
 		return <div hidden={!this.state.show} className = 'pop-modal'>
 			<div className='modal-x' onClick={this.close}>
@@ -7422,27 +8762,24 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		this.setState({value:this.state.value.slice(0,this.state.value.length - 1)})
 	},
 	clear:function () {
-		// body...
 		this.setState({value:""})
 	},
 	onShift :function() {
-		// body...
 		this.setState({shift:!this.state.shift})
 	},
 	render:function () {
-		// body...
 		var self = this;
-		var NumericKeyset = [['cancel','-','del'],['7','8','9'],['4','5','6'],['1','2','3'],['0','.','enter']]
+		var NumericKeyset = [['7','8','9'],['4','5','6'],['1','2','3'],['.','0','-']]
 		var ANumericKeyset = [ ['1','2','3','4','5','6','7','8','9','0'],['q','w','e','r','t','y','u','i','o','p'],
-							['a','s','d','f','g','h','j','k','l','del'],['shift','z','x','c','v','b','n','m','-','shift'],
-							['cancel','@','#','space','.','enter']]
+							['a','s','d','f','g','h','j','k','l','@'],['shift','z','x','c','v','b','n','m','-','.'],
+							['space','#','enter','cancel']]
 		var rows = ""
 		var width = 290;
 		var caps = this.state.shift
 		if(this.props.num){
 			rows = NumericKeyset.map(function (row) {
 				var tds = row.map(function(k){
-					console.log(k)
+					////console.log(k)
 					return <CustomKey Key={k}  caps={false} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
@@ -7454,6 +8791,9 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 						if (key.length == 1){
 							key = key.toUpperCase();
 						}
+						if(key == '-'){
+							key = '_';
+						}
 					}
 					return <CustomKey Key={key} caps={caps} onPress={self.onKeyPress}/>
 				})
@@ -7461,10 +8801,15 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			})
 			width = 940
 		}
+		var dispval = this.state.value;
+		if(this.props.pwd){
+			dispval = this.state.value.split('').map(function(c){return '*'}).join('');
+		}
 		return <div style={{paddingLeft:7,paddingRight:7}} className = 'selectmodal-outer'>
 		<label style={{color:'#a0a0a0',fontSize:25,width:400,marginRight:'auto',marginLeft:'auto',display:'block'}}>
 			{this.props.label}</label>
-		<div style={{background:'rgba(150,150,150,0.3)',fontSize:25,lineHeight:2,textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:54,color:'#eee', whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}}>{this.state.value}</div>
+	<div style={{height:60, position:'relative'}}>	<div style={{background:'rgba(150,150,150,0.3)',display:'inline-block',fontSize:25,lineHeight:2,textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:54,color:'#eee', whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}}>{dispval}</div>
+		<svg style={{position:'absolute', top:14, marginLeft:-36}} onClick={this.clear} xmlns="http://www.w3.org/2000/svg" height="32" version="1.1" viewBox="0 0 32 32" width="32"><g id="Layer_1"/><g id="x_x5F_alt"><path d="M16,0C7.164,0,0,7.164,0,16s7.164,16,16,16s16-7.164,16-16S24.836,0,16,0z M23.914,21.086   l-2.828,2.828L16,18.828l-5.086,5.086l-2.828-2.828L13.172,16l-5.086-5.086l2.828-2.828L16,13.172l5.086-5.086l2.828,2.828   L18.828,16L23.914,21.086z" fill="#3E3E40"/></g></svg></div>
 		<div style={{width:width,marginLeft:'auto',marginRight:'auto'}}>
 		<table style={{tableLayout:'fixed', position:'relative', top:0,width:width}}className='customKeyboardTable'><tbody>
 			{rows}
@@ -7472,8 +8817,9 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		
 	  	
 		</div>
-		<div><button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.onEnter}>Accept</button><button style={{height:50, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.close}>Cancel</button></div>
+		<div hidden={!this.props.num}><button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.onEnter}>Accept</button><button style={{height:50, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.close}>Cancel</button></div>
 		</div>
+	  	
 	}
 }))
 class CustomKey extends React.Component{
@@ -7493,8 +8839,9 @@ class CustomKey extends React.Component{
 			return	<td onClick={this.onPress} className='customKey'><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg></div></td>
 		}else if(this.props.Key == 'enter'){
 
-
-			return <td onClick={this.onPress} className='customKey'><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M19 7v4H5.83l3.58-3.59L8 6l-6 6 6 6 1.41-1.41L5.83 13H21V7z"/></svg></div></td>
+			
+			return <td onClick={this.onPress} className='customKey'  colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Accept</div></td>
+		
 		}else if(this.props.Key == 'shift'){
 			var fill = "#000000"
 			var st = {}
@@ -7504,8 +8851,9 @@ class CustomKey extends React.Component{
 			}
 			return <td style={st} onClick={this.onPress} className='customKey'><div style={{marginBottom:-15}}><svg fill={fill} xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M12 8.41L16.59 13 18 11.59l-6-6-6 6L7.41 13 12 8.41zM6 18h12v-2H6v2z"/></svg></div></td>
 		}else if(this.props.Key == 'cancel'){
-			return <td onClick={this.onPress} className='customKey'><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></div></td>
+			return <td onClick={this.onPress} className='customKey'  colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Cancel</div></td>
 			
+	
 		}else{
 
 			return <td onClick={this.onPress} className='customKey'>{this.props.Key.slice(0,1)}</td>
@@ -7524,7 +8872,7 @@ class TreeNode extends React.Component{
 		this.setState({hidden:hidden});
 	}
 	render(){
-		////console.log("render")
+		////////console.log("render")
 		var cName = "collapsed"
 		if(!this.state.hidden){
 			cName = "expanded"

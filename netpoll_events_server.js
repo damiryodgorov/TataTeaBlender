@@ -511,7 +511,7 @@ class NetPollEvents{
 //            	res = res + p["@name"] + ": " + self.password8(value, i) + '\n';
 						}
 	        }
-	        else if((p['@type'] == 'rej_chk') || (p['@type'] == 'rej_mode') || (p['@type'] == 'rej_latch') || (p['@type'] == 'peak_mode') || (p['@type'] == 'ipv4_address'))
+	        else if(((p['@type'] == 'rej_chk') || (p['@type'] == 'rej_mode') || (p['@type'] == 'rej_latch') || (p['@type'] == 'peak_mode') || (p['@type'] == 'ipv4_address'))&& (typeof p['@dep'] != 'undefined'))
 	        {
 //	          console.log(p["@name"] + ": " + self.parse_and_print_param_1_dep(value, p, idx, i, word));
 						var aux = self.parse_and_print_param_1_dep(value, p, idx, i, word);
@@ -766,6 +766,7 @@ class NetPollEvents{
 	  var res;
 	  if(idx == 0)
 	  {
+	  	console.log(p)
 	    if(this.record_deps[p['@dep'][0]] == 0)
 	    {
 	      if(value == 0)

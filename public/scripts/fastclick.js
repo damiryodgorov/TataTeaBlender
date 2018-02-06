@@ -12,6 +12,7 @@
             }
          };
          FastButton.prototype.onTouchStart = function(event) {
+            console.log('clickevent')
              event.stopPropagation();
             this.element.addEventListener('touchend', this, false);
             document.body.addEventListener('touchmove', this, false);
@@ -25,6 +26,7 @@
             }
          };
          FastButton.prototype.onClick = function(event) {
+               console.log('clickevent')
             this.reset();
             this.handler(event);
            // console.log('fastbutton')

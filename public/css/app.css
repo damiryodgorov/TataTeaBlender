@@ -37,6 +37,18 @@ button{
     animation-duration: 1.8s;
     animation-iteration-count: infinite;*/
 }
+.interceptorDynamicView_t{
+    border: 7px solid rgb(0,80,200);
+    /*animation: blink_border_r;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;*/
+}
+.interceptorDynamicView_tf{
+    border: 7px solid black;
+    animation: blink_border_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
 .compassButton{
     height: 40px;
     border: none;
@@ -206,12 +218,17 @@ li {
 .npTable{
     font-size:16px;
     table-layout: fixed;
+    border-collapse: collapse;
+    margin-top: 10px;
+
 }
 .npTable thead tr {
         display: block;
         position: relative;
         
 }
+.npTable tr:nth-child(odd)       { background-color:rgba(200,200,200,0.5); }
+.npTable tr:nth-child(even)      { background-color:transparent; }
 .npTable td{
     padding-left: 7px;
     padding-right: 7px;
@@ -220,7 +237,7 @@ li {
         display: block;
         overflow: auto;
         width: 100%;
-        height: 230px;
+        height: 330px;
 }
 .mtab{
 
@@ -243,6 +260,18 @@ li {
     background-size: contain;
     height: 50px;
     width: 50px;
+    margin-top: -10px;
+    background-repeat: no-repeat;
+
+    display: inline-block;
+}
+.logbuttCell button{
+   height: 50px;
+}
+.logbuttCell button::after{
+    background-size: contain;
+    height: 40px;
+    width: 40px;
     margin-top: -10px;
     background-repeat: no-repeat;
 
@@ -354,7 +383,8 @@ li {
     background-repeat: no-repeat;
 }
 .circularButton{
-    width:191;
+    text-align: center;
+    width:191px;
     background-color: #484074;
     position: relative;
     margin-top: 8px;
@@ -388,11 +418,22 @@ li {
     margin-top: 2px;
     margin-bottom: 2px;
 }
-}
+
 .login::after{
+     height: 40px;
+    width: 40px;
     float: right;
     content:" ";
-    background:url('../assets/lock.svg');
+    background:url('../assets/locked.svg');
+    
+
+}
+.logout::after{
+     height: 40px;
+    width: 40px;
+    float: right;
+    content:" ";
+    background:url('../assets/unlocked.svg');
     
 
 }
@@ -543,6 +584,32 @@ li {
     100% {background-color: rgba(200,200,0,0.4);}
 
 }
+@keyframes blink_left_tf{
+    0% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));}
+    49% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));}
+    50% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(0, 80,200,0.7) 51%, rgba(0, 80,200,0.7));}
+    100% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(0, 80,200,0.7) 51%, rgba(0, 80,200,0.7));}
+}
+
+@keyframes blink_right_tf{
+    0% {background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);}
+    49% {background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);}
+    50% {background: linear-gradient(100deg, rgba(0, 80,200,0.7), rgba(0, 80,200,0.7) 49%, transparent 53%, transparent);}
+    100% {background: linear-gradient(100deg, rgba(0, 80,200,0.7), rgba(0, 80,200,0.7) 49%, transparent 53%, transparent);}
+}
+@keyframes blink_center_tf{
+    0% {background-color : rgba(150, 150, 150, 0.3);}
+    49% {background-color : rgba(150, 150, 150, 0.3);}
+    50% {background-color : rgba(0, 80,200,0.7);}
+    100% {background-color: rgba(0, 80,200,0.7);}
+}
+@keyframes blink_wr_tf{
+    0% {background-color : black;}
+    49% {background-color : black;}
+    50% {background-color : rgba(0,80,200,0.4);}
+    100% {background-color: rgba(0,80,200,0.4);}
+
+}
 @keyframes blink_border{
     0% {border : 7px solid black;}
     49% {border : 7px solid black;}
@@ -555,6 +622,13 @@ li {
     49% {border : 7px solid black;}
     50% {border : 7px solid yellow;}
     100% {border : 7px solid yellow;}
+
+}
+@keyframes blink_border_tf{
+    0% {border : 7px solid black;}
+    49% {border : 7px solid black;}
+    50% {border : 7px solid rgb(0,80,200);}
+    100% {border : 7px solid rgb(0,80,200);}
 
 }
 .navTabLeft{
@@ -603,6 +677,36 @@ li {
     animation-iteration-count: infinite;
     color: #e1e1e1
 }
+.navWrapper_tf{
+    background: black;
+    animation-name: blink_wr_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+
+.navTabLeft_tf{
+    width: 40px;
+    background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));
+    animation-name: blink_left_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.navTabRight_tf{
+    width: 40px;
+    background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);
+    animation-name: blink_right_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.navTabCent_tf{
+    height: 75px;
+    background: rgba(150, 150, 150, 0.3);
+    width: 330px;
+    animation-name: blink_center_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+    color: #e1e1e1
+}
 .navWrapper_r{
 
     background-color : rgba(200,200,0,0.4);
@@ -620,6 +724,24 @@ li {
     height: 75px;
     width: 330px;
     background-color : rgba(255, 255,0,0.7);
+}
+.navWrapper_t{
+
+    background-color : rgba(0,80,200,0.4);
+}
+
+.navTabLeft_t{
+    width: 40px;
+    background: linear-gradient(80deg, transparent, transparent 47%, rgba(0, 80,200,0.7) 51%, rgba(0, 80,200,0.7));
+}
+.navTabRight_t{
+    width: 40px;
+    background: linear-gradient(100deg, rgba(0, 80,200,0.7), rgba(0, 80,200,0.7) 49%, transparent 53%, transparent);
+}
+.navTabCent_t{
+    height: 75px;
+    width: 330px;
+    background-color : rgba(0, 80,200,0.7);
 }
 .modal-content{
     background-color: #362c66;
@@ -671,7 +793,7 @@ li {
 }
 .modal-outer{
     position: relative;
-    margin-top: 40px;
+    margin-top: 25px;
     width: 90%;
     max-width: 900px;
     margin-left: auto;
@@ -679,7 +801,18 @@ li {
 }
 .selectmodal-outer{
     position: relative;
-    margin-top: 40px;
+    margin-top: 75px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    background:#362c66;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    text-align: center
+}
+.alertmodal-outer{
+    position: relative;
+    margin-top: 85px;
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
@@ -985,7 +1118,7 @@ li {
     padding-bottom: 5px;
     font-size: 24px;
     line-height: 45px;
-    
+    position: relative;
 }
 .sItem label{
 
@@ -1132,7 +1265,11 @@ li {
     background: transparent;
     
 }
-
+.logbuttCell button{
+    border: none;
+    background: transparent;
+    
+}
 .menuTable h1::after{
     width: 100%;
     border-bottom: none;
@@ -1149,6 +1286,10 @@ li {
     width: 200px;
 }
 .buttCell{
+    width: 46px;
+    height: 100px;
+}
+.logbuttCell{
     width: 46px;
     height: 100px;
 }
