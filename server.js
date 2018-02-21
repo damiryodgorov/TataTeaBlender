@@ -25,6 +25,7 @@ const cp = require('child_process')
 const WebSocket = require('ws')
 const wss = new WebSocket.Server({server:http})
 const stream = require('stream')
+const os = require('os');
 //var usb = require('usb')
 //var drivelist = require('drivelist')
 var db = flatfile('./dbs/users.db')
@@ -61,11 +62,19 @@ var funcJSON ={
       "bit_array":"(function(val){if(val == 0){return 0;}else{ var i = 0; while(i<16 && ((val>>i) & 1) == 0){ i++; } i++;  return i; } })",
       "patt_frac":"(function(val){return (val/10.0).toFixed(1)})",
       "eye_rej_mode":"(function(val,photo,width){if(photo == 0){return 3;}else{if(val==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})",
-      "ipv4_address":"(function(words){return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');})"
+      "ipv4_address":"(function(words){return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');})",
+      "username":"(function(username){return username;}",
+      "user_opts":"(function(opts){return opts});",
+      "password_hash":"(function(phash){return phash;});"
       }
   }
 
+const salt = 'fortress'
+//const hash = crypto.createHash('sha1')
 
+console.log(crypto.createHash('sha1').update("operator0123"+salt).digest().slice(0,8))
+console.log(crypto.createHash('sha1').update("operator0023"+salt).digest().slice(0,8))
+console.log(crypto.createHash('sha1').update("engineer0123"+salt).digest().slice(0,8))
 //lets just keep it here for now
 var accounts = {"operator":{"acc":1,"password":"0123"},"engineer":{"acc":2,"password":"0123"},"fortress":{"acc":3,"password":"0123"}}
 /*
@@ -111,6 +120,7 @@ let nVdfs = {};
 let pVdefs = {};
 let nphandlers = {};
 let accountJSONs = {};
+let macs = {}
 let networking = new NetworkInfo();
 
 networking.listInterfaces().then(console.log).catch(console.error);
@@ -122,7 +132,7 @@ function load_vdef_parameters(json){
 function write_netpoll_events(message, ip){
   console.log("Writing NetpollEvents from " + ip);
  // console.log(message);
-  var msg = {det:{ip:ip}, data:message}
+  var msg = {det:{ip:ip, mac:macs[ip]}, data:message}
   relayNetPoll(msg)
   msg = null;
   ip = null;
@@ -130,7 +140,14 @@ function write_netpoll_events(message, ip){
 }
 
 function initSocks(arr, cb){
-  dsp_ips = []
+  dsp_ips = [];
+  vdefs = {};
+  nVdfs = {};
+  pVdefs = {};
+  clients = {};
+  udpClients = {};
+  nphandlers = {};
+  accountJSONs = {};
   console.log('dsp_ips')
   for(var i = 0; i<arr.length; i++){
    // console.log(arr)
@@ -159,12 +176,19 @@ function getVdef(ip, callback){
       zlib.unzip(buffer, function(er,b){
         var vdef = JSON.parse(b.toString())
         vdefs[ip] = vdef; 
-        var nvdf = [[],[],[],[],[]];
-        var pVdef = [{},{},{},{},{}];
+        var nvdf = [[],[],[],[],[],[],[]];
+        var pVdef = [{},{},{},{},{},{},{}];
         vdef['@params'].forEach(function (p) {
           // body...
-          nvdf[p["@rec"]].push(p['@name'])
-          pVdef[p['@rec']][p['@name']] = p
+          if(("username" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
+            nvdf[6].push(p['@name'])
+            pVdef[6][p['@name']] = p
+          }else{
+
+
+            nvdf[p["@rec"]].push(p['@name'])
+            pVdef[p['@rec']][p['@name']] = p
+          }
         })
         for(var p in vdef['@deps']){
           //console.log(p)
@@ -238,6 +262,7 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
   }
   var pack;
   var rec = {};
+   var userrec = {};
   if(rec_type == 0){
     nVdf[0].forEach(function (p) {
       rec[p] = getVal(array, 0, p, pVdef)
@@ -276,9 +301,19 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
     
   }else if(rec_type == 3){
      nVdf[3].forEach(function (p) {
+      //need to account for user objects here. 
+     // if(p)
       rec[p] = getVal(array, 3, p, pVdef)
       // body...
     })
+   
+    nVdf[6].forEach(function (p) {
+      //need to account for user objects here. 
+     // if(p)
+      userrec[p] = getVal(array, 6, p, pVdef)
+      // body...
+    })
+    relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:5, rec:userrec}}})
 
     pack = {type:3, rec:rec}
     
@@ -291,13 +326,14 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
     pack = {type:4, rec:rec}
   }
  // data = null;
-  relayParamMsg2({det:{ip:ip}, data:pack});
+  relayParamMsg2({det:{ip:ip, mac:macs[ip]}, data:pack});
  
   nVdf = null;
   pVdef = null;
   array = null;
   e = null;
   rec = null;
+  userrec = null;
  // pack.det = {ip:ip}
   pack = null;
 
@@ -598,6 +634,15 @@ class Params{
     //return ip
    return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');
   }
+  static username(username){
+    return username;
+  }
+  static user_opts(opts){
+    return opts;
+  }
+  static password_hash(phash){
+    return phash;
+  }
 }
 function udpConSing(ip){
   if(dsp_ips.indexOf(ip) == -1){
@@ -631,7 +676,7 @@ function udpConSing(ip){
   }else{
     console.log('else!')
     udpClients[ip] = null;
-         udpClients[ip] = new UdpParamServer(ip , function(_ip,e){
+         udpClients[ip] = new UdpParamServer(ip, function(_ip,e){
       if(e){
      //   var ab = toArrayBuffer(e.data)
       //  console.log(ab)
@@ -718,6 +763,16 @@ function relayParamMsg2(packet){
     //console.log(packet)
 
     passocs[pid].relayParsed(packet);
+  }
+  packet = null;
+}
+function relayUserNames(packet){
+  //console.log('relay param msg 2')
+
+  for(var pid in passocs){
+    //console.log(packet)
+
+    passocs[pid].relayUserNames(packet);
   }
   packet = null;
 }
@@ -844,6 +899,7 @@ class FtiHelper{
 var Helper = new FtiHelper();
 var dspip = "192.168.10.59";
 var dspips = [];
+var nvdspips = [];
 
 var dets;
 
@@ -1034,6 +1090,11 @@ function getProdName(ip, list, ind, callback, arr){
         socket.emit('paramMsg2',p)
         p = null;
       }
+       var relayUserNamesFunc = function (p) {
+        // body...
+        socket.emit('userNames',p)
+        p = null;
+      }
     var relayRpcFunc = function(p){
       socket.emit('rpcMsg',p)
       p = null;
@@ -1043,7 +1104,7 @@ function getProdName(ip, list, ind, callback, arr){
       p = null;
     }
       console.log(socket.id)
-      passocs[socket.id] = {relay:relayFunc, relayParsed:relayFuncP}
+      passocs[socket.id] = {relay:relayFunc, relayParsed:relayFuncP, relayUserNames:relayUserNamesFunc}
       rassocs[socket.id] = {relay:relayRpcFunc}
       nassocs[socket.id] = {relay:relayNetFunc}
 
@@ -1071,7 +1132,7 @@ function getProdName(ip, list, ind, callback, arr){
   socket.on('login', function(arg){
 
     /*if(db.has(arg.id)){
-      if(crypto.createHash('sha256').update(arg.pw).digest('base64') == db.get(arg.id).pw){
+      if(crypto.createHash('sha256').update(arg.pw)ç == db.get(arg.id).pw){
         loginLevel = db.get(arg.id).level
         socket.emit('loggedIn', {id:arg.id,level:db.get(arg.id).level})
         console.log('success logging in')
@@ -1110,10 +1171,25 @@ function getProdName(ip, list, ind, callback, arr){
   socket.on('locateReq', function (argument) {
     // body...
     console.log('locate req')
+    var ifaces = os.networkInterfaces();  
+    var iface = 'eth0'
+    if(os.platform() == 'darwin'){
+      iface = 'en4'
+    }
+    var nf;// = ifaces[iface];
+    if(ifaces[iface][0].family == 'IPv4'){
+      nf = ifaces[iface][0]
+    }else{
+      nf = ifaces[iface][1]
+    }
+    console.log(nf)
+    socket.emit('nif', nf);
+  
         Helper.scan_for_dsp_board(function (e) {
           dets = e
           console.log(dets)
     dspips = [];
+    nvdspips = [];
   for(var i = 0; i < e.length; i++){
     if(e[i].board_type == 1){
       var ip = e[i].ip.split('.').map(function(e){return parseInt(e)});
@@ -1122,6 +1198,7 @@ function getProdName(ip, list, ind, callback, arr){
   if(!((ip[0] == nifip[0]) && (ip[1] == nifip[1]) && (ip[2] == nifip[2]))){
     //dsp not visible
     console.log('dsp not visible')
+    nvdspips.push(e[i])
    
     }else if(e[i].ver == '20.17.4.27'){
       //Hack, seeing a 170427 on the network seems to cause this to crash. should actually check for versions properly in the future to ignore incompatible version.
@@ -1129,7 +1206,7 @@ function getProdName(ip, list, ind, callback, arr){
     }else{
       console.log('dsp visible')
       dspip = ip.join('.');
-     
+      macs[dspip] = e[i].mac
      // console.log(dspip);
       dspips.push(e[i]);
     }
@@ -1147,9 +1224,13 @@ for(var i = 0; i < dspips.length;i++){
   }
   console.log('dsp ips')
  // console.log(dspips)
+   if((dspips.length == 0)&&(nvdspips.length >0)){
+          console.log('non visible1186')
+          socket.emit('notvisible', nvdspips);
+        }
   initSocks(dsps, function(){
-         socket.emit('locatedResp', dspips)
-
+         socket.emit('locatedResp', dspips);
+      
   });
     
  
@@ -1159,11 +1240,11 @@ socket.on('getProdList', function (ip) {
   // body...
   getProdList(ip)
 })
-          socket.on('vdefReq', function(ip){
-            if(vdefs[ip]){
-                socket.emit('vdef',[vdefs[ip],ip])
+          socket.on('vdefReq', function(det){
+            if(vdefs[det.ip]){
+                socket.emit('vdef',[vdefs[det.ip],det])
               }else{
-                socket.emit('noVdef', ip)
+                socket.emit('noVdef', det)
               }
           })
           socket.on('vdefRec', function(){
@@ -1177,14 +1258,14 @@ socket.on('getProdList', function (ip) {
               udpClients[pack.ip].send_rpc(new Buffer(pack.data), function(e){
                 console.log('Ack from ' + pack.ip)
 
-                relayRpcMsg({det:{ip:pack.ip},data:{data:toArrayBuffer(e)}});
+                relayRpcMsg({det:{ip:pack.ip, mac:macs[pack.ip]},data:{data:toArrayBuffer(e)}});
                 e = null;
 
               })
               //rconns[pack.ip].send(pack.data)
             }else{
-              console.log('failed to send rpc')
-              console.log(pack.ip)
+            //  console.log('failed to send rpc')
+              //console.log(pack.ip)
             }
             //pack = null;
        })
@@ -1209,7 +1290,7 @@ socket.on('getProdList', function (ip) {
     console.log('connect sing!! '+ ip)
     udpConSing(ip)
     getAccountsJSON(ip,function(json){
-      socket.emit('accounts', {data:json,ip:ip})
+      socket.emit('accounts', {data:json,ip:ip, mac:macs[ip]})
     })
   })
   socket.on('authenticate', function(packet){
@@ -1233,7 +1314,7 @@ socket.on('getProdList', function (ip) {
     putJSONStringTftp(pack.ip, JSON.stringify(accJson), '/accounts.json')
     setTimeout(function(){
         getAccountsJSON(pack.ip,function(json){
-      socket.emit('accounts', {data:json,ip:pack.ip})
+      socket.emit('accounts', {data:json,ip:pack.ip, mac:macs[pack.ip]})
     })
     },500)
   })
@@ -1244,7 +1325,7 @@ socket.on('getProdList', function (ip) {
      putJSONStringTftp(pack.ip, JSON.stringify(accJson), '/accounts.json')
       setTimeout(function(){
         getAccountsJSON(pack.ip,function(json){
-      socket.emit('accounts', {data:json,ip:pack.ip})
+      socket.emit('accounts', {data:json,ip:pack.ip, mac:macs[pack.ip]})
     })
     },500)
   })
@@ -1285,15 +1366,32 @@ socket.on('getProdList', function (ip) {
   socket.on('nifip', function(addr){
     //need to figure out how to determine interface gracefully. maybe specify from onset? 
     console.log(addr)
-    networking.applySettings('eth0', {active:true, ipv4:{address:'0.0.0.0'}})
+    var iface = 'eth0'
+    if(os.platform() == 'darwin'){
+      iface = 'en4'
+    }
+    networking.applySettings(iface, {active:true, ipv4:{address:'0.0.0.0'}})
     setTimeout(function(){
-        networking.applySettings('eth0', {active:true, ipv4:{address:addr, netmask:'255.255.255.0'}})
-        socket.emit('onReset')
+        networking.applySettings(iface, {active:true, ipv4:{address:addr, netmask:'255.255.255.0'}})
+      //  socket.emit('onReset')
         setTimeout(function(){
       socket.emit('resetConfirm')
     },300)
     },300)
   
    
+  })
+  socket.on('getInterface', function(){
+    var ifaces = {}
+    networking.listInterfaces().forEach(function(nif){
+      ifaces[nif.name] = nif;
+
+    })
+    var iface = 'eth0'
+    if(os.platform() == 'darwin'){
+      iface = 'en4'
+    }
+    //console.log(ifaces[iface])
+    socket.emit('nif', ifaces[iface]);
   })
 });
