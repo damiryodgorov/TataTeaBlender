@@ -26,8 +26,8 @@ const WebSocket = require('ws')
 const wss = new WebSocket.Server({server:http})
 const stream = require('stream')
 const os = require('os');
-//var usb = require('usb')
-//var drivelist = require('drivelist')
+//const usb = require('usb')
+//const drivelist = require('drivelist')
 var db = flatfile('./dbs/users.db')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
@@ -63,7 +63,7 @@ var funcJSON ={
       "patt_frac":"(function(val){return (val/10.0).toFixed(1)})",
       "eye_rej_mode":"(function(val,photo,width){if(photo == 0){return 3;}else{if(val==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})",
       "ipv4_address":"(function(words){return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');})",
-      "username":"(function(username){return username;}",
+      "username":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
       "user_opts":"(function(opts){return opts});",
       "password_hash":"(function(phash){return phash;});"
       }
@@ -77,26 +77,12 @@ console.log(crypto.createHash('sha1').update("operator0023"+salt).digest().slice
 console.log(crypto.createHash('sha1').update("engineer0123"+salt).digest().slice(0,8))
 //lets just keep it here for now
 var accounts = {"operator":{"acc":1,"password":"0123"},"engineer":{"acc":2,"password":"0123"},"fortress":{"acc":3,"password":"0123"}}
-/*
-usb.on('attach', function(dev){
+
+/*usb.on('attach', function(dev){
   console.log('usb attached');
   console.log(dev)
   console.log('drivelist:')
-  setTimeout(function(){
-     drivelist.list((error, drives) => {
-  if (error) {
-    throw error;
-  }
 
-  drives.forEach((drive) => {
-    console.log(drive);
-    if(drive.description == 'Flash Drive'){
-      if(drive.mountpoints.length > 0){
-        fs.writeFile(drive.mountpoints[0].path + '/test.txt', Date.now().toString())
-      }
-    }  });
-});
-   }, 5000)
   
 })
 usb.on('detach', function(dev){
@@ -634,8 +620,12 @@ class Params{
     //return ip
    return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');
   }
-  static username(username){
-    return username;
+  static username(sa){
+   var str = sa.map(function(e){
+      return (String.fromCharCode((e>>8),(e%256)));
+    }).join("");
+    return str.replace("\u0000","").trim();
+
   }
   static user_opts(opts){
     return opts;
