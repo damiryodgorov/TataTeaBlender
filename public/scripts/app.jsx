@@ -804,6 +804,9 @@ class LandingPage extends React.Component{
 			self.setState({currentPage:'landing', curDet:''});
 			
 		})
+		socket.on('userNames', function(p){
+			console.log(['808', p])
+		})
 		socket.on('netpoll', function(m){
 			//////////console.log(['73',m])
 			self.onNetpoll(m.data, m.det)

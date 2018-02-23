@@ -18,6 +18,7 @@
     "concrete": "0.0.3",
     "crc": "^3.4.1",
     "create-react-class": "^15.6.2",
+    "debug": "^3.1.0",
     "drivelist": "^6.0.0",
     "express": "^4.14.0",
     "flat-file-db": "^1.0.0",

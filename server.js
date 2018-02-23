@@ -31,8 +31,6 @@ const os = require('os');
 var db = flatfile('./dbs/users.db')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
-
-
 db.on('open', function() {
   //db.clear()
   //var hs = crypto.createHash('sha256').update('515151').digest('base64');
