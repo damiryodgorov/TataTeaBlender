@@ -26,8 +26,11 @@ const WebSocket = require('ws')
 const wss = new WebSocket.Server({server:http})
 const stream = require('stream')
 const os = require('os');
-//const usb = require('usb')
+const usb = require('usb');
+const sys = require('sys');
+const exec = require('child_process').exec;
 //const drivelist = require('drivelist')
+const filesystem = require('fs-filesystem');
 var db = flatfile('./dbs/users.db')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
@@ -76,18 +79,8 @@ console.log(crypto.createHash('sha1').update("engineer0123"+salt).digest().slice
 //lets just keep it here for now
 var accounts = {"operator":{"acc":1,"password":"0123"},"engineer":{"acc":2,"password":"0123"},"fortress":{"acc":3,"password":"0123"}}
 
-/*usb.on('attach', function(dev){
-  console.log('usb attached');
-  console.log(dev)
-  console.log('drivelist:')
 
-  
-})
-usb.on('detach', function(dev){
-  console.log('usb detached');
-  console.log(dev)
-})
-*/
+
 var prefs;
 
 var cur = Date.now()
@@ -108,7 +101,235 @@ let macs = {}
 let networking = new NetworkInfo();
 
 networking.listInterfaces().then(console.log).catch(console.error);
+function checkAndMkdir(targetpath,i, callback){
+  if(i>targetpath.length){
+    callback()
+  }else{
+  fs.access(targetpath.slice(0,i).join('/'), function(err){
+    console.log('109')
+      if(err && err.code === 'ENOENT'){
+        fs.mkdir(targetpath.slice(0,i).join('/'), function(){
+          console.log('112')
+          checkAndMkdir(targetpath, i+1, callback)
+        })  
+      }else{
+        checkAndMkdir(targetpath, i+1, callback)        
+      }
+    })
+  }
 
+}
+
+function tftpPollForFDDList(det,nr,callback){
+  //path = [1], nr=1 at start
+  var num = nr;
+  var fn = num%10 + 1;
+  var filename = ('0'+fn).slice(-2) + '.FDD'
+
+  num = Math.floor(num/10)
+  filename = ('0'+(num%10 + 1)).slice(-2) +'/' + filename;
+  while(num > 9){
+    num = Math.floor(num/10)
+    filename = ('0'+(num%10 + 1)).slice(-2) +'/' + filename;
+  }
+
+
+  filename = '/FDD/'+filename; 
+
+  getJSONStringTftp(det.ip,filename,function(res){
+    var fpath = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() + filename
+      console.log(fpath)
+      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase()]
+      console.log(arr.concat(filename.split('/').slice(1,-1)))
+      checkAndMkdir(arr.concat(filename.split('/').slice(1,-1)),0,function(){
+         fs.writeFile(fpath,res,(err)=>{
+          if(err) throw err
+          console.log(nr,filename)
+          
+          tftpPollForFDDList(det,nr+1,callback);
+        })
+      })
+     
+    },function(e){
+      callback(e)
+    })
+}
+function tftpPollForSCDList(det,nr,callback){
+  //path = [1], nr=1 at start
+  var num = nr;
+  var fn = num%10 + 1;
+  var filename = ('0'+fn).slice(-2) + '.SCD'
+
+  num = Math.floor(num/10)
+  filename = ('0'+(num%10 + 1)).slice(-2) +'/' + filename;
+  while(num > 9){
+    num = Math.floor(num/10)
+    filename = ('0'+(num%10 + 1)).slice(-2) +'/' + filename;
+  }
+
+
+  filename = '/SCD/'+filename; 
+
+  getJSONStringTftp(det.ip,filename,function(res){
+    var fpath = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() + filename
+      console.log(fpath)
+      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase()]
+      console.log(arr.concat(filename.split('/').slice(1,-1)))
+      checkAndMkdir(arr.concat(filename.split('/').slice(1,-1)),0,function(){
+         fs.writeFile(fpath,res,(err)=>{
+          if(err) throw err
+          console.log(nr,filename)
+          
+          tftpPollForSCDList(det,nr+1,callback);
+        })
+      })
+     
+    },function(e){
+      callback(e)
+    })
+}
+function buildFDDList(arm,callBack){
+  var paths = []
+   arm.rpc_cb([3,0,0],function(_f){
+      arm.clearCB(function(f){
+          var path = ''
+        var buf1 = Buffer.from([3,2,path.length])
+        var buf = Buffer.concat([buf1,Buffer.from(path,'ascii'),Buffer.alloc(15)]);
+
+        arm.rpc_cb(buf,function(_e){
+           arm.clearCB(function(e){
+            return recursiveFDDSync(e,arm,paths,callBack)
+            }, _e)
+        }, _f)
+
+    })
+  })
+}
+function buildSCDList(arm,callBack){
+  var paths = []
+  arm.rpc_cb([3,23,0,0,0],function(_e){
+      arm.clearCB(function(e){
+         return recursiveSync(e,arm,paths,callBack)
+       }, _e)
+     
+    //})
+  })
+}
+function buildSyncList(arm,callBack){
+  var paths = []
+  //var arm = new fti.ArmRpc.ArmRpc(det.ip)
+  arm.rpc_cb([3,0,0],function(_e){
+      arm.clearCB(function(e){
+         return recursiveSync(e,arm,paths,callBack)
+       }, _e)
+     
+    //})
+  })
+}
+function recursiveSync(pkt,arm,paths,callBack){
+  //var msg = pkt.to
+  var packt = pkt.slice(2)
+   //  var msg = toArrayBuffer(packt)
+    // var arr = new Uint8Array(msg)
+  var state = packt.readUInt8(1)
+    if(state == 1){
+      arm.rpc_cb([3,16],function(_e){
+        arm.clearCB(function(e){
+  
+        return  recursiveSync(e,arm,paths.slice(0),callBack)
+        }, _e)
+     
+      })
+    }else if(state == 3){
+      var pths = paths.slice(0)
+      var nr = packt.readUInt16LE(2)
+      var type = packt.readUInt8(4)
+      var pathlen = packt.readUInt8(7)
+      var pth = packt.slice(8,8+pathlen)
+     // console.log([nr,type,pathlen,pth.toString('ascii')])
+      pths.push(pth.toString('ascii'))
+      arm.rpc_cb([3,4,packt.readUInt8(2),packt.readUInt8(3),0], function(_e){
+        arm.clearCB(function(e){
+  
+       return   recursiveSync(e,arm,pths.slice(0),callBack)
+        }, _e)
+     
+      })
+    }else if(state == 7){
+      arm.rpc_cb([3,9],function(_e){
+        arm.clearCB(function(e){
+  
+       return   recursiveSync(e,arm,paths.slice(0),callBack)
+        }, _e)
+          })
+    }else if(state == 10){
+      callBack(paths)
+    }else{
+
+      console.log('something went wrong')
+      callBack(paths)
+    }
+    return null;
+}
+
+function recursiveFDDSync(pkt,arm,paths,callBack){
+  //var msg = pkt.to
+  var packt = pkt.slice(2)
+   //  var msg = toArrayBuffer(packt)
+    // var arr = new Uint8Array(msg)
+  var state = packt.readUInt8(1)
+    if(state == 3){
+      var pths = paths.slice(0)
+      var nr = packt.readUInt16LE(2)
+      var type = packt.readUInt8(4)
+      var pathlen = packt.readUInt8(7)
+      var pth = packt.slice(8,8+pathlen)
+      var i = 0;
+      var templen = 4;
+      var pthnr = []
+      while((templen+7)<pathlen){
+        pthnr.push((pth.readUInt8(i*3+5)-0x30)*10 + pth.readUInt8(i*3+6)-0x30);
+        i++;
+        templen +=3;
+      }
+      var path = '/FDD/'
+      for(var j=0; j<i; j++){
+        path += ('0'+pthnr[j]).slice(-2)
+      }
+      path += '/'
+      path += ('0'+nr).slice(-2)
+      path += '.FDD';
+        pths.push(path)
+
+        arm.rpc_cb([3,4,packt.readUInt8(2),packt.readUInt8(3),0], function(_e){
+        arm.clearCB(function(e){
+  
+          return   recursiveFDDSync(e,arm,pths.slice(0),callBack)
+        }, _e)
+     
+      })
+      
+     // console.log([nr,type,pathlen,pth.toString('ascii')])
+
+    }else if(state == 7){
+      arm.rpc_cb([3,9],function(_e){
+        arm.clearCB(function(e){
+  
+       return   recursiveFDDSync(e,arm,paths.slice(0),callBack)
+        }, _e)
+          })
+    }else if(state == 10){
+      callBack(paths)
+    }else{
+      console.log('state',state)
+      console.log('something went wrong')
+      callBack(paths)
+    }
+    return null;
+    //arm.rpc_cb([3,16],function(e){
+      //push filename, move on
+
+}
 function load_vdef_parameters(json){
  // console.log(json)
   return json;
@@ -141,7 +362,6 @@ function initSocks(arr, cb){
   console.log(dsp_ips.length)
  // setTimeout(function(){nextSock('init');},300);
  udpCon('init', cb)
-//accounts/db
 }
 function getVdef(ip, callback){
   var tclient = tftp.createClient({host:ip ,retries:10, timeout:1000})
@@ -216,7 +436,7 @@ function putJSONStringTftp(ip, string, filename){
   var put = tclient.createPutStream(filename, {size:getBinarySize(string)})
   rs.pipe(put);
 }
-function getJSONStringTftp(ip, filename, callBack){
+function getJSONStringTftp(ip, filename, callBack,enoent){
   var tclient = tftp.createClient({host:ip,retries:10, timeout:1000})
  
   var get = tclient.createGetStream(filename) 
@@ -225,13 +445,67 @@ function getJSONStringTftp(ip, filename, callBack){
     chunks.push(chnk.toString())
   })
   get.on('end',function(){
+
     callBack(chunks.join(''));
   })
+  get.on('error',function(e){
+      enoent(e);
+    
+  })
+}
+/*function writeFtiFilesToUsb(det,list,ind,callback){
+  console.log(['323',ind, list.length])
+  //console.log(list)
+  if(ind >= list.length){
+    callback()
+  }else{
+    getJSONStringTftp(det.ip,list[ind],function(res){
+      console.log(list)
+      var path = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() + list[ind]
+      console.log(path)
+      fs.writeFile(path,res,(err)=>{
+        if(err) throw err
+        console.log(ind,list)
+
+        writeFtiFilesToUsb(det,list,ind+1,callback);
+      })
+    })
+  }
+}*/
+
+function writeFtiFilesToUsb(det,list,ind,callback){
+  console.log(['323',ind, list.length])
+  //console.log(list)
+  if(ind >= list.length){
+    callback('done')
+  }else{
+    getJSONStringTftp(det.ip,list[ind],function(res){
+      console.log(list)
+
+
+      var path = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() + list[ind]
+      console.log(path)
+      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase()]
+      console.log(arr.concat(list[ind].split('/').slice(1,-1)))
+      checkAndMkdir(arr.concat(list[ind].split('/').slice(1,-1)),0,function(){
+         fs.writeFile(path,res,(err)=>{
+          if(err) throw err
+          console.log(ind,list)
+          writeFtiFilesToUsb(det,list,ind+1,callback);
+        })
+      })
+     
+    },function(e){
+      callback('DONE!!!')
+    })
+  }
 }
 function getAccountsJSON(ip, callback){
   getJSONStringTftp(ip, '/accounts.json', function(str){
     accountJSONs[ip] = JSON.parse(str)
     callback(JSON.parse(str))
+  },function(e){
+    console.log(e)
   })
 }
 
@@ -287,6 +561,7 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
      nVdf[3].forEach(function (p) {
       //need to account for user objects here. 
      // if(p)
+
       rec[p] = getVal(array, 3, p, pVdef)
       // body...
     })
@@ -297,7 +572,7 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
       userrec[p] = getVal(array, 6, p, pVdef)
       // body...
     })
-    relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:5, rec:userrec}}})
+    relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:5, rec:userrec, array:array.slice(-100)}}})
 
     pack = {type:3, rec:rec}
     
@@ -1117,6 +1392,106 @@ function getProdName(ip, list, ind, callback, arr){
     socket.emit('userList', users)*/
 
   })
+  usb.on('attach', function(dev){
+  console.log('usb attached');
+  console.log(dev)
+  socket.emit('usbdetect')
+  /*setTimeout(function(){
+    exec("sudo fdisk -l", function(err, stdout, stderr) {
+      console.log(stdout);
+      var drives = []
+
+      stdout.split('\n\n\n').forEach(function(l){
+        var arr = l.split('\n');
+        if(arr.length > 4){
+          drives.push(arr)
+        }
+      });
+      if(drives.length >1){
+        exec('sudo mount /dev/sda1 /mnt', function(err, stdout, stderr){
+          var dirtree = ['/mnt', 'FortressTechnology','Detectors','MAC','FDD']
+          checkAndMkdir(dirtree,1,function(){
+            var dtree = ['/mnt','FortressTechnology','Detectors','MAC','FtiFiles']
+        
+            checkAndMkdir(dtree,1,function(){
+              //here should be the tftp stuff...
+              fs.writeFile('/mnt/FortressTechnology/Detectors/MAC/test.txt', 'testing', function(){
+                exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+                  socket.emit('testusb', 'sync complete')
+                })
+              });
+            })
+          })
+        })
+      }
+
+      socket.emit('testusb', drives)
+    });
+   },5000)*/
+ 
+  
+
+  
+})
+usb.on('detach', function(dev){
+  console.log('usb detached');
+  console.log(dev)
+  socket.emit('testusb',dev)
+})
+socket.on('syncStart', function(det){
+  //check if dir exists
+  var arm = new fti.ArmRpc.ArmRpc(det.ip)
+    buildSyncList(arm,function(list){
+      console.log('how many times am I syncing....')
+      console.log(list)
+      var array = list.slice(0)
+      array.push('/DetectorInfo.did')
+       var mac = det.mac.split('-').join('').toUpperCase();
+      exec("sudo fdisk -l", function(err, stdout, stderr) {
+     // console.log(stdout);
+      var drives = []
+
+      stdout.split('\n\n\n').forEach(function(l){
+        var arr = l.split('\n');
+        if(arr.length > 4){
+          drives.push(arr)
+        }
+      });
+      if(drives.length >1){
+        exec('sudo mount /dev/sda1 /mnt', function(err, stdout, stderr){
+              //here should be the tftp stuff...
+              var ind = 0;
+              console.log('start writing to usb')
+              writeFtiFilesToUsb(det,array,0,function(){
+                tftpPollForFDDList(det,0,function(fdds){
+                  tftpPollForSCDList(det,0,function(scds){
+                         console.log('SYNC is COMPLETE')
+                exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+                  socket.emit('syncComplete', det)
+                })
+                  })
+           
+              });
+           })
+        })
+      }
+
+      socket.emit('testusb', drives)
+   
+    })
+    })
+  
+    /* drivelist.list((error, drives) => {
+  if (error) {
+    throw error;
+  }
+
+ //socket.emit('testusb',drives)
+  console.log('drivelist:')
+});*/
+  
+  //getJSONStringTftp(det.ip, '/FDD/01/01.fdd')
+})
   socket.on('login', function(arg){
 
     /*if(db.has(arg.id)){

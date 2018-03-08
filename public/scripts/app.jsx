@@ -822,6 +822,12 @@ class LandingPage extends React.Component{
 			})
 			self.setState({mbunits:f, detL:detL})
 		})
+		socket.on('syncComplete',function(){
+			notify.show('Sync Complete.')
+		})
+		socket.on('testusb',function(dev){
+			console.log(['testusb',dev])
+		})
 		socket.on('noVdef', function(det){
 			setTimeout(function(){
 				socket.emit('vdefReq', det);
@@ -4860,6 +4866,9 @@ class DetectorView extends React.Component{
 		this.logout = this.logout.bind(this);
 		this.authenticate = this.authenticate.bind(this);
 		this.setAuthAccount = this.setAuthAccount.bind(this);
+		this.syncPrompt = this.syncPrompt.bind(this);
+		this.startSync = this.startSync.bind(this);
+		this.cancelSync = this.cancelSync.bind(this);
 
 		ifvisible.setIdleDuration(300);
 		var self = this;
@@ -4875,7 +4884,21 @@ class DetectorView extends React.Component{
 				socket.emit('locateReq')	
 			}
 		},1000)
+
+		socket.on('usbdetect',function(){
+			self.syncPrompt()	
+		})
 	
+	}
+	syncPrompt(){
+		this.refs.syncModal.toggle();
+	}
+	startSync(){
+		socket.emit('syncStart', this.props.det)
+		this.refs.syncModal.close();
+	}
+	cancelSync(){
+		this.refs.syncModal.close();
 	}
 	componentWillUnmount () {
 		clearInterval(myTimers[this.props.det.mac]);
@@ -6201,6 +6224,15 @@ class DetectorView extends React.Component{
 				<Modal ref='loginModal' intMeter={true} clear={this.clearSig}>
 					<LogInControl  mac={this.props.det.mac} ip={this.props.ip} accounts={this.props.accounts} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.level}/>
 				</Modal>
+				<Modal ref='syncModal' className='pop-modal'>
+					<div className='selectmodal-outer'>
+						<div >Usb detected. Start sync process?</div>
+
+						<div><button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.startSync}>Accept</button>
+						<button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1',background:'#5d5480', width:150, borderRadius:20}} onClick={this.cancelSync}>Cancel</button></div>
+	  	
+					</div>
+				</Modal>
 				</div>)
 	} 
 }
@@ -6923,9 +6955,9 @@ class GraphModal extends React.Component{
 
 		if(!h){
 			
-cont = (<GModalCont toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle}>
+			cont = (<GModalCont toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle}>
 				{this.props.children}
-		</GModalCont>)
+			</GModalCont>)
 		}
 
 		return(<div className={this.state.className} hidden={h}>
@@ -6935,7 +6967,7 @@ cont = (<GModalCont toggle={this.toggle} Style={this.props.Style} innerStyle={th
   				</svg>
 			</div>
 			{cont}
-	</div>)
+		</div>)
 	}
 }
 class GModalC extends React.Component{

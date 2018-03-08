@@ -46,11 +46,27 @@ class ArmRpcBase{
 		this.rem_ip = host
 		this.rem_port = port
 		this.loc_port = loc_port
+		this.callBack = function(e){
+			console.log(e)
+		}
 		var self = this;
 		this.init_socket()
 		//Sync(function(){
 			//self.socket = self.init_socket.sync(null);	
 		//})
+		
+	}
+	clearCB(cb,e){
+		this.callBack = null;
+		this.callBack = function(e){
+			console.log(e)
+		}	
+		cb(e)	
+	}
+	onMessage(e){
+		var data = this.verify_rpc_ack(e)
+		this.callBack(data);
+
 		
 	}
 	init_socket(){
@@ -68,6 +84,13 @@ class ArmRpcBase{
 		this.socket = dgram.createSocket('udp4');
 		this.socket.on("bind",function(){
 			console.log("bound f")
+		})
+		this.socket.on('message',function(e,rinfo){
+			console.log(80,rinfo.port)
+			if(rinfo.port == self.rem_port){
+				self.onMessage(e)
+
+			}
 		})
 		this.socket.bind(0,'0.0.0.0');
 
@@ -108,10 +131,10 @@ class ArmRpcBase{
 	}
 	packet_for(data, callBack){
 		if(Array.isArray(data)){
-			data = new Buffer(Array.prototype.concat.apply([],data));
+			data = Buffer.from(Array.prototype.concat.apply([],data));
 		}
 		else{
-			data = new Buffer(data.toString());
+			data = Buffer.from(data);
 		}
 		var crcBuff = new Buffer(4)//[Crc.crc32(data)]);
 		crcBuff.writeUInt32LE(Crc.crc32(data));
@@ -173,7 +196,10 @@ class ArmRpcBase{
  		}
  		var data = ack.slice(0,-4);
  		var crc = Crc.crc32(data);
-
+ 		//if(){
+ 			//worry about this later
+ 		//}
+ 		return data
 	}
 	rpc_ack_dispatch(ack){
 		//var res = ack.write()
@@ -189,6 +215,16 @@ class ArmRpcBase{
 
 		})
 		
+	}
+	rpc_cb(pkt,callBack){
+		var self = this;
+	//	this.callBack = null;
+		this.callBack=callBack;
+		console.log('rpc_cb',pkt)
+		this.packet_for(pkt,function(p){
+			console.log('rpc_cb packet for', p, self.rem_port)
+			self.socket.send(p,0,p.length,self.rem_port,self.rem_ip)
+		})
 	}
 	echo_cb(callBack){
 
@@ -259,7 +295,7 @@ class ArmRpc extends ArmRpcBase{
 		
 		if(this.aesECB){
 			
-			callBack([this.aesECB]);
+			callBack([this.aesECB, this.aesk]);
 		}else{
 		//this.KEY = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]//
 		this.KEY = [138, 23, 225,  96, 151, 39,  79,  57, 65, 108, 240, 251, 252, 54, 34,  87];
@@ -286,7 +322,8 @@ class ArmRpc extends ArmRpcBase{
 			var k = aes.update((msg.slice(2,msg.byteLength)).toString('binary'),'binary');
 			console.log(k.length)
 			k = Buffer.concat([k,aes.final()]);
-			self.aesk = k;
+		//	self.aesk = k;
+			
 			var aesEcb = new aesjs.ModeOfOperation.ecb(self.KEY);
 			var ke = aesEcb.decrypt(msg.slice(2,msg.byteLength));
 			
@@ -295,6 +332,8 @@ class ArmRpc extends ArmRpcBase{
 			for(var ko = 0; ko < ke.length; ko++){
 				ka.push(ke.readUInt8(ko))
 			}
+			self.aesk = Buffer.from(ka);
+			console.log('aesk', self.aesk)
 
 			self.aesECB = new aesjs.ModeOfOperation.ecb(ka);
 		
@@ -329,15 +368,33 @@ class ArmRpc extends ArmRpcBase{
 		var en = c[0];
 		var t;
 		
+		//console.log(typeof c[1])
+		//var aes = crypto.createCipher('aes-128-ecb', c[1])
 		
-	
-		var pkt = en.encrypt(dat.slice(0,bsize))
-
+		var pkt = Buffer.alloc(0);//concat([aes.update(dat.slice(0,bsize)),aes.final()]);
+		//console.log(pkt)
+		for(var i = 0; i<n; i++){
+			pkt = Buffer.concat([pkt,en.encrypt(dat.slice(i*bsize,(i+1)*bsize))])
+		
+		}
 		callBack(pkt)
 
 	})	
 
 		
+	}
+	verify_rpc_ack(data){
+		var	bsize = this.KEY.length;
+		var n = data.length/bsize;
+		var rem = data.length%bsize;
+		if(rem != 0){
+			console.log(data.length,rem)
+			throw new ArmRpcAckError('Ack size must be multiple of '+bsize);
+		}
+		var en = this.aesECB;
+		var pkt = en.decrypt(data)
+		return pkt
+
 	}
 }
 
