@@ -41,6 +41,7 @@ db.on('open', function() {
   console.log(db.keys())
 });
 
+
 var funcJSON ={
   "@func":{"frac_value":"(function(int){return (int/(1<<15));})",
       "mm":"(function(dist,metric){if(metric==0){return (dist/25.4).toFixed(1) + ' in'}else{ return dist + ' mm'}})",
@@ -136,10 +137,23 @@ function tftpPollForFDDList(det,nr,callback){
 
   filename = '/FDD/'+filename; 
 
-  getJSONStringTftp(det.ip,filename,function(res){
-    var fpath = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() + filename
+   var fpath = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() +'/Sync' + filename
       console.log(fpath)
-      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase()]
+      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync']
+      console.log(arr.concat(filename.split('/').slice(1,-1)))
+      checkAndMkdir(arr.concat(filename.split('/').slice(1,-1)),0,function(){
+     getFileTftp(det.ip, filename, fpath,function(){
+      //  console.log(ind,list)
+        tftpPollForFDDList(det,nr+1,callback);
+    },function(e){
+      callback(e)
+    })
+  })
+
+  /*getJSONStringTftp(det.ip,filename,function(res){
+    var fpath = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() +'/Sync'+ filename
+      console.log(fpath)
+      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync']
       console.log(arr.concat(filename.split('/').slice(1,-1)))
       checkAndMkdir(arr.concat(filename.split('/').slice(1,-1)),0,function(){
          fs.writeFile(fpath,res,(err)=>{
@@ -152,7 +166,7 @@ function tftpPollForFDDList(det,nr,callback){
      
     },function(e){
       callback(e)
-    })
+    })*/
 }
 function tftpPollForSCDList(det,nr,callback){
   //path = [1], nr=1 at start
@@ -170,10 +184,23 @@ function tftpPollForSCDList(det,nr,callback){
 
   filename = '/SCD/'+filename; 
 
-  getJSONStringTftp(det.ip,filename,function(res){
-    var fpath = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() + filename
+  var fpath = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() +'/Sync' + filename
       console.log(fpath)
-      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase()]
+      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync']
+      console.log(arr.concat(filename.split('/').slice(1,-1)))
+      checkAndMkdir(arr.concat(filename.split('/').slice(1,-1)),0,function(){
+     getFileTftp(det.ip, filename, fpath,function(){
+      //  console.log(ind,list)
+        tftpPollForSCDList(det,nr+1,callback);
+    },function(e){
+      callback(e)
+    })
+  })
+      /*
+  getJSONStringTftp(det.ip,filename,function(res){
+    var fpath = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync' + filename
+      console.log(fpath)
+      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync']
       console.log(arr.concat(filename.split('/').slice(1,-1)))
       checkAndMkdir(arr.concat(filename.split('/').slice(1,-1)),0,function(){
          fs.writeFile(fpath,res,(err)=>{
@@ -186,7 +213,7 @@ function tftpPollForSCDList(det,nr,callback){
      
     },function(e){
       callback(e)
-    })
+    })*/
 }
 function buildFDDList(arm,callBack){
   var paths = []
@@ -224,6 +251,19 @@ function buildSyncList(arm,callBack){
        }, _e)
      
     //})
+  })
+}
+function getProdRecExport(det,callback){
+  var arm = new fti.ArmRpc.ArmRpc(det.ip)
+ 
+  arm.rpc_cb([1,6],function(e){
+    console.log(e)
+    getJSONStringTftp(det.ip,'/FtiFiles/ProdRecBackup.fti',function(res){
+      //write
+      callback(res)
+    },function(err){
+      console.log(err)
+    })
   })
 }
 function recursiveSync(pkt,arm,paths,callBack){
@@ -436,13 +476,24 @@ function putJSONStringTftp(ip, string, filename){
   var put = tclient.createPutStream(filename, {size:getBinarySize(string)})
   rs.pipe(put);
 }
+function getFileTftp(ip,remote,local,callback,enoent){
+  var tclient = tftp.createClient({host:ip,retries:10, timeout:1000})
+  tclient.get(remote,local,function(err){
+    if(err){
+      enoent(err);
+    }else{
+      callback();
+    }
+  })
+}
 function getJSONStringTftp(ip, filename, callBack,enoent){
   var tclient = tftp.createClient({host:ip,retries:10, timeout:1000})
  
   var get = tclient.createGetStream(filename) 
   var chunks = [];
   get.on('data', function(chnk){
-    chunks.push(chnk.toString())
+   // console.log(chnk)
+    chunks.push(chnk)
   })
   get.on('end',function(){
 
@@ -453,25 +504,6 @@ function getJSONStringTftp(ip, filename, callBack,enoent){
     
   })
 }
-/*function writeFtiFilesToUsb(det,list,ind,callback){
-  console.log(['323',ind, list.length])
-  //console.log(list)
-  if(ind >= list.length){
-    callback()
-  }else{
-    getJSONStringTftp(det.ip,list[ind],function(res){
-      console.log(list)
-      var path = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() + list[ind]
-      console.log(path)
-      fs.writeFile(path,res,(err)=>{
-        if(err) throw err
-        console.log(ind,list)
-
-        writeFtiFilesToUsb(det,list,ind+1,callback);
-      })
-    })
-  }
-}*/
 
 function writeFtiFilesToUsb(det,list,ind,callback){
   console.log(['323',ind, list.length])
@@ -479,13 +511,13 @@ function writeFtiFilesToUsb(det,list,ind,callback){
   if(ind >= list.length){
     callback('done')
   }else{
-    getJSONStringTftp(det.ip,list[ind],function(res){
+ /*   getJSONStringTftp(det.ip,list[ind],function(res){
       console.log(list)
 
 
-      var path = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() + list[ind]
+      var path = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() +'/Sync' + list[ind]
       console.log(path)
-      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase()]
+      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync']
       console.log(arr.concat(list[ind].split('/').slice(1,-1)))
       checkAndMkdir(arr.concat(list[ind].split('/').slice(1,-1)),0,function(){
          fs.writeFile(path,res,(err)=>{
@@ -498,11 +530,22 @@ function writeFtiFilesToUsb(det,list,ind,callback){
     },function(e){
       callback('DONE!!!')
     })
-  }
+  }*/
+   var path = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() +'/Sync' + list[ind]
+      console.log(path)
+      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync']
+      console.log(arr.concat(list[ind].split('/').slice(1,-1)))
+      checkAndMkdir(arr.concat(list[ind].split('/').slice(1,-1)),0,function(){
+     getFileTftp(det.ip, list[ind], path,function(){
+        console.log(ind,list)
+        writeFtiFilesToUsb(det,list,ind+1,callback);
+    },function(e){throw e})
+  })
+}
 }
 function getAccountsJSON(ip, callback){
   getJSONStringTftp(ip, '/accounts.json', function(str){
-    accountJSONs[ip] = JSON.parse(str)
+    accountJSONs[ip] = JSON.parse(str.toString())
     callback(JSON.parse(str))
   },function(e){
     console.log(e)
@@ -1436,7 +1479,7 @@ function getProdName(ip, list, ind, callback, arr){
 usb.on('detach', function(dev){
   console.log('usb detached');
   console.log(dev)
-  socket.emit('testusb',dev)
+  socket.emit('usbdetach')
 })
 socket.on('syncStart', function(det){
   //check if dir exists
@@ -1460,6 +1503,7 @@ socket.on('syncStart', function(det){
       if(drives.length >1){
         exec('sudo mount /dev/sda1 /mnt', function(err, stdout, stderr){
               //here should be the tftp stuff...
+
               var ind = 0;
               console.log('start writing to usb')
               writeFtiFilesToUsb(det,array,0,function(){
@@ -1467,7 +1511,7 @@ socket.on('syncStart', function(det){
                   tftpPollForSCDList(det,0,function(scds){
                          console.log('SYNC is COMPLETE')
                 exec('sudo umount /dev/sda1', function(er, stdout, stderr){
-                  socket.emit('syncComplete', det)
+                  socket.emit('notify', 'Sync complete');
                 })
                   })
            
@@ -1475,22 +1519,152 @@ socket.on('syncStart', function(det){
            })
         })
       }
-
-      socket.emit('testusb', drives)
-   
     })
     })
   
-    /* drivelist.list((error, drives) => {
-  if (error) {
-    throw error;
-  }
+})
+socket.on('export',function(det){
+  var arm = new fti.ArmRpc.ArmRpc(det.ip)
+    arm.rpc_cb([1,6],function(e){
+      console.log(1580,e)
+      exec("sudo fdisk -l", function(err, stdout, stderr) {
+    if(stderr){
+      console.log(stderr)
+    }
+    exec('sudo mount /dev/sda1 /mnt', function(err, stdout,stder){
+      if(stder){
+        console.log(stder)
+      }
+        getFileTftp(det.ip,'/FTIFiles/ProdRecBackup.fti', '/mnt/ProdRecBackup.fti',function(){
+          exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+      
+                socket.emit('notify','Products Backed up')
+               })
+        },function(e){
+          socket.emit('notify', 'Error writing file')
+        })
+      
+  })
+  })
+ })
+  /*getProdRecExport(det,function(res){
+      exec("sudo fdisk -l", function(err, stdout, stderr) {
+    if(stderr){
+      console.log(stderr)
+    }
+    exec('sudo mount /dev/sda1 /mnt', function(err, stdout,stder){
+      if(stder){
+        console.log(stder)
+      }
+         fs.writeFile('/mnt/ProdRecBackup.fti',res, function(err){
+            if(err){
+              socket.emit('notify', 'Error writing file')
+            }else{
+              exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+      
+                socket.emit('notify','Products Exported')
+               })
+            }
 
- //socket.emit('testusb',drives)
-  console.log('drivelist:')
-});*/
-  
-  //getJSONStringTftp(det.ip, '/FDD/01/01.fdd')
+    
+        })
+      
+    })
+  })
+  })*/
+})
+socket.on('import',function(det){
+  exec("sudo mount /dev/sda1 /mnt", function(err,stdout,stderr){
+    fs.access('/mnt/ProdRecBackup.fti',function(err,stats){
+      if(err){
+        socket.emit('notify','Error reading file')
+      }else{
+
+          var tclient = tftp.createClient({host:det.ip ,retries:10, timeout:1000})
+          tclient.put('/mnt/ProdRecBackup.fti', '/FTIFiles/ProdRecBackup.fti', function(err){
+           if(err){ socket.emit('notify','Error importing file')}else{
+              var arm = new fti.ArmRpc.ArmRpc(det.ip)
+              arm.rpc_cb([1,7],function(e){
+                exec('sudo umount /dev/sda1',function(err, stdout, stderr){
+                   socket.emit('notify','Products Imported')
+                   getProdList(det.ip)
+                })
+               
+              })
+           }
+          })
+      }
+    })
+  })
+})
+socket.on('backup',function(det){
+   // getProdRecExport(det,function(res){
+    var arm = new fti.ArmRpc.ArmRpc(det.ip)
+    arm.rpc_cb([1,6],function(e){
+      console.log(1580,e)
+      exec("sudo fdisk -l", function(err, stdout, stderr) {
+    if(stderr){
+      console.log(stderr)
+    }
+    exec('sudo mount /dev/sda1 /mnt', function(err, stdout,stder){
+      if(stder){
+        console.log(stder)
+      }
+       var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync','FTIFiles']
+    //  console.log(arr.concat(list[ind].split('/').slice(1,-1)))
+      checkAndMkdir(arr,0,function(){
+        getFileTftp(det.ip,'/FTIFiles/ProdRecBackup.fti', '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti',function(){
+          exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+      
+                socket.emit('notify','Products Backed up')
+               })
+        },function(e){
+          socket.emit('notify', 'Error writing file')
+        })
+       /*  fs.writeFile('/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti',res, function(err){
+            if(err){
+              socket.emit('notify', 'Error writing file')
+            }else{
+              exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+      
+                socket.emit('notify','Products Backed up')
+               })
+
+            }
+
+    
+        })*/
+      
+    })
+  })
+  })
+ })
+//})
+})
+socket.on('restore',function(det){
+   exec("sudo mount /dev/sda1 /mnt", function(err,stdout,stderr){
+    fs.access('/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti',function(err,stats){
+      if(err){
+        socket.emit('notify','Error reading file')
+      }else{
+
+          var tclient = tftp.createClient({host:det.ip ,retries:10, timeout:1000})
+          tclient.put('/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti', '/FTIFiles/ProdRecBackup.fti', function(err){
+           if(err){ socket.emit('notify','Error importing file')}else{
+              var arm = new fti.ArmRpc.ArmRpc(det.ip)
+              arm.rpc_cb([1,7],function(e){
+                console.log(e)
+                exec('sudo umount /dev/sda1',function(err, stdout, stderr){
+                   socket.emit('notify','Products Restored')
+                   getProdList(det.ip)
+                })
+               
+              })
+           }
+          })
+      }
+    })
+  })
 })
   socket.on('login', function(arg){
 

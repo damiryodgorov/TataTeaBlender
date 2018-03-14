@@ -822,8 +822,8 @@ class LandingPage extends React.Component{
 			})
 			self.setState({mbunits:f, detL:detL})
 		})
-		socket.on('syncComplete',function(){
-			notify.show('Sync Complete.')
+		socket.on('notify',function(msg){
+			notify.show(msg)
 		})
 		socket.on('testusb',function(dev){
 			console.log(['testusb',dev])
@@ -4817,7 +4817,7 @@ class DetectorView extends React.Component{
 		var interceptor = this.props.det.interceptor//(vdefByMac[this.props.det.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.det.board_id == 5);
 		this.state =  {callback:null, rec:{},	showTest:false, faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, 
 			prodSettings:{}, sysSettings:{}, combinedSettings:[],cob2:[], pages:{}, showCal:false,
-			minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, 
+			minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, usb:false,
 			peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{},framRec:{}, updateCount:0, language:0,rejOn:0,showSens:false,level:0}
 		this.sendPacket = this.sendPacket.bind(this);
 		this.onRMsg = this.onRMsg.bind(this);
@@ -4886,7 +4886,11 @@ class DetectorView extends React.Component{
 		},1000)
 
 		socket.on('usbdetect',function(){
+			self.setState({usb:true,update:true})
 			self.syncPrompt()	
+		})
+		socket.on('usbdetach',function(){
+			self.setState({usb:false,update:true})
 		})
 	
 	}
@@ -6082,7 +6086,7 @@ class DetectorView extends React.Component{
 		}
 		var SD = (<SettingsDisplay2 Id={this.props.ip+'SD'} language={lg} mode={'config'} setOverride={this.setOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.det.mac} int={this.state.interceptor} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.det.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} framRec={this.state.framRec} level={this.state.level}/>)
 		MD = ""; 
-		var mpui = 	<StealthMainPageUI  mac={this.props.det.mac}  language={this.state.language} setLang={this.setLanguage} toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
+		var mpui = 	<StealthMainPageUI usb={this.state.usb} mac={this.props.det.mac}  language={this.state.language} setLang={this.setLanguage} toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
 		var cb = <StealthCalibrateUI  mac={this.props.det.mac} language={lg} ref='cb' onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.cal} />
 	
 		var lbut = (<td onClick={this.logoClick}><img style={lstyle}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>)
@@ -6153,7 +6157,7 @@ class DetectorView extends React.Component{
 		}
 				
 			if(this.props.det.interceptor){
-				mpui = 	<InterceptorMainPageUI  mac={this.props.det.mac} login={this.toggleLogin} toggleTestRModal={this.showTestRModal} testReq={trec} status={status} rejOn={this.state.rejOn} language={this.state.language} setLang={this.setLanguage} toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal}
+				mpui = 	<InterceptorMainPageUI usb={this.state.usb} mac={this.props.det.mac} login={this.toggleLogin} toggleTestRModal={this.showTestRModal} testReq={trec} status={status} rejOn={this.state.rejOn} language={this.state.language} setLang={this.setLanguage} toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal}
 				faultArray={this.state.faultArray} clearFaults={this.clearFaults} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName} level={this.state.level} username={this.state.username}/>
 				cb = <div>
 				<div style={{paddingTop:10, paddingBottom:4}}>
@@ -6193,9 +6197,7 @@ class DetectorView extends React.Component{
 				
 				</Modal>
 		}
-		//	<AccountControl accounts={this.props.accounts} language={'english'} login={this.login} val={this.state.level}/>
-				
-
+	
 		return(<div>
 			{mpui}	
 			<Modal ref ='calibModal' onClose={this.calClosed} intMeter={true} clear={this.clearSig}>
@@ -6224,14 +6226,12 @@ class DetectorView extends React.Component{
 				<Modal ref='loginModal' intMeter={true} clear={this.clearSig}>
 					<LogInControl  mac={this.props.det.mac} ip={this.props.ip} accounts={this.props.accounts} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.level}/>
 				</Modal>
-				<Modal ref='syncModal' className='pop-modal'>
-					<div className='selectmodal-outer'>
-						<div >Usb detected. Start sync process?</div>
+				<Modal ref='syncModal' className='pop-modal' Style={{textAlign:'center', marginTop:40}}>
+						<div style={{color:'#e1e1e1'}}>Usb detected. Start sync process?</div>
 
 						<div><button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.startSync}>Accept</button>
 						<button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1',background:'#5d5480', width:150, borderRadius:20}} onClick={this.cancelSync}>Cancel</button></div>
 	  	
-					</div>
 				</Modal>
 				</div>)
 	} 
@@ -7489,6 +7489,10 @@ class InterceptorMainPageUI extends React.Component{
 		this.deleteAll = this.deleteAll.bind(this);
 		this.factoryRestore = this.factoryRestore.bind(this);
 		this.factorySave = this.factorySave.bind(this);
+		this.importUSB = this.importUSB.bind(this);
+		this.exportUSB = this.exportUSB.bind(this);
+		this.restorUSB = this.restorUSB.bind(this);
+		this.backupUSB = this.backupUSB.bind(this);
 	}
 	shouldComponentUpdate (nextProps, nextState) {
 		if(this.state.keyboardVisible){
@@ -7835,7 +7839,20 @@ class InterceptorMainPageUI extends React.Component{
 			socket.emit('getProdList', self.props.det.ip)
 		},100)
 	}
-
+	importUSB(){
+		socket.emit('import',this.props.det)
+		this.refs.pedit.close();
+	}
+	exportUSB(){
+		socket.emit('export', this.props.det)
+	}
+	backupUSB(){
+		socket.emit('backup',this.props.det)
+	}
+	restorUSB(){
+		socket.emit('restore', this.props.det)
+		this.refs.pedit.close();
+	}
 	onCalFocus () {
 		this.refs.calibModal.setState({override:true})
 	}
@@ -7921,7 +7938,7 @@ class InterceptorMainPageUI extends React.Component{
 		var chSize = 8;
 		
 		var chsize = 3, maxHeight = 380;
-		var defRestore = '', factorySave = '', factoryRestore = '', editCont = '', showPropmt = "#e1e1e1";
+		var defRestore = '', factorySave = '', factoryRestore = '', editCont = '', showPropmt = "#e1e1e1", exportCont='';
 		if(this.state.peditMode){
 			chsize = 2
 			maxHeight = 330;
@@ -7935,6 +7952,16 @@ class InterceptorMainPageUI extends React.Component{
 				{defRestore}
 				 <CustomAlertButton alertMessage={'Delete all current products?'}  onClick={this.deleteAll}  style={{display:'inline-block', marginLeft:10, marginRight:10, height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}}>Delete All </CustomAlertButton>
 			</div>
+			if(this.props.usb){ 
+				maxHeight = 275;
+				exportCont = <div style={{position:'relative', display:'block', height:50, width:785, marginTop:5, marginLeft:'auto',marginRight:'auto', textAlign:'center'}}>
+				 <CustomAlertButton alertMessage={'Import Product Records from USB?'}  onClick={this.importUSB}  style={{display:'inline-block', marginLeft:10, marginRight:10, height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}}>Import Products</CustomAlertButton>
+				 <CustomAlertButton alertMessage={'Export Product Records to USB?'}  onClick={this.exportUSB}  style={{display:'inline-block', marginLeft:10, marginRight:10, height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}}>Export Products</CustomAlertButton>
+				 <CustomAlertButton alertMessage={'Restore Product Records from USB?'}  onClick={this.restorUSB}  style={{display:'inline-block', marginLeft:10, marginRight:10, height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}}>Restore Products</CustomAlertButton>
+				 <CustomAlertButton alertMessage={'Backup Product Records to USB?'}  onClick={this.backupUSB}  style={{display:'inline-block', marginLeft:10, marginRight:10, height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}}>Backup Products </CustomAlertButton>
+			</div>
+
+			}
 		}
 		var chpnames = this.state.prodNames.chunk(chsize);
 		var prList = this.state.prodList.chunk(chsize).map(function(a,i){
@@ -7978,6 +8005,7 @@ class InterceptorMainPageUI extends React.Component{
 				</div>
 				{togglePedit}
 				{editCont}
+				{exportCont}
 				
 				<div style={{position:'relative',textAlign:'center', width:785, marginLeft:'auto', marginRight:'auto', display:'block'}}>
 					<ScrollArrow ref='arrowTop' width={72} marginTop={-35} active={SA} mode={'top'} onClick={this.scrollDown}/>
