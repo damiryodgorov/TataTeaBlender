@@ -264,6 +264,17 @@ class ArmRpcBase{
 		})
 		
 	}
+	bootloader(callBack){
+		this.rpc_cb([ARM_RPC_FW_UPDATE,1,2],callBack)
+	}
+	/*
+		def bootloader # drop to boot loader
+        rpc([ARM_RPC_FW_UPDATE,1,2], 0)
+        # while sh_ping; end # keep trying to ping the bootloader as the ethernet comes up
+        true
+      end
+
+	*/
 }
 
 class ArmRpc extends ArmRpcBase{

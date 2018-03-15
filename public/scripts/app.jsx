@@ -6533,7 +6533,7 @@ class NetPollView extends React.Component{
 				}
 			})
 		}
-
+		console.log(['6536',self.props.mac])
 		var events = eventArr.map(function(e){
 			var ev = e.net_poll_h;
 			if(netMap[e.net_poll_h]){
@@ -7290,7 +7290,7 @@ class StealthMainPageUI extends React.Component{
 				{peditCont}
 				</Modal>
 				<Modal ref='netpolls'>
-					<NetPollView ref='np' eventCount={15} events={this.props.netpoll} ip={this.props.det.ip}/>
+					<NetPollView ref='np' eventCount={15} events={this.props.netpoll} ip={this.props.det.ip} mac={this.props.det.mac}/>
 				</Modal>
 				<Modal ref='configs'>
 				</Modal>
@@ -8044,7 +8044,7 @@ class InterceptorMainPageUI extends React.Component{
 				</Modal>
 				
 				<Modal ref='netpolls' intMeter={true} clear={this.clearSig}>
-					<NetPollView language={lg} ref='np' eventCount={15} events={this.props.netpoll} ip={this.props.det.ip}/>
+					<NetPollView language={lg} ref='np' eventCount={15} events={this.props.netpoll} ip={this.props.det.ip} mac={this.props.det.mac}/>
 				</Modal>
 				<Modal ref='configs'>
 				</Modal>
