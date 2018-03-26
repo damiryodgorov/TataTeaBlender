@@ -3,6 +3,7 @@ var dgram = require('dgram');
 var Crc = require('crc');
 var crypto = require('crypto');
 var aesjs = require('aes-js')
+var fs = require('fs');
 //var Sync = require('sync');
 
 const ARM_RPC_PORT = 10002
@@ -86,7 +87,7 @@ class ArmRpcBase{
 			console.log("bound f")
 		})
 		this.socket.on('message',function(e,rinfo){
-			console.log(80,rinfo.port)
+			//console.log(80,rinfo.port)
 			if(rinfo.port == self.rem_port){
 				self.onMessage(e)
 
@@ -220,6 +221,16 @@ class ArmRpcBase{
 		var self = this;
 	//	this.callBack = null;
 		this.callBack=callBack;
+	//	console.log('rpc_cb',pkt)
+		this.packet_for(pkt,function(p){
+	//		console.log('rpc_cb packet for', p, self.rem_port)
+			self.socket.send(p,0,p.length,self.rem_port,self.rem_ip)
+		})
+	}
+	rpc_cb_to(pkt,timeout,callBack){
+		var self = this;
+	//	this.callBack = null;
+		this.callBack=callBack;
 		console.log('rpc_cb',pkt)
 		this.packet_for(pkt,function(p){
 			console.log('rpc_cb packet for', p, self.rem_port)
@@ -264,9 +275,128 @@ class ArmRpcBase{
 		})
 		
 	}
-	bootloader(callBack){
-		this.rpc_cb([ARM_RPC_FW_UPDATE,1,2],callBack)
+	reset(){
+		this.rpc_cb([8,0], function(e){
+			console.log(e)
+		})
 	}
+	bootloader(callBack){
+		this.rpc_cb([8,1,2],callBack)
+	}
+	prog_start(bootloader, callBack){
+		var dst = 2
+		if(bootloader){
+			dst = 3;
+		}
+		this.rpc_cb([8,1,dst],callBack)
+	}
+	prog_start_bl(callBack){
+		this.prog_start(true, callBack)
+	}
+	prog_erase(callBack){
+		this.rpc_cb([8,11],callBack)
+	}
+	prog_erase_app(callBack){
+		var bytes = Buffer.alloc(512,0xff)
+		this.prog_block(0,bytes,callBack)
+	}
+	prog_binary(bf,callBack){
+		var self = this;
+		fs.readFile(bf,function(err,res){
+			self.prog_rc_block(0,0,res.length, res,callBack)
+		})
+	}
+	prog_block(i, bytes, callBack){
+		var header = Buffer.alloc(4);
+		header.writeUInt8(8,0);
+		header.writeUInt8(3,1);
+		header.writeUInt16LE(i,2);
+		var pkt = Buffer.concat([header,Buffer.from(bytes)]);
+		this.rpc_cb(pkt,callBack)
+	}
+	verify_binary_file(fn, callBack){
+		fs.readFile(fn,function(err,res){
+			var vec_end_val = 0xffffffff
+			var n = null;
+			for(var i = 0; i < 2840; i = i+4){
+				if(res.readUInt32LE(i) == vec_end_val){
+					n = i;
+					break;
+				}
+			}
+			if(n == null){
+				throw new ArmRpcError('Verify bin file: size not found');
+			}
+			var size = res.readUInt32LE(n+4)
+			var start_addr = res.readUInt32LE(n+8)
+			callBack(size,start_addr)
+		})
+	}
+	prog_rc_block(n,i,fsize,buf,callBack){
+		var self = this;
+		if(n < fsize){
+			var data = buf.slice(n,n+512)//pad with 0xff if less than blk_size
+			//console.log('data length', data.length)
+			if(data.length < 512){
+				//console.log('fill', data)
+				//data.fill(0xff,data.length)
+				data = Buffer.concat([data,Buffer.alloc(512,0xff)]).slice(0,512);
+				//console.log('filled', data)
+			}
+			this.prog_block(i,data,function(d){
+			//	console.log(d)
+				if(d.readUInt8(3) != 4){
+					throw new ArmRpcError('Error Programming Block');
+				}
+				self.prog_rc_block(n+512, i+1, fsize,buf, callBack)
+			})
+		}else{
+			callBack()
+		}
+	}
+	/*
+	  def verify_binary_file(bin_file)
+        bf=read_binary_file(bin_file)
+        vec_end_val = 0xffffffff
+        n=nil; (0..2840).step(4) {|i| if bf[i,4].unpack('L')[0] == vec_end_val; n=i; break; end}
+        raise "Verify bin file: size not found" unless n
+        size = bf[n+4,4].unpack('L')[0] # extract the file size
+        p "Program Size: #{bf[n+4,4].unpack('L')[0]}"
+        raise "Verify bin file: size error" unless n < bf.size
+        start_addr = bf[n+8,4].unpack('L')[0]
+        p "Start Address: 0x#{start_addr.to_s(16)}"
+        csum = Digest::SHA1.digest( bf[0,size] ) # compute checksum
+        raise "Verify bin file: digest error" if csum != bf[size,csum.size]
+        puts "check bytes: #{csum.unpack('C*').inspect}"
+        [bf,start_addr]
+      end
+          def prog_block(i, bytes, timeout=1)
+        raise "prog_block: called with wrong block size" unless bytes.size == ARM_PROG_BLOCK_SIZE
+        bytes = bytes.pack('C*') if Array===bytes
+        pkt = [ARM_RPC_FW_UPDATE,3,i].pack('CCS') + bytes
+        res = rpc(pkt, timeout)
+        return res[2]+(res[3] << 8) if res[1]==4 # ack with block number
+        raise "Error prog_block: #{res.inspect}"
+      end
+      
+      def prog_binary(binary_file, app_start=nil)
+        arm = self; blk_size = ARM_PROG_BLOCK_SIZE
+        fsize = File.size(binary_file)
+        open(binary_file, "rb") do |fd|
+          n = 0; blk = 0
+          while n < fsize
+            data = fd.read(blk_size)
+            data << "\xff" * (blk_size - data.size) if data.size < blk_size # pad the block with 0xff
+            ack_blk = arm.prog_block(blk, data)
+            # arm.read(app_start+(blk_size*blk),blk_size) {|s| raise "Verify failed" unless s==data} if app_start
+            n += data.size; blk+=1
+            percent = ([n,fsize-1].min * 100/fsize.to_f).to_i
+            yield percent if block_given?
+          end # while
+        end # open
+        yield 100 if block_given?
+      end
+	*/
 	/*
 		def bootloader # drop to boot loader
         rpc([ARM_RPC_FW_UPDATE,1,2], 0)
@@ -344,7 +474,7 @@ class ArmRpc extends ArmRpcBase{
 				ka.push(ke.readUInt8(ko))
 			}
 			self.aesk = Buffer.from(ka);
-			console.log('aesk', self.aesk)
+//			console.log('aesk', self.aesk)
 
 			self.aesECB = new aesjs.ModeOfOperation.ecb(ka);
 		
@@ -370,7 +500,7 @@ class ArmRpc extends ArmRpcBase{
 		for(var i=0;i<pad;i++){
 			parry.push(0)
 		}
-		console.log('pad size: ' + pad.toString())
+//		console.log('pad size: ' + pad.toString())
 		var bu = new Buffer(2)//[dat.length]);
 		bu.writeUInt16LE(dat.length)
 		dat = Buffer.concat([bu ,dat, new Buffer(parry)])
@@ -399,7 +529,7 @@ class ArmRpc extends ArmRpcBase{
 		var n = data.length/bsize;
 		var rem = data.length%bsize;
 		if(rem != 0){
-			console.log(data.length,rem)
+	//		console.log(data.length,rem)
 			throw new ArmRpcAckError('Ack size must be multiple of '+bsize);
 		}
 		var en = this.aesECB;

@@ -30,7 +30,7 @@ const usb = require('usb');
 const sys = require('sys');
 const exec = require('child_process').exec;
 //const drivelist = require('drivelist')
-const filesystem = require('fs-filesystem');
+//const filesystem = require('fs-filesystem');
 var db = flatfile('./dbs/users.db')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
@@ -40,7 +40,10 @@ db.on('open', function() {
   //db.put('admin',{level:5,pw:hs})
   console.log(db.keys())
 });
-
+http.on('error', function(err){
+  console.log('this is an http error')
+  console.log(err)
+})
 
 var funcJSON ={
   "@func":{"frac_value":"(function(int){return (int/(1<<15));})",
@@ -67,7 +70,7 @@ var funcJSON ={
       "ipv4_address":"(function(words){return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');})",
       "username":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
       "user_opts":"(function(opts){return opts});",
-      "password_hash":"(function(phash){return phash;});"
+      "password_hash":"(function(phash){    var buf = Buffer.alloc(8); buf.writeUInt16LE(phash[1],0); buf.writeUInt16LE(phash[0],2); buf.writeUInt16LE(phash[2],6); buf.writeUInt16LE(phash[3],4);return buf;});"
       }
   }
 
@@ -80,7 +83,7 @@ console.log(crypto.createHash('sha1').update("engineer0123"+salt).digest().slice
 //lets just keep it here for now
 var accounts = {"operator":{"acc":1,"password":"0123"},"engineer":{"acc":2,"password":"0123"},"fortress":{"acc":3,"password":"0123"}}
 
-
+let _accounts = {};
 
 var prefs;
 
@@ -119,6 +122,25 @@ function checkAndMkdir(targetpath,i, callback){
     })
   }
 
+}
+function arm_burn(ip, fname){
+  var arm = new fti.ArmRpc.ArmRpc(ip)
+  arm.verfy_binary_file(fname, function(size,addr){
+    if(addr == 0x08000000){
+      arm_program_flash(fname, arm, true)
+    } else{
+
+      arm_program_flash(fname, arm, false)
+    }
+  })
+}
+function arm_program_flash(bf,arm,bl){
+  arm.prog_start(bl, function(){arm.prog_erase_app(function(){
+    arm.prog_binary(bf,function(){
+      
+      arm.reset();
+    })
+  })});
 }
 
 function tftpPollForFDDList(det,nr,callback){
@@ -393,6 +415,7 @@ function initSocks(arr, cb){
   udpClients = {};
   nphandlers = {};
   accountJSONs = {};
+  _accounts = {};
   console.log('dsp_ips')
   for(var i = 0; i<arr.length; i++){
    // console.log(arr)
@@ -615,7 +638,14 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
       userrec[p] = getVal(array, 6, p, pVdef)
       // body...
     })
-    relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:5, rec:userrec, array:array.slice(-100)}}})
+    var usernames = []
+    var accArray = []
+    for(var i = 0; i<10; i++){
+      usernames.push({username:userrec['UserName'+i], acc:userrec['UserOptions'+i]});
+      accArray.push({username:userrec['UserName'+i], opt:userrec['UserOptions'+i], phash:userrec['PasswordHash'+i]})
+    }
+    _accounts[ip] = accArray.slice(0)
+    relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:5, rec:userrec, array:usernames}}})
 
     pack = {type:3, rec:rec}
     
@@ -947,7 +977,12 @@ class Params{
     return opts;
   }
   static password_hash(phash){
-    return phash;
+    var buf = Buffer.alloc(8);
+    buf.writeUInt16LE(phash[1],0);
+    buf.writeUInt16LE(phash[0],2);
+    buf.writeUInt16LE(phash[2],6);
+    buf.writeUInt16LE(phash[3],4);
+    return buf;
   }
 }
 function udpConSing(ip){
@@ -1208,7 +1243,11 @@ var dspips = [];
 var nvdspips = [];
 
 var dets;
-
+process.on('uncaughtException', (err) => {
+  fs.writeFileSync(__dirname +'/error.txt', err.toString());
+  console.log(err);
+  process.abort();
+});
 app.set('port', (process.env.PORT || 3300));
 app.use('/', express.static(path.join(__dirname,'public')));
 console.log('dirname:' + __dirname)
@@ -1218,6 +1257,9 @@ app.get('/', function(req, res) {
   res.render('test.html');
 });
 app.use(helmet());
+app.on('error', function(err){
+  console.log(err)
+})
 
 http.listen(app.get('port'), function(){
 //  console.log(__dirname)
@@ -1290,11 +1332,25 @@ class FtiSockIOServer{
    //this = null;
   }
 }
+wss.on('error', function(error){
+  console.log("error should be handled here....")
+  console.log(error)
+
+ // throw error
+})
 //wss.on('')
 wss.on('connection', function(scket, req){ 
   let loginLevel = 0;
   let curUser = '';
   var fileVer = 0;
+  scket.on('error', function(err){
+    console.log('this is a socket error', err)
+    scket.close();
+ //   socket.close();
+  })
+  req.on('error', function(err){
+    console.log('this is a req error', err)
+  })
   var socket = new FtiSockIOServer(scket)
 
   socket.on('close',function(){
@@ -1667,7 +1723,7 @@ socket.on('restore',function(det){
   })
 })
   socket.on('login', function(arg){
-
+    console.log(arg)
     /*if(db.has(arg.id)){
       if(crypto.createHash('sha256').update(arg.pw)ç == db.get(arg.id).pw){
         loginLevel = db.get(arg.id).level
@@ -1679,9 +1735,9 @@ socket.on('restore',function(det){
     }else{
       socket.emit('access denied', 'username invalid')
     }*/
-    if(arg.password == accounts[arg.user].password){
+  /*  if(arg.password == accounts[arg.user].password){
       socket.emit('loginSucess', {user:arg.user})
-    }
+    }*/
   })
   socket.on('logOut', function(arg){
     loginLevel = 0;
@@ -1833,13 +1889,25 @@ socket.on('getProdList', function (ip) {
   socket.on('authenticate', function(packet){
     console.log('authenticate this packet')
     console.log(packet)
+    var hash = crypto.createHash('sha1').update(Buffer.from(packet.pswd,'ascii')).digest().slice(0,8)
+    var ap = _accounts[packet.ip][packet.user].phash
+    console.log(hash)
+    console.log(_accounts[packet.ip][packet.user].phash)
+    if(ap.equals(hash)){
+      console.log('success')
+      socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt})
+    }else{
+      console.log('fail')
+      socket.emit('authFail')
+    }
+    /*  console.log(packet)
     if(accountJSONs[packet.ip][packet.user].password == packet.pswd){
       console.log('success')
       socket.emit('authResp', {user:packet.user, level:accountJSONs[packet.ip][packet.user].acc})
     }else{
       console.log('fail')
       socket.emit('authFail')
-    }
+    }*/
   })
   socket.on('addAccount', function(pack){
 
