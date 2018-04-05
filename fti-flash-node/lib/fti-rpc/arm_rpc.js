@@ -275,9 +275,12 @@ class ArmRpcBase{
 		})
 		
 	}
-	reset(){
+	reset(callBack){
 		this.rpc_cb([8,0], function(e){
 			console.log(e)
+			if(callBack){
+				callBack()
+			}
 		})
 	}
 	bootloader(callBack){

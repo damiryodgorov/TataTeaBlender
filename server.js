@@ -172,23 +172,6 @@ function tftpPollForFDDList(det,nr,callback){
     })
   })
 
-  /*getJSONStringTftp(det.ip,filename,function(res){
-    var fpath = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() +'/Sync'+ filename
-      console.log(fpath)
-      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync']
-      console.log(arr.concat(filename.split('/').slice(1,-1)))
-      checkAndMkdir(arr.concat(filename.split('/').slice(1,-1)),0,function(){
-         fs.writeFile(fpath,res,(err)=>{
-          if(err) throw err
-          console.log(nr,filename)
-          
-          tftpPollForFDDList(det,nr+1,callback);
-        })
-      })
-     
-    },function(e){
-      callback(e)
-    })*/
 }
 function tftpPollForSCDList(det,nr,callback){
   //path = [1], nr=1 at start
@@ -218,24 +201,7 @@ function tftpPollForSCDList(det,nr,callback){
       callback(e)
     })
   })
-      /*
-  getJSONStringTftp(det.ip,filename,function(res){
-    var fpath = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync' + filename
-      console.log(fpath)
-      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync']
-      console.log(arr.concat(filename.split('/').slice(1,-1)))
-      checkAndMkdir(arr.concat(filename.split('/').slice(1,-1)),0,function(){
-         fs.writeFile(fpath,res,(err)=>{
-          if(err) throw err
-          console.log(nr,filename)
-          
-          tftpPollForSCDList(det,nr+1,callback);
-        })
-      })
-     
-    },function(e){
-      callback(e)
-    })*/
+
 }
 function buildFDDList(arm,callBack){
   var paths = []
@@ -534,26 +500,7 @@ function writeFtiFilesToUsb(det,list,ind,callback){
   if(ind >= list.length){
     callback('done')
   }else{
- /*   getJSONStringTftp(det.ip,list[ind],function(res){
-      console.log(list)
 
-
-      var path = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() +'/Sync' + list[ind]
-      console.log(path)
-      var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync']
-      console.log(arr.concat(list[ind].split('/').slice(1,-1)))
-      checkAndMkdir(arr.concat(list[ind].split('/').slice(1,-1)),0,function(){
-         fs.writeFile(path,res,(err)=>{
-          if(err) throw err
-          console.log(ind,list)
-          writeFtiFilesToUsb(det,list,ind+1,callback);
-        })
-      })
-     
-    },function(e){
-      callback('DONE!!!')
-    })
-  }*/
    var path = '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase() +'/Sync' + list[ind]
       console.log(path)
       var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync']
@@ -1165,6 +1112,10 @@ function dsp_rpc_paylod_for (n_func, i16_args, byte_data) {
           }         
         } else if (byte_data instanceof Array) {
           bytes = byte_data;
+         }else if(Buffer.isBuffer( byte_data )){
+          for(var i = 0; i<byte_data.length;i++){
+            bytes.push(byte_data.readUInt8(i));
+          }
          }
         rpc[0] = n_func;
         rpc[1] = n_args;
@@ -1244,7 +1195,7 @@ var nvdspips = [];
 
 var dets;
 process.on('uncaughtException', (err) => {
-  fs.writeFileSync(__dirname +'/error.txt', err.toString());
+  fs.writeFileSync(__dirname +'/error.txt', err.stack.toString() || err.toString());
   console.log(err);
   process.abort();
 });
@@ -1909,6 +1860,45 @@ socket.on('getProdList', function (ip) {
       socket.emit('authFail')
     }*/
   })
+  socket.on('writeUserData', function(packet){
+    //var buf = Buffer.alloc(vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE'])
+    var users = _accounts[packet.ip].slice(0);
+    var pswd = users[packet.data.user].phash;
+    if(packet.data.password != '*******'){
+      pswd = crypto.createHash('sha1').update(Buffer.from(packet.data.password,'ascii')).digest().slice(0,8)
+    }
+    users[packet.data.user] = {username:packet.data.username, opt:packet.data.acc, phash:pswd}
+    console.log('users',users)
+    var _users = []
+    for(var i = 0; i<10; i++){
+      var user = Buffer.from((users[i].username + "          ").slice(0,10),'ascii');
+      var _phash = users[i].phash//crypto.createHash('sha1').update(Buffer.from(packet.data[i].password,'ascii')).digest();
+      var phash = Buffer.alloc(8)
+      phash.writeUInt16BE(_phash.readUInt16LE(2),0);
+      phash.writeUInt16BE(_phash.readUInt16LE(0),2);
+      phash.writeUInt16BE(_phash.readUInt16LE(6),4);
+      phash.writeUInt16BE(_phash.readUInt16LE(4),6);
+      var useropt = Buffer.alloc(2);
+      useropt.writeUInt16LE(parseInt(users[i].opt),0)
+      _users.push(Buffer.concat([user,phash,useropt]))
+    }
+    var buf = Buffer.concat(_users);
+    if(buf.length != vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
+      socket.emit('notify','Error updating users')
+    }else{
+      var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][1],buf)
+      console.log(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'])
+      console.log(Buffer.from(pkt))
+       udpClients[packet.ip].send_rpc(Buffer.from(pkt), function(e){
+                console.log('Ack from ' + packet.ip)
+
+                relayRpcMsg({det:{ip:packet.ip, mac:macs[packet.ip]},data:{data:toArrayBuffer(e)}});
+                e = null;
+
+              })
+             
+    }
+  })
   socket.on('addAccount', function(pack){
 
     console.log(pack)
@@ -1978,7 +1968,6 @@ socket.on('getProdList', function (ip) {
     networking.applySettings(iface, {active:true, ipv4:{address:'0.0.0.0'}})
     setTimeout(function(){
         networking.applySettings(iface, {active:true, ipv4:{address:addr, netmask:'255.255.255.0'}})
-      //  socket.emit('onReset')
         setTimeout(function(){
       socket.emit('resetConfirm')
     },300)
