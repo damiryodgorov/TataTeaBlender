@@ -235,6 +235,7 @@ class ArmRpcBase{
 		this.packet_for(pkt,function(p){
 			console.log('rpc_cb packet for', p, self.rem_port)
 			self.socket.send(p,0,p.length,self.rem_port,self.rem_ip)
+			
 		})
 	}
 	echo_cb(callBack){
@@ -319,6 +320,9 @@ class ArmRpcBase{
 	}
 	verify_binary_file(fn, callBack){
 		fs.readFile(fn,function(err,res){
+			if(err){
+				throw err
+			}
 			var vec_end_val = 0xffffffff
 			var n = null;
 			for(var i = 0; i < 2840; i = i+4){
@@ -347,7 +351,7 @@ class ArmRpcBase{
 				//console.log('filled', data)
 			}
 			this.prog_block(i,data,function(d){
-			//	console.log(d)
+				console.log(i)
 				if(d.readUInt8(3) != 4){
 					throw new ArmRpcError('Error Programming Block');
 				}

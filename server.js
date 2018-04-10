@@ -123,25 +123,6 @@ function checkAndMkdir(targetpath,i, callback){
   }
 
 }
-function arm_burn(ip, fname){
-  var arm = new fti.ArmRpc.ArmRpc(ip)
-  arm.verfy_binary_file(fname, function(size,addr){
-    if(addr == 0x08000000){
-      arm_program_flash(fname, arm, true)
-    } else{
-
-      arm_program_flash(fname, arm, false)
-    }
-  })
-}
-function arm_program_flash(bf,arm,bl){
-  arm.prog_start(bl, function(){arm.prog_erase_app(function(){
-    arm.prog_binary(bf,function(){
-      
-      arm.reset();
-    })
-  })});
-}
 
 function tftpPollForFDDList(det,nr,callback){
   //path = [1], nr=1 at start
@@ -493,7 +474,114 @@ function getJSONStringTftp(ip, filename, callBack,enoent){
     
   })
 }
+function updateBinaries(paths, ip, cnt, callBack){
 
+  if(cnt + 1 > paths.length){
+    callBack(true)
+  }else{
+    console.log(501, paths[cnt])
+    arm_burn(ip, paths[cnt], function(suc){
+      if(suc){
+          setTimeout(function(){
+        updateBinaries(paths, ip, cnt+1, callBack)
+      },1000)
+      
+      }else{
+        callBack(false)
+      }
+    })
+  }
+
+}
+function parse_update(str, callback){
+  var arr = str.split('\n\n')
+  var updateCount = parseInt(arr[0]);
+  var list = [];
+  console.log(arr)
+  arr.slice(1, 1+updateCount).forEach(function(s){
+    var a = s.split(',')
+    if((parseInt(a[0]) == 10)){
+      list.push('/mnt'+a[a.length-1].split('\\').join('/'));
+    }
+  })
+  callback(list)
+}
+function arm_burn(ip, fname, callback){
+  var arm = new fti.ArmRpc.ArmRpc(ip)
+
+  arm.verify_binary_file(fname, function(size,addr){
+    if(addr == 0x08000000){
+      console.log('bootloader')
+      arm_program_flash(fname, arm, true, function(){
+        callback(true);
+      })
+    } else{
+      arm.bootloader(function(){
+       console.log('reset to bootloader')
+       
+      })
+      var echoed = false
+      var cnt = 0
+      var interval = setInterval(function(){
+        if(echoed == true){
+          clearInterval(interval)
+        }else if(cnt > 13){
+          console.log('Too many tries')
+          clearInterval(interval)
+          callback(false);
+        }else{
+          console.log('try ', cnt++)
+          arm.prog_start(false, function(){
+            clearInterval(interval)
+             console.log('prog_start callback')
+            echoed = true;
+             arm.prog_erase_app(function(){
+            console.log('program erased')
+               setTimeout(function(){
+                arm.prog_binary(fname,function(){
+                 setTimeout(function(){
+                  arm.reset(function(){
+                     callback(true)
+                      });
+                   },500)
+      
+                 })
+               },10000)
+
+           })
+         })
+        }
+        
+      }, 1000)
+   /*    setTimeout(function(){
+
+            arm_program_flash(fname, arm, false, function(){
+              callback(true)
+            })
+          },7000)*/
+     
+    }
+  })
+}
+function arm_program_flash(bf,arm,bl, callback){
+  console.log('programming '+ bf)
+  arm.prog_start(bl, function(){
+    console.log('prog_start callback')
+    arm.prog_erase_app(function(){
+    console.log('program erased')
+    setTimeout(function(){
+          arm.prog_binary(bf,function(){
+            setTimeout(function(){
+              arm.reset(function(){
+                callback()
+              });
+            },500)
+      
+    })
+        },10000)
+
+  })});
+}
 function writeFtiFilesToUsb(det,list,ind,callback){
   console.log(['323',ind, list.length])
   //console.log(list)
@@ -509,9 +597,9 @@ function writeFtiFilesToUsb(det,list,ind,callback){
      getFileTftp(det.ip, list[ind], path,function(){
         console.log(ind,list)
         writeFtiFilesToUsb(det,list,ind+1,callback);
-    },function(e){throw e})
-  })
-}
+      },function(e){throw e})
+    })
+  }
 }
 function getAccountsJSON(ip, callback){
   getJSONStringTftp(ip, '/accounts.json', function(str){
@@ -1487,6 +1575,37 @@ usb.on('detach', function(dev){
   console.log('usb detached');
   console.log(dev)
   socket.emit('usbdetach')
+})
+socket.on('startUpdate', function(det){
+      exec('sudo mount /dev/sda1 /mnt', function(errr, stdout, stderr){
+        if(errr){
+          socket.emit('notify', 'Error reading update file.')
+          throw errr
+        }
+        fs.readFile('/mnt/FortressFirmwareUpdate.txt', (err, res)=>{
+          if(err){
+            socket.emit('notify', 'Error reading update file.')
+            exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+              
+            });
+          }else{
+            parse_update(res.toString(), function(arr){
+              console.log(arr)
+              updateBinaries(arr, det.ip, 0, function(suc){
+                 exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+                  if(suc){
+                    socket.emit('notify', 'update complete');
+                  }else{
+                     socket.emit('notify', 'update failed');
+                  }
+               
+                   socket.emit('doneUpdate')
+                }) 
+              })
+            })
+          }
+        })
+      })
 })
 socket.on('syncStart', function(det){
   //check if dir exists
