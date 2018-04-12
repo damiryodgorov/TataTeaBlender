@@ -74,13 +74,6 @@ var funcJSON ={
       }
   }
 
-const salt = 'fortress'
-//const hash = crypto.createHash('sha1')
-
-console.log(crypto.createHash('sha1').update("operator0123"+salt).digest().slice(0,8))
-console.log(crypto.createHash('sha1').update("operator0023"+salt).digest().slice(0,8))
-console.log(crypto.createHash('sha1').update("engineer0123"+salt).digest().slice(0,8))
-//lets just keep it here for now
 var accounts = {"operator":{"acc":1,"password":"0123"},"engineer":{"acc":2,"password":"0123"},"fortress":{"acc":3,"password":"0123"}}
 
 let _accounts = {};
@@ -482,9 +475,11 @@ function updateBinaries(paths, ip, cnt, callBack){
     console.log(501, paths[cnt])
     arm_burn(ip, paths[cnt], function(suc){
       if(suc){
-          setTimeout(function(){
+        //var echoed = false;
+
+      setTimeout(function(){
         updateBinaries(paths, ip, cnt+1, callBack)
-      },1000)
+      },4000)
       
       }else{
         callBack(false)
@@ -512,9 +507,43 @@ function arm_burn(ip, fname, callback){
   arm.verify_binary_file(fname, function(size,addr){
     if(addr == 0x08000000){
       console.log('bootloader')
-      arm_program_flash(fname, arm, true, function(){
-        callback(true);
+        arm.bootloader(function(){
+       console.log('reset to bootloader')
+       
       })
+      var echoed = false
+      var cnt = 0
+      var interval = setInterval(function(){
+        if(echoed == true){
+          clearInterval(interval)
+        }else if(cnt > 13){
+          console.log('Too many tries')
+          clearInterval(interval)
+          callback(false);
+        }else{
+          console.log('try ', cnt++)
+          arm.prog_start(true, function(){
+            clearInterval(interval)
+             console.log('prog_start callback')
+            echoed = true;
+             arm.prog_erase_app(function(){
+            console.log('program erased')
+               setTimeout(function(){
+                arm.prog_binary(fname,function(){
+                 setTimeout(function(){
+                  arm.reset(function(){
+                     callback(true)
+                      });
+                   },500)
+      
+                 })
+               },10000)
+
+           })
+         })
+        }
+        
+      }, 1000)
     } else{
       arm.bootloader(function(){
        console.log('reset to bootloader')
@@ -1586,7 +1615,7 @@ socket.on('startUpdate', function(det){
           if(err){
             socket.emit('notify', 'Error reading update file.')
             exec('sudo umount /dev/sda1', function(er, stdout, stderr){
-              
+
             });
           }else{
             parse_update(res.toString(), function(arr){
@@ -2084,9 +2113,76 @@ socket.on('getProdList', function (ip) {
     if(os.platform() == 'darwin'){
       iface = 'en4'
     }
+    var ifaces = os.networkInterfaces();  
+  
+    var nf;// = ifaces[iface];
+    console.log(ifaces[iface])
+    if(ifaces[iface][0].family == 'IPv4'){
+      nf = ifaces[iface][0]
+    }else{
+      nf = ifaces[iface][1]
+    }
+    console.log(nf)
+
     networking.applySettings(iface, {active:true, ipv4:{address:'0.0.0.0'}})
     setTimeout(function(){
-        networking.applySettings(iface, {active:true, ipv4:{address:addr, netmask:'255.255.255.0'}})
+        networking.applySettings(iface, {active:true, ipv4:{address:addr, netmask:nf.netmask}})
+        fs.readFile('/etc/network/interfaces', (err,res)=>{
+          if(err){
+            console.log(err)
+          }
+          var arr = res.toString().split('\n')
+          var ind = arr.indexOf('iface eth0 inet static')
+          if(ind != -1){
+            arr[ind+1] = '\taddress ' + addr
+            fs.writeFile('/etc/network/interfaces', arr.join('\n'), function(err){
+              console.log(err)
+            })
+          }
+          console.log(res.toString().split('\n'));
+        })
+        setTimeout(function(){
+      socket.emit('resetConfirm')
+    },300)
+    },300)
+  
+   
+  })
+    socket.on('nifnm', function(addr){
+    //need to figure out how to determine interface gracefully. maybe specify from onset? 
+    console.log(addr)
+    var iface = 'eth0'
+    if(os.platform() == 'darwin'){
+      iface = 'en4'
+    }
+    var ifaces = os.networkInterfaces();  
+  
+    var nf;// = ifaces[iface];
+   // console.log(ifaces[iface])
+    if(ifaces[iface][0].family == 'IPv4'){
+      nf = ifaces[iface][0]
+    }else{
+      nf = ifaces[iface][1]
+    }
+    console.log(nf)
+    var ip = nf.address;
+    networking.applySettings(iface, {active:true, ipv4:{address:'0.0.0.0'}})
+    setTimeout(function(){
+        networking.applySettings(iface, {active:true, ipv4:{address:nf.address, netmask:addr}})
+        fs.readFile('/etc/network/interfaces', (err,res)=>{
+          if(err){
+            console.log(err)
+          }
+          var arr = res.toString().split('\n')
+          var ind = arr.indexOf('iface eth0 inet static')
+          if(ind != -1){
+            arr[ind+2] = '\tnetmask ' + addr
+            fs.writeFile('/etc/network/interfaces', arr.join('\n'), function(err){
+              console.log(err)
+            })
+          }
+          console.log(res.toString().split('\n'));
+        })
         setTimeout(function(){
       socket.emit('resetConfirm')
     },300)
