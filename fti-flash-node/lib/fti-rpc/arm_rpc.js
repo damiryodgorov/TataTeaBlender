@@ -235,7 +235,7 @@ class ArmRpcBase{
 		this.packet_for(pkt,function(p){
 			console.log('rpc_cb packet for', p, self.rem_port)
 			self.socket.send(p,0,p.length,self.rem_port,self.rem_ip)
-			
+
 		})
 	}
 	echo_cb(callBack){
@@ -288,6 +288,7 @@ class ArmRpcBase{
 		this.rpc_cb([8,1,2],callBack)
 	}
 	prog_start(bootloader, callBack){
+		console.log('prog start')
 		var dst = 2
 		if(bootloader){
 			dst = 3;
@@ -301,6 +302,7 @@ class ArmRpcBase{
 		this.rpc_cb([8,11],callBack)
 	}
 	prog_erase_app(callBack){
+		console.log('prog erase app')
 		var bytes = Buffer.alloc(512,0xff)
 		this.prog_block(0,bytes,callBack)
 	}

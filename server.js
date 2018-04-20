@@ -34,12 +34,7 @@ const exec = require('child_process').exec;
 var db = flatfile('./dbs/users.db')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
-db.on('open', function() {
-  //db.clear()
-  //var hs = crypto.createHash('sha256').update('515151').digest('base64');
-  //db.put('admin',{level:5,pw:hs})
-  console.log(db.keys())
-});
+
 http.on('error', function(err){
   console.log('this is an http error')
   console.log(err)
@@ -85,6 +80,7 @@ var cur = Date.now()
 let passocs = {}
 let rassocs = {}
 let nassocs = {}
+let sockrelays = {}
 let rconns = {}
 let dsp_ips = []
 let clients = {};
@@ -200,8 +196,6 @@ function buildSCDList(arm,callBack){
       arm.clearCB(function(e){
          return recursiveSync(e,arm,paths,callBack)
        }, _e)
-     
-    //})
   })
 }
 function buildSyncList(arm,callBack){
@@ -374,6 +368,7 @@ function getVdef(ip, callback){
       var rawVdef = [];
       get.on('data', (chnk)=>{
         rawVdef.push(chnk)//zlib.gunzipSync(chnk);
+        chnk = null;
       })
       get.on('end', ()=>{
       console.log('getting vdef tftp end')
@@ -409,14 +404,18 @@ function getVdef(ip, callback){
         nVdfs[ip] = nvdf
         pVdefs[ip] = pVdef
         callback(ip,vdef) 
-
+        vdef = null;
+        b = null;
         get.abort()     
         tclient = null;         
       })
+      rawVdef = null;
+      buffer = null;
      
     })
      get.on('error',(e)=>{
         console.log(e)
+        rawVdef = null;
         tclient = null;
       })
     /*
@@ -461,10 +460,11 @@ function getJSONStringTftp(ip, filename, callBack,enoent){
   get.on('end',function(){
 
     callBack(chunks.join(''));
+    chunks = null;
   })
   get.on('error',function(e){
       enoent(e);
-    
+      chunks = null;
   })
 }
 function updateBinaries(paths, ip, cnt, callBack){
@@ -473,6 +473,7 @@ function updateBinaries(paths, ip, cnt, callBack){
     callBack(true)
   }else{
     console.log(501, paths[cnt])
+    relaySockMsg('notify','Updating file ' + (cnt+1) +' of ' + paths.length);
     arm_burn(ip, paths[cnt], function(suc){
       if(suc){
         //var echoed = false;
@@ -482,6 +483,7 @@ function updateBinaries(paths, ip, cnt, callBack){
       },4000)
       
       }else{
+        console.log('failed somewhere in arm_burn')
         callBack(false)
       }
     })
@@ -489,7 +491,13 @@ function updateBinaries(paths, ip, cnt, callBack){
 
 }
 function parse_update(str, callback){
-  var arr = str.split('\n\n')
+  var array = str.split('\n')
+  var arr = []
+  array.forEach(function(st){
+    if(st.trim().length > 0){
+      arr.push(st.trim())
+    }
+  })
   var updateCount = parseInt(arr[0]);
   var list = [];
   console.log(arr)
@@ -545,6 +553,7 @@ function arm_burn(ip, fname, callback){
         
       }, 1000)
     } else{
+      console.log('now reset to bootloader')
       arm.bootloader(function(){
        console.log('reset to bootloader')
        
@@ -552,14 +561,14 @@ function arm_burn(ip, fname, callback){
       var echoed = false
       var cnt = 0
       var interval = setInterval(function(){
-        if(echoed == true){
-          clearInterval(interval)
-        }else if(cnt > 13){
+       if(cnt > 13){
+          relaySockMsg('notify','timeout')
           console.log('Too many tries')
           clearInterval(interval)
           callback(false);
         }else{
-          console.log('try ', cnt++)
+          cnt++;
+          console.log('try ', cnt)
           arm.prog_start(false, function(){
             clearInterval(interval)
              console.log('prog_start callback')
@@ -602,7 +611,7 @@ function arm_program_flash(bf,arm,bl, callback){
           arm.prog_binary(bf,function(){
             setTimeout(function(){
               arm.reset(function(){
-                callback()
+                callback(true)
               });
             },500)
       
@@ -654,14 +663,8 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
   if(rec_type == 0){
     nVdf[0].forEach(function (p) {
       rec[p] = getVal(array, 0, p, pVdef)
-      // body...
     })
-    /*for(var p in Vdef["@deps"]){
-      if(Vdef["@deps"][p]["@rec"] == 0){
-        rec[p] = getVal(array,5, p, pVdef);
-      }
-    }*/
-
+  
     pack = {type:0, rec:rec}
     //system
   }else if(rec_type == 1){
@@ -1062,6 +1065,7 @@ function udpConSing(ip){
       //  console.log(ab)
       if(vdefs[_ip]){
         processParam(e,vdefs[_ip],nVdfs[_ip],pVdefs[_ip],ip)
+
         //processor.send({e:e,vdef:vdefs[_ip],nVdf:nVdfs[_ip],pVdef:pVdefs[_ip],ip:_ip})
       }
        // 
@@ -1081,6 +1085,8 @@ function udpConSing(ip){
   }else{
     console.log('else!')
     udpClients[ip] = null;
+    delete udpClients[ip];
+
          udpClients[ip] = new UdpParamServer(ip, function(_ip,e){
       if(e){
      //   var ab = toArrayBuffer(e.data)
@@ -1097,10 +1103,12 @@ function udpConSing(ip){
       //ab = null;
     })
     getVdef(ip, function(__ip,vdef){
-      if(typeof nphandlers[__ip] == 'undefined'){
-        nphandlers[__ip] = new NetPollEvents(__ip,vdef,write_netpoll_events)
+      if(typeof nphandlers[__ip] != 'undefined'){
+        nphandlers[__ip] = null;
+        delete nphandlers[__ip];
+       
       }
-
+       nphandlers[__ip] = new NetPollEvents(__ip,vdef,write_netpoll_events)
     })
 
   }
@@ -1120,6 +1128,7 @@ function udpCon(ip, cb){
       })*/
       getVdef(dsp_ips[0], function(_ip,vdef){
         console.log('this is the first one')
+        vdef = null;
      //   nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
         udpCon(_ip, cb)
       })
@@ -1131,17 +1140,9 @@ function udpCon(ip, cb){
     if(ind + 1 <dsp_ips.length){
         console.log('currently grabbing vdef for ' + (ind+1))
   
-     /* console.log('udp://'+ dsp_ips[ind + 1])
-      udpClients[dsp_ips[ind+1]] = null;
-      udpClients[dsp_ips[ind+1]] = new UdpParamServer(dsp_ips[0], function(__ip,e){
-        if(e){
-          var ab = toArrayBuffer(e)
-          relayParamMsg({det:{ip:__ip},data:{data:ab}})
-        }
-        
-      })*/
+     
       getVdef(dsp_ips[ind+1], function(_ip,vdef){
-     //   nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
+        vdef = null;
         udpCon(_ip, cb)
       })
       
@@ -1155,8 +1156,7 @@ function udpCon(ip, cb){
 function relayParamMsg(packet){
 
   for(var pid in passocs){
-    //console.log(packet)
-
+  
     passocs[pid].relay(packet);
   }
   packet = null;
@@ -1196,6 +1196,11 @@ function relayNetPoll(packet){
   }
   packet = null;
 }
+function relaySockMsg(ev,arg){
+  for(var sid in sockrelays){
+    sockrelays[sid].relay(ev,arg)
+  }
+}
 function sendRpcMsg(packet){
   for(var pid in rassocs){
     rassocs[pid].send(packet)
@@ -1213,6 +1218,7 @@ function toArrayBuffer(buffer) {
     for (var i = 0; i < buffer.length; ++i) {
         view[i] = buffer[i];
     }
+    buffer = null;
     return ab;
 }
 function swap16(val){
@@ -1260,6 +1266,45 @@ function fletcherCheckBytes (data) {
         return [c1,c2];
       }
 
+function update(det){
+  relaySockMsg('startUpdate','');
+  try{
+      exec('sudo mount /dev/sda1 /mnt', function(errr, stdout, stderr){
+        if(errr){
+          relaySockMsg('notify', 'Error reading update file.')
+          console.log(errr);
+        }else{
+          fs.readFile('/mnt/FortressFirmwareUpdate.txt', (err, res)=>{
+          if(err){
+            relaySockMsg('notify', 'Error reading update file.')
+            exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+
+            });
+          }else{
+            parse_update(res.toString(), function(arr){
+              console.log(arr)
+              updateBinaries(arr, det.ip, 0, function(suc){
+                 exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+                  if(suc){
+                    relaySockMsg('notify', 'update complete');
+                  }else{
+                     relaySockMsg('notify', 'update failed');
+                  }
+               
+                   relaySockMsg('doneUpdate','')
+                }) 
+              })
+            })
+          }
+        })
+        }
+
+      })
+    }catch(e){
+      relaySockMsg('notify', 'update failed');
+      relaySockMsg('doneUpdate','')
+    }
+}
 class FtiHelper{
   constructor(ip){
  
@@ -1347,13 +1392,8 @@ class FtiSockIOServer{
     sock.on('message',function (message) {
       // body...
       //if(message.data){
-        try{
-           var msg = JSON.parse(message)
-
-      //sock.send(JSON.stringify({event:'wtf',data:msg}));
-     // console.log(JSON.stringify(message))
-      //console.log(msg.event)
-       // console.log(msg)
+    try{
+        var msg = JSON.parse(message)
         self.handle(msg.event, msg.data);
        // msg = null;
      }catch(e){
@@ -1492,9 +1532,7 @@ function getProdName(ip, list, ind, callback, arr){
       var str = sa.map(function(ch){
         return String.fromCharCode(ch)
       }).join("").replace("\u0000","").trim();
-   // console.log(['5888',str])
-   // var prodNames = this.state.prodNames;
-   // prodNames[ind] = str
+
       array.push(str)
       if(ind + 1< list.length){
         getProdName(ip, list, ind+1, callback, array)
@@ -1506,8 +1544,7 @@ function getProdName(ip, list, ind, callback, arr){
         }
         
       }
-      //callback(e, ip, list, ind)
-    })
+     })
 }
 
 
@@ -1533,11 +1570,14 @@ function getProdName(ip, list, ind, callback, arr){
       socket.emit('netpoll',p)
       p = null;
     }
+    var sockrelay = function(ev, arg){
+      socket.emit(ev,arg)
+    }
       console.log(socket.id)
       passocs[socket.id] = {relay:relayFunc, relayParsed:relayFuncP, relayUserNames:relayUserNamesFunc}
       rassocs[socket.id] = {relay:relayRpcFunc}
       nassocs[socket.id] = {relay:relayNetFunc}
-
+      sockrelays[socket.id] = {relay:sockrelay}
 
   socket.on('reset', function (argument) {
     // body...
@@ -1545,59 +1585,10 @@ function getProdName(ip, list, ind, callback, arr){
     clients = {};
     socket.emit('resetConfirm','locate now')
   })
-  socket.on('resetReq', function(argument){
-
-  })
-  socket.on('getUsers', function(ip){
- /*   var keys = db.keys();
-    var users = []
-    keys.forEach(function(k){
-      users.push({id:k, level:db.get(k).level});
-    })
-    console.log(users)
-    console.log(keys)
-    socket.emit('userList', users)*/
-
-  })
   usb.on('attach', function(dev){
   console.log('usb attached');
   console.log(dev)
   socket.emit('usbdetect')
-  /*setTimeout(function(){
-    exec("sudo fdisk -l", function(err, stdout, stderr) {
-      console.log(stdout);
-      var drives = []
-
-      stdout.split('\n\n\n').forEach(function(l){
-        var arr = l.split('\n');
-        if(arr.length > 4){
-          drives.push(arr)
-        }
-      });
-      if(drives.length >1){
-        exec('sudo mount /dev/sda1 /mnt', function(err, stdout, stderr){
-          var dirtree = ['/mnt', 'FortressTechnology','Detectors','MAC','FDD']
-          checkAndMkdir(dirtree,1,function(){
-            var dtree = ['/mnt','FortressTechnology','Detectors','MAC','FtiFiles']
-        
-            checkAndMkdir(dtree,1,function(){
-              //here should be the tftp stuff...
-              fs.writeFile('/mnt/FortressTechnology/Detectors/MAC/test.txt', 'testing', function(){
-                exec('sudo umount /dev/sda1', function(er, stdout, stderr){
-                  socket.emit('testusb', 'sync complete')
-                })
-              });
-            })
-          })
-        })
-      }
-
-      socket.emit('testusb', drives)
-    });
-   },5000)*/
- 
-  
-
   
 })
 usb.on('detach', function(dev){
@@ -1606,7 +1597,7 @@ usb.on('detach', function(dev){
   socket.emit('usbdetach')
 })
 socket.on('startUpdate', function(det){
-      exec('sudo mount /dev/sda1 /mnt', function(errr, stdout, stderr){
+   /*   exec('sudo mount /dev/sda1 /mnt', function(errr, stdout, stderr){
         if(errr){
           socket.emit('notify', 'Error reading update file.')
           throw errr
@@ -1634,7 +1625,8 @@ socket.on('startUpdate', function(det){
             })
           }
         })
-      })
+      })*/
+      update(det);
 })
 socket.on('syncStart', function(det){
   //check if dir exists
@@ -1656,6 +1648,7 @@ socket.on('syncStart', function(det){
         }
       });
       if(drives.length >1){
+        try{
         exec('sudo mount /dev/sda1 /mnt', function(err, stdout, stderr){
               //here should be the tftp stuff...
 
@@ -1673,7 +1666,11 @@ socket.on('syncStart', function(det){
               });
            })
         })
-      }
+      
+    }catch(e){
+      socket.emit('notify', 'Sync Failed')
+    }
+  }
     })
     })
   
@@ -1702,31 +1699,7 @@ socket.on('export',function(det){
   })
   })
  })
-  /*getProdRecExport(det,function(res){
-      exec("sudo fdisk -l", function(err, stdout, stderr) {
-    if(stderr){
-      console.log(stderr)
-    }
-    exec('sudo mount /dev/sda1 /mnt', function(err, stdout,stder){
-      if(stder){
-        console.log(stder)
-      }
-         fs.writeFile('/mnt/ProdRecBackup.fti',res, function(err){
-            if(err){
-              socket.emit('notify', 'Error writing file')
-            }else{
-              exec('sudo umount /dev/sda1', function(er, stdout, stderr){
-      
-                socket.emit('notify','Products Exported')
-               })
-            }
 
-    
-        })
-      
-    })
-  })
-  })*/
 })
 socket.on('import',function(det){
   exec("sudo mount /dev/sda1 /mnt", function(err,stdout,stderr){
@@ -1776,19 +1749,7 @@ socket.on('backup',function(det){
         },function(e){
           socket.emit('notify', 'Error writing file')
         })
-       /*  fs.writeFile('/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti',res, function(err){
-            if(err){
-              socket.emit('notify', 'Error writing file')
-            }else{
-              exec('sudo umount /dev/sda1', function(er, stdout, stderr){
-      
-                socket.emit('notify','Products Backed up')
-               })
-
-            }
-
     
-        })*/
       
     })
   })
@@ -1821,47 +1782,22 @@ socket.on('restore',function(det){
     })
   })
 })
-  socket.on('login', function(arg){
-    console.log(arg)
-    /*if(db.has(arg.id)){
-      if(crypto.createHash('sha256').update(arg.pw)ç == db.get(arg.id).pw){
-        loginLevel = db.get(arg.id).level
-        socket.emit('loggedIn', {id:arg.id,level:db.get(arg.id).level})
-        console.log('success logging in')
-      }else{
-        socket.emit('access denied', 'wrong password')
-      }
-    }else{
-      socket.emit('access denied', 'username invalid')
-    }*/
-  /*  if(arg.password == accounts[arg.user].password){
-      socket.emit('loginSucess', {user:arg.user})
-    }*/
-  })
   socket.on('logOut', function(arg){
     loginLevel = 0;
     socket.emit('logOut','logged out')
   })
-  socket.on('addUser', function(args){
-    if(loginLevel == 5){
-      db.put(args.id, {level:args.level,pw:crypto.createHash('sha256').update(args.pw).digest('base64')})
-       var keys = db.keys();
-    var users = []
-    keys.forEach(function(k){
-      users.push({id:k, level:db.get(k).level});
-    })
-    console.log(users)
-    console.log(keys)
-    socket.emit('userList', users)
-    }
-  })
 
-  socket.on('delUser', function(uid){
-    console.log('del ' +uid )
-  })
+
   console.log("connected")
   socket.on('locateReq', function (argument) {
     // body...
+   /* if (global.gc) {
+        global.gc();
+    } else {
+      console.log('Garbage collection unavailable.  Pass --expose-gc '
+        + 'when launching node to enable forced garbage collection.');
+    }*/
+
     console.log('locate req')
     var ifaces = os.networkInterfaces();  
     var iface = 'eth0'
@@ -1875,11 +1811,31 @@ socket.on('restore',function(det){
       nf = ifaces[iface][1]
     }
     console.log(nf)
+     exec('sudo route',function(err, stdout, stderr){
+      //console.log(stdout.split('\n')[2][1])
+      var rarr = stdout.split('\n')
+      console.log(rarr)
+      var rin = -1
+      for(var i=0; i<rarr.length; i++){
+        if(rarr[i].indexOf('default') != -1){
+          rin = i;
+          //break;
+        }
+      }
+      if(rin != -1){
+        var garr = rarr[rin].split(/\s+/);
+        console.log(1877, garr)
+        var gw = garr[1]
+      
+        socket.emit('gw', gw)
+      }
+      
+    })
     socket.emit('nif', nf);
   
         Helper.scan_for_dsp_board(function (e) {
           dets = e
-          console.log(dets)
+          //console.log(dets)
     dspips = [];
     nvdspips = [];
   for(var i = 0; i < e.length; i++){
@@ -1920,11 +1876,10 @@ for(var i = 0; i < dspips.length;i++){
           console.log('non visible1186')
           socket.emit('notvisible', nvdspips);
         }
-  initSocks(dsps, function(){
+  initSocks(dsps.slice(0), function(){
          socket.emit('locatedResp', dspips);
       
   });
-    
  
 });
 });
@@ -1999,17 +1954,9 @@ socket.on('getProdList', function (ip) {
       console.log('fail')
       socket.emit('authFail')
     }
-    /*  console.log(packet)
-    if(accountJSONs[packet.ip][packet.user].password == packet.pswd){
-      console.log('success')
-      socket.emit('authResp', {user:packet.user, level:accountJSONs[packet.ip][packet.user].acc})
-    }else{
-      console.log('fail')
-      socket.emit('authFail')
-    }*/
+
   })
   socket.on('writeUserData', function(packet){
-    //var buf = Buffer.alloc(vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE'])
     var users = _accounts[packet.ip].slice(0);
     var pswd = users[packet.data.user].phash;
     if(packet.data.password != '*******'){
@@ -2076,7 +2023,6 @@ socket.on('getProdList', function (ip) {
       
 
   socket.on('initTestStream', function(f){
-  //  var testFiles = ['/json/test/testAlt.json','/json/test/testAlt2.json','/json/test/testAlt3.json','/json/test/testAlt4.json','/json/test/testAlt5.json','/json/test/testAlt6.json' ];
     var testFiles = ['/json/test/wipes1.fss','/json/test/wipes2.fss','/json/test/wipes3.fss','/json/test/wipes4.fss','/json/test/wipes5.fss']
     var fName = testFiles[fileVer]
     fileVer = (fileVer+1)%5;
@@ -2123,8 +2069,8 @@ socket.on('getProdList', function (ip) {
       nf = ifaces[iface][1]
     }
     console.log(nf)
-
-    networking.applySettings(iface, {active:true, ipv4:{address:'0.0.0.0'}})
+    ArmConfig
+    networking.applySettings(iface, {active:false, ipv4:{address:'0.0.0.0'}})
     setTimeout(function(){
         networking.applySettings(iface, {active:true, ipv4:{address:addr, netmask:nf.netmask}})
         fs.readFile('/etc/network/interfaces', (err,res)=>{
@@ -2157,8 +2103,7 @@ socket.on('getProdList', function (ip) {
     }
     var ifaces = os.networkInterfaces();  
   
-    var nf;// = ifaces[iface];
-   // console.log(ifaces[iface])
+    var nf;
     if(ifaces[iface][0].family == 'IPv4'){
       nf = ifaces[iface][0]
     }else{
@@ -2190,6 +2135,31 @@ socket.on('getProdList', function (ip) {
   
    
   })
+  socket.on('nifgw',function(gw){
+    exec('sudo ip route change default via '+gw+' dev eth0',function(_err, stdout, stderr){
+      if(!_err){
+        exec('sudo ip route flush cache',function(er, stdout, stderr){
+            fs.readFile('/etc/network/interfaces', (err,res)=>{
+          if(err){
+            console.log(err)
+          }
+          var arr = res.toString().split('\n')
+          var ind = arr.indexOf('iface eth0 inet static')
+          if(ind != -1){
+            arr[ind+3] = '\tgateway ' + gw
+            fs.writeFile('/etc/network/interfaces', arr.join('\n'), function(err){
+              console.log(err)
+            })
+          }
+
+            setTimeout(function(){
+             socket.emit('resetConfirm')
+            },300)
+        })
+        })
+      }
+    })
+  })
   socket.on('getInterface', function(){
     var ifaces = {}
     networking.listInterfaces().forEach(function(nif){
@@ -2200,7 +2170,28 @@ socket.on('getProdList', function (ip) {
     if(os.platform() == 'darwin'){
       iface = 'en4'
     }
+     exec('sudo route',function(err, stdout, stderr){
+      //console.log(stdout.split('\n')[2][1])
+      var rarr = stdout.split('\n')
+      var rin = -1
+      for(var i=0; i<rarr.length; i++){
+        if(rarr[i].indexOf('default') != -1){
+          rin = i;
+          //break;
+        }
+      }
+      if(rin != -1){
+        var gw = rarr[rin].split('\t')[1]
+        ifaces[iface].gateway = gw;
+        socket.emit('nif', ifaces[iface])
+      }
+      
+    })
     //console.log(ifaces[iface])
-    socket.emit('nif', ifaces[iface]);
+   // socket.emit('nif', );
+    exec('sudo route',function(err, stdout, stderr){
+      console.log(stdout.split('\n'))
+    })
   })
+
 });
