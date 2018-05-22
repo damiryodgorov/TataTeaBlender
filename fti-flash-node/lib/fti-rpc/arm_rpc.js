@@ -327,7 +327,9 @@ class ArmRpcBase{
 			}
 			var vec_end_val = 0xffffffff
 			var n = null;
+			console.log(res.length)
 			for(var i = 0; i < 2840; i = i+4){
+				console.log(i, res.readUInt32LE(i))
 				if(res.readUInt32LE(i) == vec_end_val){
 					n = i;
 					break;

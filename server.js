@@ -360,7 +360,7 @@ function initSocks(arr, cb){
  // setTimeout(function(){nextSock('init');},300);
  udpCon('init', cb)
 }
-function getVdef(ip, callback){
+function getVdef(ip, callback,failed){
   var tclient = tftp.createClient({host:ip ,retries:10, timeout:1000})
   console.log('start getting vdef from ' + ip)
   //var put = tclient.createPutStream()
@@ -417,6 +417,7 @@ function getVdef(ip, callback){
         console.log(e)
         rawVdef = null;
         tclient = null;
+        failed(ip);
       })
     /*
     fs.readFile(__dirname + '/json/170429.json',(err, data) => {
@@ -503,7 +504,7 @@ function parse_update(str, callback){
   console.log(arr)
   arr.slice(1, 1+updateCount).forEach(function(s){
     var a = s.split(',')
-    if((parseInt(a[0]) == 10)){
+    if((parseInt(a[0]) == 12)){
       list.push('/mnt'+a[a.length-1].split('\\').join('/'));
     }
   })
@@ -511,7 +512,7 @@ function parse_update(str, callback){
 }
 function arm_burn(ip, fname, callback){
   var arm = new fti.ArmRpc.ArmRpc(ip)
-
+  try{
   arm.verify_binary_file(fname, function(size,addr){
     if(addr == 0x08000000){
       console.log('bootloader')
@@ -600,6 +601,9 @@ function arm_burn(ip, fname, callback){
      
     }
   })
+}catch(e){
+  relaySockMsg('notify','update failed')
+} 
 }
 function arm_program_flash(bf,arm,bl, callback){
   console.log('programming '+ bf)
@@ -1080,6 +1084,8 @@ function udpConSing(ip){
         nphandlers[__ip] = new NetPollEvents(__ip,vdef,write_netpoll_events)
       }
 
+    },function(e){
+      console.log('failed getting vdef from ', e)
     })
 
   }else{
@@ -1109,6 +1115,8 @@ function udpConSing(ip){
        
       }
        nphandlers[__ip] = new NetPollEvents(__ip,vdef,write_netpoll_events)
+    },function(e){
+      console.log('failed getting vdef from ', e)
     })
 
   }
@@ -1131,6 +1139,9 @@ function udpCon(ip, cb){
         vdef = null;
      //   nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
         udpCon(_ip, cb)
+      },function(_ip){
+        console.log('timeout for vdef')
+        udpCon(_ip, cb)
       })
       
 
@@ -1144,6 +1155,9 @@ function udpCon(ip, cb){
       getVdef(dsp_ips[ind+1], function(_ip,vdef){
         vdef = null;
         udpCon(_ip, cb)
+      },function(_ip){
+        console.log('timeout for vdef')
+        udpCon(_ip,cb)
       })
       
     }else{
@@ -2069,7 +2083,6 @@ socket.on('getProdList', function (ip) {
       nf = ifaces[iface][1]
     }
     console.log(nf)
-    ArmConfig
     networking.applySettings(iface, {active:false, ipv4:{address:'0.0.0.0'}})
     setTimeout(function(){
         networking.applySettings(iface, {active:true, ipv4:{address:addr, netmask:nf.netmask}})
