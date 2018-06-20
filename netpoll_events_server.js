@@ -5,7 +5,7 @@ var dgram = require('dgram');
 
 const KAPI_RPC_ETHERNETIP = 100;
 const KAPI_RPC_REJ_DEL_CLOCK_READ = 70;
-
+var KAPI_RPC_NETPOLLSTREAM;
 const DRPC_NUMBER = 19;
 const NP_RPC = 13;
 
@@ -15,6 +15,7 @@ class NetPollEvents{
 		var self = this;
 		this.ip = detector_ip;
 		this.vdef = vdef;
+		KAPI_RPC_NETPOLLSTREAM = vdef['@rpc_map']['KAPI_RPC_NETPOLLSTREAM'][1][0];
 		this.record_deps = [];
 		this.param_last_val = [];
 		this.param_last_val["ProdName"] = "*********************";

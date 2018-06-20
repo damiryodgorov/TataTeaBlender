@@ -419,14 +419,7 @@ function getVdef(ip, callback,failed){
         tclient = null;
         failed(ip);
       })
-    /*
-    fs.readFile(__dirname + '/json/170429.json',(err, data) => {
-      // body...
-      var vdef = JSON.parse(data);
-      vdefs[ip] = vdef
-      
-      callback(ip,vdef)
-    })*/
+
 }
 function getBinarySize(string) {
     return Buffer.byteLength(string, 'utf8');
