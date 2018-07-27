@@ -1278,12 +1278,12 @@ function update(det){
   try{
       exec('sudo mount /dev/sda1 /mnt', function(errr, stdout, stderr){
         if(errr){
-          relaySockMsg('notify', 'Error reading update file.')
+          relaySockMsg('notify', 'Error mounting drive.')
           console.log(errr);
         }else{
           fs.readFile('/mnt/FortressFirmwareUpdate.txt', (err, res)=>{
           if(err){
-            relaySockMsg('notify', 'Error reading update file.')
+            relaySockMsg('notify', err.name)
             exec('sudo umount /dev/sda1', function(er, stdout, stderr){
 
             });
@@ -1926,7 +1926,11 @@ socket.on('getProdList', function (ip) {
   socket.on('getPrefs', function (f) {
     if(fs.existsSync(path.join(__dirname, 'json/prefData.json'))){
     fs.readFile(path.join(__dirname, 'json/prefData.json'), (err,data) =>{
-      prefs = JSON.parse(data)
+      try{
+         prefs = JSON.parse(data)
+      }catch(e){
+        
+      }
       socket.emit('prefs', prefs)
     })
     }else{
