@@ -45,12 +45,13 @@ LocatorClient.prototype ={
 	mac_addr: function() {
 		return ((this.nif && this.nif.mac) || [0,0,0,0,0,0])
 	},
-	send_query: function() {
+	send_query: function(addr) {
 		// body...
+		var ip = addr ||  '255.255.255.255';
 		var dq = this.discover_query();
 		//console.log(dq.length);
 		var sender = this.sender
-		sender.send(dq, 0, dq.length, 27182, '255.255.255.255', function () {
+		sender.send(dq, 0, dq.length, 27182, ip, function () {
 			// body...
 			console.log('query sent')
 		} );
@@ -67,7 +68,8 @@ LocatorClient.prototype ={
 }
 
 class ArmLocator{
-	static scan(secTimeout, callBack){
+	static scan(secTimeout, callBack, addr){
+
 		var list = NetInterface.find(/^Ethernet|^en|^eth/);
 		console.log(list);
 		var devlist=[];
@@ -105,7 +107,7 @@ class ArmLocator{
 				  
 				});
 				listeners[i].on('listening', function(){
-					listenerClient.send_query();
+					listenerClient.send_query(addr);
 				});
 				listeners[i].on('message', function(msg, rinfo) {
 				  //console.log(msg);

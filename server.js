@@ -34,6 +34,7 @@ const exec = require('child_process').exec;
 var db = flatfile('./dbs/users.db')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
+const VERSION = '2018/07/31'
 
 http.on('error', function(err){
   console.log('this is an http error')
@@ -1330,12 +1331,12 @@ class FtiHelper{
       self.send_ip_change(e)
     })
   }
-  scan_for_dsp_board(callBack){
+  scan_for_dsp_board(callBack,addr){
   	console.log('scan')
     arloc.ArmLocator.scan(1000, function(e){
      // console.log(e)
       callBack(e)
-    })
+    }, addr)
   }
   send_ip_change(e){
     var ds;
@@ -1592,6 +1593,10 @@ function getProdName(ip, list, ind, callback, arr){
     clients = {};
     socket.emit('resetConfirm','locate now')
   })
+  socket.on('getVersion', function (argument) {
+    // body...
+    socket.emit('version', VERSION)
+  })
   usb.on('attach', function(dev){
   console.log('usb attached');
   console.log(dev)
@@ -1796,6 +1801,101 @@ socket.on('restore',function(det){
 
 
   console.log("connected")
+ socket.on('locateUnicast', function (addr) {
+    // body...
+   /* if (global.gc) {
+        global.gc();
+    } else {
+      console.log('Garbage collection unavailable.  Pass --expose-gc '
+        + 'when launching node to enable forced garbage collection.');
+    }*/
+
+    console.log('locate req')
+    var ifaces = os.networkInterfaces();  
+    var iface = 'eth0'
+    if(os.platform() == 'darwin'){
+      iface = 'en4'
+    }
+    var nf;// = ifaces[iface];
+    if(ifaces[iface][0].family == 'IPv4'){
+      nf = ifaces[iface][0]
+    }else{
+      nf = ifaces[iface][1]
+    }
+    console.log(nf)
+     exec('sudo route',function(err, stdout, stderr){
+      //console.log(stdout.split('\n')[2][1])
+      var rarr = stdout.split('\n')
+      console.log(rarr)
+      var rin = -1
+      for(var i=0; i<rarr.length; i++){
+        if(rarr[i].indexOf('default') != -1){
+          rin = i;
+          //break;
+        }
+      }
+      if(rin != -1){
+        var garr = rarr[rin].split(/\s+/);
+        console.log(1877, garr)
+        var gw = garr[1]
+      
+        socket.emit('gw', gw)
+      }
+      
+    })
+    socket.emit('nif', nf);
+   
+    Helper.scan_for_dsp_board(function (e) {
+          dets = e
+          //console.log(dets)
+    dspips = [];
+    nvdspips = [];
+  for(var i = 0; i < e.length; i++){
+    if(e[i].board_type == 1){
+      var ip = e[i].ip.split('.').map(function(e){return parseInt(e)});
+      var nifip = e[i].nif_ip.split('.').map(function(e){return parseInt(e)});
+
+  if(!((ip[0] == nifip[0]) && (ip[1] == nifip[1]) && (ip[2] == nifip[2]))){
+    //dsp not visible
+    console.log('dsp not visible')
+    nvdspips.push(e[i])
+   
+    }else if(e[i].ver == '20.17.4.27'){
+      //Hack, seeing a 170427 on the network seems to cause this to crash. should actually check for versions properly in the future to ignore incompatible version.
+      console.log('ignore this version')
+    }else{
+      console.log('dsp visible')
+      dspip = ip.join('.');
+      macs[dspip] = e[i].mac
+     // console.log(dspip);
+      dspips.push(e[i]);
+    }
+   }
+ }
+
+var dsps = []
+for(var i = 0; i < dspips.length;i++){
+    console.log(dspips[i].ip)
+
+   if(!clients[dspips[i].ip]){
+      dsps.push(dspips[i])
+   }
+
+  }
+  console.log('dsp ips')
+ // console.log(dspips)
+   if((dspips.length == 0)&&(nvdspips.length >0)){
+          console.log('non visible1186')
+          socket.emit('notvisible', nvdspips);
+        }
+  initSocks(dsps.slice(0), function(){
+         socket.emit('locatedResp', dspips);
+      
+  });
+ 
+},addr);
+});
+
   socket.on('locateReq', function (argument) {
     // body...
    /* if (global.gc) {
@@ -1840,7 +1940,7 @@ socket.on('restore',function(det){
     })
     socket.emit('nif', nf);
   
-        Helper.scan_for_dsp_board(function (e) {
+    Helper.scan_for_dsp_board(function (e) {
           dets = e
           //console.log(dets)
     dspips = [];

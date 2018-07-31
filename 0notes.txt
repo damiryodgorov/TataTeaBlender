@@ -77,3 +77,7 @@ updated test, calibrate (will work with ST170307 or newer)
 --170504
 
 New ui for interceptor, regular stealth not supported atm
+
+--180731
+
+added version numbers - not yet sure how best to version, currently going by date
