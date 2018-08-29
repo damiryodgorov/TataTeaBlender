@@ -34,7 +34,7 @@ const exec = require('child_process').exec;
 var db = flatfile('./dbs/users.db')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
-const VERSION = '2018/07/31'
+const VERSION = '2018/08/29-KR'
 
 http.on('error', function(err){
   console.log('this is an http error')
@@ -1375,7 +1375,7 @@ console.log('dirname:' + __dirname)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 app.get('/', function(req, res) {
-  res.render('test.html');
+  res.render('rpi.html');
 });
 app.use(helmet());
 app.on('error', function(err){
@@ -1408,11 +1408,7 @@ class FtiSockIOServer{
         console.log(message)
         console.log(e)
      }
-     /*sock.once('open', function (argument) {
-       // body...
-       self.open = true;
-
-     })*/
+    
    
       
       message = null;
@@ -1609,35 +1605,7 @@ usb.on('detach', function(dev){
   socket.emit('usbdetach')
 })
 socket.on('startUpdate', function(det){
-   /*   exec('sudo mount /dev/sda1 /mnt', function(errr, stdout, stderr){
-        if(errr){
-          socket.emit('notify', 'Error reading update file.')
-          throw errr
-        }
-        fs.readFile('/mnt/FortressFirmwareUpdate.txt', (err, res)=>{
-          if(err){
-            socket.emit('notify', 'Error reading update file.')
-            exec('sudo umount /dev/sda1', function(er, stdout, stderr){
 
-            });
-          }else{
-            parse_update(res.toString(), function(arr){
-              console.log(arr)
-              updateBinaries(arr, det.ip, 0, function(suc){
-                 exec('sudo umount /dev/sda1', function(er, stdout, stderr){
-                  if(suc){
-                    socket.emit('notify', 'update complete');
-                  }else{
-                     socket.emit('notify', 'update failed');
-                  }
-               
-                   socket.emit('doneUpdate')
-                }) 
-              })
-            })
-          }
-        })
-      })*/
       update(det);
 })
 socket.on('syncStart', function(det){
@@ -1663,8 +1631,10 @@ socket.on('syncStart', function(det){
         try{
         exec('sudo mount /dev/sda1 /mnt', function(err, stdout, stderr){
               //here should be the tftp stuff...
-
-              var ind = 0;
+              if(err || stderr){
+                 socket.emit('notify', 'Sync Failed')
+              }else{
+                   var ind = 0;
               console.log('start writing to usb')
               writeFtiFilesToUsb(det,array,0,function(){
                 tftpPollForFDDList(det,0,function(fdds){
@@ -1677,6 +1647,8 @@ socket.on('syncStart', function(det){
            
               });
            })
+              }
+           
         })
       
     }catch(e){
@@ -1698,6 +1670,8 @@ socket.on('export',function(det){
     exec('sudo mount /dev/sda1 /mnt', function(err, stdout,stder){
       if(stder){
         console.log(stder)
+        socket.emit('notify', 'Error writing file')
+        return;
       }
         getFileTftp(det.ip,'/FTIFiles/ProdRecBackup.fti', '/mnt/ProdRecBackup.fti',function(){
           exec('sudo umount /dev/sda1', function(er, stdout, stderr){
@@ -1715,9 +1689,15 @@ socket.on('export',function(det){
 })
 socket.on('import',function(det){
   exec("sudo mount /dev/sda1 /mnt", function(err,stdout,stderr){
+    if(err || stderr){
+       socket.emit('notify','Error reading file');
+       return;
+    }
     fs.access('/mnt/ProdRecBackup.fti',function(err,stats){
       if(err){
-        socket.emit('notify','Error reading file')
+          exec('sudo umount /dev/sda1',function(err, stdout, stderr){
+           socket.emit('notify','Error reading file')
+          });
       }else{
 
           var tclient = tftp.createClient({host:det.ip ,retries:10, timeout:1000})
@@ -1773,7 +1753,10 @@ socket.on('restore',function(det){
    exec("sudo mount /dev/sda1 /mnt", function(err,stdout,stderr){
     fs.access('/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti',function(err,stats){
       if(err){
-        socket.emit('notify','Error reading file')
+       
+        exec('sudo umount /dev/sda1',function(err, stdout, stderr){
+           socket.emit('notify','Error reading file')
+          });
       }else{
 
           var tclient = tftp.createClient({host:det.ip ,retries:10, timeout:1000})
