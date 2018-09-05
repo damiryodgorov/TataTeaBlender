@@ -81,3 +81,7 @@ New ui for interceptor, regular stealth not supported atm
 --180731
 
 added version numbers - not yet sure how best to version, currently going by date
+
+--180830
+
+Update via usb support, Kraft version support, Warnings, Translations
