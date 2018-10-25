@@ -34,7 +34,7 @@ const exec = require('child_process').exec;
 var db = flatfile('./dbs/users.db')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
-const VERSION = '2018/08/30'
+const VERSION = '2018/10/19'
 
 http.on('error', function(err){
   console.log('this is an http error')
@@ -51,8 +51,8 @@ var funcJSON ={
       "phase_spread":"(function(val){return Math.round((val/(1<<15))*45)})",
       "phase":"(function(val,wet){ if(wet == 0){if((((val/(1<<15))*45)+90) <= 135){return (((val/(1<<15))*45)+90).toFixed(2); }else{ return ((val/(1<<15))*45).toFixed(2); }}else{ return ((val/(1<<15))*45).toFixed(2);}})",
       "rej_del":"(function(ticks,tack) { if(tack==0){return (ticks/231.0).toFixed(2);}else{return ticks;}})",
-      "belt_speed":"(function(tpm,metric,tack){if(tack!=0){return tpm;} var speed= (231.0/tpm)*60; if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}})",
-      "password8":"(function(words){return words.map(function(w){return((w&0xffff).toString(16))}).join(',');})",
+      "belt_speed":"(function(tpm,metric,tack,tps){if(tack!=0){var speed= (tps/tpm)*60;  if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}} var speed= (231.0/tpm)*60; if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}})",
+     "password8":"(function(words){return words.map(function(w){return((w&0xffff).toString(16))}).join(',');})",
       "rej_chk":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
       "rej_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
       "rej_latch":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
@@ -515,6 +515,8 @@ function parse_update(str, callback){
     var a = s.split(',')
     if((parseInt(a[0]) == 12)){
       list.push('/mnt'+a[a.length-1].split('\\').join('/'));
+    }else if(parseInt(a[0]) == 13){
+      list.push('/mnt'+a[a.length-1].split('\\').join('/'));
     }
   })
   callback(list)
@@ -575,6 +577,7 @@ function arm_burn(ip, fname, callback){
         
       }, 1000)
     } else{
+      relaySockMsg('notify','Resetting to bootloader...')
       console.log('now reset to bootloader')
       arm.bootloader(function(){
        console.log('reset to bootloader')
@@ -596,8 +599,10 @@ function arm_burn(ip, fname, callback){
              console.log('prog_start callback')
             echoed = true;
              arm.prog_erase_app(function(){
+              relaySockMsg('notify','Program Erased...')
             console.log('program erased')
                setTimeout(function(){
+                relaySockMsg('notify','Start Programming...')
                 arm.prog_binary(fname,function(){
                  setTimeout(function(){
                   arm.reset(function(){
@@ -795,6 +800,19 @@ function wordValue(arr, p){
       //funcJSON['@func'][p['@type']].apply(this, sa)
       return Params[p['@type']](sa)
     //  return eval(funcJSON['@func'][p['@type']])(sa)
+    }else if(p['@name'] = 'DateTime'){
+     
+     var sa0 = Params.swap16(sa[0])
+     var sa1 = Params.swap16(sa[1])
+     var month
+      var sec = ('0' + ((sa0&0x1f)*2).toString()).slice(-2)
+      var min = ('0' + ((sa0>>5)&0b111111).toString()).slice(-2)
+      var hr =  ('0' +(sa0>>11).toString()).slice(-2);
+      var dd = ('0' +(sa1 & 0x1f).toString()).slice(-2)
+      var mm = ('0' + ((sa1 >>5)&0xf).toString()).slice(-2)
+      var year = 1980 + (sa1 >> 9)
+      return year+'/'+mm+'/'+dd + ' ' +hr +':'+min+':'+sec ;
+
     }else{
       var str = sa.map(function(e){
       return (String.fromCharCode((e>>8),(e%256)));
@@ -881,11 +899,16 @@ class Params{
       return ticks;
     }
   }
-  static belt_speed(tpm, metric, tack){
+  static belt_speed(tpm, metric, tack,tps=231.0){
     //console.log(tpm);
     if(tack!=0){
 
-      return tpm;
+     var speed = (tps/tpm) * 60;
+    if(metric==0){
+      return (speed*3.281).toFixed(1) + ' ft/min'
+    }else{
+      return speed.toFixed(1) + ' M/min'
+    }
     }
     var speed = (231.0/tpm) * 60;
     if(metric==0){
@@ -1111,6 +1134,7 @@ function udpConSing(ip){
 
   }else{
     console.log('else!')
+  //  udpClients[ip].release_sock();
     udpClients[ip] = null;
     delete udpClients[ip];
 
@@ -1118,7 +1142,9 @@ function udpConSing(ip){
       if(e){
      //   var ab = toArrayBuffer(e.data)
       //  console.log(ab)
+      //cb()
       if(vdefs[_ip]){
+
         processParam(e,vdefs[_ip],nVdfs[_ip],pVdefs[_ip],ip)
         //processor.send({e:e,vdef:vdefs[_ip],nVdf:nVdfs[_ip],pVdef:pVdefs[_ip],ip:_ip})
       }
@@ -1304,22 +1330,50 @@ function fletcherCheckBytes (data) {
 function update(det){
   relaySockMsg('startUpdate','');
   try{
-      exec('sudo mount /dev/sda1 /mnt', function(errr, stdout, stderr){
+     exec('sudo fdisk -l', function(err,stdout,stderr){
+      var usbdrive = '/dev/sda1'
+         var _dev = stdout.split('\n\n').map(function(disk){
+        var arr = disk.trim().split('\n')
+        return arr;
+      })
+      var _devices = []
+      var devices = []
+      _dev.forEach(function(d){
+        if(d[0].slice(0,6) == 'Device'){
+          _devices.push(d.slice(1))
+        }
+      })
+      _devices.forEach(function(dv){
+        if(dv[0]){
+          if(dv[0].trim().indexOf('/dev/sd') == 0){
+            dv.forEach(function(_dv){
+              devices.push(_dv.split(/\s/)[0])
+            })
+          }
+        }
+      })
+      if(devices.length != 0){
+        usbdrive = devices[0];
+      }
+    //socket.emit('testusb', stdout)
+      exec('sudo mount '+usbdrive +' /mnt', function(errr, stdout, stderr){
         if(errr){
           relaySockMsg('notify', 'Error mounting drive.')
           console.log(errr);
+          relaySockMsg('doneUpdate','')
         }else{
           fs.readFile('/mnt/FortressFirmwareUpdate.txt', (err, res)=>{
           if(err){
-            relaySockMsg('notify', err.name)
-            exec('sudo umount /dev/sda1', function(er, stdout, stderr){
-
+            
+            exec('sudo umount '+usbdrive, function(er, stdout, stderr){
+              relaySockMsg('notify', err.name)
+              relaySockMsg('doneUpdate','')
             });
           }else{
             parse_update(res.toString(), function(arr){
               console.log(arr)
               updateBinaries(arr, det.ip, 0, function(suc){
-                 exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+                 exec('sudo umount '+usbdrive, function(er, stdout, stderr){
                   if(suc){
                     relaySockMsg('notify', 'update complete');
                   }else{
@@ -1335,10 +1389,123 @@ function update(det){
         }
 
       })
+    })
     }catch(e){
       relaySockMsg('notify', 'update failed');
       relaySockMsg('doneUpdate','')
     }
+}
+
+function locateUnicast (addr) {
+
+
+    console.log('locate req')
+    var ifaces = os.networkInterfaces();  
+    var iface = 'eth0'
+    if(os.platform() == 'darwin'){
+      iface = 'en4'
+    }
+    var nf;// = ifaces[iface];
+    if(ifaces[iface][0].family == 'IPv4'){
+      nf = ifaces[iface][0]
+    }else{
+      nf = ifaces[iface][1]
+    }
+    console.log(nf)
+     exec('sudo route',function(err, stdout, stderr){
+      //console.log(stdout.split('\n')[2][1])
+      var rarr = stdout.split('\n')
+      console.log(rarr)
+      var rin = -1
+      for(var i=0; i<rarr.length; i++){
+        if(rarr[i].indexOf('default') != -1){
+          rin = i;
+          //break;
+        }
+      }
+      if(rin != -1){
+        var garr = rarr[rin].split(/\s+/);
+        console.log(1877, garr)
+        var gw = garr[1]
+      
+        relaySockMsg('gw', gw)
+      }
+      
+    })
+    relaySockMsg('nif', nf);
+   
+    Helper.scan_for_dsp_board(function (e) {
+          dets = e
+            console.log(dets)
+      dspips = [];
+      nvdspips = [];
+    for(var i = 0; i < e.length; i++){
+      if(e[i].board_type == 1){
+        var ip = e[i].ip.split('.').map(function(e){return parseInt(e)});
+        var nifip = e[i].nif_ip.split('.').map(function(e){return parseInt(e)});
+
+    if(!((ip[0] == nifip[0]) && (ip[1] == nifip[1]) && (ip[2] == nifip[2]))){
+      //dsp not visible
+      console.log('dsp not visible')
+      nvdspips.push(e[i])
+     
+      }else if(e[i].ver == '20.17.4.27'){
+        //Hack, seeing a 170427 on the network seems to cause this to crash. should actually check for versions properly in the future to ignore incompatible version.
+        console.log('ignore this version')
+      }else{
+        console.log('dsp visible')
+        dspip = ip.join('.');
+        macs[dspip] = e[i].mac
+       // console.log(dspip);
+        dspips.push(e[i]);
+      }
+     }
+   }
+
+  var dsps = []
+  for(var i = 0; i < dspips.length;i++){
+      console.log(dspips[i].ip)
+
+     if(!clients[dspips[i].ip]){
+        dsps.push(dspips[i])
+     }
+
+    }
+    console.log('dsp ips')
+   // console.log(dspips)
+     if((dspips.length == 0)&&(nvdspips.length >0)){
+            console.log('non visible1186')
+            relaySockMsg('notvisible', nvdspips);
+          }
+    initSocks(dsps.slice(0), function(){
+           relaySockMsg('locatedResp', dspips);
+        
+    });
+   
+  },addr);
+}
+
+function autoIP(){
+ // var prefData = prefs
+ /*
+  if(fs.existsSync(path.join(__dirname, 'json/prefData.json'))){
+    fs.readFile(path.join(__dirname, 'json/prefData.json'), (err,data) =>{
+      try{
+         prefs = JSON.parse(data)
+         if(prefs.length == 1){
+          if(prefs.banks.length == 1){
+            var addr = prefs[0].banks[0].ip
+            locateUnicast(addr)
+          }
+         }
+      }catch(e){
+        
+      }
+    })
+    }else{
+      
+    }*/
+
 }
 class FtiHelper{
   constructor(ip){
@@ -1392,9 +1559,13 @@ var nvdspips = [];
 
 var dets;
 process.on('uncaughtException', (err) => {
-  fs.writeFileSync(__dirname +'/error.txt', err.stack.toString() || err.toString());
-  console.log(err);
-  process.abort();
+ 
+     fs.writeFileSync(__dirname +'/error.txt', err.stack.toString() || err.toString());
+     console.log(err);
+    process.abort();
+  
+ 
+ 
 });
 app.set('port', (process.env.PORT || 3300));
 app.use('/', express.static(path.join(__dirname,'public')));
@@ -1471,6 +1642,7 @@ class FtiSockIOServer{
    //this = null;
   }
 }
+
 wss.on('error', function(error){
   console.log("error should be handled here....")
   console.log(error)
@@ -1624,6 +1796,12 @@ function getProdName(ip, list, ind, callback, arr){
   console.log('usb attached');
   console.log(dev)
   socket.emit('usbdetect')
+  setTimeout(function(){
+     exec('sudo fdisk -l', function(err,stdout,stderr){
+    socket.emit('testusb', stdout)
+  })
+   }, 500)
+ 
   
 })
 usb.on('detach', function(dev){
@@ -1636,8 +1814,33 @@ socket.on('startUpdate', function(det){
       update(det);
 })
 socket.on('updateDisplay',function(){
-  
-    exec('sudo mount /dev/sda1 /mnt', function(err, stdout, stderr){
+   exec('sudo fdisk -l', function(err,stdout,stderr){
+      var usbdrive = '/dev/sda1'
+         var _dev = stdout.split('\n\n').map(function(disk){
+        var arr = disk.trim().split('\n')
+        return arr;
+      })
+      var _devices = []
+      var devices = []
+      _dev.forEach(function(d){
+        if(d[0].slice(0,6) == 'Device'){
+          _devices.push(d.slice(1))
+        }
+      })
+      _devices.forEach(function(dv){
+        if(dv[0]){
+          if(dv[0].trim().indexOf('/dev/sd') == 0){
+            dv.forEach(function(_dv){
+              devices.push(_dv.split(/\s/)[0])
+            })
+          }
+        }
+      })
+      if(devices.length != 0){
+        usbdrive = devices[0];
+      }
+    socket.emit('testusb', stdout)
+    exec('sudo mount '+usbdrive+' /mnt', function(err, stdout, stderr){
               //here should be the tftp stuff...
        if(err || stderr){
           socket.emit('notify', 'Update Failed')
@@ -1645,14 +1848,14 @@ socket.on('updateDisplay',function(){
           fs.readFile('/mnt/FortressDisplayUpdate.txt', (err, res)=>{
           if(err){
             socket.emit('notify', 'issue reading file')
-            exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+            exec('sudo umount '+ usbdrive, function(er, stdout, stderr){
 
             });
           }else{
             parse_display_update(res.toString(), function(arr){
               console.log(arr)
               updateDisplayFiles(arr, 0, function(suc){
-                 exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+                 exec('sudo umount '+usbdrive, function(er, stdout, stderr){
                   if(suc){
                     socket.emit('notify', 'update complete - remove usb and power cycle');
                   }else{
@@ -1666,8 +1869,8 @@ socket.on('updateDisplay',function(){
           }
         })
         }
-              
-            })
+    })
+  })
 })
 socket.on('syncStart', function(det){
   //check if dir exists
@@ -1678,22 +1881,37 @@ socket.on('syncStart', function(det){
       var array = list.slice(0)
       array.push('/DetectorInfo.did')
        var mac = det.mac.split('-').join('').toUpperCase();
-      exec("sudo fdisk -l", function(err, stdout, stderr) {
-     // console.log(stdout);
-      var drives = []
-
-      stdout.split('\n\n\n').forEach(function(l){
-        var arr = l.split('\n');
-        if(arr.length > 4){
-          drives.push(arr)
+   exec('sudo fdisk -l', function(err,stdout,stderr){
+      var usbdrive = '/dev/sda1'
+         var _dev = stdout.split('\n\n').map(function(disk){
+        var arr = disk.trim().split('\n')
+        return arr;
+      })
+      var _devices = []
+      var devices = []
+      _dev.forEach(function(d){
+        if(d[0].slice(0,6) == 'Device'){
+          _devices.push(d.slice(1))
         }
-      });
-      if(drives.length >1){
-        try{
-        exec('sudo mount /dev/sda1 /mnt', function(err, stdout, stderr){
+      })
+      _devices.forEach(function(dv){
+        if(dv[0]){
+          if(dv[0].trim().indexOf('/dev/sd') == 0){
+            dv.forEach(function(_dv){
+              devices.push(_dv.split(/\s/)[0])
+            })
+          }
+        }
+      })
+      if(devices.length != 0){
+        usbdrive = devices[0];
+      }
+    socket.emit('testusb', stdout)
+        exec('sudo mount '+usbdrive+' /mnt', function(err, stdout, stderr){
               //here should be the tftp stuff...
               if(err || stderr){
                  socket.emit('notify', 'Sync Failed')
+                  socket.emit('doneSync');
               }else{
                    var ind = 0;
               console.log('start writing to usb')
@@ -1701,8 +1919,9 @@ socket.on('syncStart', function(det){
                 tftpPollForFDDList(det,0,function(fdds){
                   tftpPollForSCDList(det,0,function(scds){
                          console.log('SYNC is COMPLETE')
-                exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+                exec('sudo umount '+usbdrive, function(er, stdout, stderr){
                   socket.emit('notify', 'Sync complete');
+                  socket.emit('doneSync')
                 })
                   })
            
@@ -1712,51 +1931,103 @@ socket.on('syncStart', function(det){
            
         })
       
-    }catch(e){
-      socket.emit('notify', 'Sync Failed')
-    }
-  }
-    })
     })
   
+  })
 })
 socket.on('export',function(det){
   var arm = new fti.ArmRpc.ArmRpc(det.ip)
     arm.rpc_cb([1,6],function(e){
       console.log(1580,e)
-      exec("sudo fdisk -l", function(err, stdout, stderr) {
-    if(stderr){
-      console.log(stderr)
-    }
-    exec('sudo mount /dev/sda1 /mnt', function(err, stdout,stder){
-      if(stder){
-        console.log(stder)
-        socket.emit('notify', 'Error writing file')
-        return;
+      if(e.readUInt8(4) == 0){
+      exec('sudo fdisk -l', function(err,stdout,stderr){
+      var usbdrive = '/dev/sda1'
+         var _dev = stdout.split('\n\n').map(function(disk){
+        var arr = disk.trim().split('\n')
+        return arr;
+      })
+      var _devices = []
+      var devices = []
+      _dev.forEach(function(d){
+        if(d[0].slice(0,6) == 'Device'){
+          _devices.push(d.slice(1))
+        }
+      })
+      _devices.forEach(function(dv){
+        if(dv[0]){
+          if(dv[0].trim().indexOf('/dev/sd') == 0){
+            dv.forEach(function(_dv){
+              devices.push(_dv.split(/\s/)[0])
+            })
+          }
+        }
+      })
+      if(devices.length != 0){
+        usbdrive = devices[0];
       }
+    socket.emit('testusb', stdout)
+  
+  exec("sudo mount "+usbdrive+" /mnt", function(err,stdout,stderr){
+    if(err || stderr){
+       socket.emit('notify','Error mounting drive');
+       return;
+    }
+
         getFileTftp(det.ip,'/FTIFiles/ProdRecBackup.fti', '/mnt/ProdRecBackup.fti',function(){
-          exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+          exec('sudo umount ' +usbdrive, function(er, stdout, stderr){
       
                 socket.emit('notify','Products Backed up')
                })
         },function(e){
+             exec('sudo umount ' +usbdrive, function(er, stdout, stderr){
           socket.emit('notify', 'Error writing file')
+        })
         })
       
   })
   })
+    }else{
+      socket.emit('notify','Error - Check Internal USB');
+    }
  })
 
 })
 socket.on('import',function(det){
-  exec("sudo mount /dev/sda1 /mnt", function(err,stdout,stderr){
+    exec('sudo fdisk -l', function(err,stdout,stderr){
+      var usbdrive = '/dev/sda1'
+         var _dev = stdout.split('\n\n').map(function(disk){
+        var arr = disk.trim().split('\n')
+        return arr;
+      })
+      var _devices = []
+      var devices = []
+      _dev.forEach(function(d){
+        if(d[0].slice(0,6) == 'Device'){
+          _devices.push(d.slice(1))
+        }
+      })
+      _devices.forEach(function(dv){
+        if(dv[0]){
+          if(dv[0].trim().indexOf('/dev/sd') == 0){
+            dv.forEach(function(_dv){
+              devices.push(_dv.split(/\s/)[0])
+            })
+          }
+        }
+      })
+      if(devices.length != 0){
+        usbdrive = devices[0];
+      }
+    socket.emit('testusb', stdout)
+  
+  exec("sudo mount "+usbdrive+" /mnt", function(err,stdout,stderr){
     if(err || stderr){
-       socket.emit('notify','Error reading file');
+       socket.emit('notify','Error mounting drive');
        return;
     }
     fs.access('/mnt/ProdRecBackup.fti',function(err,stats){
       if(err){
-          exec('sudo umount /dev/sda1',function(err, stdout, stderr){
+          exec('sudo umount '+usbdrive,function(err, stdout, stderr){
            socket.emit('notify','Error reading file')
           });
       }else{
@@ -1766,15 +2037,26 @@ socket.on('import',function(det){
            if(err){ socket.emit('notify','Error importing file')}else{
               var arm = new fti.ArmRpc.ArmRpc(det.ip)
               arm.rpc_cb([1,7],function(e){
-                exec('sudo umount /dev/sda1',function(err, stdout, stderr){
+                console.log('RPC Response', e)
+                if(e.readUInt8(4) == 0){
+                  socket.emit('testusb',e);
+                  exec('sudo umount '+usbdrive,function(err, stdout, stderr){
                    socket.emit('notify','Products Imported')
                    getProdList(det.ip)
                 })
+                }else{
+                  exec('sudo umount '+usbdrive,function(err, stdout, stderr){
+                   socket.emit('notify','Error Importing Products')
+                   getProdList(det.ip)
+                })
+                }
+              
                
               })
            }
           })
-      }
+        }
+      })
     })
   })
 })
@@ -1783,39 +2065,101 @@ socket.on('backup',function(det){
     var arm = new fti.ArmRpc.ArmRpc(det.ip)
     arm.rpc_cb([1,6],function(e){
       console.log(1580,e)
-      exec("sudo fdisk -l", function(err, stdout, stderr) {
-    if(stderr){
-      console.log(stderr)
-    }
-    exec('sudo mount /dev/sda1 /mnt', function(err, stdout,stder){
-      if(stder){
-        console.log(stder)
+      if(e.readUInt8(4) == 0){
+      exec('sudo fdisk -l', function(err,stdout,stderr){
+      var usbdrive = '/dev/sda1'
+         var _dev = stdout.split('\n\n').map(function(disk){
+        var arr = disk.trim().split('\n')
+        return arr;
+      })
+      var _devices = []
+      var devices = []
+      _dev.forEach(function(d){
+        if(d[0].slice(0,6) == 'Device'){
+          _devices.push(d.slice(1))
+        }
+      })
+      _devices.forEach(function(dv){
+        if(dv[0]){
+          if(dv[0].trim().indexOf('/dev/sd') == 0){
+            dv.forEach(function(_dv){
+              devices.push(_dv.split(/\s/)[0])
+            })
+          }
+        }
+      })
+      if(devices.length != 0){
+        usbdrive = devices[0];
       }
+    socket.emit('testusb', stdout)
+  
+  exec("sudo mount "+usbdrive+" /mnt", function(err,stdout,stderr){
+    if(err || stderr){
+       socket.emit('notify','Error mounting drive');
+       return;
+    }
        var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync','FTIFiles']
     //  console.log(arr.concat(list[ind].split('/').slice(1,-1)))
       checkAndMkdir(arr,0,function(){
         getFileTftp(det.ip,'/FTIFiles/ProdRecBackup.fti', '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti',function(){
-          exec('sudo umount /dev/sda1', function(er, stdout, stderr){
+          exec('sudo umount '+usbdrive, function(er, stdout, stderr){
       
                 socket.emit('notify','Products Backed up')
                })
         },function(e){
-          socket.emit('notify', 'Error writing file')
+           exec('sudo umount '+usbdrive, function(er, stdout, stderr){
+      
+            socket.emit('notify', 'Error writing file')
+          })
         })
     
       
     })
   })
   })
+    }else{
+      socket.emit('notify','Error - Check Internal USB');
+    }
  })
-//})
+
 })
 socket.on('restore',function(det){
-   exec("sudo mount /dev/sda1 /mnt", function(err,stdout,stderr){
+  exec('sudo fdisk -l', function(err,stdout,stderr){
+      var usbdrive = '/dev/sda1'
+         var _dev = stdout.split('\n\n').map(function(disk){
+        var arr = disk.trim().split('\n')
+        return arr;
+      })
+      var _devices = []
+      var devices = []
+      _dev.forEach(function(d){
+        if(d[0].slice(0,6) == 'Device'){
+          _devices.push(d.slice(1))
+        }
+      })
+      _devices.forEach(function(dv){
+        if(dv[0]){
+          if(dv[0].trim().indexOf('/dev/sd') == 0){
+            dv.forEach(function(_dv){
+              devices.push(_dv.split(/\s/)[0])
+            })
+          }
+        }
+      })
+      if(devices.length != 0){
+        usbdrive = devices[0];
+      }
+    socket.emit('testusb', stdout)
+  
+  exec("sudo mount "+usbdrive+" /mnt", function(err,stdout,stderr){
+    if(err || stderr){
+       socket.emit('notify','Error mounting drive');
+       return;
+    }
     fs.access('/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti',function(err,stats){
       if(err){
        
-        exec('sudo umount /dev/sda1',function(err, stdout, stderr){
+        exec('sudo umount '+ usbdrive,function(err, stdout, stderr){
            socket.emit('notify','Error reading file')
           });
       }else{
@@ -1825,11 +2169,18 @@ socket.on('restore',function(det){
            if(err){ socket.emit('notify','Error importing file')}else{
               var arm = new fti.ArmRpc.ArmRpc(det.ip)
               arm.rpc_cb([1,7],function(e){
-                console.log(e)
-                exec('sudo umount /dev/sda1',function(err, stdout, stderr){
+                 if(e.readUInt8(4) == 0){
+                  socket.emit('testusb',e);
+                  exec('sudo umount '+usbdrive,function(err, stdout, stderr){
                    socket.emit('notify','Products Restored')
                    getProdList(det.ip)
                 })
+                }else{
+                  exec('sudo umount '+usbdrive,function(err, stdout, stderr){
+                   socket.emit('notify','Error Restoring Products')
+                   getProdList(det.ip)
+                })
+                }
                
               })
            }
@@ -1837,6 +2188,7 @@ socket.on('restore',function(det){
       }
     })
   })
+})
 })
   socket.on('logOut', function(arg){
     loginLevel = 0;
@@ -1847,12 +2199,7 @@ socket.on('restore',function(det){
   console.log("connected")
  socket.on('locateUnicast', function (addr) {
     // body...
-   /* if (global.gc) {
-        global.gc();
-    } else {
-      console.log('Garbage collection unavailable.  Pass --expose-gc '
-        + 'when launching node to enable forced garbage collection.');
-    }*/
+   /* 
 
     console.log('locate req')
     var ifaces = os.networkInterfaces();  
@@ -1937,7 +2284,9 @@ for(var i = 0; i < dspips.length;i++){
       
   });
  
-},addr);
+},addr);*/
+
+  locateUnicast(addr)
 });
 
   socket.on('locateReq', function (argument) {

@@ -7,6 +7,7 @@ const KAPI_RPC_UDPWEBPARMS = 104;
 const KAPI_RPC_REJ_DEL_CLOCK_READ = 70;
 const DRPC_NUMBER = 19;
 const WP_RPC = 13;
+const UDP_PORT = 10011
 
 class UdpParamServer{
   constructor(ip,callback){
@@ -18,14 +19,19 @@ class UdpParamServer{
     self.init_udp_param_server();
 
   }
+  release_sock(){
+     //this.so.bind({address:'0.0.0.0',port:0})
+    this.so.unref();
+    this.so = null;
+  }
   init_udp_param_server(){
     var self = this;
-    var so = dgram.createSocket('udp4');
-    so.on("listening", function () {
-      self.init_params_stream(so.address().port)
+    this.so = dgram.createSocket({type:'udp4',reuseAddr:true});
+    this.so.on("listening", function () {
+      self.init_params_stream(self.so.address().port)
       // body...
     } );
-    so.on('message', function(e,rinfo){
+    this.so.on('message', function(e,rinfo){
       if(self.ip == rinfo.address){
         if(e){
           self.parse_params(e)
@@ -34,7 +40,10 @@ class UdpParamServer{
         }
       }
     })
-    so.bind({address:'0.0.0.0',port:0,exclusive:true})
+      //this.init_params_stream()
+      this.so.bind({address:'0.0.0.0',port:UDP_PORT})
+
+
   }
   init_params_stream(port){
     var FtiRpc = Fti.Rpc.FtiRpc;
@@ -52,7 +61,7 @@ class UdpParamServer{
   parse_params(e){
     if(e){
       //console.log(e)
-      this.callback(this.ip,e)
+      this.callback(this.ip,e, this.init_params_stream);
     }
     e = null;
   }
