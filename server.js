@@ -767,6 +767,15 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
   pack = null;
 
 }
+
+function uintToInt(uint, nbit) {
+    nbit = +nbit || 32;
+    if (nbit > 32) throw new RangeError('uintToInt only supports ints up to 32 bits');
+    uint <<= (32 - nbit);
+    uint >>= 32 - nbit;
+    return uint;
+}
+
 function getVal(arr, rec, key, pVdef){
     //console.log([rec,key])
     var param = pVdef[rec][key]
@@ -781,6 +790,13 @@ function getVal(arr, rec, key, pVdef){
         
       }else{
         val = Params.swap16(arr[param["@i_var"]]);
+         if(typeof param['@name'] != 'undefined'){
+          if((param['@name'].indexOf('HaloPeak') != -1) && (param['@bit_len'] == 16)){
+
+              val = uintToInt(val,16)
+            
+            }
+          }
       } 
       if(param["@bit_len"] < 16){
         val = (val >> param["@bit_pos"]) & ((1<<param["@bit_len"])-1)
@@ -800,7 +816,7 @@ function wordValue(arr, p){
       //funcJSON['@func'][p['@type']].apply(this, sa)
       return Params[p['@type']](sa)
     //  return eval(funcJSON['@func'][p['@type']])(sa)
-    }else if(p['@name'] = 'DateTime'){
+    }else if('DateTime' == p['@name']){
      
      var sa0 = Params.swap16(sa[0])
      var sa1 = Params.swap16(sa[1])
@@ -1505,6 +1521,7 @@ function autoIP(){
     }else{
       
     }*/
+    
 
 }
 class FtiHelper{
