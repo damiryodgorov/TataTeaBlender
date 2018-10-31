@@ -813,7 +813,7 @@ function wordValue(arr, p){
     var sa = arr.slice(p["@i_var"], p["@i_var"]+n)
     arr = null;
     if(p['@type']){
-      //funcJSON['@func'][p['@type']].apply(this, sa)
+      //funcJSON['@func'][p['@type']].apply(this, sa) 1980/00/00 00:00:02
       return Params[p['@type']](sa)
     //  return eval(funcJSON['@func'][p['@type']])(sa)
     }else if('DateTime' == p['@name']){
@@ -829,6 +829,8 @@ function wordValue(arr, p){
       var year = 1980 + (sa1 >> 9)
       return year+'/'+mm+'/'+dd + ' ' +hr +':'+min+':'+sec ;
 
+    }else if('EtherExtPorts' == p['@name']){
+      return Params.swap16(sa[0])
     }else{
       var str = sa.map(function(e){
       return (String.fromCharCode((e>>8),(e%256)));
@@ -1412,7 +1414,7 @@ function update(det){
     }
 }
 
-function locateUnicast (addr) {
+function locateUnicast (addr,cb) {
 
 
     console.log('locate req')
@@ -1464,6 +1466,7 @@ function locateUnicast (addr) {
       //dsp not visible
       console.log('dsp not visible')
       nvdspips.push(e[i])
+
      
       }else if(e[i].ver == '20.17.4.27'){
         //Hack, seeing a 170427 on the network seems to cause this to crash. should actually check for versions properly in the future to ignore incompatible version.
@@ -1492,12 +1495,14 @@ function locateUnicast (addr) {
      if((dspips.length == 0)&&(nvdspips.length >0)){
             console.log('non visible1186')
             relaySockMsg('notvisible', nvdspips);
+    
           }
     initSocks(dsps.slice(0), function(){
            relaySockMsg('locatedResp', dspips);
+          
         
     });
-   
+           
   },addr);
 }
 
@@ -1521,9 +1526,94 @@ function autoIP(){
     }else{
       
     }*/
-    
+    locateUnicast('255.255.255.255', function(dets){
+      var x = -1
+      var ips = []
+      dets.forEach(function(d, i){
+        ips.push(d.ip)
+        if((d.dir_conn != 0) &&(d.board_type ==1)){
+          x = i
+        }
+      })
+      if(x != -1){
+        var det = dets[x]
+      
+        var addrByte = 14;
+        var chosen = false
+        var newIP;
+        while((!chosen)&&(addrByte<255)){
+          var tmpIP = det.ip.split('.').slice(0,3).join('.') + '.'+addrByte;
+
+            if(ips.indexOf(tmpIP) == -1){
+              chosen = true;
+              newIP = tmpIP
+            }else{
+              addrByte++;
+            }
+          }
+          if(chosen){
+            setNifIp(newIP,function(){
+             
+             getVdef(det.ip,function(vdf,ip4){
+                if(vdf){
+                 if(vdf['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2){
+                  det.interceptor = true
+                }
+                 prefs = [{name:det.name, type:'single', banks:[det]}];
+                relaySockMsg('prefs',prefs)
+                locateUnicast(ip4)
+              }
+             })
+            })
+          
+        }
+      }
+
+    })
 
 }
+function setNifIp(addr, callback){
+    //need to figure out how to determine interface gracefully. maybe specify from onset? 
+    console.log(addr)
+    var iface = 'eth0'
+    if(os.platform() == 'darwin'){
+      iface = 'en4'
+    }
+    var ifaces = os.networkInterfaces();  
+  
+    var nf;// = ifaces[iface];
+    console.log(ifaces[iface])
+    if(ifaces[iface][0].family == 'IPv4'){
+      nf = ifaces[iface][0]
+    }else{
+      nf = ifaces[iface][1]
+    }
+    console.log(nf)
+    networking.applySettings(iface, {active:false, ipv4:{address:'0.0.0.0'}})
+    setTimeout(function(){
+        networking.applySettings(iface, {active:true, ipv4:{address:addr, netmask:nf.netmask}})
+        fs.readFile('/etc/network/interfaces', (err,res)=>{
+          if(err){
+            console.log(err)
+          }
+          var arr = res.toString().split('\n')
+          var ind = arr.indexOf('iface eth0 inet static')
+          if(ind != -1){
+            arr[ind+1] = '\taddress ' + addr
+            fs.writeFile('/etc/network/interfaces', arr.join('\n'), function(err){
+              console.log(err)
+            })
+          }
+          console.log(res.toString().split('\n'));
+        })
+        setTimeout(function(){
+          callback();
+      //relaySockMsg('resetConfirm')
+    },300)
+    },300)
+  
+   
+  }
 class FtiHelper{
   constructor(ip){
  
@@ -2441,7 +2531,12 @@ socket.on('getProdList', function (ip) {
       }catch(e){
         
       }
-      socket.emit('prefs', prefs)
+      if(prefs.length == 0){
+        autoIP();
+      }else{
+        socket.emit('prefs', prefs)  
+      }
+      
     })
     }else{
       socket.emit('prefs',prefs)
