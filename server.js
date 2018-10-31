@@ -74,7 +74,7 @@ var accounts = {"operator":{"acc":1,"password":"0123"},"engineer":{"acc":2,"pass
 
 let _accounts = {};
 
-var prefs;
+var prefs = [];
 
 var cur = Date.now()
 
@@ -1502,8 +1502,12 @@ function locateUnicast (addr,cb) {
           
         
     });
-           
+       
+    if(cb){
+    cb(e.slice(0))
+  }    
   },addr);
+
 }
 
 function autoIP(){
@@ -1529,11 +1533,15 @@ function autoIP(){
     locateUnicast('255.255.255.255', function(dets){
       var x = -1
       var ips = []
+      console.log(dets)
       dets.forEach(function(d, i){
-        ips.push(d.ip)
+        if(d.ip != d.nif_ip){
+           ips.push(d.ip)
         if((d.dir_conn != 0) &&(d.board_type ==1)){
           x = i
         }
+        }
+       
       })
       if(x != -1){
         var det = dets[x]
@@ -1553,9 +1561,10 @@ function autoIP(){
           }
           if(chosen){
             setNifIp(newIP,function(){
-             
-             getVdef(det.ip,function(vdf,ip4){
+             console.log(1556, det)
+             getVdef(det.ip,function(ip4,vdf){
                 if(vdf){
+                  console.log(vdf)
                  if(vdf['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2){
                   det.interceptor = true
                 }
@@ -1581,14 +1590,15 @@ function setNifIp(addr, callback){
     }
     var ifaces = os.networkInterfaces();  
   
-    var nf;// = ifaces[iface];
+    var nf = {netmask:'255.255.0.0'};// = ifaces[iface];
     console.log(ifaces[iface])
     if(ifaces[iface][0].family == 'IPv4'){
       nf = ifaces[iface][0]
-    }else{
+    }else if(ifaces[iface][1].family == 'IPv4'){
       nf = ifaces[iface][1]
     }
     console.log(nf)
+
     networking.applySettings(iface, {active:false, ipv4:{address:'0.0.0.0'}})
     setTimeout(function(){
         networking.applySettings(iface, {active:true, ipv4:{address:addr, netmask:nf.netmask}})
@@ -1606,9 +1616,10 @@ function setNifIp(addr, callback){
           }
           console.log(res.toString().split('\n'));
         })
+         callback();
         setTimeout(function(){
-          callback();
-      //relaySockMsg('resetConfirm')
+         
+      relaySockMsg('resetConfirm')
     },300)
     },300)
   
@@ -2639,29 +2650,6 @@ socket.on('getProdList', function (ip) {
   })
 
       
-
-  socket.on('initTestStream', function(f){
-    var testFiles = ['/json/test/wipes1.fss','/json/test/wipes2.fss','/json/test/wipes3.fss','/json/test/wipes4.fss','/json/test/wipes5.fss']
-    var fName = testFiles[fileVer]
-    fileVer = (fileVer+1)%5;
-    fs.readFile(__dirname + fName, (err,data) =>{
-      var testFss = JSON.parse(data)
-      var length = testFss.Channels.R.length;
-      var testind = 0;
-     var testInterval = setInterval(function(){
-       if(testind < length){
-         socket.emit('testXR', {x:testFss.Channels.X[testind],r:testFss.Channels.R[testind]})
-          testind++;
-
-         }else{
-          clearInterval(testInterval);
-          testind = 0;
-         }
-      },4)
-     
-    })
-  })
-  
   socket.on('savePrefs', function (f) {
     // body...
     console.log(f)
