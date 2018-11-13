@@ -513,7 +513,7 @@ function parse_update(str, callback){
   console.log(arr)
   arr.slice(1, 1+updateCount).forEach(function(s){
     var a = s.split(',')
-    if((parseInt(a[0]) == 12)){
+    if((parseInt(a[0]) == 12)||(parseInt(a[0])==14)||(parseInt(a[0] == 16))){
       list.push('/mnt'+a[a.length-1].split('\\').join('/'));
     }else if(parseInt(a[0]) == 13){
       list.push('/mnt'+a[a.length-1].split('\\').join('/'));
@@ -1530,6 +1530,7 @@ function autoIP(){
     }else{
       
     }*/
+    relaySockMsg('notify', 'Attempting to autoconnect')
     locateUnicast('255.255.255.255', function(dets){
       var x = -1
       var ips = []
@@ -1544,6 +1545,7 @@ function autoIP(){
        
       })
       if(x != -1){
+        relaySockMsg('notify', 'Detector Found')
         var det = dets[x]
       
         var addrByte = 14;
@@ -1576,6 +1578,8 @@ function autoIP(){
             })
           
         }
+      }else{
+        relaySockMsg('notify', 'Try adding detector manually')
       }
 
     })
@@ -2543,6 +2547,7 @@ socket.on('getProdList', function (ip) {
         
       }
       if(prefs.length == 0){
+
         autoIP();
       }else{
         socket.emit('prefs', prefs)  
