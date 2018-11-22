@@ -34,7 +34,7 @@ const exec = require('child_process').exec;
 var db = flatfile('./dbs/users.db')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
-const VERSION = '2018/10/19'
+const VERSION = '2018/11/16'
 
 http.on('error', function(err){
   console.log('this is an http error')
@@ -477,6 +477,33 @@ function updateDisplayFiles(files,cnt,callBack){
     })
   }
 }
+function unzipTar(path, callback) {
+  // body...
+  relaySockMsg('displayUpdate')
+  exec('sudo rsync '+ path + ' /home/myuser/temp', function () {
+    if(fs.statSync(path).size == fs.statSync('/home/myuser/temp').size){
+    // body...
+    exec('sudo rm -rf /home/myuser/node',function (argument) {
+      // body...
+       exec('sudo tar -xzf /home/myuser/temp -C /home/myuser', function(err,stdout,stderr) {
+      // body...
+      console.log(stdout)
+      relaySockMsg('notify','Unpacking')
+      setTimeout(function(){
+        exec('sudo rm -f /home/myuser/temp',function(){
+         callback()
+      })
+      },15000)
+      
+      
+      
+      })
+    })
+   }else{
+    relaySockMsg('notify', 'Update Failed')
+   }
+  })
+}
 function updateBinaries(paths, ip, cnt, callBack){
 
   if(cnt + 1 > paths.length){
@@ -512,14 +539,21 @@ function parse_update(str, callback){
   var list = [];
   console.log(arr)
   arr.slice(1, 1+updateCount).forEach(function(s){
+
     var a = s.split(',')
-    if((parseInt(a[0]) == 12)||(parseInt(a[0])==14)||(parseInt(a[0] == 16))){
+    console.log(a)
+    if((parseInt(a[0]) == 12)||(parseInt(a[0])==14)||(parseInt(a[0]) == 16)||(parseInt(a[0]) == 18)){
       list.push('/mnt'+a[a.length-1].split('\\').join('/'));
     }else if(parseInt(a[0]) == 13){
       list.push('/mnt'+a[a.length-1].split('\\').join('/'));
     }
+    console.log(list)
   })
+
   callback(list)
+}
+function parseDisplayUpdate(argument) {
+  // body...
 }
 function parse_display_update(str, callback){
   var array = str.split('\n')
@@ -536,7 +570,7 @@ function parse_display_update(str, callback){
 function arm_burn(ip, fname, callback){
   var arm = new fti.ArmRpc.ArmRpc(ip)
   try{
-  arm.verify_binary_file(fname, function(size,addr){
+  arm.verify_binary_file(fname, function(size,addr,enc_flag){
     if(addr == 0x08000000){
       console.log('bootloader')
         arm.bootloader(function(){
@@ -558,7 +592,7 @@ function arm_burn(ip, fname, callback){
             clearInterval(interval)
              console.log('prog_start callback')
             echoed = true;
-             arm.prog_erase_app(function(){
+             arm.prog_erase_app(enc_flag,function(){
             console.log('program erased')
                setTimeout(function(){
                 arm.prog_binary(fname,function(){
@@ -598,7 +632,7 @@ function arm_burn(ip, fname, callback){
             clearInterval(interval)
              console.log('prog_start callback')
             echoed = true;
-             arm.prog_erase_app(function(){
+             arm.prog_erase_app(enc_flag,function(){
               relaySockMsg('notify','Program Erased...')
             console.log('program erased')
                setTimeout(function(){
@@ -1498,6 +1532,7 @@ function locateUnicast (addr,cb) {
     
           }
     initSocks(dsps.slice(0), function(){
+      console.log('this should be updatings...', dspips)
            relaySockMsg('locatedResp', dspips);
           
         
@@ -1681,8 +1716,13 @@ var nvdspips = [];
 
 var dets;
 process.on('uncaughtException', (err) => {
- 
-     fs.writeFileSync(__dirname +'/error.txt', err.stack.toString() || err.toString());
+    
+    var errstring = err.toString();
+    if(err.stack){
+      errstring = err.stack.toString();
+    }
+
+     fs.writeFileSync(__dirname +'/error.txt', errstring);
      console.log(err);
     process.abort();
   
@@ -1936,6 +1976,61 @@ socket.on('startUpdate', function(det){
       update(det);
 })
 socket.on('updateDisplay',function(){
+   exec('sudo fdisk -l', function(err,stdout,stderr){
+      var usbdrive = '/dev/sda1'
+         var _dev = stdout.split('\n\n').map(function(disk){
+        var arr = disk.trim().split('\n')
+        return arr;
+      })
+      var _devices = []
+      var devices = []
+      _dev.forEach(function(d){
+        if(d[0].slice(0,6) == 'Device'){
+          _devices.push(d.slice(1))
+        }
+      })
+      _devices.forEach(function(dv){
+        if(dv[0]){
+          if(dv[0].trim().indexOf('/dev/sd') == 0){
+            dv.forEach(function(_dv){
+              devices.push(_dv.split(/\s/)[0])
+            })
+          }
+        }
+      })
+      if(devices.length != 0){
+        usbdrive = devices[0];
+      }
+    socket.emit('testusb', stdout)
+    exec('sudo mount '+usbdrive+' /mnt', function(err, stdout, stderr){
+              //here should be the tftp stuff...
+       if(err || stderr){
+          socket.emit('notify', 'Update Failed')
+        }else{
+          fs.readFile('/mnt/FortressDisplayUpdate.txt', (err, res)=>{
+          if(err){
+            socket.emit('notify', 'issue reading file')
+            exec('sudo umount '+ usbdrive, function(er, stdout, stderr){
+
+            });
+          }else{
+              unzipTar('/mnt/'+res.toString(), function (argument) {
+                // body...
+                exec('sudo umount '+usbdrive, function(er, stdout, stderr){
+                  socket.emit('notify', 'update complete - restarting');
+                  exec('sudo reboot -n -d -f', function (argument) {
+                    // body...
+                  })
+                })
+              })
+           
+          }
+        })
+        }
+    })
+  })
+})
+socket.on('updateDisplay_old',function(){
    exec('sudo fdisk -l', function(err,stdout,stderr){
       var usbdrive = '/dev/sda1'
          var _dev = stdout.split('\n\n').map(function(disk){
@@ -2320,105 +2415,11 @@ socket.on('restore',function(det){
 
   console.log("connected")
  socket.on('locateUnicast', function (addr) {
-    // body...
-   /* 
-
-    console.log('locate req')
-    var ifaces = os.networkInterfaces();  
-    var iface = 'eth0'
-    if(os.platform() == 'darwin'){
-      iface = 'en4'
-    }
-    var nf;// = ifaces[iface];
-    if(ifaces[iface][0].family == 'IPv4'){
-      nf = ifaces[iface][0]
-    }else{
-      nf = ifaces[iface][1]
-    }
-    console.log(nf)
-     exec('sudo route',function(err, stdout, stderr){
-      //console.log(stdout.split('\n')[2][1])
-      var rarr = stdout.split('\n')
-      console.log(rarr)
-      var rin = -1
-      for(var i=0; i<rarr.length; i++){
-        if(rarr[i].indexOf('default') != -1){
-          rin = i;
-          //break;
-        }
-      }
-      if(rin != -1){
-        var garr = rarr[rin].split(/\s+/);
-        console.log(1877, garr)
-        var gw = garr[1]
-      
-        socket.emit('gw', gw)
-      }
-      
-    })
-    socket.emit('nif', nf);
-   
-    Helper.scan_for_dsp_board(function (e) {
-          dets = e
-          //console.log(dets)
-    dspips = [];
-    nvdspips = [];
-  for(var i = 0; i < e.length; i++){
-    if(e[i].board_type == 1){
-      var ip = e[i].ip.split('.').map(function(e){return parseInt(e)});
-      var nifip = e[i].nif_ip.split('.').map(function(e){return parseInt(e)});
-
-  if(!((ip[0] == nifip[0]) && (ip[1] == nifip[1]) && (ip[2] == nifip[2]))){
-    //dsp not visible
-    console.log('dsp not visible')
-    nvdspips.push(e[i])
-   
-    }else if(e[i].ver == '20.17.4.27'){
-      //Hack, seeing a 170427 on the network seems to cause this to crash. should actually check for versions properly in the future to ignore incompatible version.
-      console.log('ignore this version')
-    }else{
-      console.log('dsp visible')
-      dspip = ip.join('.');
-      macs[dspip] = e[i].mac
-     // console.log(dspip);
-      dspips.push(e[i]);
-    }
-   }
- }
-
-var dsps = []
-for(var i = 0; i < dspips.length;i++){
-    console.log(dspips[i].ip)
-
-   if(!clients[dspips[i].ip]){
-      dsps.push(dspips[i])
-   }
-
-  }
-  console.log('dsp ips')
- // console.log(dspips)
-   if((dspips.length == 0)&&(nvdspips.length >0)){
-          console.log('non visible1186')
-          socket.emit('notvisible', nvdspips);
-        }
-  initSocks(dsps.slice(0), function(){
-         socket.emit('locatedResp', dspips);
-      
-  });
- 
-},addr);*/
 
   locateUnicast(addr)
 });
 
   socket.on('locateReq', function (argument) {
-    // body...
-   /* if (global.gc) {
-        global.gc();
-    } else {
-      console.log('Garbage collection unavailable.  Pass --expose-gc '
-        + 'when launching node to enable forced garbage collection.');
-    }*/
 
     console.log('locate req')
     var ifaces = os.networkInterfaces();  
@@ -2499,6 +2500,7 @@ for(var i = 0; i < dspips.length;i++){
           socket.emit('notvisible', nvdspips);
         }
   initSocks(dsps.slice(0), function(){
+    console.log('this should be updating....',dspips)
          socket.emit('locatedResp', dspips);
       
   });

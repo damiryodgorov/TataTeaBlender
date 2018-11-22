@@ -31,6 +31,8 @@ const ARM_PROG_BLOCK_SIZE  = 512
   
 const ARM_RPC_ERROR = 255
 
+const KEY_FRMW = Buffer.from([0x7E, 0xB2, 0x8A, 0xF9, 0x5F, 0xFB, 0xB9, 0xA7, 0x47, 0x02, 0xC8, 0x3A, 0xCE, 0xF2, 0x35, 0xF7])
+
 class ArmRpcError extends Error{}
 class ArmRpcErrorTimeout extends ArmRpcError{}
 class ArmRpcErrorChecksum extends ArmRpcError{}
@@ -301,9 +303,21 @@ class ArmRpcBase{
 	prog_erase(callBack){
 		this.rpc_cb([8,11],callBack)
 	}
-	prog_erase_app(callBack){
+	prog_erase_app(enc_flag,callBack){
 		console.log('prog erase app')
 		var bytes = Buffer.alloc(512,0xff)
+		if(enc_flag != 0){
+			var ksize = KEY_FRMW.length;
+			var aes = crypto.createCipheriv('aes-128-ecb', new Buffer(KEY_FRMW), "")
+			aes.setAutoPadding(false);
+			var enc_bytes = Buffer.alloc(0);
+			var n = ARM_PROG_BLOCK_SIZE /ksize;
+			for(var i = 0; i <n; i++){
+				enc_bytes = Buffer.concat([enc_bytes, aes.update(bytes.slice(i*ksize, (i+1)*ksize))])
+			}
+			enc_bytes = Buffer.concat([enc_bytes, aes.final()]);
+			bytes = Buffer.from(enc_bytes)
+		}
 		this.prog_block(0,bytes,callBack)
 	}
 	prog_binary(bf,callBack){
@@ -321,27 +335,87 @@ class ArmRpcBase{
 		this.rpc_cb(pkt,callBack)
 	}
 	verify_binary_file(fn, callBack){
-		fs.readFile(fn,function(err,res){
-			if(err){
-				throw err
+		fs.readFile(fn,function(er,res){
+			if(er){
+				throw er
 			}
+			var enc_flag = 0;
+			var err = 0;
+			var csum = ""
 			var vec_end_val = 0xffffffff
 			var n = null;
+			var size = 0;
+			var start_addr = 0;
+
 			console.log(res.length)
-			for(var i = 0; i < 2840; i = i+4){
+			for(var i = 0; i < 1024; i = i+4){
 				console.log(i, res.readUInt32LE(i))
 				if(res.readUInt32LE(i) == vec_end_val){
 					n = i;
 					break;
 				}
 			}
-			if(n == null){
-				throw new ArmRpcError('Verify bin file: size not found');
+			if(n != null){		
+				size = res.readUInt32LE(n+4)
+				start_addr = res.readUInt32LE(n+8)
+				if(n < res.length){
+					csum = checksum(res.slice(0,size),'sha1')
+					if(Buffer.compare(csum,res.slice(size,size+csum.length)) == -1){
+						err = 3
+					}
+				}else{
+					err = 2
+				}
+				
+			}else{
+				err = 1;
 			}
-			var size = res.readUInt32LE(n+4)
-			var start_addr = res.readUInt32LE(n+8)
-			callBack(size,start_addr)
+			if(err != 0){
+				console.log("Checking file encryption..")
+				var bsize = KEY_FRMW.length
+				var rem = res.length % bsize;
+				var div = res.length/bsize
+				if(0 == rem){
+					var dec = crypto.createDecipheriv('aes-128-ecb', new Buffer(KEY_FRMW), "")
+					dec.setAutoPadding(false)
+					var dec_bf = Buffer.alloc(0);
+					for(var i = 0;i<div;i++){
+						dec_bf = Buffer.concat([dec_bf, dec.update(res.slice(i*bsize, (i+1)*bsize))])
+					}
+					dec_bf = Buffer.concat([dec_bf,dec.final()]);
+					n = null;
+					for(var i = 0; i < 1024; i = i+4){
+						console.log(i, dec_bf.readUInt32LE(i))
+						if(dec_bf.readUInt32LE(i) == vec_end_val){
+							n = i;
+							break;
+						}
+					}
+					if(n != null){
+						size = dec_bf.readUInt32LE(n+4)
+						start_addr = dec_bf.readUInt32LE(n+8)
+						if(n < dec_bf.length){
+							csum = checksum(dec_bf.slice(0,size),'sha1')
+							if(Buffer.compare(csum,dec_bf.slice(size,size+csum.length)) != -1){
+								err = 0
+							}
+						}
+						enc_flag = 1;
+					}
+				}
+			}
+			if(err == 0){
+				callBack(size,start_addr,enc_flag)
+			}else if (err == 1){
+				throw "Verify bin file: size not found"
+			}else if (err == 2){
+				throw "Verify bin file: size error"
+			}else if (err == 3){
+				throw "Verify bin file: digest error"
+			}
+			
 		})
+
 	}
 	prog_rc_block(n,i,fsize,buf,callBack){
 		var self = this;
@@ -548,6 +622,14 @@ class ArmRpc extends ArmRpcBase{
 		return pkt
 
 	}
+}
+
+
+function checksum(str, algorithm) {
+  return crypto
+    .createHash(algorithm || 'md5')
+    .update(str)
+    .digest()
 }
 
 module.exports = {}
