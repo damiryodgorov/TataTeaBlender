@@ -11,7 +11,8 @@ import {ToastContainer, toast,Zoom, cssTransition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {css} from 'glamor'
 import FlexText from 'flex-text';
-var createReactClass = require('create-react-class')
+var createReactClass = require('create-react-class');
+const createPool = require('reuse-pool')
 
 const _buildVersion = 'display';
 
@@ -85,6 +86,10 @@ Object.defineProperty(Array.prototype, 'chunk', {
         return temporal;
     }
 });
+
+var _oPool = createPool(function(){
+	return {}
+})
 
 class Params{
   static frac_value(int){
@@ -454,10 +459,11 @@ class FtiSockIo{
 		var self = this;
 		this.sock.onmessage = function (message) {
 			// body...
-			var msg = JSON.parse(message.data)
-			self.handle(msg.event, msg.data);
-			message = null;
-			msg = null;
+			var obj = _oPool.get();
+
+			obj.msg = JSON.parse(message.data)
+			self.handle(obj.msg.event, obj.msg.data);
+			_oPool.recycle(obj)
 		}
 		this.sock.onopen = function (argument) {
 			// body...
@@ -826,8 +832,8 @@ class LandingPage extends React.Component{
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
 		}
-		this.state =  ({currentPage:'landing',netpolls:{}, curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, 
-			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:5, version:'2018/07/30',
+		this.state =  ({currentPage:'landing',netpolls:{}, curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, progress:'',
+			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:5, version:'2018/07/30',pmsg:'',pON:false,percent:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''})
 		this.listenToMq = this.listenToMq.bind(this);
 		this.locateUnits = this.locateUnits.bind(this);
@@ -901,6 +907,9 @@ class LandingPage extends React.Component{
 		socket.on('displayUpdate', function(){
 			self.refs.updateModal.toggle();
 		})
+		socket.on('updateProgress',function(r){
+			self.setState({progress:r})
+		})
 		socket.on('onReset', function(r){
 			/*if(self.state.currentPage != 'landing'){
 				self.setState({curDet:self.state.dets[self.state.curDet.mac]})
@@ -959,6 +968,11 @@ class LandingPage extends React.Component{
 		})
 		socket.on('notify',function(msg){
 			toast(msg)
+		})
+		socket.on('progressNotify',function(pk){
+			var on = pk.on;
+			var msg = pk.msg;
+			var percentage = pk.percentage
 		})
 		socket.on('testusb',function(dev){
 
@@ -1166,7 +1180,7 @@ class LandingPage extends React.Component{
   			
 		
 			if(this.refs.dv){
-				this.refs.dv.onParamMsg2(e,d)
+				this.refs.dv.onParamMsg3(e,d)
 			}
 		}
 		e = null;
@@ -1251,11 +1265,17 @@ class LandingPage extends React.Component{
 				mbUnits.name = dsps[e].name
 			}
 			var tmpdsp = dsps[e]
-		if(vdefByMac[dsps[e].mac][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2){
+		if(vdefByMac[dsps[e].mac][0]['@defines']['INTERCEPTOR']){
 			tmpdsp.interceptor = true
 		}else{
 			tmpdsp.interceptor = false
 		}
+		if(vdefByMac[dsps[e].mac][0]['@defines']['INTERCEPTOR_DF']){
+			tmpdsp.df = true;
+		}
+		if(vdefByMac[dsps[e].mac][0]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
+            tmpdsp.ts_login = true;   
+        }
 		socket.emit('connect',tmpdsp.ip)
 		cont.push(tmpdsp)
 		detL[dsps[e].mac] = null;
@@ -1512,7 +1532,10 @@ class LandingPage extends React.Component{
 				 	{mbunits}
 
 					<Modal ref='updateModal'>
-						Updating Display... 
+						<div style={{color:'#e1e1e1'}}>
+							<div>Updating Display...</div>
+							<div>{this.state.progress}</div>
+						</div> 
 					</Modal>
 			</div>)	
 	}
@@ -4687,7 +4710,7 @@ class StatBarMB extends React.Component{
 				if(!this.state.interceptor){
 					this.setDyn(uintToInt(rec['PhaseAngleAuto'],16),rec['Peak'], rec['RejCount'], faultArray)
 					this.updateMeter(uintToInt(rec['DetectSignal'],16))
-					this.setLEDS(getVal(prodArray,2,'Reject_LED', pVdef),rec['Prod_LED'],rec['Prod_HI_LED'])
+					this.setLEDS(rec['Reject_LED'],rec['Prod_LED'],rec['Prod_HI_LED'])
 				}else{
 					this.updateMeterInt(uintToInt(rec['DetectSignal_A'],16),uintToInt(rec['DetectSignal_B'],16))
 					this.setDynInt(uintToInt(rec['PhaseAngleAuto_A'],16),rec['Peak_A'], rec['RejCount'], faultArray, uintToInt(rec['PhaseAngleAuto_B'],16),rec['Peak_B'], rec['RejCount'], faultArray)
@@ -5150,7 +5173,7 @@ class DetectorView extends React.Component{
 		this.getCob = this.getCob.bind(this);
 		this.getPages = this.getPages.bind(this);
 		this.getPage = this.getPage.bind(this);
-		this.onParamMsg2 = this.onParamMsg2.bind(this);
+		this.onParamMsg3 = this.onParamMsg3.bind(this);
 		this.setLEDS = this.setLEDS.bind(this);
 		this.setLEDSInt = this.setLEDSInt.bind(this);
 		this.showSettings = this.showSettings.bind(this);
@@ -5199,8 +5222,18 @@ class DetectorView extends React.Component{
 		ifvisible.setIdleDuration(300);
 		var self = this;
 		ifvisible.on("idle", function(){
+			if(self.refs.im){
+				self.refs.im.pauseGraph()
+			}
+			
 			self.logout()
 		});
+		ifvisible.on('wakeup', function(){
+			if(self.refs.im){
+				console.log('wakeup')
+				self.refs.im.restart()
+			}
+		})
 		ifvisible.onEvery(5,function(){
 			//send keepalive
 			if(self.state.userid != 0){
@@ -5407,7 +5440,7 @@ class DetectorView extends React.Component{
 		_page = null;
 		return page
 	}
-	onParamMsg2 (e,d) {
+	onParamMsg3 (e,d) {
 		if(this.props.det.ip != d.ip){
 			return;
 		}
@@ -5495,21 +5528,74 @@ class DetectorView extends React.Component{
 					var pVdef = vdefByMac[d.mac][1]
 					var rejOn = 0
 					var shouldUpdate = false
-  					
+  					var pauseGraph = false;
 					var prodRec = e.rec
-					var iobits = {}
+					var iobits = _oPool.get();
+					iobits.data = {}//{}
 					if(_ioBits){
     						
     						_ioBits.forEach(function(b){
     							if(typeof prodRec[b] != 'undefined'){
-    								iobits[b] = prodRec[b]
+    								iobits.data[b] = prodRec[b]
     							}
     						})
-    						if(isDiff(iobits,this.state.ioBITs)){
+    						if(isDiff(iobits.data,this.state.ioBITs)){
     							shouldUpdate = true;
     							//this.setState({ioBITs:iobits, update:true})
     						}
     					}
+
+    				var faultArray = _oPool.get();//[];
+    				faultArray.arr = []
+				  	var warningArray = _oPool.get();//[];
+				  	warningArray.arr = [];
+					pVdef[7].forEach(function(f){
+					if(prodRec[f] != 0){
+						faultArray.arr.push(f)
+							if(self.state.prodSettings[f+'Warn'] == 1){
+								warningArray.arr.push(f)
+							}
+						}
+					});
+					//////console.log(rejOn)
+					
+  					if(this.state.faultArray.length != faultArray.length){
+  						shouldUpdate = true;
+  						//this.setState({faultArray:faultArray, rejOn:rejOn, update:true})
+  					}else if(this.state.rejOn != rejOn){
+  						shouldUpdate = true
+  						//////console.log(['4566', rejOn])
+  					}else if(this.state.warningArray.length != warningArray.length){
+  						shouldUpdate = true;
+  						//this.setState({faultArray:faultArray, rejOn:rejOn, update:true})
+  					}else{
+  						//var diff = false;
+  						faultArray.forEach(function (f) {
+  							if(self.state.faultArray.indexOf(f) == -1){
+  								shouldUpdate = true;
+  							}
+  						})
+  						warningArray.forEach(function (w) {
+  							// body...
+  							if(self.state.warningArray.indexOf(w) == -1){
+  								shouldUpdate = true;
+  							}
+  						})
+  					}
+  					if(this.state.trec != trec){
+  						shouldUpdate = true;
+  					}
+
+
+  					if(this.state.updateCount ==3){
+  						if((this.refs.sModal.state.show && !this.refs.sModal.state.keyboardVisible) || (this.refs.snModal.state.show && !this.refs.snModal.state.keyboardVisible)
+  							|| (this.refs.teModal.state.show && !this.refs.teModal.state.keyboardVisible)|| (this.refs.calibModal.state.show && this.state.showCal && !this.refs.calibModal.state.keyboardVisible)){
+  								shouldUpdate = true
+  						}
+  					}
+  						if(this.refs.sModal.state.show && this.refs.sModal.state.keyboardVisible){
+  							shouldUpdate = false;
+  						}	
     				if(this.state.interceptor){
     					if(this.state.rec['DateTime'] != prodRec['DateTime']){
     						this.refs.im.setDT(prodRec['DateTime'])
@@ -5643,42 +5729,7 @@ class DetectorView extends React.Component{
 		
 					}
 					
-				  	var faultArray = [];
-				  	var warningArray = [];
-					pVdef[7].forEach(function(f){
-					if(prodRec[f] != 0){
-						faultArray.push(f)
-							if(self.state.prodSettings[f+'Warn'] == 1){
-								warningArray.push(f)
-							}
-						}
-					});
-					//////console.log(rejOn)
-					
-  					if(this.state.faultArray.length != faultArray.length){
-  						shouldUpdate = true;
-  						//this.setState({faultArray:faultArray, rejOn:rejOn, update:true})
-  					}else if(this.state.rejOn != rejOn){
-  						shouldUpdate = true
-  						//////console.log(['4566', rejOn])
-  					}else if(this.state.warningArray.length != warningArray.length){
-  						shouldUpdate = true;
-  						//this.setState({faultArray:faultArray, rejOn:rejOn, update:true})
-  					}else{
-  						//var diff = false;
-  						faultArray.forEach(function (f) {
-  							if(self.state.faultArray.indexOf(f) == -1){
-  								shouldUpdate = true;
-  							}
-  						})
-  						warningArray.forEach(function (w) {
-  							// body...
-  							if(self.state.warningArray.indexOf(w) == -1){
-  								shouldUpdate = true;
-  							}
-  						})
-  					}
-  					
+			
   						
   					//faultArray = null;	
   					//timings for shouldUpdate? 
@@ -5713,38 +5764,12 @@ class DetectorView extends React.Component{
   							trec = 0;
   						}
   					}
-  					if(this.state.trec != trec){
-  						shouldUpdate = true;
-  					}
-
-  					//todo - refactor modals?
-  				/*	this.refs.sModal.updateMeter(siga,sigb)
-  					this.refs.sModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])
-  					this.refs.snModal.updateMeter(siga,sigb)
-  					this.refs.snModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])
-  					this.refs.calibModal.updateMeter(siga,sigb)
-  					this.refs.calibModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])
-  					this.refs.teModal.updateMeter(siga,sigb)
-  					this.refs.teModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])
-  					this.refs.tModal.updateMeter(siga,sigb)
-  					this.refs.tModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])
-  					this.refs.loginModal.updateMeter(siga,sigb)
-  					this.refs.loginModal.updateSig(prodRec['Peak_A'],prodRec['Peak_B'])*/
-  						
-  					if(this.state.updateCount ==3){
-  						if((this.refs.sModal.state.show && !this.refs.sModal.state.keyboardVisible) || (this.refs.snModal.state.show && !this.refs.snModal.state.keyboardVisible)
-  							|| (this.refs.teModal.state.show && !this.refs.teModal.state.keyboardVisible)|| (this.refs.calibModal.state.show && this.state.showCal && !this.refs.calibModal.state.keyboardVisible)){
-  								shouldUpdate = true
-  						}
-  					}
-  						if(this.refs.sModal.state.show && this.refs.sModal.state.keyboardVisible){
-  							shouldUpdate = false;
-  						}
+  					
 
   						if(shouldUpdate){
   							if(this.refs.sModal.state.show){
   								var	cob2 = this.getCob(this.state.sysSettings, this.state.prodSettings, prodRec, this.state.framRec)
-  								this.setState({rec:prodRec,faultArray:faultArray,warningArray:warningArray,trec:trec, cob2:cob2, rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits})
+  								this.setState({rec:prodRec,faultArray:faultArray.arr,warningArray:warningArray.arr,trec:trec, cob2:cob2, rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits.data})
   								//////console.log(['3196',cob2])
   								
   								cob2 = null;
@@ -5752,7 +5777,7 @@ class DetectorView extends React.Component{
   								var	sns = this.getPage('Sens',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Sens'] = sns
-  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray,warningArray:warningArray,trec:trec, rejOn:rejOn,updateCount:0,update:shouldUpdate, ioBITs:iobits})
+  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray.arr,warningArray:warningArray.arr,trec:trec, rejOn:rejOn,updateCount:0,update:shouldUpdate, ioBITs:iobits.data})
   								sns = null;
   								pages = null;
 
@@ -5760,7 +5785,7 @@ class DetectorView extends React.Component{
   								var	te = this.getPage('Test',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Test'] = te
-  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray,warningArray:warningArray,trec:trec,rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits})
+  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray.arr,warningArray:warningArray.arr,trec:trec,rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits.data})
   								te = null;
   								pages = null;
   							}else if(this.state.showCal){
@@ -5768,22 +5793,23 @@ class DetectorView extends React.Component{
   								var	cal = this.getPage('Calibration',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Calibration'] = cal
-  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray,warningArray:warningArray,trec:trec, rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits})
+  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray.arr,warningArray:warningArray.arr,trec:trec, rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits.data})
   								cal = null;
   								pages = null;
   							}else{
-  								this.setState({rec:prodRec,faultArray:faultArray,warningArray:warningArray, rejOn:rejOn,trec:trec, updateCount:0, update:shouldUpdate, ioBITs:iobits})
+  								this.setState({rec:prodRec,faultArray:faultArray.arr,warningArray:warningArray.arr, rejOn:rejOn,trec:trec, updateCount:0, update:shouldUpdate, ioBITs:iobits.data})
   							}
   						}else{
   							//////console.log(rejOn)
-  							this.setState({rec:prodRec, rejOn:rejOn,faultArray:faultArray, warningArray:warningArray,updateCount:(this.state.updateCount+1)%6, update:shouldUpdate, ioBITs:iobits})
+  							this.setState({rec:prodRec, rejOn:rejOn,faultArray:faultArray.arr, warningArray:warningArray.arr,updateCount:(this.state.updateCount+1)%6, update:shouldUpdate, ioBITs:iobits.data})
   						}
-  						faultArray = null;
-  						warningArray = null;
+  						_oPool.recycle(faultArray);
+  						_oPool.recycle(warningArray);
+  						_oPool.recycle(iobits)
 			}
 			
 			pVdef = null;
-			iobits = null;
+			
 
    		}else if(lcd_type == 3){
    					
@@ -5832,7 +5858,6 @@ class DetectorView extends React.Component{
    		}
 
    		prodRec = null;	
-   		faultArray = null;	
    		e = null;
    		d = null;
    		combinedSettings = null;
@@ -5878,7 +5903,8 @@ class DetectorView extends React.Component{
 		
 		this.setState({data:[[this.state.cob2,0]], update:true})
 		setTimeout(function () {
-				self.refs.sModal.toggle()
+				self.refs.im.pauseGraph();
+				self.refs.sModal.toggle();
 		}, 100)
 		}else{
 			//toast('Access Denied')
@@ -5897,7 +5923,7 @@ class DetectorView extends React.Component{
 
 			setTimeout(function () {
 			// body...
-
+				self.refs.im.pauseGraph();
 				self.refs.snModal.toggle()
 			}, 100)
 		}else{
@@ -5925,7 +5951,7 @@ class DetectorView extends React.Component{
 		}
 		setTimeout(function () {
 			// body...
-			
+				self.refs.im.pauseGraph();		
 				self.refs.teModal.toggle()
 		}, 100)
 		}else{
@@ -5954,6 +5980,7 @@ class DetectorView extends React.Component{
 		}
 		setTimeout(function () {
 			// body...
+
 			self.refs.tModal.toggle()
 		}, 100)
 		}else{
@@ -5971,6 +5998,7 @@ class DetectorView extends React.Component{
 		if((this.state.sysSettings['PassAccCal'] <= this.state.level)||(this.state.sysSettings['PassOn'] == 0)||(this.state.level > 2)){
 			this.setState({showCal:false, update:true})
 			setTimeout(function (argument) {
+				self.refs.im.pauseGraph();
 				self.refs.calibModal.toggle();
 			
 			},100)
@@ -6527,6 +6555,7 @@ class DetectorView extends React.Component{
 		// body...
 			var st = [];
 			var currentView = 'MainDisplay';
+			this.refs.im.restart();
 			this.setState({currentView:currentView,data:[], stack:[], settings:false, update:true})
 
 	}
@@ -6713,11 +6742,7 @@ class DetectorView extends React.Component{
 			}
 		}
 
-		var testprompt = (<div style={{color:'#e1e1e1'}} >{testcont}
-			
-		<div><button onClick={this.quitTest}>Quit Test</button></div>
-
-		 </div>)
+		var testprompt = (<div style={{color:'#e1e1e1'}}>{testcont}<div><button onClick={this.quitTest}>Quit Test</button></div></div>)
 		return testprompt
 	}
 	setOverride (ov) {
@@ -6765,12 +6790,15 @@ class DetectorView extends React.Component{
 		}
 	}
 	calClosed () {
+		this.refs.im.restart();
 		this.setState({showCal:false, update:true})
 	}
 	snmClosed () {
+		this.refs.im.restart();
 		this.setState({showSens:false, update:true})
 	}
 	tmClosed () {
+		this.refs.im.restart();
 		this.setState({showTest:false, update:true})
 	}
 	
@@ -6794,20 +6822,6 @@ class DetectorView extends React.Component{
 		this.refs.loginModal.toggle()
 	}
 	login(v){
-		/*
-			var pkt = rpc[1].map(function (r) {
-				if(!isNaN(r)){
-					return r
-				}else{
-					if(isNaN(v)){
-						return 0
-					}else{
-						return parseInt(v)
-					}
-				}
-			})
-			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-			socket.emit('rpc', {ip:this.props.ip, data:packet})*/
 		this.setState({level:v,update:true})
 	}
 	authenticate(user,pswd){
@@ -7612,6 +7626,15 @@ class SlimGraph extends React.Component{
 		this.state = ({width:480, height:215, mqls:mqls, popUp:false})
 		this.toggle = this.toggle.bind(this);
 		this.stream = this.stream.bind(this);
+		this.pauseGraph = this.pauseGraph.bind(this);
+		this.restart = this.restart.bind(this);
+	}
+	pauseGraph(){
+		console.log('lower res')
+		this.refs.cv.pauseGraph();
+	}
+	restart(){
+		this.refs.cv.restart();
 	}
 	listenToMq () {
 		// body...
@@ -7636,8 +7659,11 @@ class SlimGraph extends React.Component{
 		}
 		return(<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int}/>)
 	}
-	stream (dat) {
-		this.refs.cv.stream(dat)
+	stream (dat, ov) {
+		if(!ov){
+			this.refs.cv.stream(dat)
+		}
+		
 	}
 	toggle(){
 		var self = this;
@@ -8426,6 +8452,8 @@ class InterceptorMainPageUI extends React.Component{
 		this.onDeny = this.onDeny.bind(this);
 		this.logout = this.logout.bind(this);
 		this.setDT = this.setDT.bind(this);
+		this.pauseGraph = this.pauseGraph.bind(this);
+		this.restart = this.restart.bind(this);
 	}
 	shouldComponentUpdate (nextProps, nextState) {
 		if(this.state.keyboardVisible){
@@ -8438,6 +8466,15 @@ class InterceptorMainPageUI extends React.Component{
 		}else{
 			return true;
 		}
+	}
+	pauseGraph(){
+	
+			this.refs.nv.pauseGraph();
+		
+	}
+	restart(){
+		
+			this.refs.nv.restart();
 	}
 	setDT(dt){
 		this.refs.clock.setDT(dt)
@@ -8461,9 +8498,9 @@ class InterceptorMainPageUI extends React.Component{
 	sendPacket (n,v) {
 		this.props.sendPacket(n,v);
 	}
-	update(siga, sigb,df) {
+	update(siga, sigb,df,ov) {
 		var dat = {t:Date.now(),val:siga,valb:sigb, valCom:df}
-		this.refs.nv.streamTo(dat)
+		this.refs.nv.streamTo(dat,ov)
 		this.refs.dv.update(siga,sigb,df)
 			this.refs.pedit.updateMeter(siga,sigb,df)
 			this.refs.netpolls.updateMeter(siga,sigb,df)
@@ -9102,6 +9139,14 @@ class InterceptorNav extends React.Component{
 		this.setCip = this.setCip.bind(this);
 		this.setCipSec = this.setCipSec.bind(this);
 		this.onDeny = this.onDeny.bind(this);	
+		this.pauseGraph =this.pauseGraph.bind(this);
+		this.restart = this.restart.bind(this);
+	}
+	pauseGraph(){
+		this.refs.sg.pauseGraph();
+	}
+	restart(){
+		this.refs.sg.restart();
 	}
 	onDeny(){
 		this.props.onDeny();
@@ -9142,9 +9187,10 @@ class InterceptorNav extends React.Component{
 		// body...
 		this.props.onButton('prod')
 	}
-	streamTo (dat) {
+	streamTo (dat,ov) {
 		// body...
-		this.refs.sg.stream(dat);
+
+		this.refs.sg.stream(dat,ov);
 	}
 	clearRejLatch(){
 		this.props.clearRejLatch();
@@ -9382,7 +9428,7 @@ class InterceptorNavContent extends React.Component{
 		this.clearWarnings = this.clearWarnings.bind(this);
 		this.onClick = this.onClick.bind(this);
 	}
-	stream (dat) {
+	stream (dat,ov) {
 	}
 	componentWillReceiveProps(newProps){
 		if(newProps.faultArray.length > this.props.faultArray.length){
@@ -10662,9 +10708,7 @@ class CustomKey extends React.Component{
 		}else if(this.props.Key == 'del'){
 			return	<td onClick={this.onPress} className='customKey'><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg></div></td>
 		}else if(this.props.Key == 'enter'){
-
-			
-			return <td onClick={this.onPress} className='customKey'  colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Accept</div></td>
+			return  <td onClick={this.onPress} className='customKey' colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Accept</div></td>
 		
 		}else if(this.props.Key == 'shift'){
 			var fill = "#000000"
@@ -10675,7 +10719,7 @@ class CustomKey extends React.Component{
 			}
 			return <td style={st} onClick={this.onPress} className='customKey'><div style={{marginBottom:-15}}><svg fill={fill} xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M12 8.41L16.59 13 18 11.59l-6-6-6 6L7.41 13 12 8.41zM6 18h12v-2H6v2z"/></svg></div></td>
 		}else if(this.props.Key == 'cancel'){
-			return <td onClick={this.onPress} className='customKey'  colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Cancel</div></td>
+			return <td onClick={this.onPress} className='customKey' colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Cancel</div></td>
 			
 	
 		}else{
@@ -10719,17 +10763,25 @@ class CanvasElem extends React.Component{
 		var l1 = new TimeSeries();
 		var l2 = new TimeSeries();
 		var l3 = new TimeSeries();
-		this.state =  ({line:l1, line_b:l2, line_com:l3})
+		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#808a90'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
+		
+		this.state =  ({smoothie:smoothie,line:l1, line_b:l2, line_com:l3})
 		this.stream = this.stream.bind(this);
+		this.pauseGraph = this.pauseGraph.bind(this);
+		this.restart = this.restart.bind(this);
+	}
+	pauseGraph(){
+		this.state.smoothie.setTargetFPS(8)
+	}
+	restart(){
+		this.state.smoothie.setTargetFPS(15)
 	}
 	componentDidMount(){
-		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
-		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#808a90'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
-		smoothie.setTargetFPS(18)
+		var smoothie = this.state.smoothie;
+		smoothie.setTargetFPS(15)
 		smoothie.streamTo(document.getElementById(this.props.canvasId));
 		if(this.props.df){
 			smoothie.addTimeSeries(this.state.line_com, {lineWidth:2,strokeStyle:'rgb(0, 128, 128)'});
-			
 			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
 			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
 		}else if(this.props.int){

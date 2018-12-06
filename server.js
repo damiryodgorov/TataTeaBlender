@@ -10,12 +10,10 @@ const HTTP = require('http')
 const net = require('net')
 const fti = require('./fti-flash-node/index.js');
 const arloc = fti.ArmFind;
-const flatfile = require('flat-file-db')
 const crypto = require('crypto')
 const parser = require('http-string-parser')
 const zlib = require('zlib')
 const unzip = zlib.createGunzip();
-const unzipResponse = require('unzip-response')
 const NetPollEvents = require('./netpoll_events_server.js')
 const tftp = require('tftp');
 const PassThrough = require('stream').PassThrough;
@@ -29,12 +27,11 @@ const os = require('os');
 const usb = require('usb');
 const sys = require('sys');
 const exec = require('child_process').exec;
-//const drivelist = require('drivelist')
-//const filesystem = require('fs-filesystem');
-var db = flatfile('./dbs/users.db')
+const crc = require('crc');
+
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
-const VERSION = '2018/11/16'
+const VERSION = '2018/12/05'
 
 http.on('error', function(err){
   console.log('this is an http error')
@@ -480,17 +477,21 @@ function updateDisplayFiles(files,cnt,callBack){
 function unzipTar(path, callback) {
   // body...
   relaySockMsg('displayUpdate')
+  relaySockMsg('updateProgress','Copying Archive')
   exec('sudo rsync '+ path + ' /home/myuser/temp', function () {
-    if(fs.statSync(path).size == fs.statSync('/home/myuser/temp').size){
+    if(crc.crc32(fs.readFileSync(path)) == crc.crc32(fs.readFileSync('/home/myuser/temp'))){
     // body...
+    relaySockMsg('updateProgress','Deleting App')
     exec('sudo rm -rf /home/myuser/node',function (argument) {
       // body...
+      relaySockMsg('updateProgress','Unpacking...')
        exec('sudo tar -xzf /home/myuser/temp -C /home/myuser', function(err,stdout,stderr) {
       // body...
       console.log(stdout)
-      relaySockMsg('notify','Unpacking')
+      
       setTimeout(function(){
         exec('sudo rm -f /home/myuser/temp',function(){
+            relaySockMsg('updateProgress','Rebooting - this may take a while')
          callback()
       })
       },15000)
@@ -652,13 +653,7 @@ function arm_burn(ip, fname, callback){
         }
         
       }, 1000)
-   /*    setTimeout(function(){
 
-            arm_program_flash(fname, arm, false, function(){
-              callback(true)
-            })
-          },7000)*/
-     
     }
   })
 }catch(e){
@@ -715,25 +710,23 @@ function getAccountsJSON(ip, callback){
 function processParam(e, Vdef, nVdf, pVdef, ip) {
 
   var rec_type = e.readUInt8(0)
+  var buf = e.slice(1)
   //  console.log(rec_type)
   var n = e.length
-  var array = []
-  for(var i = 0; i<((n-1)/2); i++ ){
-    array[i] = e.readUInt16BE(i*2 + 1);
-  }
+
   var pack;
   var rec = {};
    var userrec = {};
   if(rec_type == 0){
     nVdf[0].forEach(function (p) {
-      rec[p] = getVal(array, 0, p, pVdef)
+      rec[p] = getVal(buf, 0, p, pVdef)
     })
   
     pack = {type:0, rec:rec}
     //system
   }else if(rec_type == 1){
     nVdf[1].forEach(function (p) {
-      rec[p] = getVal(array, 1, p, pVdef)
+      rec[p] = getVal(buf, 1, p, pVdef)
       // body...
     })
     /*for(var p in Vdef["@deps"]){
@@ -744,7 +737,7 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
      pack = {type:1, rec:rec}
   }else if(rec_type == 2){
     nVdf[2].forEach(function (p) {
-      rec[p] = getVal(array, 2, p, pVdef)
+      rec[p] = getVal(buf, 2, p, pVdef)
       // body...
     })
     /*for(var p in Vdef["@deps"]){
@@ -759,14 +752,14 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
       //need to account for user objects here. 
      // if(p)
 
-      rec[p] = getVal(array, 3, p, pVdef)
+      rec[p] = getVal(buf, 3, p, pVdef)
       // body...
     })
    
     nVdf[6].forEach(function (p) {
       //need to account for user objects here. 
      // if(p)
-      userrec[p] = getVal(array, 6, p, pVdef)
+      userrec[p] = getVal(buf, 6, p, pVdef)
       // body...
     })
     var usernames = []
@@ -782,7 +775,7 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
     
   }else if(rec_type == 4){
     nVdf[4].forEach(function (p) {
-      rec[p] = getVal(array, 4, p, pVdef)
+      rec[p] = getVal(buf, 4, p, pVdef)
       // body...
     })
 
@@ -793,10 +786,10 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
  
   nVdf = null;
   pVdef = null;
-  array = null;
   e = null;
   rec = null;
   userrec = null;
+  buf = null;
  // pack.det = {ip:ip}
   pack = null;
 
@@ -819,11 +812,11 @@ function getVal(arr, rec, key, pVdef){
     }else{
       var val;
       if((param['@bit_pos'] + param['@bit_len']) > 16){
-        var wd = (Params.swap16(arr[param['@i_var']+1])<<16) | Params.swap16((arr[param['@i_var']]))
+        var wd = (arr.readUInt16LE((param['@i_var']+1)*2)<<16) | (arr.readUInt16LE(param['@i_var']*2))
         val = (wd >> param["@bit_pos"]) & ((1<<param["@bit_len"])-1)
         
       }else{
-        val = Params.swap16(arr[param["@i_var"]]);
+        val = arr.readUInt16LE(param["@i_var"]*2);
          if(typeof param['@name'] != 'undefined'){
           if((param['@name'].indexOf('HaloPeak') != -1) && (param['@bit_len'] == 16)){
 
@@ -844,16 +837,19 @@ function getVal(arr, rec, key, pVdef){
 function wordValue(arr, p){
 
     var n = Math.floor(p["@bit_len"]/16);
-    var sa = arr.slice(p["@i_var"], p["@i_var"]+n)
+
+    var sa = [];
+    for(var i = 0; i< n; i++){
+      sa.push(arr.readUInt16LE((p["@i_var"]+i)*2));
+    }
     arr = null;
     if(p['@type']){
-      //funcJSON['@func'][p['@type']].apply(this, sa) 1980/00/00 00:00:02
+
       return Params[p['@type']](sa)
-    //  return eval(funcJSON['@func'][p['@type']])(sa)
     }else if('DateTime' == p['@name']){
      
-     var sa0 = Params.swap16(sa[0])
-     var sa1 = Params.swap16(sa[1])
+     var sa0 = sa[0]
+     var sa1 = sa[1]
      var month
       var sec = ('0' + ((sa0&0x1f)*2).toString()).slice(-2)
       var min = ('0' + ((sa0>>5)&0b111111).toString()).slice(-2)
@@ -864,10 +860,10 @@ function wordValue(arr, p){
       return year+'/'+mm+'/'+dd + ' ' +hr +':'+min+':'+sec ;
 
     }else if('EtherExtPorts' == p['@name']){
-      return Params.swap16(sa[0])
+      return sa[0]
     }else{
       var str = sa.map(function(e){
-      return (String.fromCharCode((e>>8),(e%256)));
+      return (String.fromCharCode((e%256),(e>>8)));
     }).join("");
       sa = null;
       p = null;
@@ -893,21 +889,21 @@ class Params{
   static prod_name_u16_le(sa){
     //console.log(sa)
     var str = sa.map(function(e){
-      return (String.fromCharCode((e>>8),(e%256)));
+      return (String.fromCharCode((e%256),(e>>8)));
     }).join("");
     return str.replace("\u0000","").trim();
     //return val
   }
   static dsp_name_u16_le(sa){
     var str = sa.map(function(e){
-      return (String.fromCharCode((e>>8),(e%256)));
+      return (String.fromCharCode((e%256),(e>>8)));
     }).join("");
     return str.replace("\u0000","").trim();
     //return val
   }
   static dsp_serno_u16_le(sa){
     var str = sa.map(function(e){
-      return (String.fromCharCode((e>>8),(e%256)));
+      return (String.fromCharCode((e%256),(e>>8)));
     }).join("");
     return str.replace("\u0000","").trim();
     //return val
@@ -1015,7 +1011,7 @@ class Params{
   }
   static prod_name(sa){
     var str = sa.map(function(e){
-      return (String.fromCharCode((e>>8),(e%256)));
+      return (String.fromCharCode((e%256),(e>>8)));
     }).join("");
     return str.replace("\u0000","").trim();
     //return val;
@@ -1131,11 +1127,11 @@ class Params{
     //todo
     //console.log(ip)
     //return ip
-   return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');
+   return words.map(function(w){return [w&0xff,(w>>8)&0xff].join('.')}).join('.');
   }
   static username(sa){
    var str = sa.map(function(e){
-      return (String.fromCharCode((e>>8),(e%256)));
+      return (String.fromCharCode((e%256),(e>>8)));
     }).join("");
     return str.replace("\u0000","").trim();
 
@@ -1145,10 +1141,10 @@ class Params{
   }
   static password_hash(phash){
     var buf = Buffer.alloc(8);
-    buf.writeUInt16LE(phash[1],0);
-    buf.writeUInt16LE(phash[0],2);
-    buf.writeUInt16LE(phash[2],6);
-    buf.writeUInt16LE(phash[3],4);
+    buf.writeUInt16BE(phash[1],0);
+    buf.writeUInt16BE(phash[0],2);
+    buf.writeUInt16BE(phash[2],6);
+    buf.writeUInt16BE(phash[3],4);
     return buf;
   }
 }
@@ -1602,10 +1598,17 @@ function autoIP(){
              getVdef(det.ip,function(ip4,vdf){
                 if(vdf){
                   console.log(vdf)
-                 if(vdf['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2){
+                 if(vdf['@defines']['INTERCEPTOR']){
                   det.interceptor = true
                 }
+                if(vdf['@defines']['INTERCEPTOR_DF']){
+                  det.df = true;
+                }
+                if(vdf['@defines']['FINAL_FRAM_STRUCT_SIZE']){
+                  det.ts_login = true;   
+                }
                  prefs = [{name:det.name, type:'single', banks:[det]}];
+                
                 relaySockMsg('prefs',prefs)
                 locateUnicast(ip4)
               }
@@ -2014,12 +2017,15 @@ socket.on('updateDisplay',function(){
 
             });
           }else{
+
               unzipTar('/mnt/'+res.toString(), function (argument) {
                 // body...
                 exec('sudo umount '+usbdrive, function(er, stdout, stderr){
-                  socket.emit('notify', 'update complete - restarting');
-                  exec('sudo reboot -n -d -f', function (argument) {
+                 
+                  exec('sudo sh reboot.sh', function (argument) {
                     // body...
+                    console.log('reboot')
+                    //process.abort()
                   })
                 })
               })

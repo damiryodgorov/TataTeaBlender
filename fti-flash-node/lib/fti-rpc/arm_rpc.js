@@ -423,10 +423,8 @@ class ArmRpcBase{
 			var data = buf.slice(n,n+512)//pad with 0xff if less than blk_size
 			//console.log('data length', data.length)
 			if(data.length < 512){
-				//console.log('fill', data)
-				//data.fill(0xff,data.length)
+				
 				data = Buffer.concat([data,Buffer.alloc(512,0xff)]).slice(0,512);
-				//console.log('filled', data)
 			}
 			this.prog_block(i,data,function(d){
 				console.log(i)
@@ -439,57 +437,6 @@ class ArmRpcBase{
 			callBack()
 		}
 	}
-	/*
-	  def verify_binary_file(bin_file)
-        bf=read_binary_file(bin_file)
-        vec_end_val = 0xffffffff
-        n=nil; (0..2840).step(4) {|i| if bf[i,4].unpack('L')[0] == vec_end_val; n=i; break; end}
-        raise "Verify bin file: size not found" unless n
-        size = bf[n+4,4].unpack('L')[0] # extract the file size
-        p "Program Size: #{bf[n+4,4].unpack('L')[0]}"
-        raise "Verify bin file: size error" unless n < bf.size
-        start_addr = bf[n+8,4].unpack('L')[0]
-        p "Start Address: 0x#{start_addr.to_s(16)}"
-        csum = Digest::SHA1.digest( bf[0,size] ) # compute checksum
-        raise "Verify bin file: digest error" if csum != bf[size,csum.size]
-        puts "check bytes: #{csum.unpack('C*').inspect}"
-        [bf,start_addr]
-      end
-          def prog_block(i, bytes, timeout=1)
-        raise "prog_block: called with wrong block size" unless bytes.size == ARM_PROG_BLOCK_SIZE
-        bytes = bytes.pack('C*') if Array===bytes
-        pkt = [ARM_RPC_FW_UPDATE,3,i].pack('CCS') + bytes
-        res = rpc(pkt, timeout)
-        return res[2]+(res[3] << 8) if res[1]==4 # ack with block number
-        raise "Error prog_block: #{res.inspect}"
-      end
-      
-      def prog_binary(binary_file, app_start=nil)
-        arm = self; blk_size = ARM_PROG_BLOCK_SIZE
-        fsize = File.size(binary_file)
-        open(binary_file, "rb") do |fd|
-          n = 0; blk = 0
-          while n < fsize
-            data = fd.read(blk_size)
-            data << "\xff" * (blk_size - data.size) if data.size < blk_size # pad the block with 0xff
-            ack_blk = arm.prog_block(blk, data)
-            # arm.read(app_start+(blk_size*blk),blk_size) {|s| raise "Verify failed" unless s==data} if app_start
-            n += data.size; blk+=1
-            percent = ([n,fsize-1].min * 100/fsize.to_f).to_i
-            yield percent if block_given?
-          end # while
-        end # open
-        yield 100 if block_given?
-      end
-	*/
-	/*
-		def bootloader # drop to boot loader
-        rpc([ARM_RPC_FW_UPDATE,1,2], 0)
-        # while sh_ping; end # keep trying to ping the bootloader as the ethernet comes up
-        true
-      end
-
-	*/
 }
 
 class ArmRpc extends ArmRpcBase{
@@ -505,17 +452,6 @@ class ArmRpc extends ArmRpcBase{
 		this.rem_port = port
 		this.loc_port = loc_port
 		this.init_socket();
-		/*var self = this;
-		Sync(function(){
-			console.log(215)
-			self.socket = self.init_socket.sync(null);
-			console.log(217)
-			var d = self.init_session_key(null);
-			self.enc = d[0];
-			self.dec = d[1];
-			console.log("keys initialized")
-		})*/
-		
 	}
 	init_session_key(callBack){
 		
