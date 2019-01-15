@@ -213,6 +213,7 @@
       removeCount++;
     }
     if (removeCount !== 0) {
+     // console.log('dropping data', Date.now())
       this.data.splice(0, removeCount);
     }
   };

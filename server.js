@@ -31,7 +31,7 @@ const crc = require('crc');
 
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
-const VERSION = '2018/12/05'
+const VERSION = 'PR2019/01/15'
 
 http.on('error', function(err){
   console.log('this is an http error')
@@ -1953,6 +1953,13 @@ function getProdName(ip, list, ind, callback, arr){
     clients = {};
     socket.emit('resetConfirm','locate now')
   })
+ /* setInterval(function(){
+    cur = Date.now();
+    socket.emit('echo')
+  },10000)
+  socket.on('echoback',function(){
+    console.log('time to echo: ', (Date.now() - cur))
+  })*/
   socket.on('getVersion', function (argument) {
     // body...
     socket.emit('version', VERSION)

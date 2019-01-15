@@ -12,8 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {css} from 'glamor'
 import FlexText from 'flex-text';
 var createReactClass = require('create-react-class');
-const createPool = require('reuse-pool')
-
+var createPool = require('reuse-pool')
 const _buildVersion = 'display';
 
 const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CLEAR_WARNINGS','PHASE_HOLD','CIP_TEST','CIP_PLC','PROD_SEL1', 'PROD_SEL2', 'PROD_SEL3','PROD_SEL4']
@@ -86,10 +85,7 @@ Object.defineProperty(Array.prototype, 'chunk', {
         return temporal;
     }
 });
-
-var _oPool = createPool(function(){
-	return {}
-})
+var packetPool = createPool(function(){return {}});
 
 class Params{
   static frac_value(int){
@@ -459,11 +455,11 @@ class FtiSockIo{
 		var self = this;
 		this.sock.onmessage = function (message) {
 			// body...
-			var obj = _oPool.get();
-
-			obj.msg = JSON.parse(message.data)
-			self.handle(obj.msg.event, obj.msg.data);
-			_oPool.recycle(obj)
+			var msg = JSON.parse(message.data)
+			self.handle(msg.event, msg.data);
+			message = null;
+			msg = null;
+			//packetPool.recycle(obj);
 		}
 		this.sock.onopen = function (argument) {
 			// body...
@@ -559,7 +555,12 @@ _Vdef = json
 })
 
 
-
+socket.on('echo',function(){
+	setTimeout(function(){
+		socket.emit('echoback')
+	},100)
+	//socket.emit('echoback')
+})
 /*******************************************/
 
 function setScrollTop(id, top) {
@@ -1636,7 +1637,7 @@ class DispSettings extends React.Component{
 	render(){
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-			var _st = {textAlign:'center',lineHeight:'51px', height:51, width:536, display:'table-cell', position:'relative'}
+			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 
 		return <div>
 	<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} >
@@ -1725,7 +1726,7 @@ class LogInControl extends React.Component{
 			list.push(ac.username)
 		})
 		list.unshift('Not Logged In')
-		this.state = {val:0, list:list, showAcccountControl:false}
+		this.state = {val:0, list:list, showAcccountControl:false, open:false}
 		this.enterPIN = this.enterPIN.bind(this);
 		this.valChanged = this.valChanged.bind(this);
 		this.onFocus = this.onFocus.bind(this);
@@ -1738,7 +1739,8 @@ class LogInControl extends React.Component{
 			list.push(ac.username)
 		})
 		list.unshift('Not Logged In')
-		if(!this.state.open){
+		if(!this.props.isOpen){
+
 			this.setState({val:props.val, list:list})
 		}else{
 			console.log('this was the issue... why Though?')
@@ -1818,11 +1820,11 @@ class LogInControl extends React.Component{
 			logoutbutton = (<div><button className='customAlertButton' onClick={this.logout}>Log Out</button></div>)
 		}
 		
-		var namestring = 'Choose User'
+		var namestring = 'Select User'
 		var pw = <PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref='pw' val={[this.props.val]} options={[list]} onChange={this.selectChanged}/>
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-			var _st = {textAlign:'center',lineHeight:'51px', height:51, width:536, display:'table-cell', position:'relative'}
+			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 
 		    
 		var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#eee"}} >
@@ -1851,6 +1853,120 @@ class LogInControl extends React.Component{
 			{actrl}
 			{logoutbutton}
 		</div> 
+	}
+}
+class LogInControl2 extends React.Component{
+	constructor(props){
+		super(props)
+		this.login = this.login.bind(this)
+		this.logout = this.logout.bind(this);
+		this.selectChanged = this.selectChanged.bind(this);
+		var list = []
+		this.props.accounts.forEach(function(ac){
+			list.push(ac.username)
+		})
+		list.unshift('Not Logged In')
+		this.state = {val:0, list:list, showAcccountControl:false, open:false}
+		this.enterPIN = this.enterPIN.bind(this);
+		this.valChanged = this.valChanged.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+		this.toggleAccountControl = this.toggleAccountControl.bind(this);
+		this.onCancel = this.onCancel.bind(this);
+	}
+	componentWillReceiveProps(props){
+		var list = []
+		props.accounts.forEach(function(ac){
+			list.push(ac.username)
+		})
+		list.unshift('Not Logged In')
+		if(!this.props.isOpen){
+
+			this.setState({val:props.val, list:list})
+		}else{
+			console.log('this was the issue... why Though?')
+			this.setState({list:list})
+		}
+		
+	}
+	componentDidMount(){
+		this.setState({showAcccountControl:false})
+	}
+	login(){
+		var self = this;
+		setTimeout(function(){
+			self.refs.pw.toggleCont();
+			self.setState({open:true})
+		},100)
+		
+	}
+	logout(){
+		this.props.logout();
+	}
+	selectChanged(v,i){
+		////console.log(['1531',v])
+		var self = this;
+		setTimeout(function(){
+			self.setState({val:v})
+		}, 100)
+		
+		if(v != 0){
+			this.enterPIN()
+			
+		}
+
+
+		//this.props.login(v)
+	}
+	enterPIN(){
+		this.refs.psw.toggle();
+	}
+	onFocus(){
+		this.setState({open:true})
+	}
+	onRequestClose(){
+		this.setState({open:false})
+	}
+	valChanged(v){
+		//console.log(v)
+		//this.props.authenticate(this.state.list[this.state.val], v)
+		console.log(this.state.val)
+		if(this.props.pass6 == 0){
+			if(v.length == 6){
+				this.props.authenticate(this.state.val,v)
+			}else{
+				toast('Password should be 6 characters')
+			}
+		}else{
+			if(v.length == 4){
+				this.props.authenticate(this.state.val,v)
+			}else{
+				toast('Password should be 4 characters')
+			}
+		}
+		
+	}
+	toggleAccountControl(){
+		if(this.props.level > 2){
+			this.setState({showAcccountControl:!this.state.showAcccountControl})
+		}else{
+			toast('Access Denied')
+		}
+//		return 	<AccountControl accounts={this.props.accounts} language={this.props.language} login={this.login} val={this.state.level}/>
+		
+	}
+	onCancel(){
+		this.setState({open:false})
+	}
+	render(){
+		var list = this.state.list
+		var namestring = 'Select User'
+		var pw = <PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref='pw' val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
+
+		return <React.Fragment>{pw}
+			<CustomKeyboard language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'psw'} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
+		
+		</React.Fragment> 
 	}
 }
 class TickerBox extends React.Component{
@@ -2788,7 +2904,7 @@ class SettingItem2 extends React.Component{
 			}
 			//	////console.log(namestring)		
 			//
-				var _st = {textAlign:'center',lineHeight:'51px', height:51, width:536, display:'table-cell', position:'relative'}
+				var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 
 		
 		//	return <div className='sItem noChild' onClick={this.onItemClick}><label style={{display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{namestring}</label>
@@ -2822,7 +2938,7 @@ class SettingItem2 extends React.Component{
 			}else if(namestring.length > 18){
 				fSize = 22
 			}
-			var _st = {textAlign:'center',lineHeight:'51px', height:51, width:536, display:'table-cell', position:'relative'}
+			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 			console.log(2692,this.props.data);
 			
 			if(typeof this.props.data[0]['child'] != 'undefined'){
@@ -3122,7 +3238,7 @@ class MultiEditControl extends React.Component{
 		var labWidth = (536/this.state.val.length)
 			var vLabels = this.state.val.map(function(d,i){
 			var val = d;
-			var st = {textAlign:'center',lineHeight:'51px', height:51}
+			var st = {textAlign:'center',lineHeight:'60px', height:60}
 			st.width = labWidth
 			st.fontSize = self.props.vst.fontSize;
 			st.display = 'table-cell';//self.props.vst.display;
@@ -3355,11 +3471,11 @@ class AlertModal extends React.Component{
 		cont =  <AlertModalCont vMap={this.props.vMap} accept={this.accept} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</AlertModalCont>
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
-		<div className='modal-x' onClick={this.close}>
+	{/*	<div className='modal-x' onClick={this.close}>
 			 	 <svg viewbox="0 0 40 40">
     				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
   				</svg>
-			</div>
+			</div>*/}
 			{cont}
 		</div>
 	}
@@ -3442,6 +3558,12 @@ class PopoutWheel extends React.Component{
 		this.onChange = this.onChange.bind(this);
 		this.toggle = this.toggle.bind(this);
 		this.toggleCont =this.toggleCont.bind(this);
+		this.onCancel = this.onCancel.bind(this);
+	}
+	onCancel(){
+		if(this.props.onCancel){
+			this.props.onCancel();
+		}
 	}
 	onChange (v,i,i2) {
 		if(typeof this.props.index != 'undefined'){
@@ -3459,7 +3581,7 @@ class PopoutWheel extends React.Component{
 	}
 	render () {
 		var value = "placeholder"
-		return	<PopoutWheelModal params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
+		return	<PopoutWheelModal onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
 	}
 }
 class PopoutWheelModal extends React.Component{
@@ -3473,11 +3595,15 @@ class PopoutWheelModal extends React.Component{
 	toggle () {
 		this.setState({show:true})
 	}
-	close () {
+	close (v) {
 		var self = this;
+
 		setTimeout(function () {
 			self.setState({show:false})
 		},80)
+		if(v == 0){
+			this.props.onCancel();
+		}
 		
 	}
 	onChange(v,i,i2){
@@ -3489,11 +3615,11 @@ class PopoutWheelModal extends React.Component{
 		cont =  <PopoutWheelModalCont params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
-		<div className='modal-x' onClick={this.close}>
+	{/*	<div className='modal-x' onClick={this.close}>
 			 	 <svg viewbox="0 0 40 40">
     				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
   				</svg>
-			</div>
+			</div>*/}
 			{cont}
 		</div>
 	}
@@ -3515,14 +3641,14 @@ class PopoutWheelModalC extends React.Component{
 	handleClickOutside(e) {
 		// body...
 		if(this.props.show){
-			this.props.close();
+			this.props.close(0);
 		}
 		
 	}
-	close() {
+	close(v) {
 		// body...
 		if(this.props.show){
-			this.props.close();
+			this.props.close(v);
 		}
 	}
 	select(v, i) {
@@ -3546,27 +3672,27 @@ class PopoutWheelModalC extends React.Component{
 							if(self.props.value[2] != self.state.value[2]){
 								setTimeout(function () {
 									self.props.onChange(self.state.value[2],2)
-									self.close();
+									self.close(1);
 								},80)
 							}else{
-								self.close();
+								self.close(1);
 							}
 						}else{
-							self.close();
+							self.close(1);
 						}
 					},80)
 				}else{
 					if(this.props.value[2] != this.state.value[2]){
 						setTimeout(function () {
 							self.props.onChange(self.state.value[2],2)
-							self.close();
+							self.close(1);
 						},80)
 					}else{
-						self.close();
+						self.close(1);
 					}
 				}
 			}else{
-				this.close();
+				this.close(1);
 			}
 		}else if(this.props.value.length > 1){
 			if(this.props.value[1] != this.state.value[1]){
@@ -3575,23 +3701,23 @@ class PopoutWheelModalC extends React.Component{
 					if(this.props.value[2] != this.state.value[2]){
 						setTimeout(function () {
 							self.props.onChange(self.state.value[2],2)
-							self.close();
+							self.close(1);
 						},80)
 					}else{
-						self.close();
+						self.close(1);
 					}
 				}else{
-					self.close();
+					self.close(1);
 				}
 			}else{
 				if(this.props.value[2] != this.state.value[2]){
 					this.props.onChange(this.state.value[2],2)
 				}
-			this.close();
+			this.close(1);
 				
 			}
 		}else{
-			this.close();
+			this.close(1);
 		}
 
 
@@ -3659,7 +3785,7 @@ class PopoutWheelModalC extends React.Component{
 	  		{wheels}
 	  		</div>
 	  		<div><button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.accept}>{vdefMapV2['@labels']['Accept'][this.props.language].name}</button>
-	  		<button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1',background:'#5d5480', width:150, borderRadius:20}} onClick={this.close}>{vdefMapV2['@labels']['Cancel'][this.props.language].name}</button></div>
+	  		<button style={{height:50, border:'5px solid #808a90', color:'#e1e1e1',background:'#5d5480', width:150, borderRadius:20}} onClick={()=> this.close(0)}>{vdefMapV2['@labels']['Cancel'][this.props.language].name}</button></div>
 	  		<Modal ref='helpModal' Style={{color:'#e1e1e1',width:400}}>
 	  		<div>{tooltiptext}</div>
 	  		</Modal>
@@ -3830,11 +3956,11 @@ class PopoutSelectModal extends React.Component{
 		cont =  <PopoutSelectModalCont show={this.state.show} onChange={this.props.onChange} close={this.close} value={this.props.value} options={this.props.options} />
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
-		<div className='modal-x' onClick={this.close}>
+	{/*	<div className='modal-x' onClick={this.close}>
 			 	 <svg viewbox="0 0 40 40">
     				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
   				</svg>
-			</div>
+			</div>*/}
 			{cont}
 		</div>
 	}	
@@ -4431,11 +4557,11 @@ class Modal extends React.Component{
 		
 
 		return(<div className={this.state.className} hidden={h}>
-			<div className='modal-x' onClick={this.toggle}>
+		{/*	<div className='modal-x' onClick={this.close}>
 			 	 <svg viewbox="0 0 40 40">
     				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
   				</svg>
-			</div>
+			</div>*/}
 			{cont}
 	</div>)
 	}
@@ -5141,7 +5267,7 @@ class MbSetup extends React.Component{
 					</div>)
 			}
 			return (<div className="sItem" onClick={this.toggleOptions}>
-						<label >Name:{this.props.mb.name}</label>
+						<label>Name:{this.props.mb.name}</label>
 						{editRow}
 					</div>)	
 		}
@@ -5164,7 +5290,7 @@ class DetectorView extends React.Component{
 		this.state =  {callback:null, rec:{},offline:true,	showTest:false, warningArray:[],faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, 
 			prodSettings:{}, sysSettings:{}, combinedSettings:[],cob2:[], pages:{}, showCal:false,userid:0, isUpdating:false, username:'Not Logged In', isSyncing:false,
 			minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, usb:false, usernames:[{username:'ADMIN',acc:4}], broadCast:false,
-			peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{},framRec:{}, updateCount:0, language:0,rejOn:0,showSens:false,level:0, trec:0}
+			peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{},framRec:{}, updateCount:0, language:0,rejOn:0,showSens:false,level:0, trec:0, loginOpen:false}
 		this.sendPacket = this.sendPacket.bind(this);
 		this.onRMsg = this.onRMsg.bind(this);
 		this.toggleAttention = this.toggleAttention.bind(this);
@@ -5218,6 +5344,7 @@ class DetectorView extends React.Component{
 		this.startSync = this.startSync.bind(this);
 		this.startUpdate = this.startUpdate.bind(this);
 		this.cancelSync = this.cancelSync.bind(this);
+		this.loginClosed = this.loginClosed.bind(this);
 
 		ifvisible.setIdleDuration(300);
 		var self = this;
@@ -5225,7 +5352,6 @@ class DetectorView extends React.Component{
 			if(self.refs.im){
 				self.refs.im.pauseGraph()
 			}
-			
 			self.logout()
 		});
 		ifvisible.on('wakeup', function(){
@@ -5237,12 +5363,10 @@ class DetectorView extends React.Component{
 		ifvisible.onEvery(5,function(){
 			//send keepalive
 			if(self.state.userid != 0){
-				if(ifvisible.getIdleInfo().timeLeft > 294899){
-					
+				if(ifvisible.getIdleInfo().timeLeft > 294899){		
 					self.setAuthAccount({level:self.state.level, username:self.state.username, user:self.state.userid - 1});
 				}
 			}
-			
 		});
 	}
 	componentDidMount(){
@@ -5258,8 +5382,7 @@ class DetectorView extends React.Component{
 						socket.emit('locateUnicast', self.props.det.ip)
 						self.setState({broadCast:true,offline:true, update:true});
 					}
-				}
-			
+				}		
 			}else{
 				self.setState({broadCast:false, update:false})
 			}
@@ -5284,7 +5407,6 @@ class DetectorView extends React.Component{
 			self.setState({isSyncing:true, update:true})
 		})
 	}
-
 	syncPrompt(){
 		this.refs.syncModal.toggle();
 	}
@@ -5530,30 +5652,27 @@ class DetectorView extends React.Component{
 					var shouldUpdate = false
   					var pauseGraph = false;
 					var prodRec = e.rec
-					var iobits = _oPool.get();
-					iobits.data = {}//{}
+					var iobits = {}
 					if(_ioBits){
     						
     						_ioBits.forEach(function(b){
     							if(typeof prodRec[b] != 'undefined'){
-    								iobits.data[b] = prodRec[b]
+    								iobits[b] = prodRec[b]
     							}
     						})
-    						if(isDiff(iobits.data,this.state.ioBITs)){
+    						if(isDiff(iobits,this.state.ioBITs)){
     							shouldUpdate = true;
     							//this.setState({ioBITs:iobits, update:true})
     						}
     					}
 
-    				var faultArray = _oPool.get();//[];
-    				faultArray.arr = []
-				  	var warningArray = _oPool.get();//[];
-				  	warningArray.arr = [];
+    					  	var faultArray = [];
+				  	var warningArray = [];
 					pVdef[7].forEach(function(f){
 					if(prodRec[f] != 0){
-						faultArray.arr.push(f)
+						faultArray.push(f)
 							if(self.state.prodSettings[f+'Warn'] == 1){
-								warningArray.arr.push(f)
+								warningArray.push(f)
 							}
 						}
 					});
@@ -5769,7 +5888,7 @@ class DetectorView extends React.Component{
   						if(shouldUpdate){
   							if(this.refs.sModal.state.show){
   								var	cob2 = this.getCob(this.state.sysSettings, this.state.prodSettings, prodRec, this.state.framRec)
-  								this.setState({rec:prodRec,faultArray:faultArray.arr,warningArray:warningArray.arr,trec:trec, cob2:cob2, rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits.data})
+  								this.setState({rec:prodRec,faultArray:faultArray,warningArray:warningArray,trec:trec, cob2:cob2, rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits})
   								//////console.log(['3196',cob2])
   								
   								cob2 = null;
@@ -5777,7 +5896,7 @@ class DetectorView extends React.Component{
   								var	sns = this.getPage('Sens',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Sens'] = sns
-  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray.arr,warningArray:warningArray.arr,trec:trec, rejOn:rejOn,updateCount:0,update:shouldUpdate, ioBITs:iobits.data})
+  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray,warningArray:warningArray,trec:trec, rejOn:rejOn,updateCount:0,update:shouldUpdate, ioBITs:iobits})
   								sns = null;
   								pages = null;
 
@@ -5785,7 +5904,7 @@ class DetectorView extends React.Component{
   								var	te = this.getPage('Test',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Test'] = te
-  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray.arr,warningArray:warningArray.arr,trec:trec,rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits.data})
+  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray,warningArray:warningArray,trec:trec,rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits})
   								te = null;
   								pages = null;
   							}else if(this.state.showCal){
@@ -5793,23 +5912,22 @@ class DetectorView extends React.Component{
   								var	cal = this.getPage('Calibration',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Calibration'] = cal
-  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray.arr,warningArray:warningArray.arr,trec:trec, rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits.data})
+  								this.setState({rec:prodRec, pages:pages,faultArray:faultArray,warningArray:warningArray,trec:trec, rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits})
   								cal = null;
   								pages = null;
   							}else{
-  								this.setState({rec:prodRec,faultArray:faultArray.arr,warningArray:warningArray.arr, rejOn:rejOn,trec:trec, updateCount:0, update:shouldUpdate, ioBITs:iobits.data})
+  								this.setState({rec:prodRec,faultArray:faultArray,warningArray:warningArray, rejOn:rejOn,trec:trec, updateCount:0, update:shouldUpdate, ioBITs:iobits})
   							}
   						}else{
   							//////console.log(rejOn)
-  							this.setState({rec:prodRec, rejOn:rejOn,faultArray:faultArray.arr, warningArray:warningArray.arr,updateCount:(this.state.updateCount+1)%6, update:shouldUpdate, ioBITs:iobits.data})
+  							this.setState({rec:prodRec, rejOn:rejOn,faultArray:faultArray, warningArray:warningArray,updateCount:(this.state.updateCount+1)%6, update:shouldUpdate, ioBITs:iobits})
   						}
-  						_oPool.recycle(faultArray);
-  						_oPool.recycle(warningArray);
-  						_oPool.recycle(iobits)
+  						faultArray = null;
+  						warningArray = null;
 			}
 			
 			pVdef = null;
-			
+			iobits = null;
 
    		}else if(lcd_type == 3){
    					
@@ -5858,6 +5976,7 @@ class DetectorView extends React.Component{
    		}
 
    		prodRec = null;	
+   		faultArray = null;	
    		e = null;
    		d = null;
    		combinedSettings = null;
@@ -6819,10 +6938,15 @@ class DetectorView extends React.Component{
 		this.setState({language:i, update:true})
 	} 
 	toggleLogin(){
-		this.refs.loginModal.toggle()
+		//this.refs.loginModal.toggle()
+		this.refs.lgctrl.login();
+		this.setState({loginOpen:true})
 	}
 	login(v){
 		this.setState({level:v,update:true})
+	}
+	loginClosed(){
+		this.setState({loginOpen:false})
 	}
 	authenticate(user,pswd){
 		console.log(6457, [user,pswd])
@@ -7022,9 +7146,11 @@ class DetectorView extends React.Component{
 					{snsCont}
 					</div>
 				</Modal>
-				<Modal ref='loginModal' intMeter={true} dfMeter={df} clear={this.clearSig}>
-					<LogInControl pass6={this.state.sysSettings['PasswordLength']} level={this.state.level}  mac={this.props.det.mac} ip={this.props.ip} logout={this.logout} accounts={this.state.usernames} authenticate={this.authenticate} language={lg} login={this.login} val={this.state.userid}/>
+				<Modal ref='loginModal' onClose={this.loginClosed} intMeter={true} dfMeter={df} clear={this.clearSig}>
+					<LogInControl isOpen={this.state.loginOpen} pass6={this.state.sysSettings['PasswordLength']} level={this.state.level}  mac={this.props.det.mac} ip={this.props.ip} logout={this.logout} accounts={this.state.usernames} authenticate={this.authenticate} language={lg} login={this.login} val={this.state.userid}/>
 				</Modal>
+				<LogInControl2 ref='lgctrl' isOpen={this.state.loginOpen} pass6={this.state.sysSettings['PasswordLength']} level={this.state.level}  mac={this.props.det.mac} ip={this.props.ip} logout={this.logout} accounts={this.state.usernames} authenticate={this.authenticate} language={lg} login={this.login} val={this.state.userid}/>
+
 				<Modal ref='syncModal' className='pop-modal' Style={{textAlign:'center', marginTop:40}}>
 						<div style={{color:'#e1e1e1'}}>Usb detected. Start sync process?</div>
 
@@ -7089,7 +7215,7 @@ class AccountControl extends React.Component{
 		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
 			var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-			var _st = {textAlign:'center',lineHeight:'51px', height:51, width:536, display:'table-cell', position:'relative'}
+			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 
 		    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#eee"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
 		var st = {padding:7,display:'inline-block', width:180}
@@ -7598,7 +7724,7 @@ class DummyGraph extends React.Component{
 		this.listenToMq()
 	}
 	renderCanv () {
-		return(<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int}/>)
+		return(<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int} mpp={20}/>)
 	}
 	stream (dat) {
 		this.refs.cv.stream(dat)
@@ -7653,11 +7779,11 @@ class SlimGraph extends React.Component{
 	}
 	renderCanv () {
 		if(this.state.popUp){
-			return <GraphModal Style={{maxWidth:1000,width:1000,marginTop:100, background:'#000'}} innerStyle={{backgroundColor:'black'}} show={true} onClose={this.toggle}>
-				<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={950} h={400} int={this.props.int}/>
+			return <GraphModal Style={{maxWidth:950,width:950,marginTop:100, background:'#000'}} innerStyle={{backgroundColor:'black'}} show={true} onClose={this.toggle}>
+				<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={900} h={400} int={this.props.int} mpp={13}/>
 			</GraphModal>
 		}
-		return(<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int}/>)
+		return(<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int} mpp={28}/>)
 	}
 	stream (dat, ov) {
 		if(!ov){
@@ -7741,11 +7867,11 @@ class GraphModal extends React.Component{
 		}
 
 		return(<div className={this.state.className} hidden={h}>
-			<div className='modal-x' onClick={this.toggle}>
+{/*	<div className='modal-x' onClick={this.close}>
 			 	 <svg viewbox="0 0 40 40">
     				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
   				</svg>
-			</div>
+			</div>*/}
 			{cont}
 		</div>)
 	}
@@ -10316,9 +10442,9 @@ class KeyboardInputTextButton extends React.Component{
 			ckb = ""
 		}
 		if(this.props.inverted){
-		var before = {position: 'absolute',height:'100%',display: 'inline-block',top:0,width:44,left:2,backgroundColor:bgColor,borderRadius:22, height:57}
-		var after = {position:'absolute',height:'100%',display:'inline-block',top:0,width:44,left:92,backgroundColor:'transparent',boxShadow:boxShadow,  borderRadius:22, height:57}
-		var contStyle= {display:'inline-block',width:75,position:'absolute',left:14,overflow:'hidden', height:57, backgroundColor:bgColor, zIndex:2, borderRadius:10}
+		var before = {position: 'absolute',height:'100%',display: 'inline-block',top:0,width:44,left:2,backgroundColor:bgColor,borderRadius:22, height:62}
+		var after = {position:'absolute',height:'100%',display:'inline-block',top:0,width:44,left:92,backgroundColor:'transparent',boxShadow:boxShadow,  borderRadius:22, height:62}
+		var contStyle= {display:'inline-block',width:75,position:'absolute',left:14,overflow:'hidden', height:62, backgroundColor:bgColor, zIndex:2, borderRadius:10}
    		
 		
 		return (
@@ -10338,9 +10464,9 @@ class KeyboardInputTextButton extends React.Component{
 			</div>
 		);
 		}else{
-		var after = {position: 'absolute',height:'100%',display: 'inline-block',top:0,width:44,left:55,backgroundColor:bgColor,borderRadius:22, height:57}
-		var before = {position:'absolute',height:'100%',display:'inline-block',top:0,width:44,left:-32,backgroundColor:'transparent',boxShadow:boxShadow,  borderRadius:22, height:57}
-		var contStyle= {display:'inline-block',width:75,position:'absolute',left:14,overflow:'hidden', height:57, backgroundColor:bgColor, zIndex:2, borderRadius:10}
+		var after = {position: 'absolute',height:'100%',display: 'inline-block',top:0,width:44,left:55,backgroundColor:bgColor,borderRadius:22, height:62}
+		var before = {position:'absolute',height:'100%',display:'inline-block',top:0,width:44,left:-32,backgroundColor:'transparent',boxShadow:boxShadow,  borderRadius:22, height:62}
+		var contStyle= {display:'inline-block',width:75,position:'absolute',left:14,overflow:'hidden', height:62, backgroundColor:bgColor, zIndex:2, borderRadius:10}
   	
 		return (
 			<div className='keyboardInputTextButton'>
@@ -10424,9 +10550,11 @@ class CustomKeyboard extends React.Component{
 			cont = <CustomKeyboardCont datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
 		}
 		return <div hidden={!this.state.show} className = 'pop-modal'>
-			<div className='modal-x' onClick={this.close}>
-			 	 <svg viewbox="0 0 40 40"><path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" /></svg>
-			</div>
+		{/*	<div className='modal-x' onClick={this.close}>
+			 	 <svg viewbox="0 0 40 40">
+    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
+  				</svg>
+			</div>*/}
 			{cont}
 		</div>
 	}
@@ -10572,7 +10700,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			{label}</span></div>{but2}</div>
 	<div style={{height:60, position:'relative'}}>		<svg style={{position:'absolute', top:14, marginLeft:3}} onClick={this.clear} xmlns="http://www.w3.org/2000/svg" height="32" version="1.1" viewBox="0 0 32 32" width="32"><g id="Layer_1"/><g id="x_x5F_alt"><path d="M16,0C7.164,0,0,7.164,0,16s7.164,16,16,16s16-7.164,16-16S24.836,0,16,0z M23.914,21.086   l-2.828,2.828L16,18.828l-5.086,5.086l-2.828-2.828L13.172,16l-5.086-5.086l2.828-2.828L16,13.172l5.086-5.086l2.828,2.828   L18.828,16L23.914,21.086z" fill="#3E3E40"/></g></svg>
 	<div style={{background:'rgba(150,150,150,0.3)',display:'inline-block',fontSize:25,lineHeight:2,textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:54,color:'#eee', whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}}>{dispval}</div>{but1}
-<svg style={{position:'absolute', top:14, marginLeft:-36, width:30}} onClick={this.onDelete} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#3E3E40" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
+<svg style={{position:'absolute', top:10, marginLeft:-45, width:40}} onClick={this.onDelete} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#3E3E40" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
 		</div>
 		<div style={{width:width,marginLeft:'auto',marginRight:'auto'}}>
 		<table style={{tableLayout:'fixed', position:'relative', top:0,width:width}}className='customKeyboardTable'><tbody style={{display:'table-row-group'}}>
@@ -10653,13 +10781,13 @@ class DateTimeSelect extends React.Component{
 		var date = [years.indexOf(this.state.year), months.indexOf(this.state.month), days.indexOf(this.state.day)];
 		var time = [hours.indexOf(this.state.hour), minutes.indexOf(this.state.minute), secs.indexOf(this.state.sec)]
 		var tg = ['off','on']
-		var namestring = 'Choose User'
+		var namestring = 'Select User'
 		var dpw = <PopoutWheel vMap={vMapV2['Date']} language={this.props.language} interceptor={false} name={'Date'} ref='dpw' val={date} options={[years,months,days]} onChange={this.onDateChange}/>
 		var tpw = <PopoutWheel vMap={vMapV2['Time']} language={this.props.language} interceptor={false} name={'Time'} ref='tpw' val={time} options={[hours,minutes,secs]} onChange={this.onTimeChange}/>
 		var dstpw = <PopoutWheel vMap={vMapV2['DST']} language={this.props.language} interceptor={false} name={'Daylight Savings'} ref='dstpw' val={[this.props.dst]} options={[['off','on']]} onChange={this.onDSTChange}/>
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-			var _st = {textAlign:'center',lineHeight:'51px', height:51, width:536, display:'table-cell', position:'relative'}
+			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 
 		    
 		var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#eee"}} >
@@ -10763,7 +10891,9 @@ class CanvasElem extends React.Component{
 		var l1 = new TimeSeries();
 		var l2 = new TimeSeries();
 		var l3 = new TimeSeries();
-		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#808a90'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
+		var smoothie = new SmoothieChart({millisPerPixel:this.props.mpp,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
+			horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],
+			labels:{fillStyle:'#808a90'}, grid:{millisPerLine:2000,fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc, maxDataSetLength:1800, minDataSetLength:800});
 		
 		this.state =  ({smoothie:smoothie,line:l1, line_b:l2, line_com:l3})
 		this.stream = this.stream.bind(this);
@@ -10795,19 +10925,25 @@ class CanvasElem extends React.Component{
 	}
 	stream(dat) {
 		this.state.line.append(dat.t, dat.val);
-		this.state.line.dropOldData(1000, 3000)
+		//this.state.line.dropOldData(1000, 3000)
 		if(this.props.df){
 			this.state.line_com.append(dat.t, dat.valCom)
-			this.state.line_com.dropOldData(1000, 3000)
+			
 		
 		} 
 		if(this.props.int){
 			this.state.line_b.append(dat.t, dat.valb)
-			this.state.line_b.dropOldData(1000, 3000)
-		
+				
 		}
+	/*	if(this.state.line.data.length > 3000){
+			this.state.line.dropOldData(1000, 3000)
+			this.state.line_com.dropOldData(1000, 3000)
+			this.state.line_b.dropOldData(1000, 3000)
+
+		}*/
 	}
-	render(){
+
+		render(){
 		return(
 			<div className="canvElem">
 				<canvas id={this.props.canvasId} height={this.props.h} width={this.props.w}></canvas>
