@@ -558,10 +558,10 @@ li {
     100% {background-color: rgba(255, 0,0,0.7);}
 }
 @keyframes blink_wr{
-    0% {background-color : black;}
-    49% {background-color : black;}
-    50% {background-color : rgba(200,0,0,0.4);}
-    100% {background-color: rgba(200,0,0,0.4);}
+    0% {background-color : linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);}
+    49% {background-color : linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);}
+    50% {background-color : linear-gradient(90deg, transparent, transparent 5%, rgba(200,0,0,0.4) 5%, rgba(200,0,0,0.4) 95%, transparent 95%);}
+    100% {background-color : linear-gradient(90deg, transparent, transparent 5%, rgba(200,0,0,0.4) 5%, rgba(200,0,0,0.4) 95%, transparent 95%);}
 
 }
 @keyframes blink_left_r{
@@ -751,10 +751,10 @@ li {
     width: 330px;
 }
 .navWrapper{
-    background: black;
+    background: linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);
 }
 .navWrapper_f{
-    background: black;
+    background: linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);
     animation-name: blink_wr;
     animation-duration: 1.8s;
     animation-iteration-count: infinite;
@@ -815,7 +815,8 @@ li {
 }
 .navWrapper_r{
 
-    background-color : rgba(200,200,0,0.4);
+    background-color :    linear-gradient(90deg, transparent, transparent 5%, rgba(200,0,0,0.4) 5%, rgba(200,0,0,0.4) 95%, transparent 95%);
+
 }
 
 .navTabLeft_r{
@@ -832,8 +833,8 @@ li {
     background-color : rgba(255, 255,0,0.7);
 }
 .navWrapper_t{
+    background-color :    linear-gradient(90deg, transparent, transparent 5%, rgba(0,80,200,0.4) 5%, rgba(0,80,200,0.4) 95%, transparent 95%);
 
-    background-color : rgba(0,80,200,0.4);
 }
 
 .navTabLeft_t{
@@ -1273,53 +1274,54 @@ li {
     
 }
 .slantedRight{
-    height: 263px;
-    width: 235px;
+    border-top-right-radius: 50px 65px;
+    height: 357px;
+    width: 250px;
     background: #362c66;
-    border-radius: 0px 50px 0px 0px;
+    /* border-radius: 0px 68px 0px 0px; */
     position: relative;
     display: inline-block;
     z-index: 2;
-      box-shadow: 0px 0px 0px 10px #818a90;
-
+    box-shadow: 20px -20px 0px -10px #818a90;
 }
 .slantedRight::after{
   background: #362c66;
     content: "";
     position: absolute;
-    top: 37px;
-    left: 26px;
+    top: 28px;
+    left: -76px;
     height: 0px;
     width: 0px;
-    border-radius: 30px 0px;
-    border: 113px solid #362c66;
-    transform: rotate(80deg);
+    /* border-radius: 11px 0px; */
+    border-top-left-radius: 41px 11px;
+    border: 171px solid #362c66;
+    transform: rotate(84deg);
     z-index: -1;
-    box-shadow: 0px 0px 0px 10px #818a90;
+    box-shadow: 0px 9px 0px 21px #818a90;
 }
 .slantedLeft{
-    height: 263px;
-    width: 235px;
+    height: 357px;
+    width: 257px;
     background: #362c66;
-    border-radius: 50px 0px 0px 0px;
+    border-top-left-radius: 50px 65px;
     position: relative;
     display: inline-block;
     z-index: 2;
-    box-shadow: 0px 0px 0px 10px #818a90;
+    box-shadow: -19px -20px 0px -10px #818a90;
 }
 .slantedLeft::before{
-    background: #362c66;
+   background: #362c66;
     content: "";
     position: absolute;
-    top: 37px;
+    top: 33px;
     left: -17px;
     height: 0px;
     width: 0px;
-    border-radius: 0px 30px;
-    border: 113px solid #362c66;
-    transform: rotate(280deg);
+    border-top-right-radius: 41px 11px;
+    border: 171px solid #362c66;
+    transform: rotate(276deg);
     z-index: -1;
-    box-shadow: 0px 0px 0px 10px #818a90;
+    box-shadow: 0px 10px 0px 21px #818a90;
 }
 
 .mainView{

@@ -1863,7 +1863,7 @@ class LogInControl2 extends React.Component{
 		this.selectChanged = this.selectChanged.bind(this);
 		var list = []
 		this.props.accounts.forEach(function(ac){
-			list.push(ac.username)
+			list.push(ac.username + ' - lv' + ac.acc)
 		})
 		list.unshift('Not Logged In')
 		this.state = {val:0, list:list, showAcccountControl:false, open:false}
@@ -1877,7 +1877,7 @@ class LogInControl2 extends React.Component{
 	componentWillReceiveProps(props){
 		var list = []
 		props.accounts.forEach(function(ac){
-			list.push(ac.username)
+			list.push(ac.username + ' - lv' + ac.acc)
 		})
 		list.unshift('Not Logged In')
 		if(!this.props.isOpen){
@@ -3891,7 +3891,7 @@ class PopoutWheelSelector extends React.Component{
 			<div style={{display:'inline-block'}}>
 			{ul}
 			<ScrollArrow ref='arrowTop' active={sa} offset={48} width={48} marginTop={-25}  mode={'top'} onClick={this.scrollUp}/>
-			<div id={this.props.Id} onScroll={this.handleScroll} style={{width:220, height:this.props.height, overflowY:'scroll', padding:5, marginLeft:5, marginRight:5, background:'rgba(200,200,200,1)'}}>
+			<div id={this.props.Id} onScroll={this.handleScroll} style={{width:230, height:this.props.height, overflowY:'scroll', padding:5, marginLeft:5, marginRight:5, background:'rgba(200,200,200,1)'}}>
 				{options}
 			</div>
 			<ScrollArrow ref='arrowBot' active={sa} offset={48} width={48} marginTop={-20} mode={'bot'} onClick={this.scrollDown}/>
@@ -3926,7 +3926,7 @@ class PopoutSelect extends React.Component{
 		// body...
 		var value = this.props.options[this.props.val]
 		return(
-			<div  className='customSelect' style={{width:170,   background: 'rgba(255,255,255,0.4)'	}}><div style={{padding:5}}  onClick={this.toggleCont}><div  className='popoutCustomSelect'>{value}</div><div style={{display:'inline-block'}}><img src='assets/dropdown.png' style={{width:30, height:30, marginBottom:-10}}/></div></div>
+			<div  className='customSelect' style={{width:180,   background: 'rgba(255,255,255,0.4)'	}}><div style={{padding:5}}  onClick={this.toggleCont}><div  className='popoutCustomSelect'>{value}</div><div style={{display:'inline-block'}}><img src='assets/dropdown.png' style={{width:30, height:30, marginBottom:-10}}/></div></div>
 			<PopoutSelectModal onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
 			</div>
 		)
@@ -4048,7 +4048,7 @@ class SelectSCModalRow extends React.Component{
 		if(!this.props.active){
 				style.color = "#666"
 			}
-		return (<div onClick={this.onClick} style={style}><div style={{width:22, display:'table-cell'}}>{check}</div><div style={{width:170, display:'table-cell', lineHeight:'54px', height:54}}>{this.props.value}</div><div style={{width:22, display:'table-cell'}}></div></div>)
+		return (<div onClick={this.onClick} style={style}><div style={{width:22, display:'table-cell'}}>{check}</div><div style={{width:180, display:'table-cell', lineHeight:'54px', height:54}}>{this.props.value}</div><div style={{width:22, display:'table-cell'}}></div></div>)
 	}
 }
 class EditControl extends React.Component{
@@ -8375,7 +8375,7 @@ constructor(props) {
 				</div>
 				</td>
 				</tr>
-				<tr><td colSpan={3} style={{display:'inline-block', padding:0,overflow:'hidden'}}><div style={{width:936,height:116, overflow:'hidden'}}>
+				<tr><td colSpan={3} style={{display:'inline-block', padding:0,overflow:'hidden'}}><div style={{width:936,height:116, overflow:'hidden', display:'none'}}>
 					<MessageConsole offline={this.props.offline} ref='mc' isUpdating={this.props.isUpdating} isSyncing={this.props.isSyncing} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
 				toggleTest={this.onTestReq} rejOn={this.props.rejOn} rejLatch={this.props.rejLatch} language={this.props.language} clearFaults={this.props.clearFaults} warningArray={this.props.warningArray} faultArray={this.props.faultArray} prodName={this.props.prodName}/>
 
@@ -9329,8 +9329,8 @@ class InterceptorNav extends React.Component{
 		'Sensitivity':{'english':'Sensitivity','korean':'민감도'},
 		'Calibrate':{'english':'Calibrate','korean':'캘리브레이션'},
 		'Product':{'english':'Product','korean':'품목'} }
-		var left =  {width:205, marginLeft:0, marginRight:'auto'}
-		var right =  {width:205, marginLeft:'auto', marginRight:0}
+		var left =  {width:205, marginLeft:0, marginRight:'auto', height:80, lineHeight:'80px'}
+		var right =  {width:205, marginLeft:'auto', marginRight:0,height:80, lineHeight:'80px'}
 		var klass = 'navWrapper'
 		if(this.props.faultArray.length != 0){
 			if(this.props.faultArray.length > this.props.warningArray.length){
@@ -9353,25 +9353,25 @@ class InterceptorNav extends React.Component{
 		if(this.props.df){
 			content = <SlimGraph df={true} int={true} ref='sg' canvasId={'sgcanvas2'}/>
 		}
-		return (<div className='interceptorNav' style={{display:'block', width:950, marginLeft:'auto',marginRight:'auto', background:'black'}}>
+		return (<div className='interceptorNav' style={{display:'block', width:987, marginLeft:'auto',marginRight:'auto', background:'linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%)'}}>
 				
-				<div className={klass} style={{overflow:'hidden',width:950,height:250}}>
+				<div className={klass} style={{overflow:'hidden',width:987,height:352}}>
 				<table className='intNavTable' style={{height:240, borderSpacing:0, borderCollapse:'collapse'}}><tbody><tr>
 				<td>
 				<div className='slantedRight'>
-					<div style={{background:'#362c66', borderTopRightRadius:'30px 40px', height:240, textAlign:'center'}}>
+					<div style={{background:'#362c66', borderTopRightRadius:'30px 50px', height:366, textAlign:'center', marginTop:0, paddingTop:1, position:'relative'}}>
 					<CircularButton style={left} lab={vdefMapV2['@labels']['Settings'][this.props.language]['name']} onClick={this.onConfig}/>
 					<CircularButton style={left} lab={vdefMapV2['@labels']['Test'][this.props.language]['name']} onClick={this.onTest}/>
 					<CircularButton style={left} lab={vdefMapV2['@labels']['Log'][this.props.language]['name']} onClick={this.onLog}/>
 					</div>
 				</div>
 				</td><td>
-				<div style={{display:'inline-block', width:480, height:220, borderBottom:'20px solid #818a90',position:'relative', borderBottomLeftRadius:'100px 402px', borderBottomRightRadius:'100px 402px'}}>
-						
+				<div style={{display:'inline-block', width:480, height:327, borderBottom:'20px solid #818a90',position:'relative', borderBottomLeftRadius:'40px 100px', borderBottomRightRadius:'40px 100px'}}>
+				<div style={{height:110}}></div>
 				{content}
 
 				</div></td><td>
-				<div className='slantedLeft'><div style={{background:'#362c66', borderTopLeftRadius:'30px 40px', height:240, textAlign:'center'}}>
+				<div className='slantedLeft'><div style={{background:'#362c66', borderTopLeftRadius:'30px 50px', height:366, textAlign:'center', marginTop:0, paddingTop:1, position:'relative'}}>
 				<CircularButton style={right} lab={vdefMapV2['@labels']['Sensitivity'][this.props.language]['name']} inverted={true} onClick={this.onSens}/>
 				<CircularButton style={right} lab={vdefMapV2['@labels']['Calibrate'][this.props.language]['name']} inverted={true} onClick={this.onCal}/>
 				<CircularButton style={right} lab={vdefMapV2['@labels']['Product'][this.props.language]['name']} inverted={true} onClick={this.onProd}/>

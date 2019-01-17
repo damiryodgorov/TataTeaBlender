@@ -89,4 +89,4 @@ Update via usb support, Kraft version support, Warnings, Translations
 --190115
 
 Size of components, login now goes straight to select user. DF calibrate, sensitivity needs to be drawn up
-
+Compatible with ST181106 and above
