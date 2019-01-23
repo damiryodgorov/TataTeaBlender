@@ -31,7 +31,7 @@ const crc = require('crc');
 
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
-const VERSION = 'PR2019/01/15'
+const VERSION = 'PR2019/01/23'
 
 http.on('error', function(err){
   console.log('this is an http error')
@@ -528,6 +528,16 @@ function updateBinaries(paths, ip, cnt, callBack){
   }
 
 }
+let udpCallback = function(_ip,e){
+      if(e){
+ 
+      if(vdefs[_ip]){
+        processParam(e,vdefs[_ip],nVdfs[_ip],pVdefs[_ip],_ip)
+     }
+      }
+      _ip = null;
+      e = null;
+}
 function parse_update(str, callback){
   var array = str.split('\n')
   var arr = []
@@ -725,6 +735,7 @@ function processParam(e, Vdef, nVdf, pVdef, ip) {
     pack = {type:0, rec:rec}
     //system
   }else if(rec_type == 1){
+    console.log('PROD REC')
     nVdf[1].forEach(function (p) {
       rec[p] = getVal(buf, 1, p, pVdef)
       // body...
@@ -1148,6 +1159,7 @@ class Params{
     return buf;
   }
 }
+
 function udpConSing(ip){
   if(dsp_ips.indexOf(ip) == -1){
     return;
@@ -1155,22 +1167,7 @@ function udpConSing(ip){
   if(typeof udpClients[ip] == 'undefined'){
    
     udpClients[ip] = null;
-       udpClients[ip] = new UdpParamServer(ip , function(_ip,e){
-      if(e){
-     //   var ab = toArrayBuffer(e.data)
-      //  console.log(ab)
-      if(vdefs[_ip]){
-        processParam(e,vdefs[_ip],nVdfs[_ip],pVdefs[_ip],ip)
-
-        //processor.send({e:e,vdef:vdefs[_ip],nVdf:nVdfs[_ip],pVdef:pVdefs[_ip],ip:_ip})
-      }
-       // 
-      //  relayParamMsg({det:{ip:_ip},data:{data:ab}})
-      }
-      _ip = null;
-      e = null;
-      //ab = null;
-    })
+       udpClients[ip] = new UdpParamServer(ip ,udpCallback)
     getVdef(ip, function(__ip,vdef){
       if(typeof nphandlers[__ip] == 'undefined'){
         nphandlers[__ip] = new NetPollEvents(__ip,vdef,write_netpoll_events)
@@ -1179,30 +1176,22 @@ function udpConSing(ip){
     },function(e){
       console.log('failed getting vdef from ', e)
     })
-
+    console.log(udpClients)
   }else{
     console.log('else!')
-  //  udpClients[ip].release_sock();
+    udpClients[ip].release_sock();
+    udpClients[ip].callback = null;
+    udpClients[ip].so.removeAllListeners('message');
+    //udpClients[ip].so.off('listening')
+
     udpClients[ip] = null;
     delete udpClients[ip];
+    console.log(udpClients)
+         udpClients[ip] = new UdpParamServer(ip, udpCallback)
+         setTimeout(function(){
+                   console.log('listener count: ', udpClients[ip].so.listenerCount('message').toString())
+         },500)
 
-         udpClients[ip] = new UdpParamServer(ip, function(_ip,e){
-      if(e){
-     //   var ab = toArrayBuffer(e.data)
-      //  console.log(ab)
-      //cb()
-      if(vdefs[_ip]){
-
-        processParam(e,vdefs[_ip],nVdfs[_ip],pVdefs[_ip],ip)
-        //processor.send({e:e,vdef:vdefs[_ip],nVdf:nVdfs[_ip],pVdef:pVdefs[_ip],ip:_ip})
-      }
-       // 
-      //  relayParamMsg({det:{ip:_ip},data:{data:ab}})
-      }
-      _ip = null;
-      e = null;
-      //ab = null;
-    })
     getVdef(ip, function(__ip,vdef){
       if(typeof nphandlers[__ip] != 'undefined'){
         nphandlers[__ip] = null;
@@ -1778,9 +1767,22 @@ class FtiSockIOServer{
      // msg = null;
     })
     sock.on('close', function () {
+      console.log('closing socket')
        // body..
        sock.removeAllListeners();
+       passocs[self.id] = null;
+      
+        rassocs[self.id] = null;
+      nassocs[self.id] = null;
+      sockrelays[self.id] = null;
      //  self.destroy();
+     delete passocs[self.id]
+
+     delete rassocs[self.id]
+
+     delete nassocs[self.id]
+
+     delete sockrelays[self.id]
     }) 
     this.id = Date.now();
 

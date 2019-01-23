@@ -19,13 +19,22 @@ class UdpParamServer{
     self.init_udp_param_server();
 
   }
+  destroy(){
+    this.callback = null;
+
+  }
   release_sock(){
      //this.so.bind({address:'0.0.0.0',port:0})
     this.so.unref();
     this.so = null;
   }
   init_udp_param_server(){
+    console.log('init udp param server')
     var self = this;
+    if(this.so){
+      this.so.removeAllListeners();
+      this.so = null;
+    }
     this.so = dgram.createSocket({type:'udp4',reuseAddr:true});
     this.so.on("listening", function () {
       self.init_params_stream(self.so.address().port)
@@ -61,8 +70,11 @@ class UdpParamServer{
   parse_params(e){
     if(e){
       //console.log(e)
-      this.callback(this.ip,e, this.init_params_stream);
-    }
+      if(this.callback){
+        this.callback(this.ip,e);
+      
+      }
+     }
     e = null;
   }
   send_rpc(e, cb){
