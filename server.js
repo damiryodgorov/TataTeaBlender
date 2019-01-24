@@ -31,7 +31,7 @@ const crc = require('crc');
 
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 
-const VERSION = 'PR2019/01/23'
+const VERSION = 'PR2019/01/24'
 
 http.on('error', function(err){
   console.log('this is an http error')

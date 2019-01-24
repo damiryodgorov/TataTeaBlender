@@ -90,3 +90,8 @@ Update via usb support, Kraft version support, Warnings, Translations
 
 Size of components, login now goes straight to select user. DF calibrate, sensitivity needs to be drawn up
 Compatible with ST181106 and above
+
+--190124
+
+DF now Regular Interceptor - Currently compatible with 181274 test version, need to redo calibrate ui
+TODO - Look at state
