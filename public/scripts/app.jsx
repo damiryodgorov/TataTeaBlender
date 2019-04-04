@@ -19,7 +19,7 @@ const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'R
 const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 
 const vdefMapV2 ={
-	"@acc":{"SensEdit":1,"Calib":1,"TestButton":1,"ProductButton":1,"ProductEdit":2},"@categories":{"acc":4,"cat":"@root","params":[{"type":1,"val":{"cat":"Reject","params":[{"type":1,"val":{"cat":"Additional Settings","params":[{"type":1,"val":{"cat":"Distances","params":[{"type":0,"val":"AppUnitDist","acc":0},{"type":0,"val":"HeadCoilSp","acc":0},{"type":0,"val":"HeadDepth","acc":0},{"type":0,"val":"EyeDist","acc":0},{"type":0,"val":"RejExitDist","acc":0},{"type":0,"val":"RejExitDistEst","acc":0},{"type":0,"val":"RejExitWin","acc":0},{"type":0,"val":"EyeMinGapDist","acc":0},{"type":0,"val":"HeadSeparation","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Belt Speed","params":[{"type":0,"val":"BeltSpeed","acc":0},{"type":0,"val":"BeltSpeedEst","acc":0},{"type":0,"val":"EyePkgLength","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Latch","params":[{"type":0,"val":"FaultLatch","acc":0},{"type":0,"val":"RejLatchMode","acc":0},{"type":0,"val":"Rej2Latch","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Clocks","params":[{"type":0,"val":"RejBinDoorTime","acc":0},{"type":0,"val":"CIPCycleTime","acc":0},{"type":0,"val":"CIPDwellTime","acc":0},{"type":0,"val":"IsoCleanTimeout","acc":0},{"type":0,"val":"EyeBlockTime","acc":0},{"type":0,"val":"RejCheckTime","acc":0},{"type":0,"val":"ExcessRejTime","acc":0},{"type":0,"val":"RejDelClock","acc":0},{"type":0,"val":"EncFreq","acc":0}]},"acc":0}]},"acc":0},{"type":0,"val":"RejDelSec","acc":0},{"type":0,"val":"RejDurSec","acc":0},{"type":0,"val":"RejDelSec2","acc":0},{"type":0,"val":"RejDurSec2","acc":0},{"type":0,"val":"RejMode","acc":0},{"type":0,"val":"EyeReject","acc":0},{"type":0,"val":"RejCheckMode","acc":0},{"type":0,"val":"FaultRejMode","acc":0},{"type":0,"val":"Rej2Fault","acc":0},{"type":0,"val":"ManRejState","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Fault","params":[{"type":0,"val":"FaultClearTime","acc":0},{"type":0,"val":"RefFaultMask","acc":0},{"type":0,"val":"BalFaultMask","acc":0},{"type":0,"val":"ProdMemFaultMask","acc":0},{"type":0,"val":"RejConfirmFaultMask","acc":0},{"type":0,"val":"PhaseFaultMask","acc":0},{"type":0,"val":"TestSigFaultMask","acc":0},{"type":0,"val":"PeyeBlockFaultMask","acc":0},{"type":0,"val":"RejBinFullFaultMask","acc":0},{"type":0,"val":"AirFaultMask","acc":0},{"type":0,"val":"ExcessRejFaultMask","acc":0},{"type":0,"val":"BigMetalFaultMask","acc":0},{"type":0,"val":"NetBufferFaultMask","acc":0},{"type":0,"val":"RejMemoryFaultMask","acc":0},{"type":0,"val":"RejectExitFaultMask","acc":0},{"type":0,"val":"TachometerFaultMask","acc":0},{"type":0,"val":"PatternFaultMask","acc":0},{"type":0,"val":"ExitNoPackFaultMask","acc":0},{"type":0,"val":"ExitNewPackFaultMask","acc":0},{"type":0,"val":"InterceptorFaultMask","acc":0},{"type":0,"val":"RtcLowBatFaultMask","acc":0},{"type":0,"val":"RtcTimeFaultMask","acc":0},{"type":0,"val":"IntUsbFaultMask","acc":0},{"type":0,"val":"IoBoardFaultMask","acc":0},{"type":0,"val":"HaloFaultMask","acc":0},{"type":0,"val":"SignalFaultMask","acc":0},{"type":0,"val":"RejBinDoorFaultMask","acc":0}]},"acc":1},{"type":1,"val":{"cat":"IO","params":[{"type":1,"val":{"cat":"Inputs","params":[{"type":0,"val":"INPUT_TACH","acc":0},{"type":0,"val":"INPUT_EYE","acc":0},{"type":0,"val":"INPUT_RC_1","acc":0},{"type":0,"val":"INPUT_RC_2","acc":0},{"type":0,"val":"INPUT_REJ_EYE","acc":0},{"type":0,"val":"INPUT_AIR_PRES","acc":0},{"type":0,"val":"INPUT_REJ_LATCH","acc":0},{"type":0,"val":"INPUT_BIN_FULL","acc":0},{"type":0,"val":"INPUT_REJ_PRESENT","acc":0},{"type":0,"val":"INPUT_DOOR1_OPEN","acc":0},{"type":0,"val":"INPUT_DOOR2_OPEN","acc":0},{"type":0,"val":"INPUT_CLEAR_FAULTS","acc":0},{"type":0,"val":"INPUT_CLEAR_WARNINGS","acc":0},{"type":0,"val":"INPUT_PHASE_HOLD","acc":0},{"type":0,"val":"INPUT_CIP","acc":0},{"type":0,"val":"INPUT_CIP_TEST","acc":0},{"type":0,"val":"INPUT_CIP_PLC","acc":0},{"type":0,"val":"INPUT_PROD_SEL1","acc":0},{"type":0,"val":"INPUT_PROD_SEL2","acc":0},{"type":0,"val":"INPUT_PROD_SEL3","acc":0},{"type":0,"val":"INPUT_PROD_SEL4","acc":0},{"type":0,"val":"INPUT_TEST","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Outputs","params":[{"type":0,"val":"OUT_PHY_PL3_1","acc":0},{"type":0,"val":"OUT_PHY_PL11_1A2","acc":0},{"type":0,"val":"OUT_PHY_PL11_3A4","acc":0},{"type":0,"val":"OUT_PHY_PL11_5A6","acc":0},{"type":0,"val":"OUT_PHY_PL4_1","acc":0},{"type":0,"val":"OUT_PHY_PL4_2","acc":0},{"type":0,"val":"OUT_PHY_PL4_3","acc":0},{"type":0,"val":"OUT_PHY_PL4_5","acc":0},{"type":0,"val":"OUT_PHY_IO_PL3_R1","acc":0},{"type":0,"val":"OUT_PHY_IO_PL3_R2","acc":0},{"type":0,"val":"OUT_PHY_IO_PL3_O1","acc":0},{"type":0,"val":"OUT_PHY_IO_PL3_O2","acc":0},{"type":0,"val":"OUT_PHY_IO_PL3_O3","acc":0},{"type":0,"val":"OUT_PHY_IO_PL4_02","acc":0},{"type":0,"val":"OUT_PHY_IO_PL4_03","acc":0},{"type":0,"val":"OUT_PHY_IO_PL4_04","acc":0},{"type":0,"val":"OUT_PHY_IO_PL4_05","acc":0}]},"acc":0}]},"acc":0},{"type":1,"val":{"cat":"System","params":[{"val":{"cat":"SysVersion","child":0,"params":[{"type":0,"val":"SRecordDate","acc":3},{"type":0,"val":"ThresR_A","acc":0},{"type":0,"val":"ThresX_A","acc":0},{"type":1,"val":{"cat":"DCFilter","child":0,"params":[{"type":0,"val":"DCRate_A","acc":0},{"type":0,"val":"DcCoeffNorm_A","acc":0}]},"acc":0},{"type":1,"val":{"cat":"MPhase","params":[{"type":0,"val":"MPhaseOrder_A","acc":0},{"type":0,"val":"MPhaseDD_A","acc":0},{"type":0,"val":"MPhaseRD_A","acc":0}]},"acc":0}]},"type":2,"acc":0},{"type":0,"val":"DspName","acc":3},{"val":{"cat":"FRAM","params":[{"val":{"child":0,"cat":"Detector IP","params":[{"type":0,"val":"InternalIP","acc":3},{"type":0,"val":"InternalNM","acc":3},{"type":0,"val":"XPortIP","acc":3},{"type":0,"val":"XPortNM","acc":3},{"type":0,"val":"XPortGW","acc":3}]},"type":1,"acc":0},{"val":{"child":1,"cat":"IO Board Settings","params":[{"type":0,"val":"IOBoardLocate","acc":2},{"type":0,"val":"IOBoardIP","acc":3},{"type":0,"val":"IOBoardType","acc":3}]},"type":1,"acc":0},{"val":{"child":1,"cat":"Halo Board Settings","params":[{"type":0,"val":"HaloLocate","acc":2},{"type":0,"val":"HaloIP","acc":3}]},"type":1,"acc":0},{"val":{"child":0,"cat":"Display Settings","params":[{"type":0,"val":"Nif_ip","acc":3},{"type":0,"val":"Nif_nm","acc":3},{"type":0,"val":"Nif_gw","acc":3}]},"type":1,"acc":0},{"type":0,"val":"NTPServerIP","acc":3},{"type":0,"val":"EtherExtPorts","acc":3}]},"type":1,"acc":4},{"val":{"cat":"Passwords","params":[{"type":0,"val":"PassOn","acc":3},{"type":0,"val":"PassAccSens","acc":3},{"type":0,"val":"PassAccProd","acc":3},{"type":0,"val":"PassAccCal","acc":3},{"type":0,"val":"PassAccTest","acc":3},{"type":0,"val":"PassAccSelUnit","acc":3},{"type":0,"val":"PassAccClrFaults","acc":3},{"type":0,"val":"PassAccClrRej","acc":3},{"type":0,"val":"PassAccClrLatch","acc":3},{"type":0,"val":"PassAccTime","acc":3},{"type":0,"val":"PassAccSync","acc":3}]},"type":1,"acc":4},{"val":{"cat":"About","params":[{"type":0,"val":"SysFreq_A","acc":3},{"type":0,"val":"SysBal_A","acc":3},{"type":0,"val":"SysRef_A","acc":3}]},"type":1,"acc":0}]},"acc":0},{"type":0,"val":"Language","acc":0}]},"@vMap":{"Sens_A":{"@translations":{"english":{"name":"Sensitivity","description":"Sensitivity determines the size of metal that can be detected. Higher sensitivity can detect smaller metal, but is also more susceptible to outside noise sources"},"korean":{"name":"민감도","description":""},"spanish":{"name":"Sensibilidad","description":""},"french":{"name":"Sensibilité","description":"La sensibilité détermine la taille du métal pouvant être détecté. Une sensibilité accrue peut détecter une taille plus petite mais rend le détecteur de métaux plus vulnérable aux interférences externes."},"portuguese":{"name":"Sensibilidade","description":""},"italian":{"name":"Sensibilità","description":""},"german":{"name":"Empfinflichkeit","description":"Die Empfindlichkeit bestimmt maßgeblich die Detektionsgenauigkeit des Detektors.Ein höherer Zahlenwert bedeutet Erkennung kleinerer Metallpartikel, umgekehrt kleinerer Zahlenwert nur größerer Metallkontaminationen.Eine zu hoch eingestellte Empfindlichkeit kann zu Instabilitäten und in der Folge zu Fehldetektionen führen."},"turkish":{"name":"Sensitivity","description":"Sensitivity determines the size of metal that can be detected. Higher sensitivity can detect smaller metal, but is also more susceptible to outside noise sources"}},"children":["Sens_B"],"@labels":["Channel A","Channel B"]},"SysFreq_A":{"@translations":{"english":{"name":"Frequency","description":""},"korean":{"name":"주파수","description":""},"spanish":{"name":"Frequency","description":""},"french":{"name":"Fréquence","description":""},"portuguese":{"name":"Frequency","description":""},"italian":{"name":"Frequency","description":""},"german":{"name":"Frequenz","description":""},"turkish":{"name":"Frequency","description":""}},"children":["SysFreq_B"],"@labels":["Channel A","Channel B"]},"SysBal_A":{"@translations":{"english":{"name":"Balance","description":""},"korean":{"name":"발란스","description":""},"spanish":{"name":"Balance","description":""},"french":{"name":"Balance","description":""},"portuguese":{"name":"Balance","description":""},"italian":{"name":"Balance","description":""},"german":{"name":"Balance","description":"Abgleich der Empfangsspulen,Spannungen über 1500mV führen zu einer Störmeldung.Es sollte der Kundendienst gerufen werden."},"turkish":{"name":"Balance","description":""}},"children":["SysBal_B"],"@labels":["Channel A","Channel B"]},"SysRef_A":{"@translations":{"english":{"name":"Reference Voltage","description":""},"korean":{"name":"참조 전압","description":""},"spanish":{"name":"Reference Voltage","description":""},"french":{"name":"Tension de référence","description":""},"portuguese":{"name":"Reference Voltage","description":""},"italian":{"name":"Reference Voltage","description":""},"german":{"name":"Referenz Spannung","description":"Sollspannung liegt hier bei 1-1,5Vss"},"turkish":{"name":"Reference Voltage","description":""}},"children":["SysRef_B"],"@labels":["Channel A","Channel B"]},"DetThresh_A":{"@translations":{"english":{"name":"Detection Threshold","description":"Set the Detection Threshold 1 or 2 above the Detection Threshold Est with product running"},"korean":{"name":"검출역치 ","description":""},"spanish":{"name":"Umbral Detección","description":""},"french":{"name":"Seuil de Détection","description":"Durant la production, fixez le seuil de détection 1 ou 2 au-dessus du seuil estimé."},"portuguese":{"name":"Limite Detecção","description":""},"italian":{"name":"Soglia Rivelamento","description":""},"german":{"name":"Detektions-Schwellenwert","description":"Der Detektions-Schwellenwert ist ca. 1-2 Zahlenwerte über dem höchsten \"Est\"-Wert zu stellen."},"turkish":{"name":"Detection Threshold","description":"Set the Detection Threshold 1 or 2 above the Detection Threshold Est with product running"}},"children":["DetThresh_B"],"@labels":["Channel A","Channel B"]},"ThresProdHi_A":{"@translations":{"english":{"name":"Product High Threshold","description":""},"korean":{"name":"교정한계치","description":""},"spanish":{"name":"Umbral Superior Producto","description":""},"french":{"name":"Seuil Élevé du Produit","description":""},"portuguese":{"name":"Limite Produto Alto","description":""},"italian":{"name":"Soglia alta prodotto","description":""},"german":{"name":"Hoher Produkt-Schwellenwert","description":""},"turkish":{"name":"Product High Threshold","description":""}},"children":["ThresProdHi_B"],"@labels":["Channel A","Channel B"]},"ThresX_A":{"@translations":{"english":{"name":"X Threshold","description":""},"korean":{"name":"X 역치","description":""},"spanish":{"name":"Umbral X","description":""},"french":{"name":"Seuil X","description":""},"portuguese":{"name":"Limite de X","description":""},"italian":{"name":"Soglia X","description":""},"german":{"name":"X-Schwellenwert","description":""},"turkish":{"name":"X Threshold","description":""}},"children":["ThresX_B"],"@labels":["Channel A","Channel B"]},"ThresR_A":{"@translations":{"english":{"name":"R Threshold","description":""},"korean":{"name":"R 역치","description":""},"spanish":{"name":"Umbral R","description":""},"french":{"name":"Seuil R","description":""},"portuguese":{"name":"Limite de R","description":""},"italian":{"name":"Soglia R","description":""},"german":{"name":"R-Schwellenwert","description":""},"turkish":{"name":"R Threshold","description":""}},"children":["ThresR_B"],"@labels":["Channel A","Channel B"]},"BigMetThres_A":{"@translations":{"english":{"name":"Large Metal Threshold","description":"Threshold for Large Metal Fault"},"korean":{"name":"대량금속 역치","description":""},"spanish":{"name":"Umbral Metal Grande","description":""},"french":{"name":"Seuil Grande Quantité de Métaux","description":"Défaillance/Erreur Seuil Grandes Quantités de Métaux"},"portuguese":{"name":"Limite Metal Grande","description":""},"italian":{"name":"Soglia Metallo Grande","description":""},"german":{"name":"Hoher Metall-Schwellenwert","description":"Schwellenwert überschritten! führte zur Fehlermeldung"},"turkish":{"name":"Large Metal Threshold","description":"Threshold for Large Metal Fault"}},"children":["BigMetThres_B"],"@labels":["Channel A","Channel B"]},"DetMode_A":{"@translations":{"english":{"name":"Detection Mode","description":"Peak mode is the default detection mode. FM mode can improve performance in certain applications"},"korean":{"name":"검출방식","description":""},"spanish":{"name":"Modo Detección","description":""},"french":{"name":"Mode Détection","description":"Le Mode de détection Peak est configuré par défaut. Le Mode FM peut améliorer la performance dans certaines applications."},"portuguese":{"name":"Modo de Detecção","description":""},"italian":{"name":"Modo Rivelamento","description":""},"german":{"name":"Detektions Modus","description":"Peak-Modus ist die Standardeinstellung.\nDer FM-Modus kann die Detektionsgenauigkeit in bestimmten Anwendungsfällen deutlich verbessern. "},"turkish":{"name":"Detection Mode","description":"Peak mode is the default detection mode. FM mode can improve performance in certain applications"}},"children":["DetMode_B"],"@labels":["Channel A","Channel B"]},"NoiseR_A":{"@translations":{"english":{"name":"R Channel Noise","description":""},"korean":{"name":"R 채널 노이즈","description":""},"spanish":{"name":"Ruido Canal R","description":""},"french":{"name":"Canal Bruits R","description":""},"portuguese":{"name":"Ruído do Canal R","description":""},"italian":{"name":"Rumore Canale R","description":""},"german":{"name":"R-Kanal Rauschen","description":""},"turkish":{"name":"R Channel Noise","description":""}},"children":["NoiseR_B"],"@labels":["Channel A","Channel B"]},"NoiseX_A":{"@translations":{"english":{"name":"X Channel Noise","description":""},"korean":{"name":"X 채널 노이즈","description":""},"spanish":{"name":"Ruido Canal X","description":""},"french":{"name":"Canal Bruits X","description":""},"portuguese":{"name":"Ruído do canal X","description":""},"italian":{"name":"Rumore Canale X","description":""},"german":{"name":"X-Kanal Rauschen","description":""},"turkish":{"name":"X Channel Noise","description":""}},"children":["NoiseX_B"],"@labels":["Channel A","Channel B"]},"DetThEst_A":{"@translations":{"english":{"name":"Detection Threshold Est","description":"The estimated FM signal; run product to get an estimate of product effect while using FM"},"korean":{"name":"검출역치 추정값","description":""},"spanish":{"name":"Umbral Detección Estimado","description":""},"french":{"name":"Seuil de Détection Estimé","description":"Le signal FM estimé; En Mode FM, faites passer le produit pour obtenir une estimation de l'effet du produit."},"portuguese":{"name":"Est do Limite de Detecção","description":""},"italian":{"name":"Soglia Rivelamento Stimata","description":""},"german":{"name":"Detektions Schwellenwert \"Est\"","description":"Das annäherungsweise ermittelte FM-Signal;Produkt durch die Öffnung laufen lassen um das FM-Signal zu bestimmen."},"turkish":{"name":"Detection Threshold Est","description":"The estimated FM signal; run product to get an estimate of product effect while using FM"}},"children":["DetThEst_B"],"@labels":["Channel A","Channel B"]},"FilterNoise_A":{"@translations":{"english":{"name":"Filter ","description":"filters prevent external noise from accidentally causing a false reject. Care should be taken that after a new filter is applied, the required metal samples can still be detected; a manual test is strongly reccommended after changes."},"korean":{"name":"필터 노이즈","description":""},"spanish":{"name":"Filtro Ruido","description":""},"french":{"name":"Filtre","description":"Les filtres préviennent les faux rejets causés accidentellement par les bruits externes. Une attention particulière doit être apportée après l’installation d’un nouveau filtre, il faut s'assurer que l'échantillon de métal peut encore être détecté; il est fortement recommandé de procéder à un test de détection manuel."},"portuguese":{"name":"Filtro do Ruído","description":""},"italian":{"name":"Rumore Filtro","description":""},"german":{"name":"Filter ","description":"Die Filter verhindern,das elektromagnetische Störungen, zu Fehldetektionen führen und somit die Betriebsstabilität zu verbessern.Nach einer Einstellungsänderung sollte immer mittels der Testkörper geprüft werden ob die erforderliche Detektionsgenauigkeit noch gewährleistet ist."},"turkish":{"name":"Filter ","description":"filters prevent external noise from accidentally causing a false reject. Care should be taken that after a new filter is applied, the required metal samples can still be detected; a manual test is strongly reccommended after changes."}},"children":["FilterNoise_B"],"@labels":["Channel A","Channel B"]},"OscPower_A":{"@translations":{"english":{"name":"Oscillator Power","description":"The oscillator power is set to high by default, but may be changed to low to accomodate for high product signal. Always recalibrate & run a manual test after changing the oscillator power"},"korean":{"name":"진동 출력","description":""},"spanish":{"name":"Potencia Oscilación","description":""},"french":{"name":"Puissance Oscillateur","description":"La puissance de l'oscillateur est préréglée \"High\" par défaut mais peut être modifiée à \"Low\" pour composer avec un signal élevé d'un produit. Toujours recalibrer et exécuter un test manuel après un changement de la puissance de l'oscillateur"},"portuguese":{"name":"Potência","description":""},"italian":{"name":"Potenza Oscillatore","description":""},"german":{"name":"Oszillator-Leistung","description":"Die Oszillator-Leistung steht standardmäßig auf hoch. Kann jedoch bei hohem Produkteffekt und Schwierigkeiten bei der Produkteffektkompensation auf niedrig gestellt werden. Nach Wechsel der Einstellung sollte immer eine Kalbrierung und ein Test mit den Prüfkörpern erfolgen."},"turkish":{"name":"Oscillator Power","description":"The oscillator power is set to high by default, but may be changed to low to accomodate for high product signal. Always recalibrate & run a manual test after changing the oscillator power"}},"children":["OscPower_B"],"@labels":["Channel A","Channel B"]},"FmInput_A":{"@translations":{"english":{"name":"FM Signal","description":"Signal in FM mode. "},"korean":{"name":"FM 입력","description":""},"spanish":{"name":"Entrada FM ","description":""},"french":{"name":"Signal FM","description":"Signal en Mode FM"},"portuguese":{"name":"Input do FM ","description":""},"italian":{"name":"Ingresso FM","description":""},"german":{"name":"FM Signal","description":"Signal in FM mode. "},"turkish":{"name":"FM Signal","description":"Signal in FM mode. "}},"children":["FmInput_B"],"@labels":["Channel A","Channel B"]},"TestTime":{"@translations":{"english":{"name":"Test Interval","description":"Time between automatically run tests in minutes. When set to \"0\" tests must be manually run through the test menu"},"korean":{"name":"테스트 간격","description":""},"spanish":{"name":"Intervalo Test","description":""},"french":{"name":"Intervalle  Essai/Test","description":"L'Auto Test s'exécute en temps minute. Lorsqu’il y a mise à 0, le test doit être exécuté manuellement à partir du menu d'Essai/Test"},"portuguese":{"name":"Intervalo de Teste","description":""},"italian":{"name":"Intervallo Test","description":""},"german":{"name":"Test Intervall","description":"Zeit zwischen automatischen Tests in Minuten. Wenn auf \"0\" gesetzt, müssen Tests manuell durch das Testmenü durchgeführt werden"},"turkish":{"name":"Test Interval","description":"Time between automatically run tests in minutes. When set to \"0\" tests must be manually run through the test menu"}},"children":[],"@labels":["Test Interval"]},"TestDeferTime":{"@translations":{"english":{"name":"Test Defer TIme","description":"Test defer time sets the interval between tests if multiple tests have been configured"},"korean":{"name":"테스트 지연 시간","description":""},"spanish":{"name":"Tiempo Aplazamiento Test","description":""},"french":{"name":"Un Temps d'Essai/Test Différé","description":"Un Temps d'Essai/Test Différé détermine l'intervalle entre les Essais/Tests si plusieurs requêtes d'Essai/Test ont été configurées."},"portuguese":{"name":"Deferir Tempo de Teste","description":""},"italian":{"name":"Tempo Differire Test","description":""},"german":{"name":"Testverzögerungszeit","description":"Die Testverzögerungszeit legt das Intervall zwischen den Tests fest, wenn mehrere Tests konfiguriert wurden"},"turkish":{"name":"Test Defer TIme","description":"Test defer time sets the interval between tests if multiple tests have been configured"}},"children":[],"@labels":["Test Defer TIme"]},"TestMode":{"@translations":{"english":{"name":"Test Mode","description":"Sets the test run when triggered by the test input. Prompt allows users to select test manually, halo & halo2 options require an optional Halo Board, Manual and Manual2 options prompt operator to run selected number of metal types for test."},"korean":{"name":"테스트 방식","description":""},"spanish":{"name":"Modo Test","description":""},"french":{"name":"Mode Essai/Test","description":"Déclenche l'Essai/test lorsqu’actionner \"Test Input\". Cette fonctionnalité permet à l'utilisateur de sélectionner un Essai/Test manuel, Halo et Halo 2 nécessite un Panneau Halo optionnel, l’option Manuel et Manuel 2 demande à l’opérateur de passer un nombre déterminé de types de métal à tester."},"portuguese":{"name":"Modo do Teste","description":""},"italian":{"name":"Modo Test","description":""},"german":{"name":"Test-Modus","description":"Startet den Testablauf, wenn dieser vom Signal eines vordefinfierten Eingangs angefordert wird. Die Eingabeaufforderung ermöglicht Benutzern die manuelle Auswahl eines Tests. Halo & Halo2-Optionen erfordern ein optionales Halo Board.Die Optionen Manuell und Manuell2 ermöglichen dem Bediener, die Art des Metalls für den Test,sowie die Testhäufigkeit zu definieren."},"turkish":{"name":"Test Mode","description":"Sets the test run when triggered by the test input. Prompt allows users to select test manually, halo & halo2 options require an optional Halo Board, Manual and Manual2 options prompt operator to run selected number of metal types for test."}},"children":[],"@labels":["Test Mode"]},"TestConfigCount0_0":{"@translations":{"english":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":"Cuenta es el número de pasadas. Selecciona el Tipo de Metal para testear en el cadena de señal específico"},"french":{"name":"Essai/Test 1","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 1","description":"Count is number of passes. Select Metal Type to test on the specified signal chain"},"italian":{"name":"Test 1","description":""},"german":{"name":"Test 1","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_0","TestConfigFreq0_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_1":{"@translations":{"english":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Essai/Test 2","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 2","description":""},"italian":{"name":"Test 2","description":""},"german":{"name":"Test 2","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_1","TestConfigFreq0_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_2":{"@translations":{"english":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Essai/Test 3","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 3","description":""},"italian":{"name":"Test 3","description":""},"german":{"name":"Test 3","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_2","TestConfigFreq0_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_3":{"@translations":{"english":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Essai/Test 4","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 4","description":""},"italian":{"name":"Test 4","description":""},"german":{"name":"Test 4","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_3","TestConfigFreq0_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_4":{"@translations":{"english":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Essai/Test 5","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 5","description":""},"italian":{"name":"Test 5","description":""},"german":{"name":"Test 5","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_4","TestConfigFreq0_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_5":{"@translations":{"english":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Essai/Test 6","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 6","description":""},"italian":{"name":"Test 6","description":""},"german":{"name":"Test 6","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_5","TestConfigFreq0_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck0":{"@translations":{"english":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Confirmation Test","description":"En position \"ON\", il oblige l'utilisateur à appuyer sur la touche de confirmation Essai/Test entre chaque Essai/Test."},"portuguese":{"name":"Reconhecer","description":""},"italian":{"name":"Riconoscere","description":""},"german":{"name":"Test Bestätigung","description":"Wenn auf \"an\" eingestellt ist, muss der Benutzer die Taste drücken, um den Test zwischen den einzelnen Tests zu bestätigen"},"turkish":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator0":{"@translations":{"english":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Code Opérateur","description":"En position \"ON\", il oblige l'utilisateur à entrer son code d'opérateur avant d'effectuer l'Essai/Test"},"portuguese":{"name":"Operador","description":""},"italian":{"name":"Operatore","description":""},"german":{"name":"Bnutzer-Code","description":"Wenn auf \"an\" gesetzt ist, muss der Benutzer seinen Bedienercode eingeben, bevor er den Test ausführt"},"turkish":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode0":{"@translations":{"english":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Mode Halo","description":"Place l'Échantillon-Test vers le milieu (mid), ou le bord avant, milieu et le bord arrière (cycle) du produit."},"portuguese":{"name":"Modo Halo","description":""},"italian":{"name":"Modo Halo","description":""},"german":{"name":"Halo-Modus","description":"Setzt die simulierte Metallprobe auf die mittlere (Mitte) oder Vorderkante, mittlere und hintere Kante (Zyklus) des Produkts"},"turkish":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount1_0":{"@translations":{"english":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Essai/Test 1","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 1","description":""},"italian":{"name":"Test 1","description":""},"german":{"name":"Test 1","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_0","TestConfigFreq1_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_1":{"@translations":{"english":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Essai/Test 2","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 2","description":""},"italian":{"name":"Test 2","description":""},"german":{"name":"Test 2","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_1","TestConfigFreq1_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_2":{"@translations":{"english":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Essai/Test 3","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 3","description":""},"italian":{"name":"Test 3","description":""},"german":{"name":"Test 3","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_2","TestConfigFreq1_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_3":{"@translations":{"english":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Essai/Test 4","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 4","description":""},"italian":{"name":"Test 4","description":""},"german":{"name":"Test 4","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_3","TestConfigFreq1_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_4":{"@translations":{"english":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Essai/Test 5","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 5","description":""},"italian":{"name":"Test 5","description":""},"german":{"name":"Test 5","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_4","TestConfigFreq1_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_5":{"@translations":{"english":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Essai/Test 6","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 6","description":""},"italian":{"name":"Test 6","description":""},"german":{"name":"Test 6","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_5","TestConfigFreq1_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck1":{"@translations":{"english":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Confirmation Test","description":"En position \"ON\", il oblige l'utilisateur à appuyer sur la touche de confirmation Essai/Test entre chaque Essai/Test."},"portuguese":{"name":"Reconhecer","description":""},"italian":{"name":"Riconoscere","description":""},"german":{"name":" Test-Bestätigung","description":"Wenn auf \"an\" eingestellt ist, muss der Benutzer die Taste drücken, um den Test zwischen den einzelnen Tests zu bestätigen"},"turkish":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator1":{"@translations":{"english":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Code Opérateur","description":"En position \"ON\", il oblige l'utilisateur à entrer son code d'opérateur avant d'effectuer l'Essai/Test"},"portuguese":{"name":"Operador","description":""},"italian":{"name":"Operatore","description":""},"german":{"name":"Benutzer-Code","description":"Wenn auf \"an\" gesetzt ist, muss der Benutzer seinen Bedienercode eingeben, bevor er den Test ausführt"},"turkish":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode1":{"@translations":{"english":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Mode Halo","description":"Place l'Échantillon-Test vers le milieu (mid), ou le bord avant, milieu et le bord arrière (cycle) du produit."},"portuguese":{"name":"Modo Halo","description":""},"italian":{"name":"Modo Halo","description":""},"german":{"name":"Halo-Modus","description":"Setzt die simulierte Metallprobe auf die mittlere (Mitte) oder Vorderkante, mittlere und hintere Kante (Zyklus) des Produkts"},"turkish":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount2_0":{"@translations":{"english":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Essai/Test 1","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 1","description":""},"italian":{"name":"Test 1","description":""},"german":{"name":"Test 1","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_0","TestConfigFreq2_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_1":{"@translations":{"english":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Essai/Test 2","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 2","description":""},"italian":{"name":"Test 2","description":""},"german":{"name":"Test 2","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_1","TestConfigFreq2_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_2":{"@translations":{"english":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Essai/Test 3","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 3","description":""},"italian":{"name":"Test 3","description":""},"german":{"name":"Test 3","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_2","TestConfigFreq2_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_3":{"@translations":{"english":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Essai/Test 4","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 4","description":""},"italian":{"name":"Test 4","description":""},"german":{"name":"Test 4","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_3","TestConfigFreq2_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_4":{"@translations":{"english":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Essai/Test 5","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 5","description":""},"italian":{"name":"Test 5","description":""},"german":{"name":"Test 5","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_4","TestConfigFreq2_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_5":{"@translations":{"english":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Essai/Test 6","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 6","description":""},"italian":{"name":"Test 6","description":""},"german":{"name":"Test 6","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_5","TestConfigFreq2_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck2":{"@translations":{"english":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Confirmation Test","description":"En position \"ON\", il oblige l'utilisateur à appuyer sur la touche de confirmation Essai/Test entre chaque Essai/Test"},"portuguese":{"name":"Reconhecer","description":""},"italian":{"name":"Riconoscere","description":""},"german":{"name":"Test Bestätigung","description":"Wenn auf \"an\" eingestellt ist, muss der Benutzer die Taste drücken, um den Test zwischen den einzelnen Tests zu bestätigen"},"turkish":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator2":{"@translations":{"english":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Code Opétateur","description":"En position \"ON\", il oblige l'utilisateur à entrer son code d'opérateur avant d'effectuer l'Essai/Test"},"portuguese":{"name":"Operador","description":""},"italian":{"name":"Operatore","description":""},"german":{"name":"Benutzer-Code","description":"Wenn auf \"an\" gesetzt ist, muss der Benutzer seinen Bedienercode eingeben, bevor er den Test ausführt"},"turkish":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode2":{"@translations":{"english":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Mode Halo","description":"Place l'Échantillon-Test vers le milieu (mid), ou le bord avant, milieu et le bord arrière (cycle) du produit."},"portuguese":{"name":"Modo Halo","description":""},"italian":{"name":"Modo Halo","description":""},"german":{"name":"Halo-Modus","description":"Setzt die simulierte Metallprobe auf die mittlere (Mitte) oder Vorderkante, mittlere und hintere Kante (Zyklus) des Produkts"},"turkish":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount3_0":{"@translations":{"english":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Essai/Test 1","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 1","description":""},"italian":{"name":"Test 1","description":""},"german":{"name":"Test 1","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_0","TestConfigFreq3_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_1":{"@translations":{"english":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Essai/Test 2","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 2","description":""},"italian":{"name":"Test 2","description":""},"german":{"name":"Test 2","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_1","TestConfigFreq3_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_2":{"@translations":{"english":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Essai/Test 3","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 3","description":""},"italian":{"name":"Test 3","description":""},"german":{"name":"Test 3","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_2","TestConfigFreq3_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_3":{"@translations":{"english":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Essai/Test 4","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 4","description":""},"italian":{"name":"Test 4","description":""},"german":{"name":"Test 4","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_3","TestConfigFreq3_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_4":{"@translations":{"english":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Essai/Test 5","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 5","description":""},"italian":{"name":"Test 5","description":""},"german":{"name":"Test 5","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_4","TestConfigFreq3_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_5":{"@translations":{"english":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Essai/Test 6","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 6","description":""},"italian":{"name":"Test 6","description":""},"german":{"name":"Test 6","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_5","TestConfigFreq3_5"],"@labels":["Count","Metal Type","Signal Chain"]},"Date":{"@translations":{"english":{"name":"Date","description":""},"korean":{"name":"날짜","description":""},"spanish":{"name":"Date","description":""},"french":{"name":"Date","description":""},"portuguese":{"name":"Date","description":""},"italian":{"name":"Date","description":""},"german":{"name":"Date","description":""},"turkish":{"name":"Date","description":""}},"children":["months","days"],"@labels":["Year","Month","Day"]},"Time":{"@translations":{"english":{"name":"Time","description":""},"korean":{"name":"시간","description":""},"spanish":{"name":"Time","description":""},"french":{"name":"Time","description":""},"portuguese":{"name":"Time","description":""},"italian":{"name":"Time","description":""},"german":{"name":"Time","description":""},"turkish":{"name":"Time","description":""}},"children":["minute","second"],"@labels":["Hour","Minute","Second"]},"TestConfigAck3":{"@translations":{"english":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Confirmation Test","description":"En position \"ON\", il oblige l'utilisateur à appuyer sur la touche de confirmation Essai/Test entre chaque Essai/Test"},"portuguese":{"name":"reconhecer","description":""},"italian":{"name":"Riconoscere","description":""},"german":{"name":"Test Bestätigung","description":"Wenn auf \"an\" gesetzt ist, muss der Benutzer seinen Bedienercode eingeben, bevor er den Test ausführt"},"turkish":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator3":{"@translations":{"english":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Code Opérateur","description":"En position \"ON\", il oblige l'utilisateur à entrer son code d'opérateur avant d'effectuer l'Essai/Test"},"portuguese":{"name":"Operador","description":""},"italian":{"name":"Operatore","description":""},"german":{"name":"Benutzer Code","description":"Wenn auf \"an\" gesetzt ist, muss der Benutzer seinen Bedienercode eingeben, bevor er den Test ausführt"},"turkish":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode3":{"@translations":{"english":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Mode Halo","description":"Place l'Échantillon-Test vers le milieu (mid), ou le bord avant, milieu et le bord arrière (cycle) du produit."},"portuguese":{"name":"Modo Halo","description":""},"italian":{"name":"Modo Halo","description":""},"german":{"name":"Halo-Modus","description":"Setzt die simulierte Metallprobe auf die mittlere (Mitte) oder Vorderkante, mittlere und hintere Kante (Zyklus) des Produkts"},"turkish":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"}},"children":[],"@labels":["Halo Mode"]},"TestBlockReject":{"@translations":{"english":{"name":"Reject Disable on Test","description":""},"korean":{"name":"테스트시 리젝트 해제","description":""},"spanish":{"name":"Reject Disable on Test","description":""},"french":{"name":"Reject Disable on Test","description":""},"portuguese":{"name":"Reject Disable on Test","description":""},"italian":{"name":"Reject Disable on Test","description":""},"german":{"name":"Reject Disable on Test","description":""},"turkish":{"name":"Reject Disable on Test","description":""}},"children":[],"@labels":["Halo Mode"]},"HaloPeakRFe_A":{"@translations":{"english":{"name":"Ferrous Peak A","description":""},"korean":{"name":"철분 피크 A","description":""},"spanish":{"name":"Pico Ferrorso A","description":""},"french":{"name":"Limite Supérieure Ferreux A","description":""},"portuguese":{"name":"Pico Ferroso A","description":""},"italian":{"name":"Picco Ferroso A","description":""},"german":{"name":"Ferrous Peak A","description":""},"turkish":{"name":"Ferrous Peak A","description":""}},"children":["HaloPeakXFe_A"],"@labels":["Channel R","Channel X"]},"HaloPeakRFe_B":{"@translations":{"english":{"name":"Ferrous Peak B","description":""},"korean":{"name":"철분 피크 B","description":""},"spanish":{"name":"Pico Ferroso B","description":""},"french":{"name":"Limite Supérieure Ferreux B","description":""},"portuguese":{"name":"Pico Ferroso B","description":""},"italian":{"name":"Picco Ferroso B","description":""},"german":{"name":"Ferrous Peak B","description":""},"turkish":{"name":"Ferrous Peak B","description":""}},"children":["HaloPeakXFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakRNFe_A":{"@translations":{"english":{"name":"Non-Ferrous Peak A","description":""},"korean":{"name":"비철금속 피크 A","description":""},"spanish":{"name":"Pico No Ferroso A","description":""},"french":{"name":"Limite Supérieure Non-Ferreux A","description":""},"portuguese":{"name":"Pico Não-Ferroso A","description":""},"italian":{"name":"Picco Non Ferroso A","description":""},"german":{"name":"Non-Ferrous Peak A","description":""},"turkish":{"name":"Non-Ferrous Peak A","description":""}},"children":["HaloPeakXNFe_A"],"@labels":["Channel A","Channel B"]},"HaloPeakRNFe_B":{"@translations":{"english":{"name":"Non-Ferrous Peak B","description":""},"korean":{"name":"비철금속 피크 B","description":""},"spanish":{"name":"Pico No Ferroso B","description":""},"french":{"name":"Limite Supérieure Non-Ferreux B","description":""},"portuguese":{"name":"Pico Não-Ferroso B","description":""},"italian":{"name":"Picco Non Ferroso B","description":""},"german":{"name":"Non-Ferrous Peak B","description":""},"turkish":{"name":"Non-Ferrous Peak B","description":""}},"children":["HaloPeakXNFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakRSs_A":{"@translations":{"english":{"name":"Stainless Peak A","description":""},"korean":{"name":"스테인리스 피크 A","description":""},"spanish":{"name":"Pico Inoxidable A","description":""},"french":{"name":"Limite Supérieure Acier Inoxydable A","description":""},"portuguese":{"name":"Pico R Aço Inoxidável","description":""},"italian":{"name":"Picco Inossidabile A","description":""},"german":{"name":"Edelstahl Peak A","description":""},"turkish":{"name":"Stainless Peak A","description":""}},"children":["HaloPeakXSs_A"],"@labels":["Channel A","Channel B"]},"HaloPeakRSs_B":{"@translations":{"english":{"name":"Stainless Peak B","description":""},"korean":{"name":"스테인리스 피크 B","description":""},"spanish":{"name":"Pico Inoxidable B","description":""},"french":{"name":"Limite Supérieure Acier inoxidable B","description":""},"portuguese":{"name":"Pico Aço Inoxidável B","description":""},"italian":{"name":"Picco Inossidabile B","description":""},"german":{"name":"Edelstahl Peak B","description":""},"turkish":{"name":"Stainless Peak B","description":""}},"children":["HaloPeakXSs_B"],"@labels":["Channel A","Channel B"]},"PhaseAngle_A":{"@translations":{"english":{"name":"Phase Angle","description":"Current Phase angle the unit is calibrated to "},"korean":{"name":"페이즈","description":""},"spanish":{"name":"Ángulo de Fase","description":""},"french":{"name":"Angle Phase","description":"L’angle de Phase calibrée de l’unité"},"portuguese":{"name":"Ángulo de Fase","description":""},"italian":{"name":"Angolo Fase","description":""},"german":{"name":"Phasenwinkel","description":"aktuell eingestellter/gelernter Phasenwinkel  "},"turkish":{"name":"Phase Angle","description":"Current Phase angle the unit is calibrated to "}},"children":["PhaseAngle_B"],"@labels":["Channel A","Channel B"]},"PhaseMode_A":{"@translations":{"english":{"name":"Phase Mode","description":"Wet or Dry phase mode is set by the calibrated phase angle of the unit"},"korean":{"name":"페이즈 모드","description":""},"spanish":{"name":"Modo Fase","description":""},"french":{"name":"Mode Phase","description":"Mode de Phase Humide ou Sec est réglé par l’angle de phase calibrée de l’unité"},"portuguese":{"name":"Modo da Fase","description":""},"italian":{"name":"Modo Fase","description":""},"german":{"name":"Phasen Modus","description":"Der Modus Nass oder Trocken wird durch den kalibrierten Phasenwinkel des Geräts ermittelt"},"turkish":{"name":"Phase Mode","description":"Wet or Dry phase mode is set by the calibrated phase angle of the unit"}},"children":["PhaseMode_B"],"@labels":["Channel A","Channel B"]},"PhaseSpeed_A":{"@translations":{"english":{"name":"Phase Speed","description":"fixed indicates a fixed value, fast indicates calibration is in progress, auto indicates the detector will automatically phase to small changes in product phase over time, learn indicates a calibration is in progress."},"korean":{"name":"페이즈 학습","description":""},"spanish":{"name":"Velocidad Fase","description":""},"french":{"name":"Vitesse Phase","description":"Fixe indique une valeur fixée, Fast indique une calibration en traitement, Auto indique que le détecteur va automatiquement s’ajuster face aux petites variations de l’effet du produit, Learn indique que la calibration est en traitement."},"portuguese":{"name":"Velocidade da Fase","description":""},"italian":{"name":"Velocità Fase","description":""},"german":{"name":"Phasengeschwindigkeit","description":"fest zeigt einen festen Wert an, schnell zeigt an, dass die Kalibrierung läuft, auto zeigt an, dass der Detektor automatisch zu kleinen Änderungen der Produktphase im Laufe der Zeit nachgeführt wird, lernen zeigt an, dass eine Kalibrierung läuft."},"turkish":{"name":"Phase Speed","description":"fixed indicates a fixed value, fast indicates calibration is in progress, auto indicates the detector will automatically phase to small changes in product phase over time, learn indicates a calibration is in progress."}},"children":["PhaseSpeed_B"],"@labels":["Channel A","Channel B"]},"PhaseModeHold_A":{"@translations":{"english":{"name":"Phase Limit Hold","description":""},"korean":{"name":"페이즈 모드 홀드","description":""},"spanish":{"name":"Retención Límite Fase","description":""},"french":{"name":"Rétention Limite Phase","description":""},"portuguese":{"name":"Trava do Limite da Fase","description":""},"italian":{"name":"Retenzione Limite Fase","description":""},"german":{"name":"Phasen-Grenzen halten","description":""},"turkish":{"name":"Phase Limit Hold","description":""}},"children":["PhaseModeHold_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitDry_A":{"@translations":{"english":{"name":"Dry Phase Limit","description":""},"korean":{"name":"건식 페이즈 극치","description":""},"spanish":{"name":"Límite Fase Seco","description":""},"french":{"name":"Limite Phase Sec","description":""},"portuguese":{"name":"Limite Fase Seco","description":""},"italian":{"name":"Limite Fase Secco","description":""},"german":{"name":"Trocken Phasen-Grenzen","description":""},"turkish":{"name":"Dry Phase Limit","description":""}},"children":["PhaseLimitDry_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitDrySpread_A":{"@translations":{"english":{"name":"Dry Phase Limit Spread","description":""},"korean":{"name":"건식 페이즈 극치 범위","description":""},"spanish":{"name":"Límite Propagación Fase Seco","description":""},"french":{"name":"Limite Vitesse Phase Sec","description":""},"portuguese":{"name":"Limite de Propagação da Fase Seco","description":""},"italian":{"name":"Limite Propagazione Fase Secco","description":""},"german":{"name":"Trocken Phasen-Grenzen setzen","description":""},"turkish":{"name":"Dry Phase Limit Spread","description":""}},"children":["PhaseLimitDrySpread_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitWet_A":{"@translations":{"english":{"name":"Wet Phase Limit","description":""},"korean":{"name":"습식 페이즈","description":""},"spanish":{"name":"Límite Fase Húmedo","description":""},"french":{"name":"Limite Phase Humide","description":""},"portuguese":{"name":"Limite Fase Humido","description":""},"italian":{"name":"Limite Fase Umido","description":""},"german":{"name":"Nass Phasen-Grenzen","description":""},"turkish":{"name":"Wet Phase Limit","description":""}},"children":["PhaseLimitWet_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitWetSpread_A":{"@translations":{"english":{"name":"Wet Phase Limit Spread","description":""},"korean":{"name":"습식 페이즈 극치 범위","description":""},"spanish":{"name":"Límite Propagación Fase Húmedo","description":""},"french":{"name":"Limite Vitesse Phase Humide","description":""},"portuguese":{"name":"Limite de Propagação da Fase Humido ","description":""},"italian":{"name":"Limite Propagazione Fase Umido","description":""},"german":{"name":"Nass Phasen-Grenzen setzen","description":""},"turkish":{"name":"Wet Phase Limit Spread","description":""}},"children":["PhaseLimitWetSpread_B"],"@labels":["Channel A","Channel B"]},"PhaseAngleAuto_A":{"@translations":{"english":{"name":"Phase Angle","description":"Current Phase angle the unit is calibrated to "},"korean":{"name":"페이즈","description":""},"spanish":{"name":"Ángulo Fase","description":""},"french":{"name":"Angle Phase","description":"L’angle de Phase calibrée de l’unité"},"portuguese":{"name":"Ángulo da Fase","description":""},"italian":{"name":"Angolo Fase","description":""},"german":{"name":"Phasenwinkel","description":"aktuell eingestellter/gelernter Phasenwinkel  "},"turkish":{"name":"Phase Angle","description":"Current Phase angle the unit is calibrated to "}},"children":["PhaseAngleAuto_B"],"@labels":["Channel A","Channel B"]},"PhaseFastBit_A":{"@translations":{"english":{"name":"Phase Speed","description":"fixed indicates a fixed value, fast indicates calibration is in progress, auto indicates the detector will automatically phase to small changes in product phase over time, learn indicates a calibration is in progress."},"korean":{"name":"페이즈 속도","description":""},"spanish":{"name":"Velocidad Fase","description":""},"french":{"name":"Vitesse Phase","description":"Fixe indique une valeur fixée, Fast indique une calibration en traitement, Auto indique que le détecteur va automatiquement s’ajuster face aux petites variations de l’effet du produit, Learn indique que la calibration est en traitement."},"portuguese":{"name":"Velocidade da Fase","description":""},"italian":{"name":"Velocità Fase","description":""},"german":{"name":"Phasengeschwindigkeit","description":"fest zeigt einen festen Wert an, schnell zeigt an, dass die Kalibrierung läuft, auto zeigt an, dass der Detektor automatisch zu kleinen Änderungen der Produktphase im Laufe der Zeit nachgeführt wird, lernen zeigt an, dass eine Kalibrierung läuft."},"turkish":{"name":"Phase Speed","description":"fixed indicates a fixed value, fast indicates calibration is in progress, auto indicates the detector will automatically phase to small changes in product phase over time, learn indicates a calibration is in progress."}},"children":["PhaseFastBit_B"],"@labels":["Channel A","Channel B"]},"PhaseWetBit_A":{"@translations":{"english":{"name":"Phase Wet","description":""},"korean":{"name":"습식 페이즈","description":""},"spanish":{"name":"Fase Húmedo","description":""},"french":{"name":"Phase Humide","description":""},"portuguese":{"name":"Fase Humido","description":""},"italian":{"name":"Fase Umido","description":""},"german":{"name":"Phase Wet","description":""},"turkish":{"name":"Phase Wet","description":""}},"children":["PhaseWetBit_B"],"@labels":["Channel A","Channel B"]},"PhaseDSALearn_A":{"@translations":{"english":{"name":"Phase DSA Learn","description":""},"korean":{"name":"DSA 페이즈 학습","description":""},"spanish":{"name":"Aprender Fase DSA","description":""},"french":{"name":"Apprendre Phase DSA ","description":""},"portuguese":{"name":"Aprender Fase DSA","description":""},"italian":{"name":"Apprendere Fase DSA","description":""},"german":{"name":"Phase DSA Learn","description":""},"turkish":{"name":"Phase DSA Learn","description":""}},"children":["PhaseDSALearn_B"],"@labels":["Channel A","Channel B"]},"PhaseTrigLimit":{"@translations":{"english":{"name":"Phase Trigger Limit","description":""},"korean":{"name":"페이즈 트리거 리밋","description":""},"spanish":{"name":"Límite disparo fase","description":""},"french":{"name":"limite déclenchement phase","description":""},"portuguese":{"name":"limite disparo fase","description":""},"italian":{"name":"limite innesco fase","description":""},"german":{"name":"Phase Triggergrenze","description":""},"turkish":{"name":"Phase Trigger Limit","description":""}},"children":[],"@labels":["PhaseTrigLimit"]},"PhaseOffset_A":{"@translations":{"english":{"name":"Phase Offset","description":""},"korean":{"name":"페이즈 오프셋","description":""},"spanish":{"name":"Phase Offset","description":""},"french":{"name":"Phase Offset","description":""},"portuguese":{"name":"Phase Offset","description":""},"italian":{"name":"Phase Offset","description":""},"german":{"name":"Phase Offset","description":""},"turkish":{"name":"Phase Offset","description":""}},"children":["PhaseOffset_B"],"@labels":["Channel A","Channel B"]},"LearnCombined":{"@translations":{"english":{"name":"Learn Combined","description":""},"korean":{"name":"Learn Combined","description":""},"spanish":{"name":"Learn Combined","description":""},"french":{"name":"Learn Combined","description":""},"portuguese":{"name":"Learn Combined","description":""},"italian":{"name":"Learn Combined","description":""},"german":{"name":"Learn Combined","description":""},"turkish":{"name":"Learn Combined","description":""}},"children":[],"@labels":["PhaseTrigLimit"]},"LearnSens_A":{"@translations":{"english":{"name":"Learn Sensitivity","description":""},"korean":{"name":"Learn Sensitivity","description":""},"spanish":{"name":"Learn Sensitivity","description":""},"french":{"name":"Learn Sensitivity","description":""},"portuguese":{"name":"Learn Sensitivity","description":""},"italian":{"name":"Learn Sensitivity","description":""},"german":{"name":"Learn Sensitivity","description":""},"turkish":{"name":"Learn Sensitivity","description":""}},"children":["LearnSens_B"],"@labels":["Channel A","Channel B"]},"ExpectedSig_A":{"@translations":{"english":{"name":"Expected Signal","description":""},"korean":{"name":"Expected Signal","description":""},"spanish":{"name":"Expected Signal","description":""},"french":{"name":"Expected Signal","description":""},"portuguese":{"name":"Expected Signal","description":""},"italian":{"name":"Expected Signal","description":""},"german":{"name":"Expected Signal","description":""},"turkish":{"name":"Expected Signal","description":""}},"children":["ExpectedSig_B"],"@labels":["Channel A","Channel B"]},"SensMax_A":{"@translations":{"english":{"name":"Max Sensitivity","description":""},"korean":{"name":"Max Sensitivity","description":""},"spanish":{"name":"Max Sensitivity","description":""},"french":{"name":"Max Sensitivity","description":""},"portuguese":{"name":"Max Sensitivity","description":""},"italian":{"name":"Max Sensitivity","description":""},"german":{"name":"Max Sensitivity","description":""},"turkish":{"name":"Max Sensitivity","description":""}},"children":["SensMax_B"],"@labels":["Channel A","Channel B"]},"SensMin_A":{"@translations":{"english":{"name":"Min Sensitivity","description":""},"korean":{"name":"Min Sensitivity","description":""},"spanish":{"name":"Min Sensitivity","description":""},"french":{"name":"Min Sensitivity","description":""},"portuguese":{"name":"Max Sensitivity","description":""},"italian":{"name":"Min Sensitivity","description":""},"german":{"name":"Min Sensitivity","description":""},"turkish":{"name":"Min Sensitivity","description":""}},"children":["SensMin_B"],"@labels":["Channel A","Channel B"]},"LearnPhase_A":{"@translations":{"english":{"name":"Learn Phase","description":""},"korean":{"name":"Learn Phase","description":""},"spanish":{"name":"Learn Phase","description":""},"french":{"name":"Learn Phase","description":""},"portuguese":{"name":"Learn Phase","description":""},"italian":{"name":"Learn Phase","description":""},"german":{"name":"Learn Phase","description":""},"turkish":{"name":"Learn Phase","description":""}},"children":["LearnPhase_B"],"@labels":["Channel A","Channel B"]},"RejCheckMode":{"@translations":{"english":{"name":"Reject Check Mode","description":""},"korean":{"name":"거부 확인 모드","description":""},"spanish":{"name":"Reject Check Mode","description":""},"french":{"name":"mode de vérification de rejet ","description":""},"portuguese":{"name":"Reject Check Mode","description":""},"italian":{"name":"Reject Check Mode","description":""},"german":{"name":"Reject Check Mode","description":""},"turkish":{"name":"Reject Check Mode","description":""}},"children":["Rej2Check"],"@labels":["Mode","Device"]},"FaultRejMode":{"@translations":{"english":{"name":"Reject on Fault","description":""},"korean":{"name":"거부시 폴트","description":""},"spanish":{"name":"Reject on Fault","description":""},"french":{"name":"Reject on Fault","description":""},"portuguese":{"name":"Reject on Fault","description":""},"italian":{"name":"Reject on Fault","description":""},"german":{"name":"Reject on Fault","description":""},"turkish":{"name":"Reject on Fault","description":""}},"children":[],"@labels":["Reject Check Mode"]},"Rej2Fault":{"@translations":{"english":{"name":"Alternate Reject on Fault","description":""},"korean":{"name":"거부시 폴트","description":""},"spanish":{"name":"Alternate Reject on Fault","description":""},"french":{"name":"Alternate Reject on Fault","description":""},"portuguese":{"name":"Alternate Reject on Fault","description":""},"italian":{"name":"Alternate Reject on Fault","description":""},"german":{"name":"Alternate Reject on Fault","description":""},"turkish":{"name":"Alternate Reject on Fault","description":""}},"children":[],"@labels":["Reject Check Mode"]},"PhaseTrigThres":{"@translations":{"english":{"name":"Phase Trigger Threshold","description":""},"korean":{"name":"페이즈 트리거 리밋","description":""},"spanish":{"name":"umbral disparo fase","description":""},"french":{"name":"seuil déclenchement phase","description":""},"portuguese":{"name":"limiar disparo fase","description":""},"italian":{"name":"soglia innesco fase","description":""},"german":{"name":"Phasenauslöserschwelle","description":""},"turkish":{"name":"Phase Trigger Threshold","description":""}},"children":[],"@labels":["PhaseTrigLimit"]},"MPhaseOrder_A":{"@translations":{"english":{"name":"M Phase Order","description":""},"korean":{"name":"다중 페이즈 오더","description":""},"spanish":{"name":"Orden Fase M","description":""},"french":{"name":"Commande Phases M","description":""},"portuguese":{"name":"Ordem da Fase M","description":""},"italian":{"name":"Ordine Fasi M","description":""},"german":{"name":"M Phase Ordnung","description":""},"turkish":{"name":"M Phase Order","description":""}},"children":["MPhaseOrder_B"],"@labels":["Channel A","Channel B"]},"MPhaseDD_A":{"@translations":{"english":{"name":"M Phase Detection","description":""},"korean":{"name":"다중 페이즈 감지","description":""},"spanish":{"name":"D Fase M","description":""},"french":{"name":"D Phases M","description":""},"portuguese":{"name":"DD da Fase M","description":""},"italian":{"name":"Rivelamento Fasi M","description":""},"german":{"name":"M Phasen Detektion","description":""},"turkish":{"name":"M Phase Detection","description":""}},"children":["MPhaseDD_B"],"@labels":["Channel A","Channel B"]},"MPhaseRD_A":{"@translations":{"english":{"name":"M Phase Reference","description":""},"korean":{"name":"다중 페이즈 레퍼런스","description":""},"spanish":{"name":"Referencia Fase M","description":""},"french":{"name":"Référence Phases M","description":""},"portuguese":{"name":"RD da Fase M","description":""},"italian":{"name":"Riferimento Fasi M","description":""},"german":{"name":"M Phasen Referenz","description":""},"turkish":{"name":"M Phase Reference","description":""}},"children":["MPhaseRD_A"],"@labels":["Channel A","Channel B"]},"Language":{"@translations":{"english":{"name":"Language","description":"This is a description of f the language"},"korean":{"name":"언어","description":"This is a description of f the language"},"spanish":{"name":"Idioma","description":"Esto es una descripción del idioma"},"french":{"name":"Terminologie","description":"Ceci est une description de la terminologie"},"portuguese":{"name":"Língua","description":"This is a description of f the language"},"italian":{"name":"Lingua","description":""},"german":{"name":"Sprache","description":"Dies ist eine Bezeichnung der Sprache."},"turkish":{"name":"Language","description":"This is a description of f the language"}},"children":[],"@labels":["Language"]},"RejDelSec":{"@translations":{"english":{"name":"Main Reject Delay","description":"Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates"},"korean":{"name":"주 리젝트 딜레이","description":""},"spanish":{"name":"Retardo Rechazo Principal","description":""},"french":{"name":"Délai Rejet Principal","description":"Le Délai de Rejet Principal est nombre de secondes s'étant écoulées depuis la détection jusqu'au moment précédent le déclenchement du Système de Rejet Principal"},"portuguese":{"name":"Atraso Relé Geral","description":""},"italian":{"name":"Ritardo Rifiuto Principale","description":""},"german":{"name":"Auswurf-Verzögerungszeit ","description":"Auswurfverzögerungszeit,hier kann die Zeitverzögerung, ab dem Zeitpunkt der Erkennung eingestellt werden, bevor die Auswurfvorrichtung aktiviert wird."},"turkish":{"name":"Main Reject Delay","description":"Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates"}},"children":[],"@labels":["Main Reject Delay"]},"RejDelSec2":{"@translations":{"english":{"name":"Alternate Reject Delay","description":"Alternae reject delay is the number of seconds from the moment of detection before the alterante reject device activates"},"korean":{"name":"보조 리젝트 딜레이","description":""},"spanish":{"name":"Retardo Rechazo Alternativo","description":""},"french":{"name":"Délai Rejet Alternatif","description":"Le Délai de Rejet Alternatif est nombre de secondes s'étant écoulées depuis la détection jusqu'au moment précédent le déclenchement du Système de Rejet Alternatif"},"portuguese":{"name":"Atraso Relé Alternativo","description":""},"italian":{"name":"Ritardo Rifiuto Alternativo","description":""},"german":{"name":"Alt. Auswurf-Verzögerungszeit","description":"Alt.Auswurfverzögerungszeit,hier kann die Zeitverzögerung, ab dem Zeitpunkt der Erkennung eingestellt werden, bevor die Auswurfvorrichtung aktiviert wird."},"turkish":{"name":"Alternate Reject Delay","description":"Alternae reject delay is the number of seconds from the moment of detection before the alterante reject device activates"}},"children":[],"@labels":["Alternate Reject Delay"]},"RejDurSec":{"@translations":{"english":{"name":"Main Reject Duration","description":"Main Reject Duration is the number of seconds for which the main reject device will be activated"},"korean":{"name":"주 리젝트 유지시간","description":""},"spanish":{"name":"Duración Rechazo Principal","description":""},"french":{"name":"Durée Rejet Principal","description":"La Durée du rejet est le nombre de secondes que demeurera activé le Système de Rejet Principal"},"portuguese":{"name":"Duração Relé Geral","description":""},"italian":{"name":"Durata Rifiuto Principale","description":""},"german":{"name":"Auswurf-Dauer","description":"Auswurf-Dauer,hier kann die Zeitdauer eingestellt werden für die, die Auswurfvorrichtung betätigt werden soll."},"turkish":{"name":"Main Reject Duration","description":"Main Reject Duration is the number of seconds for which the main reject device will be activated"}},"children":[],"@labels":["Main Reject Duration"]},"RejDurSec2":{"@translations":{"english":{"name":"Alternate Reject Duration","description":"Alternate Reject Duration is the number of seconds for which the alternate reject device will be activated"},"korean":{"name":"보조 리젝트 유지시간","description":""},"spanish":{"name":"Duración Rechazo Alternativo","description":""},"french":{"name":"Durée Rejet Alternatif","description":"La Durée du Rejet Alternatif est le nombre de secondes que demeurera activé le Système de Rejet Alternatif"},"portuguese":{"name":"Duração Relé Alternativo","description":""},"italian":{"name":"Durata Rifiuto Alternativa","description":""},"german":{"name":"Alt.Auswurf-Dauer","description":"Alt.Auswurf-Dauer,hier kann die Zeitdauer eingestellt werden für die, die Auswurfvorrichtung betätigt werden soll."},"turkish":{"name":"Alternate Reject Duration","description":"Alternate Reject Duration is the number of seconds for which the alternate reject device will be activated"}},"children":[],"@labels":["Alternate Reject Duration"]},"RejMode":{"@translations":{"english":{"name":"Reject Mode","description":"Set to normal for operation without an infeed photo eye, photo for operation with an infeed photo eye, and reverse for reverse operations"},"korean":{"name":"리젝트 모드","description":""},"spanish":{"name":"Modo Rechazo","description":""},"french":{"name":"Mode Rejet","description":"Réglé en position normale pour une installation sans capteur optique, réglez à photo pour une installation avec un capteur optique et marche arrière pour une opération de marche arrière"},"portuguese":{"name":"Modo de Rejeção","description":""},"italian":{"name":"Modo Rifuto","description":""},"german":{"name":"Auswurf Modus","description":"Für den Betrieb ohne Lichtschranke, Foto für den Betrieb mit eine Lichtschranke, und invers für die Erkennung/Ausschleußung nicht metallhaltiger Produkte."},"turkish":{"name":"Reject Mode","description":"Set to normal for operation without an infeed photo eye, photo for operation with an infeed photo eye, and reverse for reverse operations"}},"children":[],"@labels":["Reject Mode"]},"RejExitDist":{"@translations":{"english":{"name":"Reject Exit Distance","description":"Distance from the center of the head to the exit photo eye"},"korean":{"name":"리젝트 퇴장 거리","description":""},"spanish":{"name":"Distancia Salida Rechazo","description":""},"french":{"name":"Distance Sortie Rejet","description":"Distance du centre de la tête à la sortie du capteur optique"},"portuguese":{"name":"Distancia da Saida de Rejeção","description":""},"italian":{"name":"Distanza Uscita Rifuto","description":""},"german":{"name":"Abstand Ausgangslichtschranke","description":"Abstand von der Mitte des Suchkopfes bis zur Ausgangslichtschranke"},"turkish":{"name":"Reject Exit Distance","description":"Distance from the center of the head to the exit photo eye"}},"children":[],"@labels":["Reject Exit Distance"]},"RejExitDistEst":{"@translations":{"english":{"name":"Reject Exit Distance Estimate","description":"Distance from the center of the head to the exit photo eye"},"korean":{"name":"리젝트 퇴장 거리 추정","description":""},"spanish":{"name":"Reject Exit Distance Estimate","description":""},"french":{"name":"Reject Exit Distance Estimate","description":"Distance du centre de la tête à la sortie du capteur optique"},"portuguese":{"name":"Reject Exit Distance Estimate","description":""},"italian":{"name":"Reject Exit Distance Estimate","description":""},"german":{"name":"Reject Exit Distance Estimate","description":"Abstand von der Mitte des Suchkopfes bis zur Ausgangslichtschranke"},"turkish":{"name":"Reject Exit Distance Estimate","description":"Distance from the center of the head to the exit photo eye"}},"children":[],"@labels":["Reject Exit Distance"]},"RejExitWin":{"@translations":{"english":{"name":"Reject Exit Window","description":"tolerance window is available to compensate for cases where the pack may slip or turn in normal production causing unnecessary faults; can be increased where required to eliminate excess faults due to pack movement errors."},"korean":{"name":"리젝트 퇴장 범위","description":""},"spanish":{"name":"Ventana Salida Rechazo","description":""},"french":{"name":"Fenêtre Sortie Rejet","description":"Une fenêtre de tolérance est disponible pour les situations où le paquet peut glisser ou tourner sur une ligne de production normale créant ainsi des défaillances; elle peut être augmentée s’il est requis d’éliminer un excès de défaillances en lien avec le mouvement erroné d’un paquet."},"portuguese":{"name":"Janela da Saida de Rejeção","description":""},"italian":{"name":"Finestra Uscita Rifuto","description":""},"german":{"name":"Toleranz Ausgangslichtschranke","description":"Toleranzfenster ist verfügbar, um Fälle auszugleichen, in denen die Packung bei normaler Produktion rutschen oder wenden kann, was unnötige Fehler verursacht; kann bei Bedarf erhöht werden, um übermäßige Fehler aufgrund von Packungsbewegungsfehlern zu eliminieren."},"turkish":{"name":"Reject Exit Window","description":"tolerance window is available to compensate for cases where the pack may slip or turn in normal production causing unnecessary faults; can be increased where required to eliminate excess faults due to pack movement errors."}},"children":[],"@labels":["Reject Exit Window"]},"AppUnitDist":{"@translations":{"english":{"name":"Units ","description":""},"korean":{"name":"단위 ","description":""},"spanish":{"name":"Unidades ","description":""},"french":{"name":"Unité","description":""},"portuguese":{"name":"Unidades","description":""},"italian":{"name":"Unità","description":""},"german":{"name":"Einheiten ","description":""},"turkish":{"name":"Units ","description":""}},"children":[],"@labels":["Units "]},"BeltSpeed":{"@translations":{"english":{"name":"Belt Speed","description":"Speed of product through the detector; should be set even for non conveyor applications"},"korean":{"name":"벨트 속도","description":""},"spanish":{"name":"Velocidad Cinta","description":""},"french":{"name":"Vitesse Courroie","description":"Vitesse du produit circulant dans le détecteur; elle devrait être réglée même sur des applications sans convoyeur"},"portuguese":{"name":"Velocidade da Esteira","description":""},"italian":{"name":"Velocità Nastro Trasportatore","description":""},"german":{"name":"Bandgeschwindigkeit","description":"Geschwindigkeit des Produkts durch den Detektor; sollte für Anwendungen ohne Förderer manuell eingestellt werden."},"turkish":{"name":"Belt Speed","description":"Speed of product through the detector; should be set even for non conveyor applications"}},"children":[],"@labels":["Belt Speed"]},"BeltSpeedEst":{"@translations":{"english":{"name":"Belt Speed Estimate","description":"Estimated belt speed based on photo eye and package length when running a sample pack."},"korean":{"name":"벨트 속도 추정치","description":""},"spanish":{"name":"Velocidad Cinta Estimate","description":""},"french":{"name":"Vitesse Estimée Courroie","description":"Vitesse Estimée de Courroie basée sur le capteur optique et la longueur du paquet lors du passage de l’échantillon"},"portuguese":{"name":"Velocidade da Esteira Estimate","description":""},"italian":{"name":"Velocità Nastro Trasportatore Est.","description":""},"german":{"name":"Ermittlung der Bandgeschwindigkeit","description":"Ermittelte Bandgeschwindigkeit mit Hilfe der Einlauflichtschranke und der Paketlänge beim Durchlauf eines Probepacks."},"turkish":{"name":"Belt Speed Estimate","description":"Estimated belt speed based on photo eye and package length when running a sample pack."}},"children":[],"@labels":["Belt Speed"]},"FaultLatch":{"@translations":{"english":{"name":"Fault Latch","description":""},"korean":{"name":"폴트 래치","description":""},"spanish":{"name":"Retención Fallo","description":""},"french":{"name":"Défaillance du Verrou","description":""},"portuguese":{"name":"Trava Falha","description":""},"italian":{"name":"Mantenere Messaggio Errore","description":""},"german":{"name":"Fehlerverriegelung","description":""},"turkish":{"name":"Fault Latch","description":""}},"children":[],"@labels":["Fault Latch"]},"RejLatchMode":{"@translations":{"english":{"name":"Reject Latch","description":""},"korean":{"name":"리젝트 래치","description":""},"spanish":{"name":"Retención Rechazo","description":""},"french":{"name":"Verrou Rejet","description":""},"portuguese":{"name":"Trava Rejeção","description":""},"italian":{"name":"Mantenere Rifiuto","description":""},"german":{"name":"Auswurfselbsthaltung","description":""},"turkish":{"name":"Reject Latch","description":""}},"children":[],"@labels":["Reject Latch"]},"Rej2Latch":{"@translations":{"english":{"name":"Alternate Reject Latch","description":""},"korean":{"name":"보조 리젝트 래치","description":""},"spanish":{"name":"Retención Rechazo Alternativo","description":""},"french":{"name":"Verrou Alternatif Rejet","description":""},"portuguese":{"name":"Trava Rejeção Alternativa","description":""},"italian":{"name":"Mantenere Rifiuto Alternativo","description":""},"german":{"name":"Alternative Auswurfselbsthaltung","description":""},"turkish":{"name":"Alternate Reject Latch","description":""}},"children":[],"@labels":["Alternate Reject Latch"]},"ManRejState":{"@translations":{"english":{"name":"Manual Reject","description":""},"korean":{"name":"수동 리젝트","description":""},"spanish":{"name":"Manual Reject","description":""},"french":{"name":"Manual Reject","description":""},"portuguese":{"name":"Manual Reject","description":""},"italian":{"name":"Manual Reject","description":""},"german":{"name":"Manual Reject","description":""},"turkish":{"name":"Manual Reject","description":""}},"children":[],"@labels":["Alternate Reject Latch"]},"EyeReject":{"@translations":{"english":{"name":"Photo Reject","description":"The “mid” option of Photo Reject means that the reject device will hit the middle of the package regardless of the package size (kicker rejects) – it can be changed to “lead” (leading edge for diverter rejects) or “width” (entire length of package for retracting rejects)"},"korean":{"name":"포토 리젝트","description":""},"spanish":{"name":"Eye Reject","description":""},"french":{"name":"Rejet Capteur Optique","description":"L'option \"Mid\" du Capteur Optique détermine que le dispositif de rejet frappera le milieu du paquet peu importe la grosseur de celui-ci ( Pousseur/Piston)— elle peut être modifiée to \"Lead\" ( la partie avant pour le bras déviateur) ou \"Width\" (toute la largeur du produit pour une courroie de rappel)"},"portuguese":{"name":"Eye Reject","description":""},"italian":{"name":"Eye Reject","description":""},"german":{"name":"Lichtschrankenauswurf ","description":"Die \"Mitte\" Option von Lichtschrankenauswurf bedeutet, dass die Auswurfvorrichtung unabhängig von der Packungsgröße (Kicker/Pusher-Auswurf) die Mitte des Produktes trifft - es kann zwischen \"Vorderkante\" (Vorderkante bei Abweisarmen) oder \"Länge\" ( Gesamtlänge des Produktes bei Rückzug der Endwalze umgestellt werden."},"turkish":{"name":"Photo Reject","description":"The “mid” option of Photo Reject means that the reject device will hit the middle of the package regardless of the package size (kicker rejects) – it can be changed to “lead” (leading edge for diverter rejects) or “width” (entire length of package for retracting rejects)"}},"children":[],"@labels":["Eye Reject"]},"RejBinDoorTime":{"@translations":{"english":{"name":"Reject Bin Door Time","description":"The time allowed in seconds for the bin door to remain open"},"korean":{"name":"리젝트 보관함 오픈시간","description":""},"spanish":{"name":"Tiempo Puerta Contenedor","description":""},"french":{"name":"Délai Ouverture Porte Boîte Rejet","description":"La durée en secondes de l’ouverture de la porte de la boîte de rejet"},"portuguese":{"name":"Tempo Falha Porta Caixa de rejeção","description":""},"italian":{"name":"Tempo Porta Contenitore","description":""},"german":{"name":"Zeit Auswurfbehältertüre","description":"Die Zeit, in Sekunden welche die Auswurfbehältertür geöffnet sein darf."},"turkish":{"name":"Reject Bin Door Time","description":"The time allowed in seconds for the bin door to remain open"}},"children":[],"@labels":["Reject Bin Door Time"]},"AutoPhasePacks":{"@translations":{"english":{"name":"Auto Phase Packs","description":""},"korean":{"name":"오토페이즈 팩 갯수","description":""},"spanish":{"name":"Auto Phase Packs","description":""},"french":{"name":"Auto Phase Packs","description":""},"portuguese":{"name":"Auto Phase Packs","description":""},"italian":{"name":"Auto Phase Packs","description":""},"german":{"name":"Auto Phase Packs","description":""},"turkish":{"name":"Auto Phase Packs","description":""}},"children":[],"@labels":["Reject Bin Door Time"]},"CIPCycleTime":{"@translations":{"english":{"name":"CIP Cycle Time","description":"The duration of a CIP cycle"},"korean":{"name":"CIP 사이클 시간","description":""},"spanish":{"name":"Tiempo Ciclo Limpieza","description":""},"french":{"name":"Temp Cycle CIP","description":"La durée de temps d'un cycle CIP"},"portuguese":{"name":"Tempo Ciclo Limpeza CIP","description":""},"italian":{"name":"Tempo Ciclo Pulizia CIP","description":""},"german":{"name":"CIP Zykluszeit","description":"Die Zeitdauer eines CIP-Zyklus."},"turkish":{"name":"CIP Cycle Time","description":"The duration of a CIP cycle"}},"children":[],"@labels":["CIP Cycle Time"]},"CIPDwellTime":{"@translations":{"english":{"name":"CIP Dwell Time","description":"The duration during one CIP cycle that the reject will be active (in reject position)"},"korean":{"name":"CIP 유지 시간","description":""},"spanish":{"name":"Tiempo Actuación CIP","description":""},"french":{"name":"CIP Dwell Time","description":"La durée de temps, pendant un cycle CIP, de l’activation du système de rejet (en position de rejet)"},"portuguese":{"name":"Tempo de Atuação CIP","description":""},"italian":{"name":"Tempo Azionamento CIP","description":""},"german":{"name":"CIP Verweilzeit","description":"Die Dauer während eines CIP-Zyklus, in dem der Auswurfvorrichtung aktiv ist.\n (in der Auswurfposition)"},"turkish":{"name":"CIP Dwell Time","description":"The duration during one CIP cycle that the reject will be active (in reject position)"}},"children":[],"@labels":["CIP Dwell Time"]},"FaultClearTime":{"@translations":{"english":{"name":"Fault Clear Time","description":""},"korean":{"name":"폴트 클리어 시간","description":""},"spanish":{"name":"Tiempo Borrado Fallo","description":""},"french":{"name":"Temps sans Défaillance/Erreur","description":""},"portuguese":{"name":"Tempo Limpar Falhas","description":""},"italian":{"name":"Tempo Cancellazione Errore","description":""},"german":{"name":"Fehler-Lösch-Zeit","description":""},"turkish":{"name":"Fault Clear Time","description":""}},"children":[],"@labels":["Fault Clear Time"]},"EyeBlockTime":{"@translations":{"english":{"name":"Eye Block Time","description":""},"korean":{"name":"아이 차단 시간","description":""},"spanish":{"name":"Tiempo Bloqueo Fotocélula","description":""},"french":{"name":"Temps Capteur Optique Obstrué","description":""},"portuguese":{"name":"Tempo Fotocélula Bloqueado","description":""},"italian":{"name":"Tempo Blocco Fotocellula","description":""},"german":{"name":"Blockierzeit Lichtschranke","description":""},"turkish":{"name":"Eye Block Time","description":""}},"children":[],"@labels":["Eye Block Time"]},"RejCheckTime":{"@translations":{"english":{"name":"Reject Check Time","description":""},"korean":{"name":"리젝트 확인 시간","description":""},"spanish":{"name":"Tiempo Comprobación Rechazo","description":""},"french":{"name":"Temps Confirmation Rejet","description":""},"portuguese":{"name":"Tempo Confirmação de Rejeção","description":""},"italian":{"name":"Tempo Verifica Rifiuto","description":""},"german":{"name":"Zeit Auswurfbestätigung","description":""},"turkish":{"name":"Reject Check Time","description":""}},"children":[],"@labels":["Reject Check Time"]},"ExcessRejTime":{"@translations":{"english":{"name":"Excess Reject Time","description":""},"korean":{"name":"초과 리젝트 시간","description":""},"spanish":{"name":"Tiempo Rechazo Excedente","description":""},"french":{"name":"Dépassement Temps Rejet","description":""},"portuguese":{"name":"Tempo de Rejeção Ultrapassado","description":""},"italian":{"name":"Tempo Rifiuto Eccedente","description":""},"german":{"name":"Exzessive Auswurfzeit","description":""},"turkish":{"name":"Excess Reject Time","description":""}},"children":[],"@labels":["Excess Reject Time"]},"RejDelClock":{"@translations":{"english":{"name":"Reject Clock","description":""},"korean":{"name":"리젝트 시간","description":""},"spanish":{"name":"Retardo Rechazo","description":""},"french":{"name":"Minuterie Délais Rejet","description":""},"portuguese":{"name":"Relógio Atrazo de Rejeção","description":""},"italian":{"name":"Ritardo Rifiuto","description":""},"german":{"name":"Auswurf Zeitgeber","description":""},"turkish":{"name":"Reject Clock","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"EncFreq":{"@translations":{"english":{"name":"Encoder Frequency","description":""},"korean":{"name":"엔코더 주파수","description":""},"spanish":{"name":"Encoder Frequency","description":""},"french":{"name":"Encoder Frequency","description":""},"portuguese":{"name":"Encoder Frequency","description":""},"italian":{"name":"Encoder Frequency","description":""},"german":{"name":"Encoder Frequency","description":""},"turkish":{"name":"Encoder Frequency","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"HaloBoard":{"@translations":{"english":{"name":"Halo Board","description":""},"korean":{"name":"헤일로 보드","description":""},"spanish":{"name":"Halo Board","description":""},"french":{"name":"Halo Board","description":""},"portuguese":{"name":"Halo Board","description":""},"italian":{"name":"Halo Board","description":""},"german":{"name":"Halo Board","description":""},"turkish":{"name":"Halo Board","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"HaloCal":{"@translations":{"english":{"name":"Halo Calibration","description":""},"korean":{"name":"Halo Calibration","description":""},"spanish":{"name":"Halo Calibration","description":""},"french":{"name":"Halo Calibration","description":""},"portuguese":{"name":"Halo Calibration","description":""},"italian":{"name":"Halo Calibration","description":""},"german":{"name":"Halo Calibration","description":""},"turkish":{"name":"Halo Calibration","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"PW1":{"@translations":{"english":{"name":"Password 1","description":""},"korean":{"name":"암호 1","description":""},"spanish":{"name":"Contraseña 1","description":""},"french":{"name":"Mot de Passe 1","description":""},"portuguese":{"name":"Senha 1","description":""},"italian":{"name":"Password 1","description":""},"german":{"name":"Passwort 1","description":""},"turkish":{"name":"Password 1","description":""}},"children":[],"@labels":["Password 1"]},"PW2":{"@translations":{"english":{"name":"Password 2","description":""},"korean":{"name":"암호 2","description":""},"spanish":{"name":"Contraseña 2","description":""},"french":{"name":"Mot de Passe 2","description":""},"portuguese":{"name":"Senha 2","description":""},"italian":{"name":"Password 2","description":""},"german":{"name":"Passwort 2","description":""},"turkish":{"name":"Password 2","description":""}},"children":[],"@labels":["Password 2"]},"PW3":{"@translations":{"english":{"name":"Password 3","description":""},"korean":{"name":"암호 3","description":""},"spanish":{"name":"Contraseña 3","description":""},"french":{"name":"Mot de Passe 3","description":""},"portuguese":{"name":"Senha 3","description":""},"italian":{"name":"Password 3","description":""},"german":{"name":"Passwort 3","description":""},"turkish":{"name":"Password 3","description":""}},"children":[],"@labels":["Password 3"]},"PW4":{"@translations":{"english":{"name":"Password 4","description":""},"korean":{"name":"암호 4","description":""},"spanish":{"name":"Contraseña 4","description":""},"french":{"name":"Mot de Passe 4","description":""},"portuguese":{"name":"Senha 4","description":""},"italian":{"name":"Password 4","description":""},"german":{"name":"Passwort 4","description":""},"turkish":{"name":"Password 4","description":""}},"children":[],"@labels":["Password 4"]},"PassAccSens":{"@translations":{"english":{"name":"Sensitivity Access Level","description":""},"korean":{"name":"민감도 접근 레벨","description":""},"spanish":{"name":"Nivel Acesso Sensibilidad","description":""},"french":{"name":"Niveau d'Accès Sensibilité","description":""},"portuguese":{"name":"Nível de Acesso à Sensibilidade ","description":""},"italian":{"name":"Livello Accesso Sensibilità","description":""},"german":{"name":"Empfindlichkeit Zugriffsebene","description":""},"turkish":{"name":"Sensitivity Access Level","description":""}},"children":[],"@labels":["Sensitivity Access Level"]},"PassAccProd":{"@translations":{"english":{"name":"Product Access Level","description":""},"korean":{"name":"품목 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Producto","description":""},"french":{"name":"Niveau D'Accès Produit","description":""},"portuguese":{"name":"Nível de Acesso ao Produto","description":""},"italian":{"name":"Livello Accesso Prodotto","description":""},"german":{"name":"Produkt Zugriffsebene","description":""},"turkish":{"name":"Product Access Level","description":""}},"children":[],"@labels":["Product Access Level"]},"PassAccCal":{"@translations":{"english":{"name":"Calibrate Access Level","description":""},"korean":{"name":"캘리브레이션 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Calibración","description":""},"french":{"name":"Niveau d'Accès Calibration","description":""},"portuguese":{"name":"Nível de Acesso à Calibração","description":""},"italian":{"name":"Livello Accesso Calibrazione","description":""},"german":{"name":"Kalibrieren Zugriffsebene","description":""},"turkish":{"name":"Calibrate Access Level","description":""}},"children":[],"@labels":["Calibrate Access Level"]},"PassAccTest":{"@translations":{"english":{"name":"Test Access Level","description":""},"korean":{"name":"테스트 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Test","description":""},"french":{"name":"Niveau d'Accès Test","description":""},"portuguese":{"name":"Nível de Accesso à Teste","description":""},"italian":{"name":"Livello Accesso Test","description":""},"german":{"name":"Test Zugriffsebene","description":""},"turkish":{"name":"Test Access Level","description":""}},"children":[],"@labels":["Test Access Level"]},"PassAccSelUnit":{"@translations":{"english":{"name":"Select Unit Access Level","description":""},"korean":{"name":"유닛선택 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Unidad","description":""},"french":{"name":"Sélectionnez Niveau Accès Unité","description":""},"portuguese":{"name":"Nível de Acesso das Unidades","description":""},"italian":{"name":"Livello Accesso Unità","description":""},"german":{"name":"Gerätewahl Zugriffsebene","description":""},"turkish":{"name":"Select Unit Access Level","description":""}},"children":[],"@labels":["Select Unit Access Level"]},"PassAccClrFaults":{"@translations":{"english":{"name":"Fault Clear Access Level","description":""},"korean":{"name":"폴트클리어 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Borrado Fallo","description":""},"french":{"name":"Défaillance/Erreur Effacer Niveau Accès","description":""},"portuguese":{"name":"Nível de Acesso à Limpar Falha","description":""},"italian":{"name":"Livello Accesso Cancellazione Errore","description":""},"german":{"name":"Fehler löschen Zugriffsebene","description":""},"turkish":{"name":"Fault Clear Access Level","description":""}},"children":[],"@labels":["Fault Clear Access Level"]},"PassAccClrRej":{"@translations":{"english":{"name":"Reject Clear Access Level","description":""},"korean":{"name":"리젝트클리어 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Borrado Rechazo","description":""},"french":{"name":"Reject Effacer Niveau Accès","description":""},"portuguese":{"name":"Nível de Acesso à Rejeção","description":""},"italian":{"name":"Livello Accesso Cancellazione Rifiuto","description":""},"german":{"name":"Auswurf löschen Zugriffsebene","description":""},"turkish":{"name":"Reject Clear Access Level","description":""}},"children":[],"@labels":["Reject Clear Access Level"]},"PassAccClrLatch":{"@translations":{"english":{"name":"Latch Clear Access Level","description":""},"korean":{"name":"래치클리어 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Borrado Retención","description":""},"french":{"name":"Verrou Effacer Niveau Accès","description":""},"portuguese":{"name":"Nível de Acesso à Reset Trava","description":""},"italian":{"name":"Livello Accesso Cancellazione Mantenere Messaggi","description":""},"german":{"name":"Selbsthaltung  Zugriffsebene","description":""},"turkish":{"name":"Latch Clear Access Level","description":""}},"children":[],"@labels":["Latch Clear Access Level"]},"PassAccTime":{"@translations":{"english":{"name":"Time Access Level","description":""},"korean":{"name":"시간 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Hora","description":""},"french":{"name":"Temps Niveau Accès","description":""},"portuguese":{"name":"Nível de Acesso Tempo","description":""},"italian":{"name":"Livello Accesso Ora","description":""},"german":{"name":"Zeit Zugriffsebene","description":""},"turkish":{"name":"Time Access Level","description":""}},"children":[],"@labels":["Time Access Level"]},"PassAccSync":{"@translations":{"english":{"name":"Sync Access Level","description":""},"korean":{"name":"동기화 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Sync","description":""},"french":{"name":"Sync Niveau Accès","description":""},"portuguese":{"name":"Nível de Acesso Sync","description":""},"italian":{"name":"Livello Accesso Sync","description":""},"german":{"name":"Synchronisation Zugriffsebene","description":""},"turkish":{"name":"Sync Access Level","description":""}},"children":[],"@labels":["Sync Access Level"]},"DateTime":{"@translations":{"english":{"name":"Detector Time","description":""},"korean":{"name":"디텍터 시간","description":""},"spanish":{"name":"Detector Time","description":""},"french":{"name":"Detector Time","description":""},"portuguese":{"name":"Detector Time","description":""},"italian":{"name":"Detector Time","description":""},"german":{"name":"Detector Time","description":""},"turkish":{"name":"Detector Time","description":""}},"children":[],"@labels":["Sync Access Level"]},"INPUT_TACH":{"@translations":{"english":{"name":"Tachometer","description":""},"korean":{"name":"타코미터","description":""},"spanish":{"name":"Tacómetro","description":""},"french":{"name":"Tachymètre","description":""},"portuguese":{"name":"Tacômetro","description":""},"italian":{"name":"Tachimetro","description":""},"german":{"name":"Impulsgeber","description":""},"turkish":{"name":"Tachometer","description":""}},"children":["INPUT_POL_TACH"],"@labels":["Source","Polarity"]},"INPUT_EYE":{"@translations":{"english":{"name":"Photo Eye","description":""},"korean":{"name":"포토아이","description":""},"spanish":{"name":"Fotocélula","description":""},"french":{"name":"Capteur Optique","description":""},"portuguese":{"name":"Fotocélula","description":""},"italian":{"name":"Fotocellula","description":""},"german":{"name":"Lichtschranke","description":""},"turkish":{"name":"Photo Eye","description":""}},"children":["INPUT_POL_EYE"],"@labels":["Source","Polarity"]},"INPUT_RC_1":{"@translations":{"english":{"name":"Reject Check 1","description":""},"korean":{"name":"리젝트 체크 1","description":""},"spanish":{"name":"Comprobación Rechazo 1","description":""},"french":{"name":"Confirmation Rejet 1","description":""},"portuguese":{"name":"Confirmação Rejeççao 1","description":""},"italian":{"name":"Verifica Rifiuto 1","description":""},"german":{"name":"Auswurfbestätigung 1","description":""},"turkish":{"name":"Reject Check 1","description":""}},"children":["INPUT_POL_RC_1"],"@labels":["Source","Polarity"]},"INPUT_RC_2":{"@translations":{"english":{"name":"Reject Check 2","description":""},"korean":{"name":"리젝트 체크 2","description":""},"spanish":{"name":"Comprobación Rechazo 2","description":""},"french":{"name":"Confirmation Rejet 2","description":""},"portuguese":{"name":"Comfirmação Rejeção 2","description":""},"italian":{"name":"Verifica Rifiuto 2","description":""},"german":{"name":"Auswurfbestätigung 2","description":""},"turkish":{"name":"Reject Check 2","description":""}},"children":["INPUT_POL_RC_2"],"@labels":["Source","Polarity"]},"INPUT_REJ_EYE":{"@translations":{"english":{"name":"Reject Eye","description":""},"korean":{"name":"리젝트 아이","description":""},"spanish":{"name":"Fotocélula de Rechazo","description":""},"french":{"name":"Capteur Optique Rejet","description":""},"portuguese":{"name":"Fotocélula de Rejeção","description":""},"italian":{"name":"Fotocellula di Rifiuto","description":""},"german":{"name":"Einlauflichtschranke","description":""},"turkish":{"name":"Reject Eye","description":""}},"children":["INPUT_POL_REJ_EYE"],"@labels":["Source","Polarity"]},"INPUT_AIR_PRES":{"@translations":{"english":{"name":"Air Pressure","description":""},"korean":{"name":"공기압","description":""},"spanish":{"name":"Presión Aire","description":""},"french":{"name":"Pression d'Air","description":""},"portuguese":{"name":"Pressão do Ar","description":""},"italian":{"name":"Pressione Aria","description":""},"german":{"name":"Druckluft","description":""},"turkish":{"name":"Air Pressure","description":""}},"children":["INPUT_POL_AIR_PRES"],"@labels":["Source","Polarity"]},"INPUT_REJ_LATCH":{"@translations":{"english":{"name":"Reject Latch","description":""},"korean":{"name":"리젝트 래치","description":""},"spanish":{"name":"Retención Rechazo","description":""},"french":{"name":"Verrou Rejet","description":""},"portuguese":{"name":"Trava da Rejeção","description":""},"italian":{"name":"Mantenere Rifiuto","description":""},"german":{"name":"Auswurf Selbsthaltung","description":""},"turkish":{"name":"Reject Latch","description":""}},"children":["INPUT_POL_REJ_LATCH"],"@labels":["Source","Polarity"]},"INPUT_BIN_FULL":{"@translations":{"english":{"name":"Bin Full","description":""},"korean":{"name":"보관함 용량초과","description":""},"spanish":{"name":"Contenedor Lleno","description":""},"french":{"name":"Boîte Pleine","description":""},"portuguese":{"name":"Caixa Cheia","description":""},"italian":{"name":"Contenitore Pieno","description":""},"german":{"name":"Auswurfbehälter voll","description":""},"turkish":{"name":"Bin Full","description":""}},"children":["INPUT_POL_BIN_FULL"],"@labels":["Source","Polarity"]},"INPUT_REJ_PRESENT":{"@translations":{"english":{"name":"Reject Present","description":""},"korean":{"name":"리젝트 유효","description":""},"spanish":{"name":"Rechazo Presente","description":""},"french":{"name":"Présence Rejet","description":""},"portuguese":{"name":"Rejeção Presente","description":""},"italian":{"name":"Rifiuto Presente","description":""},"german":{"name":"Auswurf vorhanden","description":""},"turkish":{"name":"Reject Present","description":""}},"children":["INPUT_POL_REJ_PRESENT"],"@labels":["Source","Polarity"]},"INPUT_DOOR1_OPEN":{"@translations":{"english":{"name":"Door 1 Open","description":""},"korean":{"name":"문 1 열림","description":""},"spanish":{"name":"Puerta 1 Abierta","description":""},"french":{"name":"Porte 1 Ouverte","description":""},"portuguese":{"name":"Porta 1 Aberta","description":""},"italian":{"name":"Porta 1 Aperta","description":""},"german":{"name":"Türe 1 offen","description":""},"turkish":{"name":"Door 1 Open","description":""}},"children":["INPUT_POL_DOOR1_OPEN"],"@labels":["Source","Polarity"]},"INPUT_DOOR2_OPEN":{"@translations":{"english":{"name":"Door 2 Open","description":""},"korean":{"name":"문 2 열림","description":""},"spanish":{"name":"Puerta 2 Abierta","description":""},"french":{"name":"Porte 2 Ouverte","description":""},"portuguese":{"name":"Porta 2 Aberta","description":""},"italian":{"name":"Porta 2 Aperta","description":""},"german":{"name":"Türe 2 offen","description":""},"turkish":{"name":"Door 2 Open","description":""}},"children":["INPUT_POL_DOOR2_OPEN"],"@labels":["Source","Polarity"]},"INPUT_CLEAR_FAULTS":{"@translations":{"english":{"name":"Clear Faults","description":""},"korean":{"name":"폴트 클리어","description":""},"spanish":{"name":"Borrar Fallos","description":""},"french":{"name":"Effacer Erreur","description":""},"portuguese":{"name":"Limpar Falhas","description":""},"italian":{"name":"Cancella Errori","description":""},"german":{"name":"Fehler löschen","description":""},"turkish":{"name":"Clear Faults","description":""}},"children":["INPUT_POL_CLEAR_FAULTS"],"@labels":["Source","Polarity"]},"INPUT_CLEAR_WARNINGS":{"@translations":{"english":{"name":"Clear Warnings","description":""},"korean":{"name":"경고 클리어","description":""},"spanish":{"name":"Borrar Advertencias","description":""},"french":{"name":"Effacer Alerte","description":""},"portuguese":{"name":"Limpar Avisos","description":""},"italian":{"name":"Cancella Avvertenze","description":""},"german":{"name":"Fehler Warnungen","description":""},"turkish":{"name":"Clear Warnings","description":""}},"children":["INPUT_POL_CLEAR_WARNINGS"],"@labels":["Source","Polarity"]},"INPUT_CIP":{"@translations":{"english":{"name":"CIP","description":""},"korean":{"name":"CIP","description":""},"spanish":{"name":"Limpieza CIP","description":""},"french":{"name":"CIP","description":""},"portuguese":{"name":"Limpeza CIP","description":""},"italian":{"name":"Pulizia CIP","description":""},"german":{"name":"CIP","description":""},"turkish":{"name":"CIP","description":""}},"children":["INPUT_POL_CIP"],"@labels":["Source","Polarity"]},"INPUT_CIP_TEST":{"@translations":{"english":{"name":"CIP Test","description":""},"korean":{"name":"CIP 테스트","description":""},"spanish":{"name":"Limpieza CIP TEST","description":""},"french":{"name":"CIP Teste","description":""},"portuguese":{"name":"Limpeza CIP Test","description":""},"italian":{"name":"Pulizia CIP Test","description":""},"german":{"name":"CIP Test","description":""},"turkish":{"name":"CIP Test","description":""}},"children":["INPUT_POL_CIP_TEST"],"@labels":["Source","Polarity"]},"INPUT_CIP_PLC":{"@translations":{"english":{"name":"CIP PLC","description":""},"korean":{"name":"CIP PLC","description":""},"spanish":{"name":"Limpieza CIP PLC","description":""},"french":{"name":"CIP PLC","description":""},"portuguese":{"name":"Limpeza CIP PLC","description":""},"italian":{"name":"Pulizia CIP PLC","description":""},"german":{"name":"CIP PLC","description":""},"turkish":{"name":"CIP PLC","description":""}},"children":["INPUT_POL_CIP_PLC"],"@labels":["Source","Polarity"]},"INPUT_PHASE_HOLD":{"@translations":{"english":{"name":"Phase Hold","description":""},"korean":{"name":"페이즈 유지","description":""},"spanish":{"name":"retención de fase","description":""},"french":{"name":"maintien de phase","description":""},"portuguese":{"name":"espera de fase","description":""},"italian":{"name":"tenuta di fase","description":""},"german":{"name":"Phase halten","description":""},"turkish":{"name":"Phase Hold","description":""}},"children":["INPUT_POL_PHASE_HOLD"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL1":{"@translations":{"english":{"name":"Product Select 1","description":""},"korean":{"name":"품목 선택 1","description":""},"spanish":{"name":"Selección Producto 1","description":""},"french":{"name":"Sélection Produit 1","description":""},"portuguese":{"name":"Seleção Produto 1","description":""},"italian":{"name":"Selezione Prodotto 1","description":""},"german":{"name":"Produkt Eing.1","description":"Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."},"turkish":{"name":"Product Select 1","description":""}},"children":["INPUT_POL_PROD_SEL1"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL2":{"@translations":{"english":{"name":"Product Select 2","description":""},"korean":{"name":"품목 선택 2","description":""},"spanish":{"name":"Selección Producto 2","description":""},"french":{"name":"Sélection Produit 2","description":""},"portuguese":{"name":"Seleção Produto 2","description":""},"italian":{"name":"Selezione Prodotto 2","description":""},"german":{"name":"Produkt Eing.2","description":"Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."},"turkish":{"name":"Product Select 2","description":""}},"children":["INPUT_POL_PROD_SEL2"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL3":{"@translations":{"english":{"name":"Product Select 3","description":""},"korean":{"name":"품목 선택 3","description":""},"spanish":{"name":"Selección Producto 3","description":""},"french":{"name":"Sélection Produit 3","description":""},"portuguese":{"name":"Seleção Produto 3","description":""},"italian":{"name":"Selezione Prodotto 3","description":""},"german":{"name":"Produkt Eing.3","description":"Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."},"turkish":{"name":"Product Select 3","description":""}},"children":["INPUT_POL_PROD_SEL3"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL4":{"@translations":{"english":{"name":"Product Select 4","description":""},"korean":{"name":"품목 선택 4","description":""},"spanish":{"name":"Selección Producto 4","description":""},"french":{"name":"Sélection Poduit 4","description":""},"portuguese":{"name":"Seleção Produto 4","description":""},"italian":{"name":"Selezione Prodotto 4","description":""},"german":{"name":"Produkt Eing. 4","description":"Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."},"turkish":{"name":"Product Select 4","description":""}},"children":["INPUT_POL_PROD_SEL4"],"@labels":["Source","Polarity"]},"INPUT_TEST":{"@translations":{"english":{"name":"Test","description":""},"korean":{"name":"테스트","description":""},"spanish":{"name":"Test","description":""},"french":{"name":"Test","description":""},"portuguese":{"name":"Teste","description":""},"italian":{"name":"Test","description":""},"german":{"name":"Test","description":"Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."},"turkish":{"name":"Test","description":""}},"children":["INPUT_POL_TEST"],"@labels":["Source","Polarity"]},"OUT_PHY_PL3_1":{"@translations":{"english":{"name":"PL3 1","description":""},"korean":{"name":"PL3 1","description":""},"spanish":{"name":"PL3 1","description":""},"french":{"name":"PL3 1","description":""},"portuguese":{"name":"PL3 1","description":""},"italian":{"name":"PL3 1","description":""},"german":{"name":"PL3 1","description":""},"turkish":{"name":"PL3 1","description":""}},"children":["OUT_POL_PL3_1"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_1A2":{"@translations":{"english":{"name":"PL11 1A2","description":""},"korean":{"name":"PL11 1A2","description":""},"spanish":{"name":"PL11 1A2","description":""},"french":{"name":"PL11 1A2","description":""},"portuguese":{"name":"PL11 1A2","description":""},"italian":{"name":"PL11 1A2","description":""},"german":{"name":"PL11 1A2","description":""},"turkish":{"name":"PL11 1A2","description":""}},"children":["OUT_POL_PL11_1A2"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_3A4":{"@translations":{"english":{"name":"PL11 3A4","description":""},"korean":{"name":"PL11 3A4","description":""},"spanish":{"name":"PL11 3A4","description":""},"french":{"name":"PL11 3A4","description":""},"portuguese":{"name":"PL11 3A4","description":""},"italian":{"name":"PL11 3A4","description":""},"german":{"name":"PL11 3A4","description":""},"turkish":{"name":"PL11 3A4","description":""}},"children":["OUT_POL_PL11_3A4"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_5A6":{"@translations":{"english":{"name":"PL11 5A6","description":""},"korean":{"name":"PL11 5A6","description":""},"spanish":{"name":"PL11 5A6","description":""},"french":{"name":"PL11 5A6","description":""},"portuguese":{"name":"PL11 5A6","description":""},"italian":{"name":"PL11 5A6","description":""},"german":{"name":"PL11 5A6","description":""},"turkish":{"name":"PL11 5A6","description":""}},"children":["OUT_POL_PL11_5A6"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_1":{"@translations":{"english":{"name":"PL4 1","description":""},"korean":{"name":"PL4 1","description":""},"spanish":{"name":"PL4 1","description":""},"french":{"name":"PL4 1","description":""},"portuguese":{"name":"PL4 1","description":""},"italian":{"name":"PL4 1","description":""},"german":{"name":"PL4 1","description":""},"turkish":{"name":"PL4 1","description":""}},"children":["OUT_POL_PL4_1"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_2":{"@translations":{"english":{"name":"PL4 2","description":""},"korean":{"name":"PL4 2","description":""},"spanish":{"name":"PL4 2","description":""},"french":{"name":"PL4 2","description":""},"portuguese":{"name":"PL4 2","description":""},"italian":{"name":"PL4 2","description":""},"german":{"name":"PL4 2","description":""},"turkish":{"name":"PL4 2","description":""}},"children":["OUT_POL_PL4_2"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_3":{"@translations":{"english":{"name":"PL4 3","description":""},"korean":{"name":"PL4 3","description":""},"spanish":{"name":"PL4 3","description":""},"french":{"name":"PL4 3","description":""},"portuguese":{"name":"PL4 3","description":""},"italian":{"name":"PL4 3","description":""},"german":{"name":"PL4 3","description":""},"turkish":{"name":"PL4 3","description":""}},"children":["OUT_POL_PL4_3"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_5":{"@translations":{"english":{"name":"PL4 5","description":""},"korean":{"name":"PL4 5","description":""},"spanish":{"name":"PL4 5","description":""},"french":{"name":"PL4 5","description":""},"portuguese":{"name":"PL4 5","description":""},"italian":{"name":"PL4 5","description":""},"german":{"name":"PL4 5","description":""},"turkish":{"name":"PL4 5","description":""}},"children":["OUT_POL_PL4_5"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_R1":{"@translations":{"english":{"name":"IO PL3 R1","description":""},"korean":{"name":"IO PL3 R1","description":""},"spanish":{"name":"IO PL3 R1","description":""},"french":{"name":"IO PL3 R1","description":""},"portuguese":{"name":"IO PL3 R1","description":""},"italian":{"name":"IO PL3 R1","description":""},"german":{"name":"IO PL3 R1","description":""},"turkish":{"name":"IO PL3 R1","description":""}},"children":["OUT_POL_IO_PL3_R1"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_R2":{"@translations":{"english":{"name":"IO PL3 R2","description":""},"korean":{"name":"IO PL3 R2","description":""},"spanish":{"name":"IO PL3 R2","description":""},"french":{"name":"IO PL3 R2","description":""},"portuguese":{"name":"IO PL3 R2","description":""},"italian":{"name":"IO PL3 R2","description":""},"german":{"name":"IO PL3 R2","description":""},"turkish":{"name":"IO PL3 R2","description":""}},"children":["OUT_POL_IO_PL3_R2"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O1":{"@translations":{"english":{"name":"IO PL3 O1","description":""},"korean":{"name":"IO PL3 O1","description":""},"spanish":{"name":"IO PL3 O1","description":""},"french":{"name":"IO PL3 O1","description":""},"portuguese":{"name":"IO PL3 O1","description":""},"italian":{"name":"IO PL3 O1","description":""},"german":{"name":"IO PL3 O1","description":""},"turkish":{"name":"IO PL3 O1","description":""}},"children":["OUT_POL_IO_PL3_O1"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O2":{"@translations":{"english":{"name":"IO PL3 O2","description":""},"korean":{"name":"IO PL3 O2","description":""},"spanish":{"name":"IO PL3 O2","description":""},"french":{"name":"IO PL3 O2","description":""},"portuguese":{"name":"IO PL3 O2","description":""},"italian":{"name":"IO PL3 O2","description":""},"german":{"name":"IO PL3 O2","description":""},"turkish":{"name":"IO PL3 O2","description":""}},"children":["OUT_POL_IO_PL3_O2"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O3":{"@translations":{"english":{"name":"IO PL3 O3","description":""},"korean":{"name":"IO PL3 O3","description":""},"spanish":{"name":"IO PL3 O3","description":""},"french":{"name":"IO PL3 O3","description":""},"portuguese":{"name":"IO PL3 O3","description":""},"italian":{"name":"IO PL3 O3","description":""},"german":{"name":"IO PL3 O3","description":""},"turkish":{"name":"IO PL3 O3","description":""}},"children":["OUT_POL_IO_PL3_O3"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_02":{"@translations":{"english":{"name":"IO PL4 02","description":""},"korean":{"name":"IO PL4 02","description":""},"spanish":{"name":"IO PL4 02","description":""},"french":{"name":"IO PL4 02","description":""},"portuguese":{"name":"IO PL4 02","description":""},"italian":{"name":"IO PL4 02","description":""},"german":{"name":"IO PL4 02","description":""},"turkish":{"name":"IO PL4 02","description":""}},"children":["OUT_POL_IO_PL4_02"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_03":{"@translations":{"english":{"name":"IO PL4 03","description":""},"korean":{"name":"IO PL4 03","description":""},"spanish":{"name":"IO PL4 03","description":""},"french":{"name":"IO PL4 03","description":""},"portuguese":{"name":"IO PL4 03","description":""},"italian":{"name":"IO PL4 03","description":""},"german":{"name":"IO PL4 03","description":""},"turkish":{"name":"IO PL4 03","description":""}},"children":["OUT_POL_IO_PL4_03"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_04":{"@translations":{"english":{"name":"IO PL4 04","description":""},"korean":{"name":"IO PL4 04","description":""},"spanish":{"name":"IO PL4 04","description":""},"french":{"name":"IO PL4 04","description":""},"portuguese":{"name":"IO PL4 04","description":""},"italian":{"name":"IO PL4 04","description":""},"german":{"name":"IO PL4 04","description":""},"turkish":{"name":"IO PL4 04","description":""}},"children":["OUT_POL_IO_PL4_04"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_05":{"@translations":{"english":{"name":"IO PL4 05","description":""},"korean":{"name":"IO PL4 05","description":""},"spanish":{"name":"IO PL4 05","description":""},"french":{"name":"IO PL4 05","description":""},"portuguese":{"name":"IO PL4 05","description":""},"italian":{"name":"IO PL4 05","description":""},"german":{"name":"IO PL4 05","description":""},"turkish":{"name":"IO PL4 05","description":""}},"children":["OUT_POL_IO_PL4_05"],"@labels":["Source","Polarity"]},"SRecordDate":{"@translations":{"english":{"name":"System Record Date","description":""},"korean":{"name":"시스템 기록일","description":""},"spanish":{"name":"Fecha Registro Sistema","description":""},"french":{"name":"Système Enregistrement Date","description":""},"portuguese":{"name":"Data do Registro do Sistema","description":""},"italian":{"name":"Data Registrazione Sistema","description":""},"german":{"name":"Datum System-Datenerfassung","description":""},"turkish":{"name":"System Record Date","description":""}},"children":[],"@labels":["System Record Date"]},"ProdNo":{"@translations":{"english":{"name":"Product Number","description":""},"korean":{"name":"품목 번호","description":""},"spanish":{"name":"Número Producto","description":""},"french":{"name":"Numéro Produit","description":""},"portuguese":{"name":"Numero do Produto","description":""},"italian":{"name":"Numero Prodotto","description":""},"german":{"name":"Produkt Nummer","description":""},"turkish":{"name":"Product Number","description":""}},"children":[],"@labels":["Product Number"]},"Unit":{"@translations":{"english":{"name":"Unit","description":""},"korean":{"name":"유닛","description":""},"spanish":{"name":"Unidad","description":""},"french":{"name":"Unité","description":""},"portuguese":{"name":"Unidade","description":""},"italian":{"name":"Unità","description":""},"german":{"name":"Einheit","description":""},"turkish":{"name":"Unit","description":""}},"children":[],"@labels":["Unit"]},"RefFaultMask":{"@translations":{"english":{"name":"Reference Fault","description":""},"korean":{"name":"참조 폴트","description":""},"spanish":{"name":"Fallo Referencia","description":""},"french":{"name":" Référer Défaillance/Erreur ","description":""},"portuguese":{"name":"Falha de Refêrencia","description":""},"italian":{"name":"Errore di Riferimento","description":""},"german":{"name":"Referenz Fehler","description":""},"turkish":{"name":"Reference Fault","description":""}},"children":[],"@labels":["Reference Fault"]},"BalFaultMask":{"@translations":{"english":{"name":"Balance Fault","description":""},"korean":{"name":"발란스 폴트","description":""},"spanish":{"name":"Fallo Balanceo","description":""},"french":{"name":"Défaillance/Erreur Balance","description":""},"portuguese":{"name":"Falha do Balance","description":""},"italian":{"name":"Errore di Equilibrio","description":""},"german":{"name":"Balance Fehler","description":""},"turkish":{"name":"Balance Fault","description":""}},"children":[],"@labels":["Balance Fault"]},"ProdMemFaultMask":{"@translations":{"english":{"name":"Product Memory Fault","description":""},"korean":{"name":"품목 메모리 폴트","description":""},"spanish":{"name":"Fallo Memoria Producto","description":""},"french":{"name":"Défaillance/Erreur Mémoire du Produit","description":""},"portuguese":{"name":"Falha Memoria do produto","description":""},"italian":{"name":"Errore Memoria Prodotto","description":""},"german":{"name":"Fehler Produktspeicher","description":""},"turkish":{"name":"Product Memory Fault","description":""}},"children":[],"@labels":["Product Memory Fault"]},"RejConfirmFaultMask":{"@translations":{"english":{"name":"Reject Confirm Fault","description":""},"korean":{"name":"리젝트 컨펌 폴트","description":""},"spanish":{"name":"Fallo Confirmación Rechazo","description":""},"french":{"name":"Défaillance/Erreur de Confirmation de rejet","description":""},"portuguese":{"name":"Falha Comfirmação de Rejeção","description":""},"italian":{"name":"Errore Conferma Rifiuto","description":""},"german":{"name":"Fehler Auswurfbestätigung","description":""},"turkish":{"name":"Reject Confirm Fault","description":""}},"children":[],"@labels":["Reject Confirm Fault"]},"PhaseFaultMask":{"@translations":{"english":{"name":"Phase Fault","description":""},"korean":{"name":"페이즈 폴트","description":""},"spanish":{"name":"Fallo Fase","description":""},"french":{"name":"Défaillance/Erreur Phase","description":""},"portuguese":{"name":"Falha da Fase","description":""},"italian":{"name":"Errore di Fase","description":""},"german":{"name":"Phasen Fehler","description":""},"turkish":{"name":"Phase Fault","description":""}},"children":[],"@labels":["Phase Fault"]},"TestSigFaultMask":{"@translations":{"english":{"name":"Test Signal Fault","description":""},"korean":{"name":"테스트 시그널 폴트","description":""},"spanish":{"name":"Fallo Señal Test","description":""},"french":{"name":"Défaillance/Erreur Signal Essai/Test","description":""},"portuguese":{"name":"Falha do Sinal do Teste","description":""},"italian":{"name":"Errore Segnale Test","description":""},"german":{"name":"Test Signal Fehler","description":""},"turkish":{"name":"Test Signal Fault","description":""}},"children":[],"@labels":["Test Signal Fault"]},"PeyeBlockFaultMask":{"@translations":{"english":{"name":"Photoeye Block Fault","description":"The photo eye has been or is blocked for longer than expected. "},"korean":{"name":"포토아이 차단 폴트","description":""},"spanish":{"name":"Fallo Bloqueo Fotocélula","description":""},"french":{"name":"Défaillance/Erreur Capteur Optique Obstrué","description":"Le capteur optique a été ou est bloqué plus longtemps que prévu"},"portuguese":{"name":"Falha Fotocélula Bloqueado","description":""},"italian":{"name":"Errore Blocco Fotocellula","description":""},"german":{"name":"Lichtschranken Fehler","description":"Die Lichtschranke wurde länger als erwartet blockiert. "},"turkish":{"name":"Photoeye Block Fault","description":"The photo eye has been or is blocked for longer than expected. "}},"children":[],"@labels":["Photoeye Block Fault"]},"RejBinFullFaultMask":{"@translations":{"english":{"name":"Reject Bin Full Fault","description":"The reject bin is full"},"korean":{"name":"리젝트 보관함 용량초과 폴트","description":""},"spanish":{"name":"Fallo Contenedor Rechazo Lleno","description":""},"french":{"name":"Défaillance/Erreur de Contenant Plein","description":"Le contenant de rejets est plein"},"portuguese":{"name":"Falha Caixa Cheia","description":""},"italian":{"name":"Errore Contenitore Pieno","description":""},"german":{"name":"Fehler Auswurfbehälter voll","description":"Der Auswurfbehälter ist voll, bitte leeren."},"turkish":{"name":"Reject Bin Full Fault","description":"The reject bin is full"}},"children":[],"@labels":["Reject Bin Full Fault"]},"RejBinDoorFaultMask":{"@translations":{"english":{"name":"Reject Bin Door Fault","description":"The reject bin door is open"},"korean":{"name":"리젝트 보관함 용량초과 폴트","description":""},"spanish":{"name":"Fallo Contenedor Rechazo Lleno","description":""},"french":{"name":"Défaillance/Erreur de Contenant Plein","description":"Le contenant de rejets est plein"},"portuguese":{"name":"Falha Caixa Cheia","description":""},"italian":{"name":"Errore Contenitore Pieno","description":""},"german":{"name":"Fehler Auswurfbehälter voll","description":"Der Auswurfbehälter ist voll, bitte leeren."},"turkish":{"name":"Reject Bin Door Fault","description":"The reject bin door is open"}},"children":[],"@labels":["Reject Bin Full Fault"]},"AirFaultMask":{"@translations":{"english":{"name":"Air Pressure Fault","description":"Air pressure is too low, or not present"},"korean":{"name":"공기 폴트","description":""},"spanish":{"name":"Fallo Presión Aire","description":""},"french":{"name":"Défaillance/Erreur Pression d'Air","description":"Pression d’air basse ou non existante"},"portuguese":{"name":"Fala Pressão de AR","description":""},"italian":{"name":"Errore Pressione Aria","description":""},"german":{"name":"Fehler Druckluft","description":"Der Druck der Druckluft ist zu niedrig oder komplett abgeschaltet."},"turkish":{"name":"Air Pressure Fault","description":"Air pressure is too low, or not present"}},"children":[],"@labels":["Air Fault"]},"ExcessRejFaultMask":{"@translations":{"english":{"name":"Excess Rejects Fault","description":"The number of rejects has exceeded the number set"},"korean":{"name":"리젝트 초과 폴트","description":""},"spanish":{"name":"Fallo Exceso Rechazos","description":""},"french":{"name":"Défaillance/Erreur Rejets Excessifs","description":"Le nombre de rejets dépasse le nombre établi"},"portuguese":{"name":"Falha excesso de Rejeçoes","description":""},"italian":{"name":"Errore Eccedenza Rifiuti","description":""},"german":{"name":"Fehler zuviele Auswürfe","description":"Die Anzahl der Auswürfe pro Zeiteinheit hat den voreingestellten Wert überschritten."},"turkish":{"name":"Excess Rejects Fault","description":"The number of rejects has exceeded the number set"}},"children":[],"@labels":["Excess Rejects Fault"]},"BigMetalFaultMask":{"@translations":{"english":{"name":"Large Metal Fault","description":""},"korean":{"name":"대량금속 폴트","description":""},"spanish":{"name":"Fallo Metal Grande","description":""},"french":{"name":"Défaillance/Erreur Large Métal ","description":""},"portuguese":{"name":"Falha Metal Grande","description":""},"italian":{"name":"Errore Metallo Grande","description":""},"german":{"name":"Fehler großes Metall","description":""},"turkish":{"name":"Large Metal Fault","description":""}},"children":[],"@labels":["Large Metal Fault"]},"NetBufferFaultMask":{"@translations":{"english":{"name":"Net Buffer Fault","description":""},"korean":{"name":"넷 버퍼 폴트","description":""},"spanish":{"name":"Fallo Buffer Red","description":""},"french":{"name":"Défaillance/Erreur Net Buffer","description":""},"portuguese":{"name":"Falha Net Buffer ","description":""},"italian":{"name":"Errore Buffer di Rete","description":""},"german":{"name":"Fehler Netzpuffer","description":""},"turkish":{"name":"Net Buffer Fault","description":""}},"children":[],"@labels":["Net Buffer Fault"]},"RejMemoryFaultMask":{"@translations":{"english":{"name":"Reject Memory Fault","description":""},"korean":{"name":"리젝트 메모리 폴트","description":""},"spanish":{"name":"Fallo Memoria Rechazo","description":""},"french":{"name":"Défaillance/Erreur Mémoire Rejet","description":""},"portuguese":{"name":"Falha Memoria de Rejeção","description":""},"italian":{"name":"Errore Memoria Rifuti","description":""},"german":{"name":"Fehler Auswurf-Speicherung ","description":""},"turkish":{"name":"Reject Memory Fault","description":""}},"children":[],"@labels":["Reject Memory Fault"]},"RejectExitFaultMask":{"@translations":{"english":{"name":"Reject Exit Fault","description":"A reject has passed through the exit photo eye; the reject device may not be functioning correctly"},"korean":{"name":"리젝트 퇴장 폴트","description":""},"spanish":{"name":"Fallo Salida Rechazo","description":""},"french":{"name":"Défaillance/Erreur Sortie Rejet","description":"Un rejet a passé par le capteur optique de sortie; le système de rejet peut être défectueux"},"portuguese":{"name":"Falha Saida de rejeção","description":""},"italian":{"name":"Errore Uscita Rifiuto","description":""},"german":{"name":"Fehler Ausgangslichtschranke","description":"Ein Ausschuss hat das Ausgangslichtschranke passiert; Die Auswurfvorrichtung funktioniert möglicherweise nicht richtig"},"turkish":{"name":"Reject Exit Fault","description":"A reject has passed through the exit photo eye; the reject device may not be functioning correctly"}},"children":[],"@labels":["Reject Exit Fault"]},"TachometerFaultMask":{"@translations":{"english":{"name":"Tachometer Fault","description":"No signal is being recieved from the tachometer when the unit is set to external timing"},"korean":{"name":"타코미터 폴트","description":""},"spanish":{"name":"Fallo Tacómetro","description":""},"french":{"name":"Défaillance/Erreur Tachymètre","description":"Aucun signal, émis par le Tachymètre, n’est capté lorsque l’unité est réglée à une minuterie externe"},"portuguese":{"name":"Falha Tacômetro","description":""},"italian":{"name":"Errore Tachimetro","description":""},"german":{"name":"Fehler Impulsgeber","description":"Vom externen Impulsgeber estellt ist, wird kein Signal registriert."},"turkish":{"name":"Tachometer Fault","description":"No signal is being recieved from the tachometer when the unit is set to external timing"}},"children":[],"@labels":["Tachometer Fault"]},"PatternFaultMask":{"@translations":{"english":{"name":"Pattern Fault","description":""},"korean":{"name":"패턴 폴트","description":""},"spanish":{"name":"Fallo Patrón","description":""},"french":{"name":"Défaillance/Erreur Configuration","description":""},"portuguese":{"name":"Pattern Fault","description":""},"italian":{"name":"Errore Modello","description":""},"german":{"name":"Muster Fehler","description":""},"turkish":{"name":"Pattern Fault","description":""}},"children":[],"@labels":["Pattern Fault"]},"ExitNoPackFaultMask":{"@translations":{"english":{"name":"Exit No Pack Fault","description":"A pack that passed through the infeed eye did not pass through the exit eye"},"korean":{"name":"퇴장 팩 없음 폴트","description":""},"spanish":{"name":"Fallo Salida sin Producto","description":""},"french":{"name":"Défaillance/Erreur Paquet Sortie","description":"Un paquet qui a passé devant le capteur optique d’entrée mais n’a pas passé devant le capteur optique de sortie"},"portuguese":{"name":"Falha Saida Sem Produto","description":""},"italian":{"name":"Errore Uscita Senza Prodotto","description":""},"german":{"name":"Fehler keine Ausgangspackung","description":"Ein Packung wurde Einlauflichtschranke registriert, aber nicht von der Ausgangslichtschranke. "},"turkish":{"name":"Exit No Pack Fault","description":"A pack that passed through the infeed eye did not pass through the exit eye"}},"children":[],"@labels":["Exit No Pack Fault"]},"ExitNewPackFaultMask":{"@translations":{"english":{"name":"Exit New Pack Fault","description":"A pack which did not pass through the infeed eye or aperture has passed through the exit eye"},"korean":{"name":"퇴장 새 팩 폴트","description":""},"spanish":{"name":"Fallo Salida Nuevo Paquete","description":""},"french":{"name":"Défaillance/Erreur Nouveau Paquet Sortie","description":"Un paquet qui n’a pas passé par le capteur optique d’entrée ou par l’ouverture est passé par le capteur optique de sortie."},"portuguese":{"name":"Exit New Pack Fault","description":""},"italian":{"name":"Errore Uscita Nuovo Pacco","description":""},"german":{"name":"Fehler Ausgang-neue-Packung","description":"Es wurde keine Packung von der Einlauflichtschranke oder dem Suchkopf registriert, aber von der Ausgangslichtschranke. "},"turkish":{"name":"Exit New Pack Fault","description":"A pack which did not pass through the infeed eye or aperture has passed through the exit eye"}},"children":[],"@labels":["Exit New Pack Fault"]},"InterceptorFaultMask":{"@translations":{"english":{"name":"Interceptor Fault","description":""},"korean":{"name":"인터셉터 폴트","description":""},"spanish":{"name":"Fallo Interceptor","description":""},"french":{"name":"Défaillance/Erreur Intercepteur","description":""},"portuguese":{"name":"Falha Interceptor","description":""},"italian":{"name":"Errore Interceptor","description":""},"german":{"name":"Interceptor Fehler","description":""},"turkish":{"name":"Interceptor Fault","description":""}},"children":[],"@labels":["Interceptor Fault"]},"RtcLowBatFaultMask":{"@translations":{"english":{"name":"RTC Low Battery Fault","description":"The CR2032 coil cell battery on the DSP board is low and should be replaced"},"korean":{"name":"Rtc 로우 배터리 폴트","description":""},"spanish":{"name":"Fallo Batería RTC","description":""},"french":{"name":"Défaillance/Erreur RTC Pile Faible","description":"La pile CR2032 sur le panneau DSP est faible et devrait être remplacée"},"portuguese":{"name":"Falha Bateria","description":""},"italian":{"name":"Errore Batteria Scarica RTC","description":""},"german":{"name":"Echtzeituhr-Batterie Fehler","description":"Die Spannung der CR2032 Knopfzelle auf der DSP-Karte ist niedrig und sollte ersetzt werden."},"turkish":{"name":"RTC Low Battery Fault","description":"The CR2032 coil cell battery on the DSP board is low and should be replaced"}},"children":[],"@labels":["Rtc Low Batter Fault"]},"RtcTimeFaultMask":{"@translations":{"english":{"name":"RTC Time Fault","description":""},"korean":{"name":"Rtc 시간 폴트","description":""},"spanish":{"name":"Fallo Hora","description":""},"french":{"name":"Défaillance/Erreur Temps RTC","description":""},"portuguese":{"name":"Falha Horario","description":""},"italian":{"name":"Errore Ora RTC","description":""},"german":{"name":"Fehler Echtzeituhr","description":""},"turkish":{"name":"RTC Time Fault","description":""}},"children":[],"@labels":["Rtc Time Fault"]},"IntUsbFaultMask":{"@translations":{"english":{"name":"Internal USB Fault","description":"The internal USB on the DSP board has an issue and may need to be replaced"},"korean":{"name":"내부 Usb 폴트","description":""},"spanish":{"name":"Fallo USB Interno","description":""},"french":{"name":"Défaillance/Erreur USB Interne","description":"Le USB interne sur le panneau DSP a un problème et aurait peut-être besoin d’être remplacé"},"portuguese":{"name":"Falha USB Interno","description":""},"italian":{"name":"Errore USB Interno","description":""},"german":{"name":"Interner USB Fehler","description":"Der interne USB-Anschluss an der DSP-Karte weist ein Problem auf und muss möglicherweise ausgetauscht werden"},"turkish":{"name":"Internal USB Fault","description":"The internal USB on the DSP board has an issue and may need to be replaced"}},"children":[],"@labels":["Int Usb Fault"]},"IoBoardFaultMask":{"@translations":{"english":{"name":"IO Board Fault","description":""},"korean":{"name":"IO 보드 폴트","description":""},"spanish":{"name":"Fallo Placa IO","description":""},"french":{"name":"Défaillance/Erreur Panneau IO","description":""},"portuguese":{"name":"Falha Placa IO","description":""},"italian":{"name":"Errore Scheda IO","description":""},"german":{"name":"IO-Karten Fehler","description":""},"turkish":{"name":"IO Board Fault","description":""}},"children":[],"@labels":["IO Board Fault"]},"HaloFaultMask":{"@translations":{"english":{"name":"Halo Board Fault","description":""},"korean":{"name":"헤일로 폴트","description":""},"spanish":{"name":"Fallo Halo","description":""},"french":{"name":"Défaillance/Erreur Panneau Halo","description":""},"portuguese":{"name":"Falha Halo","description":""},"italian":{"name":"Errore Halo","description":""},"german":{"name":"Halo-Karten Fehler","description":""},"turkish":{"name":"Halo Board Fault","description":""}},"children":[],"@labels":["Halo Fault"]},"SignalFaultMask":{"@translations":{"english":{"name":"Signal Fault","description":""},"korean":{"name":"시그널 폴트","description":""},"spanish":{"name":"Fallo Señal","description":""},"french":{"name":"Défaillance/Erreur Signal","description":""},"portuguese":{"name":"Falha Sinal","description":""},"italian":{"name":"Errore di Segnale","description":""},"german":{"name":"Signal-Fehler","description":""},"turkish":{"name":"Signal Fault","description":""}},"children":[],"@labels":["Signal Fault"]},"IOBoardLocate":{"@translations":{"english":{"name":"IO Board Locate","description":""},"korean":{"name":"IO 보드 추적","description":""},"spanish":{"name":"IO Board Locate","description":""},"french":{"name":"Localiser Panneau IO","description":""},"portuguese":{"name":"IO Board Locate","description":""},"italian":{"name":"Localizzare Scheda IO","description":""},"german":{"name":"IO-Karte Lokalisierung","description":""},"turkish":{"name":"IO Board Locate","description":""}},"children":[],"@labels":["Locate"]},"InternalIP":{"@type":"IP","@translations":{"english":{"name":"Internal IP","description":""},"korean":{"name":"내부 IP","description":""},"spanish":{"name":"Internal IP","description":""},"french":{"name":"IP Interne","description":""},"portuguese":{"name":"Internal IP","description":""},"italian":{"name":"Indirizzo IP Interno","description":""},"german":{"name":"Interne IP","description":""},"turkish":{"name":"Internal IP","description":""}},"children":[],"@labels":["IP"]},"InternalNM":{"@type":"IP","@translations":{"english":{"name":"Internal Netmask","description":""},"korean":{"name":"내부 Netmask","description":""},"spanish":{"name":"Internal Netmask","description":""},"french":{"name":"Netmask Interne","description":""},"portuguese":{"name":"Internal Netmask","description":""},"italian":{"name":"Netmask Interno","description":""},"german":{"name":"Interne Netzmaske","description":""},"turkish":{"name":"Internal Netmask","description":""}},"children":[],"@labels":["IP"]},"InternalGW":{"@type":"IP","@translations":{"english":{"name":"Internal Gateway","description":""},"korean":{"name":"내부 Gateway","description":""},"spanish":{"name":"Internal Gateway","description":""},"french":{"name":"Gateway Interne","description":""},"portuguese":{"name":"Internal Gateway","description":""},"italian":{"name":"Indirizzo Gateway Interno","description":""},"german":{"name":"Internes Gateway","description":""},"turkish":{"name":"Internal Gateway","description":""}},"children":[],"@labels":["IP"]},"HaloIP":{"@type":"IP","@translations":{"english":{"name":"Halo IP","description":""},"korean":{"name":"Halo IP","description":""},"spanish":{"name":"Halo IP","description":""},"french":{"name":"Halo IP","description":""},"portuguese":{"name":"Halo IP","description":""},"italian":{"name":"Indirizzo IP Halo","description":""},"german":{"name":"Halo IP","description":""},"turkish":{"name":"Halo IP","description":""}},"children":[],"@labels":["IP"]},"HaloLocate":{"@translations":{"english":{"name":"Halo Locate","description":""},"korean":{"name":"Halo 추적","description":""},"spanish":{"name":"Halo Locate","description":""},"french":{"name":" Localiser Halo","description":""},"portuguese":{"name":"Halo Locate","description":""},"italian":{"name":"Localizzare Halo","description":""},"german":{"name":"Halo Lokalisierung","description":""},"turkish":{"name":"Halo Locate","description":""}},"children":[],"@labels":["Locations"]},"IOBoardIP":{"@type":"IP","@translations":{"english":{"name":"IO Board IP","description":""},"korean":{"name":"IO 보드 IP","description":""},"spanish":{"name":"IO Board IP","description":""},"french":{"name":"Panneau IP, IO","description":""},"portuguese":{"name":"IO Board IP","description":""},"italian":{"name":"Indirizzo IP Scheda IO","description":""},"german":{"name":"IO-Karten IP","description":""},"turkish":{"name":"IO Board IP","description":""}},"children":[],"@labels":["IP"]},"IOBoardType":{"@translations":{"english":{"name":"IO Board","description":""},"korean":{"name":"IO 보드","description":""},"spanish":{"name":"IO Board","description":""},"french":{"name":"Panneau IO","description":""},"portuguese":{"name":"IO Board","description":""},"italian":{"name":"Scheda IO","description":""},"german":{"name":"IO-Karten","description":""},"turkish":{"name":"IO Board","description":""}},"children":[],"@labels":["IP"]},"DspName":{"@translations":{"english":{"name":"Detector Name","description":""},"korean":{"name":"디텍터 이름","description":""},"spanish":{"name":"Detector Name","description":""},"french":{"name":"Nom Détecteur","description":""},"portuguese":{"name":"Detector Name","description":""},"italian":{"name":"Nome Detector","description":""},"german":{"name":"Detektor Name","description":""},"turkish":{"name":"Detector Name","description":""}},"children":[],"@labels":["Name"]},"XPortIP":{"@type":"IP","@translations":{"english":{"name":"External IP","description":""},"korean":{"name":"외부 IP","description":""},"spanish":{"name":"External IP","description":""},"french":{"name":" IP Externe","description":""},"portuguese":{"name":"External IP","description":""},"italian":{"name":"Indirizzo IP Esterno","description":""},"german":{"name":"Externe IP","description":""},"turkish":{"name":"External IP","description":""}},"children":[],"@labels":["IP"]},"Nif_ip":{"@type":"IP","@translations":{"english":{"name":"Display IP","description":""},"korean":{"name":"디스플레이 IP","description":""},"spanish":{"name":"Display IP","description":""},"french":{"name":"Écran IP","description":""},"portuguese":{"name":"Display IP","description":""},"italian":{"name":"Indirizzo IP Schermo","description":""},"german":{"name":"Display IP","description":""},"turkish":{"name":"Display IP","description":""}},"children":[],"@labels":["IP"]},"Nif_nm":{"@type":"IP","@translations":{"english":{"name":"Display Netmask","description":""},"korean":{"name":"디스플레이 Netmask","description":""},"spanish":{"name":"Display Netmask","description":""},"french":{"name":"Écran Netmask","description":""},"portuguese":{"name":"Display Netmask","description":""},"italian":{"name":"Display Netmask","description":""},"german":{"name":"Display Netzmaske","description":""},"turkish":{"name":"Display Netmask","description":""}},"children":[],"@labels":["IP"]},"Nif_gw":{"@type":"IP","@translations":{"english":{"name":"Display Gateway","description":""},"korean":{"name":"디스플레이 Gateway","description":""},"spanish":{"name":"Display Gateway","description":""},"french":{"name":"Écran Gateway","description":""},"portuguese":{"name":"Display Gateway","description":""},"italian":{"name":"Display Gateway","description":""},"german":{"name":"Display Gateway","description":""},"turkish":{"name":"Display Gateway","description":""}},"children":[],"@labels":["IP"]},"XPortNM":{"@type":"IP","@translations":{"english":{"name":"External Netmask","description":""},"korean":{"name":"외부 Netmask","description":""},"spanish":{"name":"External Netmask","description":""},"french":{"name":"Netmask Externe","description":""},"portuguese":{"name":"External Netmask","description":""},"italian":{"name":"Netmask Esterno","description":""},"german":{"name":"Externe Netzmaske","description":""},"turkish":{"name":"External Netmask","description":""}},"children":[],"@labels":["IP"]},"XPortGW":{"@type":"IP","@translations":{"english":{"name":"External Gateway","description":""},"korean":{"name":"외부 Gateway","description":""},"spanish":{"name":"External Gateway","description":""},"french":{"name":" Gateway Externe","description":""},"portuguese":{"name":"External Gateway","description":""},"italian":{"name":"Gateway Esterno","description":""},"german":{"name":"Externes Gateway","description":""},"turkish":{"name":"External Gateway","description":""}},"children":[],"@labels":["IP"]},"PassOn":{"@translations":{"english":{"name":"Password On","description":""},"korean":{"name":"비밀번호 액티브","description":""},"spanish":{"name":"Password On","description":""},"french":{"name":"Mot de Passe Activé","description":""},"portuguese":{"name":"Password On","description":""},"italian":{"name":"Password On","description":""},"german":{"name":"Passwort an","description":""},"turkish":{"name":"Password On","description":""}},"children":[],"@labels":["IP"]},"EyePkgLength":{"@translations":{"english":{"name":"Eye Package Length","description":""},"korean":{"name":"패키지 길이","description":""},"spanish":{"name":"Eye Package Length","description":""},"french":{"name":"Capteur Optique Longueur Paquet","description":""},"portuguese":{"name":"Eye Package Length","description":""},"italian":{"name":"Eye Package Length","description":""},"german":{"name":"Lichtschranke Packungslänge","description":""},"turkish":{"name":"Eye Package Length","description":""}},"children":[],"@labels":["IP"]},"EyeDist":{"@translations":{"english":{"name":"Eye Distance","description":""},"korean":{"name":"포토아이 거리","description":""},"spanish":{"name":"Eye Distance","description":""},"french":{"name":"Distance Capteur Optique","description":""},"portuguese":{"name":"Eye Distance","description":""},"italian":{"name":"Eye Distance","description":""},"german":{"name":"Abstand Lichtschranke","description":""},"turkish":{"name":"Eye Distance","description":""}},"children":[],"@labels":["IP"]},"EyeMinGapDist":{"@translations":{"english":{"name":"Minimum Product Gap","description":""},"korean":{"name":"품목 최단거리","description":""},"spanish":{"name":"Minimum Product Gap","description":""},"french":{"name":"Intervalle Minimal Produit","description":""},"portuguese":{"name":"Minimum Product Gap","description":""},"italian":{"name":"Minimum Product Gap","description":""},"german":{"name":"Minimum Produktlücke","description":""},"turkish":{"name":"Minimum Product Gap","description":""}},"children":[],"@labels":["IP"]},"HeadDepth":{"@translations":{"english":{"name":"Head Depth","description":""},"korean":{"name":"헤드 깊이","description":""},"spanish":{"name":"Head Depth","description":""},"french":{"name":"Profondeur Tête","description":""},"portuguese":{"name":"Head Depth","description":""},"italian":{"name":"Head Depth","description":""},"german":{"name":"Öffnungstiefe","description":"Das Maß des Suchkopfes in Förderrichtung."},"turkish":{"name":"Head Depth","description":""}},"children":[],"@labels":["IP"]},"HeadSeparation":{"@translations":{"english":{"name":"Head Separation","description":""},"korean":{"name":"헤드 간격","description":""},"spanish":{"name":"Head Separation","description":""},"french":{"name":"Head Separation","description":""},"portuguese":{"name":"Head Separation","description":""},"italian":{"name":"Head Separation","description":""},"german":{"name":"Head Separation","description":""},"turkish":{"name":"Head Separation","description":""}},"children":[],"@labels":["IP"]},"HeadCoilSp":{"@translations":{"english":{"name":"Head Coil Spacing","description":""},"korean":{"name":"헤드 코일 간격","description":""},"spanish":{"name":"Head Coil Spacing","description":""},"french":{"name":"Espacement Tête de Bobine","description":""},"portuguese":{"name":"Head Coil Spacing","description":""},"italian":{"name":"Head Coil Spacing","description":""},"german":{"name":"Abstand der Suchkopfspulen","description":""},"turkish":{"name":"Head Coil Spacing","description":""}},"children":[],"@labels":["IP"]},"DCRate_A":{"@translations":{"english":{"name":"DC Filter","description":""},"korean":{"name":"DC 필터","description":""},"spanish":{"name":"DC Filter","description":""},"french":{"name":"Filtre DC","description":""},"portuguese":{"name":"DC Filter","description":""},"italian":{"name":"DC Filter","description":""},"german":{"name":"DC Filter","description":"ist für die 0-Abgleichgeschwindigkeit verantwortlich.Hoher Zahlenwert=schnell und umgekehrt."},"turkish":{"name":"DC Filter","description":""}},"children":["DCRate_B"],"@labels":["Channel A","Channel B"]},"DcCoeffNorm_A":{"@translations":{"english":{"name":"DC Coefficient","description":""},"korean":{"name":"DC 계수","description":""},"spanish":{"name":"DC Coefficient","description":""},"french":{"name":"Coéficient DC","description":""},"portuguese":{"name":"DC Coefficient","description":""},"italian":{"name":"DC Coefficient","description":""},"german":{"name":"DC Koefficient","description":"ist für die 0-Abgleichgeschwindigkeit verantwortlich.Hoher Zahlenwert=schnell und umgekehrt."},"turkish":{"name":"DC Coefficient","description":""}},"children":["DcCoeffNorm_B"],"@labels":["Channel A","Channel B"]},"IsoCleanTimeout":{"@translations":{"english":{"name":"Clean Timeout","description":""},"korean":{"name":"클린 진행시간","description":""},"spanish":{"name":"Clean Timeout","description":""},"french":{"name":"Clean Timeout","description":""},"portuguese":{"name":"Clean Timeout","description":""},"italian":{"name":"Clean Timeout","description":""},"german":{"name":"Clean Timeout","description":""},"turkish":{"name":"Clean Timeout","description":""}},"children":[],"@labels":["IsoCleanTimeout"]},"ManReject":{"@translations":{"english":{"name":"Manual Reject","description":""},"korean":{"name":"수동 리젝트","description":""},"spanish":{"name":"Manual Reject","description":""},"french":{"name":"Manual Reject","description":""},"portuguese":{"name":"Manual Reject","description":""},"italian":{"name":"Manual Reject","description":""},"german":{"name":"Manual Reject","description":""},"turkish":{"name":"Manual Reject","description":""}},"children":[],"@labels":["Eye Reject"]},"NTPServerIP":{"@type":"IP","@translations":{"english":{"name":"NTP Server IP","description":""},"korean":{"name":"NTP 서버 IP","description":""},"spanish":{"name":"NTP Server IP","description":""},"french":{"name":"NTP Server IP","description":""},"portuguese":{"name":"NTP Server IP","description":""},"italian":{"name":"NTP Server IP","description":""},"german":{"name":"NTP Server IP","description":""},"turkish":{"name":"NTP Server IP","description":""}},"children":[],"@labels":["IP"]},"EtherExtPorts":{"@translations":{"english":{"name":"External Ethernet Ports","description":""},"korean":{"name":"외부 이터넷 포트","description":""},"spanish":{"name":"External Ethernet Ports","description":""},"french":{"name":"External Ethernet Ports","description":""},"portuguese":{"name":"External Ethernet Ports","description":""},"italian":{"name":"External Ethernet Ports","description":""},"german":{"name":"External Ethernet Ports","description":""},"turkish":{"name":"External Ethernet Ports","description":""}},"children":[],"@labels":["IP"]},"DaylightSavings":{"@translations":{"english":{"name":"Daylight Savings","description":""},"korean":{"name":"일광절약제","description":""},"spanish":{"name":"Daylight Savings","description":""},"french":{"name":"Daylight Savings","description":""},"portuguese":{"name":"Daylight Savings","description":""},"italian":{"name":"Daylight Savings","description":""},"german":{"name":"Daylight Savings","description":""},"turkish":{"name":"Daylight Savings","description":""}},"children":[],"@labels":["IP"]},"SigModeCombined":{"@translations":{"english":{"name":"DF Mode","description":""},"korean":{"name":"DF 모드","description":""},"spanish":{"name":"DF Mode","description":""},"french":{"name":"DF Mode","description":""},"portuguese":{"name":"DF Mode","description":""},"italian":{"name":"DF Mode","description":""},"german":{"name":"DF Mode","description":""},"turkish":{"name":"DF Mode","description":""}},"children":[],"@labels":["Language"]}},"@netpollsmap":{"NET_POLL_PROTOCOL_VERSION":{"@translations":{"english":{"name":"Version"},"korean":{"name":""},"spanish":{"name":"Versión Protocolo"},"french":{"name":"Version"},"portuguese":{"name":""},"italian":{"name":"Versione"},"german":{"name":"Version"},"turkish":{"name":"Version"}}},"NET_POLL_KEY_CLASS_MASK":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""},"french":{"name":""},"portuguese":{"name":""},"italian":{"name":""},"german":{"name":""},"turkish":{"name":""}}},"NET_POLL_PROD_REC_VAR":{"@translations":{"english":{"name":"Settings - Product"},"korean":{"name":"Settings - Product"},"spanish":{"name":"Registro Producto"},"french":{"name":"Configuration - Produit"},"portuguese":{"name":""},"italian":{"name":"Registro Prodotto"},"german":{"name":"Produkteinstellungen"},"turkish":{"name":"Settings - Product"}}},"NET_POLL_PROD_SYS_VAR":{"@translations":{"english":{"name":"Settings - System"},"korean":{"name":"Settings - Product"},"spanish":{"name":"Registro Sistema"},"french":{"name":"Configuration - Produit"},"portuguese":{"name":""},"italian":{"name":"Registro Sistema"},"german":{"name":"Systemeinstellungen"},"turkish":{"name":"Settings - System"}}},"NET_POLL_REJECT":{"@translations":{"english":{"name":"Reject"},"korean":{"name":""},"spanish":{"name":"Rechazo"},"french":{"name":"Rejet"},"portuguese":{"name":""},"italian":{"name":"Rifiuto"},"german":{"name":"Auswurf"},"turkish":{"name":"Reject"}}},"NET_POLL_REJECT2":{"@translations":{"english":{"name":"Reject 2"},"korean":{"name":""},"spanish":{"name":"Rechazo 2"},"french":{"name":"Rejet 2"},"portuguese":{"name":""},"italian":{"name":"Rifiuto 2"},"german":{"name":"Auswurf 2"},"turkish":{"name":"Reject 2"}}},"NET_POLL_REJ_CNT":{"@translations":{"english":{"name":"Reject Count"},"korean":{"name":""},"spanish":{"name":"Cuenta Rechazos"},"french":{"name":"Nombre de Rejet"},"portuguese":{"name":""},"italian":{"name":"Contatore Rifiuti"},"german":{"name":"Auswurf-Zähler"},"turkish":{"name":"Reject Count"}}},"NET_POLL_FAULT":{"@translations":{"english":{"name":"Fault"},"korean":{"name":""},"spanish":{"name":"Fallo"},"french":{"name":"Défaillance/Erreur"},"portuguese":{"name":""},"italian":{"name":"Errore"},"german":{"name":"Fehler"},"turkish":{"name":"Fault"}}},"NET_POLL_RETEST":{"@translations":{"english":{"name":"Re-test"},"korean":{"name":""},"spanish":{"name":"Re-test"},"french":{"name":"Re-Tester"},"portuguese":{"name":""},"italian":{"name":"Re-test"},"german":{"name":"Re-test"},"turkish":{"name":"Re-test"}}},"NET_POLL_CONTROL":{"@translations":{"english":{"name":"Control"},"korean":{"name":""},"spanish":{"name":"Control"},"french":{"name":"Contrôle"},"portuguese":{"name":""},"italian":{"name":"Controllo"},"german":{"name":"Kontrolle"},"turkish":{"name":"Control"}}},"NET_POLL_POWERUP":{"@translations":{"english":{"name":"Power Up"},"korean":{"name":""},"spanish":{"name":"Arranque"},"french":{"name":"Mise sous Tension"},"portuguese":{"name":""},"italian":{"name":"Iniziare"},"german":{"name":"Einschalten"},"turkish":{"name":"Power Up"}}},"NET_POLL_OPERATOR_NO":{"@translations":{"english":{"name":"Operator Number"},"korean":{"name":""},"spanish":{"name":"Número Operador"},"french":{"name":"Numéro Opérateur"},"portuguese":{"name":""},"italian":{"name":"Numero Operatore"},"german":{"name":"Benutzer Nummer"},"turkish":{"name":"Operator Number"}}},"NET_POLL_TEST_REQ_PASS":{"@translations":{"english":{"name":"Test Request Pass"},"korean":{"name":""},"spanish":{"name":"Solicitud Test Aprobada"},"french":{"name":"Requête de Test Passe"},"portuguese":{"name":""},"italian":{"name":"Richiesta Test Superato"},"german":{"name":"Testanforderung bestanden"},"turkish":{"name":"Test Request Pass"}}},"NET_POLL_REJECT_ID":{"@translations":{"english":{"name":"Reject ID"},"korean":{"name":""},"spanish":{"name":"Identificación Rechazo"},"french":{"name":"ID Rejet"},"portuguese":{"name":""},"italian":{"name":"ID Rifiuto"},"german":{"name":"Auswurf ID"},"turkish":{"name":"Reject ID"}}},"NET_POLL_REJECT_CLEAR":{"@translations":{"english":{"name":"Reject Clear"},"korean":{"name":""},"spanish":{"name":"Borrado Rechazo"},"french":{"name":"Effacer Rejet"},"portuguese":{"name":""},"italian":{"name":"Cancellazione Rifiuto"},"german":{"name":"Auswurf löschen"},"turkish":{"name":"Reject Clear"}}},"NET_POLL_EYE_PROD_PEAK":{"@translations":{"english":{"name":"Product Signal Peak"},"korean":{"name":""},"spanish":{"name":"Señal Producto"},"french":{"name":"Signal Maximal du Produit"},"portuguese":{"name":""},"italian":{"name":"Picco Segnale Prodotto"},"german":{"name":"Produktsignal Peak"},"turkish":{"name":"Product Signal Peak"}}},"NET_POLL_EYE_PROD_PHASE":{"@translations":{"english":{"name":"Eye Product Phase"},"korean":{"name":""},"spanish":{"name":"Fase Producto"},"french":{"name":"Phase Produit Capteur Optique"},"portuguese":{"name":""},"italian":{"name":"Fase Prodotto Fotocellula"},"german":{"name":"Lichtschranke Produkt-Phase"},"turkish":{"name":"Eye Product Phase"}}},"NET_POLL_FAULT_CLEAR":{"@translations":{"english":{"name":"Clear Fault"},"korean":{"name":""},"spanish":{"name":"Fallo Borrado"},"french":{"name":"Effacer Défaillance/Erreur"},"portuguese":{"name":""},"italian":{"name":"Cancella Errore"},"german":{"name":"Fehler löschen"},"turkish":{"name":"Clear Fault"}}},"NET_POLL_SYNC_MENU":{"@translations":{"english":{"name":"Sync Menu"},"korean":{"name":""},"spanish":{"name":"Menú Sincronización"},"french":{"name":"Menu Sync"},"portuguese":{"name":""},"italian":{"name":"Sync Menu"},"german":{"name":"Sync. Menü"},"turkish":{"name":"Sync Menu"}}},"NET_POLL_PWD_ENTRY_1":{"@translations":{"english":{"name":"Password Entry 1"},"korean":{"name":""},"spanish":{"name":"Entrada Password 1"},"french":{"name":"Mot de Passe Entrée 1"},"portuguese":{"name":""},"italian":{"name":"Inserimento Password 1"},"german":{"name":"Passworteingabe 1"},"turkish":{"name":"Password Entry 1"}}},"NET_POLL_PWD_ENTRY_2":{"@translations":{"english":{"name":"Password Entry 2"},"korean":{"name":""},"spanish":{"name":"Entrada Password 2"},"french":{"name":"Mot de Passe Entrée 2"},"portuguese":{"name":""},"italian":{"name":"Inserimento Password 2"},"german":{"name":"Passworteingabe 2"},"turkish":{"name":"Password Entry 2"}}},"NET_POLL_SEL_UNIT":{"@translations":{"english":{"name":"Select Unit"},"korean":{"name":""},"spanish":{"name":"Seleccionar Unidad"},"french":{"name":"Sélectionner l'Unité"},"portuguese":{"name":""},"italian":{"name":"Seleziona Unità"},"german":{"name":"Einheit wählen"},"turkish":{"name":"Select Unit"}}},"NET_POLL_RESERVED":{"@translations":{"english":{"name":"Reserved"},"korean":{"name":""},"spanish":{"name":"Reservado"},"french":{"name":"Réservé"},"portuguese":{"name":""},"italian":{"name":"Riservato"},"german":{"name":"Reserved"},"turkish":{"name":"Reserved"}}},"NET_POLL_CLEAR_SCOPE":{"@translations":{"english":{"name":"Clear Scope"},"korean":{"name":""},"spanish":{"name":"Borrar Scope"},"french":{"name":"Effacer Champ"},"portuguese":{"name":""},"italian":{"name":"Cancella Scope"},"german":{"name":"Anzeige löschen"},"turkish":{"name":"Clear Scope"}}},"NET_POLL_REJECT_PHASE":{"@translations":{"english":{"name":"Reject Phase"},"korean":{"name":""},"spanish":{"name":"Rechazo Fase"},"french":{"name":"Phase Rejet"},"portuguese":{"name":""},"italian":{"name":"Fase Rifiuto"},"german":{"name":"Auswurf Phase"},"turkish":{"name":"Reject Phase"}}},"NET_POLL_FLASH_WRITE":{"@translations":{"english":{"name":"Flash Write"},"korean":{"name":""},"spanish":{"name":"Escritura Flash"},"french":{"name":"Clignotant Blanc"},"portuguese":{"name":""},"italian":{"name":"Scrivere Flash"},"german":{"name":"Flash beschreiben"},"turkish":{"name":"Flash Write"}}},"NET_POLL_INTCPTR_SWITCH":{"@translations":{"english":{"name":"Interceptor Switch"},"korean":{"name":""},"spanish":{"name":"Conmutación Interceptor"},"french":{"name":"Commutateur d'Intercepteur"},"portuguese":{"name":""},"italian":{"name":"Scambio Interceptor"},"german":{"name":"Interceptor Schalter"},"turkish":{"name":"Interceptor Switch"}}},"NET_POLL_PREC_DELETE":{"@translations":{"english":{"name":"Product Record Delete"},"korean":{"name":""},"spanish":{"name":"Eliminar Registro Producto"},"french":{"name":" Effacer Enregistrement Produit "},"portuguese":{"name":""},"italian":{"name":"Elimina Registro Prodotto"},"german":{"name":"Produktauzeichnung löschen"},"turkish":{"name":"Product Record Delete"}}},"NET_POLL_PREC_DEL_ALL":{"@translations":{"english":{"name":"Product Records Delete All"},"korean":{"name":""},"spanish":{"name":"Eliminar Todo Registro Producto"},"french":{"name":"Effacer Tous les Enregistrement Produit"},"portuguese":{"name":""},"italian":{"name":"Elimina Tutti Registri Prodotto"},"german":{"name":"Produktauzeichnung alles löschen"},"turkish":{"name":"Product Records Delete All"}}},"NET_POLL_PREC_BACKUP_SAVE":{"@translations":{"english":{"name":"Product Record Backup Save"},"korean":{"name":""},"spanish":{"name":"Guardar Copia Registro Producto"},"french":{"name":"Sauvegarde de l'Enregistrement Produit Sauvegardée"},"portuguese":{"name":""},"italian":{"name":"Backup Registro Prodotto"},"german":{"name":"Produktaufzeichnung Backup speichern"},"turkish":{"name":"Product Record Backup Save"}}},"NET_POLL_PREC_BACKUP_RESTORE":{"@translations":{"english":{"name":"Product Record Restore"},"korean":{"name":""},"spanish":{"name":"Restaurar Registro Producto"},"french":{"name":"Rétablir Enregistrement de Produit "},"portuguese":{"name":""},"italian":{"name":"Ripristina Registro Prodotto"},"german":{"name":"Produktaufzeichnung wieder herstellen"},"turkish":{"name":"Product Record Restore"}}},"NET_POLL_PREC_DEAULTS":{"@translations":{"english":{"name":"Product Record Defaults"},"korean":{"name":""},"spanish":{"name":"Registro Producto Defecto"},"french":{"name":"Enregistrement Défaillance/Erreur Produit"},"portuguese":{"name":""},"italian":{"name":"Registro Prodotto Predefinito"},"german":{"name":"Produktaufzeichnung Grundwerte"},"turkish":{"name":"Product Record Defaults"}}},"NET_POLL_PREC_COPY":{"@translations":{"english":{"name":"Product Record Copy"},"korean":{"name":""},"spanish":{"name":"Copiar Registro Producto"},"french":{"name":"Copier l'enregistrement de Produit"},"portuguese":{"name":""},"italian":{"name":"Copia Registro Prodotto"},"german":{"name":"Produktaufzeichnung kopieren"},"turkish":{"name":"Product Record Copy"}}},"NET_POLL_REJECT2_ID":{"@translations":{"english":{"name":"Reject 2 ID"},"korean":{"name":""},"spanish":{"name":"Identificación Rechazo 2"},"french":{"name":"ID Rejet 2"},"portuguese":{"name":""},"italian":{"name":"ID Rifiuto 2"},"german":{"name":"Auswurf 2 ID"},"turkish":{"name":"Reject 2 ID"}}},"NET_POLL_REJECT2_CLEAR":{"@translations":{"english":{"name":"Reject 2 Clear"},"korean":{"name":""},"spanish":{"name":"Borrar Rechazo 2"},"french":{"name":"Effacer Rejet 2"},"portuguese":{"name":""},"italian":{"name":"Cancella Rifiuto 2"},"german":{"name":"Auswurf 2 löschen"},"turkish":{"name":"Reject 2 Clear"}}},"NET_POLL_MANUAL_REJECT":{"@translations":{"english":{"name":"Manual Reject"},"korean":{"name":""},"spanish":{"name":"Rechazo Manual"},"french":{"name":"Rejet Manuel"},"portuguese":{"name":""},"italian":{"name":"Manual Reject"},"german":{"name":"Manueller Auswurf"},"turkish":{"name":"Manual Reject"}}},"NET_POLL_STREAM_EVENT":{"@translations":{"english":{"name":"Stream Event"},"korean":{"name":"Stream Event"},"spanish":{"name":"Stream Event"},"french":{"name":"Stream Event"},"portuguese":{"name":"Stream Event"},"italian":{"name":"Stream Event"},"german":{"name":"..Übertragung"},"turkish":{"name":"Stream Event"}}},"NETPOLL_STREAM_FRAM":{"@translations":{"english":{"name":"Stream FRAM"},"korean":{"name":"Stream FRAM"},"spanish":{"name":"Stream FRAM"},"french":{"name":"Stream FRAM"},"portuguese":{"name":"Stream FRAM"},"italian":{"name":"Stream FRAM"},"german":{"name":"Übertragung FRAM"},"turkish":{"name":"Stream FRAM"}}},"NETPOLL_STREAM_FAULTS_CLEAR":{"@translations":{"english":{"name":"Faults Clear"},"korean":{"name":"Faults Clear"},"spanish":{"name":"Faults Clear"},"french":{"name":"Effacer Défaillances/Erreur"},"portuguese":{"name":"Faults Clear"},"italian":{"name":"Faults Clear"},"german":{"name":"Fehler löschen"},"turkish":{"name":"Faults Clear"}}},"NETPOLL_STREAM_REJECT_CLEAR":{"@translations":{"english":{"name":"Faults Clear"},"korean":{"name":"Faults Clear"},"spanish":{"name":"Faults Clear"},"french":{"name":"Effacer Défaillances/Erreur"},"portuguese":{"name":"Faults Clear"},"italian":{"name":"Faults Clear"},"german":{"name":"Fehler löschen"},"turkish":{"name":"Faults Clear"}}},"NETPOLL_STREAM_TEST_START":{"@translations":{"english":{"name":"Test Start"},"korean":{"name":"Test Start"},"spanish":{"name":"Test Start"},"french":{"name":"Débuter Test"},"portuguese":{"name":"Test Start"},"italian":{"name":"Test Start"},"german":{"name":"Teststart"},"turkish":{"name":"Test Start"}}},"NETPOLL_STREAM_TEST_END":{"@translations":{"english":{"name":"Test End"},"korean":{"name":"Test End"},"spanish":{"name":"Test End"},"french":{"name":"Terminer Test"},"portuguese":{"name":"Test End"},"italian":{"name":"Test End"},"german":{"name":"Test End"},"turkish":{"name":"Test End"}}},"NETPOLL_STREAM_FAULTS":{"@translations":{"english":{"name":"Fault"},"korean":{"name":"Fault"},"spanish":{"name":"Fault"},"french":{"name":"Défaillance/Erreur"},"portuguese":{"name":"Fault"},"italian":{"name":"Fault"},"german":{"name":"Fehler"},"turkish":{"name":"Fault"}}},"NET_POLL_TEST_STARTED":{"@translations":{"english":{"name":"Test Started"},"korean":{"name":"Test Started"},"spanish":{"name":"Test Started"},"french":{"name":"Test Débuté"},"portuguese":{"name":"Test Started"},"italian":{"name":"Test Started"},"german":{"name":"Test gestartet"},"turkish":{"name":"Test Started"}}},"NETPOLL_STREAM_LOGIN":{"@translations":{"english":{"name":"Logged In"},"korean":{"name":"로그인"},"spanish":{"name":"Logged In"},"french":{"name":"Connecté"},"portuguese":{"name":"Logged In"},"italian":{"name":"Logged In"},"german":{"name":"Eingeloggt"},"turkish":{"name":"Logged In"}}},"NETPOLL_STREAM_LOGOUT":{"@translations":{"english":{"name":"Logged Out"},"korean":{"name":"로그아웃"},"spanish":{"name":"Logged Out"},"french":{"name":"Déconnecté"},"portuguese":{"name":"Logged Out"},"italian":{"name":"Logged Out"},"german":{"name":"Ausgeloggt"},"turkish":{"name":"Logged Out"}}},"NETPOLL_STREAM_LOG_OUT":{"@translations":{"english":{"name":"Logged Out"},"korean":{"name":"로그아웃"},"spanish":{"name":"Logged Out"},"french":{"name":"Déconnecté"},"portuguese":{"name":"Logged Out"},"italian":{"name":"Logged Out"},"german":{"name":"Ausgeloggt"},"turkish":{"name":"Logged Out"}}},"NETPOLL_STREAM_REJECT":{"@translations":{"english":{"name":"Reject"},"korean":{"name":"리젝트"},"spanish":{"name":"Reject"},"french":{"name":"Rejet"},"portuguese":{"name":"Reject"},"italian":{"name":"Reject"},"german":{"name":"Auswurf"},"turkish":{"name":"Reject"}}}},"@pages":{"Sens":{"acc":2,"cat":"Sens","params":[{"type":0,"val":"Sens_A","acc":0},{"type":1,"val":{"child":0,"cat":"Detection Mode","params":[{"type":0,"val":"DetMode_A","acc":0}]},"acc":0},{"type":1,"val":{"child":0,"cat":"Thresholds","params":[{"type":0,"val":"DetThresh_A","acc":0},{"type":0,"val":"DetThEst_A","acc":0},{"type":0,"val":"ThresProdHi_A","acc":0},{"type":0,"val":"BigMetThres_A","acc":0}]},"acc":0},{"type":1,"val":{"child":2,"cat":"Filter","params":[{"type":0,"val":"NoiseR_A","acc":0},{"type":0,"val":"NoiseX_A","acc":0},{"type":0,"val":"FilterNoise_A","acc":0}]},"acc":0},{"type":1,"val":{"child":0,"cat":"Oscillation Power","params":[{"type":0,"val":"OscPower_A","acc":0}]},"acc":0},{"type":1,"val":{"child":0,"cat":"FM Setup","params":[{"type":0,"val":"FmInput_A","acc":0}]},"acc":0},{"type":0,"val":"NoiseR_A","acc":0},{"type":0,"val":"NoiseX_A","acc":0}]},"Test":{"acc":0,"cat":"Test","params":[{"type":1,"val":{"cat":"Manual","params":[{"type":0,"val":"TestConfigCount0_0","acc":0},{"type":0,"val":"TestConfigCount0_1","acc":0},{"type":0,"val":"TestConfigCount0_2","acc":0},{"type":0,"val":"TestConfigCount0_3","acc":0},{"type":0,"val":"TestConfigCount0_4","acc":0},{"type":0,"val":"TestConfigCount0_5","acc":0},{"type":0,"val":"TestConfigAck0","acc":0},{"type":0,"val":"TestConfigOperator0","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Manual2","params":[{"type":0,"val":"TestConfigCount2_0","acc":0},{"type":0,"val":"TestConfigCount2_1","acc":0},{"type":0,"val":"TestConfigCount2_2","acc":0},{"type":0,"val":"TestConfigCount2_3","acc":0},{"type":0,"val":"TestConfigCount2_4","acc":0},{"type":0,"val":"TestConfigCount2_5","acc":0},{"type":0,"val":"TestConfigAck2","acc":0},{"type":0,"val":"TestConfigOperator2","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Halo","params":[{"type":0,"val":"TestConfigCount1_0","acc":0},{"type":0,"val":"TestConfigCount1_1","acc":0},{"type":0,"val":"TestConfigCount1_2","acc":0},{"type":0,"val":"TestConfigCount1_3","acc":0},{"type":0,"val":"TestConfigCount1_4","acc":0},{"type":0,"val":"TestConfigCount1_5","acc":0},{"type":0,"val":"TestConfigAck1","acc":0},{"type":0,"val":"TestConfigOperator1","acc":0},{"type":0,"val":"TestConfigHaloMode1","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Halo2","params":[{"type":0,"val":"TestConfigCount3_0","acc":0},{"type":0,"val":"TestConfigCount3_1","acc":0},{"type":0,"val":"TestConfigCount3_2","acc":0},{"type":0,"val":"TestConfigCount3_3","acc":0},{"type":0,"val":"TestConfigCount3_4","acc":0},{"type":0,"val":"TestConfigCount3_5","acc":0},{"type":0,"val":"TestConfigAck3","acc":0},{"type":0,"val":"TestConfigOperator3","acc":0},{"type":0,"val":"TestConfigHaloMode3","acc":0}]},"acc":0},{"type":1,"val":{"cat":"HaloConf","params":[{"type":0,"val":"HaloBoard","acc":0},{"type":0,"val":"HaloPeakRFe_A","acc":0},{"type":0,"val":"HaloPeakRFe_B","acc":0},{"type":0,"val":"HaloPeakRNFe_A","acc":0},{"type":0,"val":"HaloPeakRNFe_B","acc":0},{"type":0,"val":"HaloPeakRSs_A","acc":0},{"type":0,"val":"HaloPeakRSs_B","acc":0},{"type":0,"val":"HaloCal","acc":0}]},"acc":0},{"type":0,"val":"TestTime","acc":0},{"type":0,"val":"TestDeferTime","acc":0},{"type":0,"val":"TestMode","acc":0},{"type":0,"val":"TestBlockReject","acc":0}]},"Calibration":{"acc":0,"cat":"Calibration","params":[{"type":1,"val":{"cat":"Learn Path","params":[{"type":0,"val":"LearnPhase_A","acc":0},{"type":0,"val":"LearnSens_A","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Phase","params":[{"type":0,"val":"PhaseAngleAuto_A","acc":0},{"type":0,"val":"PhaseMode_A","acc":0},{"type":0,"val":"PhaseSpeed_A","acc":0},{"type":0,"val":"PhaseModeHold_A","acc":0},{"type":0,"val":"PhaseLimitDry_A","acc":0},{"type":0,"val":"PhaseLimitDrySpread_A","acc":0},{"type":0,"val":"PhaseLimitWet_A","acc":0},{"type":0,"val":"PhaseLimitWetSpread_A","acc":0},{"type":0,"val":"PhaseOffset_A","acc":0},{"type":0,"val":"PhaseTrigThres","acc":0},{"type":0,"val":"PhaseTrigLimit","acc":0},{"type":0,"val":"AutoPhasePacks","acc":0}]},"acc":0},{"type":0,"val":"ExpectedSig_A","acc":0},{"type":0,"val":"SensMax_A","acc":0},{"type":0,"val":"SensMin_A","acc":0}]}},"@catmap":{"Reject":{"@translations":{"english":"Reject","korean":"거부","spanish":"Rechazo","french":"Rejet","portuguese":"Reject","italian":"Rifiuto","german":"Auswurf","turkish":"Reject"}},"Password":{"@translations":{"english":"Password","korean":"암호","spanish":"Contraseña","french":"Mot de Passe","portuguese":"Password","italian":"Password","german":"Passwort","turkish":"Password"}},"IO":{"@translations":{"english":"I/O","korean":"입출력","spanish":"I/O","french":"I/O","portuguese":"I/O","italian":"I/O","german":"I/O","turkish":"I/O"}},"System":{"@translations":{"english":"System","korean":"시스템","spanish":"Sistema","french":"Système","portuguese":"System","italian":"Sistema","german":"System","turkish":"System"}},"Fault":{"@translations":{"english":"Faults","korean":"오류","spanish":"Fallos","french":"Défaillances/Erreurs","portuguese":"Faults","italian":"Errori","german":"Fehler","turkish":"Faults"}},"System/FRAM":{"@translations":{"english":"Communication Settings","korean":"네트워크 설정","spanish":"Communication Settings","french":"Paramètres Réseau","portuguese":"Communication Settings","italian":"Impostazioni Rete","german":"Netzwerkeinstellungen","turkish":"Communication Settings"}},"System/About":{"@translations":{"english":"Technical Information","korean":"Technical Information","spanish":"Technical Information","french":"Technical Information","portuguese":"Technical Information","italian":"Technical Information","german":"Technical Information","turkish":"Technical Information"}},"System/SysVersion":{"@translations":{"english":"System Record Date","korean":"System Record Date","spanish":"System Record Date","french":"SYstème Enregistrement Date","portuguese":"System Record Date","italian":"System Record Date","german":"Systemaufzeichnungsdatum","turkish":"System Record Date"}},"System/Passwords":{"@translations":{"english":"Passwords","korean":"Passwords","spanish":"Passwords","french":"Mots de Passe","portuguese":"Passwords","italian":"Passwords","german":"Passworte","turkish":"Passwords"}},"System/FRAM/IO Board Settings":{"@translations":{"english":"IO Board Settings","korean":"IO Board 설정","spanish":"IO Board Settings","french":"Panneau Configuration IO","portuguese":"IO Board Settings","italian":"Impostazioni Scheda IO","german":"IO-Karte Einstellungen","turkish":"IO Board Settings"}},"System/FRAM/Detector IP":{"@translations":{"english":"Detector Addresses","korean":"Detector Addresses","spanish":"Detector Addresses","french":"Adresses Détecteur","portuguese":"Detector Addresses","italian":"Indirizzi Detector","german":"Detektor Adressen","turkish":"Detector Addresses"}},"System/FRAM/Halo Board Settings":{"@translations":{"english":"Halo Board Settings","korean":"Halo Board 설정","spanish":"Halo Board Settings","french":"Panneau Configuration Halo","portuguese":"Halo Board Settings","italian":"Impostazioni Scheda Halo","german":"Halo-Karten Einstellungen","turkish":"Halo Board Settings"}},"System/FRAM/Display Settings":{"@translations":{"english":"Display Settings","korean":"Display 설정","spanish":"Display Settings","french":"Affichage Paramètres","portuguese":"Display Settings","italian":"Impostazioni Schermo","german":"Display Einstellungen","turkish":"Display Settings"}},"Reject/Additional Settings":{"@translations":{"english":"Additional Settings","korean":"추가 설정","spanish":"Ajustes Adicionales","french":"Paramètres Additionnels","portuguese":"Additional Settings","italian":"Altre Impostazioni","german":"zusätzliche Einstellungen","turkish":"Additional Settings"}},"Reject/Additional Settings/Distances":{"@translations":{"english":"Distances","korean":"거리","spanish":"Distancias","french":"Distances","portuguese":"Distances","italian":"Distanze","german":"Distanzen","turkish":"Distances"}},"Reject/Additional Settings/Belt Speed":{"@translations":{"english":"Belt Speed","korean":"벨트 속도","spanish":"Velocidad de Cinta","french":"Vitesse Courroie","portuguese":"Belt Speed","italian":"Velocità Nastro Trasportatore","german":"Bandgeschwindigkeit","turkish":"Belt Speed"}},"Reject/Additional Settings/Latch":{"@translations":{"english":"Latches","korean":"래치","spanish":"Retenciones","french":"Verrous","portuguese":"Latches","italian":"Mantenimento","german":"Selbsthaltung","turkish":"Latches"}},"Reject/Additional Settings/Clocks":{"@translations":{"english":"Clocks","korean":"시계","spanish":"Relojes","french":"Horloges","portuguese":"Clocks","italian":"Orologi","german":"Uhren","turkish":"Clocks"}},"IO/Inputs":{"@translations":{"english":"Inputs","korean":"입력","spanish":"Entradas","french":"Entrées","portuguese":"Inputs","italian":"Ingressi","german":"Eingänge","turkish":"Inputs"}},"IO/Outputs":{"@translations":{"english":"Outputs","korean":"출력","spanish":"Salidas","french":"Sorties","portuguese":"Outputs","italian":"Uscite","german":"Ausgänge","turkish":"Outputs"}},"Sens":{"@translations":{"english":"Sensitivity","korean":"민감도","spanish":"Sensibilidad","french":"Sensitivité","portuguese":"Sensitivity","italian":"Sensibilità","german":"Empfindlichkeit","turkish":"Sensitivity"}},"Test":{"@translations":{"english":"Test","korean":"테스트","spanish":"Test","french":"Test","portuguese":"Test","italian":"Test","german":"Test","turkish":"Test"}},"Test/Manual":{"@translations":{"english":"Manual Test 1","korean":"수동 테스트 1","spanish":"Test Manual 1","french":"Test Manuel 1","portuguese":"Manual Test 1","italian":"Test Manuale 1","german":"Manueller Test 1","turkish":"Manual Test 1"}},"Test/Halo":{"@translations":{"english":"Halo Test 1","korean":"헤일로 테스트 1","spanish":"Test Halo 1","french":"Test Halo 1","portuguese":"Halo Test 1","italian":"Test Halo 1","german":"Halo Test 1","turkish":"Halo Test 1"}},"Test/Manual2":{"@translations":{"english":"Manual Test 2","korean":"수동 테스트 2","spanish":"Test Manual 2","french":"Test Manuel 2","portuguese":"Manual Test 2","italian":"Test Manuale 2","german":"Manueller Test 2","turkish":"Manual Test 2"}},"Test/Halo2":{"@translations":{"english":"Halo Test 2","korean":"헤일로 테스트 2","spanish":"Test Halo 2","french":"Test Halo 2","portuguese":"Halo Test 2","italian":"Test Halo 2","german":"Halo Test 2","turkish":"Halo Test 2"}},"Test/HaloConf":{"@translations":{"english":"Test Configuration","korean":"테스트 설정","spanish":"Configuración Test","french":"Configuration de Test","portuguese":"Test Configuration","italian":"Test Impostazioni","german":"Test Konfiguration","turkish":"Test Configuration"}},"Sens/Filter":{"@translations":{"english":"Filter Noise","korean":"필터 노이즈","spanish":"Filtro Ruido","french":"Filtre Bruit","portuguese":"Filter Noise","italian":"Filtro Rumore","german":"Filter Rauschen","turkish":"Filter Noise"}},"Sens/Oscillation Power":{"@translations":{"english":"Oscillator Power","korean":"오실레이션 파워","spanish":"Potencia Oscilación","french":"Puissance Oscilliateur","portuguese":"Oscillation Power","italian":"Potenza Oscillazione","german":"Oszillator Leistung","turkish":"Oscillator Power"}},"Sens/Detection Mode":{"@translations":{"english":"Detection Mode","korean":"검출방식","spanish":"Modo Detección","french":"Mode Détection","portuguese":"Modo de Detecção","italian":"Modo Rivelamento","german":"Detektions Modus","turkish":"Detection Mode"}},"Sens/FM Setup":{"@translations":{"english":"FM Setup","korean":"FM 설정","spanish":"Ajuste FM","french":"Configuration FM","portuguese":"FM Setup","italian":"Configurazione FM","german":"FM Setup","turkish":"FM Setup"}},"Calibration":{"@translations":{"english":"Learn","korean":"학습","spanish":"Learn","french":"Learn","portuguese":"Learn","italian":"Learn","german":"Learn","turkish":"Learn"}},"Calibration/Phase":{"@translations":{"english":"Phase","korean":"페이즈","spanish":"Fase","french":"Phase","portuguese":"Phase","italian":"Fase","german":"Phase","turkish":"Phase"}},"Calibration/Learn Path":{"@translations":{"english":"Learn Path","korean":"페이즈","spanish":"Fase","french":"Phase","portuguese":"Phase","italian":"Fase","german":"Phase","turkish":"Phase"}},"System/SysVersion/MPhase":{"@translations":{"english":"Multiple Phase","korean":"다중 페이즈","spanish":"Fase Múltiple","french":"Phase Multiple","portuguese":"M Phase","italian":"Fase Multiple","german":"Multiple Phase","turkish":"Multiple Phase"}},"System/SysVersion/DCFilter":{"@translations":{"english":"DC Filter","korean":"DC Filter","spanish":"DC Filter","french":"Filtre DC","portuguese":"DC Filter","italian":"DC Filter","german":"DC Filter","turkish":"DC Filter"}}},"@languages":["english","korean","spanish","french","portuguese","italian","german","turkish"],"@labels":{"Channel A":{"english":{"name":"Channel A"},"korean":{"name":"채널 A"},"spanish":{"name":"Canal A"},"french":{"name":"Canal A"},"portuguese":{"name":"Canal A"},"italian":{"name":"Canale A"},"german":{"name":"A-Kanal"},"turkish":{"name":"Channel A"}},"Channel B":{"english":{"name":"Channel B"},"korean":{"name":"채널 B"},"spanish":{"name":"Canal B"},"french":{"name":"Canal B"},"portuguese":{"name":"Canal B"},"italian":{"name":"Canale B"},"german":{"name":"B-Kanal"},"turkish":{"name":"Channel B"}},"Mode":{"english":{"name":"Mode"},"korean":{"name":"모드"},"spanish":{"name":"Modo"},"french":{"name":"Mode"},"portuguese":{"name":"Modo"},"italian":{"name":"Modo"},"german":{"name":"Modus"},"turkish":{"name":"Mode"}},"Device":{"english":{"name":"Device"},"korean":{"name":"기기"},"spanish":{"name":"dispositivo"},"french":{"name":"appareil"},"portuguese":{"name":"dispositivo"},"italian":{"name":"dispositivo"},"german":{"name":"Gerät"},"turkish":{"name":"Device"}},"Count":{"english":{"name":"Count"},"korean":{"name":"횟수"},"spanish":{"name":"Cuenta"},"french":{"name":"Nombre"},"portuguese":{"name":"Quantidade"},"italian":{"name":"Contatore"},"german":{"name":"Zähler"},"turkish":{"name":"Count"}},"Year":{"english":{"name":"Year"},"korean":{"name":"년"},"spanish":{"name":"Year"},"french":{"name":"Year"},"portuguese":{"name":"Year"},"italian":{"name":"Year"},"german":{"name":"Year"},"turkish":{"name":"Year"}},"Month":{"english":{"name":"Month"},"korean":{"name":"월"},"spanish":{"name":"Month"},"french":{"name":"Month"},"portuguese":{"name":"Month"},"italian":{"name":"Month"},"german":{"name":"Month"},"turkish":{"name":"Month"}},"Day":{"english":{"name":"Day"},"korean":{"name":"일"},"spanish":{"name":"Day"},"french":{"name":"Day"},"portuguese":{"name":"Day"},"italian":{"name":"Day"},"german":{"name":"Day"},"turkish":{"name":"Day"}},"Hour":{"english":{"name":"Hour"},"korean":{"name":"시"},"spanish":{"name":"Hour"},"french":{"name":"Hour"},"portuguese":{"name":"Hour"},"italian":{"name":"Hour"},"german":{"name":"Hour"},"turkish":{"name":"Hour"}},"Minute":{"english":{"name":"Minute"},"korean":{"name":"분"},"spanish":{"name":"Minute"},"french":{"name":"Minute"},"portuguese":{"name":"Minute"},"italian":{"name":"Minute"},"german":{"name":"Minute"},"turkish":{"name":"Minute"}},"Second":{"english":{"name":"Second"},"korean":{"name":"초"},"spanish":{"name":"Second"},"french":{"name":"Second"},"portuguese":{"name":"Second"},"italian":{"name":"Second"},"german":{"name":"Second"},"turkish":{"name":"Second"}},"Metal Type":{"english":{"name":"Metal Type"},"korean":{"name":"금속 종류"},"spanish":{"name":"Tipo Metal"},"french":{"name":"Type de Métal"},"portuguese":{"name":"Tipo de Metal"},"italian":{"name":"Tipo Metallo"},"german":{"name":"Metallart"},"turkish":{"name":"Metal Type"}},"Signal Chain":{"english":{"name":"Signal Chain"},"korean":{"name":"시그널 체인"},"spanish":{"name":"Cadena Señal"},"french":{"name":"Chaîne signalétique"},"portuguese":{"name":"Cadeia de Sinal"},"italian":{"name":"Catene Segnale"},"german":{"name":"Signalkette"},"turkish":{"name":"Signal Chain"}},"Source":{"english":{"name":"Source"},"korean":{"name":"소스"},"spanish":{"name":"Fuente"},"french":{"name":"Source"},"portuguese":{"name":"Fonte"},"italian":{"name":"Sorgente"},"german":{"name":"Quelle"},"turkish":{"name":"Source"}},"Polarity":{"english":{"name":"Polarity"},"korean":{"name":"폴래리티"},"spanish":{"name":"Polaridad"},"french":{"name":"Polarité"},"portuguese":{"name":"Polaridade"},"italian":{"name":"Polarità"},"german":{"name":"Polarität"},"turkish":{"name":"Polarity"}},"Sensitivity":{"english":{"name":"Sensitivity"},"korean":{"name":"민감도"},"spanish":{"name":"Sensibildad"},"french":{"name":" Sensibilité"},"portuguese":{"name":"Sensibilidade"},"italian":{"name":"Sensibilità"},"german":{"name":"Empfindlichkeit"},"turkish":{"name":"Sensitivity"}},"Signal":{"english":{"name":"Signal"},"korean":{"name":"신호"},"spanish":{"name":"Señal"},"french":{"name":"Signal"},"portuguese":{"name":"Sinal"},"italian":{"name":"Segnale"},"german":{"name":"Signal"},"turkish":{"name":"Signal"}},"Rejects":{"english":{"name":"Rejects"},"korean":{"name":"거부"},"spanish":{"name":"Rechazo"},"french":{"name":"Rejets"},"portuguese":{"name":"Rejeção"},"italian":{"name":"Rifiuti"},"german":{"name":"Auswürfe"},"turkish":{"name":"Rejects"}},"Settings":{"english":{"name":"Settings"},"korean":{"name":"설정"},"spanish":{"name":"Ajustes"},"french":{"name":" Paramètres"},"portuguese":{"name":"Parâmetros"},"italian":{"name":"Impostazioni"},"german":{"name":"Einstellungen"},"turkish":{"name":"Settings"}},"Test":{"english":{"name":"Test"},"korean":{"name":"테스트"},"spanish":{"name":"Test"},"french":{"name":"Test"},"portuguese":{"name":"Teste"},"italian":{"name":"Test"},"german":{"name":"Test"},"turkish":{"name":"Test"}},"Back":{"english":{"name":"Back"},"korean":{"name":"뒤로"},"spanish":{"name":"volver"},"french":{"name":"retourner"},"portuguese":{"name":"regressar"},"italian":{"name":"ritornare"},"german":{"name":"zurückkehren"},"turkish":{"name":"Back"}},"Accept":{"english":{"name":"Accept"},"korean":{"name":"적용"},"spanish":{"name":"Aceptar"},"french":{"name":"Acceptez"},"portuguese":{"name":"aceitar"},"italian":{"name":"accettare"},"german":{"name":"akzeptieren"},"turkish":{"name":"Accept"}},"Cancel":{"english":{"name":"Cancel"},"korean":{"name":"취소"},"spanish":{"name":"Cancelar"},"french":{"name":"Annuler"},"portuguese":{"name":"Cancelar"},"italian":{"name":"Annulla"},"german":{"name":"Stornieren"},"turkish":{"name":"Cancel"}},"Test in progress":{"english":{"name":"Test in progress"},"korean":{"name":"테스트 진행 중"},"spanish":{"name":"Test en progreso"},"french":{"name":"Test en cours"},"portuguese":{"name":"Teste em andamento"},"italian":{"name":"Test in corso"},"german":{"name":"Test läuft"},"turkish":{"name":"Test in progress"}},"Test required":{"english":{"name":"Test required"},"korean":{"name":"테스트 필요"},"spanish":{"name":"Test requerida"},"french":{"name":"Test requis"},"portuguese":{"name":"Teste requerido"},"italian":{"name":"Test richiesto"},"german":{"name":"Test erforderlich"},"turkish":{"name":"Test required"}},"Clear Reject Latch":{"english":{"name":"Clear Reject Latch"},"korean":{"name":"리젝트 래치 클리어"},"spanish":{"name":"Claro rechazo de cierre"},"french":{"name":"Effacer le verrou de rejet"},"portuguese":{"name":"Trava de rejeição clara"},"italian":{"name":"Cancella chiavistello di rifiuto"},"german":{"name":"Löschen Sie die Zurückweisungssperre"},"turkish":{"name":"Clear Reject Latch"}},"Reject Latched":{"english":{"name":"Reject Latched"},"korean":{"name":"리젝트 래치됨"},"spanish":{"name":"Rechazar enganchado"},"french":{"name":"Rejeter verrouillé"},"portuguese":{"name":"Rejeitar travado"},"italian":{"name":"Rifiuta chiusa"},"german":{"name":"Abweisen verriegelt"},"turkish":{"name":"Reject Latched"}},"Please Wait":{"english":{"name":"Please Wait"},"korean":{"name":"기다려주세요"},"spanish":{"name":"por favor espera"},"french":{"name":"S'il vous plaît, attendez"},"portuguese":{"name":"Por favor, espere"},"italian":{"name":"attendere prego"},"german":{"name":"Warten Sie mal"},"turkish":{"name":"Please Wait"}},"Updating Detector":{"english":{"name":"Updating Detector"},"korean":{"name":"업데이트 진행중.."},"spanish":{"name":"Détecteur Mise à jour"},"french":{"name":"Détecteur Mise à jour"},"portuguese":{"name":"Atualizando Detector"},"italian":{"name":"Aggiornamento del rilevatore"},"german":{"name":"Aktualisierung des Detektors"},"turkish":{"name":"Updating Detector"}},"Clean mode":{"english":{"name":"Clean mode"},"korean":{"name":"청소 모드"},"spanish":{"name":"Modo limpio"},"french":{"name":"Mode propre"},"portuguese":{"name":"Modo de limpeza"},"italian":{"name":"Modalità pulita"},"german":{"name":"Reinigungsmodus"},"turkish":{"name":"Clean mode"}},"Time left":{"english":{"name":"Time left"},"korean":{"name":"남은 시간"},"spanish":{"name":"Tiempo restante"},"french":{"name":"Temps restant"},"portuguese":{"name":"Tempo restante"},"italian":{"name":"Tempo rimasto"},"german":{"name":"Übrige Zeit"},"turkish":{"name":"Time left"}},"Clear Latch":{"english":{"name":"Clear Latch"},"korean":{"name":"래치 클리어"},"spanish":{"name":"pestillo claro"},"french":{"name":"verrouiller clair"},"portuguese":{"name":"trava clara"},"italian":{"name":"Cancella chiavistello"},"german":{"name":"Löschen Sie die Verriegelung"},"turkish":{"name":"Clear Latch"}},"Tests":{"english":{"name":"Tests"},"korean":{"name":"테스트"},"spanish":{"name":"Tests"},"french":{"name":"Tests"},"portuguese":{"name":"Testes"},"italian":{"name":"Tests"},"german":{"name":"Tests"},"turkish":{"name":"Tests"}},"Log":{"english":{"name":"Log"},"korean":{"name":"기록"},"spanish":{"name":"Log"},"french":{"name":"Registre"},"portuguese":{"name":"Log"},"italian":{"name":"Log"},"german":{"name":"Log"},"turkish":{"name":"Log"}},"Calibrate":{"english":{"name":"Calibrate"},"korean":{"name":"조정"},"spanish":{"name":"Calibrar"},"french":{"name":"Calibrer"},"portuguese":{"name":"Calibrar"},"italian":{"name":"Calibrare"},"german":{"name":"Kalibrieren"},"turkish":{"name":"Calibrate"}},"Learn":{"english":{"name":"Learn"},"korean":{"name":"학습"},"spanish":{"name":"Learn"},"french":{"name":"Learn"},"portuguese":{"name":"Learn"},"italian":{"name":"Learn"},"german":{"name":"Learn"},"turkish":{"name":"Learn"}},"Product":{"english":{"name":"Product"},"korean":{"name":"품목"},"spanish":{"name":"Producto"},"french":{"name":"Produit"},"portuguese":{"name":"Produto"},"italian":{"name":"Prodotto"},"german":{"name":"Produkt"},"turkish":{"name":"Product"}},"Products":{"english":{"name":"Products"},"korean":{"name":"품목"},"spanish":{"name":"Productos"},"french":{"name":"Produits"},"portuguese":{"name":"Produtos"},"italian":{"name":"Prodotti"},"german":{"name":"Produkte"},"turkish":{"name":"Products"}},"Timestamp":{"english":{"name":"Timestamp"},"korean":{"name":"시간"},"spanish":{"name":"Marca Tiempo"},"french":{"name":"Horodatage"},"portuguese":{"name":"Marca de Horário"},"italian":{"name":"Marca Temporale"},"german":{"name":"Zeitstempel"},"turkish":{"name":"Timestamp"}},"Edit":{"english":{"name":"Edit"},"korean":{"name":"변경"},"spanish":{"name":"Edit"},"french":{"name":"Editer"},"portuguese":{"name":"Edit"},"italian":{"name":"Edit"},"german":{"name":"Editieren"},"turkish":{"name":"Edit"}},"Event":{"english":{"name":"Event"},"korean":{"name":"이벤트"},"spanish":{"name":"Event"},"french":{"name":"Activité"},"portuguese":{"name":"Event"},"italian":{"name":"Evento"},"german":{"name":"Event"},"turkish":{"name":"Event"}},"Events":{"english":{"name":"Events"},"korean":{"name":"이벤트"},"spanish":{"name":"Events"},"french":{"name":"Activités"},"portuguese":{"name":"Events"},"italian":{"name":"Eventos"},"german":{"name":"Ereignisse"},"turkish":{"name":"Events"}},"All":{"english":{"name":"All"},"korean":{"name":"전체"},"spanish":{"name":"Todos"},"french":{"name":"Tout"},"portuguese":{"name":"Todos"},"italian":{"name":"Tutti"},"german":{"name":"Alle"},"turkish":{"name":"All"}},"Details":{"english":{"name":"Details"},"korean":{"name":"세부사항"},"spanish":{"name":"Detalles"},"french":{"name":"Détails"},"portuguese":{"name":"Detalhes"},"italian":{"name":"Dettagli"},"german":{"name":"Details"},"turkish":{"name":"Details"}},"Description":{"english":{"name":"Description"},"korean":{"name":"세부사항"},"spanish":{"name":"Description"},"french":{"name":"Description"},"portuguese":{"name":"Description"},"italian":{"name":"Description"},"german":{"name":"Beschreibung"},"turkish":{"name":"Description"}},"Running Product":{"english":{"name":"Running Product"},"korean":{"name":"현 품목"},"spanish":{"name":"Producto en Ejecución"},"french":{"name":"Produit Courant"},"portuguese":{"name":"Produto Rodando"},"italian":{"name":"Prodotto in Esecuzione"},"german":{"name":"aktives Produkt"},"turkish":{"name":"Running Product"}},"Select Test":{"english":{"name":"Select Test"},"korean":{"name":"테스트 선택"},"spanish":{"name":"Selección Test"},"french":{"name":"Sélectionner le Test"},"portuguese":{"name":"Seleção de Teste"},"italian":{"name":"Seleziona Test"},"german":{"name":"Select Test"},"turkish":{"name":"Select Test"}},"Currently Running":{"english":{"name":"Currently Running"},"korean":{"name":"실행중"},"spanish":{"name":"Actualmente en Ejecución"},"french":{"name":"Présentement en exécution"},"portuguese":{"name":"Atualmente em Execução"},"italian":{"name":"Attualmente In Esecuzione"},"german":{"name":"momentan Aktiv"},"turkish":{"name":"Currently Running"}},"Quit Test":{"english":{"name":"Quit Test"},"korean":{"name":"테스트 중단"},"spanish":{"name":"Salir Test"},"french":{"name":"Abandonner le test"},"portuguese":{"name":"Sair do Teste"},"italian":{"name":"Esci Test"},"german":{"name":"Test abbrechen"},"turkish":{"name":"Quit Test"}},"activate":{"english":{"name":"activate"},"korean":{"name":"활성화"},"spanish":{"name":"Activar"},"french":{"name":"Activer"},"portuguese":{"name":"Ativar"},"italian":{"name":"Attivare"},"german":{"name":"aktiviere"},"turkish":{"name":"activate"}},"Clear Faults":{"english":{"name":"Clear Faults"},"korean":{"name":"폴트 클리어"},"spanish":{"name":"Borrar Fallos"},"french":{"name":"Effacer Défaillance/Erreur"},"portuguese":{"name":"Limpar Falhas"},"italian":{"name":"Cancella Errori"},"german":{"name":"Fehler löschen"},"turkish":{"name":"Clear Faults"}},"Clear Warnings":{"english":{"name":"Clear Warnings"},"korean":{"name":"경고 클리어"},"spanish":{"name":"Clear Warnings"},"french":{"name":"Clear Warnings"},"portuguese":{"name":"Clear Warnings"},"italian":{"name":"Clear Warnings"},"german":{"name":"Clear Warnings"},"turkish":{"name":"Clear Warnings"}},"No Faults":{"english":{"name":"No Faults"},"korean":{"name":"폴트 없음"},"spanish":{"name":"Sin Fallos"},"french":{"name":"Aucune Erreur"},"portuguese":{"name":"Sem Falhas"},"italian":{"name":"Nessun Errore"},"german":{"name":"keine Fehler"},"turkish":{"name":"No Faults"}},"Faults":{"english":{"name":"Faults"},"korean":{"name":"폴트"},"spanish":{"name":"Fallos"},"french":{"name":"Erreurs"},"portuguese":{"name":"Falhas"},"italian":{"name":"Errore"},"german":{"name":"Fehler"},"turkish":{"name":"Faults"}},"Fault":{"english":{"name":"Fault"},"korean":{"name":"폴트"},"spanish":{"name":"Fallo"},"french":{"name":"Erreur"},"portuguese":{"name":"Falha"},"italian":{"name":"Errore"},"german":{"name":"Fehler"},"turkish":{"name":"Fault"}},"Warnings":{"english":{"name":"Warnings"},"korean":{"name":"경고"},"spanish":{"name":"Advertencias"},"french":{"name":"Alerte"},"portuguese":{"name":"Avisos"},"italian":{"name":"Avvertenze"},"german":{"name":"Warnungen"},"turkish":{"name":"Warnings"}},"Warning":{"english":{"name":"Warning"},"korean":{"name":"경고"},"spanish":{"name":"Advertencia"},"french":{"name":"Alerte"},"portuguese":{"name":"Aviso"},"italian":{"name":"Avvertimento"},"german":{"name":"Warnung"},"turkish":{"name":"Warning"}},"Calibrate All":{"english":{"name":"Calibrate All"},"korean":{"name":"전부 조정"},"spanish":{"name":"Calibrar Todo"},"french":{"name":"Calibrer Tout"},"portuguese":{"name":"Calibrar Tudo"},"italian":{"name":"Calibra Tutto"},"german":{"name":"Kalibriere alles"},"turkish":{"name":"Calibrate All"}},"Detector":{"english":{"name":"Detector"},"korean":{"name":"디텍터"},"spanish":{"name":"Detector"},"french":{"name":"Détecteur"},"portuguese":{"name":"Detector"},"italian":{"name":"Detector"},"german":{"name":"Detektor"},"turkish":{"name":"Detector"}},"Summary of Events":{"english":{"name":"Summary of Events"},"korean":{"name":"개요"},"spanish":{"name":"Summary of Events"},"french":{"name":"Résumé des Activités"},"portuguese":{"name":"Summary of Events"},"italian":{"name":"Summary of Events"},"german":{"name":"Zusammenfassung Ereignisse"},"turkish":{"name":"Summary of Events"}},"Setting Changes":{"english":{"name":"Setting Changes"},"korean":{"name":"설정 변경"},"spanish":{"name":"Setting Changes"},"french":{"name":"Changements de Configuration"},"portuguese":{"name":"Setting Changes"},"italian":{"name":"Setting Changes"},"german":{"name":"Einstellungsänderungen"},"turkish":{"name":"Setting Changes"}},"Product Changes":{"english":{"name":"Product Changes"},"korean":{"name":"품목 변경"},"spanish":{"name":"Product Changes"},"french":{"name":"Changements de Produit"},"portuguese":{"name":"Product Changes"},"italian":{"name":"Product Changes"},"german":{"name":"Produktänderungen"},"turkish":{"name":"Product Changes"}},"Test Rejects":{"english":{"name":"Test Rejects"},"korean":{"name":"테스트 리젝트"},"spanish":{"name":"Test Rejects"},"french":{"name":"Tester les Rejets"},"portuguese":{"name":"Test Rejects"},"italian":{"name":"Test Rejects"},"german":{"name":"Teste Auswürfe"},"turkish":{"name":"Test Rejects"}},"Contact Information":{"english":{"name":"Contact Information"},"korean":{"name":"연락처"},"spanish":{"name":"Contact Information"},"french":{"name":"Coordonnées de Communication"},"portuguese":{"name":"Contact Information"},"italian":{"name":"Contact Information"},"german":{"name":"Kontakt Information"},"turkish":{"name":"Contact Information"}},"Report Filter":{"english":{"name":"Report Filter"},"korean":{"name":"리포트 필터"},"spanish":{"name":"Report Filter"},"french":{"name":"Filtre d'enregistrement"},"portuguese":{"name":"Report Filter"},"italian":{"name":"Report Filter"},"german":{"name":"Berichte Filter"},"turkish":{"name":"Report Filter"}},"Generated at":{"english":{"name":"Generated at"},"korean":{"name":"생성시간"},"spanish":{"name":"Generated at"},"french":{"name":"Généré à"},"portuguese":{"name":"Generated at"},"italian":{"name":"Generated at"},"german":{"name":"Generiert bei"},"turkish":{"name":"Generated at"}},"Add Unit":{"english":{"name":"Add Unit"},"korean":{"name":"개체 추가"},"spanish":{"name":"Add Unit"},"french":{"name":"Jouter Unité"},"portuguese":{"name":"Add Unit"},"italian":{"name":"Add Unit"},"german":{"name":"Gerät hinzufügen"},"turkish":{"name":"Add Unit"}},"E-mail":{"english":{"name":"E-mail"},"korean":{"name":"이메일"},"spanish":{"name":"E-mail"},"french":{"name":"Courriel"},"portuguese":{"name":"E-mail"},"italian":{"name":"E-mail"},"german":{"name":"E-mail"},"turkish":{"name":"E-mail"}},"Reports":{"english":{"name":"Reports"},"korean":{"name":"리포트"},"spanish":{"name":"Reports"},"french":{"name":"Rapports"},"portuguese":{"name":"Reports"},"italian":{"name":"Reports"},"german":{"name":"Berichte"},"turkish":{"name":"Reports"}},"Database":{"english":{"name":"Database"},"korean":{"name":"데이터베이스"},"spanish":{"name":"Database"},"french":{"name":"Base de Données"},"portuguese":{"name":"Database"},"italian":{"name":"Database"},"german":{"name":"Datenbasis"},"turkish":{"name":"Database"}},"Status":{"english":{"name":"Status Lights"},"korean":{"name":"상태 표시등"},"spanish":{"name":"Status Lights"},"french":{"name":"Voyant d'État"},"portuguese":{"name":"Status Lights"},"italian":{"name":"Status Lights"},"german":{"name":"Status"},"turkish":{"name":"Status Lights"}},"Language":{"english":{"name":"Language"},"korean":{"name":"언어"},"spanish":{"name":"Language"},"french":{"name":"Langage"},"portuguese":{"name":"Language"},"italian":{"name":"Language"},"german":{"name":"Sprache"},"turkish":{"name":"Language"}},"DateTime":{"english":{"name":"Timestamp"},"korean":{"name":"시간"},"spanish":{"name":"Timestamp"},"french":{"name":"Horodatage"},"portuguese":{"name":"Timestamp"},"italian":{"name":"Timestamp"},"german":{"name":"Datum/Zeit"},"turkish":{"name":"Timestamp"}},"UserName":{"english":{"name":"User Name"},"korean":{"name":"사용자"},"spanish":{"name":"User Name"},"french":{"name":"Nom de l'Utilisateur"},"portuguese":{"name":"User Name"},"italian":{"name":"User Name"},"german":{"name":"Benutzername"},"turkish":{"name":"User Name"}},"Type":{"english":{"name":"Type"},"korean":{"name":"종류"},"spanish":{"name":"Type"},"french":{"name":"Type"},"portuguese":{"name":"Type"},"italian":{"name":"Type"},"german":{"name":"Typr"},"turkish":{"name":"Type"}},"Trying to reconnect":{"english":{"name":"Trying to reconnect"},"korean":{"name":"재연결 시도중"},"spanish":{"name":"Trying to reconnect"},"french":{"name":"Trying to reconnect"},"portuguese":{"name":"Trying to reconnect"},"italian":{"name":"Trying to reconnect"},"german":{"name":"Trying to reconnect"},"turkish":{"name":"Trying to reconnect"}},"Syncing":{"english":{"name":"Syncing"},"korean":{"name":"동기화 진행중.."},"spanish":{"name":"Détecteur Sync à jour"},"french":{"name":"Détecteur Sync à jour"},"portuguese":{"name":"Syncing"},"italian":{"name":"Syncing"},"german":{"name":"Syncing"},"turkish":{"name":"Syncing"}}},"@func":{"frac_value":"(function(int){return (int/(1<<15));})","mm":"(function(dist,metric){if(metric==0){return (dist/25.4).toFixed(1) + ' in'}else{ return dist + ' mm'}})","prod_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})","dsp_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})","dsp_serno_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})","rec_date":"(function(val){var dd = val & 0x1f; var mm = (val >> 5) & 0xf; var yyyy = ((val>>9) & 0x7f) + 1996; return yyyy.toString() + '/' + mm.toString() + '/' + dd.toString()})","phase_spread":"(function(val){return Math.round((val/(1<<15))*45)})","phase":"(function(val,wet){ if(wet == 0){if((((val/(1<<15))*45)+90) <= 135){return (((val/(1<<15))*45)+90).toFixed(2); }else{ return ((val/(1<<15))*45).toFixed(2); }}else{ return ((val/(1<<15))*45).toFixed(2);}})","rej_del":"(function(ticks,tack) { if(tack==0){return (ticks/231.0).toFixed(2);}else{return ticks;}})","belt_speed":"(function(tpm,metric,tack){if(tack!=0){return tpm;} var speed= (231.0/tpm)*60; if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}})","password8":"(function(words){return words.map(function(w){return((w&0xffff).toString(16))}).join(',');})","rej_chk":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})","rej_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})","rej_latch":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})","prod_name":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})","peak_mode":"(function(eye,time){if(eye == 0){return(time*2;)}else{return 1;}})","phase_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})","eye_rej":"(function(photo,lead,width){if(photo == 0){return 3;}else{if(lead==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})","bit_array":"(function(val){if(val == 0){return 0;}else{ var i = 0; while(i<16 && ((val>>i) & 1) == 0){ i++; } i++;  return i; } })","patt_frac":"(function(val){return (val/10.0).toFixed(1)})","eye_rej_mode":"(function(val,photo,width){if(photo == 0){return 3;}else{if(val==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})","ipv4_address":"(function(words){return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');})","username":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})","user_opts":"(function(opts){return opts});","password_hash":"(function(phash){    var buf = Buffer.alloc(8); buf.writeUInt16LE(phash[1],0); buf.writeUInt16LE(phash[0],2); buf.writeUInt16LE(phash[2],6); buf.writeUInt16LE(phash[3],4);return buf;});","det_thresh":"(function(fm,mode,wet,r,x){if(mode == 0){ if(wet == 0){ return r; }else{ return x; }}else{ return fm; }})"}
+	"@acc":{"SensEdit":1,"Calib":1,"TestButton":1,"ProductButton":1,"ProductEdit":2},"@categories":{"acc":4,"cat":"@root","params":[{"type":1,"val":{"cat":"Reject","params":[{"type":1,"val":{"cat":"Additional Settings","params":[{"type":1,"val":{"cat":"Distances","params":[{"type":0,"val":"AppUnitDist","acc":0},{"type":0,"val":"HeadCoilSp","acc":0},{"type":0,"val":"HeadDepth","acc":0},{"type":0,"val":"EyeDist","acc":0},{"type":0,"val":"RejExitDist","acc":0},{"type":0,"val":"RejExitDistEst","acc":0},{"type":0,"val":"RejExitWin","acc":0},{"type":0,"val":"EyeMinGapDist","acc":0},{"type":0,"val":"HeadSeparation","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Belt Speed","params":[{"type":0,"val":"BeltSpeed","acc":0},{"type":0,"val":"BeltSpeedEst","acc":0},{"type":0,"val":"EyePkgLength","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Latch","params":[{"type":0,"val":"FaultLatch","acc":0},{"type":0,"val":"RejLatchMode","acc":0},{"type":0,"val":"Rej2Latch","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Clocks","params":[{"type":0,"val":"RejBinDoorTime","acc":0},{"type":0,"val":"CIPCycleTime","acc":0},{"type":0,"val":"CIPDwellTime","acc":0},{"type":0,"val":"IsoCleanTimeout","acc":0},{"type":0,"val":"EyeBlockTime","acc":0},{"type":0,"val":"RejCheckTime","acc":0},{"type":0,"val":"ExcessRejTime","acc":0},{"type":0,"val":"RejDelClock","acc":0},{"type":0,"val":"EncFreq","acc":0}]},"acc":0}]},"acc":0},{"type":0,"val":"RejDelSec","acc":0},{"type":0,"val":"RejDurSec","acc":0},{"type":0,"val":"RejDelSec2","acc":0},{"type":0,"val":"RejDurSec2","acc":0},{"type":0,"val":"RejMode","acc":0},{"type":0,"val":"EyeReject","acc":0},{"type":0,"val":"RejCheckMode","acc":0},{"type":0,"val":"FaultRejMode","acc":0},{"type":0,"val":"Rej2Fault","acc":0},{"type":0,"val":"ManRejState","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Fault","params":[{"type":0,"val":"FaultClearTime","acc":0},{"type":0,"val":"RefFaultMask","acc":0},{"type":0,"val":"BalFaultMask","acc":0},{"type":0,"val":"ProdMemFaultMask","acc":0},{"type":0,"val":"RejConfirmFaultMask","acc":0},{"type":0,"val":"PhaseFaultMask","acc":0},{"type":0,"val":"TestSigFaultMask","acc":0},{"type":0,"val":"PeyeBlockFaultMask","acc":0},{"type":0,"val":"RejBinFullFaultMask","acc":0},{"type":0,"val":"AirFaultMask","acc":0},{"type":0,"val":"ExcessRejFaultMask","acc":0},{"type":0,"val":"BigMetalFaultMask","acc":0},{"type":0,"val":"NetBufferFaultMask","acc":0},{"type":0,"val":"RejMemoryFaultMask","acc":0},{"type":0,"val":"RejectExitFaultMask","acc":0},{"type":0,"val":"TachometerFaultMask","acc":0},{"type":0,"val":"PatternFaultMask","acc":0},{"type":0,"val":"ExitNoPackFaultMask","acc":0},{"type":0,"val":"ExitNewPackFaultMask","acc":0},{"type":0,"val":"InterceptorFaultMask","acc":0},{"type":0,"val":"RtcLowBatFaultMask","acc":0},{"type":0,"val":"RtcTimeFaultMask","acc":0},{"type":0,"val":"IntUsbFaultMask","acc":0},{"type":0,"val":"IoBoardFaultMask","acc":0},{"type":0,"val":"HaloFaultMask","acc":0},{"type":0,"val":"SignalFaultMask","acc":0},{"type":0,"val":"RejBinDoorFaultMask","acc":0}]},"acc":0},{"type":1,"val":{"cat":"IO","params":[{"type":1,"val":{"cat":"Inputs","params":[{"type":0,"val":"INPUT_TACH","acc":0},{"type":0,"val":"INPUT_EYE","acc":0},{"type":0,"val":"INPUT_RC_1","acc":0},{"type":0,"val":"INPUT_RC_2","acc":0},{"type":0,"val":"INPUT_REJ_EYE","acc":0},{"type":0,"val":"INPUT_AIR_PRES","acc":0},{"type":0,"val":"INPUT_REJ_LATCH","acc":0},{"type":0,"val":"INPUT_BIN_FULL","acc":0},{"type":0,"val":"INPUT_REJ_PRESENT","acc":0},{"type":0,"val":"INPUT_DOOR1_OPEN","acc":0},{"type":0,"val":"INPUT_DOOR2_OPEN","acc":0},{"type":0,"val":"INPUT_CLEAR_FAULTS","acc":0},{"type":0,"val":"INPUT_CLEAR_WARNINGS","acc":0},{"type":0,"val":"INPUT_PHASE_HOLD","acc":0},{"type":0,"val":"INPUT_CIP","acc":0},{"type":0,"val":"INPUT_CIP_TEST","acc":0},{"type":0,"val":"INPUT_CIP_PLC","acc":0},{"type":0,"val":"INPUT_PROD_SEL1","acc":0},{"type":0,"val":"INPUT_PROD_SEL2","acc":0},{"type":0,"val":"INPUT_PROD_SEL3","acc":0},{"type":0,"val":"INPUT_PROD_SEL4","acc":0},{"type":0,"val":"INPUT_TEST","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Outputs","params":[{"type":0,"val":"OUT_PHY_PL3_1","acc":0},{"type":0,"val":"OUT_PHY_PL11_1A2","acc":0},{"type":0,"val":"OUT_PHY_PL11_3A4","acc":0},{"type":0,"val":"OUT_PHY_PL11_5A6","acc":0},{"type":0,"val":"OUT_PHY_PL4_1","acc":0},{"type":0,"val":"OUT_PHY_PL4_2","acc":0},{"type":0,"val":"OUT_PHY_PL4_3","acc":0},{"type":0,"val":"OUT_PHY_PL4_5","acc":0},{"type":0,"val":"OUT_PHY_IO_PL3_R1","acc":0},{"type":0,"val":"OUT_PHY_IO_PL3_R2","acc":0},{"type":0,"val":"OUT_PHY_IO_PL3_O1","acc":0},{"type":0,"val":"OUT_PHY_IO_PL3_O2","acc":0},{"type":0,"val":"OUT_PHY_IO_PL3_O3","acc":0},{"type":0,"val":"OUT_PHY_IO_PL4_02","acc":0},{"type":0,"val":"OUT_PHY_IO_PL4_03","acc":0},{"type":0,"val":"OUT_PHY_IO_PL4_04","acc":0},{"type":0,"val":"OUT_PHY_IO_PL4_05","acc":0}]},"acc":0}]},"acc":0},{"type":1,"val":{"cat":"System","params":[{"val":{"cat":"SysVersion","child":0,"params":[{"type":0,"val":"SRecordDate","acc":3},{"type":0,"val":"ThresR_A","acc":0},{"type":0,"val":"ThresX_A","acc":0},{"type":1,"val":{"cat":"DCFilter","child":0,"params":[{"type":0,"val":"DCRate_A","acc":0},{"type":0,"val":"DcCoeffNorm_A","acc":0}]},"acc":0}]},"type":2,"acc":0},{"type":0,"val":"DspName","acc":3},{"val":{"cat":"FRAM","params":[{"val":{"child":0,"cat":"Detector IP","params":[{"type":0,"val":"InternalIP","acc":3},{"type":0,"val":"InternalNM","acc":3},{"type":0,"val":"XPortIP","acc":3},{"type":0,"val":"XPortNM","acc":3},{"type":0,"val":"XPortGW","acc":3}]},"type":1,"acc":0},{"val":{"child":1,"cat":"IO Board Settings","params":[{"type":0,"val":"IOBoardLocate","acc":2},{"type":0,"val":"IOBoardIP","acc":3},{"type":0,"val":"IOBoardType","acc":3}]},"type":1,"acc":0},{"val":{"child":1,"cat":"Halo Board Settings","params":[{"type":0,"val":"HaloLocate","acc":2},{"type":0,"val":"HaloIP","acc":3}]},"type":1,"acc":0},{"val":{"child":0,"cat":"Display Settings","params":[{"type":0,"val":"Nif_ip","acc":3},{"type":0,"val":"Nif_nm","acc":3},{"type":0,"val":"Nif_gw","acc":3}]},"type":1,"acc":0},{"type":0,"val":"NTPServerIP","acc":3},{"type":0,"val":"EtherExtPorts","acc":3}]},"type":1,"acc":4},{"val":{"cat":"Passwords","params":[{"type":0,"val":"PassOn","acc":3},{"type":0,"val":"PassAccSens","acc":3},{"type":0,"val":"PassAccProd","acc":3},{"type":0,"val":"PassAccCal","acc":3},{"type":0,"val":"PassAccTest","acc":3},{"type":0,"val":"PassAccSelUnit","acc":3},{"type":0,"val":"PassAccClrFaults","acc":3},{"type":0,"val":"PassAccClrRej","acc":3},{"type":0,"val":"PassAccClrLatch","acc":3},{"type":0,"val":"PassAccTime","acc":3},{"type":0,"val":"PassAccSync","acc":3}]},"type":1,"acc":4},{"val":{"cat":"About","params":[{"type":0,"val":"SysFreq_A","acc":3},{"type":0,"val":"SysBal_A","acc":3},{"type":0,"val":"SysRef_A","acc":3}]},"type":1,"acc":0}]},"acc":0},{"type":0,"val":"Language","acc":0}]},"@vMap":{"Sens_A":{"@translations":{"english":{"name":"Sensitivity","description":"Sensitivity determines the size of metal that can be detected. Higher sensitivity can detect smaller metal, but is also more susceptible to outside noise sources"},"korean":{"name":"민감도","description":""},"spanish":{"name":"Sensibilidad","description":""},"french":{"name":"Sensibilité","description":"La sensibilité détermine la taille du métal pouvant être détecté. Une sensibilité accrue peut détecter une taille plus petite mais rend le détecteur de métaux plus vulnérable aux interférences externes."},"portuguese":{"name":"Sensibilidade","description":""},"italian":{"name":"Sensibilità","description":""},"german":{"name":"Empfinflichkeit","description":"Die Empfindlichkeit bestimmt maßgeblich die Detektionsgenauigkeit des Detektors.Ein höherer Zahlenwert bedeutet Erkennung kleinerer Metallpartikel, umgekehrt kleinerer Zahlenwert nur größerer Metallkontaminationen.Eine zu hoch eingestellte Empfindlichkeit kann zu Instabilitäten und in der Folge zu Fehldetektionen führen."},"turkish":{"name":"Sensitivity","description":"Sensitivity determines the size of metal that can be detected. Higher sensitivity can detect smaller metal, but is also more susceptible to outside noise sources"}},"children":["Sens_B"],"@labels":["Channel A","Channel B"]},"SysFreq_A":{"@translations":{"english":{"name":"Frequency","description":""},"korean":{"name":"주파수","description":""},"spanish":{"name":"Frequency","description":""},"french":{"name":"Fréquence","description":""},"portuguese":{"name":"Frequency","description":""},"italian":{"name":"Frequency","description":""},"german":{"name":"Frequenz","description":""},"turkish":{"name":"Frequency","description":""}},"children":["SysFreq_B"],"@labels":["Channel A","Channel B"]},"SysBal_A":{"@translations":{"english":{"name":"Balance","description":""},"korean":{"name":"발란스","description":""},"spanish":{"name":"Balance","description":""},"french":{"name":"Balance","description":""},"portuguese":{"name":"Balance","description":""},"italian":{"name":"Balance","description":""},"german":{"name":"Balance","description":"Abgleich der Empfangsspulen,Spannungen über 1500mV führen zu einer Störmeldung.Es sollte der Kundendienst gerufen werden."},"turkish":{"name":"Balance","description":""}},"children":["SysBal_B"],"@labels":["Channel A","Channel B"]},"SysRef_A":{"@translations":{"english":{"name":"Reference Voltage","description":""},"korean":{"name":"참조 전압","description":""},"spanish":{"name":"Reference Voltage","description":""},"french":{"name":"Tension de référence","description":""},"portuguese":{"name":"Reference Voltage","description":""},"italian":{"name":"Reference Voltage","description":""},"german":{"name":"Referenz Spannung","description":"Sollspannung liegt hier bei 1-1,5Vss"},"turkish":{"name":"Reference Voltage","description":""}},"children":["SysRef_B"],"@labels":["Channel A","Channel B"]},"DetThresh_A":{"@translations":{"english":{"name":"Detection Threshold","description":"Set the Detection Threshold 1 or 2 above the Detection Threshold Est with product running"},"korean":{"name":"검출역치 ","description":""},"spanish":{"name":"Umbral Detección","description":""},"french":{"name":"Seuil de Détection","description":"Durant la production, fixez le seuil de détection 1 ou 2 au-dessus du seuil estimé."},"portuguese":{"name":"Limite Detecção","description":""},"italian":{"name":"Soglia Rivelamento","description":""},"german":{"name":"Detektions-Schwellenwert","description":"Der Detektions-Schwellenwert ist ca. 1-2 Zahlenwerte über dem höchsten \"Est\"-Wert zu stellen."},"turkish":{"name":"Detection Threshold","description":"Set the Detection Threshold 1 or 2 above the Detection Threshold Est with product running"}},"children":["DetThresh_B"],"@labels":["Channel A","Channel B"]},"DetThresh":{"@translations":{"english":{"name":"Combined Detection Threshold","description":"Set the Detection Threshold 1 or 2 above the Detection Threshold Est with product running"},"korean":{"name":"검출역치 합산 ","description":""},"spanish":{"name":"Combined Detection Threshold","description":""},"french":{"name":"Combined Detection Threshold","description":"Durant la production, fixez le seuil de détection 1 ou 2 au-dessus du seuil estimé."},"portuguese":{"name":"Combined Detection Threshold","description":""},"italian":{"name":"Combined Detection Threshold","description":""},"german":{"name":"Combined Detection Threshold","description":"Der Detektions-Schwellenwert ist ca. 1-2 Zahlenwerte über dem höchsten \"Est\"-Wert zu stellen."},"turkish":{"name":"Combined Detection Threshold","description":"Set the Detection Threshold 1 or 2 above the Detection Threshold Est with product running"}},"children":[],"@labels":["Detection Threshold"]},"ThresProdHi_A":{"@translations":{"english":{"name":"Product High Threshold","description":""},"korean":{"name":"교정한계치","description":""},"spanish":{"name":"Umbral Superior Producto","description":""},"french":{"name":"Seuil Élevé du Produit","description":""},"portuguese":{"name":"Limite Produto Alto","description":""},"italian":{"name":"Soglia alta prodotto","description":""},"german":{"name":"Hoher Produkt-Schwellenwert","description":""},"turkish":{"name":"Product High Threshold","description":""}},"children":["ThresProdHi_B"],"@labels":["Channel A","Channel B"]},"ThresX_A":{"@translations":{"english":{"name":"X Threshold","description":""},"korean":{"name":"X 역치","description":""},"spanish":{"name":"Umbral X","description":""},"french":{"name":"Seuil X","description":""},"portuguese":{"name":"Limite de X","description":""},"italian":{"name":"Soglia X","description":""},"german":{"name":"X-Schwellenwert","description":""},"turkish":{"name":"X Threshold","description":""}},"children":["ThresX_B"],"@labels":["Channel A","Channel B"]},"ThresR_A":{"@translations":{"english":{"name":"R Threshold","description":""},"korean":{"name":"R 역치","description":""},"spanish":{"name":"Umbral R","description":""},"french":{"name":"Seuil R","description":""},"portuguese":{"name":"Limite de R","description":""},"italian":{"name":"Soglia R","description":""},"german":{"name":"R-Schwellenwert","description":""},"turkish":{"name":"R Threshold","description":""}},"children":["ThresR_B"],"@labels":["Channel A","Channel B"]},"BigMetThres_A":{"@translations":{"english":{"name":"Large Metal Threshold","description":"Threshold for Large Metal Fault"},"korean":{"name":"대량금속 역치","description":""},"spanish":{"name":"Umbral Metal Grande","description":""},"french":{"name":"Seuil Grande Quantité de Métaux","description":"Défaillance/Erreur Seuil Grandes Quantités de Métaux"},"portuguese":{"name":"Limite Metal Grande","description":""},"italian":{"name":"Soglia Metallo Grande","description":""},"german":{"name":"Hoher Metall-Schwellenwert","description":"Schwellenwert überschritten! führte zur Fehlermeldung"},"turkish":{"name":"Large Metal Threshold","description":"Threshold for Large Metal Fault"}},"children":["BigMetThres_B"],"@labels":["Channel A","Channel B"]},"DetMode_A":{"@translations":{"english":{"name":"Detection Mode","description":"Peak mode is the default detection mode. FM mode can improve performance in certain applications"},"korean":{"name":"검출방식","description":""},"spanish":{"name":"Modo Detección","description":""},"french":{"name":"Mode Détection","description":"Le Mode de détection Peak est configuré par défaut. Le Mode FM peut améliorer la performance dans certaines applications."},"portuguese":{"name":"Modo de Detecção","description":""},"italian":{"name":"Modo Rivelamento","description":""},"german":{"name":"Detektions Modus","description":"Peak-Modus ist die Standardeinstellung.\nDer FM-Modus kann die Detektionsgenauigkeit in bestimmten Anwendungsfällen deutlich verbessern. "},"turkish":{"name":"Detection Mode","description":"Peak mode is the default detection mode. FM mode can improve performance in certain applications"}},"children":["DetMode_B"],"@labels":["Channel A","Channel B"]},"NoiseR_A":{"@translations":{"english":{"name":"R Channel Noise","description":""},"korean":{"name":"R 채널 노이즈","description":""},"spanish":{"name":"Ruido Canal R","description":""},"french":{"name":"Canal Bruits R","description":""},"portuguese":{"name":"Ruído do Canal R","description":""},"italian":{"name":"Rumore Canale R","description":""},"german":{"name":"R-Kanal Rauschen","description":""},"turkish":{"name":"R Channel Noise","description":""}},"children":["NoiseR_B"],"@labels":["Channel A","Channel B"]},"NoiseX_A":{"@translations":{"english":{"name":"X Channel Noise","description":""},"korean":{"name":"X 채널 노이즈","description":""},"spanish":{"name":"Ruido Canal X","description":""},"french":{"name":"Canal Bruits X","description":""},"portuguese":{"name":"Ruído do canal X","description":""},"italian":{"name":"Rumore Canale X","description":""},"german":{"name":"X-Kanal Rauschen","description":""},"turkish":{"name":"X Channel Noise","description":""}},"children":["NoiseX_B"],"@labels":["Channel A","Channel B"]},"DetThEst_A":{"@translations":{"english":{"name":"Detection Threshold Est","description":"The estimated FM signal; run product to get an estimate of product effect while using FM"},"korean":{"name":"검출역치 추정값","description":""},"spanish":{"name":"Umbral Detección Estimado","description":""},"french":{"name":"Seuil de Détection Estimé","description":"Le signal FM estimé; En Mode FM, faites passer le produit pour obtenir une estimation de l'effet du produit."},"portuguese":{"name":"Est do Limite de Detecção","description":""},"italian":{"name":"Soglia Rivelamento Stimata","description":""},"german":{"name":"Detektions Schwellenwert \"Est\"","description":"Das annäherungsweise ermittelte FM-Signal;Produkt durch die Öffnung laufen lassen um das FM-Signal zu bestimmen."},"turkish":{"name":"Detection Threshold Est","description":"The estimated FM signal; run product to get an estimate of product effect while using FM"}},"children":["DetThEst_B"],"@labels":["Channel A","Channel B"]},"DetThEst":{"@translations":{"english":{"name":"Combined Detection Threshold Est","description":"The estimated FM signal; run product to get an estimate of product effect while using FM"},"korean":{"name":"Combined Detection Threshold Est","description":""},"spanish":{"name":"Combined Detection Threshold Est","description":""},"french":{"name":"Combined Detection Threshold Est","description":"Le signal FM estimé; En Mode FM, faites passer le produit pour obtenir une estimation de l'effet du produit."},"portuguese":{"name":"Combined Detection Threshold Est","description":""},"italian":{"name":"Combined Detection Threshold Est","description":""},"german":{"name":"Combined Detection Threshold Est","description":"Das annäherungsweise ermittelte FM-Signal;Produkt durch die Öffnung laufen lassen um das FM-Signal zu bestimmen."},"turkish":{"name":"Combined Detection Threshold Est","description":"The estimated FM signal; run product to get an estimate of product effect while using FM"}},"children":[],"@labels":["Det Threshold Estimate"]},"FilterNoise_A":{"@translations":{"english":{"name":"Filter ","description":"filters prevent external noise from accidentally causing a false reject. Care should be taken that after a new filter is applied, the required metal samples can still be detected; a manual test is strongly reccommended after changes."},"korean":{"name":"필터 노이즈","description":""},"spanish":{"name":"Filtro Ruido","description":""},"french":{"name":"Filtre","description":"Les filtres préviennent les faux rejets causés accidentellement par les bruits externes. Une attention particulière doit être apportée après l’installation d’un nouveau filtre, il faut s'assurer que l'échantillon de métal peut encore être détecté; il est fortement recommandé de procéder à un test de détection manuel."},"portuguese":{"name":"Filtro do Ruído","description":""},"italian":{"name":"Rumore Filtro","description":""},"german":{"name":"Filter ","description":"Die Filter verhindern,das elektromagnetische Störungen, zu Fehldetektionen führen und somit die Betriebsstabilität zu verbessern.Nach einer Einstellungsänderung sollte immer mittels der Testkörper geprüft werden ob die erforderliche Detektionsgenauigkeit noch gewährleistet ist."},"turkish":{"name":"Filter ","description":"filters prevent external noise from accidentally causing a false reject. Care should be taken that after a new filter is applied, the required metal samples can still be detected; a manual test is strongly reccommended after changes."}},"children":["FilterNoise_B"],"@labels":["Channel A","Channel B"]},"OscPower_A":{"@translations":{"english":{"name":"Oscillator Power","description":"The oscillator power is set to high by default, but may be changed to low to accomodate for high product signal. Always recalibrate & run a manual test after changing the oscillator power"},"korean":{"name":"진동 출력","description":""},"spanish":{"name":"Potencia Oscilación","description":""},"french":{"name":"Puissance Oscillateur","description":"La puissance de l'oscillateur est préréglée \"High\" par défaut mais peut être modifiée à \"Low\" pour composer avec un signal élevé d'un produit. Toujours recalibrer et exécuter un test manuel après un changement de la puissance de l'oscillateur"},"portuguese":{"name":"Potência","description":""},"italian":{"name":"Potenza Oscillatore","description":""},"german":{"name":"Oszillator-Leistung","description":"Die Oszillator-Leistung steht standardmäßig auf hoch. Kann jedoch bei hohem Produkteffekt und Schwierigkeiten bei der Produkteffektkompensation auf niedrig gestellt werden. Nach Wechsel der Einstellung sollte immer eine Kalbrierung und ein Test mit den Prüfkörpern erfolgen."},"turkish":{"name":"Oscillator Power","description":"The oscillator power is set to high by default, but may be changed to low to accomodate for high product signal. Always recalibrate & run a manual test after changing the oscillator power"}},"children":["OscPower_B"],"@labels":["Channel A","Channel B"]},"FmInput_A":{"@translations":{"english":{"name":"FM Signal","description":"Signal in FM mode. "},"korean":{"name":"FM 입력","description":""},"spanish":{"name":"Entrada FM ","description":""},"french":{"name":"Signal FM","description":"Signal en Mode FM"},"portuguese":{"name":"Input do FM ","description":""},"italian":{"name":"Ingresso FM","description":""},"german":{"name":"FM Signal","description":"Signal in FM mode. "},"turkish":{"name":"FM Signal","description":"Signal in FM mode. "}},"children":["FmInput_B"],"@labels":["Channel A","Channel B"]},"TestTime":{"@translations":{"english":{"name":"Test Interval","description":"Time between automatically run tests in minutes. When set to \"0\" tests must be manually run through the test menu"},"korean":{"name":"테스트 간격","description":""},"spanish":{"name":"Intervalo Test","description":""},"french":{"name":"Intervalle  Essai/Test","description":"L'Auto Test s'exécute en temps minute. Lorsqu’il y a mise à 0, le test doit être exécuté manuellement à partir du menu d'Essai/Test"},"portuguese":{"name":"Intervalo de Teste","description":""},"italian":{"name":"Intervallo Test","description":""},"german":{"name":"Test Intervall","description":"Zeit zwischen automatischen Tests in Minuten. Wenn auf \"0\" gesetzt, müssen Tests manuell durch das Testmenü durchgeführt werden"},"turkish":{"name":"Test Interval","description":"Time between automatically run tests in minutes. When set to \"0\" tests must be manually run through the test menu"}},"children":[],"@labels":["Test Interval"]},"TestDeferTime":{"@translations":{"english":{"name":"Test Defer TIme","description":"Test defer time sets the interval between tests if multiple tests have been configured"},"korean":{"name":"테스트 지연 시간","description":""},"spanish":{"name":"Tiempo Aplazamiento Test","description":""},"french":{"name":"Un Temps d'Essai/Test Différé","description":"Un Temps d'Essai/Test Différé détermine l'intervalle entre les Essais/Tests si plusieurs requêtes d'Essai/Test ont été configurées."},"portuguese":{"name":"Deferir Tempo de Teste","description":""},"italian":{"name":"Tempo Differire Test","description":""},"german":{"name":"Testverzögerungszeit","description":"Die Testverzögerungszeit legt das Intervall zwischen den Tests fest, wenn mehrere Tests konfiguriert wurden"},"turkish":{"name":"Test Defer TIme","description":"Test defer time sets the interval between tests if multiple tests have been configured"}},"children":[],"@labels":["Test Defer TIme"]},"TestMode":{"@translations":{"english":{"name":"Test Mode","description":"Sets the test run when triggered by the test input. Prompt allows users to select test manually, halo & halo2 options require an optional Halo Board, Manual and Manual2 options prompt operator to run selected number of metal types for test."},"korean":{"name":"테스트 방식","description":""},"spanish":{"name":"Modo Test","description":""},"french":{"name":"Mode Essai/Test","description":"Déclenche l'Essai/test lorsqu’actionner \"Test Input\". Cette fonctionnalité permet à l'utilisateur de sélectionner un Essai/Test manuel, Halo et Halo 2 nécessite un Panneau Halo optionnel, l’option Manuel et Manuel 2 demande à l’opérateur de passer un nombre déterminé de types de métal à tester."},"portuguese":{"name":"Modo do Teste","description":""},"italian":{"name":"Modo Test","description":""},"german":{"name":"Test-Modus","description":"Startet den Testablauf, wenn dieser vom Signal eines vordefinfierten Eingangs angefordert wird. Die Eingabeaufforderung ermöglicht Benutzern die manuelle Auswahl eines Tests. Halo & Halo2-Optionen erfordern ein optionales Halo Board.Die Optionen Manuell und Manuell2 ermöglichen dem Bediener, die Art des Metalls für den Test,sowie die Testhäufigkeit zu definieren."},"turkish":{"name":"Test Mode","description":"Sets the test run when triggered by the test input. Prompt allows users to select test manually, halo & halo2 options require an optional Halo Board, Manual and Manual2 options prompt operator to run selected number of metal types for test."}},"children":[],"@labels":["Test Mode"]},"TestConfigCount0_0":{"@translations":{"english":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":"Cuenta es el número de pasadas. Selecciona el Tipo de Metal para testear en el cadena de señal específico"},"french":{"name":"Essai/Test 1","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 1","description":"Count is number of passes. Select Metal Type to test on the specified signal chain"},"italian":{"name":"Test 1","description":""},"german":{"name":"Test 1","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_0","TestConfigFreq0_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_1":{"@translations":{"english":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Essai/Test 2","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 2","description":""},"italian":{"name":"Test 2","description":""},"german":{"name":"Test 2","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_1","TestConfigFreq0_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_2":{"@translations":{"english":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Essai/Test 3","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 3","description":""},"italian":{"name":"Test 3","description":""},"german":{"name":"Test 3","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_2","TestConfigFreq0_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_3":{"@translations":{"english":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Essai/Test 4","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 4","description":""},"italian":{"name":"Test 4","description":""},"german":{"name":"Test 4","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_3","TestConfigFreq0_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_4":{"@translations":{"english":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Essai/Test 5","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 5","description":""},"italian":{"name":"Test 5","description":""},"german":{"name":"Test 5","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_4","TestConfigFreq0_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount0_5":{"@translations":{"english":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Essai/Test 6","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne de signal \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 6","description":""},"italian":{"name":"Test 6","description":""},"german":{"name":"Test 6","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal0_5","TestConfigFreq0_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck0":{"@translations":{"english":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Confirmation Test","description":"En position \"ON\", il oblige l'utilisateur à appuyer sur la touche de confirmation Essai/Test entre chaque Essai/Test."},"portuguese":{"name":"Reconhecer","description":""},"italian":{"name":"Riconoscere","description":""},"german":{"name":"Test Bestätigung","description":"Wenn auf \"an\" eingestellt ist, muss der Benutzer die Taste drücken, um den Test zwischen den einzelnen Tests zu bestätigen"},"turkish":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator0":{"@translations":{"english":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Code Opérateur","description":"En position \"ON\", il oblige l'utilisateur à entrer son code d'opérateur avant d'effectuer l'Essai/Test"},"portuguese":{"name":"Operador","description":""},"italian":{"name":"Operatore","description":""},"german":{"name":"Bnutzer-Code","description":"Wenn auf \"an\" gesetzt ist, muss der Benutzer seinen Bedienercode eingeben, bevor er den Test ausführt"},"turkish":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode0":{"@translations":{"english":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Mode Halo","description":"Place l'Échantillon-Test vers le milieu (mid), ou le bord avant, milieu et le bord arrière (cycle) du produit."},"portuguese":{"name":"Modo Halo","description":""},"italian":{"name":"Modo Halo","description":""},"german":{"name":"Halo-Modus","description":"Setzt die simulierte Metallprobe auf die mittlere (Mitte) oder Vorderkante, mittlere und hintere Kante (Zyklus) des Produkts"},"turkish":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount1_0":{"@translations":{"english":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Essai/Test 1","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 1","description":""},"italian":{"name":"Test 1","description":""},"german":{"name":"Test 1","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_0","TestConfigFreq1_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_1":{"@translations":{"english":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Essai/Test 2","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 2","description":""},"italian":{"name":"Test 2","description":""},"german":{"name":"Test 2","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_1","TestConfigFreq1_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_2":{"@translations":{"english":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Essai/Test 3","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 3","description":""},"italian":{"name":"Test 3","description":""},"german":{"name":"Test 3","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_2","TestConfigFreq1_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_3":{"@translations":{"english":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Essai/Test 4","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 4","description":""},"italian":{"name":"Test 4","description":""},"german":{"name":"Test 4","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_3","TestConfigFreq1_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_4":{"@translations":{"english":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Essai/Test 5","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 5","description":""},"italian":{"name":"Test 5","description":""},"german":{"name":"Test 5","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_4","TestConfigFreq1_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount1_5":{"@translations":{"english":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Essai/Test 6","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 6","description":""},"italian":{"name":"Test 6","description":""},"german":{"name":"Test 6","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal1_5","TestConfigFreq1_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck1":{"@translations":{"english":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Confirmation Test","description":"En position \"ON\", il oblige l'utilisateur à appuyer sur la touche de confirmation Essai/Test entre chaque Essai/Test."},"portuguese":{"name":"Reconhecer","description":""},"italian":{"name":"Riconoscere","description":""},"german":{"name":" Test-Bestätigung","description":"Wenn auf \"an\" eingestellt ist, muss der Benutzer die Taste drücken, um den Test zwischen den einzelnen Tests zu bestätigen"},"turkish":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator1":{"@translations":{"english":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Code Opérateur","description":"En position \"ON\", il oblige l'utilisateur à entrer son code d'opérateur avant d'effectuer l'Essai/Test"},"portuguese":{"name":"Operador","description":""},"italian":{"name":"Operatore","description":""},"german":{"name":"Benutzer-Code","description":"Wenn auf \"an\" gesetzt ist, muss der Benutzer seinen Bedienercode eingeben, bevor er den Test ausführt"},"turkish":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode1":{"@translations":{"english":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Mode Halo","description":"Place l'Échantillon-Test vers le milieu (mid), ou le bord avant, milieu et le bord arrière (cycle) du produit."},"portuguese":{"name":"Modo Halo","description":""},"italian":{"name":"Modo Halo","description":""},"german":{"name":"Halo-Modus","description":"Setzt die simulierte Metallprobe auf die mittlere (Mitte) oder Vorderkante, mittlere und hintere Kante (Zyklus) des Produkts"},"turkish":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount2_0":{"@translations":{"english":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Essai/Test 1","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 1","description":""},"italian":{"name":"Test 1","description":""},"german":{"name":"Test 1","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_0","TestConfigFreq2_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_1":{"@translations":{"english":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Essai/Test 2","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 2","description":""},"italian":{"name":"Test 2","description":""},"german":{"name":"Test 2","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_1","TestConfigFreq2_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_2":{"@translations":{"english":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Essai/Test 3","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 3","description":""},"italian":{"name":"Test 3","description":""},"german":{"name":"Test 3","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_2","TestConfigFreq2_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_3":{"@translations":{"english":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Essai/Test 4","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 4","description":""},"italian":{"name":"Test 4","description":""},"german":{"name":"Test 4","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_3","TestConfigFreq2_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_4":{"@translations":{"english":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Essai/Test 5","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 5","description":""},"italian":{"name":"Test 5","description":""},"german":{"name":"Test 5","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_4","TestConfigFreq2_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount2_5":{"@translations":{"english":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Essai/Test 6","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 6","description":""},"italian":{"name":"Test 6","description":""},"german":{"name":"Test 6","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal2_5","TestConfigFreq2_5"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigAck2":{"@translations":{"english":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Confirmation Test","description":"En position \"ON\", il oblige l'utilisateur à appuyer sur la touche de confirmation Essai/Test entre chaque Essai/Test"},"portuguese":{"name":"Reconhecer","description":""},"italian":{"name":"Riconoscere","description":""},"german":{"name":"Test Bestätigung","description":"Wenn auf \"an\" eingestellt ist, muss der Benutzer die Taste drücken, um den Test zwischen den einzelnen Tests zu bestätigen"},"turkish":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator2":{"@translations":{"english":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Code Opétateur","description":"En position \"ON\", il oblige l'utilisateur à entrer son code d'opérateur avant d'effectuer l'Essai/Test"},"portuguese":{"name":"Operador","description":""},"italian":{"name":"Operatore","description":""},"german":{"name":"Benutzer-Code","description":"Wenn auf \"an\" gesetzt ist, muss der Benutzer seinen Bedienercode eingeben, bevor er den Test ausführt"},"turkish":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode2":{"@translations":{"english":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Mode Halo","description":"Place l'Échantillon-Test vers le milieu (mid), ou le bord avant, milieu et le bord arrière (cycle) du produit."},"portuguese":{"name":"Modo Halo","description":""},"italian":{"name":"Modo Halo","description":""},"german":{"name":"Halo-Modus","description":"Setzt die simulierte Metallprobe auf die mittlere (Mitte) oder Vorderkante, mittlere und hintere Kante (Zyklus) des Produkts"},"turkish":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"}},"children":[],"@labels":["Halo Mode"]},"TestConfigCount3_0":{"@translations":{"english":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 1","description":""},"spanish":{"name":"Test 1","description":""},"french":{"name":"Essai/Test 1","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 1","description":""},"italian":{"name":"Test 1","description":""},"german":{"name":"Test 1","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 1","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_0","TestConfigFreq3_0"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_1":{"@translations":{"english":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 2","description":""},"spanish":{"name":"Test 2","description":""},"french":{"name":"Essai/Test 2","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 2","description":""},"italian":{"name":"Test 2","description":""},"german":{"name":"Test 2","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 2","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_1","TestConfigFreq3_1"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_2":{"@translations":{"english":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 3","description":""},"spanish":{"name":"Test 3","description":""},"french":{"name":"Essai/Test 3","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 3","description":""},"italian":{"name":"Test 3","description":""},"german":{"name":"Test 3","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 3","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_2","TestConfigFreq3_2"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_3":{"@translations":{"english":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 4","description":""},"spanish":{"name":"Test 4","description":""},"french":{"name":"Essai/Test 4","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 4","description":""},"italian":{"name":"Test 4","description":""},"german":{"name":"Test 4","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 4","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_3","TestConfigFreq3_3"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_4":{"@translations":{"english":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 5","description":""},"spanish":{"name":"Test 5","description":""},"french":{"name":"Essai/Test 5","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 5","description":""},"italian":{"name":"Test 5","description":""},"german":{"name":"Test 5","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 5","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_4","TestConfigFreq3_4"],"@labels":["Count","Metal Type","Signal Chain"]},"TestConfigCount3_5":{"@translations":{"english":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"},"korean":{"name":"테스트 6","description":""},"spanish":{"name":"Test 6","description":""},"french":{"name":"Essai/Test 6","description":"Le chiffre indique le nombre de d'Essai/Test, le type de métal peut être ferreux (FE), non-ferreux (NFE) ou acier Inoxydable (SS). La chaîne signalétique \"Chain Signal\" sélectionnera l'unité A ou B"},"portuguese":{"name":"Teste 6","description":""},"italian":{"name":"Test 6","description":""},"german":{"name":"Test 6","description":"Anzahl bezieht sich auf die Anzahl der Tests, Metalltyp kann Eisen (Fe), Nicht-Eisen (nFe) oder Edelstahl (SS) sein, Signalkette wählt die Einheit A oder B"},"turkish":{"name":"Test 6","description":"Count refers to the number of tests, metal type can be ferrous (FE), non-ferrous (NFE), or stainless (SS), Signal chain selects unit A or B"}},"children":["TestConfigMetal3_5","TestConfigFreq3_5"],"@labels":["Count","Metal Type","Signal Chain"]},"Date":{"@translations":{"english":{"name":"Date","description":""},"korean":{"name":"날짜","description":""},"spanish":{"name":"Date","description":""},"french":{"name":"Date","description":""},"portuguese":{"name":"Date","description":""},"italian":{"name":"Date","description":""},"german":{"name":"Date","description":""},"turkish":{"name":"Date","description":""}},"children":["months","days"],"@labels":["Year","Month","Day"]},"Time":{"@translations":{"english":{"name":"Time","description":""},"korean":{"name":"시간","description":""},"spanish":{"name":"Time","description":""},"french":{"name":"Time","description":""},"portuguese":{"name":"Time","description":""},"italian":{"name":"Time","description":""},"german":{"name":"Time","description":""},"turkish":{"name":"Time","description":""}},"children":["minute","second"],"@labels":["Hour","Minute","Second"]},"TestConfigAck3":{"@translations":{"english":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"},"korean":{"name":"확인","description":""},"spanish":{"name":"Reconocer","description":""},"french":{"name":"Confirmation Test","description":"En position \"ON\", il oblige l'utilisateur à appuyer sur la touche de confirmation Essai/Test entre chaque Essai/Test"},"portuguese":{"name":"reconhecer","description":""},"italian":{"name":"Riconoscere","description":""},"german":{"name":"Test Bestätigung","description":"Wenn auf \"an\" gesetzt ist, muss der Benutzer seinen Bedienercode eingeben, bevor er den Test ausführt"},"turkish":{"name":"Acknowledge Test","description":"when set to \"on\" requires user to press key to acknowledge test between each test"}},"children":[],"@labels":["Acknowledge"]},"TestConfigOperator3":{"@translations":{"english":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"},"korean":{"name":"승인","description":""},"spanish":{"name":"Operador","description":""},"french":{"name":"Code Opérateur","description":"En position \"ON\", il oblige l'utilisateur à entrer son code d'opérateur avant d'effectuer l'Essai/Test"},"portuguese":{"name":"Operador","description":""},"italian":{"name":"Operatore","description":""},"german":{"name":"Benutzer Code","description":"Wenn auf \"an\" gesetzt ist, muss der Benutzer seinen Bedienercode eingeben, bevor er den Test ausführt"},"turkish":{"name":"Operator Code","description":"When set to \"on\" requires user to enter their operator code before running the test"}},"children":[],"@labels":["Operator"]},"TestConfigHaloMode3":{"@translations":{"english":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"},"korean":{"name":"헤일로 모드","description":""},"spanish":{"name":"Modo Halo","description":""},"french":{"name":"Mode Halo","description":"Place l'Échantillon-Test vers le milieu (mid), ou le bord avant, milieu et le bord arrière (cycle) du produit."},"portuguese":{"name":"Modo Halo","description":""},"italian":{"name":"Modo Halo","description":""},"german":{"name":"Halo-Modus","description":"Setzt die simulierte Metallprobe auf die mittlere (Mitte) oder Vorderkante, mittlere und hintere Kante (Zyklus) des Produkts"},"turkish":{"name":"Halo Mode","description":"Sets the simulated metal sample to the middle (mid) or leading edge, middle, and trailing edge (cycle) of product"}},"children":[],"@labels":["Halo Mode"]},"TestBlockReject":{"@translations":{"english":{"name":"Reject Disable on Test","description":""},"korean":{"name":"테스트시 리젝트 해제","description":""},"spanish":{"name":"Reject Disable on Test","description":""},"french":{"name":"Reject Disable on Test","description":""},"portuguese":{"name":"Reject Disable on Test","description":""},"italian":{"name":"Reject Disable on Test","description":""},"german":{"name":"Reject Disable on Test","description":""},"turkish":{"name":"Reject Disable on Test","description":""}},"children":[],"@labels":["Halo Mode"]},"HaloPeakRFe_A":{"@translations":{"english":{"name":"Ferrous Peak A","description":""},"korean":{"name":"철분 피크 A","description":""},"spanish":{"name":"Pico Ferrorso A","description":""},"french":{"name":"Limite Supérieure Ferreux A","description":""},"portuguese":{"name":"Pico Ferroso A","description":""},"italian":{"name":"Picco Ferroso A","description":""},"german":{"name":"Ferrous Peak A","description":""},"turkish":{"name":"Ferrous Peak A","description":""}},"children":["HaloPeakXFe_A"],"@labels":["Channel R","Channel X"]},"HaloPeakRFe_B":{"@translations":{"english":{"name":"Ferrous Peak B","description":""},"korean":{"name":"철분 피크 B","description":""},"spanish":{"name":"Pico Ferroso B","description":""},"french":{"name":"Limite Supérieure Ferreux B","description":""},"portuguese":{"name":"Pico Ferroso B","description":""},"italian":{"name":"Picco Ferroso B","description":""},"german":{"name":"Ferrous Peak B","description":""},"turkish":{"name":"Ferrous Peak B","description":""}},"children":["HaloPeakXFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakRNFe_A":{"@translations":{"english":{"name":"Non-Ferrous Peak A","description":""},"korean":{"name":"비철금속 피크 A","description":""},"spanish":{"name":"Pico No Ferroso A","description":""},"french":{"name":"Limite Supérieure Non-Ferreux A","description":""},"portuguese":{"name":"Pico Não-Ferroso A","description":""},"italian":{"name":"Picco Non Ferroso A","description":""},"german":{"name":"Non-Ferrous Peak A","description":""},"turkish":{"name":"Non-Ferrous Peak A","description":""}},"children":["HaloPeakXNFe_A"],"@labels":["Channel A","Channel B"]},"HaloPeakRNFe_B":{"@translations":{"english":{"name":"Non-Ferrous Peak B","description":""},"korean":{"name":"비철금속 피크 B","description":""},"spanish":{"name":"Pico No Ferroso B","description":""},"french":{"name":"Limite Supérieure Non-Ferreux B","description":""},"portuguese":{"name":"Pico Não-Ferroso B","description":""},"italian":{"name":"Picco Non Ferroso B","description":""},"german":{"name":"Non-Ferrous Peak B","description":""},"turkish":{"name":"Non-Ferrous Peak B","description":""}},"children":["HaloPeakXNFe_B"],"@labels":["Channel A","Channel B"]},"HaloPeakRSs_A":{"@translations":{"english":{"name":"Stainless Peak A","description":""},"korean":{"name":"스테인리스 피크 A","description":""},"spanish":{"name":"Pico Inoxidable A","description":""},"french":{"name":"Limite Supérieure Acier Inoxydable A","description":""},"portuguese":{"name":"Pico R Aço Inoxidável","description":""},"italian":{"name":"Picco Inossidabile A","description":""},"german":{"name":"Edelstahl Peak A","description":""},"turkish":{"name":"Stainless Peak A","description":""}},"children":["HaloPeakXSs_A"],"@labels":["Channel A","Channel B"]},"HaloPeakRSs_B":{"@translations":{"english":{"name":"Stainless Peak B","description":""},"korean":{"name":"스테인리스 피크 B","description":""},"spanish":{"name":"Pico Inoxidable B","description":""},"french":{"name":"Limite Supérieure Acier inoxidable B","description":""},"portuguese":{"name":"Pico Aço Inoxidável B","description":""},"italian":{"name":"Picco Inossidabile B","description":""},"german":{"name":"Edelstahl Peak B","description":""},"turkish":{"name":"Stainless Peak B","description":""}},"children":["HaloPeakXSs_B"],"@labels":["Channel A","Channel B"]},"PhaseAngle_A":{"@translations":{"english":{"name":"Phase Angle","description":"Current Phase angle the unit is calibrated to "},"korean":{"name":"페이즈","description":""},"spanish":{"name":"Ángulo de Fase","description":""},"french":{"name":"Angle Phase","description":"L’angle de Phase calibrée de l’unité"},"portuguese":{"name":"Ángulo de Fase","description":""},"italian":{"name":"Angolo Fase","description":""},"german":{"name":"Phasenwinkel","description":"aktuell eingestellter/gelernter Phasenwinkel  "},"turkish":{"name":"Phase Angle","description":"Current Phase angle the unit is calibrated to "}},"children":["PhaseAngle_B"],"@labels":["Channel A","Channel B"]},"PhaseMode_A":{"@translations":{"english":{"name":"Phase Mode","description":"Wet or Dry phase mode is set by the calibrated phase angle of the unit"},"korean":{"name":"페이즈 모드","description":""},"spanish":{"name":"Modo Fase","description":""},"french":{"name":"Mode Phase","description":"Mode de Phase Humide ou Sec est réglé par l’angle de phase calibrée de l’unité"},"portuguese":{"name":"Modo da Fase","description":""},"italian":{"name":"Modo Fase","description":""},"german":{"name":"Phasen Modus","description":"Der Modus Nass oder Trocken wird durch den kalibrierten Phasenwinkel des Geräts ermittelt"},"turkish":{"name":"Phase Mode","description":"Wet or Dry phase mode is set by the calibrated phase angle of the unit"}},"children":["PhaseMode_B"],"@labels":["Channel A","Channel B"]},"PhaseSpeed_A":{"@translations":{"english":{"name":"Phase Speed","description":"fixed indicates a fixed value, fast indicates calibration is in progress, auto indicates the detector will automatically phase to small changes in product phase over time, learn indicates a calibration is in progress."},"korean":{"name":"페이즈 학습","description":""},"spanish":{"name":"Velocidad Fase","description":""},"french":{"name":"Vitesse Phase","description":"Fixe indique une valeur fixée, Fast indique une calibration en traitement, Auto indique que le détecteur va automatiquement s’ajuster face aux petites variations de l’effet du produit, Learn indique que la calibration est en traitement."},"portuguese":{"name":"Velocidade da Fase","description":""},"italian":{"name":"Velocità Fase","description":""},"german":{"name":"Phasengeschwindigkeit","description":"fest zeigt einen festen Wert an, schnell zeigt an, dass die Kalibrierung läuft, auto zeigt an, dass der Detektor automatisch zu kleinen Änderungen der Produktphase im Laufe der Zeit nachgeführt wird, lernen zeigt an, dass eine Kalibrierung läuft."},"turkish":{"name":"Phase Speed","description":"fixed indicates a fixed value, fast indicates calibration is in progress, auto indicates the detector will automatically phase to small changes in product phase over time, learn indicates a calibration is in progress."}},"children":["PhaseSpeed_B"],"@labels":["Channel A","Channel B"]},"PhaseModeHold_A":{"@translations":{"english":{"name":"Phase Limit Hold","description":""},"korean":{"name":"페이즈 모드 홀드","description":""},"spanish":{"name":"Retención Límite Fase","description":""},"french":{"name":"Rétention Limite Phase","description":""},"portuguese":{"name":"Trava do Limite da Fase","description":""},"italian":{"name":"Retenzione Limite Fase","description":""},"german":{"name":"Phasen-Grenzen halten","description":""},"turkish":{"name":"Phase Limit Hold","description":""}},"children":["PhaseModeHold_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitDry_A":{"@translations":{"english":{"name":"Dry Phase Limit","description":""},"korean":{"name":"건식 페이즈 극치","description":""},"spanish":{"name":"Límite Fase Seco","description":""},"french":{"name":"Limite Phase Sec","description":""},"portuguese":{"name":"Limite Fase Seco","description":""},"italian":{"name":"Limite Fase Secco","description":""},"german":{"name":"Trocken Phasen-Grenzen","description":""},"turkish":{"name":"Dry Phase Limit","description":""}},"children":["PhaseLimitDry_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitDrySpread_A":{"@translations":{"english":{"name":"Dry Phase Limit Spread","description":""},"korean":{"name":"건식 페이즈 극치 범위","description":""},"spanish":{"name":"Límite Propagación Fase Seco","description":""},"french":{"name":"Limite Vitesse Phase Sec","description":""},"portuguese":{"name":"Limite de Propagação da Fase Seco","description":""},"italian":{"name":"Limite Propagazione Fase Secco","description":""},"german":{"name":"Trocken Phasen-Grenzen setzen","description":""},"turkish":{"name":"Dry Phase Limit Spread","description":""}},"children":["PhaseLimitDrySpread_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitWet_A":{"@translations":{"english":{"name":"Wet Phase Limit","description":""},"korean":{"name":"습식 페이즈","description":""},"spanish":{"name":"Límite Fase Húmedo","description":""},"french":{"name":"Limite Phase Humide","description":""},"portuguese":{"name":"Limite Fase Humido","description":""},"italian":{"name":"Limite Fase Umido","description":""},"german":{"name":"Nass Phasen-Grenzen","description":""},"turkish":{"name":"Wet Phase Limit","description":""}},"children":["PhaseLimitWet_B"],"@labels":["Channel A","Channel B"]},"PhaseLimitWetSpread_A":{"@translations":{"english":{"name":"Wet Phase Limit Spread","description":""},"korean":{"name":"습식 페이즈 극치 범위","description":""},"spanish":{"name":"Límite Propagación Fase Húmedo","description":""},"french":{"name":"Limite Vitesse Phase Humide","description":""},"portuguese":{"name":"Limite de Propagação da Fase Humido ","description":""},"italian":{"name":"Limite Propagazione Fase Umido","description":""},"german":{"name":"Nass Phasen-Grenzen setzen","description":""},"turkish":{"name":"Wet Phase Limit Spread","description":""}},"children":["PhaseLimitWetSpread_B"],"@labels":["Channel A","Channel B"]},"PhaseAngleAuto_A":{"@translations":{"english":{"name":"Phase Angle","description":"Current Phase angle the unit is calibrated to "},"korean":{"name":"페이즈","description":""},"spanish":{"name":"Ángulo Fase","description":""},"french":{"name":"Angle Phase","description":"L’angle de Phase calibrée de l’unité"},"portuguese":{"name":"Ángulo da Fase","description":""},"italian":{"name":"Angolo Fase","description":""},"german":{"name":"Phasenwinkel","description":"aktuell eingestellter/gelernter Phasenwinkel  "},"turkish":{"name":"Phase Angle","description":"Current Phase angle the unit is calibrated to "}},"children":["PhaseAngleAuto_B"],"@labels":["Channel A","Channel B"]},"PhaseFastBit_A":{"@translations":{"english":{"name":"Phase Speed","description":"fixed indicates a fixed value, fast indicates calibration is in progress, auto indicates the detector will automatically phase to small changes in product phase over time, learn indicates a calibration is in progress."},"korean":{"name":"페이즈 속도","description":""},"spanish":{"name":"Velocidad Fase","description":""},"french":{"name":"Vitesse Phase","description":"Fixe indique une valeur fixée, Fast indique une calibration en traitement, Auto indique que le détecteur va automatiquement s’ajuster face aux petites variations de l’effet du produit, Learn indique que la calibration est en traitement."},"portuguese":{"name":"Velocidade da Fase","description":""},"italian":{"name":"Velocità Fase","description":""},"german":{"name":"Phasengeschwindigkeit","description":"fest zeigt einen festen Wert an, schnell zeigt an, dass die Kalibrierung läuft, auto zeigt an, dass der Detektor automatisch zu kleinen Änderungen der Produktphase im Laufe der Zeit nachgeführt wird, lernen zeigt an, dass eine Kalibrierung läuft."},"turkish":{"name":"Phase Speed","description":"fixed indicates a fixed value, fast indicates calibration is in progress, auto indicates the detector will automatically phase to small changes in product phase over time, learn indicates a calibration is in progress."}},"children":["PhaseFastBit_B"],"@labels":["Channel A","Channel B"]},"PhaseWetBit_A":{"@translations":{"english":{"name":"Phase Wet","description":""},"korean":{"name":"습식 페이즈","description":""},"spanish":{"name":"Fase Húmedo","description":""},"french":{"name":"Phase Humide","description":""},"portuguese":{"name":"Fase Humido","description":""},"italian":{"name":"Fase Umido","description":""},"german":{"name":"Phase Wet","description":""},"turkish":{"name":"Phase Wet","description":""}},"children":["PhaseWetBit_B"],"@labels":["Channel A","Channel B"]},"PhaseDSALearn_A":{"@translations":{"english":{"name":"Phase DSA Learn","description":""},"korean":{"name":"DSA 페이즈 학습","description":""},"spanish":{"name":"Aprender Fase DSA","description":""},"french":{"name":"Apprendre Phase DSA ","description":""},"portuguese":{"name":"Aprender Fase DSA","description":""},"italian":{"name":"Apprendere Fase DSA","description":""},"german":{"name":"Phase DSA Learn","description":""},"turkish":{"name":"Phase DSA Learn","description":""}},"children":["PhaseDSALearn_B"],"@labels":["Channel A","Channel B"]},"PhaseTrigLimit":{"@translations":{"english":{"name":"Phase Trigger Limit","description":""},"korean":{"name":"페이즈 트리거 리밋","description":""},"spanish":{"name":"Límite disparo fase","description":""},"french":{"name":"limite déclenchement phase","description":""},"portuguese":{"name":"limite disparo fase","description":""},"italian":{"name":"limite innesco fase","description":""},"german":{"name":"Phase Triggergrenze","description":""},"turkish":{"name":"Phase Trigger Limit","description":""}},"children":[],"@labels":["PhaseTrigLimit"]},"PhaseOffset_A":{"@translations":{"english":{"name":"Phase Offset","description":""},"korean":{"name":"페이즈 오프셋","description":""},"spanish":{"name":"Phase Offset","description":""},"french":{"name":"Phase Offset","description":""},"portuguese":{"name":"Phase Offset","description":""},"italian":{"name":"Phase Offset","description":""},"german":{"name":"Phase Offset","description":""},"turkish":{"name":"Phase Offset","description":""}},"children":["PhaseOffset_B"],"@labels":["Channel A","Channel B"]},"LearnCombined":{"@translations":{"english":{"name":"Learn Combined","description":""},"korean":{"name":"Learn Combined","description":""},"spanish":{"name":"Learn Combined","description":""},"french":{"name":"Learn Combined","description":""},"portuguese":{"name":"Learn Combined","description":""},"italian":{"name":"Learn Combined","description":""},"german":{"name":"Learn Combined","description":""},"turkish":{"name":"Learn Combined","description":""}},"children":[],"@labels":["PhaseTrigLimit"]},"LearnSens_A":{"@translations":{"english":{"name":"Learn Sensitivity","description":""},"korean":{"name":"Learn Sensitivity","description":""},"spanish":{"name":"Learn Sensitivity","description":""},"french":{"name":"Learn Sensitivity","description":""},"portuguese":{"name":"Learn Sensitivity","description":""},"italian":{"name":"Learn Sensitivity","description":""},"german":{"name":"Learn Sensitivity","description":""},"turkish":{"name":"Learn Sensitivity","description":""}},"children":["LearnSens_B"],"@labels":["Channel A","Channel B"]},"ExpectedSig_A":{"@translations":{"english":{"name":"Expected Signal","description":""},"korean":{"name":"Expected Signal","description":""},"spanish":{"name":"Expected Signal","description":""},"french":{"name":"Expected Signal","description":""},"portuguese":{"name":"Expected Signal","description":""},"italian":{"name":"Expected Signal","description":""},"german":{"name":"Expected Signal","description":""},"turkish":{"name":"Expected Signal","description":""}},"children":["ExpectedSig_B"],"@labels":["Channel A","Channel B"]},"SensMax_A":{"@translations":{"english":{"name":"Max Sensitivity","description":""},"korean":{"name":"Max Sensitivity","description":""},"spanish":{"name":"Max Sensitivity","description":""},"french":{"name":"Max Sensitivity","description":""},"portuguese":{"name":"Max Sensitivity","description":""},"italian":{"name":"Max Sensitivity","description":""},"german":{"name":"Max Sensitivity","description":""},"turkish":{"name":"Max Sensitivity","description":""}},"children":["SensMax_B"],"@labels":["Channel A","Channel B"]},"SensMin_A":{"@translations":{"english":{"name":"Min Sensitivity","description":""},"korean":{"name":"Min Sensitivity","description":""},"spanish":{"name":"Min Sensitivity","description":""},"french":{"name":"Min Sensitivity","description":""},"portuguese":{"name":"Max Sensitivity","description":""},"italian":{"name":"Min Sensitivity","description":""},"german":{"name":"Min Sensitivity","description":""},"turkish":{"name":"Min Sensitivity","description":""}},"children":["SensMin_B"],"@labels":["Channel A","Channel B"]},"LearnPhase_A":{"@translations":{"english":{"name":"Learn Phase","description":""},"korean":{"name":"Learn Phase","description":""},"spanish":{"name":"Learn Phase","description":""},"french":{"name":"Learn Phase","description":""},"portuguese":{"name":"Learn Phase","description":""},"italian":{"name":"Learn Phase","description":""},"german":{"name":"Learn Phase","description":""},"turkish":{"name":"Learn Phase","description":""}},"children":["LearnPhase_B"],"@labels":["Channel A","Channel B"]},"RejCheckMode":{"@translations":{"english":{"name":"Reject Check Mode","description":""},"korean":{"name":"거부 확인 모드","description":""},"spanish":{"name":"Reject Check Mode","description":""},"french":{"name":"mode de vérification de rejet ","description":""},"portuguese":{"name":"Reject Check Mode","description":""},"italian":{"name":"Reject Check Mode","description":""},"german":{"name":"Reject Check Mode","description":""},"turkish":{"name":"Reject Check Mode","description":""}},"children":["Rej2Check"],"@labels":["Mode","Device"]},"FaultRejMode":{"@translations":{"english":{"name":"Reject on Fault","description":""},"korean":{"name":"거부시 폴트","description":""},"spanish":{"name":"Reject on Fault","description":""},"french":{"name":"Reject on Fault","description":""},"portuguese":{"name":"Reject on Fault","description":""},"italian":{"name":"Reject on Fault","description":""},"german":{"name":"Reject on Fault","description":""},"turkish":{"name":"Reject on Fault","description":""}},"children":[],"@labels":["Reject Check Mode"]},"Rej2Fault":{"@translations":{"english":{"name":"Alternate Reject on Fault","description":""},"korean":{"name":"거부시 폴트","description":""},"spanish":{"name":"Alternate Reject on Fault","description":""},"french":{"name":"Alternate Reject on Fault","description":""},"portuguese":{"name":"Alternate Reject on Fault","description":""},"italian":{"name":"Alternate Reject on Fault","description":""},"german":{"name":"Alternate Reject on Fault","description":""},"turkish":{"name":"Alternate Reject on Fault","description":""}},"children":[],"@labels":["Reject Check Mode"]},"PhaseTrigThres":{"@translations":{"english":{"name":"Phase Trigger Threshold","description":""},"korean":{"name":"페이즈 트리거 리밋","description":""},"spanish":{"name":"umbral disparo fase","description":""},"french":{"name":"seuil déclenchement phase","description":""},"portuguese":{"name":"limiar disparo fase","description":""},"italian":{"name":"soglia innesco fase","description":""},"german":{"name":"Phasenauslöserschwelle","description":""},"turkish":{"name":"Phase Trigger Threshold","description":""}},"children":[],"@labels":["PhaseTrigLimit"]},"MPhaseOrder_A":{"@translations":{"english":{"name":"M Phase Order","description":""},"korean":{"name":"다중 페이즈 오더","description":""},"spanish":{"name":"Orden Fase M","description":""},"french":{"name":"Commande Phases M","description":""},"portuguese":{"name":"Ordem da Fase M","description":""},"italian":{"name":"Ordine Fasi M","description":""},"german":{"name":"M Phase Ordnung","description":""},"turkish":{"name":"M Phase Order","description":""}},"children":["MPhaseOrder_B"],"@labels":["Channel A","Channel B"]},"MPhaseDD_A":{"@translations":{"english":{"name":"M Phase Detection","description":""},"korean":{"name":"다중 페이즈 감지","description":""},"spanish":{"name":"D Fase M","description":""},"french":{"name":"D Phases M","description":""},"portuguese":{"name":"DD da Fase M","description":""},"italian":{"name":"Rivelamento Fasi M","description":""},"german":{"name":"M Phasen Detektion","description":""},"turkish":{"name":"M Phase Detection","description":""}},"children":["MPhaseDD_B"],"@labels":["Channel A","Channel B"]},"MPhaseRD_A":{"@translations":{"english":{"name":"M Phase Reference","description":""},"korean":{"name":"다중 페이즈 레퍼런스","description":""},"spanish":{"name":"Referencia Fase M","description":""},"french":{"name":"Référence Phases M","description":""},"portuguese":{"name":"RD da Fase M","description":""},"italian":{"name":"Riferimento Fasi M","description":""},"german":{"name":"M Phasen Referenz","description":""},"turkish":{"name":"M Phase Reference","description":""}},"children":["MPhaseRD_A"],"@labels":["Channel A","Channel B"]},"Language":{"@translations":{"english":{"name":"Language","description":"This is a description of f the language"},"korean":{"name":"언어","description":"This is a description of f the language"},"spanish":{"name":"Idioma","description":"Esto es una descripción del idioma"},"french":{"name":"Terminologie","description":"Ceci est une description de la terminologie"},"portuguese":{"name":"Língua","description":"This is a description of f the language"},"italian":{"name":"Lingua","description":""},"german":{"name":"Sprache","description":"Dies ist eine Bezeichnung der Sprache."},"turkish":{"name":"Language","description":"This is a description of f the language"}},"children":[],"@labels":["Language"]},"RejDelSec":{"@translations":{"english":{"name":"Main Reject Delay","description":"Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates"},"korean":{"name":"주 리젝트 딜레이","description":""},"spanish":{"name":"Retardo Rechazo Principal","description":""},"french":{"name":"Délai Rejet Principal","description":"Le Délai de Rejet Principal est nombre de secondes s'étant écoulées depuis la détection jusqu'au moment précédent le déclenchement du Système de Rejet Principal"},"portuguese":{"name":"Atraso Relé Geral","description":""},"italian":{"name":"Ritardo Rifiuto Principale","description":""},"german":{"name":"Auswurf-Verzögerungszeit ","description":"Auswurfverzögerungszeit,hier kann die Zeitverzögerung, ab dem Zeitpunkt der Erkennung eingestellt werden, bevor die Auswurfvorrichtung aktiviert wird."},"turkish":{"name":"Main Reject Delay","description":"Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates"}},"children":[],"@labels":["Main Reject Delay"]},"RejDelSec2":{"@translations":{"english":{"name":"Alternate Reject Delay","description":"Alternae reject delay is the number of seconds from the moment of detection before the alterante reject device activates"},"korean":{"name":"보조 리젝트 딜레이","description":""},"spanish":{"name":"Retardo Rechazo Alternativo","description":""},"french":{"name":"Délai Rejet Alternatif","description":"Le Délai de Rejet Alternatif est nombre de secondes s'étant écoulées depuis la détection jusqu'au moment précédent le déclenchement du Système de Rejet Alternatif"},"portuguese":{"name":"Atraso Relé Alternativo","description":""},"italian":{"name":"Ritardo Rifiuto Alternativo","description":""},"german":{"name":"Alt. Auswurf-Verzögerungszeit","description":"Alt.Auswurfverzögerungszeit,hier kann die Zeitverzögerung, ab dem Zeitpunkt der Erkennung eingestellt werden, bevor die Auswurfvorrichtung aktiviert wird."},"turkish":{"name":"Alternate Reject Delay","description":"Alternae reject delay is the number of seconds from the moment of detection before the alterante reject device activates"}},"children":[],"@labels":["Alternate Reject Delay"]},"RejDurSec":{"@translations":{"english":{"name":"Main Reject Duration","description":"Main Reject Duration is the number of seconds for which the main reject device will be activated"},"korean":{"name":"주 리젝트 유지시간","description":""},"spanish":{"name":"Duración Rechazo Principal","description":""},"french":{"name":"Durée Rejet Principal","description":"La Durée du rejet est le nombre de secondes que demeurera activé le Système de Rejet Principal"},"portuguese":{"name":"Duração Relé Geral","description":""},"italian":{"name":"Durata Rifiuto Principale","description":""},"german":{"name":"Auswurf-Dauer","description":"Auswurf-Dauer,hier kann die Zeitdauer eingestellt werden für die, die Auswurfvorrichtung betätigt werden soll."},"turkish":{"name":"Main Reject Duration","description":"Main Reject Duration is the number of seconds for which the main reject device will be activated"}},"children":[],"@labels":["Main Reject Duration"]},"RejDurSec2":{"@translations":{"english":{"name":"Alternate Reject Duration","description":"Alternate Reject Duration is the number of seconds for which the alternate reject device will be activated"},"korean":{"name":"보조 리젝트 유지시간","description":""},"spanish":{"name":"Duración Rechazo Alternativo","description":""},"french":{"name":"Durée Rejet Alternatif","description":"La Durée du Rejet Alternatif est le nombre de secondes que demeurera activé le Système de Rejet Alternatif"},"portuguese":{"name":"Duração Relé Alternativo","description":""},"italian":{"name":"Durata Rifiuto Alternativa","description":""},"german":{"name":"Alt.Auswurf-Dauer","description":"Alt.Auswurf-Dauer,hier kann die Zeitdauer eingestellt werden für die, die Auswurfvorrichtung betätigt werden soll."},"turkish":{"name":"Alternate Reject Duration","description":"Alternate Reject Duration is the number of seconds for which the alternate reject device will be activated"}},"children":[],"@labels":["Alternate Reject Duration"]},"RejMode":{"@translations":{"english":{"name":"Reject Mode","description":"Set to normal for operation without an infeed photo eye, photo for operation with an infeed photo eye, and reverse for reverse operations"},"korean":{"name":"리젝트 모드","description":""},"spanish":{"name":"Modo Rechazo","description":""},"french":{"name":"Mode Rejet","description":"Réglé en position normale pour une installation sans capteur optique, réglez à photo pour une installation avec un capteur optique et marche arrière pour une opération de marche arrière"},"portuguese":{"name":"Modo de Rejeção","description":""},"italian":{"name":"Modo Rifuto","description":""},"german":{"name":"Auswurf Modus","description":"Für den Betrieb ohne Lichtschranke, Foto für den Betrieb mit eine Lichtschranke, und invers für die Erkennung/Ausschleußung nicht metallhaltiger Produkte."},"turkish":{"name":"Reject Mode","description":"Set to normal for operation without an infeed photo eye, photo for operation with an infeed photo eye, and reverse for reverse operations"}},"children":[],"@labels":["Reject Mode"]},"RejExitDist":{"@translations":{"english":{"name":"Reject Exit Distance","description":"Distance from the center of the head to the exit photo eye"},"korean":{"name":"리젝트 퇴장 거리","description":""},"spanish":{"name":"Distancia Salida Rechazo","description":""},"french":{"name":"Distance Sortie Rejet","description":"Distance du centre de la tête à la sortie du capteur optique"},"portuguese":{"name":"Distancia da Saida de Rejeção","description":""},"italian":{"name":"Distanza Uscita Rifuto","description":""},"german":{"name":"Abstand Ausgangslichtschranke","description":"Abstand von der Mitte des Suchkopfes bis zur Ausgangslichtschranke"},"turkish":{"name":"Reject Exit Distance","description":"Distance from the center of the head to the exit photo eye"}},"children":[],"@labels":["Reject Exit Distance"]},"RejExitDistEst":{"@translations":{"english":{"name":"Reject Exit Distance Estimate","description":"Distance from the center of the head to the exit photo eye"},"korean":{"name":"리젝트 퇴장 거리 추정","description":""},"spanish":{"name":"Reject Exit Distance Estimate","description":""},"french":{"name":"Reject Exit Distance Estimate","description":"Distance du centre de la tête à la sortie du capteur optique"},"portuguese":{"name":"Reject Exit Distance Estimate","description":""},"italian":{"name":"Reject Exit Distance Estimate","description":""},"german":{"name":"Reject Exit Distance Estimate","description":"Abstand von der Mitte des Suchkopfes bis zur Ausgangslichtschranke"},"turkish":{"name":"Reject Exit Distance Estimate","description":"Distance from the center of the head to the exit photo eye"}},"children":[],"@labels":["Reject Exit Distance"]},"RejExitWin":{"@translations":{"english":{"name":"Reject Exit Window","description":"tolerance window is available to compensate for cases where the pack may slip or turn in normal production causing unnecessary faults; can be increased where required to eliminate excess faults due to pack movement errors."},"korean":{"name":"리젝트 퇴장 범위","description":""},"spanish":{"name":"Ventana Salida Rechazo","description":""},"french":{"name":"Fenêtre Sortie Rejet","description":"Une fenêtre de tolérance est disponible pour les situations où le paquet peut glisser ou tourner sur une ligne de production normale créant ainsi des défaillances; elle peut être augmentée s’il est requis d’éliminer un excès de défaillances en lien avec le mouvement erroné d’un paquet."},"portuguese":{"name":"Janela da Saida de Rejeção","description":""},"italian":{"name":"Finestra Uscita Rifuto","description":""},"german":{"name":"Toleranz Ausgangslichtschranke","description":"Toleranzfenster ist verfügbar, um Fälle auszugleichen, in denen die Packung bei normaler Produktion rutschen oder wenden kann, was unnötige Fehler verursacht; kann bei Bedarf erhöht werden, um übermäßige Fehler aufgrund von Packungsbewegungsfehlern zu eliminieren."},"turkish":{"name":"Reject Exit Window","description":"tolerance window is available to compensate for cases where the pack may slip or turn in normal production causing unnecessary faults; can be increased where required to eliminate excess faults due to pack movement errors."}},"children":[],"@labels":["Reject Exit Window"]},"AppUnitDist":{"@translations":{"english":{"name":"Units ","description":""},"korean":{"name":"단위 ","description":""},"spanish":{"name":"Unidades ","description":""},"french":{"name":"Unité","description":""},"portuguese":{"name":"Unidades","description":""},"italian":{"name":"Unità","description":""},"german":{"name":"Einheiten ","description":""},"turkish":{"name":"Units ","description":""}},"children":[],"@labels":["Units "]},"BeltSpeed":{"@translations":{"english":{"name":"Belt Speed","description":"Speed of product through the detector; should be set even for non conveyor applications"},"korean":{"name":"벨트 속도","description":""},"spanish":{"name":"Velocidad Cinta","description":""},"french":{"name":"Vitesse Courroie","description":"Vitesse du produit circulant dans le détecteur; elle devrait être réglée même sur des applications sans convoyeur"},"portuguese":{"name":"Velocidade da Esteira","description":""},"italian":{"name":"Velocità Nastro Trasportatore","description":""},"german":{"name":"Bandgeschwindigkeit","description":"Geschwindigkeit des Produkts durch den Detektor; sollte für Anwendungen ohne Förderer manuell eingestellt werden."},"turkish":{"name":"Belt Speed","description":"Speed of product through the detector; should be set even for non conveyor applications"}},"children":[],"@labels":["Belt Speed"]},"BeltSpeedEst":{"@translations":{"english":{"name":"Belt Speed Estimate","description":"Estimated belt speed based on photo eye and package length when running a sample pack."},"korean":{"name":"벨트 속도 추정치","description":""},"spanish":{"name":"Velocidad Cinta Estimate","description":""},"french":{"name":"Vitesse Estimée Courroie","description":"Vitesse Estimée de Courroie basée sur le capteur optique et la longueur du paquet lors du passage de l’échantillon"},"portuguese":{"name":"Velocidade da Esteira Estimate","description":""},"italian":{"name":"Velocità Nastro Trasportatore Est.","description":""},"german":{"name":"Ermittlung der Bandgeschwindigkeit","description":"Ermittelte Bandgeschwindigkeit mit Hilfe der Einlauflichtschranke und der Paketlänge beim Durchlauf eines Probepacks."},"turkish":{"name":"Belt Speed Estimate","description":"Estimated belt speed based on photo eye and package length when running a sample pack."}},"children":[],"@labels":["Belt Speed"]},"FaultLatch":{"@translations":{"english":{"name":"Fault Latch","description":""},"korean":{"name":"폴트 래치","description":""},"spanish":{"name":"Retención Fallo","description":""},"french":{"name":"Défaillance du Verrou","description":""},"portuguese":{"name":"Trava Falha","description":""},"italian":{"name":"Mantenere Messaggio Errore","description":""},"german":{"name":"Fehlerverriegelung","description":""},"turkish":{"name":"Fault Latch","description":""}},"children":[],"@labels":["Fault Latch"]},"RejLatchMode":{"@translations":{"english":{"name":"Reject Latch","description":""},"korean":{"name":"리젝트 래치","description":""},"spanish":{"name":"Retención Rechazo","description":""},"french":{"name":"Verrou Rejet","description":""},"portuguese":{"name":"Trava Rejeção","description":""},"italian":{"name":"Mantenere Rifiuto","description":""},"german":{"name":"Auswurfselbsthaltung","description":""},"turkish":{"name":"Reject Latch","description":""}},"children":[],"@labels":["Reject Latch"]},"Rej2Latch":{"@translations":{"english":{"name":"Alternate Reject Latch","description":""},"korean":{"name":"보조 리젝트 래치","description":""},"spanish":{"name":"Retención Rechazo Alternativo","description":""},"french":{"name":"Verrou Alternatif Rejet","description":""},"portuguese":{"name":"Trava Rejeção Alternativa","description":""},"italian":{"name":"Mantenere Rifiuto Alternativo","description":""},"german":{"name":"Alternative Auswurfselbsthaltung","description":""},"turkish":{"name":"Alternate Reject Latch","description":""}},"children":[],"@labels":["Alternate Reject Latch"]},"ManRejState":{"@translations":{"english":{"name":"Manual Reject","description":""},"korean":{"name":"수동 리젝트","description":""},"spanish":{"name":"Manual Reject","description":""},"french":{"name":"Manual Reject","description":""},"portuguese":{"name":"Manual Reject","description":""},"italian":{"name":"Manual Reject","description":""},"german":{"name":"Manual Reject","description":""},"turkish":{"name":"Manual Reject","description":""}},"children":[],"@labels":["Alternate Reject Latch"]},"EyeReject":{"@translations":{"english":{"name":"Photo Reject","description":"The “mid” option of Photo Reject means that the reject device will hit the middle of the package regardless of the package size (kicker rejects) – it can be changed to “lead” (leading edge for diverter rejects) or “width” (entire length of package for retracting rejects)"},"korean":{"name":"포토 리젝트","description":""},"spanish":{"name":"Eye Reject","description":""},"french":{"name":"Rejet Capteur Optique","description":"L'option \"Mid\" du Capteur Optique détermine que le dispositif de rejet frappera le milieu du paquet peu importe la grosseur de celui-ci ( Pousseur/Piston)— elle peut être modifiée to \"Lead\" ( la partie avant pour le bras déviateur) ou \"Width\" (toute la largeur du produit pour une courroie de rappel)"},"portuguese":{"name":"Eye Reject","description":""},"italian":{"name":"Eye Reject","description":""},"german":{"name":"Lichtschrankenauswurf ","description":"Die \"Mitte\" Option von Lichtschrankenauswurf bedeutet, dass die Auswurfvorrichtung unabhängig von der Packungsgröße (Kicker/Pusher-Auswurf) die Mitte des Produktes trifft - es kann zwischen \"Vorderkante\" (Vorderkante bei Abweisarmen) oder \"Länge\" ( Gesamtlänge des Produktes bei Rückzug der Endwalze umgestellt werden."},"turkish":{"name":"Photo Reject","description":"The “mid” option of Photo Reject means that the reject device will hit the middle of the package regardless of the package size (kicker rejects) – it can be changed to “lead” (leading edge for diverter rejects) or “width” (entire length of package for retracting rejects)"}},"children":[],"@labels":["Eye Reject"]},"RejBinDoorTime":{"@translations":{"english":{"name":"Reject Bin Door Time","description":"The time allowed in seconds for the bin door to remain open"},"korean":{"name":"리젝트 보관함 오픈시간","description":""},"spanish":{"name":"Tiempo Puerta Contenedor","description":""},"french":{"name":"Délai Ouverture Porte Boîte Rejet","description":"La durée en secondes de l’ouverture de la porte de la boîte de rejet"},"portuguese":{"name":"Tempo Falha Porta Caixa de rejeção","description":""},"italian":{"name":"Tempo Porta Contenitore","description":""},"german":{"name":"Zeit Auswurfbehältertüre","description":"Die Zeit, in Sekunden welche die Auswurfbehältertür geöffnet sein darf."},"turkish":{"name":"Reject Bin Door Time","description":"The time allowed in seconds for the bin door to remain open"}},"children":[],"@labels":["Reject Bin Door Time"]},"AutoPhasePacks":{"@translations":{"english":{"name":"Auto Phase Packs","description":""},"korean":{"name":"오토페이즈 팩 갯수","description":""},"spanish":{"name":"Auto Phase Packs","description":""},"french":{"name":"Auto Phase Packs","description":""},"portuguese":{"name":"Auto Phase Packs","description":""},"italian":{"name":"Auto Phase Packs","description":""},"german":{"name":"Auto Phase Packs","description":""},"turkish":{"name":"Auto Phase Packs","description":""}},"children":[],"@labels":["Reject Bin Door Time"]},"CIPCycleTime":{"@translations":{"english":{"name":"CIP Cycle Time","description":"The duration of a CIP cycle"},"korean":{"name":"CIP 사이클 시간","description":""},"spanish":{"name":"Tiempo Ciclo Limpieza","description":""},"french":{"name":"Temp Cycle CIP","description":"La durée de temps d'un cycle CIP"},"portuguese":{"name":"Tempo Ciclo Limpeza CIP","description":""},"italian":{"name":"Tempo Ciclo Pulizia CIP","description":""},"german":{"name":"CIP Zykluszeit","description":"Die Zeitdauer eines CIP-Zyklus."},"turkish":{"name":"CIP Cycle Time","description":"The duration of a CIP cycle"}},"children":[],"@labels":["CIP Cycle Time"]},"CIPDwellTime":{"@translations":{"english":{"name":"CIP Dwell Time","description":"The duration during one CIP cycle that the reject will be active (in reject position)"},"korean":{"name":"CIP 유지 시간","description":""},"spanish":{"name":"Tiempo Actuación CIP","description":""},"french":{"name":"CIP Dwell Time","description":"La durée de temps, pendant un cycle CIP, de l’activation du système de rejet (en position de rejet)"},"portuguese":{"name":"Tempo de Atuação CIP","description":""},"italian":{"name":"Tempo Azionamento CIP","description":""},"german":{"name":"CIP Verweilzeit","description":"Die Dauer während eines CIP-Zyklus, in dem der Auswurfvorrichtung aktiv ist.\n (in der Auswurfposition)"},"turkish":{"name":"CIP Dwell Time","description":"The duration during one CIP cycle that the reject will be active (in reject position)"}},"children":[],"@labels":["CIP Dwell Time"]},"FaultClearTime":{"@translations":{"english":{"name":"Fault Clear Time","description":""},"korean":{"name":"폴트 클리어 시간","description":""},"spanish":{"name":"Tiempo Borrado Fallo","description":""},"french":{"name":"Temps sans Défaillance/Erreur","description":""},"portuguese":{"name":"Tempo Limpar Falhas","description":""},"italian":{"name":"Tempo Cancellazione Errore","description":""},"german":{"name":"Fehler-Lösch-Zeit","description":""},"turkish":{"name":"Fault Clear Time","description":""}},"children":[],"@labels":["Fault Clear Time"]},"EyeBlockTime":{"@translations":{"english":{"name":"Eye Block Time","description":""},"korean":{"name":"아이 차단 시간","description":""},"spanish":{"name":"Tiempo Bloqueo Fotocélula","description":""},"french":{"name":"Temps Capteur Optique Obstrué","description":""},"portuguese":{"name":"Tempo Fotocélula Bloqueado","description":""},"italian":{"name":"Tempo Blocco Fotocellula","description":""},"german":{"name":"Blockierzeit Lichtschranke","description":""},"turkish":{"name":"Eye Block Time","description":""}},"children":[],"@labels":["Eye Block Time"]},"RejCheckTime":{"@translations":{"english":{"name":"Reject Check Time","description":""},"korean":{"name":"리젝트 확인 시간","description":""},"spanish":{"name":"Tiempo Comprobación Rechazo","description":""},"french":{"name":"Temps Confirmation Rejet","description":""},"portuguese":{"name":"Tempo Confirmação de Rejeção","description":""},"italian":{"name":"Tempo Verifica Rifiuto","description":""},"german":{"name":"Zeit Auswurfbestätigung","description":""},"turkish":{"name":"Reject Check Time","description":""}},"children":[],"@labels":["Reject Check Time"]},"ExcessRejTime":{"@translations":{"english":{"name":"Excess Reject Time","description":""},"korean":{"name":"초과 리젝트 시간","description":""},"spanish":{"name":"Tiempo Rechazo Excedente","description":""},"french":{"name":"Dépassement Temps Rejet","description":""},"portuguese":{"name":"Tempo de Rejeção Ultrapassado","description":""},"italian":{"name":"Tempo Rifiuto Eccedente","description":""},"german":{"name":"Exzessive Auswurfzeit","description":""},"turkish":{"name":"Excess Reject Time","description":""}},"children":[],"@labels":["Excess Reject Time"]},"RejDelClock":{"@translations":{"english":{"name":"Reject Clock","description":""},"korean":{"name":"리젝트 시간","description":""},"spanish":{"name":"Retardo Rechazo","description":""},"french":{"name":"Minuterie Délais Rejet","description":""},"portuguese":{"name":"Relógio Atrazo de Rejeção","description":""},"italian":{"name":"Ritardo Rifiuto","description":""},"german":{"name":"Auswurf Zeitgeber","description":""},"turkish":{"name":"Reject Clock","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"EncFreq":{"@translations":{"english":{"name":"Encoder Frequency","description":""},"korean":{"name":"엔코더 주파수","description":""},"spanish":{"name":"Encoder Frequency","description":""},"french":{"name":"Encoder Frequency","description":""},"portuguese":{"name":"Encoder Frequency","description":""},"italian":{"name":"Encoder Frequency","description":""},"german":{"name":"Encoder Frequency","description":""},"turkish":{"name":"Encoder Frequency","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"HaloBoard":{"@translations":{"english":{"name":"Halo Board","description":""},"korean":{"name":"헤일로 보드","description":""},"spanish":{"name":"Halo Board","description":""},"french":{"name":"Halo Board","description":""},"portuguese":{"name":"Halo Board","description":""},"italian":{"name":"Halo Board","description":""},"german":{"name":"Halo Board","description":""},"turkish":{"name":"Halo Board","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"HaloCal":{"@translations":{"english":{"name":"Halo Calibration","description":""},"korean":{"name":"Halo Calibration","description":""},"spanish":{"name":"Halo Calibration","description":""},"french":{"name":"Halo Calibration","description":""},"portuguese":{"name":"Halo Calibration","description":""},"italian":{"name":"Halo Calibration","description":""},"german":{"name":"Halo Calibration","description":""},"turkish":{"name":"Halo Calibration","description":""}},"children":[],"@labels":["Reject Delay Clock"]},"PW1":{"@translations":{"english":{"name":"Password 1","description":""},"korean":{"name":"암호 1","description":""},"spanish":{"name":"Contraseña 1","description":""},"french":{"name":"Mot de Passe 1","description":""},"portuguese":{"name":"Senha 1","description":""},"italian":{"name":"Password 1","description":""},"german":{"name":"Passwort 1","description":""},"turkish":{"name":"Password 1","description":""}},"children":[],"@labels":["Password 1"]},"PW2":{"@translations":{"english":{"name":"Password 2","description":""},"korean":{"name":"암호 2","description":""},"spanish":{"name":"Contraseña 2","description":""},"french":{"name":"Mot de Passe 2","description":""},"portuguese":{"name":"Senha 2","description":""},"italian":{"name":"Password 2","description":""},"german":{"name":"Passwort 2","description":""},"turkish":{"name":"Password 2","description":""}},"children":[],"@labels":["Password 2"]},"PW3":{"@translations":{"english":{"name":"Password 3","description":""},"korean":{"name":"암호 3","description":""},"spanish":{"name":"Contraseña 3","description":""},"french":{"name":"Mot de Passe 3","description":""},"portuguese":{"name":"Senha 3","description":""},"italian":{"name":"Password 3","description":""},"german":{"name":"Passwort 3","description":""},"turkish":{"name":"Password 3","description":""}},"children":[],"@labels":["Password 3"]},"PW4":{"@translations":{"english":{"name":"Password 4","description":""},"korean":{"name":"암호 4","description":""},"spanish":{"name":"Contraseña 4","description":""},"french":{"name":"Mot de Passe 4","description":""},"portuguese":{"name":"Senha 4","description":""},"italian":{"name":"Password 4","description":""},"german":{"name":"Passwort 4","description":""},"turkish":{"name":"Password 4","description":""}},"children":[],"@labels":["Password 4"]},"PassAccSens":{"@translations":{"english":{"name":"Sensitivity Access Level","description":""},"korean":{"name":"민감도 접근 레벨","description":""},"spanish":{"name":"Nivel Acesso Sensibilidad","description":""},"french":{"name":"Niveau d'Accès Sensibilité","description":""},"portuguese":{"name":"Nível de Acesso à Sensibilidade ","description":""},"italian":{"name":"Livello Accesso Sensibilità","description":""},"german":{"name":"Empfindlichkeit Zugriffsebene","description":""},"turkish":{"name":"Sensitivity Access Level","description":""}},"children":[],"@labels":["Sensitivity Access Level"]},"PassAccProd":{"@translations":{"english":{"name":"Product Access Level","description":""},"korean":{"name":"품목 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Producto","description":""},"french":{"name":"Niveau D'Accès Produit","description":""},"portuguese":{"name":"Nível de Acesso ao Produto","description":""},"italian":{"name":"Livello Accesso Prodotto","description":""},"german":{"name":"Produkt Zugriffsebene","description":""},"turkish":{"name":"Product Access Level","description":""}},"children":[],"@labels":["Product Access Level"]},"PassAccCal":{"@translations":{"english":{"name":"Calibrate Access Level","description":""},"korean":{"name":"캘리브레이션 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Calibración","description":""},"french":{"name":"Niveau d'Accès Calibration","description":""},"portuguese":{"name":"Nível de Acesso à Calibração","description":""},"italian":{"name":"Livello Accesso Calibrazione","description":""},"german":{"name":"Kalibrieren Zugriffsebene","description":""},"turkish":{"name":"Calibrate Access Level","description":""}},"children":[],"@labels":["Calibrate Access Level"]},"PassAccTest":{"@translations":{"english":{"name":"Test Access Level","description":""},"korean":{"name":"테스트 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Test","description":""},"french":{"name":"Niveau d'Accès Test","description":""},"portuguese":{"name":"Nível de Accesso à Teste","description":""},"italian":{"name":"Livello Accesso Test","description":""},"german":{"name":"Test Zugriffsebene","description":""},"turkish":{"name":"Test Access Level","description":""}},"children":[],"@labels":["Test Access Level"]},"PassAccSelUnit":{"@translations":{"english":{"name":"Select Unit Access Level","description":""},"korean":{"name":"유닛선택 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Unidad","description":""},"french":{"name":"Sélectionnez Niveau Accès Unité","description":""},"portuguese":{"name":"Nível de Acesso das Unidades","description":""},"italian":{"name":"Livello Accesso Unità","description":""},"german":{"name":"Gerätewahl Zugriffsebene","description":""},"turkish":{"name":"Select Unit Access Level","description":""}},"children":[],"@labels":["Select Unit Access Level"]},"PassAccClrFaults":{"@translations":{"english":{"name":"Fault Clear Access Level","description":""},"korean":{"name":"폴트클리어 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Borrado Fallo","description":""},"french":{"name":"Défaillance/Erreur Effacer Niveau Accès","description":""},"portuguese":{"name":"Nível de Acesso à Limpar Falha","description":""},"italian":{"name":"Livello Accesso Cancellazione Errore","description":""},"german":{"name":"Fehler löschen Zugriffsebene","description":""},"turkish":{"name":"Fault Clear Access Level","description":""}},"children":[],"@labels":["Fault Clear Access Level"]},"PassAccClrRej":{"@translations":{"english":{"name":"Reject Clear Access Level","description":""},"korean":{"name":"리젝트클리어 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Borrado Rechazo","description":""},"french":{"name":"Reject Effacer Niveau Accès","description":""},"portuguese":{"name":"Nível de Acesso à Rejeção","description":""},"italian":{"name":"Livello Accesso Cancellazione Rifiuto","description":""},"german":{"name":"Auswurf löschen Zugriffsebene","description":""},"turkish":{"name":"Reject Clear Access Level","description":""}},"children":[],"@labels":["Reject Clear Access Level"]},"PassAccClrLatch":{"@translations":{"english":{"name":"Latch Clear Access Level","description":""},"korean":{"name":"래치클리어 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Borrado Retención","description":""},"french":{"name":"Verrou Effacer Niveau Accès","description":""},"portuguese":{"name":"Nível de Acesso à Reset Trava","description":""},"italian":{"name":"Livello Accesso Cancellazione Mantenere Messaggi","description":""},"german":{"name":"Selbsthaltung  Zugriffsebene","description":""},"turkish":{"name":"Latch Clear Access Level","description":""}},"children":[],"@labels":["Latch Clear Access Level"]},"PassAccTime":{"@translations":{"english":{"name":"Time Access Level","description":""},"korean":{"name":"시간 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Hora","description":""},"french":{"name":"Temps Niveau Accès","description":""},"portuguese":{"name":"Nível de Acesso Tempo","description":""},"italian":{"name":"Livello Accesso Ora","description":""},"german":{"name":"Zeit Zugriffsebene","description":""},"turkish":{"name":"Time Access Level","description":""}},"children":[],"@labels":["Time Access Level"]},"PassAccSync":{"@translations":{"english":{"name":"Sync Access Level","description":""},"korean":{"name":"동기화 접근 레벨","description":""},"spanish":{"name":"Nivel Acceso Sync","description":""},"french":{"name":"Sync Niveau Accès","description":""},"portuguese":{"name":"Nível de Acesso Sync","description":""},"italian":{"name":"Livello Accesso Sync","description":""},"german":{"name":"Synchronisation Zugriffsebene","description":""},"turkish":{"name":"Sync Access Level","description":""}},"children":[],"@labels":["Sync Access Level"]},"DateTime":{"@translations":{"english":{"name":"Detector Time","description":""},"korean":{"name":"디텍터 시간","description":""},"spanish":{"name":"Detector Time","description":""},"french":{"name":"Detector Time","description":""},"portuguese":{"name":"Detector Time","description":""},"italian":{"name":"Detector Time","description":""},"german":{"name":"Detector Time","description":""},"turkish":{"name":"Detector Time","description":""}},"children":[],"@labels":["Sync Access Level"]},"INPUT_TACH":{"@translations":{"english":{"name":"Tachometer","description":""},"korean":{"name":"타코미터","description":""},"spanish":{"name":"Tacómetro","description":""},"french":{"name":"Tachymètre","description":""},"portuguese":{"name":"Tacômetro","description":""},"italian":{"name":"Tachimetro","description":""},"german":{"name":"Impulsgeber","description":""},"turkish":{"name":"Tachometer","description":""}},"children":["INPUT_POL_TACH"],"@labels":["Source","Polarity"]},"INPUT_EYE":{"@translations":{"english":{"name":"Photo Eye","description":""},"korean":{"name":"포토아이","description":""},"spanish":{"name":"Fotocélula","description":""},"french":{"name":"Capteur Optique","description":""},"portuguese":{"name":"Fotocélula","description":""},"italian":{"name":"Fotocellula","description":""},"german":{"name":"Lichtschranke","description":""},"turkish":{"name":"Photo Eye","description":""}},"children":["INPUT_POL_EYE"],"@labels":["Source","Polarity"]},"INPUT_RC_1":{"@translations":{"english":{"name":"Reject Check 1","description":""},"korean":{"name":"리젝트 체크 1","description":""},"spanish":{"name":"Comprobación Rechazo 1","description":""},"french":{"name":"Confirmation Rejet 1","description":""},"portuguese":{"name":"Confirmação Rejeççao 1","description":""},"italian":{"name":"Verifica Rifiuto 1","description":""},"german":{"name":"Auswurfbestätigung 1","description":""},"turkish":{"name":"Reject Check 1","description":""}},"children":["INPUT_POL_RC_1"],"@labels":["Source","Polarity"]},"INPUT_RC_2":{"@translations":{"english":{"name":"Reject Check 2","description":""},"korean":{"name":"리젝트 체크 2","description":""},"spanish":{"name":"Comprobación Rechazo 2","description":""},"french":{"name":"Confirmation Rejet 2","description":""},"portuguese":{"name":"Comfirmação Rejeção 2","description":""},"italian":{"name":"Verifica Rifiuto 2","description":""},"german":{"name":"Auswurfbestätigung 2","description":""},"turkish":{"name":"Reject Check 2","description":""}},"children":["INPUT_POL_RC_2"],"@labels":["Source","Polarity"]},"INPUT_REJ_EYE":{"@translations":{"english":{"name":"Reject Eye","description":""},"korean":{"name":"리젝트 아이","description":""},"spanish":{"name":"Fotocélula de Rechazo","description":""},"french":{"name":"Capteur Optique Rejet","description":""},"portuguese":{"name":"Fotocélula de Rejeção","description":""},"italian":{"name":"Fotocellula di Rifiuto","description":""},"german":{"name":"Einlauflichtschranke","description":""},"turkish":{"name":"Reject Eye","description":""}},"children":["INPUT_POL_REJ_EYE"],"@labels":["Source","Polarity"]},"INPUT_AIR_PRES":{"@translations":{"english":{"name":"Air Pressure","description":""},"korean":{"name":"공기압","description":""},"spanish":{"name":"Presión Aire","description":""},"french":{"name":"Pression d'Air","description":""},"portuguese":{"name":"Pressão do Ar","description":""},"italian":{"name":"Pressione Aria","description":""},"german":{"name":"Druckluft","description":""},"turkish":{"name":"Air Pressure","description":""}},"children":["INPUT_POL_AIR_PRES"],"@labels":["Source","Polarity"]},"INPUT_REJ_LATCH":{"@translations":{"english":{"name":"Reject Latch","description":""},"korean":{"name":"리젝트 래치","description":""},"spanish":{"name":"Retención Rechazo","description":""},"french":{"name":"Verrou Rejet","description":""},"portuguese":{"name":"Trava da Rejeção","description":""},"italian":{"name":"Mantenere Rifiuto","description":""},"german":{"name":"Auswurf Selbsthaltung","description":""},"turkish":{"name":"Reject Latch","description":""}},"children":["INPUT_POL_REJ_LATCH"],"@labels":["Source","Polarity"]},"INPUT_BIN_FULL":{"@translations":{"english":{"name":"Bin Full","description":""},"korean":{"name":"보관함 용량초과","description":""},"spanish":{"name":"Contenedor Lleno","description":""},"french":{"name":"Boîte Pleine","description":""},"portuguese":{"name":"Caixa Cheia","description":""},"italian":{"name":"Contenitore Pieno","description":""},"german":{"name":"Auswurfbehälter voll","description":""},"turkish":{"name":"Bin Full","description":""}},"children":["INPUT_POL_BIN_FULL"],"@labels":["Source","Polarity"]},"INPUT_REJ_PRESENT":{"@translations":{"english":{"name":"Reject Present","description":""},"korean":{"name":"리젝트 유효","description":""},"spanish":{"name":"Rechazo Presente","description":""},"french":{"name":"Présence Rejet","description":""},"portuguese":{"name":"Rejeção Presente","description":""},"italian":{"name":"Rifiuto Presente","description":""},"german":{"name":"Auswurf vorhanden","description":""},"turkish":{"name":"Reject Present","description":""}},"children":["INPUT_POL_REJ_PRESENT"],"@labels":["Source","Polarity"]},"INPUT_DOOR1_OPEN":{"@translations":{"english":{"name":"Door 1 Open","description":""},"korean":{"name":"문 1 열림","description":""},"spanish":{"name":"Puerta 1 Abierta","description":""},"french":{"name":"Porte 1 Ouverte","description":""},"portuguese":{"name":"Porta 1 Aberta","description":""},"italian":{"name":"Porta 1 Aperta","description":""},"german":{"name":"Türe 1 offen","description":""},"turkish":{"name":"Door 1 Open","description":""}},"children":["INPUT_POL_DOOR1_OPEN"],"@labels":["Source","Polarity"]},"INPUT_DOOR2_OPEN":{"@translations":{"english":{"name":"Door 2 Open","description":""},"korean":{"name":"문 2 열림","description":""},"spanish":{"name":"Puerta 2 Abierta","description":""},"french":{"name":"Porte 2 Ouverte","description":""},"portuguese":{"name":"Porta 2 Aberta","description":""},"italian":{"name":"Porta 2 Aperta","description":""},"german":{"name":"Türe 2 offen","description":""},"turkish":{"name":"Door 2 Open","description":""}},"children":["INPUT_POL_DOOR2_OPEN"],"@labels":["Source","Polarity"]},"INPUT_CLEAR_FAULTS":{"@translations":{"english":{"name":"Clear Faults","description":""},"korean":{"name":"폴트 클리어","description":""},"spanish":{"name":"Borrar Fallos","description":""},"french":{"name":"Effacer Erreur","description":""},"portuguese":{"name":"Limpar Falhas","description":""},"italian":{"name":"Cancella Errori","description":""},"german":{"name":"Fehler löschen","description":""},"turkish":{"name":"Clear Faults","description":""}},"children":["INPUT_POL_CLEAR_FAULTS"],"@labels":["Source","Polarity"]},"INPUT_CLEAR_WARNINGS":{"@translations":{"english":{"name":"Clear Warnings","description":""},"korean":{"name":"경고 클리어","description":""},"spanish":{"name":"Borrar Advertencias","description":""},"french":{"name":"Effacer Alerte","description":""},"portuguese":{"name":"Limpar Avisos","description":""},"italian":{"name":"Cancella Avvertenze","description":""},"german":{"name":"Fehler Warnungen","description":""},"turkish":{"name":"Clear Warnings","description":""}},"children":["INPUT_POL_CLEAR_WARNINGS"],"@labels":["Source","Polarity"]},"INPUT_CIP":{"@translations":{"english":{"name":"CIP","description":""},"korean":{"name":"CIP","description":""},"spanish":{"name":"Limpieza CIP","description":""},"french":{"name":"CIP","description":""},"portuguese":{"name":"Limpeza CIP","description":""},"italian":{"name":"Pulizia CIP","description":""},"german":{"name":"CIP","description":""},"turkish":{"name":"CIP","description":""}},"children":["INPUT_POL_CIP"],"@labels":["Source","Polarity"]},"INPUT_CIP_TEST":{"@translations":{"english":{"name":"CIP Test","description":""},"korean":{"name":"CIP 테스트","description":""},"spanish":{"name":"Limpieza CIP TEST","description":""},"french":{"name":"CIP Teste","description":""},"portuguese":{"name":"Limpeza CIP Test","description":""},"italian":{"name":"Pulizia CIP Test","description":""},"german":{"name":"CIP Test","description":""},"turkish":{"name":"CIP Test","description":""}},"children":["INPUT_POL_CIP_TEST"],"@labels":["Source","Polarity"]},"INPUT_CIP_PLC":{"@translations":{"english":{"name":"CIP PLC","description":""},"korean":{"name":"CIP PLC","description":""},"spanish":{"name":"Limpieza CIP PLC","description":""},"french":{"name":"CIP PLC","description":""},"portuguese":{"name":"Limpeza CIP PLC","description":""},"italian":{"name":"Pulizia CIP PLC","description":""},"german":{"name":"CIP PLC","description":""},"turkish":{"name":"CIP PLC","description":""}},"children":["INPUT_POL_CIP_PLC"],"@labels":["Source","Polarity"]},"INPUT_PHASE_HOLD":{"@translations":{"english":{"name":"Phase Hold","description":""},"korean":{"name":"페이즈 유지","description":""},"spanish":{"name":"retención de fase","description":""},"french":{"name":"maintien de phase","description":""},"portuguese":{"name":"espera de fase","description":""},"italian":{"name":"tenuta di fase","description":""},"german":{"name":"Phase halten","description":""},"turkish":{"name":"Phase Hold","description":""}},"children":["INPUT_POL_PHASE_HOLD"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL1":{"@translations":{"english":{"name":"Product Select 1","description":""},"korean":{"name":"품목 선택 1","description":""},"spanish":{"name":"Selección Producto 1","description":""},"french":{"name":"Sélection Produit 1","description":""},"portuguese":{"name":"Seleção Produto 1","description":""},"italian":{"name":"Selezione Prodotto 1","description":""},"german":{"name":"Produkt Eing.1","description":"Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."},"turkish":{"name":"Product Select 1","description":""}},"children":["INPUT_POL_PROD_SEL1"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL2":{"@translations":{"english":{"name":"Product Select 2","description":""},"korean":{"name":"품목 선택 2","description":""},"spanish":{"name":"Selección Producto 2","description":""},"french":{"name":"Sélection Produit 2","description":""},"portuguese":{"name":"Seleção Produto 2","description":""},"italian":{"name":"Selezione Prodotto 2","description":""},"german":{"name":"Produkt Eing.2","description":"Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."},"turkish":{"name":"Product Select 2","description":""}},"children":["INPUT_POL_PROD_SEL2"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL3":{"@translations":{"english":{"name":"Product Select 3","description":""},"korean":{"name":"품목 선택 3","description":""},"spanish":{"name":"Selección Producto 3","description":""},"french":{"name":"Sélection Produit 3","description":""},"portuguese":{"name":"Seleção Produto 3","description":""},"italian":{"name":"Selezione Prodotto 3","description":""},"german":{"name":"Produkt Eing.3","description":"Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."},"turkish":{"name":"Product Select 3","description":""}},"children":["INPUT_POL_PROD_SEL3"],"@labels":["Source","Polarity"]},"INPUT_PROD_SEL4":{"@translations":{"english":{"name":"Product Select 4","description":""},"korean":{"name":"품목 선택 4","description":""},"spanish":{"name":"Selección Producto 4","description":""},"french":{"name":"Sélection Poduit 4","description":""},"portuguese":{"name":"Seleção Produto 4","description":""},"italian":{"name":"Selezione Prodotto 4","description":""},"german":{"name":"Produkt Eing. 4","description":"Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."},"turkish":{"name":"Product Select 4","description":""}},"children":["INPUT_POL_PROD_SEL4"],"@labels":["Source","Polarity"]},"INPUT_TEST":{"@translations":{"english":{"name":"Test","description":""},"korean":{"name":"테스트","description":""},"spanish":{"name":"Test","description":""},"french":{"name":"Test","description":""},"portuguese":{"name":"Teste","description":""},"italian":{"name":"Test","description":""},"german":{"name":"Test","description":"Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."},"turkish":{"name":"Test","description":""}},"children":["INPUT_POL_TEST"],"@labels":["Source","Polarity"]},"OUT_PHY_PL3_1":{"@translations":{"english":{"name":"PL3 1","description":""},"korean":{"name":"PL3 1","description":""},"spanish":{"name":"PL3 1","description":""},"french":{"name":"PL3 1","description":""},"portuguese":{"name":"PL3 1","description":""},"italian":{"name":"PL3 1","description":""},"german":{"name":"PL3 1","description":""},"turkish":{"name":"PL3 1","description":""}},"children":["OUT_POL_PL3_1"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_1A2":{"@translations":{"english":{"name":"PL11 1A2","description":""},"korean":{"name":"PL11 1A2","description":""},"spanish":{"name":"PL11 1A2","description":""},"french":{"name":"PL11 1A2","description":""},"portuguese":{"name":"PL11 1A2","description":""},"italian":{"name":"PL11 1A2","description":""},"german":{"name":"PL11 1A2","description":""},"turkish":{"name":"PL11 1A2","description":""}},"children":["OUT_POL_PL11_1A2"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_3A4":{"@translations":{"english":{"name":"PL11 3A4","description":""},"korean":{"name":"PL11 3A4","description":""},"spanish":{"name":"PL11 3A4","description":""},"french":{"name":"PL11 3A4","description":""},"portuguese":{"name":"PL11 3A4","description":""},"italian":{"name":"PL11 3A4","description":""},"german":{"name":"PL11 3A4","description":""},"turkish":{"name":"PL11 3A4","description":""}},"children":["OUT_POL_PL11_3A4"],"@labels":["Source","Polarity"]},"OUT_PHY_PL11_5A6":{"@translations":{"english":{"name":"PL11 5A6","description":""},"korean":{"name":"PL11 5A6","description":""},"spanish":{"name":"PL11 5A6","description":""},"french":{"name":"PL11 5A6","description":""},"portuguese":{"name":"PL11 5A6","description":""},"italian":{"name":"PL11 5A6","description":""},"german":{"name":"PL11 5A6","description":""},"turkish":{"name":"PL11 5A6","description":""}},"children":["OUT_POL_PL11_5A6"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_1":{"@translations":{"english":{"name":"PL4 1","description":""},"korean":{"name":"PL4 1","description":""},"spanish":{"name":"PL4 1","description":""},"french":{"name":"PL4 1","description":""},"portuguese":{"name":"PL4 1","description":""},"italian":{"name":"PL4 1","description":""},"german":{"name":"PL4 1","description":""},"turkish":{"name":"PL4 1","description":""}},"children":["OUT_POL_PL4_1"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_2":{"@translations":{"english":{"name":"PL4 2","description":""},"korean":{"name":"PL4 2","description":""},"spanish":{"name":"PL4 2","description":""},"french":{"name":"PL4 2","description":""},"portuguese":{"name":"PL4 2","description":""},"italian":{"name":"PL4 2","description":""},"german":{"name":"PL4 2","description":""},"turkish":{"name":"PL4 2","description":""}},"children":["OUT_POL_PL4_2"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_3":{"@translations":{"english":{"name":"PL4 3","description":""},"korean":{"name":"PL4 3","description":""},"spanish":{"name":"PL4 3","description":""},"french":{"name":"PL4 3","description":""},"portuguese":{"name":"PL4 3","description":""},"italian":{"name":"PL4 3","description":""},"german":{"name":"PL4 3","description":""},"turkish":{"name":"PL4 3","description":""}},"children":["OUT_POL_PL4_3"],"@labels":["Source","Polarity"]},"OUT_PHY_PL4_5":{"@translations":{"english":{"name":"PL4 5","description":""},"korean":{"name":"PL4 5","description":""},"spanish":{"name":"PL4 5","description":""},"french":{"name":"PL4 5","description":""},"portuguese":{"name":"PL4 5","description":""},"italian":{"name":"PL4 5","description":""},"german":{"name":"PL4 5","description":""},"turkish":{"name":"PL4 5","description":""}},"children":["OUT_POL_PL4_5"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_R1":{"@translations":{"english":{"name":"IO PL3 R1","description":""},"korean":{"name":"IO PL3 R1","description":""},"spanish":{"name":"IO PL3 R1","description":""},"french":{"name":"IO PL3 R1","description":""},"portuguese":{"name":"IO PL3 R1","description":""},"italian":{"name":"IO PL3 R1","description":""},"german":{"name":"IO PL3 R1","description":""},"turkish":{"name":"IO PL3 R1","description":""}},"children":["OUT_POL_IO_PL3_R1"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_R2":{"@translations":{"english":{"name":"IO PL3 R2","description":""},"korean":{"name":"IO PL3 R2","description":""},"spanish":{"name":"IO PL3 R2","description":""},"french":{"name":"IO PL3 R2","description":""},"portuguese":{"name":"IO PL3 R2","description":""},"italian":{"name":"IO PL3 R2","description":""},"german":{"name":"IO PL3 R2","description":""},"turkish":{"name":"IO PL3 R2","description":""}},"children":["OUT_POL_IO_PL3_R2"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O1":{"@translations":{"english":{"name":"IO PL3 O1","description":""},"korean":{"name":"IO PL3 O1","description":""},"spanish":{"name":"IO PL3 O1","description":""},"french":{"name":"IO PL3 O1","description":""},"portuguese":{"name":"IO PL3 O1","description":""},"italian":{"name":"IO PL3 O1","description":""},"german":{"name":"IO PL3 O1","description":""},"turkish":{"name":"IO PL3 O1","description":""}},"children":["OUT_POL_IO_PL3_O1"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O2":{"@translations":{"english":{"name":"IO PL3 O2","description":""},"korean":{"name":"IO PL3 O2","description":""},"spanish":{"name":"IO PL3 O2","description":""},"french":{"name":"IO PL3 O2","description":""},"portuguese":{"name":"IO PL3 O2","description":""},"italian":{"name":"IO PL3 O2","description":""},"german":{"name":"IO PL3 O2","description":""},"turkish":{"name":"IO PL3 O2","description":""}},"children":["OUT_POL_IO_PL3_O2"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL3_O3":{"@translations":{"english":{"name":"IO PL3 O3","description":""},"korean":{"name":"IO PL3 O3","description":""},"spanish":{"name":"IO PL3 O3","description":""},"french":{"name":"IO PL3 O3","description":""},"portuguese":{"name":"IO PL3 O3","description":""},"italian":{"name":"IO PL3 O3","description":""},"german":{"name":"IO PL3 O3","description":""},"turkish":{"name":"IO PL3 O3","description":""}},"children":["OUT_POL_IO_PL3_O3"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_02":{"@translations":{"english":{"name":"IO PL4 02","description":""},"korean":{"name":"IO PL4 02","description":""},"spanish":{"name":"IO PL4 02","description":""},"french":{"name":"IO PL4 02","description":""},"portuguese":{"name":"IO PL4 02","description":""},"italian":{"name":"IO PL4 02","description":""},"german":{"name":"IO PL4 02","description":""},"turkish":{"name":"IO PL4 02","description":""}},"children":["OUT_POL_IO_PL4_02"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_03":{"@translations":{"english":{"name":"IO PL4 03","description":""},"korean":{"name":"IO PL4 03","description":""},"spanish":{"name":"IO PL4 03","description":""},"french":{"name":"IO PL4 03","description":""},"portuguese":{"name":"IO PL4 03","description":""},"italian":{"name":"IO PL4 03","description":""},"german":{"name":"IO PL4 03","description":""},"turkish":{"name":"IO PL4 03","description":""}},"children":["OUT_POL_IO_PL4_03"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_04":{"@translations":{"english":{"name":"IO PL4 04","description":""},"korean":{"name":"IO PL4 04","description":""},"spanish":{"name":"IO PL4 04","description":""},"french":{"name":"IO PL4 04","description":""},"portuguese":{"name":"IO PL4 04","description":""},"italian":{"name":"IO PL4 04","description":""},"german":{"name":"IO PL4 04","description":""},"turkish":{"name":"IO PL4 04","description":""}},"children":["OUT_POL_IO_PL4_04"],"@labels":["Source","Polarity"]},"OUT_PHY_IO_PL4_05":{"@translations":{"english":{"name":"IO PL4 05","description":""},"korean":{"name":"IO PL4 05","description":""},"spanish":{"name":"IO PL4 05","description":""},"french":{"name":"IO PL4 05","description":""},"portuguese":{"name":"IO PL4 05","description":""},"italian":{"name":"IO PL4 05","description":""},"german":{"name":"IO PL4 05","description":""},"turkish":{"name":"IO PL4 05","description":""}},"children":["OUT_POL_IO_PL4_05"],"@labels":["Source","Polarity"]},"SRecordDate":{"@translations":{"english":{"name":"System Record Date","description":""},"korean":{"name":"시스템 기록일","description":""},"spanish":{"name":"Fecha Registro Sistema","description":""},"french":{"name":"Système Enregistrement Date","description":""},"portuguese":{"name":"Data do Registro do Sistema","description":""},"italian":{"name":"Data Registrazione Sistema","description":""},"german":{"name":"Datum System-Datenerfassung","description":""},"turkish":{"name":"System Record Date","description":""}},"children":[],"@labels":["System Record Date"]},"ProdNo":{"@translations":{"english":{"name":"Product Number","description":""},"korean":{"name":"품목 번호","description":""},"spanish":{"name":"Número Producto","description":""},"french":{"name":"Numéro Produit","description":""},"portuguese":{"name":"Numero do Produto","description":""},"italian":{"name":"Numero Prodotto","description":""},"german":{"name":"Produkt Nummer","description":""},"turkish":{"name":"Product Number","description":""}},"children":[],"@labels":["Product Number"]},"Unit":{"@translations":{"english":{"name":"Unit","description":""},"korean":{"name":"유닛","description":""},"spanish":{"name":"Unidad","description":""},"french":{"name":"Unité","description":""},"portuguese":{"name":"Unidade","description":""},"italian":{"name":"Unità","description":""},"german":{"name":"Einheit","description":""},"turkish":{"name":"Unit","description":""}},"children":[],"@labels":["Unit"]},"RefFaultMask":{"@translations":{"english":{"name":"Reference Fault","description":""},"korean":{"name":"참조 폴트","description":""},"spanish":{"name":"Fallo Referencia","description":""},"french":{"name":" Référer Défaillance/Erreur ","description":""},"portuguese":{"name":"Falha de Refêrencia","description":""},"italian":{"name":"Errore di Riferimento","description":""},"german":{"name":"Referenz Fehler","description":""},"turkish":{"name":"Reference Fault","description":""}},"children":[],"@labels":["Reference Fault"]},"BalFaultMask":{"@translations":{"english":{"name":"Balance Fault","description":""},"korean":{"name":"발란스 폴트","description":""},"spanish":{"name":"Fallo Balanceo","description":""},"french":{"name":"Défaillance/Erreur Balance","description":""},"portuguese":{"name":"Falha do Balance","description":""},"italian":{"name":"Errore di Equilibrio","description":""},"german":{"name":"Balance Fehler","description":""},"turkish":{"name":"Balance Fault","description":""}},"children":[],"@labels":["Balance Fault"]},"ProdMemFaultMask":{"@translations":{"english":{"name":"Product Memory Fault","description":""},"korean":{"name":"품목 메모리 폴트","description":""},"spanish":{"name":"Fallo Memoria Producto","description":""},"french":{"name":"Défaillance/Erreur Mémoire du Produit","description":""},"portuguese":{"name":"Falha Memoria do produto","description":""},"italian":{"name":"Errore Memoria Prodotto","description":""},"german":{"name":"Fehler Produktspeicher","description":""},"turkish":{"name":"Product Memory Fault","description":""}},"children":[],"@labels":["Product Memory Fault"]},"RejConfirmFaultMask":{"@translations":{"english":{"name":"Reject Confirm Fault","description":""},"korean":{"name":"리젝트 컨펌 폴트","description":""},"spanish":{"name":"Fallo Confirmación Rechazo","description":""},"french":{"name":"Défaillance/Erreur de Confirmation de rejet","description":""},"portuguese":{"name":"Falha Comfirmação de Rejeção","description":""},"italian":{"name":"Errore Conferma Rifiuto","description":""},"german":{"name":"Fehler Auswurfbestätigung","description":""},"turkish":{"name":"Reject Confirm Fault","description":""}},"children":[],"@labels":["Reject Confirm Fault"]},"PhaseFaultMask":{"@translations":{"english":{"name":"Phase Fault","description":""},"korean":{"name":"페이즈 폴트","description":""},"spanish":{"name":"Fallo Fase","description":""},"french":{"name":"Défaillance/Erreur Phase","description":""},"portuguese":{"name":"Falha da Fase","description":""},"italian":{"name":"Errore di Fase","description":""},"german":{"name":"Phasen Fehler","description":""},"turkish":{"name":"Phase Fault","description":""}},"children":[],"@labels":["Phase Fault"]},"TestSigFaultMask":{"@translations":{"english":{"name":"Test Signal Fault","description":""},"korean":{"name":"테스트 시그널 폴트","description":""},"spanish":{"name":"Fallo Señal Test","description":""},"french":{"name":"Défaillance/Erreur Signal Essai/Test","description":""},"portuguese":{"name":"Falha do Sinal do Teste","description":""},"italian":{"name":"Errore Segnale Test","description":""},"german":{"name":"Test Signal Fehler","description":""},"turkish":{"name":"Test Signal Fault","description":""}},"children":[],"@labels":["Test Signal Fault"]},"PeyeBlockFaultMask":{"@translations":{"english":{"name":"Photoeye Block Fault","description":"The photo eye has been or is blocked for longer than expected. "},"korean":{"name":"포토아이 차단 폴트","description":""},"spanish":{"name":"Fallo Bloqueo Fotocélula","description":""},"french":{"name":"Défaillance/Erreur Capteur Optique Obstrué","description":"Le capteur optique a été ou est bloqué plus longtemps que prévu"},"portuguese":{"name":"Falha Fotocélula Bloqueado","description":""},"italian":{"name":"Errore Blocco Fotocellula","description":""},"german":{"name":"Lichtschranken Fehler","description":"Die Lichtschranke wurde länger als erwartet blockiert. "},"turkish":{"name":"Photoeye Block Fault","description":"The photo eye has been or is blocked for longer than expected. "}},"children":[],"@labels":["Photoeye Block Fault"]},"RejBinFullFaultMask":{"@translations":{"english":{"name":"Reject Bin Full Fault","description":"The reject bin is full"},"korean":{"name":"리젝트 보관함 용량초과 폴트","description":""},"spanish":{"name":"Fallo Contenedor Rechazo Lleno","description":""},"french":{"name":"Défaillance/Erreur de Contenant Plein","description":"Le contenant de rejets est plein"},"portuguese":{"name":"Falha Caixa Cheia","description":""},"italian":{"name":"Errore Contenitore Pieno","description":""},"german":{"name":"Fehler Auswurfbehälter voll","description":"Der Auswurfbehälter ist voll, bitte leeren."},"turkish":{"name":"Reject Bin Full Fault","description":"The reject bin is full"}},"children":[],"@labels":["Reject Bin Full Fault"]},"RejBinDoorFaultMask":{"@translations":{"english":{"name":"Reject Bin Door Fault","description":"The reject bin door is open"},"korean":{"name":"리젝트 보관함 용량초과 폴트","description":""},"spanish":{"name":"Fallo Contenedor Rechazo Lleno","description":""},"french":{"name":"Défaillance/Erreur de Contenant Plein","description":"Le contenant de rejets est plein"},"portuguese":{"name":"Falha Caixa Cheia","description":""},"italian":{"name":"Errore Contenitore Pieno","description":""},"german":{"name":"Fehler Auswurfbehälter voll","description":"Der Auswurfbehälter ist voll, bitte leeren."},"turkish":{"name":"Reject Bin Door Fault","description":"The reject bin door is open"}},"children":[],"@labels":["Reject Bin Full Fault"]},"AirFaultMask":{"@translations":{"english":{"name":"Air Pressure Fault","description":"Air pressure is too low, or not present"},"korean":{"name":"공기 폴트","description":""},"spanish":{"name":"Fallo Presión Aire","description":""},"french":{"name":"Défaillance/Erreur Pression d'Air","description":"Pression d’air basse ou non existante"},"portuguese":{"name":"Fala Pressão de AR","description":""},"italian":{"name":"Errore Pressione Aria","description":""},"german":{"name":"Fehler Druckluft","description":"Der Druck der Druckluft ist zu niedrig oder komplett abgeschaltet."},"turkish":{"name":"Air Pressure Fault","description":"Air pressure is too low, or not present"}},"children":[],"@labels":["Air Fault"]},"ExcessRejFaultMask":{"@translations":{"english":{"name":"Excess Rejects Fault","description":"The number of rejects has exceeded the number set"},"korean":{"name":"리젝트 초과 폴트","description":""},"spanish":{"name":"Fallo Exceso Rechazos","description":""},"french":{"name":"Défaillance/Erreur Rejets Excessifs","description":"Le nombre de rejets dépasse le nombre établi"},"portuguese":{"name":"Falha excesso de Rejeçoes","description":""},"italian":{"name":"Errore Eccedenza Rifiuti","description":""},"german":{"name":"Fehler zuviele Auswürfe","description":"Die Anzahl der Auswürfe pro Zeiteinheit hat den voreingestellten Wert überschritten."},"turkish":{"name":"Excess Rejects Fault","description":"The number of rejects has exceeded the number set"}},"children":[],"@labels":["Excess Rejects Fault"]},"BigMetalFaultMask":{"@translations":{"english":{"name":"Large Metal Fault","description":""},"korean":{"name":"대량금속 폴트","description":""},"spanish":{"name":"Fallo Metal Grande","description":""},"french":{"name":"Défaillance/Erreur Large Métal ","description":""},"portuguese":{"name":"Falha Metal Grande","description":""},"italian":{"name":"Errore Metallo Grande","description":""},"german":{"name":"Fehler großes Metall","description":""},"turkish":{"name":"Large Metal Fault","description":""}},"children":[],"@labels":["Large Metal Fault"]},"NetBufferFaultMask":{"@translations":{"english":{"name":"Net Buffer Fault","description":""},"korean":{"name":"넷 버퍼 폴트","description":""},"spanish":{"name":"Fallo Buffer Red","description":""},"french":{"name":"Défaillance/Erreur Net Buffer","description":""},"portuguese":{"name":"Falha Net Buffer ","description":""},"italian":{"name":"Errore Buffer di Rete","description":""},"german":{"name":"Fehler Netzpuffer","description":""},"turkish":{"name":"Net Buffer Fault","description":""}},"children":[],"@labels":["Net Buffer Fault"]},"RejMemoryFaultMask":{"@translations":{"english":{"name":"Reject Memory Fault","description":""},"korean":{"name":"리젝트 메모리 폴트","description":""},"spanish":{"name":"Fallo Memoria Rechazo","description":""},"french":{"name":"Défaillance/Erreur Mémoire Rejet","description":""},"portuguese":{"name":"Falha Memoria de Rejeção","description":""},"italian":{"name":"Errore Memoria Rifuti","description":""},"german":{"name":"Fehler Auswurf-Speicherung ","description":""},"turkish":{"name":"Reject Memory Fault","description":""}},"children":[],"@labels":["Reject Memory Fault"]},"RejectExitFaultMask":{"@translations":{"english":{"name":"Reject Exit Fault","description":"A reject has passed through the exit photo eye; the reject device may not be functioning correctly"},"korean":{"name":"리젝트 퇴장 폴트","description":""},"spanish":{"name":"Fallo Salida Rechazo","description":""},"french":{"name":"Défaillance/Erreur Sortie Rejet","description":"Un rejet a passé par le capteur optique de sortie; le système de rejet peut être défectueux"},"portuguese":{"name":"Falha Saida de rejeção","description":""},"italian":{"name":"Errore Uscita Rifiuto","description":""},"german":{"name":"Fehler Ausgangslichtschranke","description":"Ein Ausschuss hat das Ausgangslichtschranke passiert; Die Auswurfvorrichtung funktioniert möglicherweise nicht richtig"},"turkish":{"name":"Reject Exit Fault","description":"A reject has passed through the exit photo eye; the reject device may not be functioning correctly"}},"children":[],"@labels":["Reject Exit Fault"]},"TachometerFaultMask":{"@translations":{"english":{"name":"Tachometer Fault","description":"No signal is being recieved from the tachometer when the unit is set to external timing"},"korean":{"name":"타코미터 폴트","description":""},"spanish":{"name":"Fallo Tacómetro","description":""},"french":{"name":"Défaillance/Erreur Tachymètre","description":"Aucun signal, émis par le Tachymètre, n’est capté lorsque l’unité est réglée à une minuterie externe"},"portuguese":{"name":"Falha Tacômetro","description":""},"italian":{"name":"Errore Tachimetro","description":""},"german":{"name":"Fehler Impulsgeber","description":"Vom externen Impulsgeber estellt ist, wird kein Signal registriert."},"turkish":{"name":"Tachometer Fault","description":"No signal is being recieved from the tachometer when the unit is set to external timing"}},"children":[],"@labels":["Tachometer Fault"]},"PatternFaultMask":{"@translations":{"english":{"name":"Pattern Fault","description":""},"korean":{"name":"패턴 폴트","description":""},"spanish":{"name":"Fallo Patrón","description":""},"french":{"name":"Défaillance/Erreur Configuration","description":""},"portuguese":{"name":"Pattern Fault","description":""},"italian":{"name":"Errore Modello","description":""},"german":{"name":"Muster Fehler","description":""},"turkish":{"name":"Pattern Fault","description":""}},"children":[],"@labels":["Pattern Fault"]},"ExitNoPackFaultMask":{"@translations":{"english":{"name":"Exit No Pack Fault","description":"A pack that passed through the infeed eye did not pass through the exit eye"},"korean":{"name":"퇴장 팩 없음 폴트","description":""},"spanish":{"name":"Fallo Salida sin Producto","description":""},"french":{"name":"Défaillance/Erreur Paquet Sortie","description":"Un paquet qui a passé devant le capteur optique d’entrée mais n’a pas passé devant le capteur optique de sortie"},"portuguese":{"name":"Falha Saida Sem Produto","description":""},"italian":{"name":"Errore Uscita Senza Prodotto","description":""},"german":{"name":"Fehler keine Ausgangspackung","description":"Ein Packung wurde Einlauflichtschranke registriert, aber nicht von der Ausgangslichtschranke. "},"turkish":{"name":"Exit No Pack Fault","description":"A pack that passed through the infeed eye did not pass through the exit eye"}},"children":[],"@labels":["Exit No Pack Fault"]},"ExitNewPackFaultMask":{"@translations":{"english":{"name":"Exit New Pack Fault","description":"A pack which did not pass through the infeed eye or aperture has passed through the exit eye"},"korean":{"name":"퇴장 새 팩 폴트","description":""},"spanish":{"name":"Fallo Salida Nuevo Paquete","description":""},"french":{"name":"Défaillance/Erreur Nouveau Paquet Sortie","description":"Un paquet qui n’a pas passé par le capteur optique d’entrée ou par l’ouverture est passé par le capteur optique de sortie."},"portuguese":{"name":"Exit New Pack Fault","description":""},"italian":{"name":"Errore Uscita Nuovo Pacco","description":""},"german":{"name":"Fehler Ausgang-neue-Packung","description":"Es wurde keine Packung von der Einlauflichtschranke oder dem Suchkopf registriert, aber von der Ausgangslichtschranke. "},"turkish":{"name":"Exit New Pack Fault","description":"A pack which did not pass through the infeed eye or aperture has passed through the exit eye"}},"children":[],"@labels":["Exit New Pack Fault"]},"InterceptorFaultMask":{"@translations":{"english":{"name":"Interceptor Fault","description":""},"korean":{"name":"인터셉터 폴트","description":""},"spanish":{"name":"Fallo Interceptor","description":""},"french":{"name":"Défaillance/Erreur Intercepteur","description":""},"portuguese":{"name":"Falha Interceptor","description":""},"italian":{"name":"Errore Interceptor","description":""},"german":{"name":"Interceptor Fehler","description":""},"turkish":{"name":"Interceptor Fault","description":""}},"children":[],"@labels":["Interceptor Fault"]},"RtcLowBatFaultMask":{"@translations":{"english":{"name":"RTC Low Battery Fault","description":"The CR2032 coil cell battery on the DSP board is low and should be replaced"},"korean":{"name":"Rtc 로우 배터리 폴트","description":""},"spanish":{"name":"Fallo Batería RTC","description":""},"french":{"name":"Défaillance/Erreur RTC Pile Faible","description":"La pile CR2032 sur le panneau DSP est faible et devrait être remplacée"},"portuguese":{"name":"Falha Bateria","description":""},"italian":{"name":"Errore Batteria Scarica RTC","description":""},"german":{"name":"Echtzeituhr-Batterie Fehler","description":"Die Spannung der CR2032 Knopfzelle auf der DSP-Karte ist niedrig und sollte ersetzt werden."},"turkish":{"name":"RTC Low Battery Fault","description":"The CR2032 coil cell battery on the DSP board is low and should be replaced"}},"children":[],"@labels":["Rtc Low Batter Fault"]},"RtcTimeFaultMask":{"@translations":{"english":{"name":"RTC Time Fault","description":""},"korean":{"name":"Rtc 시간 폴트","description":""},"spanish":{"name":"Fallo Hora","description":""},"french":{"name":"Défaillance/Erreur Temps RTC","description":""},"portuguese":{"name":"Falha Horario","description":""},"italian":{"name":"Errore Ora RTC","description":""},"german":{"name":"Fehler Echtzeituhr","description":""},"turkish":{"name":"RTC Time Fault","description":""}},"children":[],"@labels":["Rtc Time Fault"]},"IntUsbFaultMask":{"@translations":{"english":{"name":"Internal USB Fault","description":"The internal USB on the DSP board has an issue and may need to be replaced"},"korean":{"name":"내부 Usb 폴트","description":""},"spanish":{"name":"Fallo USB Interno","description":""},"french":{"name":"Défaillance/Erreur USB Interne","description":"Le USB interne sur le panneau DSP a un problème et aurait peut-être besoin d’être remplacé"},"portuguese":{"name":"Falha USB Interno","description":""},"italian":{"name":"Errore USB Interno","description":""},"german":{"name":"Interner USB Fehler","description":"Der interne USB-Anschluss an der DSP-Karte weist ein Problem auf und muss möglicherweise ausgetauscht werden"},"turkish":{"name":"Internal USB Fault","description":"The internal USB on the DSP board has an issue and may need to be replaced"}},"children":[],"@labels":["Int Usb Fault"]},"IoBoardFaultMask":{"@translations":{"english":{"name":"IO Board Fault","description":""},"korean":{"name":"IO 보드 폴트","description":""},"spanish":{"name":"Fallo Placa IO","description":""},"french":{"name":"Défaillance/Erreur Panneau IO","description":""},"portuguese":{"name":"Falha Placa IO","description":""},"italian":{"name":"Errore Scheda IO","description":""},"german":{"name":"IO-Karten Fehler","description":""},"turkish":{"name":"IO Board Fault","description":""}},"children":[],"@labels":["IO Board Fault"]},"HaloFaultMask":{"@translations":{"english":{"name":"Halo Board Fault","description":""},"korean":{"name":"헤일로 폴트","description":""},"spanish":{"name":"Fallo Halo","description":""},"french":{"name":"Défaillance/Erreur Panneau Halo","description":""},"portuguese":{"name":"Falha Halo","description":""},"italian":{"name":"Errore Halo","description":""},"german":{"name":"Halo-Karten Fehler","description":""},"turkish":{"name":"Halo Board Fault","description":""}},"children":[],"@labels":["Halo Fault"]},"SignalFaultMask":{"@translations":{"english":{"name":"Signal Fault","description":""},"korean":{"name":"시그널 폴트","description":""},"spanish":{"name":"Fallo Señal","description":""},"french":{"name":"Défaillance/Erreur Signal","description":""},"portuguese":{"name":"Falha Sinal","description":""},"italian":{"name":"Errore di Segnale","description":""},"german":{"name":"Signal-Fehler","description":""},"turkish":{"name":"Signal Fault","description":""}},"children":[],"@labels":["Signal Fault"]},"IOBoardLocate":{"@translations":{"english":{"name":"IO Board Locate","description":""},"korean":{"name":"IO 보드 추적","description":""},"spanish":{"name":"IO Board Locate","description":""},"french":{"name":"Localiser Panneau IO","description":""},"portuguese":{"name":"IO Board Locate","description":""},"italian":{"name":"Localizzare Scheda IO","description":""},"german":{"name":"IO-Karte Lokalisierung","description":""},"turkish":{"name":"IO Board Locate","description":""}},"children":[],"@labels":["Locate"]},"InternalIP":{"@type":"IP","@translations":{"english":{"name":"Internal IP","description":""},"korean":{"name":"내부 IP","description":""},"spanish":{"name":"Internal IP","description":""},"french":{"name":"IP Interne","description":""},"portuguese":{"name":"Internal IP","description":""},"italian":{"name":"Indirizzo IP Interno","description":""},"german":{"name":"Interne IP","description":""},"turkish":{"name":"Internal IP","description":""}},"children":[],"@labels":["IP"]},"InternalNM":{"@type":"IP","@translations":{"english":{"name":"Internal Netmask","description":""},"korean":{"name":"내부 Netmask","description":""},"spanish":{"name":"Internal Netmask","description":""},"french":{"name":"Netmask Interne","description":""},"portuguese":{"name":"Internal Netmask","description":""},"italian":{"name":"Netmask Interno","description":""},"german":{"name":"Interne Netzmaske","description":""},"turkish":{"name":"Internal Netmask","description":""}},"children":[],"@labels":["IP"]},"InternalGW":{"@type":"IP","@translations":{"english":{"name":"Internal Gateway","description":""},"korean":{"name":"내부 Gateway","description":""},"spanish":{"name":"Internal Gateway","description":""},"french":{"name":"Gateway Interne","description":""},"portuguese":{"name":"Internal Gateway","description":""},"italian":{"name":"Indirizzo Gateway Interno","description":""},"german":{"name":"Internes Gateway","description":""},"turkish":{"name":"Internal Gateway","description":""}},"children":[],"@labels":["IP"]},"HaloIP":{"@type":"IP","@translations":{"english":{"name":"Halo IP","description":""},"korean":{"name":"Halo IP","description":""},"spanish":{"name":"Halo IP","description":""},"french":{"name":"Halo IP","description":""},"portuguese":{"name":"Halo IP","description":""},"italian":{"name":"Indirizzo IP Halo","description":""},"german":{"name":"Halo IP","description":""},"turkish":{"name":"Halo IP","description":""}},"children":[],"@labels":["IP"]},"HaloLocate":{"@translations":{"english":{"name":"Halo Locate","description":""},"korean":{"name":"Halo 추적","description":""},"spanish":{"name":"Halo Locate","description":""},"french":{"name":" Localiser Halo","description":""},"portuguese":{"name":"Halo Locate","description":""},"italian":{"name":"Localizzare Halo","description":""},"german":{"name":"Halo Lokalisierung","description":""},"turkish":{"name":"Halo Locate","description":""}},"children":[],"@labels":["Locations"]},"IOBoardIP":{"@type":"IP","@translations":{"english":{"name":"IO Board IP","description":""},"korean":{"name":"IO 보드 IP","description":""},"spanish":{"name":"IO Board IP","description":""},"french":{"name":"Panneau IP, IO","description":""},"portuguese":{"name":"IO Board IP","description":""},"italian":{"name":"Indirizzo IP Scheda IO","description":""},"german":{"name":"IO-Karten IP","description":""},"turkish":{"name":"IO Board IP","description":""}},"children":[],"@labels":["IP"]},"IOBoardType":{"@translations":{"english":{"name":"IO Board","description":""},"korean":{"name":"IO 보드","description":""},"spanish":{"name":"IO Board","description":""},"french":{"name":"Panneau IO","description":""},"portuguese":{"name":"IO Board","description":""},"italian":{"name":"Scheda IO","description":""},"german":{"name":"IO-Karten","description":""},"turkish":{"name":"IO Board","description":""}},"children":[],"@labels":["IP"]},"DspName":{"@translations":{"english":{"name":"Detector Name","description":""},"korean":{"name":"디텍터 이름","description":""},"spanish":{"name":"Detector Name","description":""},"french":{"name":"Nom Détecteur","description":""},"portuguese":{"name":"Detector Name","description":""},"italian":{"name":"Nome Detector","description":""},"german":{"name":"Detektor Name","description":""},"turkish":{"name":"Detector Name","description":""}},"children":[],"@labels":["Name"]},"XPortIP":{"@type":"IP","@translations":{"english":{"name":"External IP","description":""},"korean":{"name":"외부 IP","description":""},"spanish":{"name":"External IP","description":""},"french":{"name":" IP Externe","description":""},"portuguese":{"name":"External IP","description":""},"italian":{"name":"Indirizzo IP Esterno","description":""},"german":{"name":"Externe IP","description":""},"turkish":{"name":"External IP","description":""}},"children":[],"@labels":["IP"]},"Nif_ip":{"@type":"IP","@translations":{"english":{"name":"Display IP","description":""},"korean":{"name":"디스플레이 IP","description":""},"spanish":{"name":"Display IP","description":""},"french":{"name":"Écran IP","description":""},"portuguese":{"name":"Display IP","description":""},"italian":{"name":"Indirizzo IP Schermo","description":""},"german":{"name":"Display IP","description":""},"turkish":{"name":"Display IP","description":""}},"children":[],"@labels":["IP"]},"Nif_nm":{"@type":"IP","@translations":{"english":{"name":"Display Netmask","description":""},"korean":{"name":"디스플레이 Netmask","description":""},"spanish":{"name":"Display Netmask","description":""},"french":{"name":"Écran Netmask","description":""},"portuguese":{"name":"Display Netmask","description":""},"italian":{"name":"Display Netmask","description":""},"german":{"name":"Display Netzmaske","description":""},"turkish":{"name":"Display Netmask","description":""}},"children":[],"@labels":["IP"]},"Nif_gw":{"@type":"IP","@translations":{"english":{"name":"Display Gateway","description":""},"korean":{"name":"디스플레이 Gateway","description":""},"spanish":{"name":"Display Gateway","description":""},"french":{"name":"Écran Gateway","description":""},"portuguese":{"name":"Display Gateway","description":""},"italian":{"name":"Display Gateway","description":""},"german":{"name":"Display Gateway","description":""},"turkish":{"name":"Display Gateway","description":""}},"children":[],"@labels":["IP"]},"XPortNM":{"@type":"IP","@translations":{"english":{"name":"External Netmask","description":""},"korean":{"name":"외부 Netmask","description":""},"spanish":{"name":"External Netmask","description":""},"french":{"name":"Netmask Externe","description":""},"portuguese":{"name":"External Netmask","description":""},"italian":{"name":"Netmask Esterno","description":""},"german":{"name":"Externe Netzmaske","description":""},"turkish":{"name":"External Netmask","description":""}},"children":[],"@labels":["IP"]},"XPortGW":{"@type":"IP","@translations":{"english":{"name":"External Gateway","description":""},"korean":{"name":"외부 Gateway","description":""},"spanish":{"name":"External Gateway","description":""},"french":{"name":" Gateway Externe","description":""},"portuguese":{"name":"External Gateway","description":""},"italian":{"name":"Gateway Esterno","description":""},"german":{"name":"Externes Gateway","description":""},"turkish":{"name":"External Gateway","description":""}},"children":[],"@labels":["IP"]},"PassOn":{"@translations":{"english":{"name":"Password On","description":""},"korean":{"name":"비밀번호 액티브","description":""},"spanish":{"name":"Password On","description":""},"french":{"name":"Mot de Passe Activé","description":""},"portuguese":{"name":"Password On","description":""},"italian":{"name":"Password On","description":""},"german":{"name":"Passwort an","description":""},"turkish":{"name":"Password On","description":""}},"children":[],"@labels":["IP"]},"EyePkgLength":{"@translations":{"english":{"name":"Eye Package Length","description":""},"korean":{"name":"패키지 길이","description":""},"spanish":{"name":"Eye Package Length","description":""},"french":{"name":"Capteur Optique Longueur Paquet","description":""},"portuguese":{"name":"Eye Package Length","description":""},"italian":{"name":"Eye Package Length","description":""},"german":{"name":"Lichtschranke Packungslänge","description":""},"turkish":{"name":"Eye Package Length","description":""}},"children":[],"@labels":["IP"]},"EyeDist":{"@translations":{"english":{"name":"Eye Distance","description":""},"korean":{"name":"포토아이 거리","description":""},"spanish":{"name":"Eye Distance","description":""},"french":{"name":"Distance Capteur Optique","description":""},"portuguese":{"name":"Eye Distance","description":""},"italian":{"name":"Eye Distance","description":""},"german":{"name":"Abstand Lichtschranke","description":""},"turkish":{"name":"Eye Distance","description":""}},"children":[],"@labels":["IP"]},"EyeMinGapDist":{"@translations":{"english":{"name":"Minimum Product Gap","description":""},"korean":{"name":"품목 최단거리","description":""},"spanish":{"name":"Minimum Product Gap","description":""},"french":{"name":"Intervalle Minimal Produit","description":""},"portuguese":{"name":"Minimum Product Gap","description":""},"italian":{"name":"Minimum Product Gap","description":""},"german":{"name":"Minimum Produktlücke","description":""},"turkish":{"name":"Minimum Product Gap","description":""}},"children":[],"@labels":["IP"]},"HeadDepth":{"@translations":{"english":{"name":"Head Depth","description":""},"korean":{"name":"헤드 깊이","description":""},"spanish":{"name":"Head Depth","description":""},"french":{"name":"Profondeur Tête","description":""},"portuguese":{"name":"Head Depth","description":""},"italian":{"name":"Head Depth","description":""},"german":{"name":"Öffnungstiefe","description":"Das Maß des Suchkopfes in Förderrichtung."},"turkish":{"name":"Head Depth","description":""}},"children":[],"@labels":["IP"]},"HeadSeparation":{"@translations":{"english":{"name":"Head Separation","description":""},"korean":{"name":"헤드 간격","description":""},"spanish":{"name":"Head Separation","description":""},"french":{"name":"Head Separation","description":""},"portuguese":{"name":"Head Separation","description":""},"italian":{"name":"Head Separation","description":""},"german":{"name":"Head Separation","description":""},"turkish":{"name":"Head Separation","description":""}},"children":[],"@labels":["IP"]},"HeadCoilSp":{"@translations":{"english":{"name":"Head Coil Spacing","description":""},"korean":{"name":"헤드 코일 간격","description":""},"spanish":{"name":"Head Coil Spacing","description":""},"french":{"name":"Espacement Tête de Bobine","description":""},"portuguese":{"name":"Head Coil Spacing","description":""},"italian":{"name":"Head Coil Spacing","description":""},"german":{"name":"Abstand der Suchkopfspulen","description":""},"turkish":{"name":"Head Coil Spacing","description":""}},"children":[],"@labels":["IP"]},"DCRate_A":{"@translations":{"english":{"name":"DC Filter","description":""},"korean":{"name":"DC 필터","description":""},"spanish":{"name":"DC Filter","description":""},"french":{"name":"Filtre DC","description":""},"portuguese":{"name":"DC Filter","description":""},"italian":{"name":"DC Filter","description":""},"german":{"name":"DC Filter","description":"ist für die 0-Abgleichgeschwindigkeit verantwortlich.Hoher Zahlenwert=schnell und umgekehrt."},"turkish":{"name":"DC Filter","description":""}},"children":["DCRate_B"],"@labels":["Channel A","Channel B"]},"DcCoeffNorm_A":{"@translations":{"english":{"name":"DC Coefficient","description":""},"korean":{"name":"DC 계수","description":""},"spanish":{"name":"DC Coefficient","description":""},"french":{"name":"Coéficient DC","description":""},"portuguese":{"name":"DC Coefficient","description":""},"italian":{"name":"DC Coefficient","description":""},"german":{"name":"DC Koefficient","description":"ist für die 0-Abgleichgeschwindigkeit verantwortlich.Hoher Zahlenwert=schnell und umgekehrt."},"turkish":{"name":"DC Coefficient","description":""}},"children":["DcCoeffNorm_B"],"@labels":["Channel A","Channel B"]},"IsoCleanTimeout":{"@translations":{"english":{"name":"Clean Timeout","description":""},"korean":{"name":"클린 진행시간","description":""},"spanish":{"name":"Clean Timeout","description":""},"french":{"name":"Clean Timeout","description":""},"portuguese":{"name":"Clean Timeout","description":""},"italian":{"name":"Clean Timeout","description":""},"german":{"name":"Clean Timeout","description":""},"turkish":{"name":"Clean Timeout","description":""}},"children":[],"@labels":["IsoCleanTimeout"]},"ManReject":{"@translations":{"english":{"name":"Manual Reject","description":""},"korean":{"name":"수동 리젝트","description":""},"spanish":{"name":"Manual Reject","description":""},"french":{"name":"Manual Reject","description":""},"portuguese":{"name":"Manual Reject","description":""},"italian":{"name":"Manual Reject","description":""},"german":{"name":"Manual Reject","description":""},"turkish":{"name":"Manual Reject","description":""}},"children":[],"@labels":["Eye Reject"]},"NTPServerIP":{"@type":"IP","@translations":{"english":{"name":"NTP Server IP","description":""},"korean":{"name":"NTP 서버 IP","description":""},"spanish":{"name":"NTP Server IP","description":""},"french":{"name":"NTP Server IP","description":""},"portuguese":{"name":"NTP Server IP","description":""},"italian":{"name":"NTP Server IP","description":""},"german":{"name":"NTP Server IP","description":""},"turkish":{"name":"NTP Server IP","description":""}},"children":[],"@labels":["IP"]},"EtherExtPorts":{"@translations":{"english":{"name":"External Ethernet Ports","description":""},"korean":{"name":"외부 이터넷 포트","description":""},"spanish":{"name":"External Ethernet Ports","description":""},"french":{"name":"External Ethernet Ports","description":""},"portuguese":{"name":"External Ethernet Ports","description":""},"italian":{"name":"External Ethernet Ports","description":""},"german":{"name":"External Ethernet Ports","description":""},"turkish":{"name":"External Ethernet Ports","description":""}},"children":[],"@labels":["IP"]},"DaylightSavings":{"@translations":{"english":{"name":"Daylight Savings","description":""},"korean":{"name":"일광절약제","description":""},"spanish":{"name":"Daylight Savings","description":""},"french":{"name":"Daylight Savings","description":""},"portuguese":{"name":"Daylight Savings","description":""},"italian":{"name":"Daylight Savings","description":""},"german":{"name":"Daylight Savings","description":""},"turkish":{"name":"Daylight Savings","description":""}},"children":[],"@labels":["IP"]},"SigModeCombined":{"@translations":{"english":{"name":"Signal Combine Mode","description":""},"korean":{"name":"Signal Combine Mode","description":""},"spanish":{"name":"Signal Combine Mode","description":""},"french":{"name":"Signal Combine Mode","description":""},"portuguese":{"name":"Signal Combine Mode","description":""},"italian":{"name":"Signal Combine Mode","description":""},"german":{"name":"Signal Combine Mode","description":""},"turkish":{"name":"Signal Combine Mode","description":""}},"children":[],"@labels":["Language"]}},"@netpollsmap":{"NET_POLL_PROTOCOL_VERSION":{"@translations":{"english":{"name":"Version"},"korean":{"name":""},"spanish":{"name":"Versión Protocolo"},"french":{"name":"Version"},"portuguese":{"name":""},"italian":{"name":"Versione"},"german":{"name":"Version"},"turkish":{"name":"Version"}}},"NET_POLL_KEY_CLASS_MASK":{"@translations":{"english":{"name":""},"korean":{"name":""},"spanish":{"name":""},"french":{"name":""},"portuguese":{"name":""},"italian":{"name":""},"german":{"name":""},"turkish":{"name":""}}},"NET_POLL_PROD_REC_VAR":{"@translations":{"english":{"name":"Settings - Product"},"korean":{"name":"Settings - Product"},"spanish":{"name":"Registro Producto"},"french":{"name":"Configuration - Produit"},"portuguese":{"name":""},"italian":{"name":"Registro Prodotto"},"german":{"name":"Produkteinstellungen"},"turkish":{"name":"Settings - Product"}}},"NET_POLL_PROD_SYS_VAR":{"@translations":{"english":{"name":"Settings - System"},"korean":{"name":"Settings - Product"},"spanish":{"name":"Registro Sistema"},"french":{"name":"Configuration - Produit"},"portuguese":{"name":""},"italian":{"name":"Registro Sistema"},"german":{"name":"Systemeinstellungen"},"turkish":{"name":"Settings - System"}}},"NET_POLL_REJECT":{"@translations":{"english":{"name":"Reject"},"korean":{"name":""},"spanish":{"name":"Rechazo"},"french":{"name":"Rejet"},"portuguese":{"name":""},"italian":{"name":"Rifiuto"},"german":{"name":"Auswurf"},"turkish":{"name":"Reject"}}},"NET_POLL_REJECT2":{"@translations":{"english":{"name":"Reject 2"},"korean":{"name":""},"spanish":{"name":"Rechazo 2"},"french":{"name":"Rejet 2"},"portuguese":{"name":""},"italian":{"name":"Rifiuto 2"},"german":{"name":"Auswurf 2"},"turkish":{"name":"Reject 2"}}},"NET_POLL_REJ_CNT":{"@translations":{"english":{"name":"Reject Count"},"korean":{"name":""},"spanish":{"name":"Cuenta Rechazos"},"french":{"name":"Nombre de Rejet"},"portuguese":{"name":""},"italian":{"name":"Contatore Rifiuti"},"german":{"name":"Auswurf-Zähler"},"turkish":{"name":"Reject Count"}}},"NET_POLL_FAULT":{"@translations":{"english":{"name":"Fault"},"korean":{"name":""},"spanish":{"name":"Fallo"},"french":{"name":"Défaillance/Erreur"},"portuguese":{"name":""},"italian":{"name":"Errore"},"german":{"name":"Fehler"},"turkish":{"name":"Fault"}}},"NET_POLL_RETEST":{"@translations":{"english":{"name":"Re-test"},"korean":{"name":""},"spanish":{"name":"Re-test"},"french":{"name":"Re-Tester"},"portuguese":{"name":""},"italian":{"name":"Re-test"},"german":{"name":"Re-test"},"turkish":{"name":"Re-test"}}},"NET_POLL_CONTROL":{"@translations":{"english":{"name":"Control"},"korean":{"name":""},"spanish":{"name":"Control"},"french":{"name":"Contrôle"},"portuguese":{"name":""},"italian":{"name":"Controllo"},"german":{"name":"Kontrolle"},"turkish":{"name":"Control"}}},"NET_POLL_POWERUP":{"@translations":{"english":{"name":"Power Up"},"korean":{"name":""},"spanish":{"name":"Arranque"},"french":{"name":"Mise sous Tension"},"portuguese":{"name":""},"italian":{"name":"Iniziare"},"german":{"name":"Einschalten"},"turkish":{"name":"Power Up"}}},"NET_POLL_OPERATOR_NO":{"@translations":{"english":{"name":"Operator Number"},"korean":{"name":""},"spanish":{"name":"Número Operador"},"french":{"name":"Numéro Opérateur"},"portuguese":{"name":""},"italian":{"name":"Numero Operatore"},"german":{"name":"Benutzer Nummer"},"turkish":{"name":"Operator Number"}}},"NET_POLL_TEST_REQ_PASS":{"@translations":{"english":{"name":"Test Request Pass"},"korean":{"name":""},"spanish":{"name":"Solicitud Test Aprobada"},"french":{"name":"Requête de Test Passe"},"portuguese":{"name":""},"italian":{"name":"Richiesta Test Superato"},"german":{"name":"Testanforderung bestanden"},"turkish":{"name":"Test Request Pass"}}},"NET_POLL_REJECT_ID":{"@translations":{"english":{"name":"Reject ID"},"korean":{"name":""},"spanish":{"name":"Identificación Rechazo"},"french":{"name":"ID Rejet"},"portuguese":{"name":""},"italian":{"name":"ID Rifiuto"},"german":{"name":"Auswurf ID"},"turkish":{"name":"Reject ID"}}},"NET_POLL_REJECT_CLEAR":{"@translations":{"english":{"name":"Reject Clear"},"korean":{"name":""},"spanish":{"name":"Borrado Rechazo"},"french":{"name":"Effacer Rejet"},"portuguese":{"name":""},"italian":{"name":"Cancellazione Rifiuto"},"german":{"name":"Auswurf löschen"},"turkish":{"name":"Reject Clear"}}},"NET_POLL_EYE_PROD_PEAK":{"@translations":{"english":{"name":"Product Signal Peak"},"korean":{"name":""},"spanish":{"name":"Señal Producto"},"french":{"name":"Signal Maximal du Produit"},"portuguese":{"name":""},"italian":{"name":"Picco Segnale Prodotto"},"german":{"name":"Produktsignal Peak"},"turkish":{"name":"Product Signal Peak"}}},"NET_POLL_EYE_PROD_PHASE":{"@translations":{"english":{"name":"Eye Product Phase"},"korean":{"name":""},"spanish":{"name":"Fase Producto"},"french":{"name":"Phase Produit Capteur Optique"},"portuguese":{"name":""},"italian":{"name":"Fase Prodotto Fotocellula"},"german":{"name":"Lichtschranke Produkt-Phase"},"turkish":{"name":"Eye Product Phase"}}},"NET_POLL_FAULT_CLEAR":{"@translations":{"english":{"name":"Clear Fault"},"korean":{"name":""},"spanish":{"name":"Fallo Borrado"},"french":{"name":"Effacer Défaillance/Erreur"},"portuguese":{"name":""},"italian":{"name":"Cancella Errore"},"german":{"name":"Fehler löschen"},"turkish":{"name":"Clear Fault"}}},"NET_POLL_SYNC_MENU":{"@translations":{"english":{"name":"Sync Menu"},"korean":{"name":""},"spanish":{"name":"Menú Sincronización"},"french":{"name":"Menu Sync"},"portuguese":{"name":""},"italian":{"name":"Sync Menu"},"german":{"name":"Sync. Menü"},"turkish":{"name":"Sync Menu"}}},"NET_POLL_PWD_ENTRY_1":{"@translations":{"english":{"name":"Password Entry 1"},"korean":{"name":""},"spanish":{"name":"Entrada Password 1"},"french":{"name":"Mot de Passe Entrée 1"},"portuguese":{"name":""},"italian":{"name":"Inserimento Password 1"},"german":{"name":"Passworteingabe 1"},"turkish":{"name":"Password Entry 1"}}},"NET_POLL_PWD_ENTRY_2":{"@translations":{"english":{"name":"Password Entry 2"},"korean":{"name":""},"spanish":{"name":"Entrada Password 2"},"french":{"name":"Mot de Passe Entrée 2"},"portuguese":{"name":""},"italian":{"name":"Inserimento Password 2"},"german":{"name":"Passworteingabe 2"},"turkish":{"name":"Password Entry 2"}}},"NET_POLL_SEL_UNIT":{"@translations":{"english":{"name":"Select Unit"},"korean":{"name":""},"spanish":{"name":"Seleccionar Unidad"},"french":{"name":"Sélectionner l'Unité"},"portuguese":{"name":""},"italian":{"name":"Seleziona Unità"},"german":{"name":"Einheit wählen"},"turkish":{"name":"Select Unit"}}},"NET_POLL_RESERVED":{"@translations":{"english":{"name":"Reserved"},"korean":{"name":""},"spanish":{"name":"Reservado"},"french":{"name":"Réservé"},"portuguese":{"name":""},"italian":{"name":"Riservato"},"german":{"name":"Reserved"},"turkish":{"name":"Reserved"}}},"NET_POLL_CLEAR_SCOPE":{"@translations":{"english":{"name":"Clear Scope"},"korean":{"name":""},"spanish":{"name":"Borrar Scope"},"french":{"name":"Effacer Champ"},"portuguese":{"name":""},"italian":{"name":"Cancella Scope"},"german":{"name":"Anzeige löschen"},"turkish":{"name":"Clear Scope"}}},"NET_POLL_REJECT_PHASE":{"@translations":{"english":{"name":"Reject Phase"},"korean":{"name":""},"spanish":{"name":"Rechazo Fase"},"french":{"name":"Phase Rejet"},"portuguese":{"name":""},"italian":{"name":"Fase Rifiuto"},"german":{"name":"Auswurf Phase"},"turkish":{"name":"Reject Phase"}}},"NET_POLL_FLASH_WRITE":{"@translations":{"english":{"name":"Flash Write"},"korean":{"name":""},"spanish":{"name":"Escritura Flash"},"french":{"name":"Clignotant Blanc"},"portuguese":{"name":""},"italian":{"name":"Scrivere Flash"},"german":{"name":"Flash beschreiben"},"turkish":{"name":"Flash Write"}}},"NET_POLL_INTCPTR_SWITCH":{"@translations":{"english":{"name":"Interceptor Switch"},"korean":{"name":""},"spanish":{"name":"Conmutación Interceptor"},"french":{"name":"Commutateur d'Intercepteur"},"portuguese":{"name":""},"italian":{"name":"Scambio Interceptor"},"german":{"name":"Interceptor Schalter"},"turkish":{"name":"Interceptor Switch"}}},"NET_POLL_PREC_DELETE":{"@translations":{"english":{"name":"Product Record Delete"},"korean":{"name":""},"spanish":{"name":"Eliminar Registro Producto"},"french":{"name":" Effacer Enregistrement Produit "},"portuguese":{"name":""},"italian":{"name":"Elimina Registro Prodotto"},"german":{"name":"Produktauzeichnung löschen"},"turkish":{"name":"Product Record Delete"}}},"NET_POLL_PREC_DEL_ALL":{"@translations":{"english":{"name":"Product Records Delete All"},"korean":{"name":""},"spanish":{"name":"Eliminar Todo Registro Producto"},"french":{"name":"Effacer Tous les Enregistrement Produit"},"portuguese":{"name":""},"italian":{"name":"Elimina Tutti Registri Prodotto"},"german":{"name":"Produktauzeichnung alles löschen"},"turkish":{"name":"Product Records Delete All"}}},"NET_POLL_PREC_BACKUP_SAVE":{"@translations":{"english":{"name":"Product Record Backup Save"},"korean":{"name":""},"spanish":{"name":"Guardar Copia Registro Producto"},"french":{"name":"Sauvegarde de l'Enregistrement Produit Sauvegardée"},"portuguese":{"name":""},"italian":{"name":"Backup Registro Prodotto"},"german":{"name":"Produktaufzeichnung Backup speichern"},"turkish":{"name":"Product Record Backup Save"}}},"NET_POLL_PREC_BACKUP_RESTORE":{"@translations":{"english":{"name":"Product Record Restore"},"korean":{"name":""},"spanish":{"name":"Restaurar Registro Producto"},"french":{"name":"Rétablir Enregistrement de Produit "},"portuguese":{"name":""},"italian":{"name":"Ripristina Registro Prodotto"},"german":{"name":"Produktaufzeichnung wieder herstellen"},"turkish":{"name":"Product Record Restore"}}},"NET_POLL_PREC_DEAULTS":{"@translations":{"english":{"name":"Product Record Defaults"},"korean":{"name":""},"spanish":{"name":"Registro Producto Defecto"},"french":{"name":"Enregistrement Défaillance/Erreur Produit"},"portuguese":{"name":""},"italian":{"name":"Registro Prodotto Predefinito"},"german":{"name":"Produktaufzeichnung Grundwerte"},"turkish":{"name":"Product Record Defaults"}}},"NET_POLL_PREC_COPY":{"@translations":{"english":{"name":"Product Record Copy"},"korean":{"name":""},"spanish":{"name":"Copiar Registro Producto"},"french":{"name":"Copier l'enregistrement de Produit"},"portuguese":{"name":""},"italian":{"name":"Copia Registro Prodotto"},"german":{"name":"Produktaufzeichnung kopieren"},"turkish":{"name":"Product Record Copy"}}},"NET_POLL_REJECT2_ID":{"@translations":{"english":{"name":"Reject 2 ID"},"korean":{"name":""},"spanish":{"name":"Identificación Rechazo 2"},"french":{"name":"ID Rejet 2"},"portuguese":{"name":""},"italian":{"name":"ID Rifiuto 2"},"german":{"name":"Auswurf 2 ID"},"turkish":{"name":"Reject 2 ID"}}},"NET_POLL_REJECT2_CLEAR":{"@translations":{"english":{"name":"Reject 2 Clear"},"korean":{"name":""},"spanish":{"name":"Borrar Rechazo 2"},"french":{"name":"Effacer Rejet 2"},"portuguese":{"name":""},"italian":{"name":"Cancella Rifiuto 2"},"german":{"name":"Auswurf 2 löschen"},"turkish":{"name":"Reject 2 Clear"}}},"NET_POLL_MANUAL_REJECT":{"@translations":{"english":{"name":"Manual Reject"},"korean":{"name":""},"spanish":{"name":"Rechazo Manual"},"french":{"name":"Rejet Manuel"},"portuguese":{"name":""},"italian":{"name":"Manual Reject"},"german":{"name":"Manueller Auswurf"},"turkish":{"name":"Manual Reject"}}},"NET_POLL_STREAM_EVENT":{"@translations":{"english":{"name":"Stream Event"},"korean":{"name":"Stream Event"},"spanish":{"name":"Stream Event"},"french":{"name":"Stream Event"},"portuguese":{"name":"Stream Event"},"italian":{"name":"Stream Event"},"german":{"name":"..Übertragung"},"turkish":{"name":"Stream Event"}}},"NETPOLL_STREAM_FRAM":{"@translations":{"english":{"name":"Stream FRAM"},"korean":{"name":"Stream FRAM"},"spanish":{"name":"Stream FRAM"},"french":{"name":"Stream FRAM"},"portuguese":{"name":"Stream FRAM"},"italian":{"name":"Stream FRAM"},"german":{"name":"Übertragung FRAM"},"turkish":{"name":"Stream FRAM"}}},"NETPOLL_STREAM_FAULTS_CLEAR":{"@translations":{"english":{"name":"Faults Clear"},"korean":{"name":"Faults Clear"},"spanish":{"name":"Faults Clear"},"french":{"name":"Effacer Défaillances/Erreur"},"portuguese":{"name":"Faults Clear"},"italian":{"name":"Faults Clear"},"german":{"name":"Fehler löschen"},"turkish":{"name":"Faults Clear"}}},"NETPOLL_STREAM_REJECT_CLEAR":{"@translations":{"english":{"name":"Reject Clear"},"korean":{"name":"Reject Clear"},"spanish":{"name":"Reject Clear"},"french":{"name":"Effacer Rejet"},"portuguese":{"name":"Reject Clear"},"italian":{"name":"Reject Clear"},"german":{"name":"Reject Clear"},"turkish":{"name":"Reject Clear"}}},"NETPOLL_STREAM_TEST_START":{"@translations":{"english":{"name":"Test Start"},"korean":{"name":"Test Start"},"spanish":{"name":"Test Start"},"french":{"name":"Débuter Test"},"portuguese":{"name":"Test Start"},"italian":{"name":"Test Start"},"german":{"name":"Teststart"},"turkish":{"name":"Test Start"}}},"NETPOLL_STREAM_TEST_END":{"@translations":{"english":{"name":"Test End"},"korean":{"name":"Test End"},"spanish":{"name":"Test End"},"french":{"name":"Terminer Test"},"portuguese":{"name":"Test End"},"italian":{"name":"Test End"},"german":{"name":"Test End"},"turkish":{"name":"Test End"}}},"NETPOLL_STREAM_FAULTS":{"@translations":{"english":{"name":"Fault"},"korean":{"name":"Fault"},"spanish":{"name":"Fault"},"french":{"name":"Défaillance/Erreur"},"portuguese":{"name":"Fault"},"italian":{"name":"Fault"},"german":{"name":"Fehler"},"turkish":{"name":"Fault"}}},"NET_POLL_TEST_STARTED":{"@translations":{"english":{"name":"Test Started"},"korean":{"name":"Test Started"},"spanish":{"name":"Test Started"},"french":{"name":"Test Débuté"},"portuguese":{"name":"Test Started"},"italian":{"name":"Test Started"},"german":{"name":"Test gestartet"},"turkish":{"name":"Test Started"}}},"NETPOLL_STREAM_LOGIN":{"@translations":{"english":{"name":"Logged In"},"korean":{"name":"로그인"},"spanish":{"name":"Logged In"},"french":{"name":"Connecté"},"portuguese":{"name":"Logged In"},"italian":{"name":"Logged In"},"german":{"name":"Eingeloggt"},"turkish":{"name":"Logged In"}}},"NETPOLL_STREAM_LOGOUT":{"@translations":{"english":{"name":"Logged Out"},"korean":{"name":"로그아웃"},"spanish":{"name":"Logged Out"},"french":{"name":"Déconnecté"},"portuguese":{"name":"Logged Out"},"italian":{"name":"Logged Out"},"german":{"name":"Ausgeloggt"},"turkish":{"name":"Logged Out"}}},"NETPOLL_STREAM_LOG_OUT":{"@translations":{"english":{"name":"Logged Out"},"korean":{"name":"로그아웃"},"spanish":{"name":"Logged Out"},"french":{"name":"Déconnecté"},"portuguese":{"name":"Logged Out"},"italian":{"name":"Logged Out"},"german":{"name":"Ausgeloggt"},"turkish":{"name":"Logged Out"}}},"NETPOLL_STREAM_REJECT":{"@translations":{"english":{"name":"Reject"},"korean":{"name":"리젝트"},"spanish":{"name":"Reject"},"french":{"name":"Rejet"},"portuguese":{"name":"Reject"},"italian":{"name":"Reject"},"german":{"name":"Auswurf"},"turkish":{"name":"Reject"}}},"NETPOLL_STREAM_INTERCEPTOR_REJECT":{"@translations":{"english":{"name":"Reject"},"korean":{"name":"리젝트"},"spanish":{"name":"Reject"},"french":{"name":"Rejet"},"portuguese":{"name":"Reject"},"italian":{"name":"Reject"},"german":{"name":"Auswurf"},"turkish":{"name":"Reject"}}}},"@pages":{"Sens":{"acc":2,"cat":"Sens","params":[{"type":0,"val":"Sens_A","acc":0},{"type":1,"val":{"child":0,"cat":"Detection Mode","params":[{"type":0,"val":"DetMode_A","acc":0},{"type":0,"val":"SigModeCombined","acc":0}]},"acc":0},{"type":1,"val":{"child":0,"cat":"Thresholds","params":[{"type":0,"val":"DetThresh","acc":0},{"type":0,"val":"DetThresh_A","acc":0},{"type":0,"val":"DetThEst","acc":0},{"type":0,"val":"DetThEst_A","acc":0},{"type":0,"val":"ThresProdHi_A","acc":0},{"type":0,"val":"BigMetThres_A","acc":0}]},"acc":0},{"type":1,"val":{"child":2,"cat":"Filter","params":[{"type":0,"val":"NoiseR_A","acc":0},{"type":0,"val":"NoiseX_A","acc":0},{"type":0,"val":"FilterNoise_A","acc":0}]},"acc":0},{"type":1,"val":{"child":0,"cat":"Oscillation Power","params":[{"type":0,"val":"OscPower_A","acc":0}]},"acc":0},{"type":1,"val":{"child":0,"cat":"FM Setup","params":[{"type":0,"val":"FmInput_A","acc":0}]},"acc":0},{"type":0,"val":"NoiseR_A","acc":0},{"type":0,"val":"NoiseX_A","acc":0}]},"Test":{"acc":0,"cat":"Test","params":[{"type":1,"val":{"cat":"Manual","params":[{"type":0,"val":"TestConfigCount0_0","acc":0},{"type":0,"val":"TestConfigCount0_1","acc":0},{"type":0,"val":"TestConfigCount0_2","acc":0},{"type":0,"val":"TestConfigCount0_3","acc":0},{"type":0,"val":"TestConfigCount0_4","acc":0},{"type":0,"val":"TestConfigCount0_5","acc":0},{"type":0,"val":"TestConfigAck0","acc":0},{"type":0,"val":"TestConfigOperator0","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Manual2","params":[{"type":0,"val":"TestConfigCount2_0","acc":0},{"type":0,"val":"TestConfigCount2_1","acc":0},{"type":0,"val":"TestConfigCount2_2","acc":0},{"type":0,"val":"TestConfigCount2_3","acc":0},{"type":0,"val":"TestConfigCount2_4","acc":0},{"type":0,"val":"TestConfigCount2_5","acc":0},{"type":0,"val":"TestConfigAck2","acc":0},{"type":0,"val":"TestConfigOperator2","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Halo","params":[{"type":0,"val":"TestConfigCount1_0","acc":0},{"type":0,"val":"TestConfigCount1_1","acc":0},{"type":0,"val":"TestConfigCount1_2","acc":0},{"type":0,"val":"TestConfigCount1_3","acc":0},{"type":0,"val":"TestConfigCount1_4","acc":0},{"type":0,"val":"TestConfigCount1_5","acc":0},{"type":0,"val":"TestConfigAck1","acc":0},{"type":0,"val":"TestConfigOperator1","acc":0},{"type":0,"val":"TestConfigHaloMode1","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Halo2","params":[{"type":0,"val":"TestConfigCount3_0","acc":0},{"type":0,"val":"TestConfigCount3_1","acc":0},{"type":0,"val":"TestConfigCount3_2","acc":0},{"type":0,"val":"TestConfigCount3_3","acc":0},{"type":0,"val":"TestConfigCount3_4","acc":0},{"type":0,"val":"TestConfigCount3_5","acc":0},{"type":0,"val":"TestConfigAck3","acc":0},{"type":0,"val":"TestConfigOperator3","acc":0},{"type":0,"val":"TestConfigHaloMode3","acc":0}]},"acc":0},{"type":1,"val":{"cat":"HaloConf","params":[{"type":0,"val":"HaloBoard","acc":0},{"type":0,"val":"HaloPeakRFe_A","acc":0},{"type":0,"val":"HaloPeakRFe_B","acc":0},{"type":0,"val":"HaloPeakRNFe_A","acc":0},{"type":0,"val":"HaloPeakRNFe_B","acc":0},{"type":0,"val":"HaloPeakRSs_A","acc":0},{"type":0,"val":"HaloPeakRSs_B","acc":0},{"type":0,"val":"HaloCal","acc":0}]},"acc":0},{"type":0,"val":"TestTime","acc":0},{"type":0,"val":"TestDeferTime","acc":0},{"type":0,"val":"TestMode","acc":0},{"type":0,"val":"TestBlockReject","acc":0}]},"Calibration":{"acc":0,"cat":"Calibration","params":[{"type":1,"val":{"cat":"Learn Path","params":[{"type":0,"val":"LearnPhase_A","acc":0},{"type":0,"val":"LearnSens_A","acc":0}]},"acc":0},{"type":1,"val":{"cat":"Phase","params":[{"type":1,"val":{"cat":"MPhase","params":[{"type":0,"val":"MPhaseOrder_A","acc":0},{"type":0,"val":"MPhaseDD_A","acc":0},{"type":0,"val":"MPhaseRD_A","acc":0}]},"acc":0},{"type":0,"val":"PhaseAngleAuto_A","acc":0},{"type":0,"val":"PhaseMode_A","acc":0},{"type":0,"val":"PhaseSpeed_A","acc":0},{"type":0,"val":"PhaseModeHold_A","acc":0},{"type":0,"val":"PhaseLimitDry_A","acc":0},{"type":0,"val":"PhaseLimitDrySpread_A","acc":0},{"type":0,"val":"PhaseLimitWet_A","acc":0},{"type":0,"val":"PhaseLimitWetSpread_A","acc":0},{"type":0,"val":"PhaseOffset_A","acc":0},{"type":0,"val":"PhaseTrigThres","acc":0},{"type":0,"val":"PhaseTrigLimit","acc":0},{"type":0,"val":"AutoPhasePacks","acc":0}]},"acc":0},{"type":0,"val":"ExpectedSig_A","acc":0},{"type":0,"val":"SensMax_A","acc":0},{"type":0,"val":"SensMin_A","acc":0}]}},"@catmap":{"Reject":{"@translations":{"english":"Reject","korean":"거부","spanish":"Rechazo","french":"Rejet","portuguese":"Reject","italian":"Rifiuto","german":"Auswurf","turkish":"Reject"}},"Password":{"@translations":{"english":"Password","korean":"암호","spanish":"Contraseña","french":"Mot de Passe","portuguese":"Password","italian":"Password","german":"Passwort","turkish":"Password"}},"IO":{"@translations":{"english":"I/O","korean":"입출력","spanish":"I/O","french":"I/O","portuguese":"I/O","italian":"I/O","german":"I/O","turkish":"I/O"}},"System":{"@translations":{"english":"System","korean":"시스템","spanish":"Sistema","french":"Système","portuguese":"System","italian":"Sistema","german":"System","turkish":"System"}},"Fault":{"@translations":{"english":"Faults","korean":"오류","spanish":"Fallos","french":"Défaillances/Erreurs","portuguese":"Faults","italian":"Errori","german":"Fehler","turkish":"Faults"}},"System/FRAM":{"@translations":{"english":"Communication Settings","korean":"네트워크 설정","spanish":"Communication Settings","french":"Paramètres Réseau","portuguese":"Communication Settings","italian":"Impostazioni Rete","german":"Netzwerkeinstellungen","turkish":"Communication Settings"}},"System/About":{"@translations":{"english":"Technical Information","korean":"Technical Information","spanish":"Technical Information","french":"Technical Information","portuguese":"Technical Information","italian":"Technical Information","german":"Technical Information","turkish":"Technical Information"}},"System/SysVersion":{"@translations":{"english":"System Record Date","korean":"System Record Date","spanish":"System Record Date","french":"SYstème Enregistrement Date","portuguese":"System Record Date","italian":"System Record Date","german":"Systemaufzeichnungsdatum","turkish":"System Record Date"}},"System/Passwords":{"@translations":{"english":"Passwords","korean":"Passwords","spanish":"Passwords","french":"Mots de Passe","portuguese":"Passwords","italian":"Passwords","german":"Passworte","turkish":"Passwords"}},"System/FRAM/IO Board Settings":{"@translations":{"english":"IO Board Settings","korean":"IO Board 설정","spanish":"IO Board Settings","french":"Panneau Configuration IO","portuguese":"IO Board Settings","italian":"Impostazioni Scheda IO","german":"IO-Karte Einstellungen","turkish":"IO Board Settings"}},"System/FRAM/Detector IP":{"@translations":{"english":"Detector Addresses","korean":"Detector Addresses","spanish":"Detector Addresses","french":"Adresses Détecteur","portuguese":"Detector Addresses","italian":"Indirizzi Detector","german":"Detektor Adressen","turkish":"Detector Addresses"}},"System/FRAM/Halo Board Settings":{"@translations":{"english":"Halo Board Settings","korean":"Halo Board 설정","spanish":"Halo Board Settings","french":"Panneau Configuration Halo","portuguese":"Halo Board Settings","italian":"Impostazioni Scheda Halo","german":"Halo-Karten Einstellungen","turkish":"Halo Board Settings"}},"System/FRAM/Display Settings":{"@translations":{"english":"Display Settings","korean":"Display 설정","spanish":"Display Settings","french":"Affichage Paramètres","portuguese":"Display Settings","italian":"Impostazioni Schermo","german":"Display Einstellungen","turkish":"Display Settings"}},"Reject/Additional Settings":{"@translations":{"english":"Additional Settings","korean":"추가 설정","spanish":"Ajustes Adicionales","french":"Paramètres Additionnels","portuguese":"Additional Settings","italian":"Altre Impostazioni","german":"zusätzliche Einstellungen","turkish":"Additional Settings"}},"Reject/Additional Settings/Distances":{"@translations":{"english":"Distances","korean":"거리","spanish":"Distancias","french":"Distances","portuguese":"Distances","italian":"Distanze","german":"Distanzen","turkish":"Distances"}},"Reject/Additional Settings/Belt Speed":{"@translations":{"english":"Belt Speed","korean":"벨트 속도","spanish":"Velocidad de Cinta","french":"Vitesse Courroie","portuguese":"Belt Speed","italian":"Velocità Nastro Trasportatore","german":"Bandgeschwindigkeit","turkish":"Belt Speed"}},"Reject/Additional Settings/Latch":{"@translations":{"english":"Latches","korean":"래치","spanish":"Retenciones","french":"Verrous","portuguese":"Latches","italian":"Mantenimento","german":"Selbsthaltung","turkish":"Latches"}},"Reject/Additional Settings/Clocks":{"@translations":{"english":"Clocks","korean":"시계","spanish":"Relojes","french":"Horloges","portuguese":"Clocks","italian":"Orologi","german":"Uhren","turkish":"Clocks"}},"IO/Inputs":{"@translations":{"english":"Inputs","korean":"입력","spanish":"Entradas","french":"Entrées","portuguese":"Inputs","italian":"Ingressi","german":"Eingänge","turkish":"Inputs"}},"IO/Outputs":{"@translations":{"english":"Outputs","korean":"출력","spanish":"Salidas","french":"Sorties","portuguese":"Outputs","italian":"Uscite","german":"Ausgänge","turkish":"Outputs"}},"Sens":{"@translations":{"english":"Sensitivity","korean":"민감도","spanish":"Sensibilidad","french":"Sensitivité","portuguese":"Sensitivity","italian":"Sensibilità","german":"Empfindlichkeit","turkish":"Sensitivity"}},"Test":{"@translations":{"english":"Test","korean":"테스트","spanish":"Test","french":"Test","portuguese":"Test","italian":"Test","german":"Test","turkish":"Test"}},"Test/Manual":{"@translations":{"english":"Manual Test 1","korean":"수동 테스트 1","spanish":"Test Manual 1","french":"Test Manuel 1","portuguese":"Manual Test 1","italian":"Test Manuale 1","german":"Manueller Test 1","turkish":"Manual Test 1"}},"Test/Halo":{"@translations":{"english":"Halo Test 1","korean":"헤일로 테스트 1","spanish":"Test Halo 1","french":"Test Halo 1","portuguese":"Halo Test 1","italian":"Test Halo 1","german":"Halo Test 1","turkish":"Halo Test 1"}},"Test/Manual2":{"@translations":{"english":"Manual Test 2","korean":"수동 테스트 2","spanish":"Test Manual 2","french":"Test Manuel 2","portuguese":"Manual Test 2","italian":"Test Manuale 2","german":"Manueller Test 2","turkish":"Manual Test 2"}},"Test/Halo2":{"@translations":{"english":"Halo Test 2","korean":"헤일로 테스트 2","spanish":"Test Halo 2","french":"Test Halo 2","portuguese":"Halo Test 2","italian":"Test Halo 2","german":"Halo Test 2","turkish":"Halo Test 2"}},"Test/HaloConf":{"@translations":{"english":"Test Configuration","korean":"테스트 설정","spanish":"Configuración Test","french":"Configuration de Test","portuguese":"Test Configuration","italian":"Test Impostazioni","german":"Test Konfiguration","turkish":"Test Configuration"}},"Sens/Filter":{"@translations":{"english":"Filter Noise","korean":"필터 노이즈","spanish":"Filtro Ruido","french":"Filtre Bruit","portuguese":"Filter Noise","italian":"Filtro Rumore","german":"Filter Rauschen","turkish":"Filter Noise"}},"Sens/Oscillation Power":{"@translations":{"english":"Oscillator Power","korean":"오실레이션 파워","spanish":"Potencia Oscilación","french":"Puissance Oscilliateur","portuguese":"Oscillation Power","italian":"Potenza Oscillazione","german":"Oszillator Leistung","turkish":"Oscillator Power"}},"Sens/Detection Mode":{"@translations":{"english":"Detection Mode","korean":"검출방식","spanish":"Modo Detección","french":"Mode Détection","portuguese":"Modo de Detecção","italian":"Modo Rivelamento","german":"Detektions Modus","turkish":"Detection Mode"}},"Sens/FM Setup":{"@translations":{"english":"FM Setup","korean":"FM 설정","spanish":"Ajuste FM","french":"Configuration FM","portuguese":"FM Setup","italian":"Configurazione FM","german":"FM Setup","turkish":"FM Setup"}},"Sens/Thresholds":{"@translations":{"english":"Thresholds","korean":"Thresholds","spanish":"Thresholds","french":"Thresholds","portuguese":"Thresholds","italian":"Thresholds","german":"Thresholds","turkish":"Thresholds"}},"Calibration":{"@translations":{"english":"Learn","korean":"학습","spanish":"Learn","french":"Learn","portuguese":"Learn","italian":"Learn","german":"Learn","turkish":"Learn"}},"Calibration/Phase":{"@translations":{"english":"Phase","korean":"페이즈","spanish":"Fase","french":"Phase","portuguese":"Phase","italian":"Fase","german":"Phase","turkish":"Phase"}},"Calibration/Learn Path":{"@translations":{"english":"Learn Path","korean":"페이즈","spanish":"Fase","french":"Phase","portuguese":"Phase","italian":"Fase","german":"Phase","turkish":"Phase"}},"Calibration/Phase/MPhase":{"@translations":{"english":"M Phase","korean":"다중 페이즈","spanish":"Fase M","french":"Phase M","portuguese":"M Phase","italian":"Fase M","german":"M Phase","turkish":"M Phase"}},"System/SysVersion/MPhase":{"@translations":{"english":"Multiple Phase","korean":"다중 페이즈","spanish":"Fase Múltiple","french":"Phase Multiple","portuguese":"M Phase","italian":"Fase Multiple","german":"Multiple Phase","turkish":"Multiple Phase"}},"System/SysVersion/DCFilter":{"@translations":{"english":"DC Filter","korean":"DC Filter","spanish":"DC Filter","french":"Filtre DC","portuguese":"DC Filter","italian":"DC Filter","german":"DC Filter","turkish":"DC Filter"}}},"@languages":["english","korean","spanish","french","portuguese","italian","german","turkish"],"@labels":{"Channel A":{"english":{"name":"Channel A"},"korean":{"name":"채널 A"},"spanish":{"name":"Canal A"},"french":{"name":"Canal A"},"portuguese":{"name":"Canal A"},"italian":{"name":"Canale A"},"german":{"name":"A-Kanal"},"turkish":{"name":"Channel A"}},"Channel B":{"english":{"name":"Channel B"},"korean":{"name":"채널 B"},"spanish":{"name":"Canal B"},"french":{"name":"Canal B"},"portuguese":{"name":"Canal B"},"italian":{"name":"Canale B"},"german":{"name":"B-Kanal"},"turkish":{"name":"Channel B"}},"Mode":{"english":{"name":"Mode"},"korean":{"name":"모드"},"spanish":{"name":"Modo"},"french":{"name":"Mode"},"portuguese":{"name":"Modo"},"italian":{"name":"Modo"},"german":{"name":"Modus"},"turkish":{"name":"Mode"}},"Device":{"english":{"name":"Device"},"korean":{"name":"기기"},"spanish":{"name":"dispositivo"},"french":{"name":"appareil"},"portuguese":{"name":"dispositivo"},"italian":{"name":"dispositivo"},"german":{"name":"Gerät"},"turkish":{"name":"Device"}},"Count":{"english":{"name":"Count"},"korean":{"name":"횟수"},"spanish":{"name":"Cuenta"},"french":{"name":"Nombre"},"portuguese":{"name":"Quantidade"},"italian":{"name":"Contatore"},"german":{"name":"Zähler"},"turkish":{"name":"Count"}},"Year":{"english":{"name":"Year"},"korean":{"name":"년"},"spanish":{"name":"Year"},"french":{"name":"Year"},"portuguese":{"name":"Year"},"italian":{"name":"Year"},"german":{"name":"Year"},"turkish":{"name":"Year"}},"Month":{"english":{"name":"Month"},"korean":{"name":"월"},"spanish":{"name":"Month"},"french":{"name":"Month"},"portuguese":{"name":"Month"},"italian":{"name":"Month"},"german":{"name":"Month"},"turkish":{"name":"Month"}},"Day":{"english":{"name":"Day"},"korean":{"name":"일"},"spanish":{"name":"Day"},"french":{"name":"Day"},"portuguese":{"name":"Day"},"italian":{"name":"Day"},"german":{"name":"Day"},"turkish":{"name":"Day"}},"Hour":{"english":{"name":"Hour"},"korean":{"name":"시"},"spanish":{"name":"Hour"},"french":{"name":"Hour"},"portuguese":{"name":"Hour"},"italian":{"name":"Hour"},"german":{"name":"Hour"},"turkish":{"name":"Hour"}},"Minute":{"english":{"name":"Minute"},"korean":{"name":"분"},"spanish":{"name":"Minute"},"french":{"name":"Minute"},"portuguese":{"name":"Minute"},"italian":{"name":"Minute"},"german":{"name":"Minute"},"turkish":{"name":"Minute"}},"Second":{"english":{"name":"Second"},"korean":{"name":"초"},"spanish":{"name":"Second"},"french":{"name":"Second"},"portuguese":{"name":"Second"},"italian":{"name":"Second"},"german":{"name":"Second"},"turkish":{"name":"Second"}},"Metal Type":{"english":{"name":"Metal Type"},"korean":{"name":"금속 종류"},"spanish":{"name":"Tipo Metal"},"french":{"name":"Type de Métal"},"portuguese":{"name":"Tipo de Metal"},"italian":{"name":"Tipo Metallo"},"german":{"name":"Metallart"},"turkish":{"name":"Metal Type"}},"Signal Chain":{"english":{"name":"Signal Chain"},"korean":{"name":"시그널 체인"},"spanish":{"name":"Cadena Señal"},"french":{"name":"Chaîne signalétique"},"portuguese":{"name":"Cadeia de Sinal"},"italian":{"name":"Catene Segnale"},"german":{"name":"Signalkette"},"turkish":{"name":"Signal Chain"}},"Source":{"english":{"name":"Source"},"korean":{"name":"소스"},"spanish":{"name":"Fuente"},"french":{"name":"Source"},"portuguese":{"name":"Fonte"},"italian":{"name":"Sorgente"},"german":{"name":"Quelle"},"turkish":{"name":"Source"}},"Polarity":{"english":{"name":"Polarity"},"korean":{"name":"폴래리티"},"spanish":{"name":"Polaridad"},"french":{"name":"Polarité"},"portuguese":{"name":"Polaridade"},"italian":{"name":"Polarità"},"german":{"name":"Polarität"},"turkish":{"name":"Polarity"}},"Sensitivity":{"english":{"name":"Sensitivity"},"korean":{"name":"민감도"},"spanish":{"name":"Sensibildad"},"french":{"name":" Sensibilité"},"portuguese":{"name":"Sensibilidade"},"italian":{"name":"Sensibilità"},"german":{"name":"Empfindlichkeit"},"turkish":{"name":"Sensitivity"}},"Signal":{"english":{"name":"Signal"},"korean":{"name":"신호"},"spanish":{"name":"Señal"},"french":{"name":"Signal"},"portuguese":{"name":"Sinal"},"italian":{"name":"Segnale"},"german":{"name":"Signal"},"turkish":{"name":"Signal"}},"Rejects":{"english":{"name":"Rejects"},"korean":{"name":"거부"},"spanish":{"name":"Rechazo"},"french":{"name":"Rejets"},"portuguese":{"name":"Rejeção"},"italian":{"name":"Rifiuti"},"german":{"name":"Auswürfe"},"turkish":{"name":"Rejects"}},"Settings":{"english":{"name":"Settings"},"korean":{"name":"설정"},"spanish":{"name":"Ajustes"},"french":{"name":" Paramètres"},"portuguese":{"name":"Parâmetros"},"italian":{"name":"Impostazioni"},"german":{"name":"Einstellungen"},"turkish":{"name":"Settings"}},"Test":{"english":{"name":"Test"},"korean":{"name":"테스트"},"spanish":{"name":"Test"},"french":{"name":"Test"},"portuguese":{"name":"Teste"},"italian":{"name":"Test"},"german":{"name":"Test"},"turkish":{"name":"Test"}},"Back":{"english":{"name":"Back"},"korean":{"name":"뒤로"},"spanish":{"name":"volver"},"french":{"name":"retourner"},"portuguese":{"name":"regressar"},"italian":{"name":"ritornare"},"german":{"name":"zurückkehren"},"turkish":{"name":"Back"}},"Accept":{"english":{"name":"Accept"},"korean":{"name":"적용"},"spanish":{"name":"Aceptar"},"french":{"name":"Acceptez"},"portuguese":{"name":"aceitar"},"italian":{"name":"accettare"},"german":{"name":"akzeptieren"},"turkish":{"name":"Accept"}},"Cancel":{"english":{"name":"Cancel"},"korean":{"name":"취소"},"spanish":{"name":"Cancelar"},"french":{"name":"Annuler"},"portuguese":{"name":"Cancelar"},"italian":{"name":"Annulla"},"german":{"name":"Stornieren"},"turkish":{"name":"Cancel"}},"Test in progress":{"english":{"name":"Test in progress"},"korean":{"name":"테스트 진행 중"},"spanish":{"name":"Test en progreso"},"french":{"name":"Test en cours"},"portuguese":{"name":"Teste em andamento"},"italian":{"name":"Test in corso"},"german":{"name":"Test läuft"},"turkish":{"name":"Test in progress"}},"Test required":{"english":{"name":"Test required"},"korean":{"name":"테스트 필요"},"spanish":{"name":"Test requerida"},"french":{"name":"Test requis"},"portuguese":{"name":"Teste requerido"},"italian":{"name":"Test richiesto"},"german":{"name":"Test erforderlich"},"turkish":{"name":"Test required"}},"Clear Reject Latch":{"english":{"name":"Clear Reject Latch"},"korean":{"name":"리젝트 래치 클리어"},"spanish":{"name":"Claro rechazo de cierre"},"french":{"name":"Effacer le verrou de rejet"},"portuguese":{"name":"Trava de rejeição clara"},"italian":{"name":"Cancella chiavistello di rifiuto"},"german":{"name":"Löschen Sie die Zurückweisungssperre"},"turkish":{"name":"Clear Reject Latch"}},"Reject Latched":{"english":{"name":"Reject Latched"},"korean":{"name":"리젝트 래치됨"},"spanish":{"name":"Rechazar enganchado"},"french":{"name":"Rejeter verrouillé"},"portuguese":{"name":"Rejeitar travado"},"italian":{"name":"Rifiuta chiusa"},"german":{"name":"Abweisen verriegelt"},"turkish":{"name":"Reject Latched"}},"Please Wait":{"english":{"name":"Please Wait"},"korean":{"name":"기다려주세요"},"spanish":{"name":"por favor espera"},"french":{"name":"S'il vous plaît, attendez"},"portuguese":{"name":"Por favor, espere"},"italian":{"name":"attendere prego"},"german":{"name":"Warten Sie mal"},"turkish":{"name":"Please Wait"}},"Updating Detector":{"english":{"name":"Updating Detector"},"korean":{"name":"업데이트 진행중.."},"spanish":{"name":"Détecteur Mise à jour"},"french":{"name":"Détecteur Mise à jour"},"portuguese":{"name":"Atualizando Detector"},"italian":{"name":"Aggiornamento del rilevatore"},"german":{"name":"Aktualisierung des Detektors"},"turkish":{"name":"Updating Detector"}},"Clean mode":{"english":{"name":"Clean mode"},"korean":{"name":"청소 모드"},"spanish":{"name":"Modo limpio"},"french":{"name":"Mode propre"},"portuguese":{"name":"Modo de limpeza"},"italian":{"name":"Modalità pulita"},"german":{"name":"Reinigungsmodus"},"turkish":{"name":"Clean mode"}},"Time left":{"english":{"name":"Time left"},"korean":{"name":"남은 시간"},"spanish":{"name":"Tiempo restante"},"french":{"name":"Temps restant"},"portuguese":{"name":"Tempo restante"},"italian":{"name":"Tempo rimasto"},"german":{"name":"Übrige Zeit"},"turkish":{"name":"Time left"}},"Clear Latch":{"english":{"name":"Clear Latch"},"korean":{"name":"래치 클리어"},"spanish":{"name":"pestillo claro"},"french":{"name":"verrouiller clair"},"portuguese":{"name":"trava clara"},"italian":{"name":"Cancella chiavistello"},"german":{"name":"Löschen Sie die Verriegelung"},"turkish":{"name":"Clear Latch"}},"Tests":{"english":{"name":"Tests"},"korean":{"name":"테스트"},"spanish":{"name":"Tests"},"french":{"name":"Tests"},"portuguese":{"name":"Testes"},"italian":{"name":"Tests"},"german":{"name":"Tests"},"turkish":{"name":"Tests"}},"Log":{"english":{"name":"Log"},"korean":{"name":"기록"},"spanish":{"name":"Log"},"french":{"name":"Registre"},"portuguese":{"name":"Log"},"italian":{"name":"Log"},"german":{"name":"Log"},"turkish":{"name":"Log"}},"Calibrate":{"english":{"name":"Calibrate"},"korean":{"name":"조정"},"spanish":{"name":"Calibrar"},"french":{"name":"Calibrer"},"portuguese":{"name":"Calibrar"},"italian":{"name":"Calibrare"},"german":{"name":"Kalibrieren"},"turkish":{"name":"Calibrate"}},"Learn":{"english":{"name":"Learn"},"korean":{"name":"학습"},"spanish":{"name":"Learn"},"french":{"name":"Learn"},"portuguese":{"name":"Learn"},"italian":{"name":"Learn"},"german":{"name":"Learn"},"turkish":{"name":"Learn"}},"Product":{"english":{"name":"Product"},"korean":{"name":"품목"},"spanish":{"name":"Producto"},"french":{"name":"Produit"},"portuguese":{"name":"Produto"},"italian":{"name":"Prodotto"},"german":{"name":"Produkt"},"turkish":{"name":"Product"}},"Products":{"english":{"name":"Products"},"korean":{"name":"품목"},"spanish":{"name":"Productos"},"french":{"name":"Produits"},"portuguese":{"name":"Produtos"},"italian":{"name":"Prodotti"},"german":{"name":"Produkte"},"turkish":{"name":"Products"}},"Timestamp":{"english":{"name":"Timestamp"},"korean":{"name":"시간"},"spanish":{"name":"Marca Tiempo"},"french":{"name":"Horodatage"},"portuguese":{"name":"Marca de Horário"},"italian":{"name":"Marca Temporale"},"german":{"name":"Zeitstempel"},"turkish":{"name":"Timestamp"}},"Edit":{"english":{"name":"Edit"},"korean":{"name":"변경"},"spanish":{"name":"Edit"},"french":{"name":"Editer"},"portuguese":{"name":"Edit"},"italian":{"name":"Edit"},"german":{"name":"Editieren"},"turkish":{"name":"Edit"}},"Event":{"english":{"name":"Event"},"korean":{"name":"이벤트"},"spanish":{"name":"Event"},"french":{"name":"Activité"},"portuguese":{"name":"Event"},"italian":{"name":"Evento"},"german":{"name":"Event"},"turkish":{"name":"Event"}},"Events":{"english":{"name":"Events"},"korean":{"name":"이벤트"},"spanish":{"name":"Events"},"french":{"name":"Activités"},"portuguese":{"name":"Events"},"italian":{"name":"Eventos"},"german":{"name":"Ereignisse"},"turkish":{"name":"Events"}},"All":{"english":{"name":"All"},"korean":{"name":"전체"},"spanish":{"name":"Todos"},"french":{"name":"Tout"},"portuguese":{"name":"Todos"},"italian":{"name":"Tutti"},"german":{"name":"Alle"},"turkish":{"name":"All"}},"Details":{"english":{"name":"Details"},"korean":{"name":"세부사항"},"spanish":{"name":"Detalles"},"french":{"name":"Détails"},"portuguese":{"name":"Detalhes"},"italian":{"name":"Dettagli"},"german":{"name":"Details"},"turkish":{"name":"Details"}},"Description":{"english":{"name":"Description"},"korean":{"name":"세부사항"},"spanish":{"name":"Description"},"french":{"name":"Description"},"portuguese":{"name":"Description"},"italian":{"name":"Description"},"german":{"name":"Beschreibung"},"turkish":{"name":"Description"}},"Running Product":{"english":{"name":"Running Product"},"korean":{"name":"현 품목"},"spanish":{"name":"Producto en Ejecución"},"french":{"name":"Produit Courant"},"portuguese":{"name":"Produto Rodando"},"italian":{"name":"Prodotto in Esecuzione"},"german":{"name":"aktives Produkt"},"turkish":{"name":"Running Product"}},"Select Test":{"english":{"name":"Select Test"},"korean":{"name":"테스트 선택"},"spanish":{"name":"Selección Test"},"french":{"name":"Sélectionner le Test"},"portuguese":{"name":"Seleção de Teste"},"italian":{"name":"Seleziona Test"},"german":{"name":"Select Test"},"turkish":{"name":"Select Test"}},"Currently Running":{"english":{"name":"Currently Running"},"korean":{"name":"실행중"},"spanish":{"name":"Actualmente en Ejecución"},"french":{"name":"Présentement en exécution"},"portuguese":{"name":"Atualmente em Execução"},"italian":{"name":"Attualmente In Esecuzione"},"german":{"name":"momentan Aktiv"},"turkish":{"name":"Currently Running"}},"Quit Test":{"english":{"name":"Quit Test"},"korean":{"name":"테스트 중단"},"spanish":{"name":"Salir Test"},"french":{"name":"Abandonner le test"},"portuguese":{"name":"Sair do Teste"},"italian":{"name":"Esci Test"},"german":{"name":"Test abbrechen"},"turkish":{"name":"Quit Test"}},"activate":{"english":{"name":"activate"},"korean":{"name":"활성화"},"spanish":{"name":"Activar"},"french":{"name":"Activer"},"portuguese":{"name":"Ativar"},"italian":{"name":"Attivare"},"german":{"name":"aktiviere"},"turkish":{"name":"activate"}},"Clear Faults":{"english":{"name":"Clear Faults"},"korean":{"name":"폴트 클리어"},"spanish":{"name":"Borrar Fallos"},"french":{"name":"Effacer Défaillance/Erreur"},"portuguese":{"name":"Limpar Falhas"},"italian":{"name":"Cancella Errori"},"german":{"name":"Fehler löschen"},"turkish":{"name":"Clear Faults"}},"Clear Warnings":{"english":{"name":"Clear Warnings"},"korean":{"name":"경고 클리어"},"spanish":{"name":"Clear Warnings"},"french":{"name":"Clear Warnings"},"portuguese":{"name":"Clear Warnings"},"italian":{"name":"Clear Warnings"},"german":{"name":"Clear Warnings"},"turkish":{"name":"Clear Warnings"}},"No Faults":{"english":{"name":"No Faults"},"korean":{"name":"폴트 없음"},"spanish":{"name":"Sin Fallos"},"french":{"name":"Aucune Erreur"},"portuguese":{"name":"Sem Falhas"},"italian":{"name":"Nessun Errore"},"german":{"name":"keine Fehler"},"turkish":{"name":"No Faults"}},"Faults":{"english":{"name":"Faults"},"korean":{"name":"폴트"},"spanish":{"name":"Fallos"},"french":{"name":"Erreurs"},"portuguese":{"name":"Falhas"},"italian":{"name":"Errore"},"german":{"name":"Fehler"},"turkish":{"name":"Faults"}},"Fault":{"english":{"name":"Fault"},"korean":{"name":"폴트"},"spanish":{"name":"Fallo"},"french":{"name":"Erreur"},"portuguese":{"name":"Falha"},"italian":{"name":"Errore"},"german":{"name":"Fehler"},"turkish":{"name":"Fault"}},"Warnings":{"english":{"name":"Warnings"},"korean":{"name":"경고"},"spanish":{"name":"Advertencias"},"french":{"name":"Alerte"},"portuguese":{"name":"Avisos"},"italian":{"name":"Avvertenze"},"german":{"name":"Warnungen"},"turkish":{"name":"Warnings"}},"Warning":{"english":{"name":"Warning"},"korean":{"name":"경고"},"spanish":{"name":"Advertencia"},"french":{"name":"Alerte"},"portuguese":{"name":"Aviso"},"italian":{"name":"Avvertimento"},"german":{"name":"Warnung"},"turkish":{"name":"Warning"}},"Calibrate All":{"english":{"name":"Calibrate All"},"korean":{"name":"전부 조정"},"spanish":{"name":"Calibrar Todo"},"french":{"name":"Calibrer Tout"},"portuguese":{"name":"Calibrar Tudo"},"italian":{"name":"Calibra Tutto"},"german":{"name":"Kalibriere alles"},"turkish":{"name":"Calibrate All"}},"Detector":{"english":{"name":"Detector"},"korean":{"name":"디텍터"},"spanish":{"name":"Detector"},"french":{"name":"Détecteur"},"portuguese":{"name":"Detector"},"italian":{"name":"Detector"},"german":{"name":"Detektor"},"turkish":{"name":"Detector"}},"Summary of Events":{"english":{"name":"Summary of Events"},"korean":{"name":"개요"},"spanish":{"name":"Summary of Events"},"french":{"name":"Résumé des Activités"},"portuguese":{"name":"Summary of Events"},"italian":{"name":"Summary of Events"},"german":{"name":"Zusammenfassung Ereignisse"},"turkish":{"name":"Summary of Events"}},"Setting Changes":{"english":{"name":"Setting Changes"},"korean":{"name":"설정 변경"},"spanish":{"name":"Setting Changes"},"french":{"name":"Changements de Configuration"},"portuguese":{"name":"Setting Changes"},"italian":{"name":"Setting Changes"},"german":{"name":"Einstellungsänderungen"},"turkish":{"name":"Setting Changes"}},"Product Changes":{"english":{"name":"Product Changes"},"korean":{"name":"품목 변경"},"spanish":{"name":"Product Changes"},"french":{"name":"Changements de Produit"},"portuguese":{"name":"Product Changes"},"italian":{"name":"Product Changes"},"german":{"name":"Produktänderungen"},"turkish":{"name":"Product Changes"}},"Test Rejects":{"english":{"name":"Test Rejects"},"korean":{"name":"테스트 리젝트"},"spanish":{"name":"Test Rejects"},"french":{"name":"Tester les Rejets"},"portuguese":{"name":"Test Rejects"},"italian":{"name":"Test Rejects"},"german":{"name":"Teste Auswürfe"},"turkish":{"name":"Test Rejects"}},"Contact Information":{"english":{"name":"Contact Information"},"korean":{"name":"연락처"},"spanish":{"name":"Contact Information"},"french":{"name":"Coordonnées de Communication"},"portuguese":{"name":"Contact Information"},"italian":{"name":"Contact Information"},"german":{"name":"Kontakt Information"},"turkish":{"name":"Contact Information"}},"Report Filter":{"english":{"name":"Report Filter"},"korean":{"name":"리포트 필터"},"spanish":{"name":"Report Filter"},"french":{"name":"Filtre d'enregistrement"},"portuguese":{"name":"Report Filter"},"italian":{"name":"Report Filter"},"german":{"name":"Berichte Filter"},"turkish":{"name":"Report Filter"}},"Generated at":{"english":{"name":"Generated at"},"korean":{"name":"생성시간"},"spanish":{"name":"Generated at"},"french":{"name":"Généré à"},"portuguese":{"name":"Generated at"},"italian":{"name":"Generated at"},"german":{"name":"Generiert bei"},"turkish":{"name":"Generated at"}},"Add Unit":{"english":{"name":"Add Unit"},"korean":{"name":"개체 추가"},"spanish":{"name":"Add Unit"},"french":{"name":"Jouter Unité"},"portuguese":{"name":"Add Unit"},"italian":{"name":"Add Unit"},"german":{"name":"Gerät hinzufügen"},"turkish":{"name":"Add Unit"}},"E-mail":{"english":{"name":"E-mail"},"korean":{"name":"이메일"},"spanish":{"name":"E-mail"},"french":{"name":"Courriel"},"portuguese":{"name":"E-mail"},"italian":{"name":"E-mail"},"german":{"name":"E-mail"},"turkish":{"name":"E-mail"}},"Reports":{"english":{"name":"Reports"},"korean":{"name":"리포트"},"spanish":{"name":"Reports"},"french":{"name":"Rapports"},"portuguese":{"name":"Reports"},"italian":{"name":"Reports"},"german":{"name":"Berichte"},"turkish":{"name":"Reports"}},"Database":{"english":{"name":"Database"},"korean":{"name":"데이터베이스"},"spanish":{"name":"Database"},"french":{"name":"Base de Données"},"portuguese":{"name":"Database"},"italian":{"name":"Database"},"german":{"name":"Datenbasis"},"turkish":{"name":"Database"}},"Status":{"english":{"name":"Status Lights"},"korean":{"name":"상태 표시등"},"spanish":{"name":"Status Lights"},"french":{"name":"Voyant d'État"},"portuguese":{"name":"Status Lights"},"italian":{"name":"Status Lights"},"german":{"name":"Status"},"turkish":{"name":"Status Lights"}},"Language":{"english":{"name":"Language"},"korean":{"name":"언어"},"spanish":{"name":"Language"},"french":{"name":"Langage"},"portuguese":{"name":"Language"},"italian":{"name":"Language"},"german":{"name":"Sprache"},"turkish":{"name":"Language"}},"DateTime":{"english":{"name":"Timestamp"},"korean":{"name":"시간"},"spanish":{"name":"Timestamp"},"french":{"name":"Horodatage"},"portuguese":{"name":"Timestamp"},"italian":{"name":"Timestamp"},"german":{"name":"Datum/Zeit"},"turkish":{"name":"Timestamp"}},"UserName":{"english":{"name":"User Name"},"korean":{"name":"사용자"},"spanish":{"name":"User Name"},"french":{"name":"Nom de l'Utilisateur"},"portuguese":{"name":"User Name"},"italian":{"name":"User Name"},"german":{"name":"Benutzername"},"turkish":{"name":"User Name"}},"Type":{"english":{"name":"Type"},"korean":{"name":"종류"},"spanish":{"name":"Type"},"french":{"name":"Type"},"portuguese":{"name":"Type"},"italian":{"name":"Type"},"german":{"name":"Typr"},"turkish":{"name":"Type"}},"Trying to reconnect":{"english":{"name":"Trying to reconnect"},"korean":{"name":"재연결 시도중"},"spanish":{"name":"Trying to reconnect"},"french":{"name":"Trying to reconnect"},"portuguese":{"name":"Trying to reconnect"},"italian":{"name":"Trying to reconnect"},"german":{"name":"Trying to reconnect"},"turkish":{"name":"Trying to reconnect"}},"Syncing":{"english":{"name":"Syncing"},"korean":{"name":"동기화 진행중.."},"spanish":{"name":"Détecteur Sync à jour"},"french":{"name":"Détecteur Sync à jour"},"portuguese":{"name":"Syncing"},"italian":{"name":"Syncing"},"german":{"name":"Syncing"},"turkish":{"name":"Syncing"}}},"@func":{"frac_value":"(function(int){return (int/(1<<15));})","mm":"(function(dist,metric){if(metric==0){return (dist/25.4).toFixed(1) + ' in'}else{ return dist + ' mm'}})","prod_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})","dsp_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})","dsp_serno_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})","rec_date":"(function(val){var dd = val & 0x1f; var mm = (val >> 5) & 0xf; var yyyy = ((val>>9) & 0x7f) + 1996; return yyyy.toString() + '/' + mm.toString() + '/' + dd.toString()})","phase_spread":"(function(val){return Math.round((val/(1<<15))*45)})","phase":"(function(val,wet){ if(wet == 0){if((((val/(1<<15))*45)+90) <= 135){return (((val/(1<<15))*45)+90).toFixed(2); }else{ return ((val/(1<<15))*45).toFixed(2); }}else{ return ((val/(1<<15))*45).toFixed(2);}})","rej_del":"(function(ticks,tack) { if(tack==0){return (ticks/231.0).toFixed(2);}else{return ticks;}})","belt_speed":"(function(tpm,metric,tack){if(tack!=0){return tpm;} var speed= (231.0/tpm)*60; if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}})","password8":"(function(words){return words.map(function(w){return((w&0xffff).toString(16))}).join(',');})","rej_chk":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})","rej_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})","rej_latch":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})","prod_name":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})","peak_mode":"(function(eye,time){if(eye == 0){return(time*2;)}else{return 1;}})","phase_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})","eye_rej":"(function(photo,lead,width){if(photo == 0){return 3;}else{if(lead==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})","bit_array":"(function(val){if(val == 0){return 0;}else{ var i = 0; while(i<16 && ((val>>i) & 1) == 0){ i++; } i++;  return i; } })","patt_frac":"(function(val){return (val/10.0).toFixed(1)})","eye_rej_mode":"(function(val,photo,width){if(photo == 0){return 3;}else{if(val==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})","ipv4_address":"(function(words){return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');})","username":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})","user_opts":"(function(opts){return opts});","password_hash":"(function(phash){    var buf = Buffer.alloc(8); buf.writeUInt16LE(phash[1],0); buf.writeUInt16LE(phash[0],2); buf.writeUInt16LE(phash[2],6); buf.writeUInt16LE(phash[3],4);return buf;});","det_thresh":"(function(fm,mode,wet,r,x){if(mode == 0){ if(wet == 0){ return r; }else{ return x; }}else{ return fm; }})"}
 }
 const funcJSON ={
 	"@func":{"frac_value":"(function(int){return (int/(1<<15));})",
@@ -47,7 +47,8 @@ const funcJSON ={
       "username":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
       "user_opts":"(function(opts){return opts});",
       "password_hash":"(function(phash){    var buf = Buffer.alloc(8); buf.writeUInt16LE(phash[1],0); buf.writeUInt16LE(phash[0],2); buf.writeUInt16LE(phash[2],6); buf.writeUInt16LE(phash[3],4);return buf;});",
-      "det_thresh":"(function(fm,mode,wet,r,x){if(mode == 0){ if(wet == 0){ return r; }else{ return x; }}else{ return fm; }})"
+      "det_thresh":"(function(fm,mode,wet,r,x){if(mode == 0){ if(wet == 0){ return r; }else{ return x; }}else{ return fm; }})",
+      "phase_offset":"(function(val){return val;})"
       }
 	}
 
@@ -146,6 +147,9 @@ class Params{
     }else{
       return Params.phase_wet(val);
     }
+  }
+  static phase_offset(val){
+  	return val
   }
   static rej_del(ticks, tack){
     if(tack==0){
@@ -246,7 +250,7 @@ class Params{
     }
   }
   static phase_mode(wet, patt){
-    //////console.log(patt)
+    ////////console.log(patt)
     if (patt==0){
       if (wet==0){
         return 0;
@@ -301,11 +305,11 @@ class Params{
     var b = new Buffer(byteArr)
     var length = byteArr.length/2;
     var wArray = []
-    //////console.log(length)
+    ////////console.log(length)
     for(var i = 0; i<length; i++){
       wArray.push(b.readUInt16BE(i*2));
     }
-    //////console.log(wArray)
+    ////////console.log(wArray)
     return wArray;
 
   }
@@ -314,17 +318,17 @@ class Params{
     var b = new Buffer(byteArr)
     var length = byteArr.length/2;
     var wArray = []
-    //////console.log(length)
+    ////////console.log(length)
     for(var i = 0; i<length; i++){
       wArray.push(b.readUInt16LE(i*2));
     }
-    //////console.log(wArray)
+    ////////console.log(wArray)
     return wArray;
 
   }
   static ipv4_address(words){
     //todo
-    //////console.log(ip)
+    ////////console.log(ip)
     //return ip
     return words.map(function(w){return [('000'+((w>>8)&0xff).toString()).slice(-3),('000'+(w&0xff).toString()).slice(-3)].join('.')}).join('.');
   }
@@ -473,19 +477,19 @@ class FtiSockIo{
 			this.handlers[ev](data)
 			data = null;
 		}else{
-			console.log(465,ev)
+			//console.log(465,ev)
 		}
 
 	}
 	on(handle, func){
-		//////console.log(handle)
+		////////console.log(handle)
 		this.handlers[handle] = func
 	}
 	emit(handle,data){
 		if(data){
-			////console.log('data is present')
+			//////console.log('data is present')
 		}else{
-			////console.log('data null')
+			//////console.log('data null')
 			data = 1
 		}
 		//data = data || 1
@@ -504,10 +508,10 @@ var located = false;
 var cnt = 0;
 
 socket.on('vdef', function(vdf){
-	//console.log('on vdef')
+	////console.log('on vdef')
 var json = vdf[0];
 _Vdef = json
-console.log(511,json)
+//console.log(511,json)
   var res = [];
     res[0] = {};
     res[1] = {};
@@ -533,7 +537,7 @@ console.log(511,json)
     res[7] = [];
    for(var par in res[2]){  
       if(par.indexOf('Fault') != -1){
-        ////console.log("fault found")
+        //////console.log("fault found")
         res[7].push(par)
       }
     }
@@ -548,7 +552,7 @@ console.log(511,json)
         vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapST["@categories"]], vdefMapST['@vMap'], vdefMapST['@pages']]
 
     }
-   console.log('552',vdefByMac)
+   //console.log('552',vdefByMac)
     isVdefSet = true;
     
 })
@@ -616,8 +620,8 @@ function getParams(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
     	}else if(typeof pVdef[2][p] != 'undefined'){
     		_p = {'@name':p, '@type':'dyn','@data':dynRec[p], '@children':[]}
     	}
-    	//////console.log(_vmap[p])
-    	//////console.log(p)
+    	////////console.log(_vmap[p])
+    	////////console.log(p)
     	_vmap[p].children.forEach(function (ch) {
     		var _ch;
     		if(typeof pVdef[0][ch] != 'undefined'){
@@ -637,13 +641,13 @@ function getParams(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
 }
 function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
 	var params = []
-	//////console.log(cat)
-	//////console.log(pVdef)
+	////////console.log(cat)
+	////////console.log(pVdef)
 	cat.params.forEach(function(par) {
 		if(par.type == 0){
 
 			var p = par.val
-			//////console.log(p)
+			////////console.log(p)
     		var _p = null//{'type':0, '@name':p, '@children':[], acc:par.acc}
    			if(typeof pVdef[0][p] != 'undefined'){
    				_p = {'type':0, '@name':p, '@data':sysRec[p], '@children':[], acc:par.acc}
@@ -658,7 +662,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
    				}
     			_p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
     			if(p == 'BeltSpeed'){
-   					console.log('653',par,_p)
+   					////console.log('653',par,_p)
    				}
     		}else if(typeof pVdef[2][p] != 'undefined'){
     			_p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc}
@@ -672,8 +676,8 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
     		}else if(par.val == 'DCRate_A'){
     			_p = {'type':0, '@name':p,'@data':prodRec[p], '@children':[], acc:par.acc}
-    		}    	//////console.log(_vmap[p])
-    	//////console.log(p)
+    		}    	////////console.log(_vmap[p])
+    	////////console.log(p)
     		if(_p != null){
     		
     		_vmap[p].children.forEach(function (ch) {
@@ -730,7 +734,7 @@ function iterateCats(cat, pVdef, sysRec, prodRec, _vmap, dynRec){
 	
 }
 function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
-	//////console.log(['684',pVdef])
+	////////console.log(['684',pVdef])
 	cat.params = getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram)
 	
 	return cat
@@ -796,7 +800,7 @@ class Container extends React.Component{
     // Display fallback UI
     this.setState({ hasError: true });
 
-    console.log(765, error, info)
+    //console.log(765, error, info)
      toast('error')
   }
 
@@ -824,22 +828,21 @@ class LandingPage extends React.Component{
 	constructor(props) {
 		super(props)
 		var minMq = window.matchMedia("(min-width: 400px)");
-		var mq = window.matchMedia("(min-width: 850px)");
-		mq.addListener(this.listenToMq)
-		minMq.addListener(this.listenToMq)
-		var mqls = [
-			window.matchMedia("(min-width: 321px)"),
-			window.matchMedia("(min-width: 376px)"),
-			window.matchMedia("(min-width: 426px)")
-		]
+		var mq = window.matchMedia("(min-width: 1000px)");
 
-		for (var i=0; i<mqls.length; i++){
-			mqls[i].addListener(this.listenToMq)
-		}
-		this.state =  ({currentPage:'landing',netpolls:{}, curIndex:0, minMq:minMq, minW:minMq.matches, mq:mq, brPoint:mq.matches, progress:'',
+		
+		var mqls = window.matchMedia("(orientation: landscape)")
+		
+		//for (var i=0; i<mqls.length; i++){
+		
+		//}//
+		this.state =  ({currentPage:'landing',netpolls:{}, mqls:mqls,curIndex:0, minMq:minMq,landScape:mqls.matches, minW:minMq.matches, mq:mq, brPoint:mq.matches, progress:'',
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:5, version:'2018/07/30',pmsg:'',pON:false,percent:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''})
 		this.listenToMq = this.listenToMq.bind(this);
+		mq.addListener(this.listenToMq)
+		minMq.addListener(this.listenToMq)
+		mqls.addListener(this.listenToMq);
 		this.locateUnits = this.locateUnits.bind(this);
 		this.onNetpoll = this.onNetpoll.bind(this);
 		this.onRMsg = this.onRMsg.bind(this);
@@ -878,9 +881,10 @@ class LandingPage extends React.Component{
 	listenToMq(argument) {
 		// body...
 		if(this.refs.dv){
-			this.refs.dv.setState({br:this.state.mq.matches})
+			//console.log(this.state.mqls.matches)
+			this.refs.dv.setState({br:this.state.mq.matches,landScape:this.state.mqls.matches, update:true})
 		}
-		this.setState({brPoint:this.state.mq.matches})
+		this.setState({brPoint:this.state.mq.matches, landScape:this.state.mqls.matches})
 	}
 	locateUnits(callback) {
 		located = false;
@@ -893,11 +897,12 @@ class LandingPage extends React.Component{
 	componentDidMount() {
 		var self = this;
 		this.loadPrefs();
+		//socket.on()
 		socket.on('resetConfirm', function (r) {
 			socket.emit('locateReq');
 		})
 		socket.on('nif', function(iface){
-			console.log('811', iface)
+			//console.log('811', iface)
 			self.setState({nifip:iface.address, nifnm:iface.netmask})
 		})
 		socket.on('version',function (version) {
@@ -905,7 +910,7 @@ class LandingPage extends React.Component{
 			self.setState({version:version})
 		})
 		socket.on('gw', function(gw){
-			console.log('823', gw)
+			//console.log('823', gw)
 			self.setState({nifgw:gw})
 		})
 		socket.on('displayUpdate', function(){
@@ -923,12 +928,12 @@ class LandingPage extends React.Component{
 		})
 	
 		socket.on('netpoll', function(m){
-			//////////console.log(['73',m])
+			////////////console.log(['73',m])
 			self.onNetpoll(m.data, m.det)
 			m = null;
 		})
 		socket.on('prefs', function(f) {
-			////////console.log(f)
+			//////////console.log(f)
 			var detL = self.state.detL
 			var cnt = 0;
 			var _ip = ''
@@ -950,13 +955,13 @@ class LandingPage extends React.Component{
 				if(self.state.currentPage == 'landing'){
 					if(self.state.mbunits[0].banks.length == 1){
 						if(vdefByMac[self.state.mbunits[0].banks[0].mac]){
-							console.log('try first here?')
+							//console.log('try first here?')
 							self.switchUnit(self.state.mbunits[0].banks[0])
 						}else{
 							setTimeout(function () {
 								// body...
 								if(self.state.currentPage == 'landing'){
-									console.log('switch?')
+									//console.log('switch?')
 									if(vdefByMac[self.state.mbunits[0].banks[0].mac]){
 										self.switchUnit(self.state.mbunits[0].banks[0])
 									}
@@ -980,7 +985,7 @@ class LandingPage extends React.Component{
 		})
 		socket.on('testusb',function(dev){
 
-			console.log(['testusb',dev])
+			//console.log(['testusb',dev])
 		})
 		socket.on('noVdef', function(det){
 			setTimeout(function(){
@@ -1009,7 +1014,7 @@ class LandingPage extends React.Component{
 						macs.push(d.mac)
 						dets[d.mac] = d
 					}
-					////////console.log(d)
+					//////////console.log(d)
 					socket.emit('vdefReq', d);
 
 			})
@@ -1024,7 +1029,7 @@ class LandingPage extends React.Component{
 						return b
 					}
 				})
-				console.log(['852',u.banks.slice(0), banks])
+				//console.log(['852',u.banks.slice(0), banks])
 				u.banks = banks;
 			})
 			var curDet = self.state.curDet;
@@ -1034,10 +1039,10 @@ class LandingPage extends React.Component{
 					curDet = dets[curDet.mac];
 				}
 				else{
-					console.log(895, 'this is the problem')
+					//console.log(895, 'this is the problem')
 				}
 			}
-			////////console.log(dets)
+			//////////console.log(dets)
 			mbunits.forEach(function(u){
 				u.banks.forEach(function(b) {
 
@@ -1045,7 +1050,7 @@ class LandingPage extends React.Component{
 					if(!nps[b.ip]){
 						nps[b.ip] = []
 					}
-					////console.log('connectToUnit')
+					//////console.log('connectToUnit')
 					socket.emit('connectToUnit', b.ip)
 				})
 			})
@@ -1058,19 +1063,19 @@ class LandingPage extends React.Component{
 			self.setState({dets:e, detL:dets, mbunits:mbunits,curDet:curDet, macList:macs, netpolls:nps, nifip:nfip})
 		}
 	}catch(er){
-		console.log(914,er)
+		//console.log(914,er)
 	//	toast(er.message)
 	}
 		});
 		
 		socket.on('paramMsg2', function(data) {
-		//	////console.log('on param msg')
-			//console.log(data)
+		//	//////console.log('on param msg')
+			////console.log(data)
 			self.onParamMsg2(data.data,data.det) 
 			data = null;
 		})
 		socket.on('rpcMsg', function (data) {
-			//console.log(data)
+			////console.log(data)
 			self.onRMsg(data.data, data.det)
 			data = null;
 		})
@@ -1083,11 +1088,11 @@ class LandingPage extends React.Component{
 			self.setState({curUser:'', level:0})
 		})
 		socket.on('accounts', function(data){
-			console.log(data)
+			//console.log(data)
 			self.setState({accounts:data.data})
 		})
 		socket.on('userNames', function(p){
-			//console.log(['808', p])
+			////console.log(['808', p])
 			if(self.refs.dv){
 				self.refs.dv.setState({usernames:p.det.data.array, update:true})
 			}
@@ -1108,7 +1113,7 @@ class LandingPage extends React.Component{
 		}
 	}
 	onNetpoll(e,d){
-		////////console.log([e,d])
+		//////////console.log([e,d])
 		var nps = this.state.netpolls
 		if(nps[d.ip]){
 			if(nps[d.ip].length == 15){
@@ -1121,9 +1126,9 @@ class LandingPage extends React.Component{
 			
 			nps[d.ip].unshift(e)
 			if(e.net_poll_h == 'NET_POLL_OPERATOR_NO'){
-				////console.log('test started: ' + d.ip)
+				//////console.log('test started: ' + d.ip)
 			}else if(e.net_poll_h == 'NET_POLL_TEST_REQ_PASS'){
-				////console.log('test passed: ' + d.ip)
+				//////console.log('test passed: ' + d.ip)
 				//toast('Test Passed')
 			}
 
@@ -1132,7 +1137,7 @@ class LandingPage extends React.Component{
 		
 	}
 	onRMsg(e,d) {
-		////////console.log([e,d])
+		//////////console.log([e,d])
 		var msg = e.data
 		var data = new Uint8Array(msg);
 
@@ -1161,9 +1166,9 @@ class LandingPage extends React.Component{
 		d = null;
 	}
 	onParamMsg2(e,d) {
-		//console.log(vdefByMac[d.mac])
+		////console.log(vdefByMac[d.mac])
 		if(vdefByMac[d.mac]){
-		//	console.log(d)
+		//	//console.log(d)
 			if(this.refs[d.mac]){
 				this.refs[d.mac].onParamMsg2(e);
 			}else{
@@ -1210,7 +1215,7 @@ class LandingPage extends React.Component{
 	}
 	logoClick() {this.setState({currentPage:'landing'})}
 	switchUnit(u) {
-		////////console.log(u)
+		//////////console.log(u)
 		var self = this;
 		setTimeout(function () {
 			// body...
@@ -1303,7 +1308,7 @@ class LandingPage extends React.Component{
 		this.setState({tmpMB:mbUnits, detL:detL})
 	}
 	cancel() {
-		////////console.log(['268', 'cancel'])
+		//////////console.log(['268', 'cancel'])
 		var detL = this.state.detL;
 		this.state.tmpMB.banks.forEach(function (b) {
 			detL[b.mac]= b
@@ -1352,7 +1357,7 @@ class LandingPage extends React.Component{
 		socket.emit('savePrefs', this.state.mbunits)
 	}
 	loadPrefs() {
-		////////console.log('load prefs')
+		//////////console.log('load prefs')
 		if(socket.sock.readyState  ==1){
 			//socket.emit('locateReq');
 			socket.emit('getVersion');
@@ -1376,7 +1381,7 @@ class LandingPage extends React.Component{
 	renderModal() {
 		var self = this;
 		var mbSetup = this.state.mbunits.map(function(mb,ind) {
-			////////console.log(ind)
+			//////////console.log(ind)
 			return <MbSetup remove={self.removeMb} move={self.move} mb={mb} edit={self.editMb} index={ind} singleUnits={self.state.single}/>	// body...
 		})
 		var detList = this.state.dets.map(function(d){
@@ -1477,7 +1482,7 @@ class LandingPage extends React.Component{
 	
 	onChange(argument) {
 		// body...
-		////console.log(argument)
+		//////console.log(argument)
 	}
 	showDisplaySettings(){
 		this.refs.dispModal.toggle();
@@ -1501,7 +1506,7 @@ class LandingPage extends React.Component{
 				return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/>	
 			}else{
 				if(mb.banks[0]){
-					////////console.log('457')
+					//////////console.log('457')
 					return <SingleUnit ref={mb.banks[0].mac} onSelect={self.switchUnit} unit={mb.banks[0]}/>	
 				}						
 			}
@@ -1575,7 +1580,7 @@ class LandingPage extends React.Component{
 	}
 	dummy() {
 		// body...
-		////console.log('dummy')
+		//////console.log('dummy')
 	}
 	render() {
 		var cont;
@@ -1584,7 +1589,7 @@ class LandingPage extends React.Component{
 
 
 		if(this.state.currentPage == 'landing'){
-			////////console.log('here')
+			//////////console.log('here')
 			cont = this.renderLanding();
 
 
@@ -1746,7 +1751,7 @@ class LogInControl extends React.Component{
 
 			this.setState({val:props.val, list:list})
 		}else{
-			console.log('this was the issue... why Though?')
+			//console.log('this was the issue... why Though?')
 			this.setState({list:list})
 		}
 		
@@ -1763,7 +1768,7 @@ class LogInControl extends React.Component{
 		this.props.logout();
 	}
 	selectChanged(v,i){
-		////console.log(['1531',v])
+		//////console.log(['1531',v])
 		var self = this;
 		setTimeout(function(){
 			self.setState({val:v})
@@ -1787,9 +1792,9 @@ class LogInControl extends React.Component{
 		this.setState({open:false})
 	}
 	valChanged(v){
-		//console.log(v)
+		////console.log(v)
 		//this.props.authenticate(this.state.list[this.state.val], v)
-		console.log(this.state.val)
+		//console.log(this.state.val)
 		if(this.props.pass6 == 0){
 			if(v.length == 6){
 				this.props.authenticate(this.state.val,v)
@@ -1887,7 +1892,7 @@ class LogInControl2 extends React.Component{
 
 			this.setState({val:props.val, list:list})
 		}else{
-			console.log('this was the issue... why Though?')
+			//console.log('this was the issue... why Though?')
 			this.setState({list:list})
 		}
 		
@@ -1907,17 +1912,16 @@ class LogInControl2 extends React.Component{
 		this.props.logout();
 	}
 	selectChanged(v,i){
-		////console.log(['1531',v])
+		//console.log(['1531',v])
 		var self = this;
 		setTimeout(function(){
-			self.setState({val:v})
-		}, 100)
-		
-		if(v != 0){
-			this.enterPIN()
-			
+			if(v != 0){
+			self.refs.psw.toggle();			
 		}
 
+		}, 100)
+		self.setState({val:v})
+		
 
 		//this.props.login(v)
 	}
@@ -1928,12 +1932,17 @@ class LogInControl2 extends React.Component{
 		this.setState({open:true})
 	}
 	onRequestClose(){
+		var self = this;
 		this.setState({open:false})
+		setTimeout(function(){
+			self.props.onRequestClose();
+		},100)
+			
 	}
 	valChanged(v){
-		//console.log(v)
+		////console.log(v)
 		//this.props.authenticate(this.state.list[this.state.val], v)
-		console.log(this.state.val)
+		//console.log(this.state.val)
 		if(this.props.pass6 == 0){
 			if(v.length == 6){
 				this.props.authenticate(this.state.val,v)
@@ -1959,15 +1968,22 @@ class LogInControl2 extends React.Component{
 		
 	}
 	onCancel(){
+		//console.log('on cancel')
+		var self = this;
 		this.setState({open:false})
+		setTimeout(function(){
+			self.props.onRequestClose();
+		},100)
+			
 	}
+
 	render(){
 		var list = this.state.list
 		var namestring = 'Select User'
-		var pw = <PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref='pw' val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
+		var pw = <PopoutWheel mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref='pw' val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
 
 		return <React.Fragment>{pw}
-			<CustomKeyboard language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'psw'} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
+			<CustomKeyboard mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'psw'} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
 		
 		</React.Fragment> 
 	}
@@ -2144,23 +2160,23 @@ class FaultItem extends React.Component{
 class SettingsDisplay2 extends React.Component{
 	constructor(props) {
 		super(props)
-		var mqls = [
+		this.mqls = [
 			window.matchMedia('(min-width: 300px)'),
 			window.matchMedia('(min-width: 467px)'),
 			window.matchMedia('(min-width: 600px)')
 		]
-		for (var i=0; i<mqls.length; i++){
-			mqls[i].addListener(this.listenToMq)
+		for (var i=0; i<3; i++){
+			this.mqls[i].addListener(this.listenToMq)
 		}
 		var font = 0;
-		if(mqls[2].matches){
+		if(this.mqls[2].matches){
 			font = 2
-		}else if(mqls[1].matches){
+		}else if(this.mqls[1].matches){
 			font = 1
 		}
 
 		this.state = ({
-		 sysRec:this.props.sysSettings, prodRec:this.props.prodSettings, dynRec:this.props.dynSettings, mqls:mqls, font:font, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec
+		 sysRec:this.props.sysSettings, prodRec:this.props.prodSettings, dynRec:this.props.dynSettings,font:font, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec
 		});
 		this.handleItemclick = this.handleItemclick.bind(this);
 		this.scrollUp = this.scrollUp.bind(this);
@@ -2171,22 +2187,29 @@ class SettingsDisplay2 extends React.Component{
 		this.activate = this.activate.bind(this);
 		this.onFocus = this.onFocus.bind(this);
 		this.onRequestClose = this.onRequestClose.bind(this);
+		this.listenToMq = this.listenToMq.bind(this);
 		//this.componentDidMount = this.component
+	}
+	componentWillUnmount(){
+		
+		for (var i=0; i<3; i++){
+			this.mqls[i].removeListener(this.listenToMq)
+		}
 	}
 	componentWillReceiveProps(newProps){
 		this.setState({data:newProps.data, cob2:newProps.cob2, sysRec:newProps.sysSettings, prodRec:newProps.prodSettings, dynRec:newProps.dynSettings, framRec:newProps.framRec})
 	}
 	listenToMq() {
-		if(this.state.mqls[2].matches){
+		if(this.mqls[2].matches){
 			this.setState({font:2})
-		}else if(this.state.mqls[1].matches){
+		}else if(this.mqls[1].matches){
 			this.setState({font:1})
 			
-		}else if(this.state.mqls[0].matches){
+		}else if(this.mqls[0].matches){
 			this.setState({font:0})
 		}
 	}
-	handleItemclick(dat, n){
+	handleItemclick(dat, n){		
 
 		this.props.onHandleClick(dat, n);
 	}
@@ -2204,20 +2227,20 @@ class SettingsDisplay2 extends React.Component{
 	
 	handleScroll(ev) {
 		// body...
-		//////console.log(ev.srcElement.body)
+		////////console.log(ev.srcElement.body)
 		var lvl = this.props.data.length
 		var len = 0;
 		if(lvl > 0){
 			len = this.props.data[lvl - 1 ][0].params.length
 		}
-		//	////console.log(document.getElementById(this.props.Id).scrollTop)
+		//	//////console.log(document.getElementById(this.props.Id).scrollTop)
 		if(len > 6){
 			if((document.getElementById(this.props.Id).scrollTop) + 390 < len*65){
 				this.refs.arrowBot.show();
-				//////console.log(['show arrow',document.getElementById(this.props.Id).scrollTop])
+				////////console.log(['show arrow',document.getElementById(this.props.Id).scrollTop])
 			}else{
 				this.refs.arrowBot.hide();	
-				//////console.log(document.getElementById(this.props.Id).scrollTop)
+				////////console.log(document.getElementById(this.props.Id).scrollTop)
 			} 
 			if(document.getElementById(this.props.Id).scrollTop > 5){
 				this.refs.arrowTop.show();
@@ -2225,7 +2248,7 @@ class SettingsDisplay2 extends React.Component{
 				this.refs.arrowTop.hide();
 			}
 		}
-		//////console.log(document.getElementById(this.props.Id));
+		////////console.log(document.getElementById(this.props.Id));
 	}
 	scrollUp() {
 		// body...
@@ -2238,7 +2261,7 @@ class SettingsDisplay2 extends React.Component{
 	}
 	sendPacket(n,v) {
 		var self = this;
-		console.log([n,v])
+		//console.log([n,v])
 		if(n['@rpcs']['toggle']){
 
 			var arg1 = n['@rpcs']['toggle'][0];
@@ -2277,13 +2300,13 @@ class SettingsDisplay2 extends React.Component{
 			var arg2 = [];
 			var strArg = null;
 			var flag = false
-				console.log('2281',v, n['@rpcs']['write'][1], n["@name"])
+				//console.log('2281',v, n['@rpcs']['write'][1], n["@name"])
 			for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
 				if(!isNaN(n['@rpcs']['write'][1][i])){
-					console.log('where')
+					//console.log('where')
 					arg2.push(n['@rpcs']['write'][1][i])
 				}else if(n['@rpcs']['write'][1][i] == n['@name']){
-					console.log('the')
+					//console.log('the')
 					if(!isNaN(v)){
 						arg2.push(v)
 					}
@@ -2293,7 +2316,7 @@ class SettingsDisplay2 extends React.Component{
 					}
 					flag = true;
 				}else{
-					console.log('fuck')
+					//console.log('fuck')
 					var dep = n['@rpcs']['write'][1][i]
 					if(dep.charAt(0) == '%'){
 
@@ -2312,7 +2335,7 @@ class SettingsDisplay2 extends React.Component{
 			if(!flag){
 				strArg = v;
 			}
-			console.log(['1917',arg1, arg2,strArg,v])
+			//console.log(['1917',arg1, arg2,strArg,v])
 		
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 				
@@ -2326,7 +2349,7 @@ class SettingsDisplay2 extends React.Component{
 	activate(n) {
 		// body...
 		var self = this;
-		////console.log(['1466',n,this.props.cob2,this.props.data])
+		//////console.log(['1466',n,this.props.cob2,this.props.data])
 		var list; 
 		if(this.props.data.length > 1){
 			list 	= this.props.data[this.props.data.length - 1][0].params
@@ -2358,13 +2381,14 @@ class SettingsDisplay2 extends React.Component{
 	render(){
 		var self = this;
 		var data = this.props.data
+		////console.log(2366,'render')
 		//var catMap = vdefByMac[this.props.dsp][]
-		////////console.log(data)
+		//////////console.log(data)
 		var lvl = data.length 
 		var handler = this.handleItemclick;
 		var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
 		var cvdf = this.props.cvdf
-		////////console.log(lvl)
+		//////////console.log(lvl)
 		var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
 
 		var nodes;
@@ -2388,7 +2412,7 @@ class SettingsDisplay2 extends React.Component{
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem2 mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} faultBits={this.props.faultBits}  ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+				nodes.push(<SettingItem3 mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			}
 			len = catList.length;
 			nav = nodes;
@@ -2423,7 +2447,7 @@ class SettingsDisplay2 extends React.Component{
 		    	var bblab = ''
 		    	if(this.props.mode == 'config'){
 		    		pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-		    		//console.log(pathString)
+		    		////console.log(pathString)
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    		bblab = catMapV2[data.slice(1,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
 		    	}else{
@@ -2444,39 +2468,39 @@ class SettingsDisplay2 extends React.Component{
 			})*/
 			data[lvl - 1 ][0].params.forEach(function (par,i) {
 				// body...
-			//	////console.log(['1986',par])
+			//	//////console.log(['1986',par])
 				if(par.type == 0){
-			//		//console.log("Is this the problem")
+			//		////console.log("Is this the problem")
 					var p = par
 
 					var ind = 0;
 					var prms = self.props.cob2[ind].params;
-					//////console.log(['1991',prms,data])
+					////////console.log(['1991',prms,data])
 					//var sbc = self.props.cob2[ind].subCats;
 					while(ind < lvl - 1){
 						ind = ind + 1
 						prms = prms[data[ind][1]]['@data'].params
-					//	////console.log(['1996',prms])
+					//	//////console.log(['1996',prms])
 					//	sbc = sbc[data[ind][1]].subCats;	
 					}
 					var d = prms[i]
 					var ch = d['@children']
 				var	acc = false;
-				////console.log(p)
+				//////console.log(p)
 				// accessControl
 					if((self.props.level > 3) || (p.acc <= self.props.level)){
 						acc = true;
 					}
-				//	//console.log(['2063',d])
+				//	////console.log(['2063',d])
 			//		self.props.level accLevel
-					nodes.push(<SettingItem2 mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} 
+					nodes.push(<SettingItem3 mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
 						ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
 							children={[vdefByMac[self.props.mac][5][p['@name']].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
 					
 				}else if(par.type == 1){
 					var sc = par['@data']
 							var	acc = false;
-							////console.log(['2046',par])
+							//////console.log(['2046',par])
 					// accessControl
 					if((self.props.level > 3) || (par.acc <= self.props.level)){
 						acc = true;
@@ -2484,18 +2508,18 @@ class SettingsDisplay2 extends React.Component{
 					if(typeof sc['child'] != 'undefined'){
 						var spar = sc.params[sc.child]
 						var ch = spar['@children']
-							nodes.push(<SettingItem2  mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+							nodes.push(<SettingItem3 mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 					data={[sc,i]} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			
 					}else{
 		
-						nodes.push(<SettingItem2  mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+						nodes.push(<SettingItem3 mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 					}
 				}else if(par.type == 2){
 					var sc = par['@data']
 							var	acc = false;
-							console.log(['2146',par])
+							//console.log(['2146',par])
 				
 					if((self.props.level > 3)){
 						acc = true;
@@ -2503,12 +2527,12 @@ class SettingsDisplay2 extends React.Component{
 					if(typeof sc['child'] != 'undefined'){
 						var spar = sc.params[sc.child]
 						var ch = spar['@children']
-							nodes.push(<SettingItem2  mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+							nodes.push(<SettingItem3 mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 					data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			
 					}else{
 		
-						nodes.push(<SettingItem2  mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} faultBits={self.props.faultBits} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+						nodes.push(<SettingItem3 mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 						data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 					}
 				}
@@ -2613,13 +2637,13 @@ class SettingItem2 extends React.Component{
 		//
 		var val = v
 		if(n['@name'] == 'Nif_ip'){
-			console.log(v.toString())
+			//console.log(v.toString())
 			socket.emit('nifip', v.toString())
 		}else if(n['@name'] == 'Nif_nm'){
-			console.log(v.toString())
+			//console.log(v.toString())
 			socket.emit('nifnm', v.toString())
 		}else if(n['@name'] == 'Nif_gw'){
-			console.log(v.toString())
+			//console.log(v.toString())
 			socket.emit('nifgw', v.toString())
 		}else{
 
@@ -2642,7 +2666,7 @@ class SettingItem2 extends React.Component{
 	onItemClick(){
 
 		if(this.props.hasChild || typeof this.props.data == 'object'){
-			////console.log([this.props.data])
+			//////console.log([this.props.data])
 			// accessControl
 			if(this.props.acc){
 				this.props.onItemClick(this.props.data, this.props.name)	
@@ -2684,8 +2708,8 @@ class SettingItem2 extends React.Component{
 							if(pVdef[5][d]["@rec"] == 0){
 								return self.props.sysSettings[d];
 							}else{
-							//	////console.log(d)
-								////////console.log(['1208',self.props.sysSettings])
+							//	//////console.log(d)
+								//////////console.log(['1208',self.props.sysSettings])
 								return self.props.prodSettings[d];
 							}
 						});
@@ -2696,7 +2720,7 @@ class SettingItem2 extends React.Component{
 						}
 					}	
 					if(pram['@bit_len']<=16){
-					//	////console.log(f)
+					//	//////console.log(f)
 
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 
@@ -2739,7 +2763,7 @@ class SettingItem2 extends React.Component{
 							}
 						}
 					if(pram['@bit_len']<=16){
-				//		////console.log(f)
+						////console.log(f)
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
 					
@@ -2783,7 +2807,7 @@ class SettingItem2 extends React.Component{
 							}else if(pVdef[5][d]["@rec"] == 1){
 								return self.props.prodSettings[d];
 							}else if(pVdef[5][d]["@rec"] == 2){
-							//		////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
 								return self.props.dynSettings[d];
 							}
 						});
@@ -2794,7 +2818,7 @@ class SettingItem2 extends React.Component{
 						}
 					}
 					if(pram['@bit_len']<=16){
-					//	////console.log(f)
+					//	//////console.log(f)
 						
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
@@ -2808,7 +2832,7 @@ class SettingItem2 extends React.Component{
 							}else if(pVdef[5][d]["@rec"] == 1){
 								return self.props.prodSettings[d];
 							}else if(pVdef[5][d]["@rec"] == 2){
-							//		////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
 								return self.props.dynSettings[d];
 							}
 					})
@@ -2837,16 +2861,16 @@ class SettingItem2 extends React.Component{
 							}else if(pVdef[5][d]["@rec"] == 1){
 								return self.props.prodSettings[d];
 							}else if(pVdef[5][d]["@rec"] == 2){
-							//		////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
 								return self.props.dynSettings[d];
 							}else if(pVdef[5][d]["@rec"] == 3){
-							//		////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
 								return self.props.framSettings[d];
 							}
 						});
 					}
 					if(pram['@bit_len']<=16){
-					//	////console.log(f)
+					//	//////console.log(f)
 						
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
@@ -2879,13 +2903,17 @@ class SettingItem2 extends React.Component{
 		var fSize = 24;
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-	
+		var sty = {height:60}
+				if(this.props.mobile){
+					sty.height = 45;
+					sty.lineHeight = '45px';
+				}
 				var res = vdefByMac[this.props.mac];
 			var pVdef = _pVdef;
 			if(res){
 				pVdef = res[1];
 			}
-			//console.log('2885',pVdef,_pVdef)
+			////console.log('2885',pVdef,_pVdef)
 			var label = false;
 		if(this.props.hasChild){
 			var namestring = this.props.name;
@@ -2897,9 +2925,9 @@ class SettingItem2 extends React.Component{
 			}
 			
 			if(typeof catMapV2[path] != 'undefined'){
-				////////console.log('1270')
+				//////////console.log('1270')
 				namestring = catMapV2[path]['@translations'][this.props.language]
-				////////console.log('1272')
+				//////////console.log('1272')
 
 			}
 			if(namestring.length > 28){
@@ -2910,15 +2938,19 @@ class SettingItem2 extends React.Component{
 			}else if(namestring.length > 18){
 				fSize = 22
 			}
-			//	////console.log(namestring)		
+			//	//////console.log(namestring)		
 			//
 				var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
-
+				if(this.props.mobile){
+					_st.lineHeight = '51px'
+					_st.height = 45
+				}
+				
 		
 		//	return <div className='sItem noChild' onClick={this.onItemClick}><label style={{display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{namestring}</label>
 		//	<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>More...<img style={{position:'absolute', width:48}}/></label></div></div>
 		//	</div>		
-		return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{namestring}</label></div>)
+		return (<div className='sItem hasChild' style={sty} onClick={this.onItemClick}><label>{namestring}</label></div>)
 		}else{
 			var val, pram;
 			//if(this.props.isArray)
@@ -2947,7 +2979,11 @@ class SettingItem2 extends React.Component{
 				fSize = 22
 			}
 			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
-			//console.log(2692,this.props.data);
+			if(this.props.mobile){
+				_st.lineHeight = '51px'
+				_st.height = 45
+			}
+			////console.log(2692,this.props.data);
 			
 			if(typeof this.props.data[0]['child'] != 'undefined'){
 				var lkey = this.props.data[0].params[this.props.data[0].child]['@name']
@@ -2987,28 +3023,31 @@ class SettingItem2 extends React.Component{
 					}
 				}
 
-			//	////console.log(['2409',pram])	<img style={{position:'absolute', width:75,top:0, left:800}} src='assets/angle-right.svg'/>
+			//	//////console.log(['2409',pram])	<img style={{position:'absolute', width:75,top:0, left:800}} src='assets/angle-right.svg'/>
 				
 				if(pram[0]['@labels']){
 					label = true
 				}	
-				var im = 		<img  style={{position:'absolute', width:36,top:15, left:815, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return.svg'/>
+				var im = <img  style={{position:'absolute', width:36,top:15, left:815, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return.svg'/>
 				if(this.props.backdoor){
 					im = ''
 				}
-				var edctrl = <EditControl mac={this.props.mac}  ov={true} language={this.props.language} ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={lkey}/>
-				return (<div className='sItem noChild' onClick={this.onItemClick}> {edctrl}
+				var edctrl = <EditControl mobile={this.props.mobile} mac={this.props.mac}  ov={true} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={lkey}/>
+				if(this.props.mobile){
+					sty.height = 51
+				}
+				return (<div className='sItem noChild' style={sty} onClick={this.onItemClick}> {edctrl}
 						{im}
 					
 					</div>)
 				}
 
 		
-				return (<div className='sItem hasChild' onClick={this.onItemClick}><label>{namestring}</label></div>)
+				return (<div className='sItem hasChild' style={sty} onClick={this.onItemClick}><label>{namestring}</label></div>)
 			}else{
 				val = [this.getValue(this.props.data['@data'], this.props.lkey)]
-				////////console.log(['1250',this.props.lkey, typeof this.props.data['@data']])
-				////////console.log(['1251', pVdef, pram])
+				//////////console.log(['1250',this.props.lkey, typeof this.props.data['@data']])
+				//////////console.log(['1251', pVdef, pram])
 				if(typeof pVdef[0][this.props.lkey] != 'undefined'){
 					pram = [pVdef[0][this.props.lkey]]
 				}else if(typeof pVdef[1][this.props.lkey] != 'undefined'){
@@ -3026,11 +3065,11 @@ class SettingItem2 extends React.Component{
 				}else if(this.props.lkey == 'DCRate_A'){
 					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
 				}else{
-					console.log(2629,this.props.lkey)
+					//console.log(2629,this.props.lkey)
 				}
 
 				if(this.props.data['@children']){
-		//			////console.log(['1346', this.props.data, this.props.children])
+		//			//////console.log(['1346', this.props.data, this.props.children])
 					for(var i=0;i<this.props.children[0].length;i++){
 						val.push(this.getValue(this.props.children[1][i], this.props.children[0][i]))
 						if(typeof pVdef[0][this.props.children[0][i]] != 'undefined'){
@@ -3070,7 +3109,7 @@ class SettingItem2 extends React.Component{
 					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
 				}
 				if(this.props.data['@children']){
-					////////console.log(['1346', this.props.data.children])
+					//////////console.log(['1346', this.props.data.children])
 					for(var ch in this.props.data['@children']){
 						val.push(this.getValue(this.props.data['@children'][ch], ch))
 						if(typeof pVdef[0][ch] != 'undefined'){
@@ -3088,13 +3127,560 @@ class SettingItem2 extends React.Component{
 					label = true
 				}
 			}
-				var edctrl = <EditControl mac={this.props.mac}  ov={false} language={this.props.language} ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={this.props.lkey}/>
-				return (<div className='sItem noChild'> {edctrl}
+			if(this.props.mobile){
+				sty.height = 51;
+			}
+				var edctrl = <EditControl mobile={this.props.mobile} mac={this.props.mac}  ov={false} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={pram} size={this.state.font} sendPacket={this.sendPacket} data={val} label={label} int={false} name={this.props.lkey}/>
+				return (<div className='sItem noChild' style={sty}> {edctrl}
 					</div>)
 			
 		}
 	}
 }
+
+
+class SettingItem3 extends React.Component{
+	constructor(props) {
+		super(props)
+
+		this.sendPacket = this.sendPacket.bind(this);
+		this.onItemClick = this.onItemClick.bind(this);
+		this.activate = this.activate.bind(this);
+		this.deactivate = this.deactivate.bind(this);
+		this.getValue = this.getValue.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose =this.onRequestClose.bind(this);
+		this.parseValues = this.parseValues.bind(this);
+		var values = this.parseValues(this.props);
+		this.state = ({mode:0,font:this.props.font, val:values[0], pram:values[1], labels:values[2]})
+		
+
+	}
+	parseValues(props){
+		var res = vdefByMac[props.mac];
+			var pVdef = _pVdef;
+			if(res){
+				pVdef = res[1];
+			}
+		var val = [], pram = [], label = false;
+		if(!props.hasChild){
+			
+		if(typeof props.data == 'object'){
+
+			if(typeof props.data['@data'] == 'undefined'){
+			
+			if(typeof props.data[0]['child'] != 'undefined'){
+				var lkey = props.data[0].params[props.data[0].child]['@name']
+				val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
+				if(typeof pVdef[0][lkey] != 'undefined'){
+					pram = [pVdef[0][lkey]]
+				}else if(typeof pVdef[1][lkey] != 'undefined'){
+					pram = [pVdef[1][lkey]]
+				}else if(typeof pVdef[2][lkey] != 'undefined'){
+					pram = [pVdef[2][lkey]]
+				}else if(typeof pVdef[3][lkey] != 'undefined'){
+					pram = [pVdef[3][lkey]]
+				}else if(lkey == 'Nif_ip'){
+					pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+				}else if(lkey == 'Nif_nm'){
+					pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+				}else if(lkey == 'Nif_gw'){
+					pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+				}else if(lkey == 'DCRate_A'){
+					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+				}
+				if(props.data[0].params[props.data[0].child]['@children']){
+
+					for(var i=0;i<props.children[0].length; i++){
+						val.push(this.getValue(props.children[1][i], props.children[0][i]))
+				
+					
+						if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[0][props.children[0][i]])
+						}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[1][props.children[0][i]])
+						}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[2][props.children[0][i]])
+						}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[3][props.children[0][i]])
+						}
+					}
+				}
+				if(pram[0]['@labels']){
+					label = true
+				}	
+				
+				}
+
+			}else{
+				val = [this.getValue(props.data['@data'], props.lkey)]
+				//////////console.log(['1250',props.lkey, typeof props.data['@data']])
+				//////////console.log(['1251', pVdef, pram])
+				if(typeof pVdef[0][props.lkey] != 'undefined'){
+					pram = [pVdef[0][props.lkey]]
+				}else if(typeof pVdef[1][props.lkey] != 'undefined'){
+					pram = [pVdef[1][props.lkey]]
+				}else if(typeof pVdef[2][props.lkey] != 'undefined'){
+					pram = [pVdef[2][props.lkey]]
+				}else if(typeof pVdef[3][props.lkey] != 'undefined'){
+					pram = [pVdef[3][props.lkey]]
+				}else if(props.lkey == 'Nif_ip'){
+					pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+				}else if(props.lkey == 'Nif_nm'){
+					pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+				}else if(props.lkey == 'Nif_gw'){
+					pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+				}else if(props.lkey == 'DCRate_A'){
+					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+				}else{
+					//console.log(2629,props.lkey)
+				}
+
+				if(props.data['@children']){
+		//			//////console.log(['1346', props.data, props.children])
+					for(var i=0;i<props.children[0].length;i++){
+						val.push(this.getValue(props.children[1][i], props.children[0][i]))
+						if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[0][props.children[0][i]])
+						}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[1][props.children[0][i]])
+						}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[2][props.children[0][i]])
+						}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+							pram.push(pVdef[3][props.children[0][i]])
+						}
+					}
+				}
+				if(pram[0]['@labels']){
+					label = true
+				}	
+			}
+			}else{
+
+
+				val = [this.getValue(props.data['@data'], props.lkey)]
+				if(typeof pVdef[0][props.lkey] != 'undefined'){
+					pram = [pVdef[0][props.lkey]]
+				}else if(typeof pVdef[1][props.lkey] != 'undefined'){
+					pram = [pVdef[1][props.lkey]]
+				}else if(typeof pVdef[2][props.lkey] != 'undefined'){
+					pram = [pVdef[2][props.lkey]]
+				}else if(typeof pVdef[3][props.lkey] != 'undefined'){
+					pram = [pVdef[3][props.lkey]]
+				}else if(props.lkey == 'Nif_ip'){
+					pram = [{'@name':'Nif_ip', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
+				}else if(props.lkey == 'Nif_nm'){
+					pram = [{'@name':'Nif_nm', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
+				}else if(props.lkey == 'Nif_gw'){
+					pram = [{'@name':'Nif_gw', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
+				}else if(props.lkey == 'DCRate_A'){
+					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+				}
+				if(props.data['@children']){
+					//////////console.log(['1346', props.data.children])
+					for(var ch in props.data['@children']){
+						val.push(this.getValue(props.data['@children'][ch], ch))
+						if(typeof pVdef[0][ch] != 'undefined'){
+							pram.push(pVdef[0][ch])
+						}else if(typeof pVdef[1][ch] != 'undefined'){
+							pram.push(pVdef[1][ch])
+						}else if(typeof pVdef[2][ch] != 'undefined'){
+							pram.push(pVdef[2][ch])
+						}else if(typeof pVdef[3][ch] != 'undefined'){
+							pram.push(pVdef[3][ch])
+						}
+					}
+				}
+				if(pram[0]['@labels']){
+					label = true
+				}
+			}	
+		}
+		return [val,pram,label]
+	}
+	sendPacket(n,v) {
+		//
+		var val = v
+		if(n['@name'] == 'Nif_ip'){
+			//console.log(v.toString())
+			socket.emit('nifip', v.toString())
+		}else if(n['@name'] == 'Nif_nm'){
+			//console.log(v.toString())
+			socket.emit('nifnm', v.toString())
+		}else if(n['@name'] == 'Nif_gw'){
+			//console.log(v.toString())
+			socket.emit('nifgw', v.toString())
+		}else{
+
+		//}
+		 if(n['@type'] == 'ipv4_address'){
+			val = v.split('.').map(function(ip){
+				return ("000"+ip).slice(-3);
+			}).join('.')
+			setTimeout(function(){
+				socket.emit('locateReq');
+			},200)
+		}
+		this.props.sendPacket(n,val)	
+		}
+	}
+	componentWillReceiveProps (newProps) {
+		// body...
+		var values = this.parseValues(newProps);
+		
+		this.setState({font:newProps.font, val:values[0], pram:values[1], labels:values[2]})
+	}
+	onItemClick(){
+
+		if(this.props.hasChild || typeof this.props.data == 'object'){
+			//////console.log([this.props.data])
+			// accessControl
+			if(this.props.acc){
+				this.props.onItemClick(this.props.data, this.props.name)	
+			}else{
+
+				toast('Access Denied')	
+				}		
+			}
+	}
+	activate () {
+		this.props.activate(this.props.data)
+	}
+	deactivate () {
+		// body...
+		if(this.refs.ed){
+			this.refs.ed.deactivate()
+		}		
+	}
+	getValue(rval, pname){
+		var pram;
+			var val;
+			var label = false
+			var res = vdefByMac[this.props.mac];
+			var pVdef = _pVdef;
+			var dec = 0;
+			var self = this;
+			if(res){
+				pVdef = res[1];
+			}
+
+			if(typeof pVdef[0][pname] != 'undefined'){
+				pram = pVdef[0][pname]
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(d){
+							if(pVdef[5][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else{
+							//	//////console.log(d)
+								//////////console.log(['1208',self.props.sysSettings])
+								return self.props.prodSettings[d];
+							}
+						});
+						if(f == 'mm'){
+							if(deps[0] == 0){
+								dec = 1
+							}
+						}
+					}	
+					if(pram['@bit_len']<=16){
+					//	//////console.log(f)
+
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+
+					}
+					
+				}
+				
+				if(pram["@labels"]){
+					label = true
+				}
+			}else if(typeof pVdef[1][pname] != 'undefined'){
+				
+				pram = pVdef[1][pname]
+				
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(dp){
+							var d = dp;
+							if(dp.indexOf('[0]') != -1){
+								if(pram['@name'].slice(-2) == '_A'){
+									d = dp.replace('[0]','[1]')
+								}
+							}
+							if(pVdef[5][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else{
+								return self.props.prodSettings[d];
+							}
+						});
+						if(pram['@name'] == 'BeltSpeed'){
+							deps.push(self.props.dynSettings['EncFreq'])
+						}
+					}
+					if(f == 'mm'){
+							if(deps[0] == 0){
+								dec = 1
+							}
+						}
+					if(pram['@bit_len']<=16){
+						////console.log(f)
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+					
+				}else if(pram["@name"].indexOf('DetThresh') != -1){
+					var dependancies = ['DetMode','PhaseMode','ThresR','ThresX']
+					var deps = dependancies.map(function(d) {
+						// body...
+						if(pram['@name'] == 'DetThresh_A'){
+							return self.props.prodSettings[d+'_A']
+						}else if(pram['@name'] == 'DetThresh_B'){
+							return self.props.prodSettings[d+'_B']
+						}
+					})
+					val = eval(funcJSON['@func']['det_thresh']).apply(this, [].concat.apply([],[val,deps]));
+					
+				}
+				if(pram["@labels"]){
+					label = true
+				}
+			}else if(typeof pVdef[2][pname] != 'undefined'){
+				
+				pram = pVdef[2][pname]
+				
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(f == 'phase'){
+						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+					}else{
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(dp){
+							var d = dp;
+							if(dp.indexOf('[0]') != -1){
+								if(pram['@name'].slice(-2) == '_A'){
+									d = dp.replace('[0]','[1]')
+								}
+							}	
+							if(pVdef[5][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else if(pVdef[5][d]["@rec"] == 1){
+								return self.props.prodSettings[d];
+							}else if(pVdef[5][d]["@rec"] == 2){
+							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+								return self.props.dynSettings[d];
+							}
+						});
+					}
+					if(f == 'mm'){
+							if(deps[0] == 0){
+								dec = 1
+						}
+					}
+					if(pram['@bit_len']<=16){
+					//	//////console.log(f)
+						
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+				}
+					
+				}else if(pram['@name'] == 'RejExitDistEst'){
+					var dependancies = ['SysRec.MetricUnits']
+					deps = dependancies.map(function(d){
+						if(pVdef[5][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else if(pVdef[5][d]["@rec"] == 1){
+								return self.props.prodSettings[d];
+							}else if(pVdef[5][d]["@rec"] == 2){
+							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+								return self.props.dynSettings[d];
+							}
+					})
+					dec = 1
+					val = eval(funcJSON['@func']['mm']).apply(this, [].concat.apply([], [val, deps]));
+
+				}
+				if(pram["@labels"]){
+					label = true
+				}
+			}else if(typeof pVdef[3][pname] != 'undefined'){
+				
+				pram = pVdef[3][pname]
+				
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(f == 'phase'){
+						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+					}else{
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(d){
+							if(pVdef[5][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else if(pVdef[5][d]["@rec"] == 1){
+								return self.props.prodSettings[d];
+							}else if(pVdef[5][d]["@rec"] == 2){
+							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+								return self.props.dynSettings[d];
+							}else if(pVdef[5][d]["@rec"] == 3){
+							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+								return self.props.framSettings[d];
+							}
+						});
+					}
+					if(pram['@bit_len']<=16){
+					//	//////console.log(f)
+						
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+				}
+					
+				}
+				if(pram["@labels"]){
+					label = true
+				}
+			}else{
+				val = rval
+			}
+			return val;
+	}
+	onFocus () {
+		// body...
+		this.props.onFocus();
+	}
+	onRequestClose () {
+		// body...
+		this.props.onRequestClose();
+	}
+	render(){
+		var ft = [16,20,24];
+		var wd = [150,260,297]
+		var vwd = [75,125,169]
+		var st = {display:'inline-block', fontSize:ft[this.state.font], width:wd[this.state.font]}
+		var vst = {display:'inline-block', fontSize:ft[this.state.font], width:vwd[this.state.font]}
+		var self = this;
+		var fSize = 24;
+		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+		var sty = {height:60}
+			if(this.props.mobile){
+				sty.height = 45;
+				sty.lineHeight = '45px';
+			}
+			var res = vdefByMac[this.props.mac];
+			var pVdef = _pVdef;
+			if(res){
+				pVdef = res[1];
+			}
+			////console.log('2885',pVdef,_pVdef)
+			var label = false;
+		if(this.props.hasChild){
+			var namestring = this.props.name;
+			var path = ""
+			if(this.props.path.length == 0){
+				path = namestring
+			}else{
+				path = this.props.path + '/'+ namestring
+			}
+			
+			if(typeof catMapV2[path] != 'undefined'){
+				//////////console.log('1270')
+				namestring = catMapV2[path]['@translations'][this.props.language]
+				//////////console.log('1272')
+
+			}
+			if(namestring.length > 28){
+				fSize = 18
+			}
+			else if(namestring.length > 24){
+				fSize= 20
+			}else if(namestring.length > 18){
+				fSize = 22
+			}
+			//	//////console.log(namestring)		
+			//
+				var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+				if(this.props.mobile){
+					_st.lineHeight = '51px'
+					_st.height = 45
+				}
+				
+			return (<div className='sItem hasChild' style={sty} onClick={this.onItemClick}><label>{namestring}</label></div>)
+		}else{
+			var val, pram;
+			//if(this.props.isArray)
+			//(Array.isArray)
+			var namestring = this.props.name;
+
+		if(typeof this.props.data == 'object'){
+
+			if(typeof this.props.data['@data'] == 'undefined'){
+			var path = ""
+			if(this.props.path.length == 0){
+				path = namestring
+			}else{
+				path = this.props.path + '/'+ namestring
+			}
+			
+			if(typeof catMapV2[path] != 'undefined'){
+				namestring = catMapV2[path]['@translations'][this.props.language]
+			}
+			if(namestring.length > 28){
+				fSize = 18
+			}
+			else if(namestring.length > 24){
+				fSize= 20
+			}else if(namestring.length > 18){
+				fSize = 22
+			}
+			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+			if(this.props.mobile){
+				_st.lineHeight = '51px'
+				_st.height = 45
+			}
+			////console.log(2692,this.props.data);
+			
+			if(typeof this.props.data[0]['child'] != 'undefined'){
+				var lkey = this.props.data[0].params[this.props.data[0].child]['@name']
+			
+				var im = <img  style={{position:'absolute', width:36,top:15, left:815, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return.svg'/>
+				if(this.props.backdoor){
+					im = ''
+				}
+				var edctrl = <EditControl mobile={this.props.mobile} mac={this.props.mac}  ov={true} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={lkey}/>
+				if(this.props.mobile){
+					sty.height = 51
+				}
+				return (<div className='sItem noChild' style={sty} onClick={this.onItemClick}> {edctrl}
+						{im}
+					
+					</div>)
+				}
+
+		
+				return (<div className='sItem hasChild' style={sty} onClick={this.onItemClick}><label>{namestring}</label></div>)
+			}
+			}
+			if(this.props.mobile){
+				sty.height = 51;
+			}
+				var edctrl = <EditControl mobile={this.props.mobile} mac={this.props.mac}  ov={false} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={this.props.lkey}/>
+				return (<div className='sItem noChild' style={sty}> {edctrl}
+					</div>)
+			
+		}
+	}
+}
+
+
 
 class MultiEditControl extends React.Component{
 	constructor(props) {
@@ -3138,14 +3724,14 @@ class MultiEditControl extends React.Component{
 		value[i] = v// e.target.value
 	}
 	valChanged(v,i){
-		console.log(['2734',v,i,this.props.param[i]])
+		//console.log(['2734',v,i,this.props.param[i]])
 		var val;
 		if(!isNaN(v)){
 			val = parseFloat(v)
 		}else{ 
 			val = v;
 		}
-		console.log('2735', val)
+		//console.log('2735', val)
 		if(this.props.param[i]['@type'] == 'mm'){
 			if(v.indexOf('in') != -1){
 				val = val*10;
@@ -3157,7 +3743,7 @@ class MultiEditControl extends React.Component{
 			if(v.indexOf('.') != -1){
 				val = val*Math.pow(10,this.props.param[i]['@decimal'])
 			}
-			console.log('3149',v,val)
+			//console.log('3149',v,val)
 		}else if(this.props.param[i]['@type'] == 'belt_speed'){
 			if(v.indexOf('.') != -1){
 				val = val*10
@@ -3175,7 +3761,7 @@ class MultiEditControl extends React.Component{
 
 			this.props.sendPacket(this.props.param[i], v)
 		}else if(!Number.isNaN(val)){
-			console.log('why')
+			//console.log('why')
 			this.props.sendPacket(this.props.param[i], parseInt(val));
 		}
 	}
@@ -3186,7 +3772,7 @@ class MultiEditControl extends React.Component{
 		this.props.onRequestClose();
 	}
 	onClear (id) {
-		console.log(3040,id)
+		//console.log(3040,id)
 		this.props.sendPacket(this.props.param[id])
 	}
 	openSelector () {
@@ -3218,8 +3804,9 @@ class MultiEditControl extends React.Component{
 		}
 	}
 	render() {
+		////console.log(3243, this.props.mobile)
 		var namestring = this.props.name
-		//////console.log(['2692',namestring])
+		////////console.log(['2692',namestring])
 			if(typeof vdefByMac[this.props.mac][5][this.props.name] != 'undefined'){
 				if(vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name'] != ''){
 					namestring = vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name']
@@ -3228,16 +3815,20 @@ class MultiEditControl extends React.Component{
 		var dt = false;
 		var self = this;
 		var fSize = 24;
-					if(namestring.length > 28){
-				fSize = 18
-			}
-			else if(namestring.length > 24){
-				fSize= 20
-			}else if(namestring.length > 18){
-				fSize = 22
-			}
+		if(namestring.length > 24){
+			fSize = 18
+		}
+		else if(namestring.length > 20){
+			fSize= 20
+		}else if(namestring.length > 12){
+			fSize = 22
+		}
+		if(this.props.mobile){
+			fSize -= 7;
+			fSize = Math.max(13, fSize)
+		}
 		let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}
-	
+
 		var isInt = false
 		var colors = ['#000','#eee']
 		var regexA = /_A$/
@@ -3252,13 +3843,27 @@ class MultiEditControl extends React.Component{
 			}
 		}
 		var labWidth = (536/this.state.val.length)
+		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+		if(this.props.mobile){
+			labWidth = 100/this.state.val.length + '%'
+			vlabelswrapperStyle.width = '60%'
+			lvst.verticalAlign = 'middle'
+			lvst.lineHeight = '25px'
+		}
 			var vLabels = this.state.val.map(function(d,i){
 			var val = d;
 			var st = {textAlign:'center',lineHeight:'60px', height:60}
+
 			st.width = labWidth
 			st.fontSize = self.props.vst.fontSize;
 			st.display = 'table-cell';//self.props.vst.display;
-			
+			if(self.props.mobile){
+				st.height = 51
+				st.lineHeight = '51px'
+				st.display = 'inline-block'
+				//labWidth = (50/this.state.val.length)+'%'
+			}
 			if(isInt){ st.color = colors[i] }
 
 			if(typeof self.props.param[i]['@labels'] != 'undefined'){
@@ -3284,17 +3889,16 @@ class MultiEditControl extends React.Component{
 					if(self.props.ioBits[outputSrcArr[d]] == 0){
 						st.color = '#666'
 					}
-			}else if((self.props.param[i]['@labels'] == 'FaultMaskBit')){
+			}/*else if((self.props.param[i]['@labels'] == 'FaultMaskBit')){
 					if(self.props.faultBits.indexOf(self.props.param[i]['@name'].slice(0,-4)) != -1){
 						st.color= '#ffa500'
 					}
-				}
+				}*/
 			}
 			return (<CustomLabel index={i} onClick={self.valClick} style={st}>{val}</CustomLabel>)
 		})
 
-		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
-		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+	
 		if(isInt){
 			vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480', background:'linear-gradient(75deg, rgb(129, 138, 144), rgb(129, 138, 144) 49.7%, rgb(72, 64, 116) 50.3%, rgb(72, 64, 116))'}
 		
@@ -3306,7 +3910,7 @@ class MultiEditControl extends React.Component{
 			acc = true
 		}}}
 		if(!acc){
-			return(<div><label style={{display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{namestring + ': '}</label>
+			return(<div><label style={lvst}>{namestring + ': '}</label>
 				<div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>)
 
 		}else{
@@ -3340,9 +3944,9 @@ class MultiEditControl extends React.Component{
 							return list//_pVdef[6][p["@labels"]]['english']
 						}
 					})
-					options = <PopoutWheel params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={isInt} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
+					options = <PopoutWheel mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={isInt} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
-					return(<div><div onClick={this.openSelector}><label style={{display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
+					return(<div><div onClick={this.openSelector}><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
 					<div style={{paddingLeft:this.props.lvst.width}}>
 						{options}
 					</div></div>)
@@ -3367,7 +3971,7 @@ class MultiEditControl extends React.Component{
 								}
 							})
 
-							return <PopoutWheel params={this.props.param}  ioBits={this.props.ioBits} vMap={self.props.vMap} language={this.props.language} interceptor={isInt} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[6][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
+							return <PopoutWheel mobile={this.props.mobile} params={this.props.param}  ioBits={this.props.ioBits} vMap={self.props.vMap} language={this.props.language} interceptor={isInt} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[6][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
 						}else{
 							var num = true
 							if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){
@@ -3381,11 +3985,11 @@ class MultiEditControl extends React.Component{
 								lbl = lbl + [' A',' B'][i];
 							}
 							
-							return <CustomKeyboard  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={'input'+i} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
+							return <CustomKeyboard mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={'input'+i} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
 						}
 					})
 
-					return(<div><label style={{display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{namestring + ': '}</label>
+					return(<div><label style={lvst}>{namestring + ': '}</label>
 						<div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>
 						
 					)
@@ -3597,7 +4201,7 @@ class PopoutWheel extends React.Component{
 	}
 	render () {
 		var value = "placeholder"
-		return	<PopoutWheelModal onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
+		return	<PopoutWheelModal mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
 	}
 }
 class PopoutWheelModal extends React.Component{
@@ -3628,7 +4232,7 @@ class PopoutWheelModal extends React.Component{
 	render () {
 		var	cont = ""
 		if(this.state.show){
-		cont =  <PopoutWheelModalCont params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
+		cont =  <PopoutWheelModalCont mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
 	{/*	<div className='modal-x' onClick={this.close}>
@@ -3664,6 +4268,7 @@ class PopoutWheelModalC extends React.Component{
 	close(v) {
 		// body...
 		if(this.props.show){
+			//console.log(3709, v)
 			this.props.close(v);
 		}
 	}
@@ -3672,13 +4277,13 @@ class PopoutWheelModalC extends React.Component{
 		var values = this.state.value
 		values[i] = v;
 		this.setState({value:values})
-		////console.log([2913,v])
+		//////console.log([2913,v])
 	}
 	accept() {
 		var self = this;
-		////console.log(['accept',this.props.value[0], this.state.value[0]])
+		//////console.log(['accept',this.props.value[0], this.state.value[0]])
 		if(this.props.value[0] != this.state.value[0]){
-			////console.log('wtf')
+			//////console.log('wtf')
 			this.props.onChange(this.state.value[0], 0)
 			if(this.props.value.length > 1){
 				if(this.props.value[1] != this.state.value[1]){
@@ -3740,7 +4345,7 @@ class PopoutWheelModalC extends React.Component{
 	}
 	help () {
 		// body...
-		console.log('help modal should open')
+		//console.log('help modal should open')
 		this.refs.helpModal.toggle();
 	}
 	render () {
@@ -3753,6 +4358,9 @@ class PopoutWheelModalC extends React.Component{
 		var height = hs.reduce(function(a,b){ return Math.max(a,b)});
 		if(height > 315){
 			height = 315;
+		}
+		if(this.props.mobile){
+			height = 200
 		}
 		var wheels;
 		var helpStyle = {float:'right', display:'inline-block', marginLeft:-50, marginRight:15, marginTop:6};
@@ -3769,17 +4377,17 @@ class PopoutWheelModalC extends React.Component{
 		}else{
 			wheels  = this.state.value.map(function (m,i) {
 			// body...
-		//	////console.log(['2258',self.props.vMap,i])
+		//	//////console.log(['2258',self.props.vMap,i])
 		  	var lb = ''
 		  	if(typeof self.props.vMap != 'undefined'){
-		  		//console.log(3321, self.props.vMap)
+		  		////console.log(3321, self.props.vMap)
 		  		lb = 	vdefMapV2['@labels'][self.props.vMap['@labels'][i]][self.props.language]['name']
 				
 		  	}	
 		  	var params = null;
 				if(self.props.params){
 					params = self.props.params[i]
-					console.log(params)
+					//console.log(params)
 				}
 			// body...
 			return <PopoutWheelSelector params={params}  height={height} ioBits={self.props.ioBits} label={lb} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
@@ -3787,14 +4395,18 @@ class PopoutWheelModalC extends React.Component{
 		}
 		
 		var tooltiptext = 'This is a tooltip'
-		//console.log(this.props.vMap)
+		////console.log(this.props.vMap)
 		if(typeof this.props.vMap != 'undefined'){
 			if(this.props.vMap['@translations'][self.props.language]['description'].length >0){
 				tooltiptext = this.props.vMap['@translations']['english']['description'];
 			}
 		}
-		//console.log(tooltiptext)
-	  return( <div className='selectmodal-outer' style={{minWidth:400}}>
+		var minW = 400
+		if(this.props.mobile){
+			minW = 300
+		}
+		////console.log(tooltiptext)
+	  return( <div className='selectmodal-outer' style={{minWidth:minW}}>
 	  		<div style={{display:'inline-block', marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{this.props.name}</div>
 	  		<div  style={helpStyle}><img src='assets/help.svg' onClick={this.help} width={30}/></div>
 	  		<div style={{textAlign:'center', padding:5}}>
@@ -3955,13 +4567,13 @@ class PopoutSelectModal extends React.Component{
 	}
 	toggle () {
 		// body...
-		//////console.log(['1882',this.props.options[this.props.value]])
+		////////console.log(['1882',this.props.options[this.props.value]])
 		
 		this.setState({show:true})
 	}
 	close () {
 		// body...
-	//	////console.log(['1882',this.props.options[this.props.value]])
+	//	//////console.log(['1882',this.props.options[this.props.value]])
 		
 		this.setState({show:false})
 	}
@@ -4110,7 +4722,7 @@ class EditControl extends React.Component{
 		
 		}
 		
-		////////console.log(this.props.data)
+		//////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	valChangedl(e){
@@ -4119,26 +4731,26 @@ class EditControl extends React.Component{
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
 		}
-			//////////console.log(val)
+			////////////console.log(val)
 			this.props.sendPacket(this.props.param[0], parseInt(val));
 		var value = this.state.val;
 		value[0] = e.target.value
-		////////console.log(this.props.data)
+		//////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	valChangedb(e){
-		////////console.log(e)
+		//////////console.log(e)
 		var val = e;
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
 		}
 		var value = this.state.val;
 		value[1] = e
-		////////console.log(this.props.data)
+		//////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	valChangedlb(e){
-	//	////////console.log(e)
+	//	//////////console.log(e)
 		var val = e.target.value;
 		if(this.props.bitLen == 16){
 			val = VdefHelper.swap16(parseInt(val))
@@ -4146,7 +4758,7 @@ class EditControl extends React.Component{
 			this.props.sendPacket(this.props.param[1], parseInt(val));
 		var value = this.state.val;
 		value[1] = e.target.value
-		////////console.log(this.props.data)
+		//////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	componentWillReceiveProps (newProps) {
@@ -4155,7 +4767,7 @@ class EditControl extends React.Component{
 	deactivate () {
 		// body...
 		if(this.refs.ed){
-			////////console.log(['1511', 'this the prob'])
+			//////////console.log(['1511', 'this the prob'])
 			this.refs.ed.setState({mode:0})
 		}else{
 			this.setState({mode:0})	
@@ -4208,14 +4820,15 @@ class EditControl extends React.Component{
 		var num = true;
 		var dt = false;
 		var style = {display:'inline-block',fontSize:24}
-		if(this.state.size == 1){
+		if((this.state.size == 1)||(this.props.mobile)){
 			style = {display:'inline-block',fontSize:20}
 		}else if(this.state.size == 0){
 			style = {display:'inline-block',fontSize:16}
 		}
+
 		var namestring = this.props.name;
 		if(namestring.indexOf('INPUT_')!= -1){
-			////////console.log(namestring)
+			//////////console.log(namestring)
 			namestring = namestring.slice(6);
 		}else if(namestring.indexOf('OUT_')!=-1){
 			namestring = namestring.slice(4)
@@ -4229,7 +4842,7 @@ class EditControl extends React.Component{
 		else if(this.props.param[0]["@name"].indexOf('DateTime') != -1){
 			dt = true;
 		}
-		////////console.log(['1720',this.props.name, this.props.data])
+		//////////console.log(['1720',this.props.name, this.props.data])
 		if(typeof vMapV2[this.props.name] != 'undefined'){
 				if(vMapV2[this.props.name]['@translations'][this.props.language]['name'] != ''){
 					namestring = vMapV2[this.props.name]['@translations'][this.props.language]['name']
@@ -4237,12 +4850,12 @@ class EditControl extends React.Component{
 			}
 		if(this.props.data.length > 0	){
 			//if(Array.isArray(this.props.data[0])){
-				////////console.log('1728')
+				//////////console.log('1728')
 			//	return (<NestedEditControl mac={this.props.mac} language={this.props.language}  ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 			//		lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 		//	}else{
-				////////console.log('1732')
-				return (<MultiEditControl mac={this.props.mac} ov={this.props.ov} vMap={vMapV2[this.props.name]} language={this.props.language} ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits}
+				//////////console.log('1732')
+				return (<MultiEditControl mobile={this.props.mobile} mac={this.props.mac} ov={this.props.ov} vMap={vMapV2[this.props.name]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
 				 onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 		//	}	
@@ -4259,6 +4872,12 @@ class EditControl extends React.Component{
 		var lvst = {display: 'inline-block',fontSize: fSize,width: '310',background: '#5d5480',borderRadius: 20,textAlign: 'center', color: '#eee'}
 		var st = this.props.vst;
 			st.width = 536
+			if(this.props.mobile){
+				st.height = 45
+				st.lineHeight = '51px'
+				lvst.lineHeight = '25px'
+				lvst.verticalAlign = 'middle'
+			}
 		
 		var dval = this.props.data[0]
 		if(this.props.label){
@@ -4282,11 +4901,11 @@ class EditControl extends React.Component{
 			}else{
 				if(this.props.label){
 					var selected = this.state.val[0];
-					////////console.log(selected)
+					//////////console.log(selected)
 					if (this.props.param[0]["@labels"] == 'InputSrc'){
-			//			////console.log(['1795', 'Input Source bits'])
+			//			//////console.log(['1795', 'Input Source bits'])
 					}else if(this.props.param[0]["@labels"] == 'OutputSrc'){
-			//			////console.log(['1797', 'Output Source bits'])
+			//			//////console.log(['1797', 'Output Source bits'])
 					}
 					var options = _pVdef[6][this.props.param[0]["@labels"]]['english'].map(function(e,i){
 						if(i==selected){
@@ -4296,11 +4915,11 @@ class EditControl extends React.Component{
 						}
 					})
 				//	var lvst = this.props.lvst
-					if((this.props.param[0]['@labels'] == 'FaultMaskBit')){
+				/*	if((this.props.param[0]['@labels'] == 'FaultMaskBit')){
 						if(this.props.faultBits.indexOf(this.props.param[0]['@name'].slice(0,-4)) != -1){
 							lvst.color= '#ffa500'
 						}
-					}
+					}*/
 					return(
 						<div>
 						<div onClick={this.switchMode}>
@@ -4470,15 +5089,17 @@ class Modal extends React.Component{
 	}
 	close(){
 		var self = this;
+		////console.log(4530, self.props.onClose)
 	
 		this.setState({show:false})
 		setTimeout(function(){
-			//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
-			self.setState({override:false})
-			if(typeof self.props.onClose != 'undefined'){
+				if(typeof self.props.onClose != 'undefined'){
 			
 				self.props.onClose();
 			}
+			//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
+			self.setState({override:false})
+			
 		},50)
 	}
 	toggle () {
@@ -4488,17 +5109,19 @@ class Modal extends React.Component{
 		}
 		if(!this.state.override){
 			if(this.state.show){
+			/*	if(typeof self.props.onClose != 'undefined'){
+			
+					self.props.onClose();
+				}
 			this.setState({show:false, override:true})
 
 		
 			setTimeout(function(){
 				//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
 				self.setState({override:false})
-				if(typeof self.props.onClose != 'undefined'){
-			
-					self.props.onClose();
-				}
-			},50)
+				
+			},50)*/
+				this.close()
 			}else{
 				this.setState({show:true, override:true})
 
@@ -4560,12 +5183,12 @@ class Modal extends React.Component{
 		if(!h){
 			var im =''
 			if(this.props.intMeter){
-				im = <InterceptorMeterBar ref='mb' clear={this.clear}/>
+				im = <InterceptorMeterBar ref='mb' clear={this.clear} mobile={this.props.mobile}/>
 			}
 			if(this.props.dfMeter){
-				im = <StealthMeterBar ref='mb' clear={this.clear}/>
+				im = <StealthMeterBar ref='mb' clear={this.clear} mobile={this.props.mobile}/>
 			}
-				cont = (<ModalCont toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle}>
+				cont = (<ModalCont toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
 					{im}
 			
 			{this.props.children}
@@ -4604,9 +5227,17 @@ class ModalC extends React.Component{
 	render() {
 		var style= this.props.Style || {}
 		var cs = this.props.innerStyle || {}
-		var button = 	<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
-			
+		var button = ''
+		
+		if(this.props.mobile){
+			cs.padding = 7;
+			cs.maxHeight = '83%'
+			cs.overflow = 'scroll'
+			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
+		}
+
 				return (<div className='modal-outer' style={style}>
+					{button}
 				<div className='modal-content' style={cs}>
 					{this.props.children}
 				</div>
@@ -4664,7 +5295,7 @@ class MultiBankUnit extends React.Component{
 		var dat = []
 		if(this.props.data.length >0){
 			dat = this.props.data
-			////////console.log(dat)
+			//////////console.log(dat)
 		}
 		this.state =  ({banks:dat})
 		this.onRMsg = this.onRMsg.bind(this);
@@ -4673,14 +5304,14 @@ class MultiBankUnit extends React.Component{
 	onRMsg (e,d) {
 		// body...
 		if(this.refs[d.mac]){
-			////////console.log(d)
+			//////////console.log(d)
 			this.refs[d.mac].onRMsg(e,d)
 	
 		}
 	}
 	onParamMsg2(e,d){
 		if(this.refs[d.mac]){
-			//////////console.log(d)
+			////////////console.log(d)
 			this.refs[d.mac].onParamMsg2(e,d)
 	
 		}
@@ -4881,12 +5512,12 @@ class StatBarMB extends React.Component{
 		var klass =''
 		if(this.state.fault){
 			klass = 'faultactive'
-			////////console.log(klass)
+			//////////console.log(klass)
 		}
 		if(!this.state.live){
 
 			klass = 'inactive'
-			////////console.log(klass)
+			//////////console.log(klass)
 		}
 		var list = ['dry','wet','DSA']
 		var mtab = (	<table className='mtab'><tbody>
@@ -5021,7 +5652,7 @@ class SingleUnit extends React.Component{
 		if(!this.state.live){
 			this.setState({live:true})
 		}
-		//////////console.log([a,b])
+		////////////console.log([a,b])
 		this.refs.lv.update(a,b)	
 	}
 	onRMsg (e,d) {
@@ -5033,9 +5664,9 @@ class SingleUnit extends React.Component{
 		var res = vdefByMac[this.props.unit.mac]
 		var lcd_type = e.type
 		var rec = e.rec
-	//		console.log(['4480',this.props.unit.mac, res])
+	//		//console.log(['4480',this.props.unit.mac, res])
    	
-		//////console.log(['2767',e])
+		////////console.log(['2767',e])
 		if(res){
 			var pVdef = res[1]
 			if(lcd_type == 1){
@@ -5079,7 +5710,7 @@ class SingleUnit extends React.Component{
 		var self = this;
 		this._isMounted = true;
 		myTimers[this.props.unit.mac] = setInterval(function(){
-			//console.log('4596', self.state.rpcResp)
+			////console.log('4596', self.state.rpcResp)
 			if((Date.now() - liveTimer[self.props.unit.mac]) > 1500){
 				self.setState({live:false})
 			}
@@ -5168,7 +5799,7 @@ class SingleUnit extends React.Component{
 			<div><label>Name: </label><label>{this.props.unit.name}</label></div>
 				<div><label>Product:{this.state.pn}</label></div>
 				<table className='mtab'><tbody>
-				<tr><td><label>Sensitivity:{this.state.sens_A+ "  "+ this.state.sens_B}</label></td><td><label style={{paddingLeft:15}}>Phase:{(this.state.phase_A/100).toFixed(2).toString() +' ' +list[this.state.phasemode_A] 
+				<tr><td><label>Sensitivity:{this.state.sens_A+ "  "+ this.state.sens_B}</label></td><td><label style={{paddingLeft:15, display:'none'}}>Phase:{(this.state.phase_A/100).toFixed(2).toString() +' ' +list[this.state.phasemode_A] 
 				+ "  "+ (this.state.phase_A/100).toFixed(2).toString() +' ' +list[this.state.phasemode_A]}</label></td>
 			</tr>
 				<tr><td><label>Peak:{this.state.peak_A+ "  "+ this.state.peak_B}</label></td>
@@ -5257,7 +5888,7 @@ class MbSetup extends React.Component{
 			this.toggleOptions = this.toggleOptions.bind(this);
 		}
 		editMb () {
-			////////console.log(this.props.index)
+			//////////console.log(this.props.index)
 			this.props.edit(this.props.index)
 		}
 		remove () {
@@ -5288,24 +5919,68 @@ class MbSetup extends React.Component{
 					</div>)	
 		}
 }
+class InterceptorMainPageResponsivUI extends React.Component{
+	render(){
+		return <div>
+			<InterceptorDynamicViewDFResponsive/>
 
+		</div>
+	}
+}
+class InterceptorDynamicViewDFResponsive extends React.Component{
+	render(){
+	var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'start'}
+		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'end'}
+		var contb = {position:'relative', display:'inline-block'} 
+		var conta = {position:'relative', display: 'inline-block'}
+		var klass = 'interceptorDynamicView'
+		var bcolor = 'black';
+		var pled = ['#e1e1e1', '#6eed6e', '#ee0000']
+		if(this.props.faultArray.length >0){
+			if(this.props.faultArray.length > this.props.warningArray.length){
+
+			}else{
+				//warning should look different?
+			}
+			klass = 'interceptorDynamicView_f'
+		}else if(this.props.rejOn == 1){
+			klass = 'interceptorDynamicView_r'
+		}else if(this.props.testReq == 1){
+			klass = 'interceptorDynamicView_t'
+		}else if(this.props.testReq == 2){
+			klass = 'interceptorDynamicView_tf'
+		}
+		if(this.state.cipSec == 1){
+			klass = 'InterceptorDynamicView_tf'
+		}
+		// accessControl
+		var sensacc = (this.props.sys['PassAccSens'] <= this.props.level)||(this.props.sys['PassOn'] == 0)||(this.props.level > 3);
+		var rejacc = (this.props.sys['PassAccClrRej'] <= this.props.level)||(this.props.sys['PassOn'] == 0)||(this.props.level > 3);
+		return (
+			<div style={{marginTop:2}}>
+				<div className={klass} style={{overflow:'hidden',display:'block',borderRadius:20,marginLeft:'auto',marginRight:'auto', textAlign:'center'}}></div>
+			</div>)
+	}
+}
 class DetectorView extends React.Component{
 	constructor(props) {
 		super(props)
-		var mqls = [
+		this.mqls = [
 			window.matchMedia('(min-width: 300px)'),
 			window.matchMedia('(min-width: 467px)'),
 			window.matchMedia('(min-width: 600px)')
 		]
-		var minMq = window.matchMedia("(min-width: 400px)");
-		for (var i=0; i<mqls.length; i++){
-			mqls[i].addListener(this.listenToMq)
+		this.minMq = window.matchMedia("(min-width: 400px)");
+		for (var i=0; i<3; i++){
+			this.mqls[i].addListener(this.listenToMq)
 		}
-		minMq.addListener(this.listenToMq);
+		this.landScape = window.matchMedia("(orientation: landscape)");
+		this.minMq.addListener(this.listenToMq.bind(this));
+		this.landScape.addListener(this.listenToMq.bind(this));
 		var interceptor = this.props.det.interceptor//(vdefByMac[this.props.det.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.det.board_id == 5);
-		this.state =  {callback:null, rec:{},offline:true,	showTest:false, warningArray:[],faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, 
+		this.state =  {callback:null, rec:{},offline:true, landScape:this.landScape.matches,showTest:false, warningArray:[],faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, 
 			prodSettings:{}, sysSettings:{}, combinedSettings:[],cob2:[], pages:{}, showCal:false,userid:0, isUpdating:false, username:'Not Logged In', isSyncing:false,
-			minMq:minMq, minW:minMq.matches, br:this.props.br, mqls:mqls, fault:false, usb:false, usernames:[{username:'ADMIN',acc:4}], broadCast:false,
+			minW:this.minMq.matches, br:this.props.br, fault:false, usb:false, usernames:[{username:'ADMIN',acc:4}], broadCast:false,
 			peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{},framRec:{}, updateCount:0, language:0,rejOn:0,showSens:false,level:0, trec:0, loginOpen:false}
 		this.sendPacket = this.sendPacket.bind(this);
 		this.onRMsg = this.onRMsg.bind(this);
@@ -5362,8 +6037,12 @@ class DetectorView extends React.Component{
 		this.cancelSync = this.cancelSync.bind(this);
 		this.loginClosed = this.loginClosed.bind(this);
 
-		ifvisible.setIdleDuration(300);
+
+	}
+
+	componentDidMount(){
 		var self = this;
+		ifvisible.setIdleDuration(300);
 		ifvisible.on("idle", function(){
 			if(self.refs.im){
 				self.refs.im.pauseGraph()
@@ -5372,7 +6051,7 @@ class DetectorView extends React.Component{
 		});
 		ifvisible.on('wakeup', function(){
 			if(self.refs.im){
-				console.log('wakeup')
+				//console.log('wakeup')
 				self.refs.im.restart()
 			}
 		})
@@ -5384,9 +6063,7 @@ class DetectorView extends React.Component{
 				}
 			}
 		});
-	}
-	componentDidMount(){
-		var self = this;
+
 		this._isMounted = true;
 		myTimers[this.props.det.mac] = setInterval(function(){
 			if((Date.now() - liveTimer[self.props.det.mac]) > 1500){
@@ -5440,6 +6117,9 @@ class DetectorView extends React.Component{
 		this.refs.syncModal.close();
 	}
 	componentWillUnmount () {
+		ifvisible.off('idle');
+		ifvisible.off('wakeup')
+		ifvisible.onEvery().stop();
 		clearInterval(myTimers[this.props.det.mac]);
 	}
 	componentWillReceiveProps (newProps) {
@@ -5449,13 +6129,13 @@ class DetectorView extends React.Component{
 		rec['Nif_nm'] = newProps.nifnm;
 		rec['Nif_ip'] = newProps.nifip;
 		//rec['Disp_Ver'] = newProps.dispVer;
-	//	console.log(4954, rec)
+	//	//console.log(4954, rec)
 		var cob2 = this.getCob(this.state.sysSettings, this.state.prodSettings, this.state.rec, rec)
 
 		this.setState({netpoll:newProps.netpolls, framRec:rec,cob2:cob2, update:true})
 	}
 	setAuthAccount(pack){
-	//	console.log(['4780',pack])
+	//	//console.log(['4780',pack])
 
 		var rpc = vdefByMac[this.props.mac][0]['@rpc_map']['KAPI_RPC_USERLOGIN']
 		var pkt = rpc[1].map(function (r) {
@@ -5465,7 +6145,7 @@ class DetectorView extends React.Component{
 				return pack.user
 			}
 		});
-		console.log('login packet', pkt)
+		//console.log('login packet', pkt)
 		var packet = dsp_rpc_paylod_for(rpc[0],pkt);
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
 		if(this.state.userid != pack.user+1){
@@ -5501,11 +6181,11 @@ class DetectorView extends React.Component{
 		}
 		var msg = e.data
 		var data = new Uint8Array(msg);
-	//	////console.log(['3489',data])
+	//	//////console.log(['3489',data])
 		if(data[1] == 18){
 			//prodList
 
-	//		////console.log('prodList')
+	//		//////console.log('prodList')
 			var prodbits = data.slice(3)
 			var dat = []
 			for(var i = 0; i < 99; i++){
@@ -5542,7 +6222,9 @@ class DetectorView extends React.Component{
 		this.setState({netpoll:nps, update:true})
 	}
 	listenToMq () {
-		this.setState({minW:this.state.minMq.matches, update:true})	
+		var landscape = window.matchMedia('(orientation: landscape)');
+		var minMq = window.matchMedia("(min-width: 400px)");
+		this.setState({minW:minMq.matches, landScape:landscape.matches, update:true})	
 	}
 	getCob (sys,prod,dyn, fram) {
 		// body...
@@ -5552,7 +6234,7 @@ class DetectorView extends React.Component{
 		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
 		vdef = null;
 		_cvdf = null;
-		console.log('5556',cob)
+	//	//console.log('5556',cob)
 		return cob
 
 	}
@@ -5580,6 +6262,7 @@ class DetectorView extends React.Component{
 		return page
 	}
 	onParamMsg3 (e,d) {
+		////console.log('on Param Msg 3',d)
 		if(this.props.det.ip != d.ip){
 			return;
 		}
@@ -5593,7 +6276,7 @@ class DetectorView extends React.Component{
 			this.setState({offline:false, update:true})
 		}
   	    if(lcd_type== 0){
- 			////console.log('sys')
+ 			//////console.log('sys')
 			if(vdefByMac[d.mac]){
 				var sysSettings = e.rec
     			var pages;// = {}
@@ -5617,7 +6300,7 @@ class DetectorView extends React.Component{
     		}  
     		sysSettings = null;
 		}else if(lcd_type == 1){
-			console.log('heeeeeyy')
+			//console.log('heeeeeyy')
 			if(vdefByMac[d.mac]){
 				var prodRec = e.rec;
 				var dccoeffA = prodRec['DcCoeffNorm_A']
@@ -5650,11 +6333,11 @@ class DetectorView extends React.Component{
 						this.refs.sd.parseInfo(this.state.sysSettings, prodRec)	
 					}
 					if(this.refs.im){
-						console.log('parse ProdRec')
+						//console.log('parse ProdRec')
 						this.refs.im.parseInfo(this.state.sysSettings, prodRec)
 					}
 				if(isDiff(prodRec,this.state.prodSettings)){
-					console.log('hi')
+					//console.log('hi')
 					cob2 = this.getCob(this.state.sysSettings, prodRec, this.state.rec, this.state.framRec)
 					pages = this.getPages(this.state.sysSettings, prodRec, this.state.rec, this.state.framRec)
 				
@@ -5693,14 +6376,14 @@ class DetectorView extends React.Component{
 							}
 						}
 					});
-					//////console.log(rejOn)
+					////////console.log(rejOn)
 					
   					if(this.state.faultArray.length != faultArray.length){
   						shouldUpdate = true;
   						//this.setState({faultArray:faultArray, rejOn:rejOn, update:true})
   					}else if(this.state.rejOn != rejOn){
   						shouldUpdate = true
-  						//////console.log(['4566', rejOn])
+  						////////console.log(['4566', rejOn])
   					}else if(this.state.warningArray.length != warningArray.length){
   						shouldUpdate = true;
   						//this.setState({faultArray:faultArray, rejOn:rejOn, update:true})
@@ -5723,7 +6406,7 @@ class DetectorView extends React.Component{
   					}
 
 
-  					if(this.state.updateCount ==3){
+  					if(this.state.updateCount == 6){
   						if((this.refs.sModal.state.show && !this.refs.sModal.state.keyboardVisible) || (this.refs.snModal.state.show && !this.refs.snModal.state.keyboardVisible)
   							|| (this.refs.teModal.state.show && !this.refs.teModal.state.keyboardVisible)|| (this.refs.calibModal.state.show && this.state.showCal && !this.refs.calibModal.state.keyboardVisible)){
   								shouldUpdate = true
@@ -5908,7 +6591,7 @@ class DetectorView extends React.Component{
   							if(this.refs.sModal.state.show){
   								var	cob2 = this.getCob(this.state.sysSettings, this.state.prodSettings, prodRec, this.state.framRec)
   								this.setState({rec:prodRec,faultArray:faultArray,warningArray:warningArray,trec:trec, cob2:cob2, rejOn:rejOn, updateCount:0,update:shouldUpdate, ioBITs:iobits})
-  								//////console.log(['3196',cob2])
+  								////////console.log(['3196',cob2])
   								
   								cob2 = null;
   							}else if(this.refs.snModal.state.show){
@@ -5927,7 +6610,7 @@ class DetectorView extends React.Component{
   								te = null;
   								pages = null;
   							}else if(this.state.showCal){
-  								//////console.log(['3878',prodRec['PhaseAngleAuto_B']])
+  								////////console.log(['3878',prodRec['PhaseAngleAuto_B']])
   								var	cal = this.getPage('Calibration',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Calibration'] = cal
@@ -5938,8 +6621,8 @@ class DetectorView extends React.Component{
   								this.setState({rec:prodRec,faultArray:faultArray,warningArray:warningArray, rejOn:rejOn,trec:trec, updateCount:0, update:shouldUpdate, ioBITs:iobits})
   							}
   						}else{
-  							//////console.log(rejOn)
-  							this.setState({rec:prodRec, rejOn:rejOn,faultArray:faultArray, warningArray:warningArray,updateCount:(this.state.updateCount+1)%6, update:shouldUpdate, ioBITs:iobits})
+  							////////console.log(rejOn)
+  							this.setState({rec:prodRec, rejOn:rejOn,faultArray:faultArray, warningArray:warningArray,updateCount:(this.state.updateCount+1)%6, update:false, ioBITs:iobits})
   						}
   						faultArray = null;
   						warningArray = null;
@@ -5959,9 +6642,9 @@ class DetectorView extends React.Component{
 				var cob2 = this.getCob(this.state.sysSettings, this.state.prodSettings, this.state.rec, framRec)
 				
 				this.setState({framRec:framRec,cob2:cob2, update:true})
-				console.log(framRec)
+				//console.log(framRec)
 			}
-			console.log(framRec)
+			//console.log(framRec)
 			framRec = null;
 
 		}else if(lcd_type == 4){
@@ -6233,7 +6916,7 @@ class DetectorView extends React.Component{
 		
 	}
 	clear (param) {
-		////console.log(['3277',param])
+		//////console.log(['3277',param])
 		var packet = dsp_rpc_paylod_for(param['@rpcs']['clear'][0],param['@rpcs']['clear'][1],param['@rpcs']['clear'][2] ) 
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
 		packet = null;
@@ -6331,7 +7014,7 @@ class DetectorView extends React.Component{
 				}
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[1]);
-			////////console.log(packet)
+			//////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			}else if(n == 'Sens'){
 			var rpc = vdef[0]['@rpc_map']['KAPI_SENS_WRITE']
@@ -6347,13 +7030,13 @@ class DetectorView extends React.Component{
 					}
 				}
 			})
-			////////console.log(this.props.ip)
+			//////////console.log(this.props.ip)
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-			////////console.log(packet)
+			//////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'Sens_B'){
-			////////console.log(this.props.ip)
+			//////////console.log(this.props.ip)
 			var rpc = vdef[0]['@rpc_map']['KAPI_SENS_WRITE']
 			var pkt = rpc[1].map(function (r) {
 				// body...
@@ -6368,11 +7051,11 @@ class DetectorView extends React.Component{
 				}			
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[0]);
-			////////console.log(packet)
+			//////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'SigModeCombined'){
-			////////console.log(this.props.ip)
+			//////////console.log(this.props.ip)
 			var rpc = vdef[0]['@rpc_map']['KAPI_SIG_MODE_COMBINED_WRITE']
 			var pkt = rpc[1].map(function (r) {
 				// body...
@@ -6387,7 +7070,7 @@ class DetectorView extends React.Component{
 				}			
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[0]);
-			////////console.log(packet)
+			//////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'oscPower'){
@@ -6404,13 +7087,13 @@ class DetectorView extends React.Component{
 					}
 				}
 			})
-			////////console.log(this.props.ip)
+			//////////console.log(this.props.ip)
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[1]);
-			////////console.log(packet)
+			//////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'oscPowerB'){
-			////////console.log(this.props.ip)
+			//////////console.log(this.props.ip)
 			var rpc = vdef[0]['@rpc_map']['KAPI_OSC_POWER_WRITE']
 			var pkt = rpc[1].map(function (r) {
 				// body...
@@ -6425,7 +7108,7 @@ class DetectorView extends React.Component{
 				}			
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[0]);
-			////////console.log(packet)
+			//////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'ProdNo'){
@@ -6443,7 +7126,7 @@ class DetectorView extends React.Component{
 				}
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-					////////console.log(packet)
+					//////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 		}else if(n == 'ProdName'){
 			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NAME_APIWRITE']
@@ -6604,7 +7287,7 @@ class DetectorView extends React.Component{
 			socket.emit('rpc',{ip:this.props.det.ip, data:packet})	
 
 		}else if(n=='clearWarnings'){
-			console.log(vdef[0]['@rpc_map'])
+			//console.log(vdef[0]['@rpc_map'])
 			var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARWARNINGS']
 			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
 			socket.emit('rpc',{ip:this.props.det.ip, data:packet})	
@@ -6670,7 +7353,7 @@ class DetectorView extends React.Component{
 					strArg = v
 				}
 			}
-			//console.log(['5582', strArg])
+			////console.log(['5582', strArg])
 			
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
@@ -6962,13 +7645,15 @@ class DetectorView extends React.Component{
 		this.setState({loginOpen:true})
 	}
 	login(v){
+		//console.log(7077, 'login')
 		this.setState({level:v,update:true})
 	}
 	loginClosed(){
-		this.setState({loginOpen:false})
+		 //console.log(7077, 'loginClosed')
+		this.setState({loginOpen:false, update:true})
 	}
 	authenticate(user,pswd){
-		console.log(6457, [user,pswd])
+		//console.log(6457, [user,pswd])
 		
 			
 		socket.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.props.det.ip})
@@ -6997,7 +7682,7 @@ class DetectorView extends React.Component{
 		}
 		var df = false;
 
-	//	////console.log(lg)
+	//	//////console.log(lg)
 		var MD ="";
 		var dm = "";// <DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm' int={this.state.interceptor}/>
 		var dg = "";// <DummyGraph ref='dg' canvasId={'dummyCanvas'} int={this.state.interceptor}/>
@@ -7007,7 +7692,7 @@ class DetectorView extends React.Component{
 		if(!this.state.minW){
 			lstyle = { height: 60, marginRight: 15, marginLeft: 10}
 		}
-		var SD = (<SettingsDisplay2 Id={this.props.ip+'SD'} language={lg} mode={'config'} setOverride={this.setOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.det.mac} int={this.state.interceptor} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.det.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} framRec={this.state.framRec} level={this.state.level}/>)
+		var SD = (<SettingsDisplay2 mobile={!this.state.br} Id={this.props.ip+'SD'} language={lg} mode={'config'} setOverride={this.setOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.det.mac} int={this.state.interceptor} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.det.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} framRec={this.state.framRec} level={this.state.level}/>)
 		MD = ""; 
 		var mpui = 	<StealthMainPageUI usb={this.state.usb} mac={this.props.det.mac}  language={this.state.language} setLang={this.setLanguage} toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
 		var cb = <StealthCalibrateUI  mac={this.props.det.mac} language={lg} ref='cb' onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.cal} />
@@ -7055,10 +7740,10 @@ class DetectorView extends React.Component{
 		
 		var showPropmt = "#e1e1e1";
 		var tbklass = 'expandButton';
-		var sensui = <InterceptorSensitivityUI  mac={this.props.det.mac} language={lg} sensA={this.state.prodSettings['Sens_A']} sensB={this.state.prodSettings['Sens_B']} onFocus={this.onSensFocus} onRequestClose={this.onSensClose} sendPacket={this.sendPacket} refresh={this.refresh} onSens={this.onSens}/>
+		var sensui = <InterceptorSensitivityUI mobile={!this.state.br} mac={this.props.det.mac} language={lg} sensA={this.state.prodSettings['Sens_A']} sensB={this.state.prodSettings['Sens_B']} onFocus={this.onSensFocus} onRequestClose={this.onSensClose} sendPacket={this.sendPacket} refresh={this.refresh} onSens={this.onSens}/>
 		if(true || vdefByMac[this.props.det.mac][0]['@defines']['INTERCEPTOR_DF']){
 			df = true;
-			sensui =  <InterceptorDFSensitivityUI ref='dfs'  mac={this.props.det.mac} language={lg} level={this.state.level} sigmode={this.state.prodSettings['SigModeCombined']} onSigMode={this.sendPacket} sens={this.state.prodSettings['Sens']} sensA={this.state.prodSettings['Sens_A']} sensB={this.state.prodSettings['Sens_B']} onFocus={this.onSensFocus} onRequestClose={this.onSensClose} sendPacket={this.sendPacket} refresh={this.refresh} onSens={this.onSens}/>
+			sensui =  <InterceptorDFSensitivityUI mobile={!this.state.br} ref='dfs'  mac={this.props.det.mac} language={lg} level={this.state.level} sigmode={this.state.prodSettings['SigModeCombined']} onSigMode={this.sendPacket} sens={this.state.prodSettings['Sens']} sensA={this.state.prodSettings['Sens_A']} sensB={this.state.prodSettings['Sens_B']} onFocus={this.onSensFocus} onRequestClose={this.onSensClose} sendPacket={this.sendPacket} refresh={this.refresh} onSens={this.onSens}/>
 		
 		}
 
@@ -7072,7 +7757,7 @@ class DetectorView extends React.Component{
 			if(this.state.data.length == 0){
 				dt = []
 			}
-			tescont = 	<SettingsDisplay2  mac={this.props.det.mac} Id={this.props.ip+'TESTD'} language={lg} setOverride={this.setTOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} 
+			tescont = 	<SettingsDisplay2 mobile={!this.state.br} mac={this.props.det.mac} Id={this.props.ip+'TESTD'} language={lg} setOverride={this.setTOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} 
 					cob2={[this.state.pages['Test']]} cvdf={vdefByMac[this.props.det.mac][6]['Test']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} level={this.state.level} framRec={this.state.framRec}/>
 			showPropmt = "orange"
 			tbklass='collapseButton'
@@ -7081,20 +7766,20 @@ class DetectorView extends React.Component{
 				
 			if(this.props.det.interceptor){
 
-				mpui = 	<InterceptorMainPageUI df={df} offline={this.state.offline} isUpdating={this.state.isUpdating} isSyncing={this.state.isSyncing} usb={this.state.usb} mac={this.props.det.mac} login={this.toggleLogin} logout={this.logout} toggleTestRModal={this.showTestRModal} testReq={trec} status={status} rejOn={this.state.rejOn} rejLatch={this.state.prodSettings['RejLatchMode'] || this.state.prodSettings['Rej2Latch']} language={this.state.language} setLang={this.setLanguage}
+				mpui = 	<InterceptorMainPageUI landScape={this.state.landScape} mobile={!this.state.br} df={df} offline={this.state.offline} isUpdating={this.state.isUpdating} isSyncing={this.state.isSyncing} usb={this.state.usb} mac={this.props.det.mac} login={this.toggleLogin} logout={this.logout} toggleTestRModal={this.showTestRModal} testReq={trec} status={status} rejOn={this.state.rejOn} rejLatch={this.state.prodSettings['RejLatchMode'] || this.state.prodSettings['Rej2Latch']} language={this.state.language} setLang={this.setLanguage}
 				 toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal} faultArray={this.state.faultArray} warningArray={this.state.warningArray} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick}
 				  ref='im' getProdName={this.getProdName} level={this.state.level} username={this.state.username} />
 				cb = <div>
 				<div style={{paddingTop:10, paddingBottom:4}}>
 					 <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5, fontWeight:500, color:"#eee"}} >
 					 <div style={{display:'inline-block', textAlign:'center'}}>{vdefMapV2['@labels']['Learn'][lg]['name']}</div></h2></span></div>
-				<InterceptorCalibrateUI learnComb={this.state.prodSettings['LearnCombined']}  mac={this.props.det.mac} language={lg} ref='cb' onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calibA={this.calA} calibB={this.calB} /></div>
+				<InterceptorCalibrateUI mobile={!this.state.br} learnComb={this.state.prodSettings['LearnCombined']}  mac={this.props.det.mac} language={lg} ref='cb' onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calibA={this.calA} calibB={this.calB} /></div>
 				
 			}
 		var testprompt = this.renderTest();
 		var CB;
 		if(this.state.showCal){
-			CB = <SettingsDisplay2  mac={this.props.det.mac} Id={this.props.ip+'CALBD'} language={lg} setOverride={this.setCOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'calpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Calibration']]} cvdf={vdefByMac[this.props.det.mac][6]['Calibration']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} level={this.state.level} framRec={this.state.framRec}/>
+			CB = <SettingsDisplay2 mobile={!this.state.br} mac={this.props.det.mac} Id={this.props.ip+'CALBD'} language={lg} setOverride={this.setCOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'calpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Calibration']]} cvdf={vdefByMac[this.props.det.mac][6]['Calibration']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} level={this.state.level} framRec={this.state.framRec}/>
 			showPrompt = "orange"
 		}else{
 			CB = cb
@@ -7102,7 +7787,7 @@ class DetectorView extends React.Component{
 		var snsCont;
 		if(this.state.showSens){
 
-			snsCont = <SettingsDisplay2  mac={this.props.det.mac} Id={this.props.ip+'SNSD'} language={lg} setOverride={this.setSOverride} 
+			snsCont = <SettingsDisplay2 mobile={!this.state.br} mac={this.props.det.mac} Id={this.props.ip+'SNSD'} language={lg} setOverride={this.setSOverride} 
 			faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} 
 			ref = 'snspage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} 
 			cob2={[this.state.pages['Sens']]} cvdf={vdefByMac[this.props.det.mac][6]['Sens']} sendPacket={this.sendPacket} 
@@ -7112,26 +7797,32 @@ class DetectorView extends React.Component{
 		}else{
 			snsCont = sn;
 		}
-	
-		var tocal = <div style={{position:'absolute', display:'block', width:460, textAlign:'right', marginLeft:400}}><div style={{top:65}}>
-		<div onClick={this.toggleCalSettings} style={{display:'inline-block', verticalAlign:'top', paddingTop:5, paddingLeft:20, color:showPrompt}}> {vdefMapV2['@labels']['Settings'][lg].name} </div> 
+		var gearStyle = {position:'absolute', display:'block', width:460, textAlign:'right', marginLeft:400}
+		var inblk = 'inline-block'
+		if(!this.state.br){
+			gearStyle = {float:'right', display:'block', textAlign:'right', marginLeft:-40}
+			inblk = 'none'
+		}
+		var tocal = <div style={gearStyle}><div style={{top:65}}>
+		<div onClick={this.toggleCalSettings} style={{display:inblk, verticalAlign:'top', paddingTop:5, paddingLeft:20, color:showPrompt}}> {vdefMapV2['@labels']['Settings'][lg].name} </div> 
 		<div onClick={this.toggleCalSettings} style={{display:'inline-block'}}><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPrompt}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div></div>
 		</div>		//var tosns = <div  onClick={this.toggleSensSettings}  style={{position:'absolute',left: 840, marginTop:2}}><div style={{position:'absolute', left:-80, marginTop:5, color:showPrompts}}> Settings </div> <div><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPrompts}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div></div>
 				
-  		var tosns =  <div style={{position:'absolute', display:'block', width:460, textAlign:'right', marginLeft:400}}><div style={{top:65}}>
-		<div   onClick={this.toggleSensSettings}  style={{display:'inline-block', verticalAlign:'top', paddingTop:5, paddingLeft:20, color:showPrompts}}> {vdefMapV2['@labels']['Settings'][lg].name} </div> 
+  		var tosns =  <div style={gearStyle}><div style={{top:65}}>
+		<div  onClick={this.toggleSensSettings}  style={{display:inblk, verticalAlign:'top', paddingTop:5, paddingLeft:20, color:showPrompts}}> {vdefMapV2['@labels']['Settings'][lg].name} </div> 
 		<div   onClick={this.toggleSensSettings} style={{display:'inline-block'}}><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPrompts}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div></div>
 		</div>	
-		var totest = <div style={{position:'absolute', display:'block', width:460, textAlign:'right', marginLeft:400}}><div  style={{top:65}}>
-		<div  onClick={this.toggleTestSettings}  style={{display:'inline-block', verticalAlign:'top',  paddingTop:5, paddingLeft:20, color:showPropmt}}> {vdefMapV2['@labels']['Settings'][lg].name} </div> 
+		var totest = <div style={gearStyle}><div  style={{top:65}}>
+		<div onClick={this.toggleTestSettings}  style={{display:inblk, verticalAlign:'top',  paddingTop:5, paddingLeft:20, color:showPropmt}}> {vdefMapV2['@labels']['Settings'][lg].name} </div> 
 		<div  onClick={this.toggleTestSettings} style={{display:'inline-block'}}><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill={showPropmt}><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div></div>
 		</div>		
-		var tModal = (	<Modal ref='tModal' intMeter={true} dfMeter={df} clear={this.clearSig}>
+
+		var tModal = (	<Modal mobile={!this.state.br} ref='tModal' intMeter={true} dfMeter={df} clear={this.clearSig}>
 					{testprompt}
 				
 				</Modal>)
 		if(trec == 0){
-			tModal = 	<Modal ref='tModal' override={0} intMeter={true} dfMeter={df} clear={this.clearSig}>
+			tModal = 	<Modal  mobile={!this.state.br} ref='tModal' override={0} intMeter={true} dfMeter={df} clear={this.clearSig}>
 					{testprompt}
 				
 				</Modal>
@@ -7142,35 +7833,35 @@ class DetectorView extends React.Component{
 	
 		return(<div style={{minWidth: 290,userSelect: 'none', maxWidth: 1028,marginLeft: 'auto', marginRight:'auto'}}>
 			{mpui}	
-			<Modal ref ='calibModal' onClose={this.calClosed} intMeter={true} dfMeter={df} clear={this.clearSig}>
+			<Modal mobile={!this.state.br} ref ='calibModal' onClose={this.calClosed} intMeter={true} dfMeter={df} clear={this.clearSig}>
 					{tocal}
 				<div>
 				{CB}
 				</div>	
 			</Modal>
-			<Modal ref='sModal' onClose={this.settingsClosed} intMeter={true} dfMeter={df} clear={this.clearSig}>
+			<Modal mobile={!this.state.br} ref='sModal' onClose={this.settingsClosed} intMeter={true} dfMeter={df} clear={this.clearSig}>
 					{SD}
 				</Modal>
-					<Modal ref='fModal'>
+					<Modal mobile={!this.state.br} ref='fModal'>
 					<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.state.faultArray}/>
 				</Modal>
 				{tModal}
-				<Modal ref='teModal' intMeter={true} clear={this.clearSig} dfMeter={df} onClose={this.tmClosed}>
+				<Modal mobile={!this.state.br} ref='teModal' intMeter={true} clear={this.clearSig} dfMeter={df} onClose={this.tmClosed}>
 				{totest}	
 				{tescont}
 				</Modal>
-				<Modal ref='snModal' intMeter={true} clear={this.clearSig} dfMeter={df} onClose={this.snmClosed}>
+				<Modal mobile={!this.state.br} ref='snModal' intMeter={true} clear={this.clearSig} dfMeter={df} onClose={this.snmClosed}>
 				{tosns}
 					<div>
 					{snsCont}
 					</div>
 				</Modal>
-				<Modal ref='loginModal' onClose={this.loginClosed} intMeter={true} dfMeter={df} clear={this.clearSig}>
+				<Modal mobile={!this.state.br} ref='loginModal' onClose={()=>this.loginClosed()} intMeter={true} dfMeter={df} clear={this.clearSig}>
 					<LogInControl isOpen={this.state.loginOpen} pass6={this.state.sysSettings['PasswordLength']} level={this.state.level}  mac={this.props.det.mac} ip={this.props.ip} logout={this.logout} accounts={this.state.usernames} authenticate={this.authenticate} language={lg} login={this.login} val={this.state.userid}/>
 				</Modal>
-				<LogInControl2 ref='lgctrl' isOpen={this.state.loginOpen} pass6={this.state.sysSettings['PasswordLength']} level={this.state.level}  mac={this.props.det.mac} ip={this.props.ip} logout={this.logout} accounts={this.state.usernames} authenticate={this.authenticate} language={lg} login={this.login} val={this.state.userid}/>
+				<LogInControl2 mobile={!this.state.br}  ref='lgctrl' onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} pass6={this.state.sysSettings['PasswordLength']} level={this.state.level}  mac={this.props.det.mac} ip={this.props.ip} logout={this.logout} accounts={this.state.usernames} authenticate={this.authenticate} language={lg} login={this.login} val={this.state.userid}/>
 
-				<Modal ref='syncModal' className='pop-modal' Style={{textAlign:'center', marginTop:40}}>
+				<Modal mobile={!this.state.br} ref='syncModal' className='pop-modal' Style={{textAlign:'center', marginTop:40}}>
 						<div style={{color:'#e1e1e1'}}>Usb detected. Start sync process?</div>
 
 						<div>
@@ -7239,7 +7930,7 @@ class AccountControl extends React.Component{
 		    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#eee"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
 		var st = {padding:7,display:'inline-block', width:180}
 		
-		console.log(this.props.accounts)
+		//console.log(this.props.accounts)
 		var accTableRows = [];
 		this.props.accounts.forEach(function(ac,i){
 			accTableRows.push(<AccountRow language={self.props.language} lvl={self.props.level} change={self.props.level > ac.acc} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
@@ -7402,7 +8093,12 @@ class NetPollView extends React.Component{
 		var self = this;
 		var eventArr = []
 		if(this.state.curFilter == 0){
-			eventArr = this.props.events.slice(0);
+			//eventArr = this.props.events.slice(0); (hack)
+			this.props.events.forEach(function(e){
+				if(e.net_poll_h != 'NETPOLL_STREAM_FRAM'){
+					eventArr.push(e)
+				}
+			})
 		}else if(this.state.curFilter == 1){
 			this.props.events.forEach(function(ev){
 				if(ev.net_poll_h == "NET_POLL_REJECT_ID"){
@@ -7422,7 +8118,7 @@ class NetPollView extends React.Component{
 				}
 			})
 		}
-		console.log(['6536',self.props.mac])
+		//console.log(['6536',self.props.mac])
 		var events = eventArr.map(function(e){
 			var ev = e.net_poll_h;
 			if(netMap[e.net_poll_h]){
@@ -7432,13 +8128,13 @@ class NetPollView extends React.Component{
 			var rejects = e.rejects
 			var faults = e.faults
 			var string = ""
-			////console.log(['4163',e])
+			//////console.log(['4163',e])
 			if(e.net_poll_h == "NET_POLL_REJECT_ID"){
 
 				string = 'rejects:' + rejects.number + ', signal:' + rejects.signal;
 
 			}else if((e.net_poll_h == 'NET_POLL_PROD_REC_VAR')||(e.net_poll_h == 'NET_POLL_PROD_SYS_VAR')){
-				console.log(6957,e)
+				//console.log(6957,e)
 				if(e.parameters[0]){
 				if(e.parameters[0].value != null){
 
@@ -7470,25 +8166,28 @@ class NetPollView extends React.Component{
 			}
 
 
-			return (<tr><td style={{width:150}}>{dateTime}</td><td style={{width:150}}>{ev}</td><td style={{width:250}}>{string}</td></tr>)
+			return (<tr><td style={{width:185}}>{dateTime}</td><td style={{width:135, fontSize:16}}>{e.username}</td><td style={{width:185, fontSize:16}}>{ev}</td><td style={{width:295, fontSize:16}}>{string}</td></tr>)
 		})
 		var filters = ['All', 'Rejects', 'Faults', 'Tests']
 		// body... 
 		return (<div>
-			<div style={{display: 'table-cell', width:250, height:360}}>
-			<div>
-			<label style={{fontSize:26,width:100,paddingLeft: 20,color:'#e1e1e1'}}>{vdefMapV2['@labels']['Events'][this.props.language]['name']}</label>
-			<div style={{position:'relative'}} onClick={this.changeFilter} ><label style={{color:'#e1e1e1'}}>{vdefMapV2['@labels'][filters[this.state.curFilter]][this.props.language].name}</label><img style={{width:25, top:5, marginLeft:2, position:'absolute'}} src='assets/dropdown.svg'/> </div>
-				<PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref='pw' val={[this.state.curFilter]} options={[filters]} onChange={this.selectChanged}/>	</div>
-				
+			<div style={{textAlign:'center'}}><label style={{fontSize:26,width:100,paddingLeft: 20,color:'#e1e1e1'}}>{vdefMapV2['@labels']['Events'][this.props.language]['name']}</label></div>
+			<div>	
+			<div style={{position:'relative', textAlign:'center'}}>
+			<CircularButton style={{width:170, display:'inline-block', marginLeft:5, marginRight:5}} selected={(this.state.curFilter == 0)} lab={'All'} onClick={()=>this.selectChanged(0)}/>
+			<CircularButton style={{width:170, display:'inline-block', marginLeft:5, marginRight:5}} selected={(this.state.curFilter == 1)} lab={'Rejects'} onClick={()=>this.selectChanged(1)}/>
+			<CircularButton style={{width:170, display:'inline-block', marginLeft:5, marginRight:5}} selected={(this.state.curFilter == 2)} lab={'Faults'} onClick={()=>this.selectChanged(2)}/>
+			<CircularButton style={{width:170, display:'inline-block', marginLeft:5, marginRight:5}} selected={(this.state.curFilter == 3)} lab={'Tests'} onClick={()=>this.selectChanged(3)}/>
 			</div>
-			<div style={{display:'table-cell', height:360,width:600,color:'#e1e1e1'}}>
+				
+			<div style={{color:'#e1e1e1'}}>
 			<table className='npTable'>
-			<thead><tr style={{background:'transparent'}}><th style={{width:150}}>{vdefMapV2['@labels']['Timestamp'][this.props.language]['name']}</th><th style={{width:150}}>{vdefMapV2['@labels']['Event'][this.props.language]['name']}</th><th style={{width:250}}>{vdefMapV2['@labels']['Details'][this.props.language]['name']}</th></tr>
+			<thead><tr style={{background:'transparent', fontSize:16}}><th style={{width:185}}>{vdefMapV2['@labels']['Timestamp'][this.props.language]['name']}</th><th style={{width:135}}>User</th><th style={{width:185}}>{vdefMapV2['@labels']['Event'][this.props.language]['name']}</th><th style={{width:295}}>{vdefMapV2['@labels']['Details'][this.props.language]['name']}</th></tr>
 		</thead>
 			<tbody>
 				{events}
 			</tbody></table>
+			</div>
 			</div>
 
 		</div>)
@@ -7759,7 +8458,7 @@ class DummyGraph extends React.Component{
 class SlimGraph extends React.Component{
 	constructor(props) {
 		super(props)
-		var mqls = [
+		/*var mqls = [
 			window.matchMedia('(min-width: 300px)'),
 			window.matchMedia('(min-width: 444px)'),
 			window.matchMedia('(min-width: 600px)'),
@@ -7767,15 +8466,15 @@ class SlimGraph extends React.Component{
 		]
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
-		}
-		this.state = ({width:480, height:215, mqls:mqls, popUp:false})
+		}*/
+		this.state = ({width:480, height:215, popUp:false})
 		this.toggle = this.toggle.bind(this);
 		this.stream = this.stream.bind(this);
 		this.pauseGraph = this.pauseGraph.bind(this);
 		this.restart = this.restart.bind(this);
 	}
 	pauseGraph(){
-		console.log('lower res')
+		//console.log('lower res')
 		this.refs.cv.pauseGraph();
 	}
 	restart(){
@@ -7794,15 +8493,15 @@ class SlimGraph extends React.Component{
 		}
 	}
 	componentDidMount () {
-		this.listenToMq()
+		//this.listenToMq()
 	}
 	renderCanv () {
 		if(this.state.popUp){
 			return <GraphModal Style={{maxWidth:950,width:950,marginTop:100, background:'#000'}} innerStyle={{backgroundColor:'black'}} show={true} onClose={this.toggle}>
-				<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={900} h={400} int={this.props.int} mpp={13}/>
+				<CanvasElem combineMode={this.props.combineMode} sens={this.props.sens} thresh={this.props.thresh} df={true} canvasId={this.props.canvasId} ref='cv' w={900} h={400} int={this.props.int} mpp={13}/>
 			</GraphModal>
 		}
-		return(<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int} mpp={28}/>)
+		return(<CanvasElem combineMode={this.props.combineMode} sens={this.props.sens} thresh={this.props.thresh} df={true} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int} mpp={28}/>)
 	}
 	stream (dat, ov) {
 		if(!ov){
@@ -7880,7 +8579,7 @@ class GraphModal extends React.Component{
 
 		if(!h){
 			
-			cont = (<GModalCont toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle}>
+			cont = (<GModalCont toggle={this.props.onClose} Style={this.props.Style} innerStyle={this.props.innerStyle}>
 				{this.props.children}
 			</GModalCont>)
 		}
@@ -7975,7 +8674,7 @@ class StealthMainPageUI extends React.Component{
 		this.sendPacket('refresh','')
 		socket.on('prodNames', function (pack) {
 			// body...
-			////console.log(['5369', pack])
+			//////console.log(['5369', pack])
 			if(self.props.det.ip == pack.ip){
 				self.setState({prodList:pack.list, prodNames:pack.names})
 			}
@@ -8098,7 +8797,7 @@ class StealthMainPageUI extends React.Component{
 		var str = sa.map(function(ch){
 			return String.fromCharCode(ch)
 		}).join("").replace("\u0000","").trim();
-		////console.log(['5888',str])
+		//////console.log(['5888',str])
 		var prodNames = this.state.prodNames;
 		prodNames[ind] = str
 		if(ind + 1 < this.state.prodList.length){
@@ -8171,7 +8870,7 @@ class StealthMainPageUI extends React.Component{
 		var lstyle = {height: 50,marginRight: 20, marginLeft:10}
 		var self = this;
 		var prodNames = this.state.prodNames
-		////console.log(this.state.prodList.chunk(8))
+		//////console.log(this.state.prodList.chunk(8))
 		var prodList = this.state.prodList.map(function(p, i){
 			var sel = false
 			if(p==self.state.sysRec['ProdNo']){
@@ -8295,6 +8994,7 @@ constructor(props) {
 		this.setCip = this.setCip.bind(this);
 		this.setCipSec = this.setCipSec.bind(this);
 		this.onTestReq = this.onTestReq.bind(this);
+		this.renderMobile = this.renderMobile.bind(this);
 	}
 	setCip(on){
 		
@@ -8335,7 +9035,59 @@ constructor(props) {
 	onTestReq(){
 		this.props.onButton('onTestReq')
 	}
+	renderMobile(){
+		var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'start'}
+		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'end'}
+		var contb = {position:'relative', display:'inline-block'} 
+		var conta = {position:'relative', display: 'inline-block'}
+		var klass = 'interceptorDynamicView'
+		var bcolor = 'black';
+		var pled = ['#e1e1e1', '#6eed6e', '#ee0000']
+		if(this.props.faultArray.length >0){
+			if(this.props.faultArray.length > this.props.warningArray.length){
+
+			}else{
+				//warning should look different?
+			}
+			klass = 'interceptorDynamicView_f'
+		}else if(this.props.rejOn == 1){
+			klass = 'interceptorDynamicView_r'
+		}else if(this.props.testReq == 1){
+			klass = 'interceptorDynamicView_t'
+		}else if(this.props.testReq == 2){
+			klass = 'interceptorDynamicView_tf'
+		}
+		if(this.state.cipSec == 1){
+			klass = 'InterceptorDynamicView_tf'
+		}
+		var marginSt = {marginLeft:5, marginRight:5}
+		// accessControl
+		var sensacc = (this.props.sys['PassAccSens'] <= this.props.level)||(this.props.sys['PassOn'] == 0)||(this.props.level > 3);
+		var rejacc = (this.props.sys['PassAccClrRej'] <= this.props.level)||(this.props.sys['PassOn'] == 0)||(this.props.level > 3);
+		return (
+			<div style={{marginTop:0, marginLeft:7, marginRight:7, marginBottom:12}}>
+			<div className={klass} style={{overflow:'hidden', display:'block', marginLeft:'auto', marginRight:'auto', textAlign:'center', borderRadius:20,boxShadow:'0px 0px 0px 8px #818a90'}}>
+				<div style={{padding:10, paddingTop:0, paddingBottom:0, display:'block', height:15}}><TickerBox ref='tbb'/>
+				</div>
+				<div>	<MessageConsole offline={this.props.offline} ref='mc' isUpdating={this.props.isUpdating} isSyncing={this.props.isSyncing} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
+				toggleTest={this.onTestReq} rejOn={this.props.rejOn} rejLatch={this.props.rejLatch} language={this.props.language} clearFaults={this.props.clearFaults} warningArray={this.props.warningArray} faultArray={this.props.faultArray} prodName={this.props.prodName}/>
+</div>
+				<div style={marginSt}>
+					<KeyboardInputTextButton mobile={true} language={this.props.language} acc={sensacc} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Sensitivity'][this.props.language]['name']} lab2={' '} num={true} isEditable={true} value={this.props.sens} onInput={this.onSens} onFocus={this.props.onKeyboardOpen} onRequestClose={this.props.onKeyboardClose} inverted={false}/></div>
+				<div style={marginSt}><KeyboardInputTextButton mobile={true} language={this.props.language}  acc={rejacc} label={vdefMapV2['@labels']['Rejects'][this.props.language]['name']} isEditable={false} onClick={this.onRej} value={this.props.rej} inverted={false}/></div>
+				
+				<div style={marginSt}>
+					<KeyboardInputTextButton mobile={true} language={this.props.language} overrideBG={true} bgColor={'rgba(200,200,200,1)'} rstyle={{backgroundColor:pled[this.props.pleds]}} label={vdefMapV2['@labels']['Signal'][this.props.language]['name']} lab2={''} onClick={this.onSig} isEditable={false} value={this.state.peak} inverted={false}/>
+				</div>
+
+				
+				</div>
+				</div>)
+	}
 	render () {
+		if(this.props.mobile){
+			return this.renderMobile()
+		}
 		var labstyleb = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'start'}
 		var labstylea = {width:60, display:'inline-block',position:'relative',top:-20, color:'rgb(225,225,225)', textAlign:'end'}
 		var contb = {position:'relative', display:'inline-block'} 
@@ -8547,7 +9299,7 @@ class InterceptorMainPageUI extends React.Component{
 		var res = null;
 
 		this.state = ({peditMode:false,lang:0,rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0,curInd:0, sysRec:{},prodRec:{}, tmp:'', tmpB:'', 
-			prodList:[],prodNames:[], phaseFast:0, phaseFastB:0, pVdef:pVdef, keyboardVisible:false,pled_a:0,pled_b:0})
+			prodList:[],prodNames:[], phaseFast:0, phaseFastB:0, pVdef:pVdef, keyboardVisible:false,pled_a:0,pled_b:0, combineMode:0})
 		this.keyboardOpen = this.keyboardOpen.bind(this);
 		this.keyboardClose = this.keyboardClose.bind(this);
 		this.onSens = this.onSens.bind(this);
@@ -8623,7 +9375,10 @@ class InterceptorMainPageUI extends React.Component{
 			this.refs.nv.restart();
 	}
 	setDT(dt){
-		this.refs.clock.setDT(dt)
+		if(!this.props.mobile){
+
+			this.refs.clock.setDT(dt)
+		}
 	}
 	cip_plc(on){
 		//if(this.props.df){
@@ -8703,7 +9458,7 @@ class InterceptorMainPageUI extends React.Component{
 		//if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
 
 			if(this.props.int){
-				console.log('this should parse it... ')
+				//console.log('this should parse it... ')
 				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens_A'], tmpB:prd['Sens_B']})
 			}else{
 				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens']})
@@ -8834,7 +9589,7 @@ class InterceptorMainPageUI extends React.Component{
 	}
 	onButton (f) {
 		// body...
-		////console.log(f)
+		//////console.log(f)
 		var self = this;
 
 		if(f == 'test'){
@@ -9046,7 +9801,7 @@ class InterceptorMainPageUI extends React.Component{
 		this.props.setLang(i)
 	}
 	handleProdScroll(){
-		console.log('handleProdScroll')
+		//console.log('handleProdScroll')
 		 var el = document.getElementById("prodList")		
      	 if(el){
 			if(el.scrollTop > 5){
@@ -9059,21 +9814,7 @@ class InterceptorMainPageUI extends React.Component{
 			}else{
 				this.refs.arrowBot.hide();
 			}
-    	}/*
-		var chsize = 3;
-		if(this.state.peditMode){
-			chsize = 2
-		}
-		if(document.getElementById('prodList').scrollTop > 5){
-			this.refs.arrowTop.show();
-		}else{
-			this.refs.arrowTop.hide();
-		}
-		if((Math.ceil(this.state.prodList.length/chsize)*81 - document.getElementById('prodList').scrollTop) > 390){
-			this.refs.arrowBot.show();
-		}else{
-			this.refs.arrowBot.hide();
-		}*/
+    	}
 	}
 	onDeny(){
 		this.login();
@@ -9088,7 +9829,7 @@ class InterceptorMainPageUI extends React.Component{
 		if(this.state.prodList.length < 2){
 			return;
 		}
-		////console.log(['6923',p, this.state.prodList])
+		//////console.log(['6923',p, this.state.prodList])
 		var self  = this;
 	
 		if(this.state.prodList.indexOf(p) != 0){
@@ -9115,6 +9856,9 @@ class InterceptorMainPageUI extends React.Component{
 		var login = 'login'
 
 		var style = {background:'#362c66', width:'100%',display:'block', height:'-webkit-fill-available'}
+		if(this.props.mobile){
+			style.overflowY = 'scroll'
+		}
 		var lstyle = {height: 50,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}
 		var self = this;
 		var lgs = ['english','french','spanish','portuguese','german','italian','polish','turkish']// ['english','korean']
@@ -9226,12 +9970,12 @@ class InterceptorMainPageUI extends React.Component{
 			logintext =	<td style={{height:60, width:100, color:'#eee'}}><label onClick={this.login}>{this.props.username}</label></td>
 		}
 
-		var dv = (<InterceptorDynamicViewV2 offline={this.props.offline} onDeny={this.onDeny} mac={this.props.mac} testReq={this.props.testReq}  language={lg} onButton={this.onButton} onSens={this.onSens} rejOn={this.props.rejOn} faultArray={this.props.faultArray} warningArray={this.props.warningArray}
+		var dv = (<InterceptorDynamicViewV2 mobile={this.props.mobile} offline={this.props.offline} onDeny={this.onDeny} mac={this.props.mac} testReq={this.props.testReq}  language={lg} onButton={this.onButton} onSens={this.onSens} rejOn={this.props.rejOn} faultArray={this.props.faultArray} warningArray={this.props.warningArray}
 							ref='dv' sys={this.state.sysRec} sens={[this.state.prodRec['Sens_A'],this.state.prodRec['Sens_B']]} sig={[this.state.peak,this.state.peakb]} pleds={[this.state.pled_a,this.state.pled_b]} 
 										rej={this.state.rej} onKeyboardOpen={this.keyboardOpen} onKeyboardClose={this.keyboardClose} level={this.props.level}/>)
 		var dfLab = ''
 		if(this.props.df){
-			dv = <InterceptorDynamicViewDF offline={this.props.offline} onDeny={this.onDeny} mac={this.props.mac} testReq={this.props.testReq}  language={lg} onButton={this.onButton} onSens={this.onSens} rejOn={this.props.rejOn} faultArray={this.props.faultArray} warningArray={this.props.warningArray}
+			dv = <InterceptorDynamicViewDF mobile={this.props.mobile}  offline={this.props.offline} onDeny={this.onDeny} mac={this.props.mac} testReq={this.props.testReq}  language={lg} onButton={this.onButton} onSens={this.onSens} rejOn={this.props.rejOn} faultArray={this.props.faultArray} warningArray={this.props.warningArray}
 							ref='dv' sys={this.state.sysRec} sens={this.state.prodRec['Sens']} sig={this.state.peak} pleds={this.state.pled_a} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} clearRejLatch={this.clearRejLatch}  status={this.props.status} clearFaults={this.props.clearFaults} 
 							clearWarnings={this.props.clearWarnings} rejLatch={this.props.rejLatch} prodName={this.state.prodRec['ProdName']}
 										rej={this.state.rej} onKeyboardOpen={this.keyboardOpen} onKeyboardClose={this.keyboardClose} level={this.props.level}/>
@@ -9243,30 +9987,33 @@ class InterceptorMainPageUI extends React.Component{
 					<table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
 						<tbody>
 							<tr>
-								<td style={{width:380}}><img style={lstyle}  src='assets/NewFortressTechnologyLogo-WHT-trans.png'/></td><td>
+								<td style={{width:380}}><img style={lstyle}  src='assets/NewFortressTechnologyLogo-WHT-trans.png'/></td><td hidden={this.props.mobile}>
 								<img style={{height:45, marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src='assets/Interceptor-white-01.svg'/>
 								</td>
 							{logintext}	{logincell}
-				<td className="buttCell" style={{height:60}}><button onClick={this.gohome} className={home}/></td>
+							{!this.props.mobile &&
+								<td className="buttCell" style={{height:60}}><button onClick={this.gohome} className={home}/></td>
+				
+							}
 							</tr>
 						</tbody>
 					</table>
 		
 		{dv}		
-		<InterceptorNav offline={this.props.offline} onDeny={this.onDeny} df={this.props.df} testReq={this.props.testReq} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} clearRejLatch={this.clearRejLatch}  status={this.props.status} language={lg} onButton={this.onButton} ref='nv' clearFaults={this.props.clearFaults} clearWarnings={this.props.clearWarnings} 
-		rejOn={this.props.rejOn} rejLatch={this.props.rejLatch}  faultArray={this.props.faultArray} warningArray={this.props.warningArray} prodName={this.state.prodRec['ProdName']}>
-			<IntClock dst={this.state.sysRec['DaylightSavings']} sendPacket={this.sendPacket} language={lg} ref='clock'/>
+		<InterceptorNav mobile={this.props.mobile} offline={this.props.offline} onDeny={this.onDeny} df={this.props.df} testReq={this.props.testReq} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} clearRejLatch={this.clearRejLatch}  status={this.props.status} language={lg} onButton={this.onButton} ref='nv' clearFaults={this.props.clearFaults} clearWarnings={this.props.clearWarnings} 
+		rejOn={this.props.rejOn} rejLatch={this.props.rejLatch}  faultArray={this.props.faultArray} warningArray={this.props.warningArray} prodName={this.state.prodRec['ProdName']} combineMode={this.state.prodRec['SigModeCombined']} sens={this.state.prodRec['Sens']} thresh={this.state.prodRec['DetThresh']}>
+			<IntClock mobile={this.props.mobile} dst={this.state.sysRec['DaylightSavings']} sendPacket={this.sendPacket} language={lg} ref='clock'/>
 		</InterceptorNav>
 				<Modal ref='testModal'>
 					<TestReq ip={this.props.det.ip} toggle={this.toggleTestModal}/>
 				</Modal>
-				<Modal ref='pedit' intMeter={true} clear={this.clearSig}>
+				<Modal mobile={this.props.mobile} ref='pedit' intMeter={true} dfMeter={this.props.df} clear={this.clearSig}>
 				
 
 				{peditCont}
 				</Modal>
 				
-				<Modal ref='netpolls' intMeter={true} clear={this.clearSig}>
+				<Modal mobile={this.props.mobile} ref='netpolls' intMeter={true} dfMeter={this.props.df}  clear={this.clearSig}>
 					<NetPollView language={lg} ref='np' eventCount={15} events={this.props.netpoll} ip={this.props.det.ip} mac={this.props.det.mac}/>
 				</Modal>
 				<Modal ref='configs'>
@@ -9291,25 +10038,33 @@ class InterceptorNav extends React.Component{
 		this.onDeny = this.onDeny.bind(this);	
 		this.pauseGraph =this.pauseGraph.bind(this);
 		this.restart = this.restart.bind(this);
+		this.renderMobile = this.renderMobile.bind(this);
 	}
 	pauseGraph(){
-		this.refs.sg.pauseGraph();
+		if(this.refs.sg){
+			this.refs.sg.pauseGraph();	
+		}
+		
 	}
 	restart(){
-		this.refs.sg.restart();
+		if(this.refs.sg){
+			this.refs.sg.restart();
+		}	
 	}
 	onDeny(){
 		this.props.onDeny();
 	}
 	setCip(on){
 		//if(!this.props.df){
+		if(!this.props.mobile){
 			this.refs.nv.setState({cip:on});
+		}
 		//}
 	}
 	setCipSec(sec){
-		//if(!this.props.df){
+		if(!this.props.mobile){
 			this.refs.nv.setState({cipSec:sec});
-		//}
+		}
 	}
 	onConfig () {
 		this.props.onButton('config')
@@ -9340,12 +10095,80 @@ class InterceptorNav extends React.Component{
 	streamTo (dat,ov) {
 		// body...
 
-		this.refs.sg.stream(dat,ov);
+		if(this.refs.sg){
+			this.refs.sg.stream(dat,ov);
+		}
+		
 	}
 	clearRejLatch(){
 		this.props.clearRejLatch();
 	}
+	renderMobile(){
+		var labels = {'Settings':{'english':'Settings','korean':'설정'},
+		'Test':{'english':'Test','korean':'테스트'},
+		'Log':{'english':'Log','korean':'기록'},
+		'Sensitivity':{'english':'Sensitivity','korean':'민감도'},
+		'Calibrate':{'english':'Calibrate','korean':'캘리브레이션'},
+		'Product':{'english':'Product','korean':'품목'} }
+		var klass = 'navWrapper'
+		if(this.props.faultArray.length != 0){
+			if(this.props.faultArray.length > this.props.warningArray.length){
+
+			}else{
+				//warning should look different?
+			}
+			klass = 'navWrapper_f'
+		}else if(this.props.rejOn == 1){
+			klass = 'navWrapper_r'
+		}else if(this.props.testReq == 1){
+			klass = 'navWrapper_t'
+		}else if(this.props.testReq == 2){
+			klass = 'navWrapper_tf'
+		}
+
+		var content = <InterceptorNavContent combineMode={this.props.combineMode} mobile={this.props.mobile} offline={this.props.offline} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
+				toggleTest={this.onTestReq} rejOn={this.props.rejOn} rejLatch={this.props.rejLatch} language={this.props.language} ref='nv' clearFaults={this.props.clearFaults} warningArray={this.props.warningArray} faultArray={this.props.faultArray} prodName={this.props.prodName}/>
+				
+		//if(this.props.df){
+		//	content = <SlimGraph df={true} int={true} ref='sg' canvasId={'sgcanvas2'}/>
+		//}
+
+		/*
+			<div style={{display:'block', textAlign:'center'}}>
+				{this.props.children}
+				<div>{content}</div>
+				
+				
+				</div>
+
+		*/
+		return (<div className='interceptorNav' style={{display:'block', marginLeft:'auto',marginRight:'auto'}}>
+				
+				<div className={klass} style={{overflow:'hidden', marginTop:-10, background:'transparent'}}>
+				<div style={{background:'#362c66', paddingLeft:15, paddingRight:15}}>
+					<CircularButton style={{width:'100%', marginLeft:-8, height:43, borderWidth:5}} lab={vdefMapV2['@labels']['Settings'][this.props.language]['name']} onClick={this.onConfig}/>
+					<CircularButton style={{width:'100%', marginLeft:-8, height:43,borderWidth:5, marginTop:3}} lab={vdefMapV2['@labels']['Test'][this.props.language]['name']} onClick={this.onTest}/>
+					<CircularButton style={{width:'100%', marginLeft:-8, height:43,borderWidth:5, marginTop:3}} lab={vdefMapV2['@labels']['Log'][this.props.language]['name']} onClick={this.onLog}/>
+					<CircularButton style={{width:'100%', marginLeft:-8, height:43,borderWidth:5, marginTop:3}} lab={vdefMapV2['@labels']['Sensitivity'][this.props.language]['name']} inverted={true} onClick={this.onSens}/>
+				<CircularButton style={{width:'100%', marginLeft:-8, height:43,borderWidth:5, marginTop:3}} lab={vdefMapV2['@labels']['Learn'][this.props.language]['name']} inverted={true} onClick={this.onCal}/>
+				<CircularButton style={{width:'100%', marginLeft:-8, height:43,borderWidth:5, marginTop:3}} lab={vdefMapV2['@labels']['Product'][this.props.language]['name']} inverted={true} onClick={this.onProd}/>
+				
+				</div>
+
+				<table hidden className='intNavTable' style={{height:240, marginTop:0, borderSpacing:0,width:'100%', borderCollapse:'collapse', background:'#362c66'}}><tbody><tr>
+				<td>
+				<div style={{marginLeft:0, marginRight:'auto', width:180}}>
+				<div></div>
+				</div>
+				</td><td>
+				<div style={{marginRight:0, marginLeft:'auto', width:180}}><div>
+				</div>	</div></td></tr></tbody></table></div>
+			</div>)
+	}
 	render () {
+		if(this.props.mobile){
+			return this.renderMobile();
+		}
 		// body...
 		var labels = {'Settings':{'english':'Settings','korean':'설정'},
 		'Test':{'english':'Test','korean':'테스트'},
@@ -9393,7 +10216,7 @@ class InterceptorNav extends React.Component{
 				<div style={{display:'inline-block', width:480, height:327, borderBottom:'20px solid #818a90',position:'relative', borderBottomLeftRadius:'40px 100px', borderBottomRightRadius:'40px 100px'}}>
 				<div style={{height:63}}>{content}</div>
 				
-				<SlimGraph df={false} int={true} ref='sg' canvasId={'sgcanvas2'}/>
+				<SlimGraph sens={this.props.sens} thresh={this.props.thresh} combineMode={this.props.combineMode} df={false} int={true} ref='sg' canvasId={'sgcanvas2'}/>
 				{this.props.children}
 				</div></td><td>
 				<div className='slantedLeft'><div style={{background:'#362c66', borderTopLeftRadius:'30px 50px', height:366, textAlign:'center', marginTop:0, paddingTop:1, position:'relative'}}>
@@ -9441,9 +10264,9 @@ class MessageConsole extends React.Component{
 		var fCont = <div style={{color:"#e1e1e1"}}>{vdefMapV2['@labels']["No Faults"][this.props.language].name}</div>
 		var bgColor = 'rgba(150,150,150,0.3)'
 		var style = {width:345,height:220,background:'rgb(225,225,225)',marginLeft:'auto',marginRight:'auto'}
-		var wrapper = {width:480, height:116, marginLeft:'auto', marginRight:'auto', marginTop:16}
-		var line1 = <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{vdefMapV2['@labels']['Running Product'][this.props.language]['name']}</div>
-		var line2 = 	<div style={{display:'block', height:34, width:400, fontSize:25}}>{this.props.prodName}</div>
+		var wrapper = {width:'100%', height:88, marginLeft:'auto', marginRight:'auto', marginTop:10}
+		var line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Running Product'][this.props.language]['name']}</div>
+		var line2 = 	<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{this.props.prodName}</div>
 		var textColor = '#eee'
 		if(fActive){
 			var fref = 'Faults'
@@ -9474,8 +10297,8 @@ class MessageConsole extends React.Component{
 					fstr = fArr.join(' ');
 				}
 			}
-			line1 = <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{fstr}</div>
-			line2 = <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{wstr}</div>	//<div style={{display:'block', height:34, width:330, fontSize:25}}><button hidden onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button></div>
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{fstr}</div>
+			line2 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{wstr}</div>	//<div style={{display:'block', height:34, width:330, fontSize:25}}><button hidden onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button></div>
 			bgColor = 'yellow'
 			left = 'dfnavTabLeft_f'
 			center = 'dfnavTabCent_f'
@@ -9504,57 +10327,55 @@ class MessageConsole extends React.Component{
 			right = 'dfnavTabRight_r'
 			if(this.props.rejLatch == 1){
 				fCont = <div style={{color:"#e1e1e1"}}><button onClick={this.clearRejLatch}>{vdefMapV2['@labels']['Clear Reject Latch'][this.props.language].name}</button></div>
-				line1 = <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{vdefMapV2['@labels']['Reject Latched'][this.props.language]['name']}</div>
-				line2 =<div style={{display:'block', height:34, width:400, fontSize:25}}>{vdefMapV2['@labels']['Clear Latch'][this.props.language]['name']}</div>
+				line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Reject Latched'][this.props.language]['name']}</div>
+				line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{vdefMapV2['@labels']['Clear Latch'][this.props.language]['name']}</div>
 			}
 		}else if(this.props.testReq == 1){
 			left = 'dfnavTabLeft_t'
 			center = 'dfnavTabCent_t'
 			right = 'dfnavTabRight_t'
-			line1 = <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{vdefMapV2['@labels']['Test in progress'][this.props.language].name}</div>
-			line2 =<div style={{display:'block', height:34, width:400, fontSize:25}}>{this.props.status}</div>
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Test in progress'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{this.props.status}</div>
 		}else if(this.props.testReq == 2){
 			left = 'dfnavTabLeft_tf'
 			center = 'dfnavTabCent_tf'
 			right = 'dfnavTabRight_tf'
-			line1 = <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{vdefMapV2['@labels']['Test required'][this.props.language].name}</div>
-			line2 =<div style={{display:'block', height:34, width:400, fontSize:25}}>{this.props.status}</div>
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Test required'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{this.props.status}</div>
 		}
 
 		if(this.props.isSyncing){
-			line1 = <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{vdefMapV2['@labels']['Syncing'][this.props.language].name}</div>
-			line2 =<div style={{display:'block', height:34, width:400, fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Syncing'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
 		}
 		if(this.state.cipSec){
 			left = 'dfnavTabLeft_tf'
 			center = 'dfnavTabCent_tf'
 			right = 'dfnavTabRight_tf'
-			line1 =  <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{vdefMapV2['@labels']['Clean mode'][this.props.language].name}</div>
-			line2 =<div style={{display:'block', height:34, width:400, fontSize:25}}>{vdefMapV2['@labels']['Time left'][this.props.language].name + ': '+ this.state.cipSec}</div>
+			line1 =  <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Clean mode'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{vdefMapV2['@labels']['Time left'][this.props.language].name + ': '+ this.state.cipSec}</div>
 
 		}
 		if(this.state.cip){
-			line1 =  <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{vdefMapV2['@labels']['Clean mode'][this.props.language].name}</div>
-			line2 =<div style={{display:'block', height:34, width:400, fontSize:25}}>PLC</div>
+			line1 =  <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Clean mode'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>PLC</div>
 
 		}
 
 		if(this.props.isUpdating){
-			line1 = <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{vdefMapV2['@labels']['Updating Detector'][this.props.language].name}</div>
-			line2 =<div style={{display:'block', height:34, width:400, fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Updating Detector'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
 		}else if(this.props.offline){
-			line1 = <div style={{display:'block', height:34, width:400, marginBottom:-3}}>{vdefMapV2['@labels']['Trying to reconnect'][this.props.language].name}</div>
-			line2 =<div style={{display:'block', height:34, width:400, fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Trying to reconnect'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
 
 		}
 		return (<div className='interceptorNavContent' style={wrapper}>
-			<div style={{paddingTop:16, color:textColor}}>
+			<div style={{paddingTop:0, color:textColor}}>
 			<div className='noPadding' onClick={this.onClick}>
-				<div className={left} ></div>
 				<div className={center}>
 				{line1}{line2}
-				</div><div className={right}></div>
-				
+				</div>
 			</div>
 			</div>
 			<div>
@@ -9578,6 +10399,7 @@ class InterceptorNavContent extends React.Component{
 		this.clearRejLatch = this.clearRejLatch.bind(this);
 		this.clearWarnings = this.clearWarnings.bind(this);
 		this.onClick = this.onClick.bind(this);
+		this.renderMobile = this.renderMobile.bind(this);
 	}
 	stream (dat,ov) {
 	}
@@ -9604,7 +10426,142 @@ class InterceptorNavContent extends React.Component{
 			this.refs.fModal.toggle();
 		}
 	}
+	renderMobile(){
+		var self = this;
+		var fActive = (this.props.faultArray.length > 0)
+		var left = 'navTabLeft'
+		var center = 'navTabCent'
+		var right = 'navTabRight'
+		var fCont = <div style={{color:"#e1e1e1"}}>{vdefMapV2['@labels']["No Faults"][this.props.language].name}</div>
+		var bgColor = 'rgba(150,150,150,0.3)'
+		var style = {width:345,height:220,background:'rgb(225,225,225)',marginLeft:'auto',marginRight:'auto'}
+		var wrapper = {width:'100%'}
+		var line1 = <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{vdefMapV2['@labels']['Running Product'][this.props.language]['name']}</div>
+		var line2 = 	<div style={{display:'block', height:34, width:270, fontSize:25}}>{this.props.prodName}</div>
+		if(fActive){
+			var fref = 'Faults'
+			var wref = 'Warnings'
+			var fstr = this.props.faultArray.length + " " +vdefMapV2['@labels'][fref][this.props.language].name
+			var wstr = ''
+			if(this.props.warningArray.length > 0){
+				var faultCount = this.props.faultArray.length - this.props.warningArray.length;
+				if(faultCount == 0){
+					fstr = this.props.warningArray.length + " " +vdefMapV2['@labels'][wref][this.props.language].name
+				}else{
+
+					if(faultCount == 1){
+						fref = 'Fault'
+					}
+					if(this.props.warningArray.length == 1){
+						wref = 'Warning'
+					}
+					fstr = faultCount + " " + vdefMapV2['@labels'][fref][this.props.language].name; 
+					wstr =  this.props.warningArray.length + " " +vdefMapV2['@labels'][wref][this.props.language].name
+				}
+			}
+			if(this.props.faultArray.length == 1){
+				fstr = vdefMapV2['@vMap'][this.props.faultArray[0]+'Mask']['@translations'][this.props.language]['name'];
+				if(this.props.warningArray.length == 1){
+					var fArr = fstr.split(' ').slice(0,-1);
+					fArr.push(vdefMapV2['@labels']["Warning"][this.props.language].name)
+					fstr = fArr.join(' ');
+				}
+			}
+			line1 = <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{fstr + " " + wstr}</div>
+			//line2 = <div style={{display:'block', height:34, width:330, marginBottom:-3}}>{wstr}</div>	//<div style={{display:'block', height:34, width:330, fontSize:25}}><button hidden onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button></div>
+			bgColor = 'yellow'
+			left = 'navTabLeft_f'
+			center = 'navTabCent_f'
+			right = 'navTabRight_f'
+			var clrButtons = ''
+			if(this.props.warningArray.length == this.props.faultArray.length){
+					clrButtons =  <button onClick={this.clearWarnings}>{vdefMapV2['@labels']['Clear Warnings'][this.props.language]['name']}</button>
+				}else if(this.props.warningArray.length != 0){
+						clrButtons =  <React.Fragment><button onClick={this.clearWarnings}>{vdefMapV2['@labels']['Clear Warnings'][this.props.language]['name']}</button>
+											 <button onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
+						</React.Fragment>
+				}else{
+					clrButtons =  <button onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
+				
+				}
+			fCont = <div style={{color:"#e1e1e1"}}>{this.props.faultArray.map(function (f) {
+				if(self.props.warningArray.indexOf(f) != -1){
+					return <div>{vdefMapV2['@vMap'][f+'Mask']['@translations'][self.props.language]['name']+ ' - '+ vdefMapV2['@labels']["Warning"][self.props.language].name}</div>
+				}
+				return  <div>{vdefMapV2['@vMap'][f+'Mask']['@translations'][self.props.language]['name']}</div>
+			})}{clrButtons}</div>
+		}else if(this.props.rejOn == 1){
+			left = 'navTabLeft_r'
+			center = 'navTabCent_r'
+			right = 'navTabRight_r'
+			if(this.props.rejLatch == 1){
+				fCont = <div style={{color:"#e1e1e1"}}><button onClick={this.clearRejLatch}>{vdefMapV2['@labels']['Clear Reject Latch'][this.props.language].name}</button></div>
+				line1 = <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{vdefMapV2['@labels']['Reject Latched'][this.props.language]['name'] + ' - ' + vdefMapV2['@labels']['Clear Latch'][this.props.language]['name']}</div>
+				//line2 =<div style={{display:'block', height:34, width:330, fontSize:25}}>{}</div>
+			}
+		}else if(this.props.testReq == 1){
+			left = 'navTabLeft_t'
+			center = 'navTabCent_t'
+			right = 'navTabRight_t'
+			line1 = <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{vdefMapV2['@labels']['Test in progress'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:270, fontSize:25}}>{this.props.status}</div>
+		}else if(this.props.testReq == 2){
+			left = 'navTabLeft_tf'
+			center = 'navTabCent_tf'
+			right = 'navTabRight_tf'
+			line1 = <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{vdefMapV2['@labels']['Test required'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:270, fontSize:25}}>{this.props.status}</div>
+		}
+		if(this.props.isUpdating){
+			line1 = <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{vdefMapV2['@labels']['Updating Detector'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:270, fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
+		}
+		if(this.props.isSyncing){
+			line1 = <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{vdefMapV2['@labels']['Syncing'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:270, fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
+		}
+		if(this.state.cipSec){
+			line1 =  <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{vdefMapV2['@labels']['Clean mode'][this.props.language].name + ' - ' + vdefMapV2['@labels']['Time left'][this.props.language].name + ': '+ this.state.cipSec}</div>
+			//line2 =<div style={{display:'block', height:34, width:330, fontSize:25}}>{}</div>
+
+		}
+		if(this.state.cip){
+			line1 =  <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{vdefMapV2['@labels']['Clean mode'][this.props.language].name}</div>
+		//	line2 =<div style={{display:'block', height:34, width:330, fontSize:25}}>PLC</div>
+
+		}
+		if(this.props.isUpdating){
+			line1 = <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{vdefMapV2['@labels']['Updating Detector'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:270, fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
+		}else if(this.props.offline){
+			line1 = <div style={{display:'block', height:34, width:270, marginBottom:-3}}>{vdefMapV2['@labels']['Trying to reconnect'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:270, fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
+	
+		}
+		return (<div className='interceptorNavContent' style={wrapper}>
+			<div style={{   textAlign:'center', color:'#eee'}}>
+			<div style={{display:'block', width:350, marginLeft:'auto',marginRight:'auto'}}>
+			<table className='noPadding' style={{marginRight:0, marginLeft:0}} onClick={this.onClick}>
+				<tbody><tr><td className={left} ></td>
+				<td className={center} style={{width:270}}>
+				{line1}{line2}
+				</td><td className={right}></td></tr>
+				</tbody>
+			</table>
+			</div>
+			</div>
+			<div>
+			{this.props.children}
+			</div>
+			<Modal ref='fModal'>
+				{fCont}
+			</Modal>
+				</div>)
+	}
 	render () {
+		if(this.props.mobile){
+			return this.renderMobile()
+		}
 		var self = this;
 		var fActive = (this.props.faultArray.length > 0)
 		var left = 'navTabLeft'
@@ -9917,16 +10874,19 @@ class CircularButton extends React.Component{
 		if(this.props.disabled){
 			bstyle.background = '#818a90'
 			return(<div  className='circularButton' onClick={this.onClick} style={bstyle}>
-				<div style={{display:'inline-block', position:'relative',top:-2,width:180, color:"#bbb", fontSize:fsize,lineHeight:'50px'}}>{this.props.lab}</div>
+				<div style={{display:'inline-block', position:'relative',top:-2,width:'100%', color:"#bbb", fontSize:fsize,lineHeight:'50px'}}>{this.props.lab}</div>
 			</div>)
 		}	
+		if(this.props.selected){
+			bstyle.background = 'rgb(128,122,150)'
+		}
 		if(this.props.inverted){
 			return(<div  className='circularButton' onClick={this.onClick} style={bstyle}>
-				<div style={{display:'inline-block', position:'relative',top:-2,width:180, color:"#e1e1e1", fontSize:fsize,lineHeight:'50px'}}>{this.props.lab}</div>
+				<div style={{display:'inline-block', position:'relative',top:-2,width:'100%', color:"#e1e1e1", fontSize:fsize,lineHeight:'50px'}}>{this.props.lab}</div>
 			</div>)
 		}else{
 			return(<div className='circularButton' onClick={this.onClick} style={bstyle}>
-				<div style={{display:'inline-block', position:'relative',top:-2,width:180, color:"#e1e1e1", fontSize:fsize,lineHeight:'50px'}}>{this.props.lab}</div>
+				<div style={{display:'inline-block', position:'relative',top:-2,width:'100%', color:"#e1e1e1", fontSize:fsize,lineHeight:'50px'}}>{this.props.lab}</div>
 			</div>)
 		}
 	}
@@ -10061,6 +11021,7 @@ class InterceptorDFSensitivityUI extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {peaka:0,peakb:0, peakdf:0}
+		this.renderMobile = this.renderMobile.bind(this);
 		this.onSens = this.onSens.bind(this);
 		this.onSensA = this.onSensA.bind(this);
 		this.onSensB = this.onSensB.bind(this);
@@ -10085,7 +11046,11 @@ class InterceptorDFSensitivityUI extends React.Component{
 		this.props.onSens(sens,'Sens_B')
 	}
 	onSigMode(){
-		this.refs.sgpw.toggle()
+		var self = this;
+		setTimeout(function(){
+			self.refs.sgpw.toggle()
+		},150)
+		
 	}
 	selectChanged(v,i){
 		this.props.onSigMode('SigModeCombined',v)
@@ -10108,7 +11073,51 @@ class InterceptorDFSensitivityUI extends React.Component{
 	onFocus(){
 
 	}
+	renderMobile(){
+		var details = '';
+		var list = vdefByMac[this.props.mac][0]['@labels']['SigModeCombined']['english']
+		if(this.props.level > 3){
+			details = (	
+				
+				<div style={{ overflow: 'hidden',borderRadius: 20, border: '8px solid #818a90',boxShadow: '0 0 14px black', textAlign:'center'}}>
+
+						<div style={{marginTop:15}}>
+						<div><KeyboardInputTextButton  mobile={this.props.mobile}  language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel A'][this.props.language]['name']} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.sensA} onInput={this.onSensA} inverted={false} />
+						</div><div>
+					<KeyboardInputTextButton mobile={this.props.mobile} onDeny={this.onDeny} language={this.props.language} label={vdefMapV2['@labels']['Signal'][this.props.language]['name'] + ' A'} onClick={this.onSigA} isEditable={false} value={this.state.peaka} inverted={false}/></div>
+					
+						</div>
+					<div>
+					<KeyboardInputTextButton mobile={this.props.mobile} language={this.props.language} tooltip={vMapV2['SigModeCombined']['@translations'][this.props.language]['description']} label={vMapV2['SigModeCombined']['@translations'][this.props.language]['name']} 
+				onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={list[this.props.sigmode]} onClick={this.onSigMode} inverted={false} />
+				<PopoutWheel mobile={this.props.mobile} ref='sgpw' vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={vMapV2['SigModeCombined']['@translations'][this.props.language]['name']} val={[this.props.sigmode]} options={[list]} onChange={this.selectChanged}/>
+				</div>
+						<div>
+						<KeyboardInputTextButton mobile={this.props.mobile} language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel B'][this.props.language]['name']}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.sensB} onInput={this.onSensB} inverted={false}/></div>
+					<div>
+					<KeyboardInputTextButton mobile={this.props.mobile}  onDeny={this.onDeny} language={this.props.language} label={vdefMapV2['@labels']['Signal'][this.props.language]['name'] + ' B'} onClick={this.onSigB} isEditable={false} value={this.state.peakb} inverted={false}/></div>
+					
+		</div>
+		)
+		}
+		
+		return <div>
+		<div style={{textAlign:'center'}}>
+				<div>
+				<div><KeyboardInputTextButton mobile={this.props.mobile} language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens_A']['@translations'][this.props.language]['name']} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.sens} onInput={this.onSens} inverted={false} />
+				</div><div>
+				<KeyboardInputTextButton mobile={this.props.mobile} language={this.props.language} label={vdefMapV2['@labels']['Signal'][this.props.language]['name']} lab2={''} onClick={this.onSigDF} isEditable={false} value={this.state.peakdf} inverted={false}/>
+					</div>
+				
+			</div>
+		</div>
+		{details}
+	</div>
+	}
 	render(){
+		if(this.props.mobile){
+			return this.renderMobile();
+		}
 		var details = '';
 		var list = vdefByMac[this.props.mac][0]['@labels']['SigModeCombined']['english']
 		if(this.props.level > 3){
@@ -10243,7 +11252,7 @@ class InterceptorCalibrateUI extends React.Component{
 	}
 	lowPower(){
 		var self = this;
-			console.log(9984, 'lowPower')
+			//console.log(9984, 'lowPower')
 			this.props.sendPacket('oscPower', 0)
 		setTimeout(function(){
 				self.props.sendPacket('oscPowerB',0)
@@ -10427,10 +11436,85 @@ class StealthMeterBar extends React.Component{
 	render () {
 		// body...
 		var tbstyle = {display:'inline-block', width:700, padding:5}
-		return(<div style={{background: 'rgb(129, 138, 144)', borderRadius:15,border:'5px solid #818a90', boxShadow:'0 0 14px black', marginBottom:3}}><div style={{display:'inline-block'}}>
-			<div className='intmetSig' style={{color:'black'}} onClick={this.onSig}>{this.state.sig}</div></div><div style={tbstyle}><TickerBox ref='tb'/></div>
+		var sigStyle = {color: 'black'}
+		var sigWrapperSytle = {display:'inline-block'}
+		if(this.props.mobile){
+			tbstyle.width = '100%'
+			tbstyle.padding = 0;
+			tbstyle.height = 15;
+			tbstyle.overflow = 'hidden'
+			//sigStyle.width = '100%'
+			//sigWrapperSytle.width = '10%'
+			sigWrapperSytle.display = 'none'
+		}
+		return(<div style={{background: 'rgb(129, 138, 144)', borderRadius:15,border:'5px solid #818a90', boxShadow:'0 0 14px black', marginBottom:3}}>
+			<div style={sigWrapperSytle}>
+			<div className='intmetSig' style={sigStyle} onClick={this.onSig}>{this.state.sig}</div></div><div style={tbstyle}><TickerBox ref='tb'/></div>
 				</div>)
 	}
+}
+
+class CustomInput extends React.Component{
+	constructor(props){
+		super(props);
+		this.onClick = this.onClick.bind(this)
+		this.onChange = this.onChange.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+
+	}
+	onChange(e){
+		if(typeof e == 'string'){
+			var ev = {target:{value:e}}
+			this.props.onChange(ev);
+		}else{
+			this.props.onChange(e)
+		}
+		
+	}
+	onClick(){
+		this.refs.ck.toggle();
+	}
+	onRequestClose(){
+		if(this.props.onRequestClose){
+			this.props.onRequestClose();
+    	}
+	}
+	onFocus(){
+		if(this.props.onFocus){
+			this.props.onFocus();
+		}
+	}
+	render(){
+		var klass = this.props.className || 'customInput';
+		var style = this.props.style || {};
+		var type = 'text'
+		var dispVal = this.props.value
+		var num = this.props.num;
+		if(this.props.type == 'password'){
+			type = 'password'
+			dispVal = dispVal.split('').map(function(e){return '*'}).join('');
+		}else if(this.props.type == 'time'){
+			type = 'text';
+			num = true;
+			dispVal = this.props.value.split(':').join('');
+			dispVal = dispVal + '000000';
+
+			dispVal = dispVal.slice(0,2) +':'+ dispVal.slice(2,4)+':'+dispVal.slice(4,6)
+		}
+		if ((screen.availHeight || screen.height-30) <= window.innerHeight) {
+    // code
+    		
+
+		return <React.Fragment>
+				<CustomKeyboard label={this.props.label} time={this.props.type == "time"} num={num} pwd={this.props.type == "password"} onFocus={this.onFocus} onChange={this.onChange} value={this.props.value} ref='ck' onRequestClose={this.onRequestClose} language={this.props.language}/>
+				<label className={klass} style={style} onClick={this.onClick}>{dispVal}</label>
+			</React.Fragment>
+		}else{
+			return <input className={klass} style={style} value={this.props.value} type={type} onChange={this.onChange}/>
+		}
+	}
+
 }
 class KeyboardInputTextButton extends React.Component{
 	constructor(props) {
@@ -10439,6 +11523,7 @@ class KeyboardInputTextButton extends React.Component{
 		this.onFocus = this.onFocus.bind(this);
 		this.onInput = this.onInput.bind(this);
 		this.onRequestClose = this.onRequestClose.bind(this);
+		this.renderMobile = this.renderMobile.bind(this);
 	}
 
 	onInput (e) {
@@ -10448,14 +11533,14 @@ class KeyboardInputTextButton extends React.Component{
 	onFocus () {
 		// body...
 		if(this.props.onFocus){
-			console.log('okay, on focus')
+			//console.log('okay, on focus')
 			this.props.onFocus()
 		}
 	}
 	onRequestClose () {
 		// body...
 		if(this.props.onRequestClose){
-			console.log('okay, on request close')
+			//console.log('okay, on request close')
 			this.props.onRequestClose();
 		}
 	}
@@ -10486,7 +11571,80 @@ class KeyboardInputTextButton extends React.Component{
 	}
 		
 	}
+
+	renderMobile(){
+			var bgColor='rgba(200,200,200,1)'
+		var rstyle = {}
+	
+		if(this.props.overrideBG){
+			bgColor = this.props.bgColor || bgColor
+			rstyle = this.props.rstyle || rstyle
+		}
+		
+		var tbst = {}
+		if(this.props.label.length>13){
+			tbst = {fontSize:13}
+		}else if(this.props.label.length > 10){
+   			tbst = {fontSize:16}
+   		}
+		rstyle.padding = 5;
+		rstyle.height = 50
+		var boxShadow = '0px 0px 0px 50px '+bgColor
+		var lab2 = this.props.lab2 || "";
+		var ckb = <CustomKeyboard mobile={this.props.mobile} language={this.props.language} tooltip={this.props.tooltip} ref='input' onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label + lab2 +': ' + this.props.value}/>
+		var	kb = <label style={{fontSize:20, textAlign:'center', width:'100%', display:'inline-block', lineHeight:'50px', marginLeft:-14}} onClick={this.editValue}>{this.props.value}</label>
+		
+		if(!this.props.isEditable){
+			ckb = ""
+		}
+		if(this.props.inverted){
+		var before = {position: 'absolute',height:'100%',display: 'inline-block',top:0,width:46,left:2,backgroundColor:bgColor,borderRadius:34, height:50}
+		var after = {position:'absolute',height:'100%',display:'inline-block',top:0,width:49,left:100,backgroundColor:'transparent',boxShadow:boxShadow,  borderRadius:35, height:50}
+		var contStyle= {display:'inline-block',width:'100%',position:'absolute',left:14,overflow:'hidden', height:50, backgroundColor:bgColor, zIndex:2, borderRadius:10}
+   		
+		
+		return (
+			<div className='keyboardInputTextButton' style={{width:'100%'}}>
+			<div onClick={this.editValue}>
+			<div className='round-bg' onClick={this.editValue} style={rstyle}>
+				<div className='pbContain_m'>
+				<div style={before}/>
+				<div style={contStyle}>{kb}</div>
+				<div style={after}/>
+				</div>
+				<div className='tbDiv_m' style={tbst}>{this.props.label}</div>
+					
+			</div>
+			</div>
+			{ckb}
+			</div>
+		);
+		}else{
+		var after = {position: 'absolute',height:'100%',display: 'inline-block',top:0,width:46,left:65,backgroundColor:bgColor,borderRadius:34, height:50}
+		var before = {position:'absolute',height:'100%',display:'inline-block',top:0,width:49,left:-36,backgroundColor:'transparent',boxShadow:boxShadow,  borderRadius:35, height:50}
+		var contStyle= {display:'inline-block',width:'100%',position:'absolute',left:14,overflow:'hidden', height:50, backgroundColor:bgColor, zIndex:2, borderRadius:10}
+  	
+		return (
+			<div className='keyboardInputTextButton' style={{width:'100%'}}>
+			<div onClick={this.editValue}>
+			<div className='round-bg' onClick={this.editValue} style={rstyle}>
+				<div className='tbDiv_m' style={tbst}>{this.props.label}</div>
+				<div className='pbContain_m' style={{borderTopRightRadius:25, borderBottomRightRadius:25}}>
+				<div style={before}/>
+				<div style={contStyle}>{kb}</div>
+				</div>
+
+			</div>
+			</div>
+			{ckb}	
+			</div>
+		);
+		}
+	}
 	render() {
+		if(this.props.mobile){
+			return this.renderMobile();
+		}
 		var bgColor='rgba(200,200,200,1)'
 		var rstyle = {}
 	
@@ -10554,7 +11712,8 @@ class KeyboardInputTextButton extends React.Component{
 		);
 		}
 	}
-}class CalibIndicator extends React.Component{
+}
+class CalibIndicator extends React.Component{
 	constructor(props) {
 		super(props)
 		
@@ -10652,7 +11811,7 @@ class CustomKeyboard extends React.Component{
 				// body...
 				var flexText = new FlexText({container:document.querySelector('.flexCont'), items:[{elem:document.querySelector('.flexBox'), flex:1}]});
 				flexText.update();
-				console.log(flexText)
+				//console.log(flexText)
 				//flexText.attachTo(document.querySelector('.flexBox'));
 				setTimeout(function(){flexText.update();},100);
 			},100)*/
@@ -10693,7 +11852,7 @@ class CustomKeyboard extends React.Component{
 		var cont = "";
 
 		if(this.state.show){
-			cont = <CustomKeyboardCont datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
+			cont = <CustomKeyboardCont mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
 		}
 		return <div hidden={!this.state.show} className = 'pop-modal'>
 		{/*	<div className='modal-x' onClick={this.close}>
@@ -10780,8 +11939,14 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			var helpModal;
 		var helpButton;
 		if(typeof this.props.tooltip != 'undefined'){
-			helpButton = <div  style={{float:'right', display:'inline-block', marginLeft:-50, marginRight:15, marginTop:3}}><img src='assets/help.svg' onClick={this.help} width={30}/></div>
-	  		helpModal = <Modal ref='helpModal' Style={{color:'#e1e1e1',width:400}}>
+			var helpWidth = 400;
+			var helpMargin = 15;
+			if(this.props.mobile){
+				helpWidth = '90%'
+				helpModal = 0;
+			}
+			helpButton = <div  style={{float:'right', display:'inline-block', marginLeft:-50, marginRight:helpMargin, marginTop:3}}><img src='assets/help.svg' onClick={this.help} width={30}/></div>
+	  		helpModal = <Modal mobile={self.props.mobile} ref='helpModal' Style={{color:'#e1e1e1',width:helpWidth, maxWidth:400}}>
 	  		<div>{this.props.tooltip}</div>
 	  		</Modal>
 		}
@@ -10790,11 +11955,11 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		var fbwidth = 290
 
 		if(this.props.datetime == true){
-			console.log('datetime')
+			//console.log('datetime')
 			rows = TimeKeySet.map(function (row) {
 				var tds = row.map(function(k){
-					////console.log(k)
-					return <CustomKey Key={k}  caps={false} onPress={self.onKeyPress}/>
+					//////console.log(k)
+					return <CustomKey Key={k} mobile={self.props.mobile}  caps={false} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -10804,8 +11969,8 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			//but1= helpButton;
 			rows = NumericKeyset.map(function (row) {
 				var tds = row.map(function(k){
-					////console.log(k)
-					return <CustomKey Key={k}  caps={false} onPress={self.onKeyPress}/>
+					//////console.log(k)
+					return <CustomKey Key={k} mobile={self.props.mobile} caps={false} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -10834,15 +11999,18 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			dispval = this.state.value.split('').map(function(c){return '*'}).join('');
 		}
 		//var tooltiptext = 'This is a tooltip'
-		//console.log(this.props.vMap)
+		////console.log(this.props.vMap)
 		var label = 'Enter'
 		if(this.props.label && this.props.label.length > 0){
 			label = this.props.label;
 		}
-	
+		var minW = 400;
+		if(this.props.mobile){
+			minW = 300
+		}
 
 		return <div style={{paddingLeft:7,paddingRight:7}} className = 'selectmodal-outer'>
-		<div style={{minWidth:400,fontSize:20}}><div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:'#a0a0a0',marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' style={{whiteSpace: 'nowrap'}}>
+		<div style={{minWidth:minW,fontSize:20}}><div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:'#a0a0a0',marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' style={{whiteSpace: 'nowrap'}}>
 			{label}</span></div>{but2}</div>
 	<div style={{height:70, position:'relative'}}>		<svg style={{position:'absolute', top:14, marginLeft:3}} onClick={this.clear} xmlns="http://www.w3.org/2000/svg" height="40" version="1.1" viewBox="0 0 32 32" width="40"><g id="Layer_1"/><g id="x_x5F_alt"><path d="M16,0C7.164,0,0,7.164,0,16s7.164,16,16,16s16-7.164,16-16S24.836,0,16,0z M23.914,21.086   l-2.828,2.828L16,18.828l-5.086,5.086l-2.828-2.828L13.172,16l-5.086-5.086l2.828-2.828L16,13.172l5.086-5.086l2.828,2.828   L18.828,16L23.914,21.086z" fill="#3E3E40"/></g></svg>
 	<div style={{background:'rgba(150,150,150,0.3)',display:'inline-block',fontSize:25,lineHeight:'65px',textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:65,color:'#eee', whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}}>{dispval}</div>{but1}
@@ -10890,11 +12058,11 @@ class DateTimeSelect extends React.Component{
 	onTimeChange(_time,i){
 		var time = [parseInt(this.state.hour),parseInt(this.state.minute),parseInt(this.state.sec)]
 		time[i] = _time;
-		console.log(1532131312, [_time,i])
+		//console.log(1532131312, [_time,i])
 		this.setState({hour:('00'+ time[0]).slice(-2).toString(), minute:('00'+ time[1]).slice(-2).toString(), sec:('00'+ time[2]).slice(-2).toString()})
 	}
 	onDSTChange(dst,i){
-		console.log(dst)
+		//console.log(dst)
 		this.props.setDST(dst)
 	}
 	render(){
@@ -10935,6 +12103,7 @@ class DateTimeSelect extends React.Component{
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
 			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 
+
 		    
 		var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#eee"}} >
 			<div style={{display:'inline-block', textAlign:'center'}}>DateTime</div></h2></span>)
@@ -10974,15 +12143,19 @@ class CustomKey extends React.Component{
 	}
 	render () {
 		// body...
+		var klass = 'customKey'
+		if(this.props.mobile){
+			klass = 'customKey_m'
+		}
 		if(this.props.Key == 'space'){
-			return	<td onClick={this.onPress} className='customKey' colSpan={5}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
+			return	<td onClick={this.onPress} className={klass} colSpan={5}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
 		}else if(this.props.Key == 'shortspace'){
-			return	<td onClick={this.onPress} className='customKey' colSpan={3}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
+			return	<td onClick={this.onPress} className={klass} colSpan={3}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
 	
 		}else if(this.props.Key == 'del'){
-			return	<td onClick={this.onPress} className='customKey'><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg></div></td>
+			return	<td onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg></div></td>
 		}else if(this.props.Key == 'enter'){
-			return  <td onClick={this.onPress} className='customKey' colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Accept</div></td>
+			return  <td onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Accept</div></td>
 		
 		}else if(this.props.Key == 'shift'){
 			var fill = "#000000"
@@ -10991,14 +12164,14 @@ class CustomKey extends React.Component{
 				fill = "#eeeeee"
 				st={background:'#808a90'}
 			}
-			return <td style={st} onClick={this.onPress} className='customKey'><div style={{marginBottom:-15}}><svg fill={fill} xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M12 8.41L16.59 13 18 11.59l-6-6-6 6L7.41 13 12 8.41zM6 18h12v-2H6v2z"/></svg></div></td>
+			return <td style={st} onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg fill={fill} xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M12 8.41L16.59 13 18 11.59l-6-6-6 6L7.41 13 12 8.41zM6 18h12v-2H6v2z"/></svg></div></td>
 		}else if(this.props.Key == 'cancel'){
-			return <td onClick={this.onPress} className='customKey' colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Cancel</div></td>
+			return <td onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Cancel</div></td>
 			
 	
 		}else{
 
-			return <td onClick={this.onPress} className='customKey'>{this.props.Key.slice(0,1)}</td>
+			return <td onClick={this.onPress} className={klass}>{this.props.Key.slice(0,1)}</td>
 		}
 		
 	}
@@ -11034,53 +12207,74 @@ class TreeNode extends React.Component{
 class CanvasElem extends React.Component{
 	constructor(props){	
 		super(props)
-		var l1 = new TimeSeries();
-		var l2 = new TimeSeries();
-		var l3 = new TimeSeries();
-		var smoothie = new SmoothieChart({millisPerPixel:this.props.mpp,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
+		this.line = new TimeSeries();
+		this.line_b = new TimeSeries();
+		this.line_com = new TimeSeries();
+		this.smoothie = new SmoothieChart({millisPerPixel:this.props.mpp,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
 			horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],
-			labels:{fillStyle:'#808a90'}, grid:{millisPerLine:2000,fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc, maxDataSetLength:1800, minDataSetLength:800, limitFPS:15});
+			labels:{fillStyle:'#808a90'}, grid:{millisPerLine:2000,fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc, maxDataSetLength:700, minDataSetLength:300, limitFPS:15});
 		
-		this.state =  ({smoothie:smoothie,line:l1, line_b:l2, line_com:l3})
+		this.state =  ({update:true})
 		this.stream = this.stream.bind(this);
 		this.pauseGraph = this.pauseGraph.bind(this);
 		this.restart = this.restart.bind(this);
 	}
+	componentWillUnmount(){
+		this.smoothie.stop();
+		this.smoothie = null;
+		this.line = null;
+		this.line_b
+		this.line_com = null;
+	}
+	shouldComponentUpdate(){
+		return false;
+	}
 	pauseGraph(){
-		this.state.smoothie.setTargetFPS(8)
+		this.setState({update:false})
+		this.smoothie.stop()
+		//this.state.smoothie.setTargetFPS(8)
 	}
 	restart(){
-		this.state.smoothie.setTargetFPS(15)
+		this.setState({update:true})
+		this.smoothie.start()
+		//this.state.smoothie.setTargetFPS(15)
 	}
 	componentDidMount(){
-		var smoothie = this.state.smoothie;
+		//var smoothie = this.state.smoothie;
 		//smoothie.setTargetFPS(15)
-		smoothie.streamTo(document.getElementById(this.props.canvasId));
+		this.smoothie.streamTo(document.getElementById(this.props.canvasId));
 		if(this.props.df){
-			smoothie.addTimeSeries(this.state.line_com, {lineWidth:2,strokeStyle:'rgb(0, 128, 128)'});
-			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
-			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
+			this.smoothie.addTimeSeries(this.line_com, {lineWidth:2,strokeStyle:'rgb(0, 128, 128)'});
+			this.smoothie.addTimeSeries(this.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
+			this.smoothie.addTimeSeries(this.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
 		}else if(this.props.int){
-			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
-			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
+			this.smoothie.addTimeSeries(this.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
+			this.smoothie.addTimeSeries(this.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
 		
 		}else{
-			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#ff00ff'});
+			this.smoothie.addTimeSeries(this.line, {lineWidth:2,strokeStyle:'#ff00ff'});
 	
 		}
 	}
 	stream(dat) {
-		this.state.line.append(dat.t, dat.val);
-		//this.state.line.dropOldData(1000, 3000)
+		if(this.state.update){
+		this.line.append(dat.t, dat.val);
 		if(this.props.df){
-			this.state.line_com.append(dat.t, dat.valCom)
+			var combVal = dat.valCom
+			if(this.props.combineMode == 1){
+				combVal = (dat.val + dat.valb)*this.props.sens/this.props.thresh
+			}else{
+				combVal = Math.max(dat.val, dat.valb)*this.props.sens/this.props.thresh
+			}
+			this.line_com.append(dat.t, combVal)
 			
 		
 		} 
 		if(this.props.int){
-			this.state.line_b.append(dat.t, dat.valb)
+			this.line_b.append(dat.t, dat.valb)
 				
 		}
+	}
 	/*	if(this.state.line.data.length > 3000){
 			this.state.line.dropOldData(1000, 3000)
 			this.state.line_com.dropOldData(1000, 3000)
@@ -11090,6 +12284,7 @@ class CanvasElem extends React.Component{
 	}
 
 		render(){
+			console.log('rendering canvas')
 		return(
 			<div className="canvElem">
 				<canvas id={this.props.canvasId} height={this.props.h} width={this.props.w}></canvas>

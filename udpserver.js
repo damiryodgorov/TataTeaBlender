@@ -10,9 +10,10 @@ const WP_RPC = 13;
 const UDP_PORT = 10011
 
 class UdpParamServer{
-  constructor(ip,callback){
+  constructor(ip,callback, vdef){
     var self = this;
     this.ip = ip
+    this.vdef = vdef
     this.callback = callback;
     this.busy = false
     this.dsp = null
@@ -29,7 +30,7 @@ class UdpParamServer{
     this.so = null;
   }
   init_udp_param_server(){
-    console.log('init udp param server')
+    //console.log('init udp param server')
     var self = this;
     if(this.so){
       this.so.removeAllListeners();
@@ -59,17 +60,21 @@ class UdpParamServer{
     var self = this;
     var dsp = FtiRpc.udp(this.ip);
     this.dsp = dsp
-    console.log(port)
+    //console.log(port)
    //var arm = new Fti.ArmRpc.ArmRpc(this.ip);
     //arm.dsp_open_cb(function(){
+      if(this.vdef){
+         dsp.rpc0(DRPC_NUMBER,[this.vdef['@rpc_map']['KAPI_RPC_UDPWEBPARAMS'][1][0],port]);
+       }else{
          dsp.rpc0(DRPC_NUMBER,[KAPI_RPC_UDPWEBPARMS,port]);
+       }
       
    // });
     
   }
   parse_params(e){
     if(e){
-      //console.log(e)
+      ////console.log(e)
       if(this.callback){
         this.callback(this.ip,e);
       

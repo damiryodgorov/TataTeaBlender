@@ -1,3 +1,7 @@
+html, body {
+  width : 100%;
+  height: 100%;
+}
 body{
    /* min-width: 290px;*/
     user-select: none;
@@ -295,8 +299,22 @@ li {
     color: #eee;
     position: relative;
     margin-bottom: -4px;
-    line-height: 75px;
+    line-height: 25px;
     font-size: 25px;
+    vertical-align: middle;
+}
+.tbDiv_m{
+    display: inline-block;
+    height: 50px;
+    vertical-align: top;
+    background: rgb(72, 64, 116);
+    border-radius: 25px;
+    width: 40%;
+    color: #eee;
+    position: relative;
+    margin-bottom: -4px;
+    line-height: 50px;
+    font-size: 20px;
 }
 .pbDiv button{
     height: 60px;
@@ -374,6 +392,15 @@ li {
     overflow: hidden;
     position: relative;
     height: 75px;
+    display: inline-block;
+    margin-bottom: -4px;
+    
+}
+.pbContain_m{
+    width: 60%;
+    overflow: hidden;
+    position: relative;
+    height: 50px;
     display: inline-block;
     margin-bottom: -4px;
     
@@ -868,16 +895,14 @@ li {
     position: relative;
 }
 .dfnavTabCent{
-    height: 84px;
+    height: 74px;
     display: inline-block;
     background: #3d3d3d;
-    width: 400px;
+    width: 100%;
     vertical-align: top;
     margin-left: 0px;
     margin-right: 0px;
     /* border-top: 10px solid black; */
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
     /* border-left: 10px solid transparent; */
     box-shadow: 0px 0px 1px 10px black;
     z-index: 1;
@@ -916,16 +941,14 @@ li {
     animation-iteration-count: infinite;
 }
 .dfnavTabCent_f{
-    height: 84px;
+    height: 74px;
     display: inline-block;
     background: #3d3d3d;
-    width: 400px;
+    width: 100%;
     vertical-align: top;
     margin-left: 0px;
     margin-right: 0px;
     /* border-top: 10px solid black; */
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
     /* border-left: 10px solid transparent; */
     box-shadow: 0px 0px 1px 10px black;
     z-index: 1;
@@ -965,16 +988,14 @@ li {
     animation-iteration-count: infinite;
 }
 .dfnavTabCent_tf{
-    height: 84px;
+    height: 74px;
     display: inline-block;
     background: #3d3d3d;
-    width: 400px;
+    width: 100%;
     vertical-align: top;
     margin-left: 0px;
     margin-right: 0px;
     /* border-top: 10px solid black; */
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
     /* border-left: 10px solid transparent; */
     box-shadow: 0px 0px 1px 10px black;
     z-index: 1;
@@ -1006,7 +1027,7 @@ li {
     position: relative;    
 }
 .dfnavTabCent_r{
-    height: 84px;
+    height: 74px;
     display: inline-block;
     background: #ffff64;
     width: 400px;
@@ -1043,25 +1064,21 @@ li {
     position: relative;   
 }
 .dfnavTabCent_t{
-    height: 84px;
+    height: 74px;
     display: inline-block;
     background: rgb(55,135,255);
     width: 400px;
     vertical-align: top;
     margin-left: 0px;
     margin-right: 0px;
-    /* border-top: 10px solid black; */
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
-    /* border-left: 10px solid transparent; */
     box-shadow: 0px 0px 1px 10px rgb(0,80,200);
     z-index: 1;
     position: relative;
 }
 .modal-content{
     background-color: #362c66;
-    /* margin: 15% auto; */
-    /* margin-top: -30px;*/
     padding: 20px;
     border: 1px solid #888;
     /* width: 80%; */
@@ -1091,17 +1108,22 @@ li {
     /* z-index: -1;/* Could be more or less, depending on screen size */
 }
 .modal-close{
-    left: -24px;
-    position: relative;
-    width: 48px;
-    height: 48px;
+
+    position: fixed;
+    width: 30px;
+    height: 30px;
     padding: 0px;
     /* margin-top: 15%; */
-    margin-bottom: -20px;
+    /* margin-bottom: -20px; */
     border-radius: 36px;
-    border: 1px solid #eee;
-    background-color: #fff;
+    /* border: 1px solid #eee; */
+    background-color: #bbb;
     z-index: 8;
+    float: right;
+    /* margin-left: auto; */
+    right: 0px;
+    top: 10px;
+    /* margin-right: 0px; */
 }
 .innerDiv{
     background: #c1c1c1;
@@ -1137,6 +1159,15 @@ li {
     text-align: center
 }
 .customKey{
+   /* padding: 5px;*/
+   /* width: 80px;*/
+     padding: 0px;
+    background:#ccc;
+    height: 67px;
+    border: 2px solid grey;
+    font-size: 40px;
+}
+.customKey_m{
    /* padding: 5px;*/
    /* width: 80px;*/
      padding: 0px;
@@ -1536,7 +1567,7 @@ li {
     padding-bottom: 5px;
     padding-top: 5px;
     padding-left: 6px;
-    line-height: 60px;
+    line-height: 57px;
 }
 /*.hasChild::before{
     content: url('../assets/angle-right.svg');

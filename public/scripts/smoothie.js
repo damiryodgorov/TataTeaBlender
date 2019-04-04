@@ -242,11 +242,14 @@
   TimeSeries.prototype.dropOldData = function(oldestValidTime, maxDataSetLength) {
     // We must always keep one expired data point as we need this to draw the
     // line that comes into the chart from the left, but any points prior to that can be removed.
+
     var removeCount = 0;
     while (this.data.length - removeCount >= maxDataSetLength && this.data[removeCount + 1][0] < oldestValidTime) {
       removeCount++;
     }
+   
     if (removeCount !== 0) {
+       // console.log("drop", removeCount, oldestValidTime, maxDataSetLength)
       this.data.splice(0, removeCount);
     }
   };

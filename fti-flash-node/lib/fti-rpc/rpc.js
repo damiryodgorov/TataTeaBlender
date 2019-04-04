@@ -61,6 +61,13 @@ class FtiRpc{
 		payload = null;
 		packet = null;
 	}
+	rpc_cb(func,args,string,callBack){
+		var payload = this.payloadForRpc(func,args,string);
+		var packet = this.frame(payload);
+		this.port.write(packet);
+		this.port.callBack = callBack
+		
+	}
 	payloadForRpc(func,args,string){
 		var payload = [func]//String.fromCharCode(func)
 		
@@ -130,6 +137,10 @@ class FtiRpc{
 		return new FtiRpcUdp(host, port, unit)
 	}
 
+	static udpMultipleHosts(remote_port, source_port){
+		return new FtiRpcMultipleHosts(remote_port, source_port)
+	}
+
 	/* RPC's */
 	/*version(){}
 	findUnits(){}
@@ -180,7 +191,95 @@ class FtiRpc{
 class FtiRpcSocket extends net.Socket{
 
 }
+class FtiRpcMultipleHosts {
+	constructor(source_port){
+		this.src_port = source_port;
+		this.socket = dgram.createSocket('udp4');
+		this.socket.bind(source_port,'0.0.0.0', function(){
+			console.log('socket bounded on port:'+source_port)
+			
+		})
+		return this
+	}
+	
+	write(packet,ip,port){
+		this.socket.send(packet, 0, packet.length, port, ip, function(){
+//			console.log('packet written')
+		});
+	}
 
+	rpc0(ip,port,func,args,string,callBack){
+		var payload = this.payloadForRpc(func,args,string);
+		var packet = this.frame(payload);
+		this.write(packet,ip,port);
+	}
+	
+	payloadForRpc(func,args,string){
+		var payload = [func]//String.fromCharCode(func)
+		
+		var argByte = args.length%4
+		if(string){
+			payload.push(argByte + 4)
+		}else{
+			payload.push(argByte)// = payload.concat(argByte)
+		}
+		for(var i = 0; i<argByte; i++){
+			var word = args[i]
+			if(!Number.isInteger(word)){
+				word = Math.round(word);
+			}
+			payload.push(word & 0xff)
+			payload.push((word>>8)&0xff)
+		}
+		if(string){
+			//	string = new Buffer(string); not going to deal with this yet
+		}
+		
+		
+		payload = this.addCheckSum(payload);
+		
+		return Buffer.from(payload);
+
+	}
+	addCheckSum(str){
+		var cs = this.checkBytes(str);
+		str.push(cs[0]);
+		str.push(cs[1]);
+		return str;//str.concat(String.fromCharCode(cs[0])).concat(String.fromCharCode(cs[1])); 
+	}
+	checkBytes(str){
+		var c = this.fletcherCheckbytes(str)
+		var cs = []; 
+		cs[0] = 255-((c[0]+c[1])%255);
+		cs[1] = 255-((c[0]+cs[0])%255);
+		return cs;
+	}
+	fletcherCheckbytes(str){
+		var c1 = 0;
+		var c2 = 0;
+		var bytes = []
+		for(var i = 0; i < str.length; i++){
+			var b = str[i]
+			c1 = c1 + b;
+			if(c1>= 255){
+				c1 = c1 - 255
+			}
+			c2 = c2 + c1;
+			if (c2>=255){
+				c2 = c2 - 255
+			}
+		}
+		return [c1,c2];
+
+	}
+	frame(string){
+		//for udp not required...
+		//will implement for non-udp in the future
+		return string
+		//var pak =
+	}
+
+}
 class FtiRpcUdp extends FtiRpc{
 	constructor(host, port, unit){
 		super();
@@ -298,6 +397,7 @@ class FtiRpcUdpSocket{
 		var self = this;
 
 		this.socket.on('message',function(e, rinfo){
+			console.log(self.callBack)
 			self.callBack(e, rinfo)
 		})
 		return this
