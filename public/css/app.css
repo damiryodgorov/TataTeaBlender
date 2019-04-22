@@ -180,6 +180,66 @@ button{
     margin-top: 0px;
     margin-bottom: -7px;
 }
+.copyButton_m{
+    height: 35px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.copyButton_m::after{
+    height: 30px;
+    width: 30px;
+    content: " ";
+    background: url(../assets/copy.svg);
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
+.deleteButton_m{
+    height: 30px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+}
+.deleteButton_m::after{
+    height: 30px;
+    width: 30px;
+    content: " ";
+    background: url(../assets/trash.svg);
+     display: inline-block;
+     background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
+.editButton_m{
+    height: 30px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+}
+.editButton_m::after{
+    height: 30px;
+    width: 30px;
+    content: " ";
+    background: url(../assets/edit.svg);
+     display: inline-block;
+     background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
 
 ul {
   list-style: none;

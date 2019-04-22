@@ -90,7 +90,7 @@ class NetPollEvents{
 		this.types = []
 		this.groups = []
 		//this.productEmailCallback = function(){}
-		console.log("Initializing object variables...")
+		//console.log("Initializing object variables...")
 //		this.writing_tables = [];
 		this.detector_ptr = 0
 		this.events_table = []
@@ -102,7 +102,7 @@ class NetPollEvents{
 		this.fram_rec_ref = []
 		this.sys_prod_refs_ready = []
 		this.rpc_state = []
-		console.log(this.detectorsList)
+		//console.log(this.detectorsList)
 		this.detectorsList.forEach(function(d,j){
 //			self.version[j] = parseInt(self.vdef[j]["@version"].replace("/","").replace("/","").substring(2),10)
 			self.isInterceptor[j] = 0;
@@ -116,7 +116,7 @@ class NetPollEvents{
 			}
 		});
 		this.detectorsList.forEach(function(d,j){
-        console.log("detector ip: " + d.ip)
+        //console.log("detector ip: " + d.ip)
 				self.prod_rec[j] = [];
 				self.sys_rec[j] = [];
 				self.record_deps[j] = [];
@@ -210,14 +210,14 @@ class NetPollEvents{
 			last_packet_id.push(0)
 		})
 		this.netpollSocket.on("listening", function () {
-			console.log('listening 210 netpoll')
+			//console.log('listening 210 netpoll')
 			self.init_net_poll_events(self.netpollSocket.address().port);
 		});
 		this.netpollSocket.on('message', function(e,rinfo){
-			console.log("new message from: "+rinfo.address)
+			//console.log("new message from: "+rinfo.address)
 			self.detectorsList.forEach(function(d,i){
 				if(e && self.detectorsList[i].ip == rinfo.address){
-					console.log(e)
+					//console.log(e)
 					if (self.vdef[i] && self.vdef[i]['@net_poll_h']['NET_POLL_STREAM_EVENT'])
 					{
 						if (e.length > 22)
@@ -242,11 +242,12 @@ class NetPollEvents{
 								}*/
 								self.parse_net_poll_event(e,i);
 							}
-							console.log("Packet Id: ");
-							console.log(packet_id);
+							//console.log("Packet Id: ");
+							//console.log(packet_id);
 						}
-						else
-							console.log("Wrong Length Netpoll event",LOG_NP)
+						else{
+							//console.log("Wrong Length Netpoll event",LOG_NP)
+						}
 					}
 				}
 			});
@@ -273,7 +274,7 @@ class NetPollEvents{
 							{
 								if (self.rpc_state[i] == 'START')
 								{
-									console.log("KAPI_RPC_NETPOLLSTREAM ACK. Ip: "+remote.address,LOG_RPC)
+									//console.log("KAPI_RPC_NETPOLLSTREAM ACK. Ip: "+remote.address,LOG_RPC)
 									self.rpc_state[i] = 'NP_REGISTERED'
 	//								dsp[i].rpc0(DRPC_NUMBER,[self.vdef[i]['@rpc_map']['KAPI_RPC_NETPOLLSTREAM'][1][0]]);
 									if (SET_DIFFERENT_PORTS_PER_DEVICE)
@@ -283,7 +284,7 @@ class NetPollEvents{
 								}
 								else if (self.rpc_state[i] == 'NP_REGISTERED')
 								{
-									console.log("KAPI_RPC_NETPOLLSTREAM RECORDS_REQUESTED. Ip: "+remote.address,LOG_RPC)
+									//console.log("KAPI_RPC_NETPOLLSTREAM RECORDS_REQUESTED. Ip: "+remote.address,LOG_RPC)
 									//not needed for my application
 									/*self.rpc_state[i] = 'RECORDS_REQUESTED'
 									self.interval[i] = setInterval(function(){
@@ -310,7 +311,7 @@ class NetPollEvents{
 			{
 				if (self.rpc_state[i] == 'START')
 				{
-					console.log("Init KAPI_RPC_NETPOLLSTREAM. Ip: "+d.ip,LOG_RPC)			
+					//console.log("Init KAPI_RPC_NETPOLLSTREAM. Ip: "+d.ip,LOG_RPC)			
 					//dsp[i].rpc0(DRPC_NUMBER,[self.vdef[i]['@rpc_map']['KAPI_RPC_NETPOLLSTREAM'][1][0],port]);
 					if (SET_DIFFERENT_PORTS_PER_DEVICE)
 						self.rpc.rpc_cb(DRPC_NUMBER,[self.vdef[i]['@rpc_map']['KAPI_RPC_NETPOLLSTREAM'][1][0],port],null,self.init_callback);
@@ -341,7 +342,7 @@ class NetPollEvents{
 							{
 								if (self.rpc_state[i] == 'START')
 								{
-									console.log("KAPI_RPC_NETPOLLSTREAM ACK. Ip: "+remote.address,LOG_RPC)
+									//console.log("KAPI_RPC_NETPOLLSTREAM ACK. Ip: "+remote.address,LOG_RPC)
 									self.rpc_state[i] = 'NP_REGISTERED'
 	//								dsp[i].rpc0(DRPC_NUMBER,[self.vdef[i]['@rpc_map']['KAPI_RPC_NETPOLLSTREAM'][1][0]]);
 									if (SET_DIFFERENT_PORTS_PER_DEVICE)
@@ -351,7 +352,7 @@ class NetPollEvents{
 								}
 								else if (self.rpc_state[i] == 'NP_REGISTERED')
 								{
-									console.log("KAPI_RPC_NETPOLLSTREAM RECORDS_REQUESTED. Ip: "+remote.address,LOG_RPC)
+									//console.log("KAPI_RPC_NETPOLLSTREAM RECORDS_REQUESTED. Ip: "+remote.address,LOG_RPC)
 									//not needed for my application
 									/*self.rpc_state[i] = 'RECORDS_REQUESTED'
 									self.interval[i] = setInterval(function(){
@@ -372,7 +373,7 @@ class NetPollEvents{
 
   }
   relaySock(cont){
-  	console.log('relaySock')
+  	//console.log('relaySock')
   	this.relaySockMsg('testusb', cont)
   }
   parse_net_poll_event(buf,detector_index){
@@ -394,15 +395,15 @@ class NetPollEvents{
 			size = buf.readUInt16LE(27);
 			var date_time = this.parse_date_time(buf.slice(4,9));
 
-			console.log(date_time)
+			//console.log(date_time)
 			//log(buf)
-			console.log('NPEvent => key: '+key+', group_id: '+group_id, LOG_NP)
+			//console.log('NPEvent => key: '+key+', group_id: '+group_id, LOG_NP)
 
 			for (var e in this.vdefQuery[detector_index]["@net_poll_h"])
 			{
 				if (this.vdefQuery[detector_index]["@net_poll_h"][e] == key)
 				{
-					console.log(e)
+					//console.log(e)
 					var eventInfo = {string: np_string,
 							date_time:{year: null, month: null, day: null, hours: null, min: null, sec: null},
 							username:username, 
@@ -431,8 +432,9 @@ class NetPollEvents{
 							eventInfo.rejects = {signal_a:valuesBuffer.readUInt16LE(0),signal_b:valuesBuffer.readUInt16LE(2), number:valuesBuffer.readUInt16LE(4)}
 							this.queue_db_wr_netpoll_event(detector_index, key, valuesBuffer, null, eventInfo, e, username, group_id, np_string, date_time)
 						}
-						else
-							console.log("There is something wrong with the length of the buffer: "+buf.length, LOG_NP)
+						else{
+							//console.log("There is something wrong with the length of the buffer: "+buf.length, LOG_NP)
+						}
 					}
 					else if (e == 'NETPOLL_STREAM_TEST_REJECT')
 					{
@@ -446,7 +448,7 @@ class NetPollEvents{
 							this.queue_db_wr_netpoll_event(detector_index, key, valuesBuffer, null, event_info, e, username, group_id, np_string, date_time)
 						}
 						else{
-							console.log('buflength wrong')
+							//console.log('buflength wrong')
 							//log("There is something wrong with the length of the buffer: "+buf.length, LOG_NP)
 						}
 					}
@@ -470,8 +472,9 @@ class NetPollEvents{
 							np_string += "Test " + valuesBuffer.readUInt16LE(4) + ", Metal: " + metal + " Pass " + valuesBuffer.readUInt16LE(6) + " of " + valuesBuffer.readUInt16LE(8);
 							this.queue_db_wr_netpoll_event(detector_index,  key, valuesBuffer, null, null, e, username, group_id, np_string,  date_time)
 						}
-						else
-							console.log("There is something wrong with the length of the buffer: "+buf.length, LOG_NP)
+						else{
+							//console.log("There is something wrong with the length of the buffer: "+buf.length, LOG_NP)
+						}
 					}
 					else if (e == 'NETPOLL_STREAM_MANUAL_REJECT')
 					{
@@ -554,7 +557,7 @@ class NetPollEvents{
 					}
 		 			else 
 					{
-						console.log("Key: "+key+" not found.", LOG_NP)
+						//console.log("Key: "+key+" not found.", LOG_NP)
 					}
 				}	
 
@@ -620,7 +623,7 @@ class NetPollEvents{
 		{
 			if( (value & mask) == mask )
 	    {
-//	      console.log(this.vdef["@labels"].FaultSrc.english[pos+1+16*idx])
+//	      //console.log(this.vdef["@labels"].FaultSrc.english[pos+1+16*idx])
 	      res = res + this.vdef["@labels"].FaultSrc.english[pos+1+16*idx] + ", ";
 				faults_array[array_pos]=pos+1+16*idx;
 				array_pos += 1;
@@ -852,12 +855,12 @@ class NetPollEvents{
 
 	  if((e=="NET_POLL_PROD_SYS_VAR"))
 	  {
-//	    console.log("System Records:");
+//	    //console.log("System Records:");
 	    rec = 0;
 	  }
 	  else
 	  {
-//	    console.log("Product Records:");
+//	    //console.log("Product Records:");
 	    rec = 1;
 	  }
 	  if(idx == 0)
@@ -872,9 +875,9 @@ class NetPollEvents{
 	    var prod_no = buf[7]|buf[8]<<8;
 	    var word_array = this.convert_word_array(buf.slice(0));
 
-//	    console.log("Date(yyyy/mm/dd): " + date_time[0] + "/" + this.pad(date_time[1],2) + "/" + this.pad(date_time[2],2));
-//	    console.log("Time(hh:mm:ss): " + this.pad(date_time[3],2) + ":" + this.pad(date_time[4],2) + ":" + this.pad(date_time[5],2));
-//	    console.log("Product No.: " + prod_no);
+//	    //console.log("Date(yyyy/mm/dd): " + date_time[0] + "/" + this.pad(date_time[1],2) + "/" + this.pad(date_time[2],2));
+//	    //console.log("Time(hh:mm:ss): " + this.pad(date_time[3],2) + ":" + this.pad(date_time[4],2) + ":" + this.pad(date_time[5],2));
+//	    //console.log("Product No.: " + prod_no);
 			var i = 0;
 	    for(var dep in this.vdef[0]["@deps"])
 	    {
@@ -894,8 +897,8 @@ class NetPollEvents{
 	    var word = buf.readUInt16LE(2);
 	    var date_time = this.parse_date_time(buf.slice(4,8));
 	    var word_array = this.convert_word_array(buf.slice(0));
-//	    console.log("Date(yyyy/mm/dd): " + date_time[0] + "/" + this.pad(date_time[1],2) + "/" + this.pad(date_time[2],2));
-//	    console.log("Time(hh:mm:ss): " + this.pad(date_time[3],2) + ":" + this.pad(date_time[4],2) + ":" + this.pad(date_time[5],2));
+//	    //console.log("Date(yyyy/mm/dd): " + date_time[0] + "/" + this.pad(date_time[1],2) + "/" + this.pad(date_time[2],2));
+//	    //console.log("Time(hh:mm:ss): " + this.pad(date_time[3],2) + ":" + this.pad(date_time[4],2) + ":" + this.pad(date_time[5],2));
 			event_info.date_time.year = date_time[0];
 			event_info.date_time.month = date_time[1];
 			event_info.date_time.day = date_time[2];
@@ -966,7 +969,7 @@ class NetPollEvents{
 	      {
 	        if(p["@type"] == "rec_date")
 	        {
-//          console.log(p["@name"] + ": " + (((value>>9) & 0x7f) + 1996) + '/' + self.pad(((value >> 5) & 0xf),2) + '/' + self.pad(((value >> 5) & 0xf),2));
+//          //console.log(p["@name"] + ": " + (((value>>9) & 0x7f) + 1996) + '/' + self.pad(((value >> 5) & 0xf),2) + '/' + self.pad(((value >> 5) & 0xf),2));
 						if((self.param_last_val[p["@name"]]!=value) || (idx == 0))
 						{
 							self.param_last_val[p["@name"]]=value;
@@ -1002,7 +1005,7 @@ class NetPollEvents{
 	        }
 	        else if(p['@type'] == 'prod_name_u16_le')
 	        {
-	//          console.log(p["@name"] + ": " + self.prod_name_u16_le(buf, p, idx, i));
+	//          //console.log(p["@name"] + ": " + self.prod_name_u16_le(buf, p, idx, i));
 						if((self.param_last_val[p["@name"]]!=value) || (idx == 0))
 						{
 
@@ -1014,7 +1017,7 @@ class NetPollEvents{
 	        }
 	        else if(p['@type'] == 'phase')
 	        {
-//	          console.log(p["@name"] + ": " + self.phase(value, p, i));
+//	          //console.log(p["@name"] + ": " + self.phase(value, p, i));
 						if((self.param_last_val[p["@name"]]!=value) || (idx == 0))
 						{
 							self.param_last_val[p["@name"]]=value;
@@ -1034,7 +1037,7 @@ class NetPollEvents{
 	        }
 	        else if(p['@type'] == 'rej_del')
 	        {
-	//          console.log(p["@name"] + ": " + self.rej_del(value, p, i));
+	//          //console.log(p["@name"] + ": " + self.rej_del(value, p, i));
 						if((self.param_last_val[p["@name"]]!=value) || (idx == 0))
 						{
 							self.param_last_val[p["@name"]]=value;
@@ -1052,7 +1055,7 @@ class NetPollEvents{
 	        }
 	        else if(p['@type'] == 'belt_speed')
 	        {
-//	          console.log(p["@name"] + ": " + self.belt_speed(value, p, i));
+//	          //console.log(p["@name"] + ": " + self.belt_speed(value, p, i));
 						if((self.param_last_val[p["@name"]]!=value) || (idx == 0))
 						{
 							self.param_last_val[p["@name"]]=value;
@@ -1080,7 +1083,7 @@ class NetPollEvents{
 	        }
 	        else if(p['@type'] == 'eye_rej_mode')
 	        {
-//	          console.log(p["@name"] + ": " + self.eye_rej_mode(value, p, idx, i, word));
+//	          //console.log(p["@name"] + ": " + self.eye_rej_mode(value, p, idx, i, word));
 						if((self.param_last_val[p["@name"]]!=value) || (idx == 0))
 						{
 							self.param_last_val[p["@name"]]=value;
@@ -1094,7 +1097,7 @@ class NetPollEvents{
         	}
 	        else if(p['@type'] == 'phase_mode')
 	        {
-//	          console.log(p["@name"] + ": " + self.phase_mode(value, p, idx, i, word));
+//	          //console.log(p["@name"] + ": " + self.phase_mode(value, p, idx, i, word));
 						if((self.param_last_val[p["@name"]]!=value) || (idx == 0))
 						{
 							self.param_last_val[p["@name"]]=value;
@@ -1112,7 +1115,7 @@ class NetPollEvents{
 	            value = word_array[p["@i_var"]];
 	          else if(idx == array_pos)
 	            value = word;
-//	          console.log(p["@name"] + ": " + self.password8(value, i));
+//	          //console.log(p["@name"] + ": " + self.password8(value, i));
 						if((self.param_last_val[p["@name"]]!=value) || (idx == 0))
 						{
 							self.param_last_val[p["@name"]]=value;
@@ -1122,7 +1125,7 @@ class NetPollEvents{
 	        }
 	        else if(((p['@type'] == 'rej_chk') || (p['@type'] == 'rej_mode') || (p['@type'] == 'rej_latch') || (p['@type'] == 'peak_mode') || (p['@type'] == 'ipv4_address'))&& (typeof p['@dep'] != 'undefined'))
 	        {
-//	          console.log(p["@name"] + ": " + self.parse_and_print_param_1_dep(value, p, idx, i, word));
+//	          //console.log(p["@name"] + ": " + self.parse_and_print_param_1_dep(value, p, idx, i, word));
 						var aux = self.parse_and_print_param_1_dep(value, p, idx, i, word);
 						if((self.param_last_val[p["@name"]]!=self.vdef[0]['@labels'][p['@labels']]['english'][aux]) || (idx == 0))
 						{
@@ -1137,7 +1140,7 @@ class NetPollEvents{
         	}
 	        else if(p["@labels"])
 	        {
-//	          console.log(p["@name"] + ": " + self.vdef['@labels'][p['@labels']]['english'][value]);
+//	          //console.log(p["@name"] + ": " + self.vdef['@labels'][p['@labels']]['english'][value]);
 					
 	          	event_info.string = event_info.string + p["@name"] + ": " + self.vdef[0]['@labels'][p['@labels']]['english'][value] + '\n';
 							event_info.parameters[pos] = {param_name: p["@name"], value: null, label:{type: p['@labels'], value: value}, units: null};
@@ -1162,7 +1165,7 @@ class NetPollEvents{
 	      }
 	      else if((idx > p['@i_var']) && (idx < (p['@i_var']+(p['@bit_len']>>4))) && (p['@type'] == 'prod_name_u16_le'))
 	      {
-//	        console.log(p["@name"] + ": " + self.prod_name_u16_le(buf, p, idx,i, detector_index));
+//	        //console.log(p["@name"] + ": " + self.prod_name_u16_le(buf, p, idx,i, detector_index));
 	        event_info.string = event_info.string + p["@name"] + ": " + self.prod_name_u16_le(buf, p, idx,i) + '\n';
 					event_info.parameters[0] = {param_name: p["@name"], value: null, label:{type: null, value: null}, units: null};
 					event_info.parameters[0].value = self.prod_name_u16_le(buf, p, idx,i);
@@ -1200,22 +1203,30 @@ class NetPollEvents{
 	  }
 	  else if((idx >= p["@i_var"]) && (idx < p["@i_var"]+(bytes_len<<1)))
 	  {
-	    var char_pos = 2*(idx - p["@i_var"]);
+	    if(this.param_last_val[p["@name"]]){
+
+		  	var char_pos = 2*(idx - p["@i_var"]);
 			var str1 = this.param_last_val[p["@name"]].toString().substring(0,char_pos);
 			var str2 = String.fromCharCode(buf[2]) + String.fromCharCode(buf[3]);
 			var str3 = this.param_last_val[p["@name"]].toString().substring(char_pos+2,bytes_len);
-			if(str1 != "0")
+		
+			if(str1 != "0"){
 				res = str1 + str2 + str3;
-			else {
-				for(var j=0; j < char_pos; j++)
-		      res = res + '*';
-		    res = res + String.fromCharCode(buf[2]) + String.fromCharCode(buf[3]);
-		    for(var j=0; j < bytes_len - 2 ; j++)
-		      res = res + '*';
-			}
+				}else{
+				for(var j=0; j < char_pos; j++){
+			      	res = res + '*';
+					}
+				 }
+	    	}else{
+	    		
+	    		res = res + String.fromCharCode(buf[2]) + String.fromCharCode(buf[3]);
+			    for(var j=0; j < bytes_len - 2 ; j++){
+			      res = res + '*';
+			    }
+	    	}
 	  }
-		this.param_last_val[p["@name"]] = res;
-//		console.log(res)
+
+	  this.param_last_val[p["@name"]] = res;
 	  return res;
 	}
 
@@ -1308,8 +1319,9 @@ class NetPollEvents{
 			else
 				res = 2;
 		}
-		else
+		else{
 			res = 1;
+		}
 //	  return this.vdef['@labels'][p['@labels']]['english'][res];
 		return res;
 	}
@@ -1320,20 +1332,24 @@ class NetPollEvents{
 	  {
 	    if(this.record_deps[p['@dep'][0]] == 0)
 	    {
-	      if(value == 0)
+	      if(value == 0){
 	        res = 0;
-	      else
+	      }else{
 	        res = 1;
+	    	}
 	    }
-	    else
+	    else{
 	      res = 2;
+	    }
 	  }
 	  else if(idx == p['@i_var'])
 	  {
-	    if(value == 0)
+	    if(value == 0){
 	      res = 0;
-	    else
+	    }
+	    else{
 	      res = 1;
+	    }
 	    this.record_deps['ProdRec.SigPath[0].PhaseWet']=value;
 	  }
 	  else if(idx == this.vdef[0]['@deps'][p['@dep'][0]]['@i_var'])
@@ -1344,13 +1360,16 @@ class NetPollEvents{
 	    this.record_deps[p['@dep'][0]]=val_dep;
 	    if(val_dep == 0)
 			{
-				if(value == 0)
+				if(value == 0){
 					res = 0;
-				else
+				}
+				else{
 					res = 1;
+				}
 			}
-			else
+			else{
 				res = 2;
+			}
 	  }
 //	  return this.vdef['@labels'][p['@labels']]['english'][res];
 		return res;
@@ -1368,16 +1387,18 @@ class NetPollEvents{
 	  var res;
 	  if(idx == 0)
 	  {
-	  	console.log(p)
+	  //	//console.log(p)
 	    if(this.record_deps[p['@dep'][0]] == 0)
 	    {
-	      if(value == 0)
+	      if(value == 0){
 	        res = 0;
-	      else
+	      }else{
 	        res = 1;
+	       }
 	    }
-	    else
+	    else{
 	      res = 2;
+	    }
 	  }
 	  else if(idx == p['@i_var'])
 	  {
@@ -1386,13 +1407,16 @@ class NetPollEvents{
 	    var val_dep = (word >> bit_pos) & ((1<<bit_len)-1);
 	    if(val_dep == 0)
 			{
-				if(value == 0)
+				if(value == 0){
 					res = 0;
-				else
+				}
+				else{
 					res = 1;
+				}
 			}
-			else
+			else{
 				res = 2;
+			}
 	  }
 //		res = this.vdef['@labels'][p['@labels']]['english'][res];
 	  return res;
@@ -1433,7 +1457,7 @@ function getGzipped(url, callback) {
             callback("error", null);
         })
     }).on('error', function(e) {
-      console.log("error: " + e)
+      //console.log("error: " + e)
         callback("error")
     });
     req.on('socket', function (socket) {
@@ -1461,10 +1485,10 @@ Object.keys(ifaces).forEach(function (ifname) {
 
     if (alias >= 1) {
       // this single interface has multiple ipv4 addresses
-      console.log(ifname + ':' + alias, iface.address);
+      //console.log(ifname + ':' + alias, iface.address);
     } else {
       // this interface has only one ipv4 adress
-      console.log(ifname, iface.address);
+      //console.log(ifname, iface.address);
     }
     ++alias;
   });

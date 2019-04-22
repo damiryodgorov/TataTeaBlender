@@ -11,6 +11,7 @@ const UDP_PORT = 10011
 
 class UdpParamServer{
   constructor(ip,callback, vdef){
+    console.log('creating udp param server')
     var self = this;
     this.ip = ip
     this.vdef = vdef
@@ -24,8 +25,13 @@ class UdpParamServer{
     this.callback = null;
 
   }
+  refresh(){
+    this.init_params_stream(this.so.address().port)
+  }
   release_sock(){
      //this.so.bind({address:'0.0.0.0',port:0})
+    this.so.removeAllListeners("listening");
+    this.so.removeAllListeners("message");  
     this.so.unref();
     this.so = null;
   }
@@ -33,7 +39,8 @@ class UdpParamServer{
     //console.log('init udp param server')
     var self = this;
     if(this.so){
-      this.so.removeAllListeners();
+      this.so.removeAllListeners("listening");
+      this.so.removeAllListeners("message")
       this.so = null;
     }
     this.so = dgram.createSocket({type:'udp4',reuseAddr:true});
