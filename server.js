@@ -29,8 +29,15 @@ const usb = require('usb');
 const sys = require('sys');
 const exec = require('child_process').exec;
 const crc = require('crc');
+
+
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 /**IMPORTS END**/
+
+const PASS_SEED1_OFFSET = 68
+const PASS_SEED2_OFFSET = 105
+const PASS_SEED3_OFFSET = 78
+const PASS_SEED4_OFFSET = 111
 
 
 
@@ -495,6 +502,60 @@ class Params{
   }
 }
 /**CLASS DECLARATIONS END**/
+function passReset(){
+  console.log('in passreset')
+  //var randPass = [];
+  var randNum = Math.floor(Math.random()*10000)
+  var randPass = itoa(randNum,10,4)
+  var asciiArr = randPass.split('').map(function(c){
+    return c.charCodeAt(0);
+  })
+  return {password:randPass,phash:crypto.createHash('sha1').update(Buffer.from((randPass + '000000').slice(0,6),'ascii')).digest().slice(0,8),seeds:[asciiArr[0]^PASS_SEED1_OFFSET,asciiArr[1]^PASS_SEED2_OFFSET,asciiArr[2]^PASS_SEED3_OFFSET,asciiArr[3]^PASS_SEED4_OFFSET]}
+  //randPass.push(Math.floor(randNum/1000))
+  //randNum
+}
+
+function itoa(number, base,len) {
+
+    //Zero is always zero
+    if(number == 0)
+    {
+       // setResult('0');
+        return '0000';
+    }
+    var str = new Array();
+    var negative = (number < 0);
+    var A = 55; //'A' = 65 in integer - 10 --> so that 10 will be converted to 55 + 10 = A 
+    if (negative) { //For base 10 we will just append - at the end
+        if (base == 10) {
+            number *= -1;
+        } else { //For all other bases, we will get the twos complement.
+            number = (number >>> 0);
+        }
+    }
+
+    var remainder = 0;
+    var index = 0;
+    while ((number > 0)||(len>0)) {
+
+        remainder = number % base;
+        if (remainder > 9) //for numbers with base > 10
+        {
+            str.unshift(String.fromCharCode(remainder + A));
+        } else {
+            str.unshift(remainder);
+        }
+        number = (number / base >> 0); //Integer devision
+        len--;
+    }
+    //Only 10 base numbers are preceded with a negative sign, all other numbers are using nth complement
+    if (negative) {
+        if (base == 10) {
+            str.unshift('-');
+        }
+    }
+    return(str.join(''));
+}
 
 /**TFTP HELPER START**/
 function getBinarySize(string) {
@@ -1645,6 +1706,7 @@ function locateUnicast (addr,cb) {
   },addr);
 }
 
+
 function autoIP(){
  // var prefData = prefs
  /*
@@ -1783,7 +1845,10 @@ process.on('uncaughtException', (err) => {
     errstring = err.stack.toString();
   }
   fs.writeFileSync(__dirname +'/error.txt', errstring);
-  process.abort();
+  exec('sudo sh reboot.sh',function(){
+    process.abort();
+  })
+  
 });
 app.set('port', (process.env.PORT || 3300));
 app.use('/', express.static(path.join(__dirname,'public')));
@@ -1852,6 +1917,7 @@ wss.on('connection', function(scket, req){
     }
   }
   function getProdName(ip, list, ind, callback, arr){
+    if(vdefs[ip]){
     var rpc = vdefs[ip]['@rpc_map']['KAPI_PROD_NAME_APIREAD']
     var pkt = rpc[1].map(function (r) {
       if(!isNaN(r)){
@@ -1897,6 +1963,9 @@ wss.on('connection', function(scket, req){
           
         }
        })
+    }else{
+      socket.emit('noVdef', ip)
+    }
   }
   var relayFunc = function(p){
     socket.emit('paramMsg', p)
@@ -2483,7 +2552,7 @@ wss.on('connection', function(scket, req){
       socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt})
     }else{
       //console.log('fail')
-      socket.emit('authFail')
+      socket.emit('authFail', {user:packet.user, ip:packet.ip})
     }
 
   })
@@ -2496,7 +2565,7 @@ wss.on('connection', function(scket, req){
     users[packet.data.user] = {username:packet.data.username, opt:packet.data.acc, phash:pswd}
     //console.log('users',users)
     var _users = []
-    for(var i = 0; i<10; i++){
+    for(var i = 0; i<vdefs[packet.ip]['@defines']['MAX_USERNAMES']; i++){
       var user = Buffer.from((users[i].username + "          ").slice(0,10),'ascii');
       var _phash = users[i].phash//crypto.createHash('sha1').update(Buffer.from(packet.data[i].password,'ascii')).digest();
       var phash = Buffer.alloc(8)
@@ -2505,12 +2574,13 @@ wss.on('connection', function(scket, req){
       phash.writeUInt16BE(_phash.readUInt16LE(6),4);
       phash.writeUInt16BE(_phash.readUInt16LE(4),6);
       var useropt = Buffer.alloc(2);
+      var opt = parseInt(users[i].opt) & 0xf
       useropt.writeUInt16LE(parseInt(users[i].opt),0)
       _users.push(Buffer.concat([user,phash,useropt]))
     }
     var buf = Buffer.concat(_users);
-    if(buf.length != vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
-      socket.emit('notify','Error updating users')
+    if(buf.length > vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
+      socket.emit('notify','Error updating users' + buf.length + ' ' + vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE'])
     }else{
       var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][1],buf)
       //console.log(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'])
@@ -2525,6 +2595,47 @@ wss.on('connection', function(scket, req){
              
     }
   })
+  socket.on('passReset',function(packet){
+    console.log('passReset')
+   var users = _accounts[packet.ip].slice(0);
+    var password = passReset();
+    console.log('why does it not get here')
+    console.log(password)
+    users[packet.data.user].phash = password.phash
+    users[packet.data.user].opt += 16;
+     var _users = []
+    for(var i = 0; i<vdefs[packet.ip]['@defines']['MAX_USERNAMES']; i++){
+      var user = Buffer.from((users[i].username + "          ").slice(0,10),'ascii');
+      var _phash = users[i].phash//crypto.createHash('sha1').update(Buffer.from(packet.data[i].password,'ascii')).digest();
+      var phash = Buffer.alloc(8)
+      phash.writeUInt16BE(_phash.readUInt16LE(2),0);
+      phash.writeUInt16BE(_phash.readUInt16LE(0),2);
+      phash.writeUInt16BE(_phash.readUInt16LE(6),4);
+      phash.writeUInt16BE(_phash.readUInt16LE(4),6);
+      var useropt = Buffer.alloc(2);
+      var opt = parseInt(users[i].opt) & 0xf
+      useropt.writeUInt16LE(parseInt(users[i].opt),0)
+      _users.push(Buffer.concat([user,phash,useropt]))
+    }
+    var buf = Buffer.concat(_users);
+    
+    if(buf.length > vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
+      socket.emit('notify','Error updating users' + buf.length + ' ' + vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE'])
+    }else{
+      var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][1],buf)
+      //console.log(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'])
+      //console.log(Buffer.from(pkt))
+          socket.emit('passwordNotify', password.seeds)
+            
+       udpClients[packet.ip].send_rpc(Buffer.from(pkt), function(e){
+                //console.log('Ack from ' + packet.ip)
+                relayRpcMsg({det:{ip:packet.ip, mac:macs[packet.ip]},data:{data:toArrayBuffer(e)}});
+                e = null;
+
+              })
+             
+    }
+  }) 
   socket.on('addAccount', function(pack){
 
     //console.log(pack)
@@ -2551,7 +2662,7 @@ wss.on('connection', function(scket, req){
     },500)
   })
 
-      
+
   socket.on('savePrefs', function (f) {
     // body...
     //console.log(f)
