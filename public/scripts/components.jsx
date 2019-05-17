@@ -3,89 +3,484 @@ var ReactDom = require('react-dom')
 var SmoothieChart = require('./smoothie.js').SmoothieChart;
 var TimeSeries = require('./smoothie.js').TimeSeries;
 var createReactClass = require('create-react-class');
-
-
-
-
-class TreeNode extends React.Component{
-	constructor(props){		
-		super(props) 
-		this.state = ({hidden:true})
-		this.toggle = this.toggle.bind(this)
-	}
-	toggle(){
-		var hidden = !this.state.hidden
-		this.setState({hidden:hidden});
-	}
-	render(){
-		////console.log("render")
-		var cName = "collapsed"
-		if(!this.state.hidden){
-			cName = "expanded"
-		}
-		return (
-			<div hidden={this.props.hide} className="treeNode">
-				<div onClick={this.toggle} />
-				<div className="nodeName">
-					<label className={cName} onClick={this.toggle}>{this.props.nodeName}</label>
-				</div>
-				<div className="innerDiv" hidden={this.state.hidden}>
-				{this.props.children}
-				</div>
-			</div>
-		)
-	}
-}
-
-var placeholder = document.createElement("li");
-placeholder.className = "placeholder";
-
+var onClickOutside = require('react-onclickoutside');
+const vdefMapV2 = require('./vdefmap.json')
 
 
 function yRangeFunc(range){
 	var max = 200;
 	if(Math.abs(range.max) > max){
-		max = Math.abs(range.max)
+		max = Math.min(1500,Math.abs(range.max))
 	}
 	if(Math.abs(range.min) > max){
-		max = Math.abs(range.min)
+		max = Math.min(1500,Math.abs(range.min))
 	}
 	return({min:(0-max),max:max});
 }
 
+class ScrollArrow extends React.Component{
+	constructor(props) {
+		super(props)
+		// body...
+		if(this.props.mode == 'top'){
+			this.state = {visible:false}
+		}else{
+			this.state = {visible:true}
+		}
+		this.hide = this.hide.bind(this)
+		this.show = this.show.bind(this)
+		this.onClick = this.onClick.bind(this);
+	}
+	hide() {
+		// body...
+		if(this.state.visible){
+			this.setState({visible:false})
+		}
+	}
+	show () {
+		// body...
+		if(!this.state.visible){
+			this.setState({visible:true})
+		}
+	}
+	onClick () {
+		// body...
+		if(this.props.onClick){
+			this.props.onClick();
+		}
+	}
+	render () {
+		// body...
+		if(this.props.mode == 'top'){
+			return <div className='scrollArrow' hidden={!(this.props.active && this.state.visible)}>
+						<svg onClick={this.onClick} style={{position:'fixed',zIndex:2,marginTop:this.props.marginTop,marginLeft:this.props.width/-2,marginRight:'auto',width:this.props.width,height:this.props.width, strokeWidth:'2%'}} xmlns="http://www.w3.org/2000/svg" fill="#e1e1e1" viewBox="0 0 24 24" ><path stroke="#000"  d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>								
+					</div>
+		}
+		return <div className='scrollArrow' hidden={!(this.props.active && this.state.visible)}>
+			<svg onClick={this.onClick} style={{position:'fixed',zIndex:2,marginTop:this.props.marginTop, marginLeft:this.props.width/-2,marginRight:'auto',width:this.props.width,height:this.props.width, strokeWidth:'2%'	}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#e1e1e1"><path stroke="#000"  d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"/></svg>								
+		</div>
+	}
+}
+
+class GraphModal extends React.Component{
+	constructor(props) {
+		super(props)
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false});
+		this.toggle = this.toggle.bind(this);
+	}
+	toggle () {
+		var self = this;
+		if(!this.state.override){
+			if(this.props.show){
+			this.setState({show:false, override:true})
+
+		
+			setTimeout(function(){
+				//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
+				self.setState({override:false})
+				if(typeof self.props.onClose != 'undefined'){
+			
+					self.props.onClose();
+				}
+			},50)
+			}else{
+				this.setState({show:true, override:true})
+
+		
+				setTimeout(function(){
+				//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
+				self.setState({override:false})
+
+				},50)
+			}
+		}
+
+		
+	}
+	render () {
+		var cont = '';
+		var h = !this.props.show
+		if(typeof this.props.override != 'undefined'){
+			if(this.props.override == 1){
+				h = false
+			}else{
+				h = true
+			}
+		}
+
+
+		if(!h){
+			
+			cont = (<GModalCont toggle={this.props.onClose} Style={this.props.Style} innerStyle={this.props.innerStyle}>
+				{this.props.children}
+			</GModalCont>)
+		}
+
+		return(<div className={this.state.className} hidden={h}>
+			{cont}
+		</div>)
+	}
+}
+class GModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {keyboardVisible:false}
+		this.toggle = this.toggle.bind(this);
+		this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+	toggle(){
+		this.props.toggle()
+	}
+	handleClickOutside(e){
+		if(!this.state.keyboardVisible){
+			this.props.toggle();	
+		}	
+	}
+	render() {
+		var style= this.props.Style || {}
+		var cs = this.props.innerStyle || {}
+		var button = 	<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
+			
+				return (<div className='modal-outer' style={style}>
+				<div className='modal-content' style={cs}>
+					{this.props.children}
+				</div>
+				</div>)
+	
+	}
+}
+var GModalCont = onClickOutside(GModalC);
+class Modal extends React.Component{
+	constructor(props) {
+		super(props)
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false});
+		this.toggle = this.toggle.bind(this);
+		this.updateMeter =this.updateMeter.bind(this);
+		this.updateSig = this.updateSig.bind(this);
+		this.clear = this.clear.bind(this);
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+	}
+	componentWillReceiveProps (newProps){
+		if(typeof newProps.override != 'undefined'){
+			if(newProps.override == 0){
+				this.setState({show:false})
+			}else{
+				this.setState({show:true})
+			}
+			
+		}
+	}
+	show(){
+		this.setState({show:true})
+	
+	}
+	close(){
+		var self = this;
+		////console.log(4530, self.props.onClose)
+	
+		this.setState({show:false})
+		setTimeout(function(){
+				if(typeof self.props.onClose != 'undefined'){
+			
+				self.props.onClose();
+			}
+			//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
+			self.setState({override:false})
+			
+		},50)
+	}
+	toggle () {
+		var self = this;
+		if(this.state.keyboardVisible){
+			return
+		}
+		if(!this.state.override){
+			if(this.state.show){
+				this.close()
+			}else{
+				this.setState({show:true, override:true})
+
+		
+				setTimeout(function(){
+				//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
+				self.setState({override:false})
+
+				},50)
+			}
+		}
+
+		
+	}
+	updateMeter (a,b) {
+		// body...
+		if(this.state.show){
+			this.refs.mb.update(a,b)
+		}
+		
+	}
+	clear (c) {
+		// body...
+		var p = 'Peak'
+		if(c == 0){
+			p = 'Peak_A'
+		}else if(c == 1){
+			p = 'Peak_B'
+		}
+		this.props.clear(c)
+	}
+	updateSig (a,b) {
+		// body...
+		if(this.state.show){
+			if((typeof b != 'undefined')){
+				if(this.refs.mb.state.sig != a || this.refs.mb.state.sigB != b){
+					this.refs.mb.setState({sig:a,sigB:b})
+				}
+			}else{
+				if(this.refs.mb.state.sig != a ){
+					this.refs.mb.setState({sig:a})
+				}
+			}
+		}
+		
+	}
+	render () {
+		var cont = '';
+		var h = !this.state.show
+		if(typeof this.props.override != 'undefined'){
+			if(this.props.override == 1){
+				h = false
+			}else{
+				h = true
+			}
+		}
+
+
+		if(!h){
+			var im =''
+		//	if(this.props.intMeter){
+				//im = <InterceptorMeterBar ref='mb' clear={this.clear} mobile={this.props.mobile}/>
+		//	}
+			if(this.props.dfMeter){
+				im = <StealthMeterBar ref='mb' clear={this.clear} mobile={this.props.mobile}/>
+			}
+				cont = (<ModalCont toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
+					{im}
+			
+			{this.props.children}
+		</ModalCont>)
+		
+
+		return(<div className={this.state.className} hidden={h}>
+			{cont}
+	</div>)
+	}
+	else{
+		return null;
+	}
+	}
+}
+class ModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {keyboardVisible:false}
+		this.toggle = this.toggle.bind(this);
+		this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+	toggle(){
+		this.props.toggle()
+	}
+	handleClickOutside(e){
+		if(!this.state.keyboardVisible){
+			this.props.toggle();	
+		}	
+	}
+	render() {
+		var style= this.props.Style || {}
+		var cs = this.props.innerStyle || {}
+		var button = ''
+		
+		if(this.props.mobile){
+			cs.padding = 7;
+			cs.maxHeight = '83%'
+			cs.overflow = 'scroll'
+			style.maxHeight = '83%'
+			style.overflow = 'scroll'
+			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
+		}
+
+				return (<div className='modal-outer' style={style}>
+					{button}
+				<div className='modal-content' style={cs}>
+					{this.props.children}
+				</div>
+				</div>)
+	
+	}
+}
+var ModalCont = onClickOutside(ModalC);
+
+class StealthMeterBar extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state =  ({sig:0, sigB:0})
+		this.update = this.update.bind(this);
+		this.onSig = this.onSig.bind(this);
+	}
+	update (a) {
+		this.refs.tb.update(a);
+	
+	}
+	onSig() {
+		this.props.clear(2)
+	}
+	render () {
+		// body...
+		var tbstyle = {display:'inline-block', width:700, padding:5}
+		var sigStyle = {color: 'black'}
+		var sigWrapperSytle = {display:'inline-block'}
+		if(this.props.mobile){
+			tbstyle.width = '100%'
+			tbstyle.padding = 0;
+			tbstyle.height = 15;
+			tbstyle.overflow = 'hidden'
+			//sigStyle.width = '100%'
+			//sigWrapperSytle.width = '10%'
+			sigWrapperSytle.display = 'none'
+		}
+		return(<div style={{background: 'rgb(129, 138, 144)', borderRadius:15,border:'5px solid #818a90', boxShadow:'0 0 14px black', marginBottom:3}}>
+			<div style={sigWrapperSytle}>
+			<div className='intmetSig' style={sigStyle} onClick={this.onSig}>{this.state.sig}</div></div><div style={tbstyle}><TickerBox ref='tb'/></div>
+				</div>)
+	}
+}
+class TickerBox extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = {ticks:0}
+		this.update = this.update.bind(this);
+	}
+	update(data) {
+		this.setState({ticks:data})
+	}
+	render(){
+		var tickerVal= this.state.ticks;
+		if(Math.abs(tickerVal)<50){
+			tickerVal = 0;
+		}else if(tickerVal>0){
+			tickerVal = tickerVal - 50;
+		}else{
+			tickerVal = tickerVal + 50
+		}
+		var color = 'green';
+		if(this.props.color){
+			color = this.props.color
+		}
+		if(Math.abs(tickerVal)>50){
+			color = 'red';
+		}
+		if(tickerVal>200){
+			tickerVal = 200;
+		}else if(tickerVal < -200){
+			tickerVal = -200
+		}
+		var path = 'example_path'
+		var block = 'example_block'
+		if(this.props.int){
+			path = 'example_path_i'
+			block = 'example_block_i'
+		}
+		return (
+			<div className='tickerBox'>
+			<div className={path}>
+				<div className={block} style = {{left:50-(tickerVal/4)+'%',backgroundColor:color}}/>
+			</div>
+			</div>
+		)
+	}
+}
 class CanvasElem extends React.Component{
 	constructor(props){	
 		super(props)
-		var l1 = new TimeSeries();
-		var l2 = new TimeSeries();
-		this.state =  ({line:l1, line_b:l2})
+		this.line = new TimeSeries();
+		this.line_b = new TimeSeries();
+		this.line_com = new TimeSeries();
+		this.smoothie = new SmoothieChart({millisPerPixel:this.props.mpp,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
+			horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],
+			labels:{fillStyle:'#808a90'}, grid:{millisPerLine:2000,fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc, maxDataSetLength:700, minDataSetLength:300, limitFPS:15});
+		
+		this.state =  ({update:true})
 		this.stream = this.stream.bind(this);
+		this.pauseGraph = this.pauseGraph.bind(this);
+		this.restart = this.restart.bind(this);
+	}
+	componentWillUnmount(){
+		this.smoothie.stop();
+		this.smoothie = null;
+		this.line = null;
+		this.line_b
+		this.line_com = null;
+	}
+	shouldComponentUpdate(){
+		return false;
+	}
+	pauseGraph(){
+		this.setState({update:false})
+		this.smoothie.stop()
+		//this.state.smoothie.setTargetFPS(8)
+	}
+	restart(){
+		this.setState({update:true})
+		this.smoothie.start()
+		//this.state.smoothie.setTargetFPS(15)
 	}
 	componentDidMount(){
-		var smoothie = new SmoothieChart({millisPerPixel:25,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
-		horizontalLines:[{color:'#000000',lineWidth:1,value:0},{color:'#880000',lineWidth:2,value:100},{color:'#880000',lineWidth:2,value:-100}],labels:{fillStyle:'#808a90'}, grid:{fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc});
-		smoothie.setTargetFPS(24)
-		smoothie.streamTo(document.getElementById(this.props.canvasId));
-
-		if(this.props.int){
-			smoothie.addTimeSeries(this.state.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
-			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
+		this.smoothie.streamTo(document.getElementById(this.props.canvasId));
+		if(this.props.df){
+			this.smoothie.addTimeSeries(this.line_com, {lineWidth:2,strokeStyle:'rgb(0, 128, 128)'});
+			this.smoothie.addTimeSeries(this.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
+			this.smoothie.addTimeSeries(this.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
+		}else if(this.props.int){
+			this.smoothie.addTimeSeries(this.line_b, {lineWidth:2,strokeStyle:'rgb(128, 128, 128)'});
+			this.smoothie.addTimeSeries(this.line, {lineWidth:2,strokeStyle:'rgb(128, 0, 128)'});
 		
 		}else{
-			smoothie.addTimeSeries(this.state.line, {lineWidth:2,strokeStyle:'#ff00ff'});
+			this.smoothie.addTimeSeries(this.line, {lineWidth:2,strokeStyle:'#ff00ff'});
 	
 		}
 	}
 	stream(dat) {
-		this.state.line.append(dat.t, dat.val);
-		this.state.line.dropOldData(1000, 3000)
-		if(this.props.int){
-			this.state.line_b.append(dat.t, dat.valb)
-			this.state.line_b.dropOldData(1000, 3000)
+		if(this.state.update){
+		this.line.append(dat.t, dat.val);
+		if(this.props.df){
+			var combVal = dat.valCom
+			if(this.props.combineMode == 1){
+				combVal = (dat.val + dat.valb)*this.props.sens/this.props.thresh
+			}else{
+				combVal = Math.max(dat.val, dat.valb)*this.props.sens/this.props.thresh
+			}
+			this.line_com.append(dat.t, combVal)
+			
 		
+		} 
+		if(this.props.int){
+			this.line_b.append(dat.t, dat.valb)
+				
 		}
 	}
-	render(){
+
+	}
+
+		render(){
+			console.log('rendering canvas')
 		return(
 			<div className="canvElem">
 				<canvas id={this.props.canvasId} height={this.props.h} width={this.props.w}></canvas>
@@ -93,621 +488,569 @@ class CanvasElem extends React.Component{
 		);
 	}
 }
-class ConcreteElem extends React.Component{
-	constructor(props){
+class DummyGraph extends React.Component{
+	constructor(props) {
 		super(props)
-		var axisLayer = new Concrete.Layer();
-		var gridLayer = new Concrete.Layer();
-		var plotLayers = [];
-		for(var i = 0; i<5;i++){
-			plotLayers[i] = new Concrete.Layer();
+		var mqls = [
+			window.matchMedia('(min-width: 300px)'),
+			window.matchMedia('(min-width: 444px)'),
+			window.matchMedia('(min-width: 600px)'),
+			window.matchMedia('(min-width: 850px)')
+		]
+		for (var i=0; i<mqls.length; i++){
+			mqls[i].addListener(this.listenToMq)
 		}
-
-		var x = this.props.w/2
-		var y = this.props.h/2
-		this.state = ({wrapper:null,gridLayer:gridLayer, plotLayers:plotLayers, axisLayer:axisLayer, axis:{x:[(0-x),x], r:[(0-y),y]}, Xscale:1, Rscale:1, packs:[[],[],[],[],[]], curPack:0, redraw:true})
+		this.state = ({width:480, height:230, mqls:mqls})
 	}
-	componentDidMount(){
-		var concreteContainer = document.getElementById(this.props.concreteId);
-
-		var wrapper = new Concrete.Wrapper({width:this.props.w, height:this.props.h, container:concreteContainer})
-		concreteContainer.addEventListener('mousedown', function(e){
-			 var boundingRect = concreteContainer.getBoundingClientRect();
-			 	var x = e.clientX - boundingRect.left
-			 	var y = e.clientY - boundingRect.top
-			 	if((x>0&&x<400)&&(y>0&&y<400)){
-			 		//console.log([x,y]);
-			}			
-		});
-		concreteContainer.addEventListener('mousemove', function(e){
-			 var boundingRect = concreteContainer.getBoundingClientRect();
-			 	var x = e.clientX - boundingRect.left
-			 	var y = e.clientY - boundingRect.top
-			 	if((x>0&&x<400)&&(y>0&&y<400)){
-			 		//console.log('move');
-			 	}
-		});
-		concreteContainer.addEventListener('mouseup', function(e){
-			 var boundingRect = concreteContainer.getBoundingClientRect();
-			 	var x = e.clientX - boundingRect.left
-			 	var y = e.clientY - boundingRect.top
-			 	if((x>0&&x<400)&&(y>0&&y<400)){
-			 		//console.log([x,y]);
-			 	}
-		});
-		wrapper.add(this.state.axisLayer)
-		wrapper.add(this.state.gridLayer)
-		var plotLayers = this.state.plotLayers;
-		for(var i = 0; i<5;i++){
-			wrapper.add(plotLayers[i])
-		}
-		var self = this;
-		socket.on('testXR', function(xr){
-			self.parseXR(xr)
-		})
-		this.setState({wrapper:wrapper});
-		this.drawAxis()
+	listenToMq () {
 	}
-	getSampleStream(){
-		this.onSwitchPack();
-		socket.emit('initTestStream')
+	componentDidMount () {
+		this.listenToMq()
 	}
-	onSwitchPack(){
-		var nextPack = (this.state.curPack+ 1)%5
-		var packs = this.state.packs;
-		packs[nextPack] = []
-		this.setState({curPack:nextPack,packs:packs, redraw:true})
-
+	renderCanv () {
+		return(<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int} mpp={20}/>)
 	}
-	parseXR(xr){
-		var packs = this.state.packs
-		packs[this.state.curPack].push(xr)
-		var minX = this.state.axis.x[0]
-		var maxX = this.state.axis.x[1]
-		var minR = this.state.axis.r[0]
-		var maxR = this.state.axis.r[1]
-		var redraw = this.state.redraw;
-		if(Math.abs(xr.x)>maxX){
-			maxX=Math.abs(xr.x);
-			minX= 0-maxX
-			redraw = true
-		}
-		if(Math.abs(xr.r)>maxR){
-			maxR=Math.abs(xr.r)
-			minR = 0-maxR
-			redraw = true
-		}
-		var Xscale = (maxX-minX)/this.props.w;
-		var Rscale = (maxR-minR)/this.props.h;
-		this.setState({ axis:{x:[minX,maxX],r:[minR,maxR]},Xscale:Xscale,Rscale:Rscale, redraw:redraw, packs:packs})
-		this.drawPacksSim();
+	stream (dat) {
+		this.refs.cv.stream(dat)
 	}
-	drawPacks(){
-		var ctx = this.state.plotLayers[this.state.curPack].sceneCanvas.context;
-		var strokeStyles = ['#FF0000', '#d8bab3', '#aa938d', '#7a6965', '493f3d']
-		var alpha = [1.0,0.8,0.7,0.6,0.5,0.4]
-		var lW = [2,1,1,1,1]	
-		if(this.state.redraw){
-			for(var ind= this.state.curPack+1; ind < this.state.curPack+6;ind++){
-				var line = this.state.packs[ind%5]
-				this.state.plotLayers[ind%5].sceneCanvas.clear();
-				if(line.length > 0){
-					var start = line[0];
-					ctx = this.state.plotLayers[ind%5].sceneCanvas.context;//canv.getContext('2d')
-		
-					ctx.beginPath();
-					ctx.strokeStyle = strokeStyles[(ind-this.state.curPack)%5]
-					ctx.globalAlpha = alpha[(ind-this.state.curPack)%5]
-					ctx.lineWidth = lW[(ind-this.state.curPack)%5]
-					ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
-					
-					for(var i = 1; i<line.length; i++){
-					
-						ctx.lineTo((line[i].x - this.state.axis.x[0])/this.state.Xscale, (0-line[i].r+this.state.axis.r[1])/this.state.Rscale)
-						start = line[i]
-					}
-					ctx.stroke();
-					this.setState({redraw:false})
-				}
-			}
-					
-		}else{
-			var line = this.state.packs[this.state.curPack]
-				var count = line.length
-				ctx.beginPath();
-				if(count>1){
-				var start = line[count-2];
-				var i = count - 1;
-				ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
-			
-				ctx.lineTo((line[count-1].x - this.state.axis.x[0])/this.state.Xscale, (0-line[count-1].r+this.state.axis.r[1])/this.state.Rscale)
-				
-			}
-			ctx.stroke();
-		}
-	}
-	clear(){
-		this.state.plotLayers.forEach(function(p) {
-			p.sceneCanvas.clear();
-		})
-		var x = this.props.w/2
-		var y = this.props.h/2
-		this.setState({axis:{x:[(0-x),x], r:[(0-y),y]}, Xscale:1, Rscale:1, packs:[[],[],[],[],[]], curPack:0, redraw:true})
-		this.toggleGrid();
-	}
-	drawPacksSim(){
-		var self = this;
-		var strokeStyles = ['#FF0000', '#d8bab3', '#aa938d', '#7a6965', '493f3d']
-		var alpha = [1.0,0.8,0.7,0.6,0.5,0.4]
-		var lW = [2,1,1,1,1]
-		var count = this.state.packs[this.state.curPack].length
-		var curPack = this.state.curPack
-		if(this.state.redraw){
-			this.state.plotLayers.forEach(function(l,j){
-				l.sceneCanvas.clear();
-				l.sceneCanvas.context.beginPath();
-				l.sceneCanvas.context.strokeStyle = strokeStyles[(j+5 - self.state.curPack)%5]
-				l.sceneCanvas.context.globalAlpha = alpha[(j+5 - self.state.curPack)%5];
-				l.sceneCanvas.context.lineWidth = lW[(j+5 - self.state.curPack)%5];
-				
-				var p = self.state.packs[j]
-				if(p.length >0){
-					l.sceneCanvas.context.moveTo((p[0].x-self.state.axis.x[0])/self.state.Xscale,(0-p[0].r +self.state.axis.r[1])/self.state.Rscale);
-				}
-				
-			})
-			for(var i=1;i<count; i++){
-				for(var j=curPack; j<curPack+5;j++){
-					if(i<this.state.packs[j%5].length){
-						var pt = this.state.packs[j%5][i]
-						this.state.plotLayers[j%5].sceneCanvas.context.lineTo((pt.x-self.state.axis.x[0])/self.state.Xscale,(0-pt.r + self.state.axis.r[1])/self.state.Rscale);
-					}
-					
-				}
-			}
-			this.state.plotLayers.forEach(function(l){
-				l.sceneCanvas.context.stroke();
-			})
-			this.toggleGrid();
-		}else{
-			for(var j=curPack; j<curPack+5;j++){
-				if(count-1<this.state.packs[j%5].length){
-					var pt = this.state.packs[j%5][count-1]
-					this.state.plotLayers[j%5].sceneCanvas.context.lineTo((pt.x-self.state.axis.x[0])/self.state.Xscale,(0-pt.r + self.state.axis.r[1])/self.state.Rscale);
-					this.state.plotLayers[j%5].sceneCanvas.context.stroke();
-				}				
-			}
-		}
-	}
-
-	drawAxis(){
-		var ctx = this.state.axisLayer.sceneCanvas.context
-			ctx.beginPath();
-			ctx.strokeStyle = 'black'
-			ctx.lineWidth = 3;
-			ctx.moveTo((0-this.state.axis.x[0])/this.state.Xscale,0);
-		ctx.lineTo((0-this.state.axis.x[0])/this.state.Xscale,this.props.h)
-		//ctx.stroke();
-		ctx.moveTo(0,(this.state.axis.r[1])/this.state.Rscale);
-		ctx.lineTo(this.props.w,(this.state.axis.r[1])/this.state.Rscale)
-		ctx.stroke();
-		this.toggleGrid();
-	}
-	toggleGrid(){
-		var ctx = this.state.gridLayer.sceneCanvas.context
-		var hctx = this.state.gridLayer.hitCanvas.context;
-		hctx.fillRect(0,0,400,400)
-		this.state.gridLayer.sceneCanvas.clear();
-		var xlim = this.state.axis.x[1];
-		var rlim = this.state.axis.r[1];
-		var xcnt = Math.floor(xlim/100)
-		var xfactor = 1
-		var rfactor = 1
-		while(xcnt > 10){
-			xcnt = Math.floor(xcnt/2)
-			xfactor = xfactor*2
-		}
-
-		var ycnt = Math.floor(rlim/100)
-		while(ycnt >10){
-			ycnt = Math.floor(ycnt/2);
-			rfactor = rfactor*2
-		}
-		ctx.beginPath()
-		for(var i=0;i<xcnt;i++){
-			ctx.moveTo(((-100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale - 5)
-			ctx.lineTo(((-100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale + 5)
-			ctx.moveTo(((100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale - 5)
-			ctx.lineTo(((100)*(i+1)*xfactor + xlim)/this.state.Xscale, rlim/this.state.Rscale + 5)
-		}
-		for(var j = 0; j<ycnt;j++){
-			ctx.moveTo(xlim/this.state.Xscale - 5,((-100)*(j+1)*rfactor + rlim)/this.state.Rscale)
-			ctx.lineTo(xlim/this.state.Xscale + 5,((-100)*(j+1)*rfactor + rlim)/this.state.Rscale)
-			ctx.moveTo(xlim/this.state.Xscale - 5,((100)*(j+1)*rfactor + rlim)/this.state.Rscale)
-			ctx.lineTo(xlim/this.state.Xscale + 5,((100)*(j+1)*rfactor + rlim)/this.state.Rscale)
-		}
-		ctx.stroke();
-	}
-	render(){
-		return(<div className='prefInterface'>
-			<div><label>X Range:[ {this.state.axis.x[0] + ' ~ ' + this.state.axis.x[1]}]</label></div>
-			<div><label>R Range:[ {this.state.axis.r[0] + ' ~ ' + this.state.axis.r[1]}]</label></div>
-		
-				<div id={this.props.concreteId}/>
-				<button onClick={this.getSample}>Get Sample</button>
-			<button onClick={this.getSampleStream}>Get Stream</button>
-			<button onClick={this.clear}>Clear</button>
+	render () {
+		var cv = this.renderCanv()
+		return (<div className='detGraph'>
+			{cv}
 			</div>)
 	}
+
 }
-/*
-	drawStream:function(){
-		var canv = document.getElementById(this.props.canvasId)
-		var ctx = canv.getContext('2d')
-		
-		var self = this;
-		if(this.state.redraw){// || (this.state.line.length > this.state.buf)){
-			//console.log('redraw')
-			ctx.clearRect(0,0,400,400)
-			ctx.beginPath();
-			var strokeStyles = ['#000000','#FF0000','#00FF00','#0000FF']
-			ctx.strokeStyle = 'black';//strokeStyles[this.state.curStyle]
-			ctx.moveTo((0-this.state.axis.x[0])/this.state.Xscale,0);
-		ctx.lineTo((0-this.state.axis.x[0])/this.state.Xscale,this.props.h)
-		//ctx.stroke();
-		ctx.moveTo(0,(this.state.axis.r[1])/this.state.Rscale);
-		ctx.lineTo(this.props.w,(this.state.axis.r[1])/this.state.Rscale)
-		ctx.stroke();
-		ctx.beginPath();
-		ctx.strokeStyle = strokeStyles[this.state.curStyle]
-		var line = this.state.line;
-		var br = this.state.line.length - this.state.buf
-
-		if(line.length >0){
-			var start = line[0];
-			//ctx.moveTo(start)
-
-			for(var i = 0; i<line.length; i++){
-				ctx.beginPath();
-				if(i<br){
-					
-					ctx.strokeStyle = '#DCDCDC'
-				}else{
-					ctx.strokeStyle = '#000000'
-				}
-				ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
-				ctx.lineTo((line[i].x - this.state.axis.x[0])/this.state.Xscale, (0-line[i].r+this.state.axis.r[1])/this.state.Rscale)
-				start = line[i]
-				ctx.stroke();
-				this.setState({redraw:false})
-			}
-		}
-		}else if(this.state.line.length > this.state.buf){
-			var line = this.state.line
-			var front = line.length - this.state.buf - 1;
-			var start = line[front]
-			ctx.beginPath();
-			ctx.strokeStyle = '#DCDCDC';
-
-			ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
-			ctx.lineTo((line[front+1].x - this.state.axis.x[0])/this.state.Xscale, (0-line[front+1].r+this.state.axis.r[1])/this.state.Rscale)
-			ctx.stroke();
-
-			ctx.beginPath();
-			ctx.strokeStyle = '#000000'
-			var count = line.length
-
-			var st = line[count-2];
-				var i = count - 1;
-				ctx.moveTo((st.x-this.state.axis.x[0])/this.state.Xscale,(0-st.r+this.state.axis.r[1])/this.state.Rscale)
-			
-				ctx.lineTo((line[count-1].x - this.state.axis.x[0])/this.state.Xscale, (0-line[count-1].r+this.state.axis.r[1])/this.state.Rscale)
-			ctx.stroke();
-				
-
-		}else{
-			//console.log('no redraw')
-			ctx.beginPath();
-			var strokeStyles = ['#000000','#FF0000','#00FF00','#0000FF']
-			ctx.strokeStyle = strokeStyles[this.state.curStyle]
-			var line = this.state.line
-			var count = line.length
-			if(count>1){
-				var start = line[count-2];
-				var i = count - 1;
-				ctx.moveTo((start.x-this.state.axis.x[0])/this.state.Xscale,(0-start.r+this.state.axis.r[1])/this.state.Rscale)
-			
-				ctx.lineTo((line[count-1].x - this.state.axis.x[0])/this.state.Xscale, (0-line[count-1].r+this.state.axis.r[1])/this.state.Rscale)
-				
-			}
-			ctx.stroke();
-			//ctx.beginPath();
-		}
-		
-		
-	},
-*/
-/*var DetMainInfo = createReactClass({
-	getInitialState: function () {
-		// body...
-		var res = vdefByIp[this.props.det.ip]
-		var pVdef = _pVdef;
-		if(res){
-			pVdef = res[1];
-		} 
-		var tmpA = '';
-		var tmpB = '';
-		var res = null;
-
-		return({rpeak:0,rpeakb:0,xpeakb:0,xpeak:0, peak:0,peakb:0,phase:0, phaseb:0,rej:0, sysRec:{},prodRec:{}, tmp:'', tmpB:'', prodList:[], phaseFast:0, phaseFastB:0, pVdef:pVdef})
-	},
-	componentDidMount: function(){
-		this.sendPacket('refresh','')
-	},
-	clearRej: function () {
-		// body...
-		var param = this.state.pVdef[2]['RejCount']
-		this.props.clear(param )
-	},
-	switchProd: function (p) {
-		// body...
-		this.props.sendPacket('ProdNo',p)
-		
-
-	},
-	sendPacket: function (n,v) {
-		// body...
-		this.props.sendPacket(n,v)
-	},
-	getProdName: function (num) {
-		// body...
-		this.props.sendPacket('getProdName',99)
-	},
-	clearPeak: function () {
-		// body...
-		var p = 'Peak'
-		if(this.props.int){
-			p = 'Peak_A'
-		}
-		var param = this.state.pVdef[2][p]
-		this.props.clear(param) 
-	},
-	clearPeakB: function () {
-		// body...
-		var p = 'Peak'
-		if(this.props.int){
-			p = 'Peak_B'
-		}
-		var param = this.state.pVdef[2][p]
-		this.props.clear(param) 
-		param = null;
-	},
-	calibrate: function () {
-		this.refs.calbModal.toggle()
-	},
-	parseInfo: function(sys, prd){
-		//////console.log('parseInfo')
-		if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
-		//	////console.log([sys,prd])
-			if(this.props.int){
-				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens_A'], tmpB:prd['Sens_B']})
-			}else{
-				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens']})
-			}
-			
-		}
-	},
-	showEditor: function () {
-		this.props.sendPacket('getProdList')
-		this.refs.pedit.toggle()
-		this.setState({peditMode:false})
-	},
-	editSens: function () {
-		this.refs.sensEdit.toggle()
-	},
-	setTest: function () {
-		if(typeof this.state.prodRec['TestMode'] != 'undefined'){
-			if(this.state.prodRec['TestMode'] != 0){
-				this.props.sendPacket('test', this.state.prodRec['TestMode'] - 1)
-			}else{
-				this.toggleTestModal()
-			}
-			
-		}
-		//
-
-	},
-	toggleTestModal: function () {
-		// body...
-		this.refs.testModal.toggle()
-	},
-	updateTmp:function (e) {
-		//e.preventDefault();
-		if(typeof e == 'string'){
-			if(this.props.int){
-				this.props.sendPacket(this.state.pVdef[1]['Sens_A'], e)
-			}else{
-				this.props.sendPacket(this.state.pVdef[1]['Sens'],e)	
-			}
-			this.setState({tmp:e})
-		}else{
-			if(this.props.int){
-				this.props.sendPacket(this.state.pVdef[1]['Sens_A'], e.target.value)
-			}else{
-				this.props.sendPacket(this.state.pVdef[1]['Sens'],e.target.value)	
-			}
-			this.setState({tmp:e.target.value})	
-		}
-		
-	},
-	updateTmpB:function (e) {
-		//e.preventDefault();
-		if(typeof e == 'string'){
-			this.props.sendPacket(this.state.pVdef[1]['Sens_B'], e)
-			this.setState({tmpB:e})
-		}else{
-			this.props.sendPacket(this.state.pVdef[1]['Sens_B'], e.target.value)
-			this.setState({tmpB:e.target.value})	
-		}
-		
-	},
-	submitTmpSns:function () {
-		if(!isNaN(this.state.tmp)){
-			if(this.props.int){
-				this.props.sendPacket('Sens_A', this.state.tmp)
-			}else{
-				this.props.sendPacket('Sens',this.state.tmp)	
-			}
-			this.cancel()
-		}
-	},
-	submitTmpSnsB:function () {
-		if(!isNaN(this.state.tmp)){
-			if(this.props.int){
-				this.props.sendPacket('Sens_B', this.state.tmpB)
-			}else{
-				this.props.sendPacket('Sens',this.state.tmpB)	
-			}
-			this.cancel()
-		}
-	},
-	refresh: function () {
-		this.props.sendPacket('refresh')
-	},
-	cancel:function () {
-		this.refs.sensEdit.toggle()
-		this.setState({tmp:''})
-	},
-	calB: function () {
-		this.props.sendPacket('cal',[0])
-	},
-	calA:function () {
-		// body...
-		this.props.sendPacket('cal',[1])
-	},
-	_handleKeyPress: function (e) {
-		if(e.key === 'Enter'){
-			this.submitTmpSns();
-		}
-	},
-	sensFocus: function(){
-		this.refs.sensEdit.setState({override:true})
-	},
-	sensClose: function(){
-		var self = this;
-		setTimeout(function(){
-			self.refs.sensEdit.setState({override:false})	
-		}, 100)
-	},
-	prodFocus: function(){
-		this.refs.pedit.setState({override:true})
-	},
-	prodClose: function(){
-		var self = this;
-		setTimeout(function(){
-			self.refs.pedit.setState({override:false})	
-		}, 100)
-	},
-	changeProdEditMode:function () {
-		// body...
-		this.setState({peditMode:!this.state.peditMode})
-	},
-	render: function () {
-			
-		//////console.log('render here')
-		var self = this;
-		var padding = {paddingLeft:10}
-		var tdstyle = {paddingLeft:10, background:'linear-gradient(135deg, rgba(128, 128, 128, 0.3), transparent 67%)', width:200}
-		var tdstylest = {paddingLeft:10, background:'linear-gradient(315deg, transparent 33%, rgba(128,0,128,0.4))', width:400}
-		
-		var tdstyleintA = {paddingLeft:10, background:'linear-gradient(315deg, transparent 33%, rgba(128,0,128,0.4))', width:200}
-		var tdstyleintB = {paddingRight:10, background:'linear-gradient(135deg, rgba(0,128,128,0.4),transparent 67%', width:200}
-		var list = ['dry', 'wet', 'DSA']
-		var headingStyle = {textAlign:'right',background:'linear-gradient(to right, transparent, transparent 33%, rgba(128, 128, 128, 0.3)'}
-		var ps = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed']]
-		if(this.state.phaseFast == 1){
-			ps = 'fast'
-		}
-		var tab = (
-		<table className='dtmiTab'>
-			<tbody>
-
-				<tr><td style={headingStyle}>Name</td><td colSpan={2} style={tdstylest}>{this.props.det.name}</td></tr>
-				<tr onClick={this.showEditor}><td style={headingStyle}>Product</td><td colSpan={2} style={tdstylest}>{this.state.prodRec['ProdName']}</td></tr>
-				<tr><td style={headingStyle}>Sensitivity</td><td colSpan={2} style={tdstylest}><KeyboardInputWrapper Style={{fontSize:26, textAlign:'center', width:'100%'}}  Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/>
-</td></tr>
-				<tr><td style={headingStyle}>Signal</td><td colSpan={2} style={tdstylest} onClick={this.clearPeak}>{this.state.peak}</td></tr>
-				<tr><td style={headingStyle}>Phase</td><td colSpan={2} style={tdstylest} >{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode']]}</td></tr>
-				<tr><td style={headingStyle}>Rejects</td><td colSpan={2} style={tdstylest} onClick={this.clearRej}>{this.state.rej}</td></tr>
-			
-				<tr><td></td><td style={tdstyle} onClick={this.calibrate}>Calibrate </td><td onClick={this.setTest} style={tdstyle}>Test</td>
-				</tr>		
-			</tbody>
-		</table>)
-		var CB = 	<CalibInterface int={this.props.int} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.calB} calibA={this.calA} phase={[this.state.phase, this.state.prodRec['PhaseMode'], ps]} phaseA={[this.state.phaseb]} peaks={[this.state.rpeak,this.state.xpeak]}ref='ci'/>
-						
-		if(this.props.int){
-			tab = (<table className='dtmiTab'>
-				<tbody>
-				<tr onClick={this.showEditor}><td style={headingStyle}>Product</td><td colSpan={2} style={tdstyleintA}>{this.state.prodRec['ProdName']}</td></tr>
-				<tr><td style={headingStyle}>Sensitivity</td><td style={tdstyleintA}><KeyboardInputWrapper  Style={{fontSize:26, textAlign:'center', width:'100%'}} Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/></td><td style={tdstyleintB}><KeyboardInputWrapper  Style={{fontSize:26, textAlign:'center', width:'100%'}} Id='sens' tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmpB} value={this.state.tmpB}/></td></tr>
-				<tr><td style={headingStyle}>Signal</td><td style={tdstyleintA} onClick={this.clearPeak}>{this.state.peak}</td><td style={tdstyleintB} onClick={this.clearPeakB}>{this.state.peakb}</td></tr>
-				<tr><td style={headingStyle}>Phase</td><td style={tdstyleintA} onClick={this.calibrate}>{this.state.phase + ' ' + list[this.state.prodRec['PhaseMode_A']]}</td>
-				<td style={tdstyleintB}>{this.state.phaseb + ' ' + list[this.state.prodRec['PhaseMode_B']]}</td></tr>
-				<tr><td style={headingStyle}>Rejects</td><td colSpan={2} style={tdstyleintA} onClick={this.clearRej}>{this.state.rej}</td></tr>
-	
-				<tr><td></td><td  onClick={this.calibrate} style={tdstyle}><span>Calibrate</span> </td><td onClick={this.setTest} style={tdstyle}><span>Test</span></td></tr>		
-			</tbody>
-				</table>)
-			ps = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed_A']]
-			var psb = this.state.pVdef[6]['PhaseSpeed']['english'][this.state.prodRec['PhaseSpeed_B']]
-			if(this.state.phaseFast == 1){
-				ps = 'fast'
-			}
-			if(this.state.phaseFastB == 1){
-				psb = 'fast'
-			}	
-			CB = <CalibInterface int={this.props.int} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.calB} calibA={this.calA} phase={[this.state.phase, this.state.prodRec['PhaseMode_A'], ps]} phaseB={[this.state.phaseb, this.state.prodRec['PhaseMode_B'], psb]} peaks={[this.state.rpeak,this.state.xpeak, this.state.rpeakb,this.state.xpeakb]}ref='ci'/>
-			
-		}
-		var prodList = this.state.prodList.map(function(p){
-			var sel = false
-			if(p==self.state.sysRec['ProdNo']){
-				sel = true;
-			}
-
-			return (<ProductItem selected={sel} p={p} switchProd={self.switchProd}/>)
-		})
-		if(this.state.peditMode){
-			var peditCont = 	<div><ProductMenu ip={this.props.det.ip} onKeyFocus={this.prodFocus}	onRequestClose={this.prodClose}/><div style={{float:'right'}}><button onClick={this.changeProdEditMode}> Back</button></div></div>
-				
-		}else{
-			peditCont = <div>
-				<div style={{display:'inline-block'}}>{prodList}</div><div style={{float:'right'}}><button onClick={this.changeProdEditMode}>Edit Product List</button></div>
-			</div>
-		}
-		return (<div className='detInfo'>
-						{tab}
-					<Modal ref='pedit'>
-					{prodList}
-						</Modal>
-						<Modal ref='sensEdit'>
-							<div>Sensitivity: <KeyboardInput onFocus={this.sensFocus} onRequestClose={this.sensClose} tid='sens' num={true} onKeyPress={this._handleKeyPress} onInput ={this.updateTmp} value={this.state.tmp}/>
-							<button onClick={this.submitTmpSns}>OK</button><button onClick={this.cancel}>Cancel</button></div>
-						</Modal>
-						<Modal ref='testModal'>
-							<TestReq ip={this.props.det.ip} toggle={this.toggleTestModal}/>
-						</Modal>
-						<Modal ref='calbModal'>
-						{CB}
-						</Modal>
-					</div>)
+class SlimGraph extends React.Component{
+	constructor(props) {
+		super(props)
+		/*var mqls = [
+			window.matchMedia('(min-width: 300px)'),
+			window.matchMedia('(min-width: 444px)'),
+			window.matchMedia('(min-width: 600px)'),
+			window.matchMedia('(min-width: 850px)')
+		]
+		for (var i=0; i<mqls.length; i++){
+			mqls[i].addListener(this.listenToMq)
+		}*/
+		this.state = ({width:480, height:215, popUp:false})
+		this.toggle = this.toggle.bind(this);
+		this.stream = this.stream.bind(this);
+		this.pauseGraph = this.pauseGraph.bind(this);
+		this.restart = this.restart.bind(this);
 	}
-})*/
+	pauseGraph(){
+		//console.log('lower res')
+		this.refs.cv.pauseGraph();
+	}
+	restart(){
+		this.refs.cv.restart();
+	}
+	listenToMq () {
+		// body...
+		if(this.state.mqls[3].matches){
+			this.setState({width:480})
+		}else if(this.state.mqls[2].matches){
+			this.setState({width:558})
+		}else if(this.state.mqls[1].matches){
+			this.setState({width:480})
+		}else{
+			this.setState({width:280})
+		}
+	}
+	componentDidMount () {
+		//this.listenToMq()
+	}
+	renderCanv () {
+		if(this.state.popUp){
+			return <GraphModal Style={{maxWidth:950,width:950,marginTop:100, background:'#000'}} innerStyle={{backgroundColor:'black'}} show={true} onClose={this.toggle}>
+				<CanvasElem combineMode={this.props.combineMode} sens={this.props.sens} thresh={this.props.thresh} df={true} canvasId={this.props.canvasId} ref='cv' w={900} h={400} int={this.props.int} mpp={13}/>
+			</GraphModal>
+		}
+		return(<CanvasElem combineMode={this.props.combineMode} sens={this.props.sens} thresh={this.props.thresh} df={true} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int} mpp={28}/>)
+	}
+	stream (dat, ov) {
+		if(!ov){
+			this.refs.cv.stream(dat)
+		}
+		
+	}
+	toggle(){
+		var self = this;
+		setTimeout(function(){
+			self.setState({popUp:!self.state.popUp})
+		},100)
+		
+	}
+	render () {
+		//img src='assets/fullscreen.svg'
+		var cv = this.renderCanv()
+		return (<div className='detGraph'>
+			<div  style={{position:'absolute', top:76,left:63, width:350,height:140}} onClick={this.toggle}/>
+			{cv}
+			</div>)
+	}
 
+}
+class AuthfailModal extends React.Component{
+	constructor(props){
+		super(props)
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false,userid:0,ip:'0.0.0.0'});
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+		this.forgot = this.forgot.bind(this);
+	}
+	show (userid, ip) {
+		this.setState({show:true, userid:userid,ip:ip})
+	}
+	close () {
+		var self = this;
+		setTimeout(function () {
+			self.setState({show:false})
+		},100)
+		
+	}
+	forgot(){
+		this.props.forgot(this.state.userid,this.state.ip);
+	}
+	render () {
+		var	cont = ""
+		if(this.state.show){
+		cont =  <AFModalCont vMap={this.props.vMap} accept={this.forgot} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</AFModalCont>
+		}
+		return <div hidden={!this.state.show} className= 'pop-modal'>
+	{/*	<div className='modal-x' onClick={this.close}>
+			 	 <svg viewbox="0 0 40 40">
+    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
+  				</svg>
+			</div>*/}
+			{cont}
+		</div>
+	}
+}
+class AFModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.handleClickOutside = this.handleClickOutside.bind(this)
+		this.close = this.close.bind(this);
+		this.accept = this.accept.bind(this);
+		this.cancel = this.cancel.bind(this);
+	}
+	componentDidMount() {
+		// body...
+	}
+	handleClickOutside(e) {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+		
+	}
+	close() {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+	}
+	accept(){
+		var self = this;
+		this.props.accept();
+		setTimeout(function(){
+			if(self.props.show){
+			self.props.close();
+			}
+		}, 100)
+		
+	}
+	cancel(){
+		var self = this;
+		setTimeout(function(){
+			self.close();
+			
+		}, 100)
+	}
+	render () {
+		// body...
+		var self = this;
+		
+	  return( <div className='alertmodal-outer'>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Authentication Failed</div>
+	  			{this.props.children}
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Try Again</button>
+				<button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>Forgot</button></div>
+	  		
+		  </div>)
+
+	}
+}
+var AFModalCont =  onClickOutside(AFModalC);
+class MessageModal extends React.Component{
+	constructor(props){
+		super(props)
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false,message:''});
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+		
+	}
+	show (message) {
+		this.setState({show:true,message:message})
+	}
+	close () {
+		var self = this;
+		setTimeout(function () {
+			self.setState({show:false})
+		},100)
+		
+	}
+	
+	render () {
+		var	cont = ""
+		if(this.state.show){
+		cont =  <MModalCont vMap={this.props.vMap} accept={this.close} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{color:'#e1e1e1'}}>{this.state.message}</div></MModalCont>
+		}
+		return <div hidden={!this.state.show} className= 'pop-modal'>
+	{/*	<div className='modal-x' onClick={this.close}>
+			 	 <svg viewbox="0 0 40 40">
+    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
+  				</svg>
+			</div>*/}
+			{cont}
+		</div>
+	}
+}
+class MModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.handleClickOutside = this.handleClickOutside.bind(this)
+		this.close = this.close.bind(this);
+		this.accept = this.accept.bind(this);
+		this.cancel = this.cancel.bind(this);
+	}
+	componentDidMount() {
+		// body...
+	}
+	handleClickOutside(e) {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+		
+	}
+	close() {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+	}
+	accept(){
+		var self = this;
+		this.props.accept();
+		setTimeout(function(){
+			if(self.props.show){
+			self.props.close();
+			}
+		}, 100)
+		
+	}
+	cancel(){
+		var self = this;
+		setTimeout(function(){
+			self.close();
+			
+		}, 100)
+	}
+	render () {
+		// body...
+		var self = this;
+		
+	  return( <div className='alertmodal-outer'>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Attention</div>
+	  			{this.props.children}
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Cancel</button><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>Confirm</button></div>
+	  		
+		  </div>)
+
+	}
+}
+var MModalCont =  onClickOutside(MModalC);
+
+class AlertModal extends React.Component{
+	constructor(props){
+		super(props)
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false});
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+		this.accept = this.accept.bind(this);
+	}
+	show () {
+		this.setState({show:true})
+	}
+	close () {
+		var self = this;
+		setTimeout(function () {
+			self.setState({show:false})
+		},100)
+		
+	}
+	accept(){
+		this.props.accept();
+	}
+	render () {
+		var	cont = ""
+		if(this.state.show){
+		cont =  <AlertModalCont vMap={this.props.vMap} accept={this.accept} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</AlertModalCont>
+		}
+		return <div hidden={!this.state.show} className= 'pop-modal'>
+	{/*	<div className='modal-x' onClick={this.close}>
+			 	 <svg viewbox="0 0 40 40">
+    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
+  				</svg>
+			</div>*/}
+			{cont}
+		</div>
+	}
+}
+class AlertModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.handleClickOutside = this.handleClickOutside.bind(this)
+		this.close = this.close.bind(this);
+		this.accept = this.accept.bind(this);
+		this.cancel = this.cancel.bind(this);
+	}
+	componentDidMount() {
+		// body...
+	}
+	handleClickOutside(e) {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+		
+	}
+	close() {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+	}
+	accept(){
+		var self = this;
+		this.props.accept();
+		setTimeout(function(){
+			if(self.props.show){
+			self.props.close();
+			}
+		}, 100)
+		
+	}
+	cancel(){
+		var self = this;
+		setTimeout(function(){
+			self.close();
+			
+		}, 100)
+	}
+	render () {
+		// body...
+		var self = this;
+		
+	  return( <div className='alertmodal-outer'>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Confirm Action</div>
+	  			{this.props.children}
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>Confirm</button><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.close}>Cancel</button></div>
+	  		
+		  </div>)
+
+	}
+}
+var AlertModalCont =  onClickOutside(AlertModalC);
+
+class MessageConsole extends React.Component{
+	constructor(props){
+		super(props)
+		this.state =  {prodName:'PRODUCT 1',cip:0,cipSec:0}
+		this.clearFaults = this.clearFaults.bind(this);
+		this.clearRejLatch = this.clearRejLatch.bind(this);
+		this.clearWarnings = this.clearWarnings.bind(this);
+		this.renderOverlay = this.renderOverlay.bind(this);
+		this.onClick = this.onClick.bind(this);
+	}
+	clearWarnings(){
+		this.props.clearWarnings();
+	}
+	clearFaults(){
+		this.props.clearFaults();
+	}
+	clearRejLatch(){
+		this.props.clearRejLatch();
+	}
+	onClick(){
+		if(this.props.faultArray.length>0){
+			this.refs.fModal.toggle();
+		}else if(this.props.testReq != 0){
+			this.props.toggleTest();
+		}else if(this.props.rejLatch ==1){
+			this.refs.fModal.toggle();
+		}
+	}
+	renderOverlay(){
+		var self = this;
+		var fActive = (this.props.faultArray.length > 0)
+		var left = 'dfnavTabLeft'
+		var center = 'dfnavTabCent'
+		var right = 'dfnavTabRight'
+		var fCont = <div style={{color:"#e1e1e1"}}>{vdefMapV2['@labels']["No Faults"][this.props.language].name}</div>
+		var bgColor = 'rgba(150,150,150,0.3)'
+		var style = {width:345,height:220,background:'rgb(225,225,225)',marginLeft:'auto',marginRight:'auto'}
+		var wrapper = {width:'100%', height:88, marginLeft:'auto', marginRight:'auto', marginTop:10}
+		var line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Running Product'][this.props.language]['name']}</div>
+		var line2 = 	<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{this.props.prodName}</div>
+		var textColor = '#eee'
+		if(fActive){
+			var fref = 'Faults'
+			var wref = 'Warnings'
+			var fstr = this.props.faultArray.length + " " +vdefMapV2['@labels'][fref][this.props.language].name
+			var wstr = ''
+			if(this.props.warningArray.length > 0){
+				var faultCount = this.props.faultArray.length - this.props.warningArray.length;
+				if(faultCount == 0){
+					fstr = this.props.warningArray.length + " " +vdefMapV2['@labels'][wref][this.props.language].name
+				}else{
+
+					if(faultCount == 1){
+						fref = 'Fault'
+					}
+					if(this.props.warningArray.length == 1){
+						wref = 'Warning'
+					}
+					fstr = faultCount + " " + vdefMapV2['@labels'][fref][this.props.language].name; 
+					wstr =  this.props.warningArray.length + " " +vdefMapV2['@labels'][wref][this.props.language].name
+				}
+			}
+			if(this.props.faultArray.length == 1){
+				fstr = vdefMapV2['@vMap'][this.props.faultArray[0]+'Mask']['@translations'][this.props.language]['name'];
+				if(this.props.warningArray.length == 1){
+					var fArr = fstr.split(' ').slice(0,-1);
+					fArr.push(vdefMapV2['@labels']["Warning"][this.props.language].name)
+					fstr = fArr.join(' ');
+				}
+			}
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{fstr}</div>
+			line2 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{wstr}</div>	//<div style={{display:'block', height:34, width:330, fontSize:25}}><button hidden onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button></div>
+			bgColor = 'yellow'
+			left = 'dfnavTabLeft_f'
+			center = 'dfnavTabCent_f'
+			right = 'dfnavTabRight_f'
+			var clrButtons = ''
+			if(this.props.warningArray.length == this.props.faultArray.length){
+					clrButtons =  <button onClick={this.clearWarnings}>{vdefMapV2['@labels']['Clear Warnings'][this.props.language]['name']}</button>
+				}else if(this.props.warningArray.length != 0){
+						clrButtons =  <React.Fragment><button onClick={this.clearWarnings}>{vdefMapV2['@labels']['Clear Warnings'][this.props.language]['name']}</button>
+											 <button onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
+						</React.Fragment>
+				}else{
+					clrButtons =  <button onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
+				
+				}
+			fCont = <div style={{color:"#e1e1e1"}}>{this.props.faultArray.map(function (f) {
+				if(self.props.warningArray.indexOf(f) != -1){
+					return <div>{vdefMapV2['@vMap'][f+'Mask']['@translations'][self.props.language]['name']+ ' - '+ vdefMapV2['@labels']["Warning"][self.props.language].name}</div>
+				}
+				return  <div>{vdefMapV2['@vMap'][f+'Mask']['@translations'][self.props.language]['name']}</div>
+			})}{clrButtons}</div>
+		}else if(this.props.rejOn == 1){
+			textColor = '#333'
+			left = 'dfnavTabLeft_r'
+			center = 'dfnavTabCent_r'
+			right = 'dfnavTabRight_r'
+			if(this.props.rejLatch == 1){
+				fCont = <div style={{color:"#e1e1e1"}}><button onClick={this.clearRejLatch}>{vdefMapV2['@labels']['Clear Reject Latch'][this.props.language].name}</button></div>
+				line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Reject Latched'][this.props.language]['name']}</div>
+				line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{vdefMapV2['@labels']['Clear Latch'][this.props.language]['name']}</div>
+			}
+		}else if(this.props.testReq == 1){
+			left = 'dfnavTabLeft_t'
+			center = 'dfnavTabCent_t'
+			right = 'dfnavTabRight_t'
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Test in progress'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{this.props.status}</div>
+		}else if(this.props.testReq == 2){
+			left = 'dfnavTabLeft_tf'
+			center = 'dfnavTabCent_tf'
+			right = 'dfnavTabRight_tf'
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Test required'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{this.props.status}</div>
+		}
+
+		if(this.props.isSyncing){
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Syncing'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
+		}
+		if(this.state.cipSec){
+			left = 'dfnavTabLeft_tf'
+			center = 'dfnavTabCent_tf'
+			right = 'dfnavTabRight_tf'
+			line1 =  <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Clean mode'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{vdefMapV2['@labels']['Time left'][this.props.language].name + ': '+ this.state.cipSec}</div>
+
+		}
+		if(this.state.cip){
+			line1 =  <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Clean mode'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>PLC</div>
+
+		}
+
+		if(this.props.isUpdating){
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Updating Detector'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
+		}else if(this.props.offline){
+			line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Trying to reconnect'][this.props.language].name}</div>
+			line2 =<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{vdefMapV2['@labels']['Please Wait'][this.props.language].name}</div>
+
+		}
+		return (<div className='interceptorNavContent' style={wrapper}>
+			<div style={{paddingTop:0, color:textColor}}>
+			<div className='noPadding' onClick={this.onClick}>
+				<div className={center}>
+				{line1}{line2}
+				</div>
+			</div>
+			</div>
+			<div>
+			{this.props.children}
+			</div>
+			<Modal ref='fModal'>
+				{fCont}
+			</Modal>
+				</div>)
+			
+	}
+	render() {
+		return this.renderOverlay();	
+	}
+}
 module.exports = {}
-module.exports.ConcreteElem =  ConcreteElem;
+module.exports.TickerBox = TickerBox;
 module.exports.CanvasElem = CanvasElem;
-//module.exports.KeyboardInput = KeyboardInput;
-module.exports.TreeNode = TreeNode
-//module.exports.SnackbarNotification = SnackbarNotification;
+module.exports.SlimGraph = SlimGraph;
+module.exports.DummyGraph = DummyGraph;
+module.exports.Modal = Modal
+module.exports.GraphModal = GraphModal
+module.exports.AuthfailModal = AuthfailModal;
+module.exports.MessageModal = MessageModal;
+module.exports.AlertModal = AlertModal;
+module.exports.MessageConsole = MessageConsole;
+module.exports.ScrollArrow = ScrollArrow;

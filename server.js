@@ -29,61 +29,7 @@ const usb = require('usb');
 const sys = require('sys');
 const exec = require('child_process').exec;
 const crc = require('crc');
-
-
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
-/**IMPORTS END**/
-
-const PASS_SEED1_OFFSET = 68
-const PASS_SEED2_OFFSET = 105
-const PASS_SEED3_OFFSET = 78
-const PASS_SEED4_OFFSET = 111
-
-
-
-const VERSION = 'PR2019/01/24'
-
-http.on('error', function(err){
-  //console.log('this is an http error')
-  //console.log(err)
-})
-
-var funcJSON ={
-  "@func":{"frac_value":"(function(int){return (int/(1<<15));})",
-      "mm":"(function(dist,metric){if(metric==0){return (dist/25.4).toFixed(1) + ' in'}else{ return dist + ' mm'}})",
-      "prod_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
-      "dsp_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
-      "dsp_serno_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
-      "rec_date":"(function(val){var dd = val & 0x1f; var mm = (val >> 5) & 0xf; var yyyy = ((val>>9) & 0x7f) + 1996; return yyyy.toString() + '/' + mm.toString() + '/' + dd.toString()})",
-      "phase_spread":"(function(val){return Math.round((val/(1<<15))*45)})",
-      "phase":"(function(val,wet){ if(wet == 0){if((((val/(1<<15))*45)+90) <= 135){return (((val/(1<<15))*45)+90).toFixed(2); }else{ return ((val/(1<<15))*45).toFixed(2); }}else{ return ((val/(1<<15))*45).toFixed(2);}})",
-      "rej_del":"(function(ticks,tack) { if(tack==0){return (ticks/231.0).toFixed(2);}else{return ticks;}})",
-      "belt_speed":"(function(tpm,metric,tack,tps){if(tack!=0){var speed= (tps/tpm)*60;  if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}} var speed= (231.0/tpm)*60; if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}})",
-     "password8":"(function(words){return words.map(function(w){return((w&0xffff).toString(16))}).join(',');})",
-      "rej_chk":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
-      "rej_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
-      "rej_latch":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
-      "prod_name":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
-      "peak_mode":"(function(eye,time){if(eye == 0){return(time*2;)}else{return 1;}})",
-      "phase_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
-      "eye_rej":"(function(photo,lead,width){if(photo == 0){return 3;}else{if(lead==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})",
-      "bit_array":"(function(val){if(val == 0){return 0;}else{ var i = 0; while(i<16 && ((val>>i) & 1) == 0){ i++; } i++;  return i; } })",
-      "patt_frac":"(function(val){return (val/10.0).toFixed(1)})",
-      "eye_rej_mode":"(function(val,photo,width){if(photo == 0){return 3;}else{if(val==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})",
-      "ipv4_address":"(function(words){return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');})",
-      "username":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
-      "user_opts":"(function(opts){return opts});",
-      "password_hash":"(function(phash){    var buf = Buffer.alloc(8); buf.writeUInt16LE(phash[1],0); buf.writeUInt16LE(phash[0],2); buf.writeUInt16LE(phash[2],6); buf.writeUInt16LE(phash[3],4);return buf;});"
-      }
-  }
-
-var accounts = {"operator":{"acc":1,"password":"0123"},"engineer":{"acc":2,"password":"0123"},"fortress":{"acc":3,"password":"0123"}}
-
-let _accounts = {};
-
-var prefs = [];
-
-var cur = Date.now()
 
 let passocs = {}
 let rassocs = {}
@@ -100,52 +46,7 @@ let nphandlers = {};
 let accountJSONs = {};
 let macs = {}
 let networking = new NetworkInfo();
-
-/**CLASS DECLARATIONS START**/
-class FtiHelper{
-  constructor(ip){
- 
-
-  }
-
-  get_interface_ip(mac){
-    var host_mac = mac.split(/[-]|[:]/).map(function(e){
-      return parseInt("0x"+e);
-    }) 
-  }
-  change_dsp_ip(callBack){
-    var self = this;
-    this.scan_for_dsp_board(function(e){
-      callBack(e);
-      self.send_ip_change(e)
-    })
-  }
-  scan_for_dsp_board(callBack,addr){
-    //console.log('scan')
-    arloc.ArmLocator.scan(1000, function(e){
-     // //console.log(e)
-      callBack(e)
-    }, addr)
-  }
-  send_ip_change(e){
-    var ds;
-    e.forEach(function(board){
-      if(board.board_type==1){
-        ds = board
-      }
-    })
-    var nifip = ds.nif_ip
-    var ip = nifip.split('.').map(function(e){return parseInt(e)});
-    var n = ip[3] + 1;
-    if(n==0||n==255){
-      n = 50
-    }
-    var new_ip = [ip[0],ip[1],ip[2],n].join('.');
-    var querystring = "mac:" + e[0].mac+ ", mode:static, ip:" + new_ip + ", nm:255.255.255.0"
-    ArmConfig.parse(querystring);
-
-  }
-}
+//const Params = require('./params.js')
 class FtiSockIOServer{
   constructor(sock){
     this.sock = sock
@@ -225,6 +126,108 @@ class FtiSockIOServer{
      delete this;
    }
 }
+
+/**IMPORTS END**/
+
+const PASS_SEED1_OFFSET = 68
+const PASS_SEED2_OFFSET = 105
+const PASS_SEED3_OFFSET = 78
+const PASS_SEED4_OFFSET = 111
+
+
+
+const VERSION = 'PR2019/01/24'
+
+http.on('error', function(err){
+  //console.log('this is an http error')
+  //console.log(err)
+})
+
+var funcJSON ={
+  "@func":{"frac_value":"(function(int){return (int/(1<<15));})",
+      "mm":"(function(dist,metric){if(metric==0){return (dist/25.4).toFixed(1) + ' in'}else{ return dist + ' mm'}})",
+      "prod_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+      "dsp_name_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+      "dsp_serno_u16_le":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+      "rec_date":"(function(val){var dd = val & 0x1f; var mm = (val >> 5) & 0xf; var yyyy = ((val>>9) & 0x7f) + 1996; return yyyy.toString() + '/' + mm.toString() + '/' + dd.toString()})",
+      "phase_spread":"(function(val){return Math.round((val/(1<<15))*45)})",
+      "phase":"(function(val,wet){ if(wet == 0){if((((val/(1<<15))*45)+90) <= 135){return (((val/(1<<15))*45)+90).toFixed(2); }else{ return ((val/(1<<15))*45).toFixed(2); }}else{ return ((val/(1<<15))*45).toFixed(2);}})",
+      "rej_del":"(function(ticks,tack) { if(tack==0){return (ticks/231.0).toFixed(2);}else{return ticks;}})",
+      "belt_speed":"(function(tpm,metric,tack,tps){if(tack!=0){var speed= (tps/tpm)*60;  if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}} var speed= (231.0/tpm)*60; if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}})",
+     "password8":"(function(words){return words.map(function(w){return((w&0xffff).toString(16))}).join(',');})",
+      "rej_chk":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+      "rej_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+      "rej_latch":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+      "prod_name":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+      "peak_mode":"(function(eye,time){if(eye == 0){return(time*2;)}else{return 1;}})",
+      "phase_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
+      "eye_rej":"(function(photo,lead,width){if(photo == 0){return 3;}else{if(lead==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})",
+      "bit_array":"(function(val){if(val == 0){return 0;}else{ var i = 0; while(i<16 && ((val>>i) & 1) == 0){ i++; } i++;  return i; } })",
+      "patt_frac":"(function(val){return (val/10.0).toFixed(1)})",
+      "eye_rej_mode":"(function(val,photo,width){if(photo == 0){return 3;}else{if(val==0){if(width==0){return 0;}else{return 2;}}else{ return 1;}}})",
+      "ipv4_address":"(function(words){return words.map(function(w){return [(w>>8)&0xff,w&0xff].join('.')}).join('.');})",
+      "username":"(function(sa){ var str = sa.map(function(e){return (String.fromCharCode((e>>8),(e%256)));}).join('');return str.replace('\u0000','').trim();})",
+      "user_opts":"(function(opts){return opts});",
+      "password_hash":"(function(phash){    var buf = Buffer.alloc(8); buf.writeUInt16LE(phash[1],0); buf.writeUInt16LE(phash[0],2); buf.writeUInt16LE(phash[2],6); buf.writeUInt16LE(phash[3],4);return buf;});"
+      }
+  }
+
+var accounts = {"operator":{"acc":1,"password":"0123"},"engineer":{"acc":2,"password":"0123"},"fortress":{"acc":3,"password":"0123"}}
+
+let _accounts = {};
+
+var prefs = [];
+
+var cur = Date.now()
+
+
+
+/**CLASS DECLARATIONS START**/
+class FtiHelper{
+  constructor(ip){
+ 
+
+  }
+
+  get_interface_ip(mac){
+    var host_mac = mac.split(/[-]|[:]/).map(function(e){
+      return parseInt("0x"+e);
+    }) 
+  }
+  change_dsp_ip(callBack){
+    var self = this;
+    this.scan_for_dsp_board(function(e){
+      callBack(e);
+      self.send_ip_change(e)
+    })
+  }
+  scan_for_dsp_board(callBack,addr){
+    //console.log('scan')
+    arloc.ArmLocator.scan(1000, function(e){
+     // //console.log(e)
+      callBack(e)
+    }, addr)
+  }
+  send_ip_change(e){
+    var ds;
+    e.forEach(function(board){
+      if(board.board_type==1){
+        ds = board
+      }
+    })
+    var nifip = ds.nif_ip
+    var ip = nifip.split('.').map(function(e){return parseInt(e)});
+    var n = ip[3] + 1;
+    if(n==0||n==255){
+      n = 50
+    }
+    var new_ip = [ip[0],ip[1],ip[2],n].join('.');
+    var querystring = "mac:" + e[0].mac+ ", mode:static, ip:" + new_ip + ", nm:255.255.255.0"
+    ArmConfig.parse(querystring);
+
+  }
+}
+
 class Params{
   static frac_value(int){
     return (int/(1<<15))
@@ -1248,8 +1251,8 @@ function processParam(e, _Vdef, nVdf, pVdef, ip) {
     var usernames = []
     var accArray = []
     for(var i = 0; i< _Vdef['@defines']['MAX_USERNAMES']; i++){
-      usernames.push({username:userrec['UserName'+i], acc:userrec['UserOptions'+i]});
-      accArray.push({username:userrec['UserName'+i], opt:userrec['UserOptions'+i], phash:userrec['PasswordHash'+i]})
+      usernames.push({username:userrec['UserName'+i], acc:userrec['UserOptions'+i],preset:userrec['UserPassReset'+i]});
+      accArray.push({username:userrec['UserName'+i], opt:userrec['UserOptions'+i], phash:userrec['PasswordHash'+i],preset:userrec['UserPassReset'+i]})
     }
     _accounts[ip] = accArray.slice(0)
     relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:5, rec:userrec, array:usernames}}})
@@ -2547,9 +2550,9 @@ wss.on('connection', function(scket, req){
     //console.log(_accounts[packet.ip][packet.user].phash)
     if(ap.equals(hash)){
       //console.log('success')
-      socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt})
+      socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:_accounts[packet.ip][packet.user].preset, ip:packet.ip})
     }else if((packet.user == 0) && ((packet.pswd + '000000').slice(0,6) == '218500')){
-      socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt})
+      socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:_accounts[packet.ip][packet.user].preset, ip:packet.ip})
     }else{
       //console.log('fail')
       socket.emit('authFail', {user:packet.user, ip:packet.ip})
@@ -2564,6 +2567,45 @@ wss.on('connection', function(scket, req){
     }
     users[packet.data.user] = {username:packet.data.username, opt:packet.data.acc, phash:pswd}
     //console.log('users',users)
+    var _users = []
+    for(var i = 0; i<vdefs[packet.ip]['@defines']['MAX_USERNAMES']; i++){
+      var user = Buffer.from((users[i].username + "          ").slice(0,10),'ascii');
+      var _phash = users[i].phash//crypto.createHash('sha1').update(Buffer.from(packet.data[i].password,'ascii')).digest();
+      var phash = Buffer.alloc(8)
+      phash.writeUInt16BE(_phash.readUInt16LE(2),0);
+      phash.writeUInt16BE(_phash.readUInt16LE(0),2);
+      phash.writeUInt16BE(_phash.readUInt16LE(6),4);
+      phash.writeUInt16BE(_phash.readUInt16LE(4),6);
+      var useropt = Buffer.alloc(2);
+      var opt = parseInt(users[i].opt) & 0xf
+      useropt.writeUInt16LE(parseInt(users[i].opt),0)
+      _users.push(Buffer.concat([user,phash,useropt]))
+    }
+    var buf = Buffer.concat(_users);
+    if(buf.length > vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
+      socket.emit('notify','Error updating users' + buf.length + ' ' + vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE'])
+    }else{
+      var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][1],buf)
+      //console.log(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'])
+      //console.log(Buffer.from(pkt))
+       udpClients[packet.ip].send_rpc(Buffer.from(pkt), function(e){
+                //console.log('Ack from ' + packet.ip)
+
+                relayRpcMsg({det:{ip:packet.ip, mac:macs[packet.ip]},data:{data:toArrayBuffer(e)}});
+                e = null;
+
+              })
+             
+    }
+  })
+   socket.on('writePass', function(packet){
+    console.log('writePass', packet)
+    var users = _accounts[packet.ip].slice(0);
+    console.log(users[packet.data.user].phash)
+    var pswd =  crypto.createHash('sha1').update(Buffer.from((packet.data.password + '000000').slice(0,6),'ascii')).digest().slice(0,8)
+    
+    users[packet.data.user].phash = pswd
+    console.log(pswd)
     var _users = []
     for(var i = 0; i<vdefs[packet.ip]['@defines']['MAX_USERNAMES']; i++){
       var user = Buffer.from((users[i].username + "          ").slice(0,10),'ascii');
