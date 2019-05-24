@@ -290,7 +290,195 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     			_p['@children'].push(_ch)	
     		})
     			params.push(_p)
-    		}
+    		}else if(_vmap[p]['@interceptor']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                ////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@interceptor'] = true; 
+              params.push(_p)
+              //console.log(335,_p)
+            }
+                 ///
+        }else if(_vmap[p]['@test']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                ////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@test'] = true; 
+              params.push(_p)
+              console.log(335,_p)
+            }
+                 ///
+        }else if(_vmap[p]['@halo']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                ////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@halo'] = true; 
+              params.push(_p)
+              console.log(335,_p)
+            }
+                 ///
+        }else if(_vmap[p]['@input']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                ////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@input'] = true; 
+              params.push(_p)
+              console.log(335,_p)
+            }
+                 ///
+        }
     		
     	}else if(par.type == 1){
     		if(typeof par.child != 'undefined'){
@@ -452,12 +640,8 @@ class LandingPage extends React.Component{
 			self.setState({progress:r})
 		})
 		socket.on('onReset', function(r){
-			/*if(self.state.currentPage != 'landing'){
-				self.setState({curDet:self.state.dets[self.state.curDet.mac]})
-			}*/
 			self.setState({currentPage:'landing', curDet:''});
-			
-		})
+	  })
 	
 		socket.on('netpoll', function(m){
 			////////////console.log(['73',m])
@@ -601,8 +785,6 @@ class LandingPage extends React.Component{
 		});
 		
 		socket.on('paramMsg2', function(data) {
-		//	//////console.log('on param msg')
-			////console.log(data)
 			self.onParamMsg2(data.data,data.det) 
 			data = null;
 		})
@@ -905,7 +1087,6 @@ class LandingPage extends React.Component{
 		socket.emit('savePrefs', this.state.mbunits)
 	}
 	loadPrefs() {
-		//////////console.log('load prefs')
 		if(socket.sock.readyState  ==1){
 			//socket.emit('locateReq');
 			socket.emit('getVersion');
@@ -1781,8 +1962,12 @@ class SettingsDisplay2 extends React.Component{
 						prms = prms[data[ind][1]]['@data'].params
 					}
 					var d = prms[i]
-					var ch = d['@children']
-					var	acc = false;
+				//  console.log('check this',d)
+        	var ch = d['@children'].slice(0)
+          if(d['@interceptor'] || d['@test'] || d['@halo'] || d['@input']){
+            ch.unshift(d['@data'])
+          }
+         	var	acc = false;
 					if((self.props.level > 3) || (p.acc <= self.props.level)){
 						acc = true;
 					}
@@ -1792,7 +1977,9 @@ class SettingsDisplay2 extends React.Component{
 					
 				}else if(par.type == 1){
 					var sc = par['@data']
-					var	acc = false;
+					//console.log('check this too',sc)
+          
+          var	acc = false;
 					if((self.props.level > 3) || (par.acc <= self.props.level)){
 						acc = true;
 					}
@@ -1809,6 +1996,8 @@ class SettingsDisplay2 extends React.Component{
 					}
 				}else if(par.type == 2){
 					var sc = par['@data']
+            //console.log('check this too',sc)
+        
 							var	acc = false;
 							//console.log(['2146',par])
 				
@@ -1903,47 +2092,70 @@ class SettingItem3 extends React.Component{
 		var val = [], pram = [], label = false;
 		if(!props.hasChild){
 			
+      console.log(props)
 		if(typeof props.data == 'object'){
 
 			if(typeof props.data['@data'] == 'undefined'){
 			
-			if(typeof props.data[0]['child'] != 'undefined'){
-				var lkey = props.data[0].params[props.data[0].child]['@name']
-				val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
-				if(typeof pVdef[0][lkey] != 'undefined'){
-					pram = [pVdef[0][lkey]]
-				}else if(typeof pVdef[1][lkey] != 'undefined'){
-					pram = [pVdef[1][lkey]]
-				}else if(typeof pVdef[2][lkey] != 'undefined'){
-					pram = [pVdef[2][lkey]]
-				}else if(typeof pVdef[3][lkey] != 'undefined'){
-					pram = [pVdef[3][lkey]]
-				}else if(lkey == 'Nif_ip'){
-					pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-				}else if(lkey == 'Nif_nm'){
-					pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-				}else if(lkey == 'Nif_gw'){
-					pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-				}else if(lkey == 'DCRate_A'){
-					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
-				}
-				if(props.data[0].params[props.data[0].child]['@children']){
+  			if(typeof props.data[0]['child'] != 'undefined'){
+  				var lkey = props.data[0].params[props.data[0].child]['@name']
+  				
+          if((props.data[0].params[props.data[0].child]['@children'])&&(props.children[0].length == 2)){
 
-					for(var i=0;i<props.children[0].length; i++){
-						val.push(this.getValue(props.children[1][i], props.children[0][i]))
-				
-					
-						if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
-							pram.push(pVdef[0][props.children[0][i]])
-						}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
-							pram.push(pVdef[1][props.children[0][i]])
-						}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
-							pram.push(pVdef[2][props.children[0][i]])
-						}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
-							pram.push(pVdef[3][props.children[0][i]])
-						}
-					}
-				}
+            for(var i=0;i<props.children[0].length; i++){
+              val.push(this.getValue(props.children[1][i], props.children[0][i]))
+          
+            
+              if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[0][props.children[0][i]])
+              }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[1][props.children[0][i]])
+              }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[2][props.children[0][i]])
+              }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[3][props.children[0][i]])
+              }
+            }
+          }else{
+          val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
+
+  				if(typeof pVdef[0][lkey] != 'undefined'){
+  					pram = [pVdef[0][lkey]]
+  				}else if(typeof pVdef[1][lkey] != 'undefined'){
+  					pram = [pVdef[1][lkey]]
+  				}else if(typeof pVdef[2][lkey] != 'undefined'){
+  					pram = [pVdef[2][lkey]]
+  				}else if(typeof pVdef[3][lkey] != 'undefined'){
+  					pram = [pVdef[3][lkey]]
+  				}else if(lkey == 'Nif_ip'){
+  					pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+  				}else if(lkey == 'Nif_nm'){
+  					pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+  				}else if(lkey == 'Nif_gw'){
+  					pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+  				}else if(lkey == 'DCRate_A'){
+  					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+  				}
+
+           if(props.data[0].params[props.data[0].child]['@children']){
+
+            for(var i=0;i<props.children[0].length; i++){
+              val.push(this.getValue(props.children[1][i], props.children[0][i]))
+          
+            
+              if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[0][props.children[0][i]])
+              }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[1][props.children[0][i]])
+              }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[2][props.children[0][i]])
+              }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[3][props.children[0][i]])
+              }
+            }
+          }
+        }
+
 				if(pram[0]['@labels']){
 					label = true
 				}	
@@ -1951,51 +2163,61 @@ class SettingItem3 extends React.Component{
 				}
 
 			}else{
-				val = [this.getValue(props.data['@data'], props.lkey)]
-				//////////console.log(['1250',props.lkey, typeof props.data['@data']])
-				//////////console.log(['1251', pVdef, pram])
-				if(typeof pVdef[0][props.lkey] != 'undefined'){
-					pram = [pVdef[0][props.lkey]]
-				}else if(typeof pVdef[1][props.lkey] != 'undefined'){
-					pram = [pVdef[1][props.lkey]]
-				}else if(typeof pVdef[2][props.lkey] != 'undefined'){
-					pram = [pVdef[2][props.lkey]]
-				}else if(typeof pVdef[3][props.lkey] != 'undefined'){
-					pram = [pVdef[3][props.lkey]]
-				}else if(props.lkey == 'Nif_ip'){
-					pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-				}else if(props.lkey == 'Nif_nm'){
-					pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-				}else if(props.lkey == 'Nif_gw'){
-					pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-				}else if(props.lkey == 'DCRate_A'){
-					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
-				}else{
-					//console.log(2629,props.lkey)
-				}
-
-				if(props.data['@children']){
-		//			//////console.log(['1346', props.data, props.children])
-					for(var i=0;i<props.children[0].length;i++){
-						val.push(this.getValue(props.children[1][i], props.children[0][i]))
-						if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
-							pram.push(pVdef[0][props.children[0][i]])
-						}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
-							pram.push(pVdef[1][props.children[0][i]])
-						}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
-							pram.push(pVdef[2][props.children[0][i]])
-						}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
-							pram.push(pVdef[3][props.children[0][i]])
-						}
-					}
-				}
-				if(pram[0]['@labels']){
-					label = true
-				}	
-			}
-			}else{
-
-
+        if((props.data['@children'])&&(props.children[0].length == 2)){
+          console.log('are we here instead?', props.children)
+            for(var i=0;i<props.children[0].length;i++){
+              val.push(this.getValue(props.children[1][i], props.children[0][i]))
+              if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[0][props.children[0][i]])
+              }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[1][props.children[0][i]])
+              }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[2][props.children[0][i]])
+              }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+                pram.push(pVdef[3][props.children[0][i]])
+              }
+            }
+        }else{
+    	   val = [this.getValue(props.data['@data'], props.lkey)]
+       
+      		if(typeof pVdef[0][props.lkey] != 'undefined'){
+    				pram = [pVdef[0][props.lkey]]
+    			}else if(typeof pVdef[1][props.lkey] != 'undefined'){
+    				pram = [pVdef[1][props.lkey]]
+    			}else if(typeof pVdef[2][props.lkey] != 'undefined'){
+    				pram = [pVdef[2][props.lkey]]
+    			}else if(typeof pVdef[3][props.lkey] != 'undefined'){
+    				pram = [pVdef[3][props.lkey]]
+    			}else if(props.lkey == 'Nif_ip'){
+    				pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+    			}else if(props.lkey == 'Nif_nm'){
+    				pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+    			}else if(props.lkey == 'Nif_gw'){
+    				pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+    			}else if(props.lkey == 'DCRate_A'){
+    				pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+    			}else{
+    					//console.log(2629,props.lkey)
+    			}
+          if(props.data['@children']){
+              for(var i=0;i<props.children[0].length;i++){
+                val.push(this.getValue(props.children[1][i], props.children[0][i]))
+                if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+                  pram.push(pVdef[0][props.children[0][i]])
+                }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+                  pram.push(pVdef[1][props.children[0][i]])
+                }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+                  pram.push(pVdef[2][props.children[0][i]])
+                }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+                  pram.push(pVdef[3][props.children[0][i]])
+                }
+              }
+          }
+        }
+        if(pram[0]['@labels']){ label = true }	
+  		}
+		}else{
+        console.log('here??????')
 				val = [this.getValue(props.data['@data'], props.lkey)]
 				if(typeof pVdef[0][props.lkey] != 'undefined'){
 					pram = [pVdef[0][props.lkey]]
@@ -2032,8 +2254,8 @@ class SettingItem3 extends React.Component{
 				if(pram[0]['@labels']){
 					label = true
 				}
-			}	
-		}
+		}	
+  }
 		return [val,pram,label]
 	}
 	sendPacket(n,v) {
@@ -2848,7 +3070,8 @@ class MultiEditControl extends React.Component{
 			lvst.verticalAlign = 'middle'
 			lvst.lineHeight = '25px'
 		}
-			var vLabels = this.state.val.map(function(d,i){
+    console.log(this.props.param, this.state.val)
+			var vLabels = this.state.val.map(function(d,i){  
 			var val = d;
 			var st = {textAlign:'center',lineHeight:'60px', height:60}
 
@@ -2862,7 +3085,7 @@ class MultiEditControl extends React.Component{
 				//labWidth = (50/this.state.val.length)+'%'
 			}
 			if(isInt){ st.color = colors[i] }
-
+        //console.log(self.props.param, i)
 			if(typeof self.props.param[i]['@labels'] != 'undefined'){
 				var list =  _pVdef[6][self.props.param[i]["@labels"]];
 				if(self.props.param[i]["@labels"] == 'DCRate'){
@@ -7330,9 +7553,9 @@ class InterceptorCalibrateUI extends React.Component{
 
 	 	return	<div style={{textAlign:'center'}} >
 	 	<div style={{marginLeft:5, marginRight:5}}><CircularButton  style={{width:'100%', marginLeft:-8, height:43, borderWidth:5}} lab={vdefMapV2['@labels']['Learn'][this.props.language]['name']} isTransparent={true} inverted={false} onClick={this.onCalA}/></div>
-	 	<div style={{marginTop:15}}><CalibIndicator  mobile={this.props.mobile}  mphase={this.state.moa} offset={this.state.offsetA} language={this.props.language} tooltip={vMapV2['PhaseAngle_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel A'][this.props.language]['name']} lab2={opsA} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phase} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.phaseSpeed]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
+	 	<div style={{marginTop:15}}><CalibIndicator  mobile={this.props.mobile}  mphase={this.state.moa} offset={this.state.offsetA} language={this.props.language} tooltip={vMapV2['PhaseAngle_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel A'][this.props.language]['name']} lab2={opsA} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phase} mphase={this.props.moa} offset={this.props.offsetA} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.phaseSpeed]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
 						<div style={{marginTop:5}}><KeyboardInputTextButton mobile={this.props.mobile} language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens_A']['@translations'][this.props.language]['name'] + ' A'} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensA} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.sensCalA]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
-		<div style={{marginTop:15}}><CalibIndicator  mobile={this.props.mobile}  mphase={this.state.moa} offset={this.state.offsetA} language={this.props.language} tooltip={vMapV2['PhaseAngle_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel B'][this.props.language]['name']} lab2={opsB} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phaseb} onInput={this.onPhaseB} inverted={false} bgColor={colors[this.state.phaseSpeedB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
+		<div style={{marginTop:15}}><CalibIndicator  mobile={this.props.mobile}  mphase={this.state.moa} offset={this.state.offsetA} language={this.props.language} tooltip={vMapV2['PhaseAngle_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel B'][this.props.language]['name']} lab2={opsB} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phaseb} mphase={this.props.mob} offset={this.props.offsetB} onInput={this.onPhaseB} inverted={false} bgColor={colors[this.state.phaseSpeedB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
 						<div style={{marginTop:5}}><KeyboardInputTextButton mobile={this.props.mobile}  language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens_A']['@translations'][this.props.language]['name'] + ' B'}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensB} onInput={this.onPhaseB} inverted={false} bgColor={colors[this.state.sensCalB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
 		
 

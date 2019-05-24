@@ -31,7 +31,6 @@ class CustomKeyboard extends React.Component{
 		if(self.state.show){
 			setTimeout(function (argument) {
 				self.setState({show:false})	
-				//flexText.clear();
 				if(self.props.onRequestClose){
 					self.props.onRequestClose();
 				}
