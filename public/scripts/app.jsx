@@ -19,6 +19,8 @@ const FtiSockIo = require('./ftisockio.js')
 const vdefMapV2 = require('./vdefmap.json')
 const funcJSON = require('./funcjson.json')
 
+const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CLEAR_WARNINGS','PHASE_HOLD','CIP_TEST','CIP_PLC','PROD_SEL1', 'PROD_SEL2', 'PROD_SEL3','PROD_SEL4']
+const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 
 var vdefMapST = {};
 
@@ -267,10 +269,10 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     		}else if(par.val == 'DCRate_A'){
     			_p = {'type':0, '@name':p,'@data':prodRec[p], '@children':[], acc:par.acc}
     		}    	////////console.log(_vmap[p])
-    	////////console.log(p)
+    //	console.log(p)
     		if(_p != null){
     		if(typeof _vmap[p] == 'undefined'){
-    			console.log(p)
+    	//		console.log(p)
     		}
     		_vmap[p].children.forEach(function (ch) {
     			var _ch;
@@ -1214,57 +1216,113 @@ class LandingPage extends React.Component{
 		socket.emit('updateDisplay')
 	}
 	renderLanding() {
-		var self = this;
-		var detectors = this.renderDetectors()
-		var config = 'config'
-		var find = 'find'
-		var login = 'login'
+    var self = this;
+    var detectors = this.renderDetectors()
+    var config = 'config_w'
+    var find = 'find_w'
+    var login = 'login'
 
-		var lstyle = {height: 72,marginRight: 20}
-		if(!this.state.minW){
-			lstyle = { height: 60, marginRight: 15}
-		}
-		var mbunits = this.state.mbunits.map(function(mb,i){
-			if(mb.type == 'mb'){
-				return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/>	
-			}else{
-				if(mb.banks[0]){
-					//////////console.log('457')
-					return <SingleUnit ref={mb.banks[0].mac} onSelect={self.switchUnit} unit={mb.banks[0]}/>	
-				}						
-			}
-			
-		})
-		
-		var modalContent = this.renderModal();
-		return (<div className = 'landingPage'>
-					<table className='landingMenuTable'>
-						<tbody>
-							<tr>
-								<td><img style={lstyle} onClick={this.showNKeyboard}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
-								<td className="buttCell"><button onClick={this.showFinder} className={find}/></td>
-								<td className="buttCell"><button onClick={this.showDisplaySettings} className={config}/></td>
-							</tr>
-						</tbody>
-					</table>
-					<Modal ref='findDetModal' innerStyle={{background:'#e1e1e1'}}>
-						{modalContent}
-					</Modal>
-					<Modal ref='dispModal' innerStyle={{background:'#e1e1e1'}}>
-						<DispSettings nif={this.state.nifip} nm={this.state.nifnm} gw={this.state.nifgw} version={this.state.version}/>
-						<CustomAlertButton alertMessage={'Update display?'} style={{color:'#000000'}} onClick={this.updateDisply}>Update Display</CustomAlertButton>
-					</Modal>
-				 	{detectors}
-				 	{mbunits}
+    var lstyle = {height: 72,marginRight: 20}
+    if(!this.state.minW){
+      lstyle = { height: 60, marginRight: 15}
+    }
+    var mbunits = this.state.mbunits.map(function(mb,i){
+      if(mb.type == 'mb'){
+        return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/> 
+      }else{
+        if(mb.banks[0]){
+          //////////console.log('457')
+          return <SingleUnit ref={mb.banks[0].mac} onSelect={self.switchUnit} unit={mb.banks[0]}/>  
+        }           
+      }
+      
+    })
+    
+    var modalContent = this.renderModal();
+    return (<div className='interceptorMainPageUI' style={{background:'#362c66', width:'100%',display:'block', height:'-webkit-fill-available'}}>
+         <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
+            <tbody>
+              <tr>
+                <td style={{width:380}}><img style={{height: 50,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src='assets/NewFortressTechnologyLogo-WHT-trans.png'/></td>
+                <td hidden={this.props.mobile}>
+                <img style={{height:45, marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src='assets/Interceptor-white-01.svg'/>
+                </td>
+                  <td className="buttCell"><button onClick={this.showFinder} className={find}/></td>
+                <td className="buttCell"><button onClick={this.showDisplaySettings} className={config}/></td>
+              </tr>
+            </tbody>
+          </table>
+          <Modal ref='findDetModal' innerStyle={{background:'#e1e1e1'}}>
+            {modalContent}
+          </Modal>
+          <Modal ref='dispModal' innerStyle={{background:'#e1e1e1'}}>
+            <DispSettings nif={this.state.nifip} nm={this.state.nifnm} gw={this.state.nifgw} version={this.state.version}/>
+            <CustomAlertButton alertMessage={'Update display?'} style={{color:'#000000'}} onClick={this.updateDisply}>Update Display</CustomAlertButton>
+          </Modal>
+          <div style={{textAlign:'center'}}>
+          {detectors}
+          {mbunits}
+          </div>
+          <Modal ref='updateModal'>
+            <div style={{color:'#e1e1e1'}}>
+              <div>Updating Display...</div>
+              <div>{this.state.progress}</div>
+            </div> 
+          </Modal>
+      </div>) 
+  }
+  renderLanding2() {
+    var self = this;
+    var detectors = this.renderDetectors()
+    var config = 'config'
+    var find = 'find'
+    var login = 'login'
 
-					<Modal ref='updateModal'>
-						<div style={{color:'#e1e1e1'}}>
-							<div>Updating Display...</div>
-							<div>{this.state.progress}</div>
-						</div> 
-					</Modal>
-			</div>)	
-	}
+    var lstyle = {height: 72,marginRight: 20}
+    if(!this.state.minW){
+      lstyle = { height: 60, marginRight: 15}
+    }
+    var mbunits = this.state.mbunits.map(function(mb,i){
+      if(mb.type == 'mb'){
+        return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/> 
+      }else{
+        if(mb.banks[0]){
+          //////////console.log('457')
+          return <SingleUnit ref={mb.banks[0].mac} onSelect={self.switchUnit} unit={mb.banks[0]}/>  
+        }           
+      }
+      
+    })
+    
+    var modalContent = this.renderModal();
+    return (<div className='landingPage'>
+          <table className='landingMenuTable'>
+            <tbody>
+              <tr>
+                <td><img style={lstyle} onClick={this.showNKeyboard}  src='assets/NewFortressTechnologyLogo-BLK-trans.png'/></td>
+                <td className="buttCell"><button onClick={this.showFinder} className={find}/></td>
+                <td className="buttCell"><button onClick={this.showDisplaySettings} className={config}/></td>
+              </tr>
+            </tbody>
+          </table>
+          <Modal ref='findDetModal' innerStyle={{background:'#e1e1e1'}}>
+            {modalContent}
+          </Modal>
+          <Modal ref='dispModal' innerStyle={{background:'#e1e1e1'}}>
+            <DispSettings nif={this.state.nifip} nm={this.state.nifnm} gw={this.state.nifgw} version={this.state.version}/>
+            <CustomAlertButton alertMessage={'Update display?'} style={{color:'#000000'}} onClick={this.updateDisply}>Update Display</CustomAlertButton>
+          </Modal>
+          {detectors}
+          {mbunits}
+
+          <Modal ref='updateModal'>
+            <div style={{color:'#e1e1e1'}}>
+              <div>Updating Display...</div>
+              <div>{this.state.progress}</div>
+            </div> 
+          </Modal>
+      </div>) 
+  }
 	renderDetector() {
 		//for kraft CIP
 		var kraft = false;
@@ -3715,6 +3773,7 @@ class SingleUnit extends React.Component{
 		this.setDyn = this.setDyn.bind(this);
 		this.setLEDSInt = this.setLEDSInt.bind(this);
 		this.setDynInt = this.setDynInt.bind(this);
+    this.renderNew = this.renderNew.bind(this);
 	}
 	onClick () {
 		if(this.state.live){
@@ -3743,7 +3802,7 @@ class SingleUnit extends React.Component{
 		if(!this.state.live){
 			this.setState({live:true})
 		}
-		this.refs.lv.update(dat)
+		//this.refs.lv.update(dat)
 	}
 	updateMeterInt(a,b){
 		liveTimer[this.props.unit.mac] = Date.now();
@@ -3751,7 +3810,7 @@ class SingleUnit extends React.Component{
 			this.setState({live:true})
 		}
 		////////////console.log([a,b])
-		this.refs.lv.update(a,b)	
+		//this.refs.lv.update(a,b)	
 	}
 	onRMsg (e,d) {
 		clearInterval(myTimers[this.props.unit.mac]);
@@ -3835,7 +3894,7 @@ class SingleUnit extends React.Component{
 		}else if(prod == 1){
 			pled = 1
 		}
-		this.refs.lv.setLEDs(pled,det)
+	//	this.refs.lv.setLEDs(pled,det)
 	}
 	setDyn(phase,pk,rc,fa){
 		var faults = (fa.length != 0);
@@ -3856,7 +3915,7 @@ class SingleUnit extends React.Component{
 		}else if(prod_b == 1){
 			pled_b = 1
 		}
-		this.refs.lv.setLEDs(pled_a,det_a,pled_b,det_b)
+		//this.refs.lv.setLEDs(pled_a,det_a,pled_b,det_b)
 	}
 	setDynInt(phase,pk,rc,fa,phase_b,pk_b){
 		var faults = (fa.length != 0);
@@ -3865,6 +3924,7 @@ class SingleUnit extends React.Component{
 		}
 	}
 	render(){
+    return this.renderNew()
 		var classname = 'multiScanUnit'
 		if(!this.state.live){
 			classname = 'multiScanUnit inactive'
@@ -3885,6 +3945,57 @@ class SingleUnit extends React.Component{
 			return this.renderST(classname, st)
 		}
 	}
+  renderNew(){
+        var lstyle = {height: 65}   
+    var imgStyle = {height: 60, verticalAlign:'middle', marginTop:5}   
+        var groupStatus = 'grey'
+        if(this.state.live){
+          groupStatus = 'green'
+        }else if(this.state.fault){
+          groupStatus = 'red'
+        }
+        var leds = <React.Fragment>
+            <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_grey.png'/></div>
+            <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_grey.png'/></div>
+            <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_grey.png'/></div>
+            </React.Fragment>
+        if (groupStatus == 'green')
+        {
+          leds = <React.Fragment>
+              <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_green.png'/></div>
+            <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_grey.png'/></div>
+            <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_grey.png'/></div>
+            </React.Fragment>
+        }
+        else if (groupStatus == 'yellow')
+        {
+leds = <React.Fragment>
+              <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_grey.png'/></div>
+            <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_yellow.png'/></div>
+            <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_grey.png'/></div>
+            </React.Fragment>
+        }
+        else if (groupStatus == 'red')
+        {
+leds = <React.Fragment>
+              <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_grey.png'/></div>
+            <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_grey.png'/></div>
+            <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_red.png'/></div>
+            </React.Fragment>
+        }
+        
+          return(
+            <div style={{border:'solid #eee 2px', borderRadius:40, padding:8, width:655, marginTop:2, marginBottom:4, marginLeft:20}}>
+            <div style={{borderRadius:25}}>
+              <div style={{display:'inline-block', lineHeight:'70px', verticalAlign:'bottom',backgroundColor:'#818a90', borderTopLeftRadius:30,borderBottomLeftRadius:30, width:465, height:70, verticalAlign:'bottom'}} className="detectorName" onClick={this.onClick}>
+              <img src='assets/layer.svg' style={{height:40,width:40,display:'inline-block',marginRight:15, marginLeft:15,marginTop:10,float:'left'}}/>
+              <div style={{display:'inline-block', height:70, verticalAlign:'bottom'}}>{this.props.unit.name}</div></div>
+              <div style={{display:'inline-block', borderRadius:23, boxShadow:' -50px 0px 0 0 #818a90', paddingLeft:10, height: 70, verticalAlign:'bottom'}}>
+              {leds}
+              </div>
+              </div>
+            </div>)
+  }
 	renderInt(classname,st){
 
 		var list = ['dry','wet','DSA']

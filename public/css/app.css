@@ -535,6 +535,11 @@ li {
     content:" ";
     background:url('../assets/search.svg');
 }
+.find_w::after{
+    float: right;
+    content:" ";
+    background:url('../assets/search_w.svg');
+}
 .home::after{
     height: 50px;
     width: 50px;
@@ -1804,6 +1809,11 @@ li {
     float: right;
     content: " ";
     background: url('../assets/config.svg');
+}
+.config_w::after{
+    float: right;
+    content: " ";
+    background: url('../assets/config_w.svg');
 }
 .config_active::after{
     float: right;
