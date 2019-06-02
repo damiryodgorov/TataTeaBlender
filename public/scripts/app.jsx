@@ -1136,17 +1136,21 @@ class LandingPage extends React.Component{
 			</div>)
 		}else{
 			return (<div>
-						<div className='prefInterface'>
-								<button onClick={this.addNewMBUnit}>Add new MultiBankUnit</button>
-								<button onClick={this.addNewSingleUnit}>Add new Single Unit</button>
-								<button onClick={this.save}>Save Settings</button>
-								<button onClick={this.loadPrefs}>Load Saved Settings </button>
-								<button onClick={this.reset}>Reset Connections</button>
+						<div>
+            <div style={{display:'inline-block', width:300, textAlign:'center'}}><CircularButton style={{width:220, lineHeight:'60px', height:60, marginRight:'auto', marginLeft:'auto'}} lab={'Add Detector'} onClick={this.addNewSingleUnit}/></div>
+					  <div style={{display:'inline-block', width:300, textAlign:'center'}}><CircularButton style={{width:220, lineHeight:'60px', height:60, marginRight:'auto', marginLeft:'auto'}} lab={'Reset Connections'} onClick={this.reset}/></div>
+          
+          			
 								<div className='mbManager'>
 								{mbSetup}
 						</div>
 						</div>
 						</div>)
+
+      /*<button onClick={this.addNewSingleUnit}>Add new Single Unit</button>
+                <button onClick={this.save}>Save Settings</button>
+                <button onClick={this.loadPrefs}>Load Saved Settings </button>
+                <button onClick={this.reset}>Reset Connections</button>*/
 		}
 	}
 	changetMBName(e) {
@@ -1187,7 +1191,7 @@ class LandingPage extends React.Component{
 			var nameEdit = <CustomKeyboard language={'english'}  onFocus={this.addFocus} onRequestClose={this.addClose} onChange={this.changetMBName} ref='an' value={MB.name} 
 									onChange={this.onChange} num={false} label={'AlphaNumeric Keyboard - Hello'}/>
 			return (<div><label>Name:</label><CustomLabel onClick={this.editName}>{MB.name}</CustomLabel>
-					<table><tbody><tr>
+					<table style={{background:'#818a90'}}><tbody><tr>
 					<th>Available Detectors</th><th>Banks</th>
 					</tr><tr>
 					<td style={{width:300, border:'1px solid black', minHeight:50}}>
@@ -1237,27 +1241,30 @@ class LandingPage extends React.Component{
       }
       
     })
+    /*
+                    <td hidden={this.props.mobile}>
+                <img style={{height:45, marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src='assets/Interceptor-white-01.svg'/>
+                </td>
+    */
     
     var modalContent = this.renderModal();
     return (<div className='interceptorMainPageUI' style={{background:'#362c66', width:'100%',display:'block', height:'-webkit-fill-available'}}>
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
             <tbody>
               <tr>
-                <td style={{width:380}}><img style={{height: 50,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src='assets/NewFortressTechnologyLogo-WHT-trans.png'/></td>
-                <td hidden={this.props.mobile}>
-                <img style={{height:45, marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src='assets/Interceptor-white-01.svg'/>
-                </td>
+                <td><img style={{height: 50,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src='assets/NewFortressTechnologyLogo-WHT-trans.png'/></td>
+
                   <td className="buttCell"><button onClick={this.showFinder} className={find}/></td>
                 <td className="buttCell"><button onClick={this.showDisplaySettings} className={config}/></td>
               </tr>
             </tbody>
           </table>
-          <Modal ref='findDetModal' innerStyle={{background:'#e1e1e1'}}>
+          <Modal ref='findDetModal'>
             {modalContent}
           </Modal>
-          <Modal ref='dispModal' innerStyle={{background:'#e1e1e1'}}>
+          <Modal ref='dispModal'>
             <DispSettings nif={this.state.nifip} nm={this.state.nifnm} gw={this.state.nifgw} version={this.state.version}/>
-            <CustomAlertButton alertMessage={'Update display?'} style={{color:'#000000'}} onClick={this.updateDisply}>Update Display</CustomAlertButton>
+            <CustomAlertButton alertMessage={'Update display?'} style={{color:'#e1e1e1'}} onClick={this.updateDisply}>Update Display</CustomAlertButton>
           </Modal>
           <div style={{textAlign:'center'}}>
           {detectors}
@@ -1429,7 +1436,7 @@ class DispSettings extends React.Component{
 			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 
 		return <div>
-		<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} >
+		<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#e1e1e1"}} >
 		<div style={{display:'inline-block', textAlign:'center'}}>Display Settings</div></h2></span>
 		
 			 <div className='sItem noChild' onClick={this.onClick}>
@@ -4093,10 +4100,21 @@ class MbSetup extends React.Component{
 					<button onClick={this.moveDown}>move down</button>
 					</div>)
 			}
-			return (<div className="sItem" onClick={this.toggleOptions}>
-						<label>Name:{this.props.mb.name}</label>
-						{editRow}
-					</div>)	
+
+        var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+    var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+      var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+
+   
+    
+      
+			return (
+         <div className='sItem noChild'>
+       <label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{'Detector Name'}</label>
+      <div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>{this.props.mb.name}</label></div></div>
+      <img onClick={this.remove} style={{position:'absolute', width:36,top:15, left:815, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/trash.svg'/>
+      </div>
+)	
 		}
 }
 
