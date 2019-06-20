@@ -575,6 +575,7 @@ function processParam(e, _Vdef, nVdf, pVdef, ip) {
      // if(p)
 
       rec[p] = getVal(buf, 3, p, pVdef)
+    //  console.log(p, rec[p])
       // body...
     })
    
@@ -1255,6 +1256,11 @@ wss.on('connection', function(scket, req){
           })
         }
       })
+    })
+  })
+  socket.on('reboot', function(){
+    exec('sudo reboot', function (argument) {
+      // body...
     })
   })
   socket.on('updateDisplay_old',function(){

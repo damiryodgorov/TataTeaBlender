@@ -325,7 +325,9 @@ function wordValue(arr, p){
 
     var sa = [];
     for(var i = 0; i< n; i++){
-      sa.push(arr.readUInt16LE((p["@i_var"]+i)*2));
+      //if(Buffer.byteLength(arr) >= (p["@_ivar"]+i+1)*2){
+             sa.push(arr.readUInt16LE((p["@i_var"]+i)*2));       
+      //}
     }
     arr = null;
     if(p['@type']){

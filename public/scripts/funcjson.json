@@ -8,7 +8,7 @@
       "phase_spread":"(function(val){return Math.round((val/(1<<15))*45)})",
       "phase":"(function(val,wet){ if(wet == 0){if((((val/(1<<15))*45)+90) <= 135){return (((val/(1<<15))*45)+90).toFixed(2); }else{ return ((val/(1<<15))*45).toFixed(2); }}else{ return ((val/(1<<15))*45).toFixed(2);}})",
       "rej_del":"(function(ticks,tack) { if(tack==0){return (ticks/231.0).toFixed(2);}else{return ticks;}})",
-      "belt_speed":"(function(tpm,metric,tack,tps){if(tack!=0){var speed= (tps/tpm)*60;  if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}} var speed= (231.0/tpm)*60; if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}})",
+      "belt_speed":"(function(tpm,metric,tack,tps){if(tack!=0){var speed; if(tpm == 0){ speed=0 }else{ speed=(tps/tpm)*60;}  if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}} var speed; if(tpm == 0){ speed=0 }else{ speed=(231.0/tpm)*60;} if (metric==0){return (speed*3.281).toFixed(1) + ' ft/min';}else{return speed.toFixed(1) + ' M/min'}})",
       "password8":"(function(words){return words.map(function(w){return((w&0xffff).toString(16))}).join(',');})",
       "rej_chk":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",
       "rej_mode":"(function(rc1,rc2){if(rc2==0){return rc1+rc2;}else{return 2;}})",

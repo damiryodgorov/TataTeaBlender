@@ -958,11 +958,11 @@ class MessageConsole extends React.Component{
 			if(this.props.warningArray.length == this.props.faultArray.length){
 					clrButtons =  <button onClick={this.clearWarnings}>{vdefMapV2['@labels']['Clear Warnings'][this.props.language]['name']}</button>
 				}else if(this.props.warningArray.length != 0){
-						clrButtons =  <React.Fragment><button onClick={this.clearWarnings}>{vdefMapV2['@labels']['Clear Warnings'][this.props.language]['name']}</button>
-											 <button onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
+						clrButtons =  <React.Fragment><button  style={{display:'block', marginLeft:'auto', marginRight:'auto', height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}} onClick={this.clearWarnings}>{vdefMapV2['@labels']['Clear Warnings'][this.props.language]['name']}</button>
+											 <button  style={{display:'block', marginLeft:'auto', marginRight:'auto', height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}} onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
 						</React.Fragment>
 				}else{
-					clrButtons =  <button onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
+					clrButtons =  <button  style={{display:'block', marginLeft:'auto', marginRight:'auto', height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}} onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
 				
 				}
 			fCont = <div style={{color:"#e1e1e1"}}>{this.props.faultArray.map(function (f) {
@@ -1032,7 +1032,7 @@ class MessageConsole extends React.Component{
 			<div>
 			{this.props.children}
 			</div>
-			<Modal ref='fModal'>
+			<Modal ref='fModal' mobile={this.props.mobile}>
 				{fCont}
 			</Modal>
 				</div>)

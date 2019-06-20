@@ -1095,13 +1095,11 @@ li {
     height: 74px;
     display: inline-block;
     background: #ffff64;
-    width: 400px;
+    width: 100%;
     vertical-align: top;
     margin-left: 0px;
     margin-right: 0px;
     /* border-top: 10px solid black; */
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
     /* border-left: 10px solid transparent; */
     box-shadow: 0px 0px 1px 10px yellow;
     z-index: 1;
@@ -1132,12 +1130,10 @@ li {
     height: 74px;
     display: inline-block;
     background: rgb(55,135,255);
-    width: 400px;
+    width: 100%;
     vertical-align: top;
     margin-left: 0px;
     margin-right: 0px;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
     box-shadow: 0px 0px 1px 10px rgb(0,80,200);
     z-index: 1;
     position: relative;

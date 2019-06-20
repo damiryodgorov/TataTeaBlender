@@ -204,15 +204,15 @@ socket.on('vdef', function(vdf){
     }
 
     _pVdef = res;
-    if(json['@defines']['INTERCEPTOR']){
+    //if(json['@defines']['INTERCEPTOR']){
          vdefList[json['@version']] = [json, res, nVdf, categories, [vdefMapV2['@categories']], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
         vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@categories"]], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
 
-    }else{
-         vdefList[json['@version']] = [json, res, nVdf, categories, [vdefMapST['@categories']], vdefMapST['@vMap'], vdefMapST['@pages']]
-        vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapST["@categories"]], vdefMapST['@vMap'], vdefMapST['@pages']]
+    //}else{
+      //   vdefList[json['@version']] = [json, res, nVdf, categories, [vdefMapST['@categories']], vdefMapST['@vMap'], vdefMapST['@pages']]
+       // vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapST["@categories"]], vdefMapST['@vMap'], vdefMapST['@pages']]
 
-    }
+    //}
    //console.log('552',vdefByMac)
     isVdefSet = true;
 })
@@ -231,7 +231,7 @@ function _scrollById(id,distance) {
     elem.scrollTop = elem.scrollTop + distance
 }
 
-function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
+function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
 	var params = []
 	////////console.log(cat)
 	////////console.log(pVdef)
@@ -272,7 +272,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     //	console.log(p)
     		if(_p != null){
     		if(typeof _vmap[p] == 'undefined'){
-    	//		console.log(p)
+    	//	console.log(p)
     		}
     		_vmap[p].children.forEach(function (ch) {
     			var _ch;
@@ -293,6 +293,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     		})
     			params.push(_p)
     		}else if(_vmap[p]['@interceptor']){
+          if(int==true){
           var a = _vmap[p].children[0];
                 if(typeof pVdef[0][a] != 'undefined'){
               _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
@@ -306,14 +307,12 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
                 
               }
               _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
-              if(p == 'BeltSpeed'){
-                ////console.log('653',par,_p)
-              }
+             
             }else if(typeof pVdef[2][a] != 'undefined'){
               _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
             }else if(typeof pVdef[3][a] != 'undefined'){
               _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
-            }else if(par.val == 'DCRate_A'){
+            }else if(par.val == 'DCRate_INT'){
               _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
             }
             if(_p != null){
@@ -338,6 +337,31 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
               params.push(_p)
               //console.log(335,_p)
             }
+          }else{
+            var pname = p.slice(0,-4)
+        //    console.log(pname, p, 342)
+              if(typeof pVdef[0][pname] != 'undefined'){
+                _p = {'type':0, '@name':p, '@data':sysRec[pname], '@children':[], acc:par.acc}
+              }else if(typeof pVdef[1][pname] != 'undefined'){
+
+                var data = prodRec[pname]
+                
+                _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+                if(p == 'BeltSpeed'){
+                  ////console.log('653',par,_p)
+                }
+              }else if(typeof pVdef[2][pname] != 'undefined'){
+                _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[pname], '@children':[], acc:par.acc}
+              }else if(typeof pVdef[3][pname] != 'undefined'){
+                _p = {'type':0, '@name':p, '@type':'fram','@data':fram[pname], '@children':[], acc:par.acc}
+              }else if(par.val == 'DCRate'){
+                _p = {'type':0, '@name':p,'@data':prodRec[pname], '@children':[], acc:par.acc}
+              }
+              if(_p!= null){
+                           params.push(_p)   
+                
+              }
+          }
                  ///
         }else if(_vmap[p]['@test']){
           var a = _vmap[p].children[0];
@@ -383,7 +407,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
               _p['@children'].push(_ch)
               _p['@test'] = true; 
               params.push(_p)
-              console.log(335,_p)
+          //    console.log(335,_p)
             }
                  ///
         }else if(_vmap[p]['@halo']){
@@ -430,7 +454,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
               _p['@children'].push(_ch)
               _p['@halo'] = true; 
               params.push(_p)
-              console.log(335,_p)
+              //console.log(335,_p)
             }
                  ///
         }else if(_vmap[p]['@input']){
@@ -477,26 +501,26 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
               _p['@children'].push(_ch)
               _p['@input'] = true; 
               params.push(_p)
-              console.log(335,_p)
+             // console.log(335,_p)
             }
                  ///
         }
     		
     	}else if(par.type == 1){
     		if(typeof par.child != 'undefined'){
-    			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc, child:par.child})
+    			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram,int), acc:par.acc, child:par.child})
     		}else{
 
 
-    			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc})
+    			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram,int), acc:par.acc})
     		}
     	}else if(par.type == 2){
     			if(typeof par.child != 'undefined'){
-    			params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc, child:par.child})
+    			params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram,int), acc:par.acc, child:par.child})
     		}else{
 
 
-    			params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc})
+    			params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram,int), acc:par.acc})
     		}
     	}else if(par.type == 3){
     		params.push({type:3, '@name':'Accounts', '@data':'get_accounts', acc:0})
@@ -505,9 +529,10 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     })
 	return params
 }
-function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
+function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
 	////////console.log(['684',pVdef])
-	cat.params = getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram)
+  //console.log('is int', int)
+	cat.params = getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int)
 	
 	return cat
 }
@@ -549,7 +574,7 @@ class Container extends React.Component{
   }
 
 	render(){
-		return (<div>
+		return (<div style={{background:"#362c66"}}>
 		<LandingPage/>	
 		<ToastContainer position="top-center" autoClose={1500} hideProgressBar newestOnTop closeOnClick closeButton={false} rtl={false}
 			pauseOnVisibilityChange draggable pauseOnHover transition={FastZoom} toastClassName='notifications-class'/>
@@ -741,7 +766,11 @@ class LandingPage extends React.Component{
 				var banks = u.banks.map(function(b){
 					if(dets[b.mac]){
 						var _bank = dets[b.mac]
-						_bank.interceptor = b.interceptor
+            _bank.interceptor = false;
+            if(b.interceptor){
+              _bank.interceptor = true;
+            }
+					//	_bank.interceptor = b.interceptor
 						return dets[b.mac]
 					}else{
 						return b
@@ -937,7 +966,7 @@ class LandingPage extends React.Component{
 	renderDetectors () {
 		var self = this;
 		var units = this.state.detectors.map(function (u) {
-			return <SingleUnit ref={u.mac} onSelect={self.switchUnit} unit={u}/>
+			return <SingleUnit mobile={!self.state.brPoint} ref={u.mac} onSelect={self.switchUnit} unit={u}/>
 		})
 		return units;
 	}
@@ -1219,6 +1248,9 @@ class LandingPage extends React.Component{
 	updateDisply(){
 		socket.emit('updateDisplay')
 	}
+  rebootDisply(){
+    socket.emit('reboot')
+  }
 	renderLanding() {
     var self = this;
     var detectors = this.renderDetectors()
@@ -1231,14 +1263,14 @@ class LandingPage extends React.Component{
       lstyle = { height: 60, marginRight: 15}
     }
     var mbunits = this.state.mbunits.map(function(mb,i){
-      if(mb.type == 'mb'){
-        return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/> 
-      }else{
+      //if(mb.type == 'mb'){
+        //return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/> 
+      //}else{
         if(mb.banks[0]){
           //////////console.log('457')
-          return <SingleUnit ref={mb.banks[0].mac} onSelect={self.switchUnit} unit={mb.banks[0]}/>  
+          return <SingleUnit mobile={!self.state.brPoint} ref={mb.banks[0].mac} onSelect={self.switchUnit} unit={mb.banks[0]}/>  
         }           
-      }
+      //}
       
     })
     /*
@@ -1264,7 +1296,9 @@ class LandingPage extends React.Component{
           </Modal>
           <Modal ref='dispModal'>
             <DispSettings nif={this.state.nifip} nm={this.state.nifnm} gw={this.state.nifgw} version={this.state.version}/>
-            <CustomAlertButton alertMessage={'Update display?'} style={{color:'#e1e1e1'}} onClick={this.updateDisply}>Update Display</CustomAlertButton>
+            <CustomAlertButton alertMessage={'Update display?'} style={{height:50,display:'inline-block',marginRight:5, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.updateDisply}>Update Display</CustomAlertButton>
+              <CustomAlertButton alertMessage={'Reboot display?'} style={{height:50, border:'5px solid #808a90',display:'inline-block', color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.rebootDisply}>Reboot Display</CustomAlertButton>
+          
           </Modal>
           <div style={{textAlign:'center'}}>
           {detectors}
@@ -1370,7 +1404,7 @@ class LandingPage extends React.Component{
 	}
 	render() {
 		var cont;
-		var style = {minWidth: 290,userSelect: 'none', maxWidth: 1028,marginLeft: 'auto', marginRight:'auto', backgroundColor:"#e1e1e1"}
+		var style = {minWidth: 290,userSelect: 'none', maxWidth: 1028,marginLeft: 'auto', marginRight:'auto', backgroundColor:"#362c66"}
 		//var hd = window.matchMedia("(min-width:1900px)").matches;
 
 
@@ -1726,7 +1760,7 @@ class SettingsDisplay2 extends React.Component{
 		}
 
 		this.state = ({
-		 sysRec:this.props.sysSettings, prodRec:this.props.prodSettings, dynRec:this.props.dynSettings,font:font, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec
+		 sysRec:this.props.sysSettings, prodRec:this.props.prodSettings, dynRec:this.props.dynSettings,font:font, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec,path:[]
 		});
 		this.handleItemclick = this.handleItemclick.bind(this);
 		this.scrollUp = this.scrollUp.bind(this);
@@ -1738,6 +1772,7 @@ class SettingsDisplay2 extends React.Component{
 		this.onFocus = this.onFocus.bind(this);
 		this.onRequestClose = this.onRequestClose.bind(this);
 		this.listenToMq = this.listenToMq.bind(this);
+    this.goBack = this.goBack.bind(this);
 		//this.componentDidMount = this.component
 	}
 	componentWillUnmount(){
@@ -1760,8 +1795,20 @@ class SettingsDisplay2 extends React.Component{
 		}
 	}
 	handleItemclick(dat, n){		
-		console.log(dat)
-		this.props.onHandleClick(dat, n);
+		console.log(dat,n,1763)
+    if(dat[0] == 'get_accounts'){
+      this.props.onHandleClick(dat,n)
+    }else{
+    var self = this;
+    var path = this.state.path;
+    path.push(dat[1])
+    setTimeout(function(){
+      self.setState({path:path})
+   
+      self.props.onHandleClick(dat, n);
+
+    },250)
+  }
 	}
 	parseInfo(sys, prd){
 		if((typeof sys != 'undefined') && (typeof prd != 'undefined')){
@@ -1924,10 +1971,34 @@ class SettingsDisplay2 extends React.Component{
 			},100)
 			
 	}
+  goBack(){
+    var path = this.state.path.slice(0);
+    if(path.length > 0){
+      path.pop();
+      this.setState({path:path})
+      this.props.goBack();
+    }
+    //console.log(this.props.data)
+  }
 	render(){
 		var self = this;
-		var data = this.props.data
-		////console.log(2366,'render')
+
+	//	var data = this.props.data
+		var data = [];
+    if(this.props.data[0] == 'get_accounts'){
+      data = this.props.data
+    }else{
+    data.push([this.state.cob2[0],0])
+    var _par = this.state.cob2[0].params.slice(0);
+    this.state.path.forEach(function (x,i) {
+      
+      data.push([_par[x]['@data'],x])
+      _par = _par[x]['@data'].params.slice(0);
+      // body...
+    })
+  }
+   // console.log(data,data2,this.state.path)
+    ////console.log(2366,'render')
 		//var catMap = vdefByMac[this.props.dsp][]
 		//////////console.log(data)
 		var lvl = data.length 
@@ -1962,7 +2033,7 @@ class SettingsDisplay2 extends React.Component{
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem3 mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+				nodes.push(<SettingItem3 int={self.props.int} mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			}
 			len = catList.length;
 			nav = nodes;
@@ -1990,7 +2061,7 @@ class SettingsDisplay2 extends React.Component{
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    	}
 		    
-					backBut = (<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return.svg'/>
+					backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return.svg'/>
 						<label style={{color:'#ccc', fontSize:ft}}>{backText}</label></div>)
 			
 		    }else{
@@ -2005,7 +2076,7 @@ class SettingsDisplay2 extends React.Component{
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    		bblab = catMapV2[data.slice(0,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
 		    	}
-		    	backBut = (<div className='bbut' onClick={this.props.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return.svg'/>
+		    	backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return.svg'/>
 		    		<label style={{color:'#ccc', fontSize:ft}}>{backText}</label></div>)
 				
 		    	 
@@ -2015,10 +2086,20 @@ class SettingsDisplay2 extends React.Component{
 	
 			data[lvl - 1 ][0].params.forEach(function (par,i) {
 				// body...
-			//	//////console.log(['1986',par])
 				if(par.type == 0){
+          
+          console.log(2091, par)
+
 			//		////console.log("Is this the problem")
 					var p = par
+
+          var pname = par['@name']
+
+          if(!self.props.int){
+            if(pname.slice(-4) == '_INT'){
+              pname = pname.slice(0,-4)
+            }
+          }
 
 					var ind = 0;
 					var prms = self.props.cob2[ind].params;
@@ -2027,8 +2108,9 @@ class SettingsDisplay2 extends React.Component{
 						prms = prms[data[ind][1]]['@data'].params
 					}
 					var d = prms[i]
-				//  console.log('check this',d)
+				  console.log('check this',d)
         	var ch = d['@children'].slice(0)
+
           if(d['@interceptor'] || d['@test'] || d['@halo'] || d['@input']){
             ch.unshift(d['@data'])
           }
@@ -2036,9 +2118,9 @@ class SettingsDisplay2 extends React.Component{
 					if((self.props.level > 3) || (p.acc <= self.props.level)){
 						acc = true;
 					}
-					nodes.push(<SettingItem3 mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+					nodes.push(<SettingItem3 int={self.props.int} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
 						ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
-							children={[vdefByMac[self.props.mac][5][p['@name']].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
+							children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
 					
 				}else if(par.type == 1){
 					var sc = par['@data']
@@ -2050,13 +2132,24 @@ class SettingsDisplay2 extends React.Component{
 					}
 					if(typeof sc['child'] != 'undefined'){
 						var spar = sc.params[sc.child]
-						var ch = spar['@children']
-							nodes.push(<SettingItem3 mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
-					data={[sc,i]} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+            console.log(sc,2115)
+						var ch = spar['@children'].slice(0)
+          if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input']){
+            ch.unshift(spar['@data'])
+          } 
+                 var spname = spar['@name']
+
+          if(!self.props.int){
+            if(spname.slice(-4) == '_INT'){
+              spname = spname.slice(0,-4)
+            }
+          }
+							nodes.push(<SettingItem3 int={self.props.int} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+					data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			
 					}else{
 		
-						nodes.push(<SettingItem3 mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+						nodes.push(<SettingItem3 int={self.props.int} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 					}
 				}else if(par.type == 2){
@@ -2071,13 +2164,16 @@ class SettingsDisplay2 extends React.Component{
 					}
 					if(typeof sc['child'] != 'undefined'){
 						var spar = sc.params[sc.child]
-						var ch = spar['@children']
-							nodes.push(<SettingItem3 mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+						var ch = spar['@children'].slice(0)
+          if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input']){
+            ch.unshift(spar['@data'])
+          }
+							nodes.push(<SettingItem3 int={self.props.int} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 					data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			
 					}else{
 		
-						nodes.push(<SettingItem3 mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+						nodes.push(<SettingItem3 int={self.props.int} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 						data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 					}
 				}else if(par.type == 3){
@@ -2089,7 +2185,7 @@ class SettingsDisplay2 extends React.Component{
 						acc = true;
 					}
 					var sc = par['@data']
-						nodes.push(<SettingItem3 usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={'Accounts'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
+						nodes.push(<SettingItem3 int={self.props.int} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={'Accounts'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
 						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 		
 				}
@@ -2122,9 +2218,7 @@ class SettingsDisplay2 extends React.Component{
 			<ScrollArrow ref='arrowTop' offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
 		
 			<div className={className}>
-							{titlediv}
-			
-							{nav}
+				{titlediv}{nav}
 			</div>
 			<ScrollArrow ref='arrowBot' offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
 			</div>
@@ -2157,13 +2251,19 @@ class SettingItem3 extends React.Component{
 		var val = [], pram = [], label = false;
 		if(!props.hasChild){
 			
-      console.log(props)
+      //console.log(props)
 		if(typeof props.data == 'object'){
 
 			if(typeof props.data['@data'] == 'undefined'){
 			
   			if(typeof props.data[0]['child'] != 'undefined'){
   				var lkey = props.data[0].params[props.data[0].child]['@name']
+          if(this.props.int != true){
+            if(lkey.slice(-4) == '_INT'){
+              lkey = lkey.slice(0,-4)
+            }
+          }
+       //   console.log(lkey,2238)
   				
           if((props.data[0].params[props.data[0].child]['@children'])&&(props.children[0].length == 2)){
 
@@ -2179,10 +2279,20 @@ class SettingItem3 extends React.Component{
                 pram.push(pVdef[2][props.children[0][i]])
               }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
                 pram.push(pVdef[3][props.children[0][i]])
+              }else if(lkey == 'Nif_ip'){
+                pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+              }else if(lkey == 'Nif_nm'){
+                pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+              }else if(lkey == 'Nif_gw'){
+                pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+              }else if(lkey == 'DCRate_INT'){
+                pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
               }
             }
           }else{
-          val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
+           // console.log(lkey, 2275)
+            
+            val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
 
   				if(typeof pVdef[0][lkey] != 'undefined'){
   					pram = [pVdef[0][lkey]]
@@ -2198,9 +2308,13 @@ class SettingItem3 extends React.Component{
   					pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
   				}else if(lkey == 'Nif_gw'){
   					pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-  				}else if(lkey == 'DCRate_A'){
+  				}else if(lkey == 'DCRate_INT'){
   					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
-  				}
+  				  //label = true;
+          }else if(lkey == 'DCRate'){
+            pram = [{'@name':'DCRate', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate",0],null]}}]
+            //label = true;
+          }
 
            if(props.data[0].params[props.data[0].child]['@children']){
 
@@ -2218,18 +2332,31 @@ class SettingItem3 extends React.Component{
                 pram.push(pVdef[3][props.children[0][i]])
               }
             }
+            if(lkey == 'DCRate_INT'){
+              pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+             // console.log(2230,lkey)
+            }
           }
         }
-
-				if(pram[0]['@labels']){
+        if(pram.length == 0){
+          console.log(lkey)
+        }
+        if(pram[0]['@labels']){
 					label = true
 				}	
 				
 				}
 
 			}else{
+          var lkey = props.lkey;
+          if(this.props.int != true){
+            if(lkey.slice(-4) == '_INT'){
+              lkey = lkey.slice(0,-4)
+            }
+          }
         if((props.data['@children'])&&(props.children[0].length == 2)){
-          console.log('are we here instead?', props.children)
+         console.log(lkey, 2340, props.children)
+         // console.log('are we here instead?', props.children)
             for(var i=0;i<props.children[0].length;i++){
               val.push(this.getValue(props.children[1][i], props.children[0][i]))
               if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
@@ -2242,28 +2369,37 @@ class SettingItem3 extends React.Component{
                 pram.push(pVdef[3][props.children[0][i]])
               }
             }
+            if(lkey == 'DCRate_INT'){
+              pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+            }
         }else{
-    	   val = [this.getValue(props.data['@data'], props.lkey)]
+          console.log(2357, lkey)
+
+    	   val = [this.getValue(props.data['@data'], lkey)]
        
-      		if(typeof pVdef[0][props.lkey] != 'undefined'){
-    				pram = [pVdef[0][props.lkey]]
-    			}else if(typeof pVdef[1][props.lkey] != 'undefined'){
-    				pram = [pVdef[1][props.lkey]]
-    			}else if(typeof pVdef[2][props.lkey] != 'undefined'){
-    				pram = [pVdef[2][props.lkey]]
-    			}else if(typeof pVdef[3][props.lkey] != 'undefined'){
-    				pram = [pVdef[3][props.lkey]]
-    			}else if(props.lkey == 'Nif_ip'){
+      		if(typeof pVdef[0][lkey] != 'undefined'){
+    				pram = [pVdef[0][lkey]]
+    			}else if(typeof pVdef[1][lkey] != 'undefined'){
+    				pram = [pVdef[1][lkey]]
+    			}else if(typeof pVdef[2][lkey] != 'undefined'){
+    				pram = [pVdef[2][lkey]]
+    			}else if(typeof pVdef[3][lkey] != 'undefined'){
+    				pram = [pVdef[3][lkey]]
+    			}else if(lkey == 'Nif_ip'){
     				pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-    			}else if(props.lkey == 'Nif_nm'){
+    			}else if(lkey == 'Nif_nm'){
     				pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-    			}else if(props.lkey == 'Nif_gw'){
+    			}else if(lkey == 'Nif_gw'){
     				pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-    			}else if(props.lkey == 'DCRate_A'){
+    			}else if(lkey == 'DCRate_INT'){
     				pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
-    			}else{
-    					//console.log(2629,props.lkey)
+    			}else if(lkey == 'DCRate'){
+            pram = [{'@name':'DCRate', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate",0],null]}}]
+            //label = true;
+          }else{
+    					console.log(2629,props.lkey, lkey)
     			}
+          console.log(pram, 2383)
           if(props.data['@children']){
               for(var i=0;i<props.children[0].length;i++){
                 val.push(this.getValue(props.children[1][i], props.children[0][i]))
@@ -2278,11 +2414,20 @@ class SettingItem3 extends React.Component{
                 }
               }
           }
+          if(lkey == 'DCRate_INT'){
+            pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+          }
+        }
+        if(pram.length == 0){
+          console.log(2311, props.lkey, lkey)
+          if(lkey == 'DCRate_INT'){
+            pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+          }
         }
         if(pram[0]['@labels']){ label = true }	
   		}
 		}else{
-        console.log('here??????')
+       // console.log('here??????')
 				val = [this.getValue(props.data['@data'], props.lkey)]
 				if(typeof pVdef[0][props.lkey] != 'undefined'){
 					pram = [pVdef[0][props.lkey]]
@@ -2298,7 +2443,7 @@ class SettingItem3 extends React.Component{
 					pram = [{'@name':'Nif_nm', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
 				}else if(props.lkey == 'Nif_gw'){
 					pram = [{'@name':'Nif_gw', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
-				}else if(props.lkey == 'DCRate_A'){
+				}else if(props.lkey == 'DCRate_INT'){
 					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
 				}
 				if(props.data['@children']){
@@ -2906,6 +3051,9 @@ class EditControl extends React.Component{
 		
 		var dval = this.props.data[0]
 		if(this.props.label){
+      if(this.props.param.length == 0){
+        console.log(this.props, 3054)
+      }
 			if(this.props.param[0]["@labels"] == 'DCRate'){
 				var dclab = ['fastest','fast','med','slow'];
 				dval = dclab[this.props.data[0]];
@@ -3135,7 +3283,7 @@ class MultiEditControl extends React.Component{
 			lvst.verticalAlign = 'middle'
 			lvst.lineHeight = '25px'
 		}
-    console.log(this.props.param, this.state.val)
+    //console.log(this.props.param, this.state.val)
 			var vLabels = this.state.val.map(function(d,i){  
 			var val = d;
 			var st = {textAlign:'center',lineHeight:'60px', height:60}
@@ -3151,7 +3299,11 @@ class MultiEditControl extends React.Component{
 			}
 			if(isInt){ st.color = colors[i] }
         //console.log(self.props.param, i)
-			if(typeof self.props.param[i]['@labels'] != 'undefined'){
+			
+      //if(self.props.param.length == 0){
+     //   console.log(self.props, 3303, self.state)
+      //}
+      if(typeof self.props.param[i]['@labels'] != 'undefined'){
 				var list =  _pVdef[6][self.props.param[i]["@labels"]];
 				if(self.props.param[i]["@labels"] == 'DCRate'){
 					var dclab = ['fastest','fast','med','slow'];
@@ -3954,12 +4106,28 @@ class SingleUnit extends React.Component{
 	}
   renderNew(){
         var lstyle = {height: 65}   
+        var width = 655;
+        var innerWidth = 465
     var imgStyle = {height: 60, verticalAlign:'middle', marginTop:5}   
+    var marL = 20
+    var imMar = 15
+    var imH = 40
+    var font = 24
         var groupStatus = 'grey'
         if(this.state.live){
           groupStatus = 'green'
         }else if(this.state.fault){
           groupStatus = 'red'
+        }
+        if(this.props.mobile){
+          imgStyle.height = 42
+          imgStyle.marginTop = 12
+          width = '93%'
+          innerWidth = '60%'
+          marL = 3
+          imMar = 10
+          imH = 32
+          font = 16
         }
         var leds = <React.Fragment>
             <div style={{display:'inline-block', height: 70, verticalAlign:'bottom'}}><img style={imgStyle} src='assets/led_circle_grey.png'/></div>
@@ -3992,11 +4160,11 @@ leds = <React.Fragment>
         }
         
           return(
-            <div style={{border:'solid #eee 2px', borderRadius:40, padding:8, width:655, marginTop:2, marginBottom:4, marginLeft:20}}>
+            <div style={{border:'solid #eee 2px', borderRadius:40, padding:8, width:width, marginTop:2, marginBottom:4, marginLeft:marL}}>
             <div style={{borderRadius:25}}>
-              <div style={{display:'inline-block', lineHeight:'70px', verticalAlign:'bottom',backgroundColor:'#818a90', borderTopLeftRadius:30,borderBottomLeftRadius:30, width:465, height:70, verticalAlign:'bottom'}} className="detectorName" onClick={this.onClick}>
-              <img src='assets/layer.svg' style={{height:40,width:40,display:'inline-block',marginRight:15, marginLeft:15,marginTop:10,float:'left'}}/>
-              <div style={{display:'inline-block', height:70, verticalAlign:'bottom'}}>{this.props.unit.name}</div></div>
+              <div style={{display:'inline-block', lineHeight:'70px', verticalAlign:'bottom',backgroundColor:'#818a90', borderTopLeftRadius:30,borderBottomLeftRadius:30, width:innerWidth, height:70, verticalAlign:'bottom'}} className="detectorName" onClick={this.onClick}>
+              <img src='assets/layer.svg' style={{height:60,width:imH,display:'inline-block',marginRight:imMar, marginLeft:imMar,float:'left'}}/>
+              <div style={{display:'inline-block', height:70, verticalAlign:'bottom', fontSize:font}}>{this.props.unit.name}</div></div>
               <div style={{display:'inline-block', borderRadius:23, boxShadow:' -50px 0px 0 0 #818a90', paddingLeft:10, height: 70, verticalAlign:'bottom'}}>
               {leds}
               </div>
@@ -4139,7 +4307,7 @@ class DetectorView extends React.Component{
 		this.minMq.addListener(this.listenToMq.bind(this));
 		this.landScape.addListener(this.listenToMq.bind(this));
 		var interceptor = this.props.det.interceptor//(vdefByMac[this.props.det.ip][0]['@defines']['NUMBER_OF_SIGNAL_CHAINS'] == 2)//(this.props.det.board_id == 5);
-		this.state =  {pVdef:pVdef, callback:null, rec:{},offline:true, landScape:this.landScape.matches,showTest:false, warningArray:[],faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[], pn:'', sens:0, netpoll:this.props.netpolls, 
+		this.state =  {pVdef:pVdef, callback:null, rec:{},offline:true, landScape:this.landScape.matches,showTest:false, warningArray:[],faultArray:[],pind:0,currentView:'MainDisplay', data:[], stack:[],stack2:[],data2:[], pn:'', sens:0, netpoll:this.props.netpolls, 
 			prodSettings:{}, sysSettings:{}, combinedSettings:[],cob2:[], pages:{}, showCal:false,userid:0, isUpdating:false, username:'Not Logged In', isSyncing:false,
 			minW:this.minMq.matches, br:this.props.br, fault:false, usb:false, usernames:[{username:'ADMIN',acc:4}], broadCast:false,
 			peak:0, rej:0, phase:0, interceptor:interceptor, ioBITs:{}, testRec:{},framRec:{}, updateCount:0, language:0,rejOn:0,showSens:false,level:0, trec:0, loginOpen:false}
@@ -4379,19 +4547,27 @@ class DetectorView extends React.Component{
 		this.setState({minW:minMq.matches, landScape:landscape.matches, update:true})	
 	}
 	getCob (sys,prod,dyn, fram) {
+    var int = false
+    if(this.props.det.interceptor){
+      int = true
+    }
 		var vdef = vdefByMac[this.props.det.mac]
 		var _cvdf = JSON.parse(JSON.stringify(vdef[4][0]))
-		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
+		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram, int)
 		vdef = null;
 		_cvdf = null;
 		return cob
 	}
 	getPages (sys,prod,dyn, fram) {
-		var vdef = vdefByMac[this.props.det.mac]
+		 var int = false
+    if(this.props.det.interceptor){
+      int = true
+    }
+    var vdef = vdefByMac[this.props.det.mac]
 		var _pages = JSON.parse(JSON.stringify(vdef[6]))
 		var pages = {}
 		for(var pg in _pages){
-			pages[pg] = iterateCats2(_pages[pg], vdef[1],sys,prod, vdef[5],dyn, fram)
+			pages[pg] = iterateCats2(_pages[pg], vdef[1],sys,prod, vdef[5],dyn, fram,int)
 		}
 		vdef = null;
 		_pages = null;
@@ -4399,10 +4575,14 @@ class DetectorView extends React.Component{
 	}
 	getPage (pg,sys,prod,dyn, fram) {
 		// body...
+     var int = false
+    if(this.props.det.interceptor){
+      int = true
+    }
 		var vdef = vdefByMac[this.props.det.mac]
 		var _page = JSON.parse(JSON.stringify(vdef[6][pg]))
 		var page = {}
-		page = iterateCats2(_page, vdef[1],sys,prod, vdef[5],dyn, fram)
+		page = iterateCats2(_page, vdef[1],sys,prod, vdef[5],dyn, fram, int)
 	
 		vdef = null;
 		_page = null;
@@ -4449,7 +4629,8 @@ class DetectorView extends React.Component{
 		}else if(lcd_type == 1){
 			if(vdefByMac[d.mac]){
 				var prodRec = e.rec;
-				var dccoeffA = prodRec['DcCoeffNorm_A']
+        if(this.state.interceptor){
+				  var dccoeffA = prodRec['DcCoeffNorm_A']
     			var dccoeffB = prodRec['DcCoeffNorm_B']
     			var dcrateA = 2
     			var dcrateB = 2
@@ -4473,6 +4654,20 @@ class DetectorView extends React.Component{
     			}
     			prodRec['DCRate_A'] = dcrateA;
     			prodRec['DCRate_B'] = dcrateB;
+        }else{
+          var dccoeff = prodRec['DcCoeffNorm'];
+          var dcrate = 2 
+          if(dccoeff<50){
+            dcrate = 3;
+          }else if(dccoeff<500){
+            dcrate = 2;
+          }else if(dccoeff< 5000){
+            dcrate = 1
+          }else{
+            dcrate = 0
+          }
+          prodRec['DCRate'] = dcrate;
+        }
 				var cob2;// = iterateCats(_cvdf[0], pVdef, this.state.sysSettings, prodSettings, _vmap, this.state.rec)
     			var pages;// = {}    		
 					if(this.refs.sd){
@@ -4551,75 +4746,75 @@ class DetectorView extends React.Component{
 					var sig =uintToInt(prodRec['DetectSignal'],16)
 					var rej = prodRec['RejCount']
 						rejOn = prodRec['LS_YEL'] || prodRec['LS_BUZ'];
-					
+					 
+              this.refs.sModal.updateMeter(sig)
+              this.refs.sModal.updateSig(pk)
+              this.refs.snModal.updateMeter(sig)
+              this.refs.snModal.updateSig(pk)
+              this.refs.calibModal.updateMeter(sig)
+              this.refs.calibModal.updateSig(pk)
+              this.refs.teModal.updateMeter(sig)
+              this.refs.teModal.updateSig(pk)
+              this.refs.tModal.updateMeter(sig)
+              this.refs.tModal.updateSig(pk)
+              this.refs.loginModal.updateMeter(sig)
+              this.refs.loginModal.updateSig(pk)
     				if(this.state.rec['DateTime'] != prodRec['DateTime']){
     					this.refs.im.setDT(prodRec['DateTime'])
     				}
     				if(this.state.interceptor){
-    					var pka = prodRec['Peak_A'];
-						var pkb = prodRec['Peak_B'];
-						var siga = uintToInt(prodRec['DetectSignal_A'],16)
-						var sigb = uintToInt(prodRec['DetectSignal_B'],16)
-						var phaseA = (uintToInt(prodRec['PhaseAngleAuto_A'],16)/100).toFixed(2)
-						var phaseB = (uintToInt(prodRec['PhaseAngleAuto_B'],16)/100).toFixed(2)
-						var phaseSpeedA = prodRec['PhaseFastBit_A']
-						var phaseSpeedB = prodRec['PhaseFastBit_B']
-						var rpka = prodRec['ProdPeakR_A']
-						var xpka = prodRec['ProdPeakX_A']
-						var rpkb = prodRec['ProdPeakR_B']
-						var xpkb = prodRec['ProdPeakX_B']
-						var sensCalA = prodRec['LearningSensBit_A']
-						var sensCalB = prodRec['LearningSensBit_B']
-						var det_power_a = this.state.prodSettings['OscPower_A'];
-						var det_power_b = this.state.prodSettings['OscPower_B']
-						var phaseWet = prodRec['PhaseWetBit_A']
-						var phaseWetB = prodRec['PhaseWetBit_B']
-						var prod_a = prodRec['Prod_LED_A'];
-						var pled_a = 0
-						if(prodRec['Prod_HI_LED_A'] == 1){
-							pled_a = 2
-						}else if(prodRec['Prod_LED_A'] == 1){
-							pled_a = 1
-						}
-						var pled_b = 0
-						if(prodRec['Prod_HI_LED_B'] == 1){
-							pled_b = 2
-						}else if(prodRec['Prod_LED_B'] == 1){
-							pled_b = 1
-						}
-							
-							this.refs.sModal.updateMeter(sig)
-  							this.refs.sModal.updateSig(pk)
-  							this.refs.snModal.updateMeter(sig)
-  							this.refs.snModal.updateSig(pk)
-  							this.refs.calibModal.updateMeter(sig)
-  							this.refs.calibModal.updateSig(pk)
-  							this.refs.teModal.updateMeter(sig)
-  							this.refs.teModal.updateSig(pk)
-  							this.refs.tModal.updateMeter(sig)
-  							this.refs.tModal.updateSig(pk)
-  							this.refs.loginModal.updateMeter(sig)
-  							this.refs.loginModal.updateSig(pk)
+      				var pka = prodRec['Peak_A'];
+  						var pkb = prodRec['Peak_B'];
+  						var siga = uintToInt(prodRec['DetectSignal_A'],16)
+  						var sigb = uintToInt(prodRec['DetectSignal_B'],16)
+  						var phaseA = (uintToInt(prodRec['PhaseAngleAuto_A'],16)/100).toFixed(2)
+  						var phaseB = (uintToInt(prodRec['PhaseAngleAuto_B'],16)/100).toFixed(2)
+  						var phaseSpeedA = prodRec['PhaseFastBit_A']
+  						var phaseSpeedB = prodRec['PhaseFastBit_B']
+  						var rpka = prodRec['ProdPeakR_A']
+  						var xpka = prodRec['ProdPeakX_A']
+  						var rpkb = prodRec['ProdPeakR_B']
+  						var xpkb = prodRec['ProdPeakX_B']
+  						var sensCalA = prodRec['LearningSensBit_A']
+  						var sensCalB = prodRec['LearningSensBit_B']
+  						var det_power_a = this.state.prodSettings['OscPower_A'];
+  						var det_power_b = this.state.prodSettings['OscPower_B']
+  						var phaseWet = prodRec['PhaseWetBit_A']
+  						var phaseWetB = prodRec['PhaseWetBit_B']
+  						var prod_a = prodRec['Prod_LED_A'];
+  						var pled_a = 0
+  						if(prodRec['Prod_HI_LED_A'] == 1){
+  							pled_a = 2
+  						}else if(prodRec['Prod_LED_A'] == 1){
+  							pled_a = 1
+  						}
+  						var pled_b = 0
+  						if(prodRec['Prod_HI_LED_B'] == 1){
+  							pled_b = 2
+  						}else if(prodRec['Prod_LED_B'] == 1){
+  							pled_b = 1
+  						}
+						
   						
 							if(this.refs.dfs){
-  								this.refs.dfs.setPeaks(pka,pkb,pk)
-  							}
-						if((this.refs.im.state.rpeak != rpka)||(this.refs.im.state.xpeak != xpka)||(this.refs.im.state.rej != rej)
-							||(this.refs.im.state.phase != phaseA)||(this.refs.im.state.rpeakb != rpkb)||(this.refs.im.state.xpeakb != xpkb)
-							||(this.refs.im.state.phaseb != phaseB)||(this.refs.im.state.phaseFast != phaseSpeedA)||(this.refs.im.state.phaseFastB != phaseSpeedB)||(this.refs.im.state.pled_a !=pled_a)||(this.refs.im.state.pled_b !=pled_b)){
-							this.refs.im.setState({rpeak:rpka,rpeakb:rpkb,xpeak:xpka,xpeakb:xpkb,rej:rej,phase:phaseA,phaseb:phaseB,phaseFast:phaseSpeedA,phaseFastB:phaseSpeedB, pled_a:pled_a, pled_b:pled_b})		
-						}
-						if(this.refs.cb){
-							if((this.refs.cb.state.sensCalA != sensCalA)||(this.refs.cb.state.sensCalB != sensCalB)||(this.refs.cb.state.sensA != this.state.prodSettings['Sens_A'])||(this.refs.cb.state.sensB != this.state.prodSettings['Sens_B'])||(this.refs.cb.state.rpeak != rpka)||(this.refs.cb.state.xpeak != xpka)||(this.refs.cb.state.phase != phaseA)||(this.refs.cb.state.rpeakb != rpkb)||(this.refs.cb.state.xpeakb != xpkb)|| (this.refs.cb.state.det_power_b != det_power_b) || (this.refs.cb.state.det_power_a != det_power_a) 
-							||(this.refs.cb.state.phaseb != phaseB)||(this.refs.cb.state.phaseSpeed != phaseSpeedA)||(this.refs.cb.state.phaseSpeedB != phaseSpeedB)||(this.refs.cb.state.phaseMode != phaseWet) || (this.refs.cb.state.phaseModeB != phaseWetB)){//||(this.refs.cb.state.pled_a != pled_a)||(this.refs.cb.state.pled_b != pled_b)){
-								this.refs.cb.setState({sensA:this.state.prodSettings['Sens_A'],sensB:this.state.prodSettings['Sens_B'],rpeak:rpka, xpeak:xpka,sensCalA:sensCalA,sensCalB:sensCalB, phase:phaseA, rpeakb:rpkb, xpeakb:xpkb, phaseb:phaseB,phaseSpeed:phaseSpeedA,phaseSpeedB:phaseSpeedB,phaseMode:phaseWet, phaseModeB:phaseWetB, det_power_a:det_power_a, det_power_b:det_power_b})
-							}
+  							this.refs.dfs.setPeaks(pka,pkb,pk)
+  						}
+  						if((this.refs.im.state.rpeak != rpka)||(this.refs.im.state.xpeak != xpka)||(this.refs.im.state.rej != rej)
+  							||(this.refs.im.state.phase != phaseA)||(this.refs.im.state.rpeakb != rpkb)||(this.refs.im.state.xpeakb != xpkb)
+  							||(this.refs.im.state.phaseb != phaseB)||(this.refs.im.state.phaseFast != phaseSpeedA)||(this.refs.im.state.phaseFastB != phaseSpeedB)||(this.refs.im.state.pled_a !=pled_a)||(this.refs.im.state.pled_b !=pled_b)){
+  							this.refs.im.setState({rpeak:rpka,rpeakb:rpkb,xpeak:xpka,xpeakb:xpkb,rej:rej,phase:phaseA,phaseb:phaseB,phaseFast:phaseSpeedA,phaseFastB:phaseSpeedB, pled_a:pled_a, pled_b:pled_b})		
+  						}
+  						if(this.refs.cb){
+  							 if((this.refs.cb.state.sensCalA != sensCalA)||(this.refs.cb.state.sensCalB != sensCalB)||(this.refs.cb.state.sensA != this.state.prodSettings['Sens_A'])||(this.refs.cb.state.sensB != this.state.prodSettings['Sens_B'])||(this.refs.cb.state.rpeak != rpka)||(this.refs.cb.state.xpeak != xpka)||(this.refs.cb.state.phase != phaseA)||(this.refs.cb.state.rpeakb != rpkb)||(this.refs.cb.state.xpeakb != xpkb)|| (this.refs.cb.state.det_power_b != det_power_b) || (this.refs.cb.state.det_power_a != det_power_a) 
+  							 ||(this.refs.cb.state.phaseb != phaseB)||(this.refs.cb.state.phaseSpeed != phaseSpeedA)||(this.refs.cb.state.phaseSpeedB != phaseSpeedB)||(this.refs.cb.state.phaseMode != phaseWet) || (this.refs.cb.state.phaseModeB != phaseWetB)){//||(this.refs.cb.state.pled_a != pled_a)||(this.refs.cb.state.pled_b != pled_b)){
+  								this.refs.cb.setState({sensA:this.state.prodSettings['Sens_A'],sensB:this.state.prodSettings['Sens_B'],rpeak:rpka, xpeak:xpka,sensCalA:sensCalA,sensCalB:sensCalB, phase:phaseA, rpeakb:rpkb, xpeakb:xpkb, phaseb:phaseB,phaseSpeed:phaseSpeedA,phaseSpeedB:phaseSpeedB,phaseMode:phaseWet, phaseModeB:phaseWetB, det_power_a:det_power_a, det_power_b:det_power_b})
+  							 }
 
-							this.refs.cb.setPleds(pled_a, pled_b)
-						}
+							   this.refs.cb.setPleds(pled_a, pled_b)
+						  }
 
-						this.refs.im.update(siga,sigb,sig)
-						this.refs.im.updatePeak(pka,pkb,pk)
+						  this.refs.im.update(sig,siga,sigb)
+						  this.refs.im.updatePeak(pk,pka,pkb)
   						pka = null;
   						pkb = null;
   						siga = null;
@@ -4637,17 +4832,35 @@ class DetectorView extends React.Component{
 						var phaseSpeed = prodRec['PhaseFastBit'];
 						var rpeak = prodRec['ProdPeakR']
 						var xpeak = prodRec['ProdPeakX']
-						if((this.refs.im.state.peak !=peak)||(this.refs.im.state.rpeak != rpeak)||(this.refs.im.state.xpeak != xpeak)||(this.refs.im.state.rej != rej)
-							||(this.refs.im.state.phase != phase)||(this.refs.im.state.phaseFast != phaseSpeed)){
-							this.refs.im.setState({peak:peak,rpeak:rpeak,xpeak:xpeak,rej:rej,phase:phase,phaseFast:phaseSpeed})		
+            var sensCal = prodRec['LearningSensBit']
+            var det_power = this.state.prodSettings['OscPower']
+            var phaseWet = prodRec['PhaseWetBit']  
+            var pled = 0
+            if(prodRec['Prod_HI_LED'] == 1){
+              pled = 2
+            }else if(prodRec['Prod_LED'] == 1){
+              pled = 1
+            }
+
+						if((this.refs.im.state.peak !=pk)||(this.refs.im.state.rpeak != rpeak)||(this.refs.im.state.xpeak != xpeak)||(this.refs.im.state.rej != rej)
+							||(this.refs.im.state.phase != phase)||(this.refs.im.state.phaseFast != phaseSpeed)||(this.refs.im.state.pled_a != pled)){
+							this.refs.im.setState({peak:pk,rpeak:rpeak,xpeak:xpeak,rej:rej,phase:phase,phaseFast:phaseSpeed, pled_a:pled})		
 						}
 						if(this.refs.cb){
-							if((this.refs.cb.state.rpeak != rpeak)||(this.refs.cb.state.xpeak != xpeak)||(this.refs.cb.state.phase != phase)||(this.refs.cb.state.phaseSpeed != phaseSpeed)){
-								this.refs.cb.setState({rpeak:rpeak, xpeak:xpeak, phase:phase, phaseSpeed:phaseSpeed})
-							}
-						}
+                 if((this.refs.cb.state.sensCalA != sensCal)||(this.refs.cb.state.sensA != this.state.prodSettings['Sens'])||(this.refs.cb.state.rpeak != rpeak)||(this.refs.cb.state.xpeak != xpeak)||(this.refs.cb.state.phase != phase)||(this.refs.cb.state.det_power_a != det_power) 
+                 ||(this.refs.cb.state.phaseSpeed != phaseSpeedA)||(this.refs.cb.state.phaseMode != phaseWet)){//||(this.refs.cb.state.pled_a != pled_a)||(this.refs.cb.state.pled_b != pled_b)){
+                  this.refs.cb.setState({sensA:this.state.prodSettings['Sens'],rpeak:rpeak, xpeak:xpeak,sensCalA:sensCal, phase:phase, phaseSpeed:phaseSpeed,phaseMode:phaseWet,det_power_a:det_power})
+                 }
+
+                 this.refs.cb.setPleds(pled)
+              }
+
+						if(this.refs.dfs){
+                this.refs.dfs.setPeaks(pk)
+              }
 						this.refs.im.update(sig)
-						peak = null;
+            this.refs.im.updatePeak(pk)
+						pk = null;
 						sig = null;
 						phase = null;
 						phaseSpeed = null;
@@ -4985,10 +5198,13 @@ class DetectorView extends React.Component{
 		this.props.logoClick();
 	}
 	goBack () {
+    var self = this;
 		if(this.state.stack.length > 0){
 			var stack = this.state.stack;
 			var d = stack.pop();
-			setTimeout(this.setState({currentView:d[0], data: d[1], stack: stack, settings:(d[0] == 'SettingsDisplay'), update:true }),100);
+			setTimeout(function(){self.setState({currentView:d[0], data: d[1], stack: stack, settings:(d[0] == 'SettingsDisplay'), update:true });
+        self.sendPacket('refresh',0)
+    },100);
 			
 		}
 	}
@@ -5755,7 +5971,7 @@ class DetectorView extends React.Component{
 		if(!this.state.minW){
 			lstyle = { height: 60, marginRight: 15, marginLeft: 10}
 		}
-		var SD = (<SettingsDisplay2 usernames={this.state.usernames} mobile={!this.state.br} Id={this.props.ip+'SD'} language={lg} mode={'config'} setOverride={this.setOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.det.mac} int={this.state.interceptor} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.det.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} framRec={this.state.framRec} level={this.state.level}/>)
+		var SD = (<SettingsDisplay2 int={this.props.det.interceptor} usernames={this.state.usernames} mobile={!this.state.br} Id={this.props.ip+'SD'} language={lg} mode={'config'} setOverride={this.setOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.det.mac} int={this.state.interceptor} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.det.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} framRec={this.state.framRec} level={this.state.level}/>)
 		MD = ""; 
 		var mpui// = 	<StealthMainPageUI usb={this.state.usb} mac={this.props.det.mac}  language={this.state.language} setLang={this.setLanguage} toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick} ref='im' getProdName={this.getProdName}/>
 		var cb// = <StealthCalibrateUI  mac={this.props.det.mac} language={lg} ref='cb' onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calib={this.cal} />
@@ -5784,7 +6000,7 @@ class DetectorView extends React.Component{
 		var showPropmt = "#e1e1e1";
 		var tbklass = 'expandButton';
 		var	df = true;
-		var	sensui =  <InterceptorDFSensitivityUI clearSig={this.clearSig} mobile={!this.state.br} ref='dfs'  mac={this.props.det.mac} language={lg} level={this.state.level} sigmode={this.state.prodSettings['SigModeCombined']} onSigMode={this.sendPacket} sens={this.state.prodSettings['Sens']} sensA={this.state.prodSettings['Sens_A']} sensB={this.state.prodSettings['Sens_B']} onFocus={this.onSensFocus} onRequestClose={this.onSensClose} sendPacket={this.sendPacket} refresh={this.refresh} onSens={this.onSens}/>
+		var	sensui =  <InterceptorDFSensitivityUI interceptor={this.props.det.interceptor} clearSig={this.clearSig} mobile={!this.state.br} ref='dfs'  mac={this.props.det.mac} language={lg} level={this.state.level} sigmode={this.state.prodSettings['SigModeCombined']} onSigMode={this.sendPacket} sens={this.state.prodSettings['Sens']} sensA={this.state.prodSettings['Sens_A']} sensB={this.state.prodSettings['Sens_B']} onFocus={this.onSensFocus} onRequestClose={this.onSensClose} sendPacket={this.sendPacket} refresh={this.refresh} onSens={this.onSens}/>
 	
 		var sn = (<div>
 				<div style={{paddingTop:10, paddingBottom:4}}>
@@ -5796,28 +6012,28 @@ class DetectorView extends React.Component{
 			if(this.state.data.length == 0){
 				dt = []
 			}
-			tescont = 	<SettingsDisplay2 mobile={!this.state.br} mac={this.props.det.mac} Id={this.props.ip+'TESTD'} language={lg} setOverride={this.setTOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} 
+			tescont = 	<SettingsDisplay2 int={this.props.det.interceptor} mobile={!this.state.br} mac={this.props.det.mac} Id={this.props.ip+'TESTD'} language={lg} setOverride={this.setTOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'testpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} 
 					cob2={[this.state.pages['Test']]} cvdf={vdefByMac[this.props.det.mac][6]['Test']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} level={this.state.level} framRec={this.state.framRec}/>
 			showPropmt = "orange"
 			tbklass='collapseButton'
 		}
 	
-			if(this.props.det.interceptor){
+		//	if(this.props.det.interceptor){
 
-				mpui = 	<InterceptorMainPageUI landScape={this.state.landScape} mobile={!this.state.br} df={df} offline={this.state.offline} isUpdating={this.state.isUpdating} isSyncing={this.state.isSyncing} usb={this.state.usb} mac={this.props.det.mac} login={this.toggleLogin} logout={this.logout} toggleTestRModal={this.showTestRModal} testReq={trec} status={status} rejOn={this.state.rejOn} rejLatch={this.state.prodSettings['RejLatchMode'] || this.state.prodSettings['Rej2Latch']} language={this.state.language} setLang={this.setLanguage}
+				mpui = 	<InterceptorMainPageUI interceptor={this.props.det.interceptor} landScape={this.state.landScape} mobile={!this.state.br} df={df} offline={this.state.offline} isUpdating={this.state.isUpdating} isSyncing={this.state.isSyncing} usb={this.state.usb} mac={this.props.det.mac} login={this.toggleLogin} logout={this.logout} toggleTestRModal={this.showTestRModal} testReq={trec} status={status} rejOn={this.state.rejOn} rejLatch={this.state.prodSettings['RejLatchMode'] || this.state.prodSettings['Rej2Latch']} language={this.state.language} setLang={this.setLanguage}
 				 toggleCalib={this.showCalibModal} toggleTestModal={this.showTestModal} faultArray={this.state.faultArray} warningArray={this.state.warningArray} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} toggleSens={this.showSens} toggleConfig={this.showSettings} netpoll={this.state.netpoll} clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} gohome={this.logoClick}
 				  ref='im' getProdName={this.getProdName} level={this.state.level} username={this.state.username} />
 				cb = <div>
 				<div style={{paddingTop:10, paddingBottom:4}}>
 					 <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5, fontWeight:500, color:"#eee"}} >
 					 <div style={{display:'inline-block', textAlign:'center'}}>{vdefMapV2['@labels']['Learn'][lg]['name']}</div></h2></span></div>
-				<InterceptorCalibrateUI mobile={!this.state.br} offsetA={uintToInt(this.state.prodSettings['PhaseOffset_A'],16)} offsetB={uintToInt(this.state.prodSettings['PhaseOffset_B'],16)} moa={this.state.prodSettings['MPhaseOrder_A']} mob={this.state.prodSettings['MPhaseOrder_B']} learnComb={this.state.prodSettings['LearnCombined']}  mac={this.props.det.mac} language={lg} ref='cb' onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calibA={this.calA} calibB={this.calB} /></div>
+				<InterceptorCalibrateUI interceptor={this.props.det.interceptor} mobile={!this.state.br} offsetA={uintToInt(this.state.prodSettings['PhaseOffset_A'],16)} offsetB={uintToInt(this.state.prodSettings['PhaseOffset_B'],16)} moa={this.state.prodSettings['MPhaseOrder_A']} mob={this.state.prodSettings['MPhaseOrder_B']} learnComb={this.state.prodSettings['LearnCombined']}  mac={this.props.det.mac} language={lg} ref='cb' onFocus={this.onCalFocus} onRequestClose={this.onCalClose} sendPacket={this.sendPacket} refresh={this.refresh} calibA={this.calA} calibB={this.calB} /></div>
 				
-			}
+			//}
 		var testprompt = this.renderTest();
 		var CB;
 		if(this.state.showCal){
-			CB = <SettingsDisplay2 mobile={!this.state.br} mac={this.props.det.mac} Id={this.props.ip+'CALBD'} language={lg} setOverride={this.setCOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'calpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Calibration']]} cvdf={vdefByMac[this.props.det.mac][6]['Calibration']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} level={this.state.level} framRec={this.state.framRec}/>
+			CB = <SettingsDisplay2 int={this.props.det.interceptor} mobile={!this.state.br} mac={this.props.det.mac} Id={this.props.ip+'CALBD'} language={lg} setOverride={this.setCOverride} faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'calpage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} cob2={[this.state.pages['Calibration']]} cvdf={vdefByMac[this.props.det.mac][6]['Calibration']} sendPacket={this.sendPacket} prodSettings={this.state.prodSettings} sysSettings={this.state.sysSettings} dynSettings={this.state.rec} level={this.state.level} framRec={this.state.framRec}/>
 			showPrompt = "orange"
 		}else{
 			CB = cb
@@ -5825,7 +6041,7 @@ class DetectorView extends React.Component{
 		var snsCont;
 		if(this.state.showSens){
 
-			snsCont = <SettingsDisplay2 mobile={!this.state.br} mac={this.props.det.mac} Id={this.props.ip+'SNSD'} language={lg} setOverride={this.setSOverride} 
+			snsCont = <SettingsDisplay2 int={this.props.det.interceptor} mobile={!this.state.br} mac={this.props.det.mac} Id={this.props.ip+'SNSD'} language={lg} setOverride={this.setSOverride} 
 			faultBits={this.state.faultArray} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} 
 			ref = 'snspage' mode={'page'} data={this.state.data} onHandleClick={this.settingClick} dsp={this.props.ip} int={this.state.interceptor} 
 			cob2={[this.state.pages['Sens']]} cvdf={vdefByMac[this.props.det.mac][6]['Sens']} sendPacket={this.sendPacket} 
@@ -5982,7 +6198,8 @@ class InterceptorMainPageUI extends React.Component{
 	}
 	shouldComponentUpdate (nextProps, nextState) {
 		if(this.state.keyboardVisible){
-			if((this.state.prodRec['Sens_A'] == nextState.prodRec['Sens_A']) &&(this.state.prodRec['Sens_B'] == nextState.prodRec['Sens_B'])){
+
+			if((this.state.prodRec['Sens'] == nextState.prodRec['Sens'])){
 				return true;
 			}else{
 				return false;
@@ -6023,18 +6240,23 @@ class InterceptorMainPageUI extends React.Component{
 	sendPacket (n,v) {
 		this.props.sendPacket(n,v);
 	}
-	update(siga, sigb,df,ov) {
-		var dat = {t:Date.now(),val:siga,valb:sigb, valCom:df}
+	update(df,siga, sigb,ov) {
+    var dat;
+    if(this.props.interceptor){
+      dat = {t:Date.now(),val:siga,valb:sigb, valCom:df}
+    }else{
+      dat = dat = {t:Date.now(),val:df}
+    }
 		this.refs.nv.streamTo(dat,ov)
-		this.refs.dv.update(siga,sigb,df)
-			this.refs.pedit.updateMeter(siga,sigb,df)
-			this.refs.netpolls.updateMeter(siga,sigb,df)
+		this.refs.dv.update(df,siga,sigb)
+			this.refs.pedit.updateMeter(df,siga,sigb)
+			this.refs.netpolls.updateMeter(df,siga,sigb)
 	
 	}
-	updatePeak(pa,pb,df){
-		this.refs.dv.updatePeak(pa,pb,df);
-		this.refs.pedit.updateSig(pa,pb,df);
-		this.refs.netpolls.updateSig(pa,pb,df)
+	updatePeak(df,pa,pb){
+		this.refs.dv.updatePeak(df,pa,pb);
+		this.refs.pedit.updateSig(df,pa,pb);
+		this.refs.netpolls.updateSig(df,pa,pb)
 	}
 	componentDidMount(){
 		var self = this;
@@ -6674,7 +6896,7 @@ class InterceptorMainPageUI extends React.Component{
 			logintext =	<td style={{height:60, width:100, color:'#eee'}}><label onClick={this.login}>{this.props.username}</label></td>
 		}
 
-		var dv = <InterceptorDynamicViewDF mobile={this.props.mobile}  offline={this.props.offline} onDeny={this.onDeny} mac={this.props.mac} testReq={this.props.testReq}  language={lg} onButton={this.onButton} onSens={this.onSens} rejOn={this.props.rejOn} faultArray={this.props.faultArray} warningArray={this.props.warningArray}
+		var dv = <InterceptorDynamicViewDF interceptor={this.props.interceptor} mobile={this.props.mobile}  offline={this.props.offline} onDeny={this.onDeny} mac={this.props.mac} testReq={this.props.testReq}  language={lg} onButton={this.onButton} onSens={this.onSens} rejOn={this.props.rejOn} faultArray={this.props.faultArray} warningArray={this.props.warningArray}
 							ref='dv' sys={this.state.sysRec} sens={this.state.prodRec['Sens']} sig={this.state.peak} pleds={this.state.pled_a} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} clearRejLatch={this.clearRejLatch}  status={this.props.status} clearFaults={this.props.clearFaults} 
 							clearWarnings={this.props.clearWarnings} rejLatch={this.props.rejLatch} prodName={this.state.prodRec['ProdName']}
 										rej={this.state.rej} onKeyboardOpen={this.keyboardOpen} onKeyboardClose={this.keyboardClose} level={this.props.level}/>
@@ -6682,12 +6904,16 @@ class InterceptorMainPageUI extends React.Component{
 			//var dfLab = <label style={{fontSize:30,lineHeight:'50px',display:'inline-block',position:'relative',top:-10,color:'#FFF'}}>DF</label>
 		
 
+    var imsrc = 'assets/Stealth-white-01.svg'
+    if(this.props.interceptor){
+      imsrc = 'assets/Interceptor-white-01.svg'
+    }
 		return (<div className='interceptorMainPageUI' style={style}>
 					<table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
 						<tbody>
 							<tr>
 								<td style={{width:380}}><img style={lstyle}  src='assets/NewFortressTechnologyLogo-WHT-trans.png'/></td><td hidden={this.props.mobile}>
-								<img style={{height:45, marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src='assets/Interceptor-white-01.svg'/>
+								<img style={{height:45, marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src={imsrc}/>
 								</td>
 							{logintext}	{logincell}
 							{!this.props.mobile &&
@@ -6699,7 +6925,7 @@ class InterceptorMainPageUI extends React.Component{
 					</table>
 		
 		{dv}		
-		<InterceptorNav mobile={this.props.mobile} offline={this.props.offline} onDeny={this.onDeny} df={this.props.df} testReq={this.props.testReq} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} clearRejLatch={this.clearRejLatch}  status={this.props.status} language={lg} onButton={this.onButton} ref='nv' clearFaults={this.props.clearFaults} clearWarnings={this.props.clearWarnings} 
+		<InterceptorNav interceptor={this.props.interceptor} mobile={this.props.mobile} offline={this.props.offline} onDeny={this.onDeny} df={this.props.df} testReq={this.props.testReq} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} clearRejLatch={this.clearRejLatch}  status={this.props.status} language={lg} onButton={this.onButton} ref='nv' clearFaults={this.props.clearFaults} clearWarnings={this.props.clearWarnings} 
 		rejOn={this.props.rejOn} rejLatch={this.props.rejLatch}  faultArray={this.props.faultArray} warningArray={this.props.warningArray} prodName={this.state.prodRec['ProdName']} combineMode={this.state.prodRec['SigModeCombined']} sens={this.state.prodRec['Sens']} thresh={this.state.prodRec['DetThresh']}>
 			<DspClock mobile={this.props.mobile} dst={this.state.sysRec['DaylightSavings']} sendPacket={this.sendPacket} language={lg} ref='clock'/>
 		</InterceptorNav>
@@ -6752,11 +6978,11 @@ class InterceptorDynamicViewDF extends React.Component{
 				}
 			}
 	}
-	update (a,b,sig) {
+	update (sig,a,b) {
 		
 		this.refs.tbb.update(sig)
 	}
-	updatePeak(a,b,df){
+	updatePeak(df,a,b){
 		if((this.state.peak != df)){
 			this.setState({peak:df})
 		}
@@ -6807,7 +7033,7 @@ class InterceptorDynamicViewDF extends React.Component{
 			<div className={klass} style={{overflow:'hidden', display:'block', marginLeft:'auto', marginRight:'auto', textAlign:'center', borderRadius:20,boxShadow:'0px 0px 0px 8px #818a90'}}>
 				<div style={{padding:10, paddingTop:0, paddingBottom:0, display:'block', height:15}}><TickerBox ref='tbb'/>
 				</div>
-				<div>	<MessageConsole offline={this.props.offline} ref='mc' isUpdating={this.props.isUpdating} isSyncing={this.props.isSyncing} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
+				<div>	<MessageConsole mobile={true} offline={this.props.offline} ref='mc' isUpdating={this.props.isUpdating} isSyncing={this.props.isSyncing} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
 				toggleTest={this.onTestReq} rejOn={this.props.rejOn} rejLatch={this.props.rejLatch} language={this.props.language} clearFaults={this.props.clearFaults} warningArray={this.props.warningArray} faultArray={this.props.faultArray} prodName={this.props.prodName}/>
 				</div>
 				<div style={marginSt}>
@@ -6886,7 +7112,7 @@ class InterceptorDynamicViewDF extends React.Component{
 				</td>
 				</tr>
 				<tr><td colSpan={3} style={{display:'inline-block', padding:0,overflow:'hidden', display:'none'}}><div style={{width:936,height:116, overflow:'hidden', display:'none'}}>
-					<MessageConsole offline={this.props.offline} ref='mc' isUpdating={this.props.isUpdating} isSyncing={this.props.isSyncing} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
+					<MessageConsole mobile={false} offline={this.props.offline} ref='mc' isUpdating={this.props.isUpdating} isSyncing={this.props.isSyncing} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
 				toggleTest={this.onTestReq} rejOn={this.props.rejOn} rejLatch={this.props.rejLatch} language={this.props.language} clearFaults={this.props.clearFaults} warningArray={this.props.warningArray} faultArray={this.props.faultArray} prodName={this.props.prodName}/>
 
 				</div></td></tr>
@@ -7001,7 +7227,7 @@ class InterceptorNav extends React.Component{
 			klass = 'navWrapper_tf'
 		}
 
-		var content = <InterceptorNavContent combineMode={this.props.combineMode} mobile={this.props.mobile} offline={this.props.offline} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
+		var content = <InterceptorNavContent interceptor={this.props.interceptor} combineMode={this.props.combineMode} mobile={this.props.mobile} offline={this.props.offline} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
 				toggleTest={this.onTestReq} rejOn={this.props.rejOn} rejLatch={this.props.rejLatch} language={this.props.language} ref='nv' clearFaults={this.props.clearFaults} warningArray={this.props.warningArray} faultArray={this.props.faultArray} prodName={this.props.prodName}/>
 				
 	
@@ -7057,7 +7283,7 @@ class InterceptorNav extends React.Component{
 			klass = 'navWrapper_tf'
 		}
 
-		var content = 				<InterceptorNavContent offline={this.props.offline} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
+		var content = 				<InterceptorNavContent interceptor={this.props.interceptor} offline={this.props.offline} isSyncing={this.props.isSyncing} isUpdating={this.props.isUpdating} status={this.props.status} clearWarnings={this.props.clearWarnings} clearRejLatch={this.clearRejLatch} testReq={this.props.testReq} 
 				toggleTest={this.onTestReq} rejOn={this.props.rejOn} rejLatch={this.props.rejLatch} language={this.props.language} ref='nv' clearFaults={this.props.clearFaults} warningArray={this.props.warningArray} faultArray={this.props.faultArray} prodName={this.props.prodName}>
 					</InterceptorNavContent>
 		//if(this.props.df){
@@ -7079,7 +7305,7 @@ class InterceptorNav extends React.Component{
 				<div style={{display:'inline-block', width:480, height:327, borderBottom:'20px solid #818a90',position:'relative', borderBottomLeftRadius:'40px 100px', borderBottomRightRadius:'40px 100px'}}>
 				<div style={{height:63}}>{content}</div>
 				
-				<SlimGraph sens={this.props.sens} thresh={this.props.thresh} combineMode={this.props.combineMode} df={false} int={true} ref='sg' canvasId={'sgcanvas2'}/>
+				<SlimGraph sens={this.props.sens} thresh={this.props.thresh} combineMode={this.props.combineMode} df={false} int={this.props.interceptor} ref='sg' canvasId={'sgcanvas2'}/>
 				{this.props.children}
 				</div></td><td>
 				<div className='slantedLeft'><div style={{background:'#362c66', borderTopLeftRadius:'30px 50px', height:366, textAlign:'center', marginTop:0, paddingTop:1, position:'relative'}}>
@@ -7252,7 +7478,7 @@ class InterceptorNavContent extends React.Component{
 			<div>
 			{this.props.children}
 			</div>
-			<Modal ref='fModal'>
+			<Modal ref='fModal' mobile={true}>
 				{fCont}
 			</Modal>
 				</div>)
@@ -7311,11 +7537,11 @@ class InterceptorNavContent extends React.Component{
 			if(this.props.warningArray.length == this.props.faultArray.length){
 					clrButtons =  <button onClick={this.clearWarnings}>{vdefMapV2['@labels']['Clear Warnings'][this.props.language]['name']}</button>
 				}else if(this.props.warningArray.length != 0){
-						clrButtons =  <React.Fragment><button onClick={this.clearWarnings}>{vdefMapV2['@labels']['Clear Warnings'][this.props.language]['name']}</button>
-											 <button onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
+						clrButtons =  <React.Fragment><button  style={{display:'block', marginLeft:'auto', marginRight:'auto', height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}}  onClick={this.clearWarnings}>{vdefMapV2['@labels']['Clear Warnings'][this.props.language]['name']}</button>
+											 <button  style={{display:'block', marginLeft:'auto', marginRight:'auto', height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}}  onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
 						</React.Fragment>
 				}else{
-					clrButtons =  <button onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
+					clrButtons =  <button  style={{display:'block', marginLeft:'auto', marginRight:'auto', height:40, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:165, borderRadius:20, fontSize:20}}  onClick={this.clearFaults}>{vdefMapV2['@labels']['Clear Faults'][this.props.language]['name']}</button>
 				
 				}
 			fCont = <div style={{color:"#e1e1e1"}}>{this.props.faultArray.map(function (f) {
@@ -7408,9 +7634,16 @@ class InterceptorDFSensitivityUI extends React.Component{
 		this.onSigDF = this.onSigDF.bind(this);
 	}
 	setPeaks(a,b,df){
+    if(this.props.interceptor){
 		if((this.state.peaka != a)||(this.state.peakb != b)||(this.state.peakdf != df)){
 			this.setState({peaka:a,peakb:b, peakdf:df})
 		}
+  }else{
+    if(this.state.peakdf != a){
+      this.setState({peakdf:a})
+    }
+  }
+
 	}
 	onSens(sens){
 		this.props.onSens(sens,'Sens');
@@ -7480,7 +7713,7 @@ class InterceptorDFSensitivityUI extends React.Component{
 		return <div>
 		<div style={{textAlign:'center'}}>
 				<div>
-				<div><KeyboardInputTextButton mobile={this.props.mobile} language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens_A']['@translations'][this.props.language]['name']} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.sens} onInput={this.onSens} inverted={false} />
+				<div><KeyboardInputTextButton mobile={this.props.mobile} language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens']['@translations'][this.props.language]['name']} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.sens} onInput={this.onSens} inverted={false} />
 				</div><div>
 				<KeyboardInputTextButton mobile={this.props.mobile} language={this.props.language} label={vdefMapV2['@labels']['Signal'][this.props.language]['name']} lab2={''} onClick={this.onSigDF} isEditable={false} value={this.state.peakdf} inverted={false}/>
 					</div>
@@ -7495,8 +7728,11 @@ class InterceptorDFSensitivityUI extends React.Component{
 			return this.renderMobile();
 		}
 		var details = '';
-		var list = vdefByMac[this.props.mac][0]['@labels']['SigModeCombined']['english']
-		if(this.props.level > 3){
+	  if(this.props.interceptor){
+      var list =  vdefByMac[this.props.mac][0]['@labels']['SigModeCombined']['english']
+  
+    
+   	if(this.props.level > 3){
 			details = (	
 				
 				<div style={{ overflow: 'hidden',borderRadius: 20, border: '8px solid #818a90',boxShadow: '0 0 14px black'}}>
@@ -7532,10 +7768,11 @@ class InterceptorDFSensitivityUI extends React.Component{
 		</div>
 		)
 		}
+  }
 		
 		return <div>
 		<div style={{textAlign:'center'}}>
-				<div><table><tbody><tr><td style={{width:450}}><KeyboardInputTextButton language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens_A']['@translations'][this.props.language]['name']} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.sens} onInput={this.onSens} inverted={false} />
+				<div><table><tbody><tr><td style={{width:450}}><KeyboardInputTextButton language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens']['@translations'][this.props.language]['name']} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.props.sens} onInput={this.onSens} inverted={false} />
 				</td><td style={{width:450}}><KeyboardInputTextButton language={this.props.language} label={vdefMapV2['@labels']['Signal'][this.props.language]['name']} lab2={''} onClick={this.onSigDF} isEditable={false} value={this.state.peakdf} inverted={false}/>
 					</td></tr></tbody></table>
 				
@@ -7644,21 +7881,33 @@ class InterceptorCalibrateUI extends React.Component{
 		var opsA = modes[self.state.phaseMode]
 		var opsB = modes[self.state.phaseModeB]
 
+    var tab =    
+    <table style={{borderSpacing:0}}>
+      <tbody> 
+        <tr><td style={{width:422, textAlign:'center'}}><div style={{marginTop:15}}><CalibIndicator language={this.props.language} tooltip={vMapV2['PhaseAngle']['@translations'][this.props.language]['description']} label={vMapV2['PhaseAngle']['@translations'][this.props.language]['name']} lab2={opsA} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phase} mphase={this.props.moa} offset={this.props.offsetA} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.phaseSpeed]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
+          </td><td style={{width:422, textAlign:'center'}}><div style={{marginTop:15}}><KeyboardInputTextButton language={this.props.language} tooltip={vMapV2['Sens']['@translations'][this.props.language]['description']} label={vMapV2['Sens']['@translations'][this.props.language]['name']}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensA} onInput={this.onPhaseB} inverted={true} bgColor={colors[this.state.sensCalB]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
+    
+        </td></tr>
 
+      </tbody>
+     </table>
+    if(this.props.interceptor){
+      tab =    <table style={{borderSpacing:0}}>
+      <tbody> 
+        <tr><td style={{width:422, textAlign:'center'}}><div style={{marginTop:15}}><CalibIndicator language={this.props.language} tooltip={vMapV2['PhaseAngle_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel A'][this.props.language]['name']} lab2={opsA} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phase} mphase={this.props.moa} offset={this.props.offsetA} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.phaseSpeed]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
+            <div style={{marginTop:5}}><KeyboardInputTextButton language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens_A']['@translations'][this.props.language]['name']} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensA} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.sensCalA]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
+          </td><td style={{width:422, textAlign:'center'}}><div style={{marginTop:15}}><CalibIndicator language={this.props.language} tooltip={vMapV2['PhaseAngle_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel B'][this.props.language]['name']} lab2={opsB} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phaseb} mphase={this.props.mob} offset={this.props.offsetB} onInput={this.onPhaseB} inverted={true} bgColor={colors[this.state.phaseSpeedB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
+            <div style={{marginTop:5}}><KeyboardInputTextButton language={this.props.language} tooltip={vMapV2['Sens_B']['@translations'][this.props.language]['description']} label={vMapV2['Sens_B']['@translations'][this.props.language]['name']}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensB} onInput={this.onPhaseB} inverted={true} bgColor={colors[this.state.sensCalB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
+    
+        </td></tr>
+
+      </tbody>
+     </table>
+    }
 
 	 	return	<div >
 	 	<div><CircularButton style={{width:228, lineHeight:'80px', height:70}} lab={vdefMapV2['@labels']['Learn'][this.props.language]['name']} isTransparent={true} inverted={false} onClick={this.onCalA}/></div>
-	 	 <table style={{borderSpacing:0}}>
-	 	 	<tbody>	
-	 	 		<tr><td style={{width:422, textAlign:'center'}}><div style={{marginTop:15}}><CalibIndicator language={this.props.language} tooltip={vMapV2['PhaseAngle_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel A'][this.props.language]['name']} lab2={opsA} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phase} mphase={this.props.moa} offset={this.props.offsetA} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.phaseSpeed]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
-						<div style={{marginTop:5}}><KeyboardInputTextButton language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens_A']['@translations'][this.props.language]['name'] + ' A'} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensA} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.sensCalA]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
-					</td><td style={{width:422, textAlign:'center'}}><div style={{marginTop:15}}><CalibIndicator language={this.props.language} tooltip={vMapV2['PhaseAngle_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel B'][this.props.language]['name']} lab2={opsB} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phaseb} mphase={this.props.mob} offset={this.props.offsetB} onInput={this.onPhaseB} inverted={true} bgColor={colors[this.state.phaseSpeedB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
-						<div style={{marginTop:5}}><KeyboardInputTextButton language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens_A']['@translations'][this.props.language]['name'] + ' B'}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensB} onInput={this.onPhaseB} inverted={true} bgColor={colors[this.state.sensCalB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
-		
-				</td></tr>
-
-	 	 	</tbody>
-	 	 </table>
+	{tab}
 
 
 				<AlertModal ref='cfmodal' accept={this.lowPower}>
@@ -7683,9 +7932,9 @@ class InterceptorCalibrateUI extends React.Component{
 	 	return	<div style={{textAlign:'center'}} >
 	 	<div style={{marginLeft:5, marginRight:5}}><CircularButton  style={{width:'100%', marginLeft:-8, height:43, borderWidth:5}} lab={vdefMapV2['@labels']['Learn'][this.props.language]['name']} isTransparent={true} inverted={false} onClick={this.onCalA}/></div>
 	 	<div style={{marginTop:15}}><CalibIndicator  mobile={this.props.mobile}  mphase={this.state.moa} offset={this.state.offsetA} language={this.props.language} tooltip={vMapV2['PhaseAngle_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel A'][this.props.language]['name']} lab2={opsA} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phase} mphase={this.props.moa} offset={this.props.offsetA} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.phaseSpeed]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
-						<div style={{marginTop:5}}><KeyboardInputTextButton mobile={this.props.mobile} language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens_A']['@translations'][this.props.language]['name'] + ' A'} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensA} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.sensCalA]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
+						<div style={{marginTop:5}}><KeyboardInputTextButton mobile={this.props.mobile} language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens']['@translations'][this.props.language]['name'] + ' A'} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensA} onInput={this.onPhaseA} inverted={false} bgColor={colors[this.state.sensCalA]} rstyle={{backgroundColor:ledcolors[this.state.pled_a]}} overrideBG={true}/></div>
 		<div style={{marginTop:15}}><CalibIndicator  mobile={this.props.mobile}  mphase={this.state.moa} offset={this.state.offsetA} language={this.props.language} tooltip={vMapV2['PhaseAngle_A']['@translations'][this.props.language]['description']} label={vdefMapV2['@labels']['Channel B'][this.props.language]['name']} lab2={opsB} onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={true} value={this.state.phaseb} mphase={this.props.mob} offset={this.props.offsetB} onInput={this.onPhaseB} inverted={false} bgColor={colors[this.state.phaseSpeedB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
-						<div style={{marginTop:5}}><KeyboardInputTextButton mobile={this.props.mobile}  language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens_A']['@translations'][this.props.language]['name'] + ' B'}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensB} onInput={this.onPhaseB} inverted={false} bgColor={colors[this.state.sensCalB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
+						<div style={{marginTop:5}}><KeyboardInputTextButton mobile={this.props.mobile}  language={this.props.language} tooltip={vMapV2['Sens_A']['@translations'][this.props.language]['description']} label={vMapV2['Sens']['@translations'][this.props.language]['name'] + ' B'}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} num={true} isEditable={false} value={this.state.sensB} onInput={this.onPhaseB} inverted={false} bgColor={colors[this.state.sensCalB]} rstyle={{backgroundColor:ledcolors[this.state.pled_b]}} overrideBG={true}/></div>
 		
 
 				<AlertModal ref='cfmodal' accept={this.lowPower}>
