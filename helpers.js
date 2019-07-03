@@ -3,7 +3,12 @@ const tftp = require('tftp');
 const fs = require('fs');
 const fti = require('./fti-flash-node/index.js');
 const arloc = fti.ArmFind;
+const crypto = require('crypto')
 
+const PASS_SEED1_OFFSET = 68
+const PASS_SEED2_OFFSET = 105
+const PASS_SEED3_OFFSET = 78
+const PASS_SEED4_OFFSET = 111
 class Params{
   static frac_value(int){
     return (int/(1<<15))
@@ -366,7 +371,10 @@ function passReset(){
   var asciiArr = randPass.split('').map(function(c){
     return c.charCodeAt(0);
   })
+  console.log('after itoa')
   return {password:randPass,phash:crypto.createHash('sha1').update(Buffer.from((randPass + '000000').slice(0,6),'ascii')).digest().slice(0,8),seeds:[asciiArr[0]^PASS_SEED1_OFFSET,asciiArr[1]^PASS_SEED2_OFFSET,asciiArr[2]^PASS_SEED3_OFFSET,asciiArr[3]^PASS_SEED4_OFFSET]}
+
+ // return 
   //randPass.push(Math.floor(randNum/1000))
   //randNum
 }

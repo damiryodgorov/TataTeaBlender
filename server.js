@@ -31,6 +31,8 @@ const exec = require('child_process').exec;
 const crc = require('crc');
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 var Helpers = require('./helpers.js');
+
+var dispSettings = require('./displaySetting.json')
 var uintToInt = Helpers.uintToInt;
 var getVal = Helpers.getVal;
 var passReset = Helpers.passReset;
@@ -151,14 +153,10 @@ class FtiSockIOServer{
 
 /**IMPORTS END**/
 
-const PASS_SEED1_OFFSET = 68
-const PASS_SEED2_OFFSET = 105
-const PASS_SEED3_OFFSET = 78
-const PASS_SEED4_OFFSET = 111
 
 
 
-const VERSION = 'PR2019/01/24'
+const VERSION = 'PR2019/07/03'
 
 http.on('error', function(err){
   //console.log('this is an http error')
@@ -166,6 +164,7 @@ http.on('error', function(err){
 })
 
 let _accounts = {};
+let _tempAccounts = {};
 var prefs = [];
 var cur = Date.now()
 
@@ -233,6 +232,7 @@ function initSocks(arr, cb){
   nphandlers = {};
   accountJSONs = {};
   _accounts = {};
+  _tempAccounts = {};
   //console.log('dsp_ips')
   for(var i = 0; i<arr.length; i++){
    // //console.log(arr)
@@ -591,7 +591,9 @@ function processParam(e, _Vdef, nVdf, pVdef, ip) {
       usernames.push({username:userrec['UserName'+i], acc:userrec['UserOptions'+i],preset:userrec['UserPassReset'+i]});
       accArray.push({username:userrec['UserName'+i], opt:userrec['UserOptions'+i], phash:userrec['PasswordHash'+i],preset:userrec['UserPassReset'+i]})
     }
+   // _tempAccounts[ip] = accArray.slice(0)
     _accounts[ip] = accArray.slice(0)
+
     relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:5, rec:userrec, array:usernames}}})
 
     pack = {type:3, rec:rec}
@@ -623,6 +625,10 @@ function udpConSing(ip){
   //console.log(udpClients[ip].ip)
   if(dsp_ips.indexOf(ip) == -1){
     return;
+  }
+  _tempAccounts[ip] = [];
+  for(var i = 0; i<50; i++){
+    _tempAccounts[ip].push({phash:null,preset:0})
   }
   if(typeof udpClients[ip] == 'undefined'){
     console.log('Why here?')
@@ -918,6 +924,7 @@ function autoIP(){
     }else{
       
     }*/
+
     relaySockMsg('notify', 'Attempting to autoconnect')
     locateUnicast('255.255.255.255', function(dets){
       var x = -1
@@ -939,6 +946,7 @@ function autoIP(){
         var addrByte = det.nif_ip.split('.')[3];
         var chosen = false
         var newIP;
+
         while((!chosen)&&(addrByte<255)){
           var tmpIP = det.ip.split('.').slice(0,3).join('.') + '.'+addrByte;
 
@@ -973,6 +981,7 @@ function autoIP(){
             })
           
         }
+      
       }else{
         relaySockMsg('notify', 'Try adding detector manually')
       }
@@ -1078,6 +1087,9 @@ wss.on('connection', function(scket, req){
   socket.on('close',function(){
     socket.destroy();
     socket = null;  
+  })
+  socket.on('getDispSettings', function(){
+    socket.emit('dispSettings',dispSettings)
   })
 
   function getProdList(ip) {
@@ -1712,7 +1724,12 @@ wss.on('connection', function(scket, req){
         
         }
         if(prefs.length == 0){
-          autoIP();
+          if(dispSettings.mode == 0){
+            autoIP();  
+          }else{
+            socket.emit('notify', 'Display is in static mode')
+          }
+          
         }else{
           socket.emit('prefs', prefs)  
         }
@@ -1739,13 +1756,19 @@ wss.on('connection', function(scket, req){
     //console.log(packet)
     var hash = crypto.createHash('sha1').update(Buffer.from((packet.pswd + '000000').slice(0,6),'ascii')).digest().slice(0,8)
     var ap = _accounts[packet.ip][packet.user].phash
+    var tempUser = _tempAccounts[packet.ip][packet.user]
     //console.log(hash)
     //console.log(_accounts[packet.ip][packet.user].phash)
     if(ap.equals(hash)){
       //console.log('success')
+      _tempAccounts[packet.ip][packet.user].preset = 0;
       socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:_accounts[packet.ip][packet.user].preset, ip:packet.ip})
+      
     }else if((packet.user == 0) && ((packet.pswd + '000000').slice(0,6) == '218500')){
       socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:_accounts[packet.ip][packet.user].preset, ip:packet.ip})
+    }else if(tempUser.preset && tempUser.phash.equals(hash)){
+      socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:1, ip:packet.ip})
+      
     }else{
       //console.log('fail')
       socket.emit('authFail', {user:packet.user, ip:packet.ip})
@@ -1832,13 +1855,16 @@ wss.on('connection', function(scket, req){
   })
   socket.on('passReset',function(packet){
     console.log('passReset')
-   var users = _accounts[packet.ip].slice(0);
+  // var users = _accounts[packet.ip].slice(0);
     var password = passReset();
     console.log('why does it not get here')
     console.log(password)
-    users[packet.data.user].phash = password.phash
-    users[packet.data.user].opt += 16;
-     var _users = []
+    //users[packet.data.user].phash = password.phash
+    //users[packet.data.user].opt += 16;
+
+   _tempAccounts[packet.ip][packet.data.user].phash = password.phash;
+   _tempAccounts[packet.ip][packet.data.user].preset = 1;
+   /*  var _users = []
     for(var i = 0; i<vdefs[packet.ip]['@defines']['MAX_USERNAMES']; i++){
       var user = Buffer.from((users[i].username + "          ").slice(0,10),'ascii');
       var _phash = users[i].phash//crypto.createHash('sha1').update(Buffer.from(packet.data[i].password,'ascii')).digest();
@@ -1853,23 +1879,23 @@ wss.on('connection', function(scket, req){
       _users.push(Buffer.concat([user,phash,useropt]))
     }
     var buf = Buffer.concat(_users);
-    
-    if(buf.length > vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
-      socket.emit('notify','Error updating users' + buf.length + ' ' + vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE'])
-    }else{
-      var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][1],buf)
+    */
+   // if(buf.length > vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
+   //   socket.emit('notify','Error updating users' + buf.length + ' ' + vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE'])
+   // }else{
+   //   var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][1],buf)
       //console.log(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'])
       //console.log(Buffer.from(pkt))
           socket.emit('passwordNotify', password.seeds)
             
-       udpClients[packet.ip].send_rpc(Buffer.from(pkt), function(e){
+     /*  udpClients[packet.ip].send_rpc(Buffer.from(pkt), function(e){
                 //console.log('Ack from ' + packet.ip)
                 relayRpcMsg({det:{ip:packet.ip, mac:macs[packet.ip]},data:{data:toArrayBuffer(e)}});
                 e = null;
 
-              })
+              })*/
              
-    }
+ //   }
   }) 
   socket.on('addAccount', function(pack){
 
@@ -1987,6 +2013,12 @@ wss.on('connection', function(scket, req){
     },300)
   
    
+  })
+  socket.on('dispMode',function(m){
+    dispSettings.mode = m;
+    fs.writeFile('./displaySetting.json', JSON.stringify(dispSettings), function(e){
+     relaySockMsg('dispSettings', dispSettings);
+    })
   })
   socket.on('nifgw',function(gw){
     exec('sudo ip route change default via '+gw+' dev eth0',function(_err, stdout, stderr){

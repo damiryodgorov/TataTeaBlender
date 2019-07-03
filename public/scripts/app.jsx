@@ -170,7 +170,7 @@ var located = false;
 var cnt = 0;
 
 socket.on('vdef', function(vdf){
-	////console.log('on vdef')
+	//////console.log('on vdef')
 	var json = vdf[0];
 	_Vdef = json
 	var res = [];
@@ -198,7 +198,7 @@ socket.on('vdef', function(vdf){
     res[7] = [];
    for(var par in res[2]){  
       if(par.indexOf('Fault') != -1){
-        //////console.log("fault found")
+        ////////console.log("fault found")
         res[7].push(par)
       }
     }
@@ -213,7 +213,7 @@ socket.on('vdef', function(vdf){
        // vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapST["@categories"]], vdefMapST['@vMap'], vdefMapST['@pages']]
 
     //}
-   //console.log('552',vdefByMac)
+   ////console.log('552',vdefByMac)
     isVdefSet = true;
 })
 socket.on('echo',function(){
@@ -233,13 +233,13 @@ function _scrollById(id,distance) {
 
 function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
 	var params = []
-	////////console.log(cat)
-	////////console.log(pVdef)
+	//////////console.log(cat)
+	//////////console.log(pVdef)
 	cat.params.forEach(function(par) {
 		if(par.type == 0){
 
 			var p = par.val
-			////////console.log(p)
+			//////////console.log(p)
     		var _p = null//{'type':0, '@name':p, '@children':[], acc:par.acc}
    			if(typeof pVdef[0][p] != 'undefined'){
    				_p = {'type':0, '@name':p, '@data':sysRec[p], '@children':[], acc:par.acc}
@@ -254,7 +254,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
    				}
     			_p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
     			if(p == 'BeltSpeed'){
-   					////console.log('653',par,_p)
+   					//////console.log('653',par,_p)
    				}
     		}else if(typeof pVdef[2][p] != 'undefined'){
     			_p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc}
@@ -268,11 +268,11 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
     			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
     		}else if(par.val == 'DCRate_A'){
     			_p = {'type':0, '@name':p,'@data':prodRec[p], '@children':[], acc:par.acc}
-    		}    	////////console.log(_vmap[p])
-    //	console.log(p)
+    		}    	//////////console.log(_vmap[p])
+    //	//console.log(p)
     		if(_p != null){
     		if(typeof _vmap[p] == 'undefined'){
-    	//	console.log(p)
+    	//	//console.log(p)
     		}
     		_vmap[p].children.forEach(function (ch) {
     			var _ch;
@@ -335,11 +335,11 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
               _p['@children'].push(_ch)
               _p['@interceptor'] = true; 
               params.push(_p)
-              //console.log(335,_p)
+              ////console.log(335,_p)
             }
           }else{
             var pname = p.slice(0,-4)
-        //    console.log(pname, p, 342)
+        //    //console.log(pname, p, 342)
               if(typeof pVdef[0][pname] != 'undefined'){
                 _p = {'type':0, '@name':p, '@data':sysRec[pname], '@children':[], acc:par.acc}
               }else if(typeof pVdef[1][pname] != 'undefined'){
@@ -348,7 +348,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
                 
                 _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
                 if(p == 'BeltSpeed'){
-                  ////console.log('653',par,_p)
+                  //////console.log('653',par,_p)
                 }
               }else if(typeof pVdef[2][pname] != 'undefined'){
                 _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[pname], '@children':[], acc:par.acc}
@@ -378,7 +378,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
               }
               _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
               if(p == 'BeltSpeed'){
-                ////console.log('653',par,_p)
+                //////console.log('653',par,_p)
               }
             }else if(typeof pVdef[2][a] != 'undefined'){
               _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
@@ -407,7 +407,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
               _p['@children'].push(_ch)
               _p['@test'] = true; 
               params.push(_p)
-          //    console.log(335,_p)
+          //    //console.log(335,_p)
             }
                  ///
         }else if(_vmap[p]['@halo']){
@@ -425,7 +425,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
               }
               _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
               if(p == 'BeltSpeed'){
-                ////console.log('653',par,_p)
+                //////console.log('653',par,_p)
               }
             }else if(typeof pVdef[2][a] != 'undefined'){
               _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
@@ -454,7 +454,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
               _p['@children'].push(_ch)
               _p['@halo'] = true; 
               params.push(_p)
-              //console.log(335,_p)
+              ////console.log(335,_p)
             }
                  ///
         }else if(_vmap[p]['@input']){
@@ -472,7 +472,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
               }
               _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
               if(p == 'BeltSpeed'){
-                ////console.log('653',par,_p)
+                //////console.log('653',par,_p)
               }
             }else if(typeof pVdef[2][a] != 'undefined'){
               _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
@@ -501,7 +501,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
               _p['@children'].push(_ch)
               _p['@input'] = true; 
               params.push(_p)
-             // console.log(335,_p)
+             // //console.log(335,_p)
             }
                  ///
         }
@@ -530,8 +530,8 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
 	return params
 }
 function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
-	////////console.log(['684',pVdef])
-  //console.log('is int', int)
+	//////////console.log(['684',pVdef])
+  ////console.log('is int', int)
 	cat.params = getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int)
 	
 	return cat
@@ -588,7 +588,7 @@ class LandingPage extends React.Component{
 		var mq = window.matchMedia("(min-width: 1000px)");
 		var mqls = window.matchMedia("(orientation: landscape)")
 			
-		this.state =  ({currentPage:'landing',netpolls:{}, mqls:mqls,curIndex:0, minMq:minMq,landScape:mqls.matches, minW:minMq.matches, mq:mq, brPoint:mq.matches, progress:'',
+		this.state =  ({automode:0,currentPage:'landing',netpolls:{}, mqls:mqls,curIndex:0, minMq:minMq,landScape:mqls.matches, minW:minMq.matches, mq:mq, brPoint:mq.matches, progress:'',
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:5, version:'2018/07/30',pmsg:'',pON:false,percent:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'mb', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''})
 		this.listenToMq = this.listenToMq.bind(this);
@@ -649,7 +649,7 @@ class LandingPage extends React.Component{
 			socket.emit('locateReq');
 		})
 		socket.on('nif', function(iface){
-			//console.log('811', iface)
+			////console.log('811', iface)
 			self.setState({nifip:iface.address, nifnm:iface.netmask})
 		})
 		socket.on('version',function (version) {
@@ -657,7 +657,7 @@ class LandingPage extends React.Component{
 			self.setState({version:version})
 		})
 		socket.on('gw', function(gw){
-			//console.log('823', gw)
+			////console.log('823', gw)
 			self.setState({nifgw:gw})
 		})
 		socket.on('displayUpdate', function(){
@@ -671,12 +671,12 @@ class LandingPage extends React.Component{
 	  })
 	
 		socket.on('netpoll', function(m){
-			////////////console.log(['73',m])
+			//////////////console.log(['73',m])
 			self.onNetpoll(m.data, m.det)
 			m = null;
 		})
 		socket.on('prefs', function(f) {
-			//////////console.log(f)
+			////////////console.log(f)
 			var detL = self.state.detL
 			var cnt = 0;
 			var _ip = ''
@@ -698,13 +698,13 @@ class LandingPage extends React.Component{
 				if(self.state.currentPage == 'landing'){
 					if(self.state.mbunits[0].banks.length == 1){
 						if(vdefByMac[self.state.mbunits[0].banks[0].mac]){
-							//console.log('try first here?')
+							////console.log('try first here?')
 							self.switchUnit(self.state.mbunits[0].banks[0])
 						}else{
 							setTimeout(function () {
 								// body...
 								if(self.state.currentPage == 'landing'){
-									//console.log('switch?')
+									////console.log('switch?')
 									if(vdefByMac[self.state.mbunits[0].banks[0].mac]){
 										self.switchUnit(self.state.mbunits[0].banks[0])
 									}
@@ -728,7 +728,7 @@ class LandingPage extends React.Component{
 		})
 		socket.on('testusb',function(dev){
 
-			//console.log(['testusb',dev])
+			////console.log(['testusb',dev])
 		})
 		socket.on('noVdef', function(det){
 			setTimeout(function(){
@@ -757,7 +757,7 @@ class LandingPage extends React.Component{
 						macs.push(d.mac)
 						dets[d.mac] = d
 					}
-					//////////console.log(d)
+					////////////console.log(d)
 					socket.emit('vdefReq', d);
 
 			})
@@ -776,7 +776,7 @@ class LandingPage extends React.Component{
 						return b
 					}
 				})
-				//console.log(['852',u.banks.slice(0), banks])
+				////console.log(['852',u.banks.slice(0), banks])
 				u.banks = banks;
 			})
 			var curDet = self.state.curDet;
@@ -786,10 +786,10 @@ class LandingPage extends React.Component{
 					curDet = dets[curDet.mac];
 				}
 				else{
-					//console.log(895, 'this is the problem')
+					////console.log(895, 'this is the problem')
 				}
 			}
-			//////////console.log(dets)
+			////////////console.log(dets)
 			mbunits.forEach(function(u){
 				u.banks.forEach(function(b) {
 
@@ -797,7 +797,7 @@ class LandingPage extends React.Component{
 					if(!nps[b.ip]){
 						nps[b.ip] = []
 					}
-					//////console.log('connectToUnit')
+					////////console.log('connectToUnit')
 					socket.emit('connectToUnit', b.ip)
 				})
 			})
@@ -810,17 +810,20 @@ class LandingPage extends React.Component{
 			self.setState({dets:e, detL:dets, mbunits:mbunits,curDet:curDet, macList:macs, netpolls:nps, nifip:nfip})
 		}
 	}catch(er){
-		//console.log(914,er)
+		////console.log(914,er)
 	//	toast(er.message)
 	}
 		});
+    socket.on('dispSettings', function(disp){
+      self.setState({automode:disp.mode})
+    })  
 		
 		socket.on('paramMsg2', function(data) {
 			self.onParamMsg2(data.data,data.det) 
 			data = null;
 		})
 		socket.on('rpcMsg', function (data) {
-			////console.log(data)
+			//////console.log(data)
 			self.onRMsg(data.data, data.det)
 			data = null;
 		})
@@ -833,11 +836,11 @@ class LandingPage extends React.Component{
 			self.setState({curUser:'', level:0})
 		})
 		socket.on('accounts', function(data){
-			//console.log(data)
+			////console.log(data)
 			self.setState({accounts:data.data})
 		})
 		socket.on('userNames', function(p){
-			////console.log(['808', p])
+			//////console.log(['808', p])
 			if(self.refs.dv){
 				self.refs.dv.setState({usernames:p.det.data.array, update:true})
 			}
@@ -870,11 +873,11 @@ class LandingPage extends React.Component{
 	}
 	resetPassword(pack,v){
 		var packet = {ip:pack.ip, data:{user:pack.user, password:v}}
-		console.log('packet',packet)
+		//console.log('packet',packet)
 		socket.emit('writePass', packet)
 	}
 	onNetpoll(e,d){
-		//////////console.log([e,d])
+		////////////console.log([e,d])
 		var nps = this.state.netpolls
 		if(nps[d.ip]){
 			if(nps[d.ip].length == 15){
@@ -887,9 +890,9 @@ class LandingPage extends React.Component{
 			
 			nps[d.ip].unshift(e)
 			if(e.net_poll_h == 'NET_POLL_OPERATOR_NO'){
-				//////console.log('test started: ' + d.ip)
+				////////console.log('test started: ' + d.ip)
 			}else if(e.net_poll_h == 'NET_POLL_TEST_REQ_PASS'){
-				//////console.log('test passed: ' + d.ip)
+				////////console.log('test passed: ' + d.ip)
 				//toast('Test Passed')
 			}
 
@@ -898,7 +901,7 @@ class LandingPage extends React.Component{
 		
 	}
 	onRMsg(e,d) {
-		//////////console.log([e,d])
+		////////////console.log([e,d])
 		var msg = e.data
 		var data = new Uint8Array(msg);
 
@@ -927,9 +930,9 @@ class LandingPage extends React.Component{
 		d = null;
 	}
 	onParamMsg2(e,d) {
-		////console.log(vdefByMac[d.mac])
+		//////console.log(vdefByMac[d.mac])
 		if(vdefByMac[d.mac]){
-		//	//console.log(d)
+		//	////console.log(d)
 			if(this.refs[d.mac]){
 				this.refs[d.mac].onParamMsg2(e);
 			}else{
@@ -976,7 +979,7 @@ class LandingPage extends React.Component{
 	}
 	logoClick() {this.setState({currentPage:'landing'})}
 	switchUnit(u) {
-		//////////console.log(u)
+		////////////console.log(u)
 		var self = this;
 		setTimeout(function () {
 			// body...
@@ -1069,7 +1072,7 @@ class LandingPage extends React.Component{
 		this.setState({tmpMB:mbUnits, detL:detL})
 	}
 	cancel() {
-		//////////console.log(['268', 'cancel'])
+		////////////console.log(['268', 'cancel'])
 		var detL = this.state.detL;
 		this.state.tmpMB.banks.forEach(function (b) {
 			detL[b.mac]= b
@@ -1122,6 +1125,7 @@ class LandingPage extends React.Component{
 			//socket.emit('locateReq');
 			socket.emit('getVersion');
 			socket.emit('getPrefs');
+      socket.emit('getDispSettings');
 
 		}
 	}
@@ -1141,7 +1145,7 @@ class LandingPage extends React.Component{
 	renderModal() {
 		var self = this;
 		var mbSetup = this.state.mbunits.map(function(mb,ind) {
-			//////////console.log(ind)
+			////////////console.log(ind)
 			return <MbSetup remove={self.removeMb} move={self.move} mb={mb} edit={self.editMb} index={ind} singleUnits={self.state.single}/>	// body...
 		})
 		var detList = this.state.dets.map(function(d){
@@ -1267,7 +1271,7 @@ class LandingPage extends React.Component{
         //return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/> 
       //}else{
         if(mb.banks[0]){
-          //////////console.log('457')
+          ////////////console.log('457')
           return <SingleUnit mobile={!self.state.brPoint} ref={mb.banks[0].mac} onSelect={self.switchUnit} unit={mb.banks[0]}/>  
         }           
       //}
@@ -1295,9 +1299,9 @@ class LandingPage extends React.Component{
             {modalContent}
           </Modal>
           <Modal ref='dispModal'>
-            <DispSettings nif={this.state.nifip} nm={this.state.nifnm} gw={this.state.nifgw} version={this.state.version}/>
-            <CustomAlertButton alertMessage={'Update display?'} style={{height:50,display:'inline-block',marginRight:5, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.updateDisply}>Update Display</CustomAlertButton>
-              <CustomAlertButton alertMessage={'Reboot display?'} style={{height:50, border:'5px solid #808a90',display:'inline-block', color:'#e1e1e1', background:'#5d5480', width:150, borderRadius:20}} onClick={this.rebootDisply}>Reboot Display</CustomAlertButton>
+            <DispSettings nif={this.state.nifip} nm={this.state.nifnm} gw={this.state.nifgw} version={this.state.version} automode={this.state.automode}/>
+            <CustomAlertButton alertMessage={'Update display?'} style={{height:50,display:'inline-block',marginRight:5, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:180, borderRadius:20, textAlign:'center', lineHeight:'50px'}} onClick={this.updateDisply}>Update Display</CustomAlertButton>
+              <CustomAlertButton alertMessage={'Reboot display?'} style={{height:50, border:'5px solid #808a90',display:'inline-block', color:'#e1e1e1', background:'#5d5480', width:180, borderRadius:20, textAlign:'center', lineHeight:'50px'}} onClick={this.rebootDisply}>Reboot Display</CustomAlertButton>
           
           </Modal>
           <div style={{textAlign:'center'}}>
@@ -1328,7 +1332,7 @@ class LandingPage extends React.Component{
         return <MultiBankUnit onSelect={self.switchUnit} ref={'mbu' + i} name={mb.name} data={mb.banks}/> 
       }else{
         if(mb.banks[0]){
-          //////////console.log('457')
+          ////////////console.log('457')
           return <SingleUnit ref={mb.banks[0].mac} onSelect={self.switchUnit} unit={mb.banks[0]}/>  
         }           
       }
@@ -1396,10 +1400,10 @@ class LandingPage extends React.Component{
 	}
 	dummy() {
 		// body...
-		//////console.log('dummy')
+		////////console.log('dummy')
 	}
 	forgot(id,ip){
-		console.log('passReset')
+		//console.log('passReset')
 		socket.emit('passReset',{ip:ip,data:{user:id}})
 	}
 	render() {
@@ -1409,7 +1413,7 @@ class LandingPage extends React.Component{
 
 
 		if(this.state.currentPage == 'landing'){
-			//////////console.log('here')
+			////////////console.log('here')
 			cont = this.renderLanding();
 
 
@@ -1439,7 +1443,19 @@ class DispSettings extends React.Component{
 		this.onClick = this.onClick.bind(this);
 		this.onClickNM = this.onClickNM.bind(this);
 		this.onClickGW = this.onClickGW.bind(this);
+    this.onChangeAuto = this.onChangeAuto.bind(this);
+    this.onClickAuto = this.onClickAuto.bind(this);
 	}
+  onChangeAuto(d){
+    socket.emit('dispMode',d)
+  }
+  onClickAuto(){
+    var self = this;
+    setTimeout(function(){
+         self.refs.auto.toggle();
+ 
+    },150)
+  }
 	onChange(v){
 		socket.emit('nifip', v);
 	}
@@ -1468,7 +1484,7 @@ class DispSettings extends React.Component{
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
 			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
-
+      var disp = ['auto','static'];
 		return <div>
 		<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#e1e1e1"}} >
 		<div style={{display:'inline-block', textAlign:'center'}}>Display Settings</div></h2></span>
@@ -1485,6 +1501,10 @@ class DispSettings extends React.Component{
 			 <label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{'Display Gateway'}</label>
 			<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>{this.props.gw}</label></div></div>
 			</div>
+      <div className='sItem noChild' onClick={this.onClickAuto}>
+       <label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{'Auto IP'}</label>
+      <div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>{disp[this.props.automode]}</label></div></div>
+      </div>
 			<div className='sItem noChild'>
 			 <label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{'Display Version'}</label>
 			<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>{this.props.version}</label></div></div>
@@ -1492,6 +1512,7 @@ class DispSettings extends React.Component{
 			<CustomKeyboard language={'english'} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'ip'} onRequestClose={this.onRequestClose} onChange={this.onChange} index={0} value={this.props.nif} num={true} label={'Address'}/>
 			<CustomKeyboard language={'english'} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'nm'} onRequestClose={this.onRequestClose} onChange={this.onChangeNM} index={0} value={this.props.nm} num={true} label={'Address'}/>
 			<CustomKeyboard language={'english'} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'gw'} onRequestClose={this.onRequestClose} onChange={this.onChangeGW} index={0} value={this.props.gw} num={true} label={'Address'}/>
+      <PopoutWheel mobile={this.props.mobile} vMap={this.props.vMap} language={'english'} index={0} interceptor={false} name={'Auto IP'} ref='auto' val={[this.props.automode]} options={[disp]} onChange={this.onChangeAuto} onCancel={this.onRequestClose}/>
 
 		</div>
 	}
@@ -1526,7 +1547,7 @@ class LogInControl2 extends React.Component{
 
 			this.setState({val:props.val, list:list})
 		}else{
-			//console.log('this was the issue... why Though?')
+			////console.log('this was the issue... why Though?')
 			this.setState({list:list})
 		}
 		
@@ -1546,7 +1567,7 @@ class LogInControl2 extends React.Component{
 		this.props.logout();
 	}
 	selectChanged(v,i){
-		//console.log(['1531',v])
+		////console.log(['1531',v])
 		var self = this;
 		setTimeout(function(){
 			if(v != 0){
@@ -1574,9 +1595,9 @@ class LogInControl2 extends React.Component{
 			
 	}
 	valChanged(v){
-		////console.log(v)
+		//////console.log(v)
 		//this.props.authenticate(this.state.list[this.state.val], v)
-		//console.log(this.state.val)
+		////console.log(this.state.val)
 		if(this.props.pass6 == 0){
 			if(v.length == 6){
 				this.props.authenticate(this.state.val,v)
@@ -1601,7 +1622,7 @@ class LogInControl2 extends React.Component{
 		
 	}
 	onCancel(){
-		//console.log('on cancel')
+		////console.log('on cancel')
 		var self = this;
 		this.setState({open:false})
 		setTimeout(function(){
@@ -1795,7 +1816,7 @@ class SettingsDisplay2 extends React.Component{
 		}
 	}
 	handleItemclick(dat, n){		
-		console.log(dat,n,1763)
+		//console.log(dat,n,1763)
     if(dat[0] == 'get_accounts'){
       this.props.onHandleClick(dat,n)
     }else{
@@ -1803,6 +1824,7 @@ class SettingsDisplay2 extends React.Component{
     var path = this.state.path;
     path.push(dat[1])
     setTimeout(function(){
+      document.getElementById(self.props.Id).scrollTop = 0;
       self.setState({path:path})
    
       self.props.onHandleClick(dat, n);
@@ -1824,27 +1846,41 @@ class SettingsDisplay2 extends React.Component{
 	
 	handleScroll(ev) {
 		// body...
-		////////console.log(ev.srcElement.body)
+		//////////console.log(ev.srcElement.body)
 		var lvl = this.props.data.length
 		var len = 0;
 		if(lvl > 0){
 			len = this.props.data[lvl - 1 ][0].params.length
 		}
-		//	//////console.log(document.getElementById(this.props.Id).scrollTop)
-		if(len > 6){
+		//	////////console.log(document.getElementById(this.props.Id).scrollTop)
+     var el = document.getElementById(this.props.Id)   
+       if(el){
+      if(el.scrollTop > 5){
+        this.refs.arrowTop.show();
+      }else{
+        this.refs.arrowTop.hide();
+      }
+      if(el.scrollTop + el.offsetHeight < el.scrollHeight ){
+        this.refs.arrowBot.show();
+      }else{
+        this.refs.arrowBot.hide();
+      }
+    }
+
+		/*if(len > 6){
 			if((document.getElementById(this.props.Id).scrollTop) + 390 < len*65){
 				this.refs.arrowBot.show();
-				////////console.log(['show arrow',document.getElementById(this.props.Id).scrollTop])
+				//////////console.log(['show arrow',document.getElementById(this.props.Id).scrollTop])
 			}else{
 				this.refs.arrowBot.hide();	
-				////////console.log(document.getElementById(this.props.Id).scrollTop)
+				//////////console.log(document.getElementById(this.props.Id).scrollTop)
 			} 
 			if(document.getElementById(this.props.Id).scrollTop > 5){
 				this.refs.arrowTop.show();
 			}else{
 				this.refs.arrowTop.hide();
 			}
-		}	
+		}	*/
 	}
 	scrollUp() {
 		_scrollById(this.props.Id,-260,300);
@@ -1854,7 +1890,7 @@ class SettingsDisplay2 extends React.Component{
 	}
 	sendPacket(n,v) {
 		var self = this;
-		//console.log([n,v])
+		////console.log([n,v])
 		if(n['@rpcs']['toggle']){
 
 			var arg1 = n['@rpcs']['toggle'][0];
@@ -1893,13 +1929,13 @@ class SettingsDisplay2 extends React.Component{
 			var arg2 = [];
 			var strArg = null;
 			var flag = false
-				//console.log('2281',v, n['@rpcs']['write'][1], n["@name"])
+				////console.log('2281',v, n['@rpcs']['write'][1], n["@name"])
 			for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
 				if(!isNaN(n['@rpcs']['write'][1][i])){
-					//console.log('where')
+					////console.log('where')
 					arg2.push(n['@rpcs']['write'][1][i])
 				}else if(n['@rpcs']['write'][1][i] == n['@name']){
-					//console.log('the')
+					////console.log('the')
 					if(!isNaN(v)){
 						arg2.push(v)
 					}
@@ -1909,7 +1945,7 @@ class SettingsDisplay2 extends React.Component{
 					}
 					flag = true;
 				}else{
-					//console.log('fuck')
+					////console.log('fuck')
 					var dep = n['@rpcs']['write'][1][i]
 					if(dep.charAt(0) == '%'){
 
@@ -1928,7 +1964,7 @@ class SettingsDisplay2 extends React.Component{
 			if(!flag){
 				strArg = v;
 			}
-			//console.log(['1917',arg1, arg2,strArg,v])
+			////console.log(['1917',arg1, arg2,strArg,v])
 		
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 				
@@ -1942,7 +1978,7 @@ class SettingsDisplay2 extends React.Component{
 	activate(n) {
 		// body...
 		var self = this;
-		//////console.log(['1466',n,this.props.cob2,this.props.data])
+		////////console.log(['1466',n,this.props.cob2,this.props.data])
 		var list; 
 		if(this.props.data.length > 1){
 			list 	= this.props.data[this.props.data.length - 1][0].params
@@ -1978,7 +2014,7 @@ class SettingsDisplay2 extends React.Component{
       this.setState({path:path})
       this.props.goBack();
     }
-    //console.log(this.props.data)
+    ////console.log(this.props.data)
   }
 	render(){
 		var self = this;
@@ -1997,15 +2033,15 @@ class SettingsDisplay2 extends React.Component{
       // body...
     })
   }
-   // console.log(data,data2,this.state.path)
-    ////console.log(2366,'render')
+   // //console.log(data,data2,this.state.path)
+    //////console.log(2366,'render')
 		//var catMap = vdefByMac[this.props.dsp][]
-		//////////console.log(data)
+		////////////console.log(data)
 		var lvl = data.length 
 		var handler = this.handleItemclick;
 		var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
 		var cvdf = this.props.cvdf
-		//////////console.log(lvl)
+		////////////console.log(lvl)
 		var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
 
 		var nodes;
@@ -2068,7 +2104,7 @@ class SettingsDisplay2 extends React.Component{
 		    	var bblab = ''
 		    	if(this.props.mode == 'config'){
 		    		pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-		    		////console.log(pathString)
+		    		//////console.log(pathString)
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    		bblab = catMapV2[data.slice(1,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
 		    	}else{
@@ -2088,9 +2124,9 @@ class SettingsDisplay2 extends React.Component{
 				// body...
 				if(par.type == 0){
           
-          console.log(2091, par)
+          //console.log(2091, par)
 
-			//		////console.log("Is this the problem")
+			//		//////console.log("Is this the problem")
 					var p = par
 
           var pname = par['@name']
@@ -2108,7 +2144,7 @@ class SettingsDisplay2 extends React.Component{
 						prms = prms[data[ind][1]]['@data'].params
 					}
 					var d = prms[i]
-				  console.log('check this',d)
+				  //console.log('check this',d)
         	var ch = d['@children'].slice(0)
 
           if(d['@interceptor'] || d['@test'] || d['@halo'] || d['@input']){
@@ -2124,7 +2160,7 @@ class SettingsDisplay2 extends React.Component{
 					
 				}else if(par.type == 1){
 					var sc = par['@data']
-					//console.log('check this too',sc)
+					////console.log('check this too',sc)
           
           var	acc = false;
 					if((self.props.level > 3) || (par.acc <= self.props.level)){
@@ -2132,7 +2168,7 @@ class SettingsDisplay2 extends React.Component{
 					}
 					if(typeof sc['child'] != 'undefined'){
 						var spar = sc.params[sc.child]
-            console.log(sc,2115)
+            //console.log(sc,2115)
 						var ch = spar['@children'].slice(0)
           if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input']){
             ch.unshift(spar['@data'])
@@ -2154,10 +2190,10 @@ class SettingsDisplay2 extends React.Component{
 					}
 				}else if(par.type == 2){
 					var sc = par['@data']
-            //console.log('check this too',sc)
+            ////console.log('check this too',sc)
         
 							var	acc = false;
-							//console.log(['2146',par])
+							////console.log(['2146',par])
 				
 					if((self.props.level > 3)){
 						acc = true;
@@ -2179,7 +2215,7 @@ class SettingsDisplay2 extends React.Component{
 				}else if(par.type == 3){
 					//This 
 								var	acc = false;
-							//console.log(['2146',par])
+							////console.log(['2146',par])
 				
 					if((self.props.level > 3)){
 						acc = true;
@@ -2251,7 +2287,7 @@ class SettingItem3 extends React.Component{
 		var val = [], pram = [], label = false;
 		if(!props.hasChild){
 			
-      //console.log(props)
+      ////console.log(props)
 		if(typeof props.data == 'object'){
 
 			if(typeof props.data['@data'] == 'undefined'){
@@ -2263,10 +2299,11 @@ class SettingItem3 extends React.Component{
               lkey = lkey.slice(0,-4)
             }
           }
-       //   console.log(lkey,2238)
+          //came here
+          //console.log(lkey,2238)
   				
           if((props.data[0].params[props.data[0].child]['@children'])&&(props.children[0].length == 2)){
-
+            //console.log(2269)
             for(var i=0;i<props.children[0].length; i++){
               val.push(this.getValue(props.children[1][i], props.children[0][i]))
           
@@ -2290,31 +2327,32 @@ class SettingItem3 extends React.Component{
               }
             }
           }else{
-           // console.log(lkey, 2275)
+            //here
+            //console.log(lkey, 2275)
             
             val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
 
-  				if(typeof pVdef[0][lkey] != 'undefined'){
-  					pram = [pVdef[0][lkey]]
-  				}else if(typeof pVdef[1][lkey] != 'undefined'){
-  					pram = [pVdef[1][lkey]]
-  				}else if(typeof pVdef[2][lkey] != 'undefined'){
-  					pram = [pVdef[2][lkey]]
-  				}else if(typeof pVdef[3][lkey] != 'undefined'){
-  					pram = [pVdef[3][lkey]]
-  				}else if(lkey == 'Nif_ip'){
-  					pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-  				}else if(lkey == 'Nif_nm'){
-  					pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-  				}else if(lkey == 'Nif_gw'){
-  					pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-  				}else if(lkey == 'DCRate_INT'){
-  					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
-  				  //label = true;
-          }else if(lkey == 'DCRate'){
-            pram = [{'@name':'DCRate', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate",0],null]}}]
-            //label = true;
-          }
+  				  if(typeof pVdef[0][lkey] != 'undefined'){
+    					pram = [pVdef[0][lkey]]
+    				}else if(typeof pVdef[1][lkey] != 'undefined'){
+    					pram = [pVdef[1][lkey]]
+    				}else if(typeof pVdef[2][lkey] != 'undefined'){
+    					pram = [pVdef[2][lkey]]
+    				}else if(typeof pVdef[3][lkey] != 'undefined'){
+    					pram = [pVdef[3][lkey]]
+    				}else if(lkey == 'Nif_ip'){
+    					pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+    				}else if(lkey == 'Nif_nm'){
+    					pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+    				}else if(lkey == 'Nif_gw'){
+    					pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+    				}else if(lkey == 'DCRate_INT'){
+    					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+    				  //label = true;
+            }else if(lkey == 'DCRate'){
+              pram = [{'@name':'DCRate', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate",0],null]}}]
+              //label = true;
+            }
 
            if(props.data[0].params[props.data[0].child]['@children']){
 
@@ -2334,12 +2372,12 @@ class SettingItem3 extends React.Component{
             }
             if(lkey == 'DCRate_INT'){
               pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
-             // console.log(2230,lkey)
+             // //console.log(2230,lkey)
             }
           }
         }
         if(pram.length == 0){
-          console.log(lkey)
+          //console.log(lkey)
         }
         if(pram[0]['@labels']){
 					label = true
@@ -2355,8 +2393,9 @@ class SettingItem3 extends React.Component{
             }
           }
         if((props.data['@children'])&&(props.children[0].length == 2)){
-         console.log(lkey, 2340, props.children)
-         // console.log('are we here instead?', props.children)
+          //also came here
+         //console.log(lkey, 2340, props.children)
+         // //console.log('are we here instead?', props.children)
             for(var i=0;i<props.children[0].length;i++){
               val.push(this.getValue(props.children[1][i], props.children[0][i]))
               if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
@@ -2373,7 +2412,8 @@ class SettingItem3 extends React.Component{
               pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
             }
         }else{
-          console.log(2357, lkey)
+          //came here
+          //console.log(2357, lkey)
 
     	   val = [this.getValue(props.data['@data'], lkey)]
        
@@ -2397,9 +2437,10 @@ class SettingItem3 extends React.Component{
             pram = [{'@name':'DCRate', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate",0],null]}}]
             //label = true;
           }else{
-    					console.log(2629,props.lkey, lkey)
+    					//console.log(2629,props.lkey, lkey)
     			}
-          console.log(pram, 2383)
+          //came here
+          //console.log(pram, 2383)
           if(props.data['@children']){
               for(var i=0;i<props.children[0].length;i++){
                 val.push(this.getValue(props.children[1][i], props.children[0][i]))
@@ -2419,7 +2460,7 @@ class SettingItem3 extends React.Component{
           }
         }
         if(pram.length == 0){
-          console.log(2311, props.lkey, lkey)
+          //console.log(2311, props.lkey, lkey)
           if(lkey == 'DCRate_INT'){
             pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
           }
@@ -2427,7 +2468,7 @@ class SettingItem3 extends React.Component{
         if(pram[0]['@labels']){ label = true }	
   		}
 		}else{
-       // console.log('here??????')
+        //console.log('here??????')
 				val = [this.getValue(props.data['@data'], props.lkey)]
 				if(typeof pVdef[0][props.lkey] != 'undefined'){
 					pram = [pVdef[0][props.lkey]]
@@ -2447,7 +2488,7 @@ class SettingItem3 extends React.Component{
 					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
 				}
 				if(props.data['@children']){
-					//////////console.log(['1346', props.data.children])
+					////////////console.log(['1346', props.data.children])
 					for(var ch in props.data['@children']){
 						val.push(this.getValue(props.data['@children'][ch], ch))
 						if(typeof pVdef[0][ch] != 'undefined'){
@@ -2498,7 +2539,7 @@ class SettingItem3 extends React.Component{
 	onItemClick(){
 
 		if(this.props.hasChild || typeof this.props.data == 'object'){
-			//////console.log([this.props.data])
+			////////console.log([this.props.data])
 			// accessControl
 			if(this.props.acc){
 				this.props.onItemClick(this.props.data, this.props.name)	
@@ -2591,7 +2632,7 @@ class SettingItem3 extends React.Component{
 							}
 						}
 					if(pram['@bit_len']<=16){
-						////console.log(f)
+						//////console.log(f)
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
 					if(f == 'phase_offset'){
@@ -2662,7 +2703,7 @@ class SettingItem3 extends React.Component{
 							}else if(pVdef[5][d]["@rec"] == 1){
 								return self.props.prodSettings[d];
 							}else if(pVdef[5][d]["@rec"] == 2){
-							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+							//		////////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
 								return self.props.dynSettings[d];
 							}
 					})
@@ -2693,16 +2734,16 @@ class SettingItem3 extends React.Component{
 							}else if(pVdef[5][d]["@rec"] == 1){
 								return self.props.prodSettings[d];
 							}else if(pVdef[5][d]["@rec"] == 2){
-							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+							//		////////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
 								return self.props.dynSettings[d];
 							}else if(pVdef[5][d]["@rec"] == 3){
-							//		//////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
+							//		////////console.log(['1521',pVdef[5][d], self.props.dynSettings[d]])
 								return self.props.framSettings[d];
 							}
 						});
 					}
 					if(pram['@bit_len']<=16){
-					//	//////console.log(f)
+					//	////////console.log(f)
 						
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
@@ -2747,7 +2788,7 @@ class SettingItem3 extends React.Component{
 			if(res){
 				pVdef = res[1];
 			}
-			////console.log('2885',pVdef,_pVdef)
+			//////console.log('2885',pVdef,_pVdef)
 			var label = false;
 		if(this.props.hasChild){
 			var namestring = this.props.name;
@@ -2759,9 +2800,9 @@ class SettingItem3 extends React.Component{
 			}
 			
 			if(typeof catMapV2[path] != 'undefined'){
-				//////////console.log('1270')
+				////////////console.log('1270')
 				namestring = catMapV2[path]['@translations'][this.props.language]
-				//////////console.log('1272')
+				////////////console.log('1272')
 
 			}
 			if(namestring.length > 28){
@@ -2881,6 +2922,9 @@ class EditControl extends React.Component{
 		if(this.props.bitLen == 16){
 			val = Params.swap16(parseInt(val))
 		}
+    if(this.props.param[0]['@type'] == 'dsp_name_u16_le' || this.props.param[0]['@type'] == 'prod_name_u16_le'){
+      val  = (val + "                    ").slice(0,20)
+    }
 		var value = this.state.val;
 		value[0] = e
 		if(this.props.param[0]['@type'] =='ipv4_address'){
@@ -2891,7 +2935,7 @@ class EditControl extends React.Component{
 		
 		}
 		
-		//////////console.log(this.props.data)
+		////////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	valChangedl(e){
@@ -2900,26 +2944,26 @@ class EditControl extends React.Component{
 		if(this.props.bitLen == 16){
 			val = Params.swap16(parseInt(val))
 		}
-			////////////console.log(val)
+			//////////////console.log(val)
 			this.props.sendPacket(this.props.param[0], parseInt(val));
 		var value = this.state.val;
 		value[0] = e.target.value
-		//////////console.log(this.props.data)
+		////////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	valChangedb(e){
-		//////////console.log(e)
+		////////////console.log(e)
 		var val = e;
 		if(this.props.bitLen == 16){
 			val = Params.swap16(parseInt(val))
 		}
 		var value = this.state.val;
 		value[1] = e
-		//////////console.log(this.props.data)
+		////////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	valChangedlb(e){
-	//	//////////console.log(e)
+	//	////////////console.log(e)
 		var val = e.target.value;
 		if(this.props.bitLen == 16){
 			val = Params.swap16(parseInt(val))
@@ -2927,7 +2971,7 @@ class EditControl extends React.Component{
 			this.props.sendPacket(this.props.param[1], parseInt(val));
 		var value = this.state.val;
 		value[1] = e.target.value
-		//////////console.log(this.props.data)
+		////////////console.log(this.props.data)
 		this.setState({val:value})
 	}
 	componentWillReceiveProps (newProps) {
@@ -2936,7 +2980,7 @@ class EditControl extends React.Component{
 	deactivate () {
 		// body...
 		if(this.refs.ed){
-			//////////console.log(['1511', 'this the prob'])
+			////////////console.log(['1511', 'this the prob'])
 			this.refs.ed.setState({mode:0})
 		}else{
 			this.setState({mode:0})	
@@ -2997,7 +3041,7 @@ class EditControl extends React.Component{
 
 		var namestring = this.props.name;
 		if(namestring.indexOf('INPUT_')!= -1){
-			//////////console.log(namestring)
+			////////////console.log(namestring)
 			namestring = namestring.slice(6);
 		}else if(namestring.indexOf('OUT_')!=-1){
 			namestring = namestring.slice(4)
@@ -3011,7 +3055,7 @@ class EditControl extends React.Component{
 		else if(this.props.param[0]["@name"].indexOf('DateTime') != -1){
 			dt = true;
 		}
-		//////////console.log(['1720',this.props.name, this.props.data])
+		////////////console.log(['1720',this.props.name, this.props.data])
 		if(typeof vMapV2[this.props.name] != 'undefined'){
 				if(vMapV2[this.props.name]['@translations'][this.props.language]['name'] != ''){
 					namestring = vMapV2[this.props.name]['@translations'][this.props.language]['name']
@@ -3019,11 +3063,11 @@ class EditControl extends React.Component{
 			}
 		if(this.props.data.length > 0	){
 			//if(Array.isArray(this.props.data[0])){
-				//////////console.log('1728')
+				////////////console.log('1728')
 			//	return (<NestedEditControl mac={this.props.mac} language={this.props.language}  ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 			//		lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 		//	}else{
-				//////////console.log('1732')
+				////////////console.log('1732')
 				return (<MultiEditControl mobile={this.props.mobile} mac={this.props.mac} ov={this.props.ov} vMap={vMapV2[this.props.name]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
 				 onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
@@ -3052,7 +3096,7 @@ class EditControl extends React.Component{
 		var dval = this.props.data[0]
 		if(this.props.label){
       if(this.props.param.length == 0){
-        console.log(this.props, 3054)
+        //console.log(this.props, 3054)
       }
 			if(this.props.param[0]["@labels"] == 'DCRate'){
 				var dclab = ['fastest','fast','med','slow'];
@@ -3074,11 +3118,11 @@ class EditControl extends React.Component{
 			}else{
 				if(this.props.label){
 					var selected = this.state.val[0];
-					//////////console.log(selected)
+					////////////console.log(selected)
 					if (this.props.param[0]["@labels"] == 'InputSrc'){
-			//			//////console.log(['1795', 'Input Source bits'])
+			//			////////console.log(['1795', 'Input Source bits'])
 					}else if(this.props.param[0]["@labels"] == 'OutputSrc'){
-			//			//////console.log(['1797', 'Output Source bits'])
+			//			////////console.log(['1797', 'Output Source bits'])
 					}
 					var options = _pVdef[6][this.props.param[0]["@labels"]]['english'].map(function(e,i){
 						if(i==selected){
@@ -3165,17 +3209,18 @@ class MultiEditControl extends React.Component{
 			val = parseFloat(v)
 		}else{ 
 			val = v;
+
 		}
-		//console.log('2735', val)
+		console.log('2735', val)
 		if(this.props.param[i]['@type'] == 'mm'){
-			if(v.indexOf('in') != -1){
+			if(this.state.val[i].indexOf('in') != -1){
 				val = val*10;
 			}
 		}else if(this.props.param[i]['@name'].indexOf('PhaseAngleAuto') != -1){
 			val = val*Math.pow(10,this.props.param[i]['@decimal'])
 		}else if(this.props.param[i]['@decimal']){
 			val = val*Math.pow(10,this.props.param[i]['@decimal'])
-			//console.log('3149',v,val)
+			////console.log('3149',v,val)
 		}else if(this.props.param[i]['@type'] == 'belt_speed'){
 			if(v.indexOf('.') != -1){
 				val = val*10
@@ -3189,11 +3234,16 @@ class MultiEditControl extends React.Component{
 		value[i] = val;
 		this.setState({val:value})
 		if(this.props.param[i]['@bit_len'] > 16){
-			//val = v + "                    "
+			//val = v + "      
+      val = v//              "
+      if(this.props.param[i]['@type'] == 'dsp_name_u16_le' || this.props.param[i]['@type'] == 'prod_name_u16_le'){
 
-			this.props.sendPacket(this.props.param[i], v)
+        val  = (v + "                    ").slice(0,20)
+        console.log(3177, val)
+      }
+			this.props.sendPacket(this.props.param[i], val)
 		}else if(!Number.isNaN(val)){
-			//console.log('why')
+			////console.log('why')
 			this.props.sendPacket(this.props.param[i], parseFloat(val));
 		}
 	}
@@ -3204,7 +3254,7 @@ class MultiEditControl extends React.Component{
 		this.props.onRequestClose();
 	}
 	onClear (id) {
-		//console.log(3040,id)
+		////console.log(3040,id)
 		this.props.sendPacket(this.props.param[id])
 	}
 	openSelector () {
@@ -3236,9 +3286,9 @@ class MultiEditControl extends React.Component{
 		}
 	}
 	render() {
-		////console.log(3243, this.props.mobile)
+		//////console.log(3243, this.props.mobile)
 		var namestring = this.props.name
-		////////console.log(['2692',namestring])
+		//////////console.log(['2692',namestring])
 			if(typeof vdefByMac[this.props.mac][5][this.props.name] != 'undefined'){
 				if(vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name'] != ''){
 					namestring = vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name']
@@ -3283,7 +3333,7 @@ class MultiEditControl extends React.Component{
 			lvst.verticalAlign = 'middle'
 			lvst.lineHeight = '25px'
 		}
-    //console.log(this.props.param, this.state.val)
+    ////console.log(this.props.param, this.state.val)
 			var vLabels = this.state.val.map(function(d,i){  
 			var val = d;
 			var st = {textAlign:'center',lineHeight:'60px', height:60}
@@ -3298,10 +3348,10 @@ class MultiEditControl extends React.Component{
 				//labWidth = (50/this.state.val.length)+'%'
 			}
 			if(isInt){ st.color = colors[i] }
-        //console.log(self.props.param, i)
+        ////console.log(self.props.param, i)
 			
       //if(self.props.param.length == 0){
-     //   console.log(self.props, 3303, self.state)
+     //   //console.log(self.props, 3303, self.state)
       //}
       if(typeof self.props.param[i]['@labels'] != 'undefined'){
 				var list =  _pVdef[6][self.props.param[i]["@labels"]];
@@ -3328,6 +3378,9 @@ class MultiEditControl extends React.Component{
 					}
 				}
 			}
+      if(self.props.param[i]['@units']){
+        val = val + ' ' + self.props.param[i]['@units']
+      }
 			return (<CustomLabel index={i} onClick={self.valClick} style={st}>{val}</CustomLabel>)
 		})
 
@@ -3610,7 +3663,7 @@ class MultiBankUnit extends React.Component{
 		var dat = []
 		if(this.props.data.length >0){
 			dat = this.props.data
-			//////////console.log(dat)
+			////////////console.log(dat)
 		}
 		this.state =  ({banks:dat})
 		this.onRMsg = this.onRMsg.bind(this);
@@ -3619,14 +3672,14 @@ class MultiBankUnit extends React.Component{
 	onRMsg (e,d) {
 		// body...
 		if(this.refs[d.mac]){
-			//////////console.log(d)
+			////////////console.log(d)
 			this.refs[d.mac].onRMsg(e,d)
 	
 		}
 	}
 	onParamMsg2(e,d){
 		if(this.refs[d.mac]){
-			////////////console.log(d)
+			//////////////console.log(d)
 			this.refs[d.mac].onParamMsg2(e,d)
 	
 		}
@@ -3827,12 +3880,12 @@ class StatBarMB extends React.Component{
 		var klass =''
 		if(this.state.fault){
 			klass = 'faultactive'
-			//////////console.log(klass)
+			////////////console.log(klass)
 		}
 		if(!this.state.live){
 
 			klass = 'inactive'
-			//////////console.log(klass)
+			////////////console.log(klass)
 		}
 		var list = ['dry','wet','DSA']
 		var mtab = (	<table className='mtab'><tbody>
@@ -3968,7 +4021,7 @@ class SingleUnit extends React.Component{
 		if(!this.state.live){
 			this.setState({live:true})
 		}
-		////////////console.log([a,b])
+		//////////////console.log([a,b])
 		//this.refs.lv.update(a,b)	
 	}
 	onRMsg (e,d) {
@@ -4023,7 +4076,7 @@ class SingleUnit extends React.Component{
 		var self = this;
 		this._isMounted = true;
 		myTimers[this.props.unit.mac] = setInterval(function(){
-			////console.log('4596', self.state.rpcResp)
+			//////console.log('4596', self.state.rpcResp)
 			if((Date.now() - liveTimer[self.props.unit.mac]) > 1500){
 				self.setState({live:false})
 			}
@@ -4243,7 +4296,7 @@ class MbSetup extends React.Component{
 			this.toggleOptions = this.toggleOptions.bind(this);
 		}
 		editMb () {
-			//////////console.log(this.props.index)
+			////////////console.log(this.props.index)
 			this.props.edit(this.props.index)
 		}
 		remove () {
@@ -4456,7 +4509,7 @@ class DetectorView extends React.Component{
 		rec['Nif_nm'] = newProps.nifnm;
 		rec['Nif_ip'] = newProps.nifip;
 		//rec['Disp_Ver'] = newProps.dispVer;
-	//	//console.log(4954, rec)
+	//	////console.log(4954, rec)
 		var cob2 = this.getCob(this.state.sysSettings, this.state.prodSettings, this.state.rec, rec)
 
 		this.setState({netpoll:newProps.netpolls, framRec:rec,cob2:cob2, update:true})
@@ -4589,7 +4642,7 @@ class DetectorView extends React.Component{
 		return page
 	}
 	onParamMsg3 (e,d) {
-		////console.log('on Param Msg 3',d)
+		//////console.log('on Param Msg 3',d)
 		if(this.props.det.ip != d.ip){
 			return;
 		}
@@ -4603,7 +4656,7 @@ class DetectorView extends React.Component{
 			this.setState({offline:false, update:true})
 		}
   	    if(lcd_type== 0){
- 			//////console.log('sys')
+ 			////////console.log('sys')
 			if(vdefByMac[d.mac]){
 				var sysSettings = e.rec
     			var pages;// = {}
@@ -4923,7 +4976,7 @@ class DetectorView extends React.Component{
   								te = null;
   								pages = null;
   							}else if(this.state.showCal){
-  								////////console.log(['3878',prodRec['PhaseAngleAuto_B']])
+  								//////////console.log(['3878',prodRec['PhaseAngleAuto_B']])
   								var	cal = this.getPage('Calibration',this.state.sysSettings,this.state.prodSettings, prodRec, this.state.framRec)
   								var pages = this.state.pages;
   								pages['Calibration'] = cal
@@ -5215,7 +5268,7 @@ class DetectorView extends React.Component{
 	}
 	settingClick (s,n) {
 		if((Array.isArray(s))&&(s[0] == 'get_accounts')){
-			console.log('get accounts')
+			//console.log('get accounts')
 			this.refs.loginModal.toggle();
 		}else{
 			var set = this.state.data.slice(0)
@@ -5233,7 +5286,7 @@ class DetectorView extends React.Component{
 		
 	}
 	clear (param) {
-		//////console.log(['3277',param])
+		////////console.log(['3277',param])
 		var packet = dsp_rpc_paylod_for(param['@rpcs']['clear'][0],param['@rpcs']['clear'][1],param['@rpcs']['clear'][2] ) 
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
 		packet = null;
@@ -5333,7 +5386,7 @@ class DetectorView extends React.Component{
 				}
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[1]);
-			//////////console.log(packet)
+			////////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			}else if(n == 'Sens'){
 			var rpc = vdef[0]['@rpc_map']['KAPI_SENS_WRITE']
@@ -5349,13 +5402,13 @@ class DetectorView extends React.Component{
 					}
 				}
 			})
-			//////////console.log(this.props.ip)
+			////////////console.log(this.props.ip)
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-			//////////console.log(packet)
+			////////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'Sens_B'){
-			//////////console.log(this.props.ip)
+			////////////console.log(this.props.ip)
 			var rpc = vdef[0]['@rpc_map']['KAPI_SENS_WRITE']
 			var pkt = rpc[1].map(function (r) {
 				// body...
@@ -5370,11 +5423,11 @@ class DetectorView extends React.Component{
 				}			
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[0]);
-			//////////console.log(packet)
+			////////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'SigModeCombined'){
-			//////////console.log(this.props.ip)
+			////////////console.log(this.props.ip)
 			var rpc = vdef[0]['@rpc_map']['KAPI_SIG_MODE_COMBINED_WRITE']
 			var pkt = rpc[1].map(function (r) {
 				// body...
@@ -5389,7 +5442,7 @@ class DetectorView extends React.Component{
 				}			
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[0]);
-			//////////console.log(packet)
+			////////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'oscPower'){
@@ -5406,13 +5459,13 @@ class DetectorView extends React.Component{
 					}
 				}
 			})
-			//////////console.log(this.props.ip)
+			////////////console.log(this.props.ip)
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[1]);
-			//////////console.log(packet)
+			////////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'oscPowerB'){
-			//////////console.log(this.props.ip)
+			////////////console.log(this.props.ip)
 			var rpc = vdef[0]['@rpc_map']['KAPI_OSC_POWER_WRITE']
 			var pkt = rpc[1].map(function (r) {
 				// body...
@@ -5427,7 +5480,7 @@ class DetectorView extends React.Component{
 				}			
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt,[0]);
-			//////////console.log(packet)
+			////////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 			
 		}else if(n == 'ProdNo'){
@@ -5445,7 +5498,7 @@ class DetectorView extends React.Component{
 				}
 			})
 			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-					//////////console.log(packet)
+					////////////console.log(packet)
 			socket.emit('rpc', {ip:this.props.ip, data:packet})
 		}else if(n == 'ProdName'){
 			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NAME_APIWRITE']
@@ -5606,7 +5659,7 @@ class DetectorView extends React.Component{
 			socket.emit('rpc',{ip:this.props.det.ip, data:packet})	
 
 		}else if(n=='clearWarnings'){
-			//console.log(vdef[0]['@rpc_map'])
+			////console.log(vdef[0]['@rpc_map'])
 			var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARWARNINGS']
 			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
 			socket.emit('rpc',{ip:this.props.det.ip, data:packet})	
@@ -5961,7 +6014,7 @@ class DetectorView extends React.Component{
 		}
 		var df = false;
 
-	//	//////console.log(lg)
+	//	////////console.log(lg)
 		var MD ="";
 		var dm = "";// <DetMainInfo clear={this.clear} det={this.props.det} sendPacket={this.sendPacket} ref='dm' int={this.state.interceptor}/>
 		var dg = "";// <DummyGraph ref='dg' canvasId={'dummyCanvas'} int={this.state.interceptor}/>
@@ -6304,7 +6357,7 @@ class InterceptorMainPageUI extends React.Component{
 		//if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
 
 			if(this.props.int){
-				//console.log('this should parse it... ')
+				////console.log('this should parse it... ')
 				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens_A'], tmpB:prd['Sens_B']})
 			}else{
 				this.setState({sysRec:sys, prodRec:prd, tmp:prd['Sens']})
@@ -6435,7 +6488,7 @@ class InterceptorMainPageUI extends React.Component{
 	}
 	onButton (f) {
 		// body...
-		//////console.log(f)
+		////////console.log(f)
 		var self = this;
 
 		if(f == 'test'){
@@ -6647,7 +6700,7 @@ class InterceptorMainPageUI extends React.Component{
 		this.props.setLang(i)
 	}
 	handleProdScroll(){
-		//console.log('handleProdScroll')
+		////console.log('handleProdScroll')
 		 var el = document.getElementById("prodList")		
      	 if(el){
 			if(el.scrollTop > 5){
@@ -6675,7 +6728,7 @@ class InterceptorMainPageUI extends React.Component{
 		if(this.state.prodList.length < 2){
 			return;
 		}
-		//////console.log(['6923',p, this.state.prodList])
+		////////console.log(['6923',p, this.state.prodList])
 		var self  = this;
 	
 		if(this.state.prodList.indexOf(p) != 0){
@@ -7295,7 +7348,7 @@ class InterceptorNav extends React.Component{
 				<table className='intNavTable' style={{height:240, borderSpacing:0, borderCollapse:'collapse'}}><tbody><tr>
 				<td>
 				<div className='slantedRight'>
-					<div style={{background:'#362c66', borderTopRightRadius:'30px 50px', height:366, textAlign:'center', marginTop:0, paddingTop:1, position:'relative'}}>
+					<div style={{background:'#362c66', borderTopRightRadius:'30px 50px',boxShadow:'-2px 0px 0px 0px #362c66', height:366, textAlign:'center', marginTop:0, paddingTop:1, position:'relative'}}>
 					<CircularButton fSize={35} style={left} lab={vdefMapV2['@labels']['Settings'][this.props.language]['name']} onClick={this.onConfig}/>
 					<CircularButton fSize={35} style={left} lab={vdefMapV2['@labels']['Test'][this.props.language]['name']} onClick={this.onTest}/>
 					<CircularButton fSize={35} style={left} lab={vdefMapV2['@labels']['Log'][this.props.language]['name']} onClick={this.onLog}/>
@@ -7308,7 +7361,7 @@ class InterceptorNav extends React.Component{
 				<SlimGraph sens={this.props.sens} thresh={this.props.thresh} combineMode={this.props.combineMode} df={false} int={this.props.interceptor} ref='sg' canvasId={'sgcanvas2'}/>
 				{this.props.children}
 				</div></td><td>
-				<div className='slantedLeft'><div style={{background:'#362c66', borderTopLeftRadius:'30px 50px', height:366, textAlign:'center', marginTop:0, paddingTop:1, position:'relative'}}>
+				<div className='slantedLeft'><div style={{background:'#362c66', borderTopLeftRadius:'30px 50px',boxShadow:'2px 0px 0px 0px #362c66', height:366, textAlign:'center', marginTop:0, paddingTop:1, position:'relative'}}>
 				<CircularButton fSize={35} style={right} lab={vdefMapV2['@labels']['Sensitivity'][this.props.language]['name']} inverted={true} onClick={this.onSens}/>
 				<CircularButton fSize={35} style={right} lab={vdefMapV2['@labels']['Learn'][this.props.language]['name']} inverted={true} onClick={this.onCal}/>
 				<CircularButton fSize={35} style={right} lab={vdefMapV2['@labels']['Product'][this.props.language]['name']} inverted={true} onClick={this.onProd}/>
@@ -7861,7 +7914,7 @@ class InterceptorCalibrateUI extends React.Component{
 	}
 	lowPower(){
 		var self = this;
-			//console.log(9984, 'lowPower')
+			////console.log(9984, 'lowPower')
 			this.props.sendPacket('oscPower', 0)
 		setTimeout(function(){
 				self.props.sendPacket('oscPowerB',0)
@@ -8001,7 +8054,7 @@ class AccountControl extends React.Component{
 		    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#eee"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
 		var st = {padding:7,display:'inline-block', width:180}
 		
-		//console.log(this.props.accounts)
+		////console.log(this.props.accounts)
 		var accTableRows = [];
 		this.props.accounts.forEach(function(ac,i){
 			accTableRows.push(<AccountRow mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > ac.acc} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
@@ -8035,7 +8088,7 @@ class AccountControl extends React.Component{
 		    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#eee"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
 		var st = {padding:7,display:'inline-block', width:180}
 		
-		//console.log(this.props.accounts)
+		////console.log(this.props.accounts)
 		var accTableRows = [];
 		this.props.accounts.forEach(function(ac,i){
 			accTableRows.push(<AccountRow mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > ac.acc} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
@@ -8131,7 +8184,7 @@ class AccountRow extends React.Component{
 	}
 	saveChanges(){
 		//if(this.state.changed){
-			console.log('save Changes')
+			//console.log('save Changes')
 			this.addAccount();
 		//}
 		
@@ -8141,11 +8194,11 @@ class AccountRow extends React.Component{
 		this.setState({changed:false})
 	}
 	render() {
-		////console.log(3243, this.props.mobile)
+		//////console.log(3243, this.props.mobile)
 		var levels = ['0','1','2','3','4']
 		
 		var namestring = 'User'+ this.props.uid
-		////////console.log(['2692',namestring])
+		//////////console.log(['2692',namestring])
 			
 		var dt = false;
 		var self = this;
@@ -8286,8 +8339,9 @@ class NetPollView extends React.Component{
 				}
 			})
 		}
-		//console.log(['6536',self.props.mac])
-		var events = eventArr.map(function(e){
+		////console.log(['6536',self.props.mac])
+		var events = []
+     eventArr.forEach(function(e){
 			var ev = e.net_poll_h;
 			if(netMap[e.net_poll_h]){
 				ev = netMap[e.net_poll_h]['@translations'][self.props.language]['name']	
@@ -8296,18 +8350,21 @@ class NetPollView extends React.Component{
 			var rejects = e.rejects
 			var faults = e.faults
 			var string = ""
-			//////console.log(['4163',e])
+			////////console.log(['4163',e])
 			if(e.net_poll_h == "NET_POLL_REJECT_ID"){
 
 				string = 'rejects:' + rejects.number + ', signal:' + rejects.signal;
 
 			}else if((e.net_poll_h == 'NET_POLL_PROD_REC_VAR')||(e.net_poll_h == 'NET_POLL_PROD_SYS_VAR')){
-				//console.log(6957,e)
-				if(e.parameters[0]){
+				////console.log(6957,e)
+				if(e.parameters.length > 0){
 				if(e.parameters[0].value != null){
 
-
-					string = e.parameters[0].param_name + ': ' + e.parameters[0].value
+          var pname = e.parameters[0].param_name;
+          if(vMapV2[pname]){
+            pname = vMapV2[pname]['@translations'][self.props.language].name
+          }
+					string = pname + ': ' + e.parameters[0].value
 				}else if(e.parameters[0].label.type != null){
 					var lg = self.props.language
 					if(typeof vdefByMac[self.props.mac][0]['@labels'][e.parameters[0].label.type][self.props.language] == 'undefined'){
@@ -8317,7 +8374,9 @@ class NetPollView extends React.Component{
 					}
 					string = e.parameters[0].param_name + ': ' + vdefByMac[self.props.mac][0]['@labels'][e.parameters[0].label.type][lg][e.parameters[0].label.value];
 				}
-			}
+			}else{
+        string = 'Rec dump'
+      }
 			}else if(e.net_poll_h == 'NET_POLL_FAULT'){
 				if(e.faults.length != 0){
 					e.faults.forEach(function(f, i){
@@ -8332,7 +8391,7 @@ class NetPollView extends React.Component{
 			}
 
 
-			return (<tr><td style={{width:'20%', fontSize:12}}>{dateTime}</td><td style={{width:'15%', fontSize:12}}>{e.username}</td><td style={{width:'30%', fontSize:12}}>{ev}</td><td style={{width:'35%', fontSize:12}}>{string}</td></tr>)
+			events.push(<tr><td style={{width:'20%', fontSize:12}}>{dateTime}</td><td style={{width:'15%', fontSize:12}}>{e.username}</td><td style={{width:'30%', fontSize:12}}>{ev}</td><td style={{width:'35%', fontSize:12}}>{string}</td></tr>)
 		})
 		var filters = ['All', 'Rejects', 'Faults', 'Tests']
 		// body... 
@@ -8390,7 +8449,7 @@ class NetPollView extends React.Component{
 				}
 			})
 		}
-		//console.log(['6536',self.props.mac])
+		////console.log(['6536',self.props.mac])
 		var events = eventArr.map(function(e){
 			var ev = e.net_poll_h;
 			if(netMap[e.net_poll_h]){
@@ -8400,18 +8459,21 @@ class NetPollView extends React.Component{
 			var rejects = e.rejects
 			var faults = e.faults
 			var string = ""
-			//////console.log(['4163',e])
+			////////console.log(['4163',e])
 			if(e.net_poll_h == "NET_POLL_REJECT_ID"){
 
 				string = 'rejects:' + rejects.number + ', signal:' + rejects.signal;
 
 			}else if((e.net_poll_h == 'NET_POLL_PROD_REC_VAR')||(e.net_poll_h == 'NET_POLL_PROD_SYS_VAR')){
-				//console.log(6957,e)
-				if(e.parameters[0]){
+				////console.log(6957,e)
+				if(e.parameters.length > 0){
 				if(e.parameters[0].value != null){
 
-
-					string = e.parameters[0].param_name + ': ' + e.parameters[0].value
+ var pname = e.parameters[0].param_name;
+          if(vMapV2[pname]){
+            pname = vMapV2[pname]['@translations'][self.props.language].name
+          }
+          string = pname + ': ' + e.parameters[0].value
 				}else if(e.parameters[0].label.type != null){
 					var lg = self.props.language
 					if(typeof vdefByMac[self.props.mac][0]['@labels'][e.parameters[0].label.type][self.props.language] == 'undefined'){
@@ -8421,7 +8483,9 @@ class NetPollView extends React.Component{
 					}
 					string = e.parameters[0].param_name + ': ' + vdefByMac[self.props.mac][0]['@labels'][e.parameters[0].label.type][lg][e.parameters[0].label.value];
 				}
-			}
+			}else{
+        string = "Rec Dump"
+      }
 			}else if(e.net_poll_h == 'NET_POLL_FAULT'){
 				if(e.faults.length != 0){
 					e.faults.forEach(function(f, i){
@@ -8830,11 +8894,11 @@ class DateTimeSelect extends React.Component{
 	onTimeChange(_time,i){
 		var time = [parseInt(this.state.hour),parseInt(this.state.minute),parseInt(this.state.sec)]
 		time[i] = _time;
-		//console.log(1532131312, [_time,i])
+		////console.log(1532131312, [_time,i])
 		this.setState({hour:('00'+ time[0]).slice(-2).toString(), minute:('00'+ time[1]).slice(-2).toString(), sec:('00'+ time[2]).slice(-2).toString()})
 	}
 	onDSTChange(dst,i){
-		//console.log(dst)
+		////console.log(dst)
 		this.props.setDST(dst)
 	}
 	render(){

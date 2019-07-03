@@ -702,11 +702,10 @@ li {
     100% {background-color: rgba(0, 80,200,0.7);}
 }
 @keyframes blink_wr_tf{
-    0% {background-color : black;}
-    49% {background-color : black;}
-    50% {background-color : rgba(0,80,200,0.4);}
-    100% {background-color: rgba(0,80,200,0.4);}
-
+     0% {background-color : linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);}
+    49% {background-color : linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);}
+    50% {background-color : linear-gradient(90deg, transparent, transparent 5%, rgba(0,80,200,0.4) 5%, rgba(0,80,200,0.4) 95%, transparent 95%);}
+    100% {background-color : linear-gradient(90deg, transparent, transparent 5%, rgba(0,80,200,0.4) 5%, rgba(0,80,200,0.4) 95%, transparent 95%);}
 }
 @keyframes blink_border{
     0% {border : 7px solid black;}
@@ -876,8 +875,8 @@ li {
     color: #e1e1e1
 }
 .navWrapper_tf{
-    background: black;
-    animation-name: blink_wr_tf;
+    background: linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);
+     animation-name: blink_wr_tf;
     animation-duration: 1.8s;
     animation-iteration-count: infinite;
 }
