@@ -504,6 +504,53 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, int){
              // //console.log(335,_p)
             }
                  ///
+        }else if(_vmap[p]['@combo']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                //////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@combo'] = true; 
+              params.push(_p)
+             // //console.log(335,_p)
+            }
+                 ///
         }
     		
     	}else if(par.type == 1){
@@ -2018,7 +2065,8 @@ class SettingsDisplay2 extends React.Component{
   }
 	render(){
 		var self = this;
-
+    var isInt = this.props.int
+    //console.log(this.props.int, 2022)
 	//	var data = this.props.data
 		var data = [];
     if(this.props.data[0] == 'get_accounts'){
@@ -2069,7 +2117,7 @@ class SettingsDisplay2 extends React.Component{
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem3 int={self.props.int} mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+				nodes.push(<SettingItem3 int={isInt} mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			}
 			len = catList.length;
 			nav = nodes;
@@ -2147,16 +2195,17 @@ class SettingsDisplay2 extends React.Component{
 				  //console.log('check this',d)
         	var ch = d['@children'].slice(0)
 
-          if(d['@interceptor'] || d['@test'] || d['@halo'] || d['@input']){
+          if(d['@interceptor'] || d['@test'] || d['@halo'] || d['@input'] || d['@combo']){
             ch.unshift(d['@data'])
           }
          	var	acc = false;
 					if((self.props.level > 3) || (p.acc <= self.props.level)){
 						acc = true;
 					}
-					nodes.push(<SettingItem3 int={self.props.int} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+          //console.log(2158, isInt)
+					nodes.push(<SettingItem3 int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
 						ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
-							children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
+							children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
 					
 				}else if(par.type == 1){
 					var sc = par['@data']
@@ -2170,23 +2219,24 @@ class SettingsDisplay2 extends React.Component{
 						var spar = sc.params[sc.child]
             //console.log(sc,2115)
 						var ch = spar['@children'].slice(0)
-          if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input']){
+          if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input'] || spar['@combo']){
             ch.unshift(spar['@data'])
           } 
                  var spname = spar['@name']
 
-          if(!self.props.int){
+          if(!isInt){
             if(spname.slice(-4) == '_INT'){
               spname = spname.slice(0,-4)
             }
           }
-							nodes.push(<SettingItem3 int={self.props.int} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
-					data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+            //console.log(2185, isInt)
+							nodes.push(<SettingItem3 int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+					data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			
 					}else{
-		
-						nodes.push(<SettingItem3 int={self.props.int} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
-						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+		      // console.log(2190, isInt)
+						nodes.push(<SettingItem3 int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 					}
 				}else if(par.type == 2){
 					var sc = par['@data']
@@ -2201,16 +2251,17 @@ class SettingsDisplay2 extends React.Component{
 					if(typeof sc['child'] != 'undefined'){
 						var spar = sc.params[sc.child]
 						var ch = spar['@children'].slice(0)
-          if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input']){
+          if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input']||  spar['@combo']){
             ch.unshift(spar['@data'])
           }
-							nodes.push(<SettingItem3 int={self.props.int} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
-					data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+          console.log(2210, isInt)
+							nodes.push(<SettingItem3 int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+					data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			
 					}else{
-		
-						nodes.push(<SettingItem3 int={self.props.int} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
-						data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+		  console.log(2210, isInt)
+						nodes.push(<SettingItem3 int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+						data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 					}
 				}else if(par.type == 3){
 					//This 
@@ -2221,8 +2272,8 @@ class SettingsDisplay2 extends React.Component{
 						acc = true;
 					}
 					var sc = par['@data']
-						nodes.push(<SettingItem3 int={self.props.int} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={'Accounts'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
-						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} int={false} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+						nodes.push(<SettingItem3 int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={'Accounts'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
+						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 		
 				}
 			})
@@ -2273,11 +2324,19 @@ class SettingItem3 extends React.Component{
 		this.onFocus = this.onFocus.bind(this);
 		this.onRequestClose =this.onRequestClose.bind(this);
 		this.parseValues = this.parseValues.bind(this);
+    this.touchStart = this.touchStart.bind(this);
+    this.touchEnd = this.touchEnd.bind(this);
 		var values = this.parseValues(this.props);
-		this.state = ({mode:0,font:this.props.font, val:values[0], pram:values[1], labels:values[2]})
+		this.state = ({mode:0,font:this.props.font, val:values[0], pram:values[1], labels:values[2], touchActive:false})
 		
 
 	}
+  touchStart(){
+    this.setState({touchActive:true})
+  }
+  touchEnd(){
+    this.setState({touchActive:false})
+  }
 	parseValues(props){
 		var res = vdefByMac[props.mac];
 			var pVdef = _pVdef;
@@ -2294,6 +2353,9 @@ class SettingItem3 extends React.Component{
 			
   			if(typeof props.data[0]['child'] != 'undefined'){
   				var lkey = props.data[0].params[props.data[0].child]['@name']
+          if(lkey == 'DCRate_INT'){
+            console.log(lkey, this.props.int, props)
+          }
           if(this.props.int != true){
             if(lkey.slice(-4) == '_INT'){
               lkey = lkey.slice(0,-4)
@@ -2324,6 +2386,9 @@ class SettingItem3 extends React.Component{
                 pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
               }else if(lkey == 'DCRate_INT'){
                 pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+              }else if(lkey == 'DCRate'){
+               pram = [{'@name':'DCRate', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate",0],null]}}]
+              //label = true;
               }
             }
           }else{
@@ -2349,9 +2414,6 @@ class SettingItem3 extends React.Component{
     				}else if(lkey == 'DCRate_INT'){
     					pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
     				  //label = true;
-            }else if(lkey == 'DCRate'){
-              pram = [{'@name':'DCRate', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate",0],null]}}]
-              //label = true;
             }
 
            if(props.data[0].params[props.data[0].child]['@children']){
@@ -2377,7 +2439,7 @@ class SettingItem3 extends React.Component{
           }
         }
         if(pram.length == 0){
-          //console.log(lkey)
+          console.log(lkey, this.props.int,props.data[0].params[props.data[0].child]['@name'])
         }
         if(pram[0]['@labels']){
 					label = true
@@ -2633,6 +2695,7 @@ class SettingItem3 extends React.Component{
 						}
 					if(pram['@bit_len']<=16){
 						//////console.log(f)
+            //console.log(f)
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
 					if(f == 'phase_offset'){
@@ -2779,6 +2842,7 @@ class SettingItem3 extends React.Component{
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
 		var sty = {height:60}
+    var klass = 'sItem'
 			if(this.props.mobile){
 				sty.height = 45;
 				sty.lineHeight = '45px';
@@ -2819,8 +2883,11 @@ class SettingItem3 extends React.Component{
 					_st.lineHeight = '51px'
 					_st.height = 45
 				}
-				
-			return (<div className='sItem hasChild' style={sty} onClick={this.onItemClick}><label>{namestring}</label></div>)
+			  klass += ' hasChild'
+        if(this.state.touchActive){
+          klass += ' touchDown'
+        }
+			return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
 		}else{
 			var val, pram;
 			var namestring = this.props.name;
@@ -2853,6 +2920,7 @@ class SettingItem3 extends React.Component{
 			}
 			
 			if(typeof this.props.data[0]['child'] != 'undefined'){
+        klass += ' noChild'
 				var lkey = this.props.data[0].params[this.props.data[0].child]['@name']
 				var im = <img  style={{position:'absolute', width:36,top:15, left:815, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return.svg'/>
 				
@@ -2868,21 +2936,25 @@ class SettingItem3 extends React.Component{
 					sty.height = 51
 					sty.paddingRight = 5
 				}
+        
 				return (<div className='sItem noChild' style={sty} onClick={this.onItemClick}> {edctrl}
 						{im}
 					
 					</div>)
 				}
 
-		
-				return (<div className='sItem hasChild' style={sty} onClick={this.onItemClick}><label>{namestring}</label></div>)
+		    klass = 'sItem hasChild'
+        if(this.state.touchActive){
+          klass += ' touchDown'
+        }
+				return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
 			}
 			}
 			if(this.props.mobile){
 				sty.height = 51;
 				sty.paddingRight = 5;
 			}
-				var edctrl = <EditControl mobile={this.props.mobile} mac={this.props.mac}  ov={false} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={this.props.lkey}/>
+				var edctrl = <EditControl mobile={this.props.mobile} combo={(this.props.data['@combo'] == true)} mac={this.props.mac}  ov={false} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={this.props.lkey}/>
 				return (<div className='sItem noChild' style={sty}> {edctrl}
 					</div>)
 			
@@ -3068,7 +3140,7 @@ class EditControl extends React.Component{
 			//		lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 		//	}else{
 				////////////console.log('1732')
-				return (<MultiEditControl mobile={this.props.mobile} mac={this.props.mac} ov={this.props.ov} vMap={vMapV2[this.props.name]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
+				return (<MultiEditControl combo={this.props.combo} mobile={this.props.mobile} mac={this.props.mac} ov={this.props.ov} vMap={vMapV2[this.props.name]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
 				 onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
 		//	}	
@@ -3082,7 +3154,7 @@ class EditControl extends React.Component{
 			}else if(namestring.length > 18){
 				fSize = 22
 			}
-		var lvst = {display: 'inline-block',fontSize: fSize,width: '310',background: '#5d5480',borderRadius: 20,textAlign: 'center', color: '#eee'}
+		var lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderRadius: 20,textAlign: 'center', color: '#eee'}
 		var st = this.props.vst;
 			st.width = 536
 			if(this.props.mobile){
@@ -3309,7 +3381,7 @@ class MultiEditControl extends React.Component{
 			fSize -= 7;
 			fSize = Math.max(13, fSize)
 		}
-		let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}
+		let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee', verticalAlign:'middle', lineHeight:'25px'}
 
 		var isInt = false
 		var colors = ['#000','#eee']
@@ -3336,7 +3408,7 @@ class MultiEditControl extends React.Component{
     ////console.log(this.props.param, this.state.val)
 			var vLabels = this.state.val.map(function(d,i){  
 			var val = d;
-			var st = {textAlign:'center',lineHeight:'60px', height:60}
+			var st = {textAlign:'center',lineHeight:'60px', verticalAlign:'middle', height:60}
 
 			st.width = labWidth
 			st.fontSize = self.props.vst.fontSize;
@@ -3380,6 +3452,10 @@ class MultiEditControl extends React.Component{
 			}
       if(self.props.param[i]['@units']){
         val = val + ' ' + self.props.param[i]['@units']
+      }
+      if(self.props.combo){
+        val = <React.Fragment><div style={{color:'#e1e1e1', fontSize:self.props.vst.fontSize - 4}}>{self.props.vMap['@labels'][i]}</div><div>{val}</div></React.Fragment>
+        st.lineHeight = '25px'
       }
 			return (<CustomLabel index={i} onClick={self.valClick} style={st}>{val}</CustomLabel>)
 		})
@@ -3470,6 +3546,9 @@ class MultiEditControl extends React.Component{
 							if(isInt){
 								lbl = lbl + [' A',' B'][i];
 							}
+              if(self.props.combo){
+                lbl = lbl + [' Delay', ' Duration'][i]
+              }
 							
 							return <CustomKeyboard mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={'input'+i} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
 						}
@@ -3500,7 +3579,7 @@ class CustomLabel extends React.Component{
 	}
 	render () {
 		var style = this.props.style || {}
-		return <label onClick={this.onClick} style={style}>{this.props.children}</label>
+		return <div onClick={this.onClick} style={style}>{this.props.children}</div>
 	}
 }
 class LiveView extends React.Component{
@@ -4438,7 +4517,7 @@ class DetectorView extends React.Component{
 			//send keepalive
 			if(self.state.userid != 0){
 				if(ifvisible.getIdleInfo().timeLeft > 294899){		
-					self.setAuthAccount({level:self.state.level, username:self.state.username, user:self.state.userid - 1});
+				//	self.setAuthAccount({level:self.state.level, username:self.state.username, user:self.state.userid - 1});
 				}
 			}
 		});
@@ -8135,15 +8214,15 @@ class AccountRow extends React.Component{
 	}
 	valClick(){
 		//toast('Value Clicked')
-		this.setState({changed:false})
+	   this.setState({changed:false})
 		this.refs.ed.toggle();
 	}
 	onUserChange(v){
-		this.setState({username:v, changed:true})
+		this.setState({username:v})//, changed:true})
 	}
 	onPswdChange(v){
 		var pswd = (v+'000000').slice(0,6)
-		this.setState({password:pswd, changed:true})
+		this.setState({password:pswd})//, changed:true})
 	}
 	setLevel(){
 		if(this.props.change){
@@ -8156,7 +8235,7 @@ class AccountRow extends React.Component{
 		}
 	}
 	selectChanged(v){
-		this.setState({acc:v, changed:true})
+		this.setState({acc:v})//, changed:true})
 	}
 	setUserName(){
 		if(this.props.change){
@@ -8190,8 +8269,10 @@ class AccountRow extends React.Component{
 		
 	}
 	addAccount(){
+    console.log(8200, 'writeUserData', this.props.uid)
 		socket.emit('writeUserData', {data:{username:this.state.username, acc:this.state.acc, password:this.state.password, user:this.props.uid}, ip:this.props.ip})
-		this.setState({changed:false})
+		
+    //this.setState({changed:false})
 	}
 	render() {
 		//////console.log(3243, this.props.mobile)
@@ -8322,19 +8403,19 @@ class NetPollView extends React.Component{
 			})
 		}else if(this.state.curFilter == 1){
 			this.props.events.forEach(function(ev){
-				if(ev.net_poll_h == "NET_POLL_REJECT_ID"){
+				if(ev.net_poll_h.indexOf("REJECT") != -1){
 					eventArr.push(ev)
 				}
 			})
 		}else if(this.state.curFilter == 2){
 			this.props.events.forEach(function(ev){
-				if(ev.net_poll_h == "NET_POLL_FAULT"){
+				if(ev.net_poll_h.indexOf("FAULT") != -1){
 					eventArr.push(ev)
 				}
 			})
 		}else if(this.state.curFilter == 3){
 			this.props.events.forEach(function(ev){
-				if(ev.net_poll_h == "NET_POLL_TEST_REQ_PASS"){
+				if(ev.net_poll_h.indexOf("TEST") != -1){//} "NET_POLL_TEST_REQ_PASS"){
 					eventArr.push(ev)
 				}
 			})
@@ -8431,24 +8512,24 @@ class NetPollView extends React.Component{
 				}
 			})
 		}else if(this.state.curFilter == 1){
-			this.props.events.forEach(function(ev){
-				if(ev.net_poll_h == "NET_POLL_REJECT_ID"){
-					eventArr.push(ev)
-				}
-			})
-		}else if(this.state.curFilter == 2){
-			this.props.events.forEach(function(ev){
-				if(ev.net_poll_h == "NET_POLL_FAULT"){
-					eventArr.push(ev)
-				}
-			})
-		}else if(this.state.curFilter == 3){
-			this.props.events.forEach(function(ev){
-				if(ev.net_poll_h == "NET_POLL_TEST_REQ_PASS"){
-					eventArr.push(ev)
-				}
-			})
-		}
+      this.props.events.forEach(function(ev){
+        if(ev.net_poll_h.indexOf("REJECT") != -1){
+          eventArr.push(ev)
+        }
+      })
+    }else if(this.state.curFilter == 2){
+      this.props.events.forEach(function(ev){
+        if(ev.net_poll_h.indexOf("FAULT") != -1){
+          eventArr.push(ev)
+        }
+      })
+    }else if(this.state.curFilter == 3){
+      this.props.events.forEach(function(ev){
+        if(ev.net_poll_h.indexOf("TEST") != -1){//} "NET_POLL_TEST_REQ_PASS"){
+          eventArr.push(ev)
+        }
+      })
+    }
 		////console.log(['6536',self.props.mac])
 		var events = eventArr.map(function(e){
 			var ev = e.net_poll_h;

@@ -490,6 +490,12 @@ li {
     border: 8px solid rgb(129,138,144);
     box-shadow: 0 0 6px black;
 }
+.touchActive{
+    background-color: #332a5f;
+}
+/*.circularButton:hover{
+    background-color: #383064;
+}*/
 .playButtonInv::after{
     content: " ";
     background: url('../assets/fti-play-button-wht.png');
@@ -1236,6 +1242,9 @@ li {
     border: 2px solid grey;
     font-size: 40px;
 }
+.keyDown{
+    background: #aaa;
+}
 .tickerBox{
    /* margin-right: 6px;*/
     
@@ -1629,6 +1638,7 @@ li {
     padding-left: 6px;
     line-height: 57px;
 }
+
 /*.hasChild::before{
     content: url('../assets/angle-right.svg');
         display: inline-block;
@@ -1646,6 +1656,12 @@ li {
 .hasChild label{
     margin-left: 2px
 }
+.touchDown{
+    background: rgba(100,100,100, 0.5)
+}
+/*.hasChild:hover{
+    background: rgba(160,160,160,0.4); 
+}*/
 
 .txtLeft{
     text-align: -webkit-right;

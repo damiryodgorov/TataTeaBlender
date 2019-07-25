@@ -5,6 +5,7 @@ var createReactClass = require('create-react-class');
 
 const vdefMapV2 = require('./vdefmap.json')
 import {Modal, ScrollArrow} from './components.jsx'
+import {CircularButton} from './buttons.jsx'
 
 const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CLEAR_WARNINGS','PHASE_HOLD','CIP_TEST','CIP_PLC','PROD_SEL1', 'PROD_SEL2', 'PROD_SEL3','PROD_SEL4']
 const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
@@ -264,9 +265,10 @@ class PopoutWheelModalC extends React.Component{
 	  		<div style={{textAlign:'center', padding:5}}>
 	  		{wheels}
 	  		</div>
-	  		<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>{vdefMapV2['@labels']['Accept'][this.props.language].name}</button>
-	  		<button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={()=> this.close(0)}>{vdefMapV2['@labels']['Cancel'][this.props.language].name}</button></div>
-	  		<Modal ref='helpModal' Style={{color:'#e1e1e1',width:400}}>
+	  		<div>
+	  		<CircularButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
+		<CircularButton style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={()=> this.close(0)} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/>
+	  	</div>	<Modal ref='helpModal' Style={{color:'#e1e1e1',width:400}}>
 	  		<div>{tooltiptext}</div>
 	  		</Modal>
 	  </div>)

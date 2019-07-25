@@ -25,6 +25,8 @@
       "user_opts":"(function(opts){return opts});",
       "password_hash":"(function(phash){    var buf = Buffer.alloc(8); buf.writeUInt16LE(phash[1],0); buf.writeUInt16LE(phash[0],2); buf.writeUInt16LE(phash[2],6); buf.writeUInt16LE(phash[3],4);return buf;});",
       "det_thresh":"(function(fm,mode,wet,r,x){if(mode == 0){ if(wet == 0){ return r; }else{ return x; }}else{ return fm; }})",
-      "phase_offset":"(function(val){return val;})"
+      "phase_offset":"(function(val){return val;})",
+      "phase_limit_dry":"(function(phase){return phase+90;})",
+      "phase_limit_wet":"(function(phase){return phase;})"
       }
 	}

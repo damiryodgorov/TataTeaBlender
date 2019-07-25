@@ -17,9 +17,70 @@ process.noDeprecation = true;
     ]
   },
 };*/
-module.exports = {
+var mdTS = {
   entry: './public/index.js',
   output: { path: __dirname, filename: './public/bundle.js' },
+  module: {
+    loaders: [
+      {
+        test: /.jsx?$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+        query: {
+          presets: ['es2015', 'react','env']
+        }
+      },
+      {
+        test: /\.css$/,
+        loader: 'style-loader'
+      }, 
+      {
+        test: /\.css$/,
+        loader: 'css-loader',
+        query: {
+         modules: true,
+         localIdentName: '[name]__[local]___[hash:base64:5]'
+        }
+      }
+    ]
+  },
+}
+var cw = {
+  entry: './public/cw.js',
+  output: { path: __dirname, filename: './public/cwbundle.js' },
+  module: {
+    loaders: [
+      {
+        test: /.jsx?$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+        query: {
+          presets: ['es2015', 'react','env']
+        }
+      },
+      {
+        test: /\.css$/,
+        loader: 'style-loader'
+      }, 
+      {
+        test: /\.css$/,
+        loader: 'css-loader',
+        query: {
+         modules: true,
+         localIdentName: '[name]__[local]___[hash:base64:5]'
+        }
+      }
+    ]
+  },
+}
+
+module.exports = {
+  entry: {
+    md:'./public/index.js',
+    cw:'./public/cw.js'
+
+  },
+  output: { path: __dirname+ '/public/', filename: '[name].bundle.js' },
   module: {
     loaders: [
       {

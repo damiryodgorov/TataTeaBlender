@@ -870,7 +870,10 @@ class AlertModalC extends React.Component{
 	  return( <div className='alertmodal-outer'>
 	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Confirm Action</div>
 	  			{this.props.children}
-				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>Confirm</button><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.close}>Cancel</button></div>
+				<div>
+	  		<CircButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept']['english'].name}/>
+		<CircButton style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={()=> this.close(0)} lab={vdefMapV2['@labels']['Cancel']['english'].name}/>
+</div>
 	  		
 		  </div>)
 
@@ -1042,6 +1045,90 @@ class MessageConsole extends React.Component{
 		return this.renderOverlay();	
 	}
 }
+
+class CircButton extends React.Component{
+	constructor(props) {
+
+		super(props)
+		this.state = {touchActive:false}
+		this.onClick = this.onClick.bind(this)
+		this.onTouchStart = this.onTouchStart.bind(this);
+		this.onTouchEnd = this.onTouchEnd.bind(this);
+	}
+	onClick () {
+		if(!this.props.disabled){
+			this.props.onClick();
+		}else{
+			toast('Test is not configured')
+		}
+	}
+	onTouchStart (){
+		this.setState({touchActive:true})
+	}
+
+	onTouchEnd (){
+		this.setState({touchActive:false})
+	}
+	render () {
+		var bg = '#818a90'
+		var gr = '#484074'
+		var mr = 'auto'
+		var ml = 'auto'
+		var border = '8px solid rgb(129, 138, 144)'
+		
+		var klass = 'circularButton'
+
+		if(this.state.touchActive){
+			klass = 'circularButton touchActive'
+		}
+
+		if(this.props.isTransparent){
+			ml = 'auto'
+			if(this.props.inverted){
+				gr = '#484074'
+
+			}else{
+				gr = '#484074'
+			}
+		}
+		
+		var style = {height:55,top:-6,left:-6}
+		var divstyle = {overflow:'hidden',background:bg,height:50,width:50,borderRadius:25}
+		var bstyle = Object.assign({} ,this.props.style)
+		var fsize = 30;
+		if(this.props.lab.length > 12){
+			fsize = 24;
+		}
+		if(this.props.fSize){
+			fsize = this.props.fSize
+		}
+		var innerStyle = {display:'inline-block', position:'relative',top:-2,width:'100%', color:"#e1e1e1", fontSize:fsize,lineHeight:'50px'}
+		if(this.props.innerStyle){
+			innerStyle = Object.assign({} ,this.props.innerStyle);
+		}
+		if(this.props.selected == true){
+			bstyle.background = 'rgb(128,122,150)'
+		}
+		if(this.props.disabled){
+			bstyle.background = '#818a90'
+			innerStyle.color = "#bbb"
+			return(<div  className={klass} onClick={this.onClick} style={bstyle}>
+				<div style={innerStyle}>{this.props.lab}</div>
+			</div>)
+		}	
+
+		//if(this.props.inverted){
+			return(<div  className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onClick={this.onClick} style={bstyle}>
+				<div style={innerStyle}>{this.props.lab}</div>
+			</div>)
+		//}else{
+		//	return(<div  className={klass} onMouseDown={this.onTouchStart} onMouseUp={this.onTouchEnd} onClick={this.onClick} style={bstyle}>
+		//		<div style={innerStyle}>{this.props.lab}</div>
+		//	</div>)
+		//}
+	}
+}
+
 module.exports = {}
 module.exports.TickerBox = TickerBox;
 module.exports.CanvasElem = CanvasElem;

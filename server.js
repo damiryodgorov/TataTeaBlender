@@ -1058,6 +1058,9 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.get('/', function(req, res) {
   res.render('rpi.html');
 });
+app.get('/cw',function(req,res){
+  res.render('cw.html')
+})
 app.use(helmet());
 app.on('error', function(err){
   //console.log(err)
@@ -1798,15 +1801,15 @@ wss.on('connection', function(scket, req){
       _users.push(Buffer.concat([user,phash,useropt]))
     }
     var buf = Buffer.concat(_users);
-    if(buf.length > vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
-      socket.emit('notify','Error updating users' + buf.length + ' ' + vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE'])
+    if(buf.length != vdefs[packet.ip]['@defines']['USER_STRUCT_SIZE']){
+      socket.emit('notify','Error updating users' + buf.length + ' ' + vdefs[packet.ip]['@defines']['USER_STRUCT_SIZE'])
     }else{
-      var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][1],buf)
+      var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_USERSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_USERSTRUCTWRITE'][1],buf)
       //console.log(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'])
       //console.log(Buffer.from(pkt))
        udpClients[packet.ip].send_rpc(Buffer.from(pkt), function(e){
-                //console.log('Ack from ' + packet.ip)
-
+                console.log('Ack from ' + packet.ip)
+               // socket.emit('notify', e.length)
                 relayRpcMsg({det:{ip:packet.ip, mac:macs[packet.ip]},data:{data:toArrayBuffer(e)}});
                 e = null;
 
@@ -1837,14 +1840,15 @@ wss.on('connection', function(scket, req){
       _users.push(Buffer.concat([user,phash,useropt]))
     }
     var buf = Buffer.concat(_users);
-    if(buf.length > vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
-      socket.emit('notify','Error updating users' + buf.length + ' ' + vdefs[packet.ip]['@defines']['FINAL_FRAM_STRUCT_SIZE'])
+    if(buf.length > vdefs[packet.ip]['@defines']['USER_STRUCT_SIZE']){
+      socket.emit('notify','Error updating users' + buf.length + ' ' + vdefs[packet.ip]['@defines']['USER_STRUCT_SIZE'])
     }else{
-      var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'][1],buf)
+      var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_USERSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_USERSTRUCTWRITE'][1],buf)
       //console.log(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_FRAMSTRUCTWRITE'])
       //console.log(Buffer.from(pkt))
        udpClients[packet.ip].send_rpc(Buffer.from(pkt), function(e){
-                //console.log('Ack from ' + packet.ip)
+                console.log('Ack from ' + packet.ip)
+
 
                 relayRpcMsg({det:{ip:packet.ip, mac:macs[packet.ip]},data:{data:toArrayBuffer(e)}});
                 e = null;

@@ -5,6 +5,7 @@ var createReactClass = require('create-react-class');
 
 const vdefMapV2 = require('./vdefmap.json')
 import {Modal} from './components.jsx'
+import {CircularButton} from './buttons.jsx'
 
 class CustomKeyboard extends React.Component{
 	constructor(props) {
@@ -295,8 +296,8 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 	  	
 		</div>
 		{helpModal}
-		<div hidden={hidden}><button style={{height:60, border:'5px solid #808a90', color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25, fontSize:30, lineHeight:'50px'}} onClick={this.onEnter}>{vdefMapV2['@labels']['Accept'][this.props.language].name}</button>
-		<button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.close}>{vdefMapV2['@labels']['Cancel'][this.props.language].name}</button></div>
+		<div hidden={hidden}><CircularButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
+		<CircularButton style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.close} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/></div>
 		</div>
 	  	
 	}
@@ -304,7 +305,16 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 class CustomKey extends React.Component{
 	constructor(props) {
 		super(props)
+		this.state = {touchActive:false}
+		this.onPointerDown = this.onPointerDown.bind(this);
+		this.onPointerUp = this.onPointerUp.bind(this);
 		this.onPress = this.onPress.bind(this)
+	}
+	onPointerDown(){
+		this.setState({touchActive:true})
+	}
+	onPointerUp(){
+		this.setState({touchActive:false})
 	}
 	onPress () {
 		// body...
@@ -316,15 +326,18 @@ class CustomKey extends React.Component{
 		if(this.props.mobile){
 			klass = 'customKey_m'
 		}
+		if(this.state.touchActive){
+			klass += ' keyDown'
+		}
 		if(this.props.Key == 'space'){
-			return	<td onClick={this.onPress} className={klass} colSpan={5}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
+			return	<td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={5}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
 		}else if(this.props.Key == 'shortspace'){
-			return	<td onClick={this.onPress} className={klass} colSpan={3}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
+			return	<td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={3}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
 	
 		}else if(this.props.Key == 'del'){
-			return	<td onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg></div></td>
+			return	<td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg></div></td>
 		}else if(this.props.Key == 'enter'){
-			return  <td onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Accept</div></td>
+			return  <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Accept</div></td>
 		
 		}else if(this.props.Key == 'shift'){
 			var fill = "#000000"
@@ -333,14 +346,14 @@ class CustomKey extends React.Component{
 				fill = "#eeeeee"
 				st={background:'#808a90'}
 			}
-			return <td style={st} onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg fill={fill} xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M12 8.41L16.59 13 18 11.59l-6-6-6 6L7.41 13 12 8.41zM6 18h12v-2H6v2z"/></svg></div></td>
+			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} style={st} onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg fill={fill} xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M12 8.41L16.59 13 18 11.59l-6-6-6 6L7.41 13 12 8.41zM6 18h12v-2H6v2z"/></svg></div></td>
 		}else if(this.props.Key == 'cancel'){
-			return <td onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Cancel</div></td>
+			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Cancel</div></td>
 			
 	
 		}else{
 
-			return <td onClick={this.onPress} className={klass}>{this.props.Key.slice(0,1)}</td>
+			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass}>{this.props.Key.slice(0,1)}</td>
 		}
 		
 	}

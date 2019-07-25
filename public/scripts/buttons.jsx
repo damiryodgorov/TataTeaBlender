@@ -17,8 +17,12 @@ class ButtonWrapper extends React.Component{
 }
 class CircularButton extends React.Component{
 	constructor(props) {
+
 		super(props)
+		this.state = {touchActive:false}
 		this.onClick = this.onClick.bind(this)
+		this.onTouchStart = this.onTouchStart.bind(this);
+		this.onTouchEnd = this.onTouchEnd.bind(this);
 	}
 	onClick () {
 		if(!this.props.disabled){
@@ -27,13 +31,26 @@ class CircularButton extends React.Component{
 			toast('Test is not configured')
 		}
 	}
+	onTouchStart (){
+		this.setState({touchActive:true})
+	}
+
+	onTouchEnd (){
+		this.setState({touchActive:false})
+	}
 	render () {
 		var bg = '#818a90'
 		var gr = '#484074'
 		var mr = 'auto'
 		var ml = 'auto'
 		var border = '8px solid rgb(129, 138, 144)'
-		 
+		
+		var klass = 'circularButton'
+
+		if(this.state.touchActive){
+			klass = 'circularButton touchActive'
+		}
+
 		if(this.props.isTransparent){
 			ml = 'auto'
 			if(this.props.inverted){
@@ -64,33 +81,43 @@ class CircularButton extends React.Component{
 		if(this.props.disabled){
 			bstyle.background = '#818a90'
 			innerStyle.color = "#bbb"
-			return(<div  className='circularButton' onClick={this.onClick} style={bstyle}>
+			return(<div  className={klass} onClick={this.onClick} style={bstyle}>
 				<div style={innerStyle}>{this.props.lab}</div>
 			</div>)
 		}	
 
-		if(this.props.inverted){
-			return(<div  className='circularButton' onClick={this.onClick} style={bstyle}>
+		//if(this.props.inverted){
+			return(<div  className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onClick={this.onClick} style={bstyle}>
 				<div style={innerStyle}>{this.props.lab}</div>
 			</div>)
-		}else{
-			return(<div className='circularButton' onClick={this.onClick} style={bstyle}>
-				<div style={innerStyle}>{this.props.lab}</div>
-			</div>)
-		}
+		//}else{
+		//	return(<div  className={klass} onMouseDown={this.onTouchStart} onMouseUp={this.onTouchEnd} onClick={this.onClick} style={bstyle}>
+		//		<div style={innerStyle}>{this.props.lab}</div>
+		//	</div>)
+		//}
 	}
 }
 class CustomAlertClassedButton extends React.Component{
 	constructor(props) {
 		super(props)
+		this.state = {touchActive:false}
 		this.onClick = this.onClick.bind(this);
 		this.accept = this.accept.bind(this);
+		this.onTouchStart = this.onTouchStart.bind(this);
+		this.onTouchEnd = this.onTouchEnd.bind(this);
+
 	}
 	onClick () {
 		var self = this;
 		setTimeout(function(){
 			self.refs.cfmodal.show();
 		},100)	
+	}
+	onTouchStart (){
+		this.setState({touchActive:true})
+	}
+	onTouchEnd (){
+		this.setState({touchActive:false})
 	}
 	accept (){
 		this.props.onClick()
@@ -101,7 +128,10 @@ class CustomAlertClassedButton extends React.Component{
 		if(this.props.className){
 			klass = this.props.className
 		}
-		return	(<div style={style}><button className={klass} style={style} onClick={this.onClick} >{this.props.children}
+		if(this.state.touchActive){
+			klass +=' touchActive';
+		}
+		return	(<div style={style}><button className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} style={style} onClick={this.onClick} >{this.props.children}
 		
 		</button>
 			<AlertModal ref='cfmodal' accept={this.accept}>
@@ -113,8 +143,11 @@ class CustomAlertClassedButton extends React.Component{
 class CustomAlertButton extends React.Component{
 	constructor(props) {
 		super(props)
+		this.state = {touchActive:false}
 		this.onClick = this.onClick.bind(this);
 		this.accept = this.accept.bind(this);
+		this.onTouchStart = this.onTouchStart.bind(this);
+		this.onTouchEnd = this.onTouchEnd.bind(this);
 	}
 	onClick () {
 		var self = this;
@@ -125,13 +158,22 @@ class CustomAlertButton extends React.Component{
 	accept (){
 		this.props.onClick()
 	}
+	onTouchStart (){
+		this.setState({touchActive:true})
+	}
+	onTouchEnd (){
+		this.setState({touchActive:false})
+	}
 	render () {
 		var style = this.props.style || {}
 		var klass = 'customAlertButton'
 		if(this.props.className){
 			klass = this.props.className
 		}
-		return	(<div className={klass} style={style}><div onClick={this.onClick} >{this.props.children}
+		if(this.state.touchActive){
+			klass +=' touchActive';
+		}
+		return	(<div className={klass} style={style}><div onClick={this.onClick} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} >{this.props.children}
 		
 		</div>
 			<AlertModal ref='cfmodal' accept={this.accept}>
