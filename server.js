@@ -166,6 +166,7 @@ http.on('error', function(err){
 let _accounts = {};
 let _tempAccounts = {};
 var prefs = [];
+var cwprefs = []
 var cur = Date.now()
 
 /**CLASS DECLARATIONS START**/
@@ -257,6 +258,41 @@ function getVdef(ip, callback,failed){
       var buffer = Buffer.concat(rawVdef)
       zlib.unzip(buffer, function(er,b){
         var vdef = JSON.parse(b.toString())
+        if(vdef['@defines']['CHECK_WEIGHER']){
+                  vdefs[ip] = vdef; 
+        var nvdf = [[],[],[],[],[],[],[],[]];
+        var pVdef = [{},{},{},{},{},{},{},{}];
+        vdef['@params'].forEach(function (p) {
+          // body...
+          if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
+            nvdf[7].push(p['@name'])
+            pVdef[7][p['@name']] = p
+          }else{
+
+
+            nvdf[p["@rec"]].push(p['@name'])
+            pVdef[p['@rec']][p['@name']] = p
+          }
+        })
+        for(var p in vdef['@deps']){
+          ////console.log(p)
+         // //console.log(vdef['@deps'][p]['@rec'])
+          nvdf[vdef['@deps'][p]['@rec']].push(p)
+          pVdef[vdef['@deps'][p]['@rec']][p] = vdef['@deps'][p]
+
+        }
+        pVdef[6] = vdef["@deps"]
+
+        nVdfs[ip] = nvdf
+        pVdefs[ip] = pVdef
+        callback(ip,vdef) 
+        vdef = null;
+        b = null;
+        get.abort()     
+        tclient = null; 
+        }else{
+
+
         vdefs[ip] = vdef; 
         var nvdf = [[],[],[],[],[],[],[]];
         var pVdef = [{},{},{},{},{},{},{}];
@@ -280,6 +316,70 @@ function getVdef(ip, callback,failed){
 
         }
         pVdef[5] = vdef["@deps"]
+
+        nVdfs[ip] = nvdf
+        pVdefs[ip] = pVdef
+        callback(ip,vdef) 
+        vdef = null;
+        b = null;
+        get.abort()     
+        tclient = null;   
+        }      
+      })
+      rawVdef = null;
+      buffer = null;
+     
+    })
+     get.on('error',(e)=>{
+        //console.log(e)
+        rawVdef = null;
+        tclient = null;
+        if(failed){
+         failed(ip);
+          
+        }
+      })
+}
+function getVdefCW(ip, callback,failed){
+  var tclient = tftp.createClient({host:ip ,retries:10, timeout:1000})
+  //console.log('start getting vdef from ' + ip)
+  //var put = tclient.createPutStream()
+  var get = tclient.createGetStream('/flash/vdef.json')
+      var rawVdef = [];
+      get.on('data', (chnk)=>{
+        rawVdef.push(chnk)//zlib.gunzipSync(chnk);
+        chnk = null;
+      })
+      get.on('end', ()=>{
+      //console.log('getting vdef tftp end')
+      //console.log(ip)
+                     // //console.log(get.headers['content-encoding'])
+      var buffer = Buffer.concat(rawVdef)
+      zlib.unzip(buffer, function(er,b){
+        var vdef = JSON.parse(b.toString())
+        vdefs[ip] = vdef; 
+        var nvdf = [[],[],[],[],[],[],[]];
+        var pVdef = [{},{},{},{},{},{},{},{}];
+        vdef['@params'].forEach(function (p) {
+          // body...
+          if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
+            nvdf[7].push(p['@name'])
+            pVdef[7][p['@name']] = p
+          }else{
+
+
+            nvdf[p["@rec"]].push(p['@name'])
+            pVdef[p['@rec']][p['@name']] = p
+          }
+        })
+        for(var p in vdef['@deps']){
+          ////console.log(p)
+         // //console.log(vdef['@deps'][p]['@rec'])
+          nvdf[vdef['@deps'][p]['@rec']].push(p)
+          pVdef[vdef['@deps'][p]['@rec']][p] = vdef['@deps'][p]
+
+        }
+        pVdef[6] = vdef["@deps"]
 
         nVdfs[ip] = nvdf
         pVdefs[ip] = pVdef
@@ -364,11 +464,15 @@ function updateBinaries(paths, ip, cnt, callBack){
     })
   }
 }
-const udpCallback = function(_ip,e){
+const udpCallback = function(_ip,e,app){
       if(e){
  
       if(vdefs[_ip]){
+        if(app == 'FTI_CW'){
+          processParamCW(e,vdefs[_ip],nVdfs[_ip],pVdefs[_ip],_ip)
+      }else{
         processParam(e,vdefs[_ip],nVdfs[_ip],pVdefs[_ip],_ip)
+      }
      }
       }
       _ip = null;
@@ -528,6 +632,103 @@ function getAccountsJSON(ip, callback){
   })
 }
 
+function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
+   var rec_type = e.readUInt8(0)
+  var buf = e.slice(1)
+  console.log(rec_type, 'cw')
+  var n = e.length
+
+  var pack;
+  var rec = {};
+   var userrec = {};
+  if(rec_type == 0){
+    nVdf[0].forEach(function (p) {
+      rec[p] = getVal(buf, 0, p, pVdef)
+    })
+  
+    pack = {type:0, rec:rec}
+    //system
+  }else if(rec_type == 1){
+    console.log('PROD REC')
+    nVdf[1].forEach(function (p) {
+      rec[p] = getVal(buf, 1, p, pVdef)
+      // body...
+    })
+    /*for(var p in Vdef["@deps"]){
+      if(Vdef["@deps"][p]["@rec"] == 1){
+        rec[p] = getVal(array,5, p, pVdef);
+      }
+    }*/
+     pack = {type:1, rec:rec}
+  }else if(rec_type == 2){
+    nVdf[2].forEach(function (p) {
+      rec[p] = getVal(buf, 2, p, pVdef)
+      // body...
+    })
+    /*for(var p in Vdef["@deps"]){
+      if(Vdef["@deps"][p]["@rec"] == 2){
+        rec[p] = getVal(array,5, p, pVdef);
+      }
+    }*/
+    pack = {type:2, rec:rec}
+    
+  }else if(rec_type == 3){
+     nVdf[3].forEach(function (p) {
+      //need to account for user objects here. 
+     // if(p)
+
+      rec[p] = getVal(buf, 3, p, pVdef)
+    //  console.log(p, rec[p])
+      // body...
+    })
+   
+    nVdf[6].forEach(function (p) {
+      //need to account for user objects here. 
+     // if(p)
+      userrec[p] = getVal(buf, 6, p, pVdef)
+      // body...
+    })
+    var usernames = []
+    var accArray = []
+    for(var i = 0; i< _Vdef['@defines']['MAX_USERNAMES']; i++){
+      usernames.push({username:userrec['UserName'+i], acc:userrec['UserOptions'+i],preset:userrec['UserPassReset'+i]});
+      accArray.push({username:userrec['UserName'+i], opt:userrec['UserOptions'+i], phash:userrec['PasswordHash'+i],preset:userrec['UserPassReset'+i]})
+    }
+   // _tempAccounts[ip] = accArray.slice(0)
+    _accounts[ip] = accArray.slice(0)
+
+    relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:5, rec:userrec, array:usernames}}})
+
+    pack = {type:3, rec:rec}
+    
+  }else if(rec_type == 4){
+    nVdf[4].forEach(function (p) {
+      rec[p] = getVal(buf, 4, p, pVdef)
+      // body...
+    })
+
+    pack = {type:4, rec:rec}
+  }else if(rec_type == 5){
+     nVdf[5].forEach(function (p) {
+      rec[p] = getVal(buf, 5, p, pVdef)
+      // body...
+    })
+
+    pack = {type:5, rec:rec}
+  }
+ // data = null;
+  relayParamMsgCW({det:{ip:ip, mac:macs[ip]}, data:pack});
+ 
+  nVdf = null;
+  pVdef = null;
+  e = null;
+  rec = null;
+  userrec = null;
+  buf = null;
+ // pack.det = {ip:ip}
+  pack = null;
+}
+
 function processParam(e, _Vdef, nVdf, pVdef, ip) {
 
   var rec_type = e.readUInt8(0)
@@ -619,7 +820,7 @@ function processParam(e, _Vdef, nVdf, pVdef, ip) {
   pack = null;
 }
 
-function udpConSing(ip){
+function udpConSing(ip,app){
   console.log(typeof udpClients[ip])
   console.log(udpClients[ip] == null)
   //console.log(udpClients[ip].ip)
@@ -634,8 +835,9 @@ function udpConSing(ip){
     console.log('Why here?')
    
     udpClients[ip] = null;
-       udpClients[ip] = new UdpParamServer(ip ,udpCallback, vdefs[ip])
-    getVdef(ip, function(__ip,vdef){
+       udpClients[ip] = new UdpParamServer(ip ,udpCallback, vdefs[ip], app)
+
+          getVdef(ip, function(__ip,vdef){
       if(typeof nphandlers[__ip] == 'undefined'){
         nphandlers[__ip] = new NetPollEvents([{'ip':__ip,'detector_name':"DET"}],[vdef],write_netpoll_events, relaySockMsg)
       }
@@ -643,6 +845,8 @@ function udpConSing(ip){
     },function(e){
       //console.log('failed getting vdef from ', e)
     })
+        
+       
     //console.log(udpClients)
   }else{
     console.log('should come here!')
@@ -650,18 +854,16 @@ function udpConSing(ip){
     udpClients[ip].refresh();
  
 
-    getVdef(ip, function(__ip,vdef){
-      if(typeof nphandlers[__ip] != 'undefined'){
-        nphandlers[__ip] = null;
-        delete nphandlers[__ip];
-       
+  getVdef(ip, function(__ip,vdef){
+      if(typeof nphandlers[__ip] == 'undefined'){
+        nphandlers[__ip] = new NetPollEvents([{'ip':__ip,'detector_name':"DET"}],[vdef],write_netpoll_events, relaySockMsg)
       }
-       nphandlers[__ip] = new NetPollEvents([{'ip':__ip,'detector_name':"DET"}],[vdef],write_netpoll_events)
+
     },function(e){
       //console.log('failed getting vdef from ', e)
     })
-
   }
+     
   
 }
 function udpCon(ip, cb){
@@ -714,11 +916,23 @@ function relayParamMsg2(packet){
 
   for(var pid in passocs){
     ////console.log(packet)
-    if(packet.data.type == 1){
-      console.log('relaying to ', pid)
-      
-    }
-    passocs[pid].relayParsed(packet);
+
+  //  if(passocs[pid].cw != true){
+      passocs[pid].relayParsed(packet);
+
+    //}
+  }
+  packet = null;
+}
+function relayParamMsgCW(packet){
+  ////console.log('relay param msg 2')
+
+  for(var pid in passocs){
+    ////console.log(packet)
+    //if(passocs[pid].cw == true){
+      passocs[pid].relayParsedCW(packet);
+
+    //}
   }
   packet = null;
 }
@@ -1181,6 +1395,9 @@ wss.on('connection', function(scket, req){
     socket.emit('paramMsg2',p)
     p = null;
   }
+  var relayFuncCW = function(p){
+    socket.emit('paramMsgCW',p)
+  }
   var relayUserNamesFunc = function (p) {
     socket.emit('userNames',p)
     p = null;
@@ -1197,7 +1414,7 @@ wss.on('connection', function(scket, req){
     socket.emit(ev,arg)
   }
 
-  passocs[socket.id] = {relay:relayFunc, relayParsed:relayFuncP, relayUserNames:relayUserNamesFunc}
+  passocs[socket.id] = {relay:relayFunc, relayParsed:relayFuncP, relayParsedCW:relayFuncCW, relayUserNames:relayUserNamesFunc}
   rassocs[socket.id] = {relay:relayRpcFunc}
   nassocs[socket.id] = {relay:relayNetFunc}
   sockrelays[socket.id] = {relay:sockrelay}
@@ -1209,8 +1426,14 @@ wss.on('connection', function(scket, req){
     socket.emit('resetConfirm','locate now')
   })
 
-  socket.on('getVersion', function (argument) {
+  socket.on('getVersion', function (cw) {
     socket.emit('version', VERSION)
+    var checkw = (true == cw)
+    passocs[socket.id].cw = checkw
+    rassocs[socket.id].cw = checkw
+    nassocs[socket.id].cw = checkw
+    sockrelays[socket.id].cw = checkw
+  
   })
   usb.on('attach', function(dev){
     socket.emit('usbdetect')
@@ -1625,8 +1848,10 @@ wss.on('connection', function(scket, req){
   socket.on('locateUnicast', function (addr) {
     locateUnicast(addr)
   });
-  socket.on('locateReq', function (argument) {
-
+  socket.on('locateReq', function (cw) {
+    if(cw == true){
+      console.log('locate Req for CW')
+    }
     //console.log('locate req')
     var ifaces = os.networkInterfaces();  
     var iface = 'eth0'
@@ -1658,16 +1883,29 @@ wss.on('connection', function(scket, req){
       dets = e
       dspips = [];
       nvdspips = [];
+      var cwips = []
       for(var i = 0; i < e.length; i++){
+        if(cw){
+          console.log(e[i])
+        }
         if(e[i].board_type == 1){
           var ip = e[i].ip.split('.').map(function(e){return parseInt(e)});
           var nifip = e[i].nif_ip.split('.').map(function(e){return parseInt(e)});
           if(!((ip[0] == nifip[0]) && (ip[1] == nifip[1]) && (ip[2] == nifip[2]))){
             nvdspips.push(e[i])
-          }else if(e[i].ver == '20.17.4.27'){}else{
+          }else if(e[i].ver == '20.17.4.27'){
+
+          }else{
             dspip = ip.join('.');
             macs[dspip] = e[i].mac
             dspips.push(e[i]);
+            if(cw){
+              console.log(e[i].app_name)
+              if(e[i].app_name == 'FTI_CW'){
+                console.log(1804, e[i])
+                cwips.push(e[i])
+              }
+            }
           }
         }
       }
@@ -1681,7 +1919,13 @@ wss.on('connection', function(scket, req){
         socket.emit('notvisible', nvdspips);
       }
       initSocks(dsps.slice(0), function(){
-        socket.emit('locatedResp', dspips);
+        if(cw){
+          socket.emit('locatedResp',cwips)
+        }else{
+          socket.emit('locatedResp', dspips);
+         
+        }
+ 
       });
     });
   });
@@ -1718,9 +1962,11 @@ wss.on('connection', function(scket, req){
             }
             //pack = null;
   })
-  socket.on('getPrefs', function (f) {
-    if(fs.existsSync(path.join(__dirname, 'json/prefData.json'))){
-      fs.readFile(path.join(__dirname, 'json/prefData.json'), (err,data) =>{
+  socket.on('getPrefs', function (cw) {
+    var fnm = 'json/prefData.json'
+  
+    if(fs.existsSync(path.join(__dirname, fnm))){
+      fs.readFile(path.join(__dirname, fnm), (err,data) =>{
         try{
           prefs = JSON.parse(data)
         }catch(e){
@@ -1741,18 +1987,48 @@ wss.on('connection', function(scket, req){
       socket.emit('prefs',prefs)
     }
   })
+    socket.on('getPrefsCW', function (cw) {
+    var fnm = 'json/cwprefData.json'
+  
+    if(fs.existsSync(path.join(__dirname, fnm))){
+      fs.readFile(path.join(__dirname, fnm), (err,data) =>{
+        try{
+          cwprefs = JSON.parse(data)
+        }catch(e){
+        
+        }
+        if(prefs.length == 0){
+          if(dispSettings.mode == 0){
+            autoIP();  
+          }else{
+            socket.emit('notify', 'Display is in static mode')
+          }
+          
+        }else{
+          socket.emit('prefs', cwprefs)  
+        }
+      })
+    }else{
+      socket.emit('prefs',cwprefs)
+    }
+  })
   socket.on('getTestFss', function(f){
     fs.readFile(__dirname + '/json/test/testfss.json', (err,data) =>{
       var testFss = JSON.parse(data)
       socket.emit('testFss', testFss)
     })
   })
-  socket.on('connectToUnit', function(ip){
+  socket.on('connectToUnit', function(u){
     //console.log('connect sing!! '+ ip)
-    udpConSing(ip)
-    getAccountsJSON(ip,function(json){
-      socket.emit('accounts', {data:json,ip:ip, mac:macs[ip]})
+    udpConSing(u.ip,u.app_name)
+    getAccountsJSON(u.ip,function(json){
+      socket.emit('accounts', {data:json,ip:u.ip, mac:macs[ip]})
     })
+     if(vdefs[u.ip]){
+                socket.emit('vdef',[vdefs[u.ip],u])
+              }else{
+                socket.emit('noVdef', u)
+              }
   })
   socket.on('authenticate', function(packet){
     //console.log('authenticate this packet')

@@ -6,6 +6,18 @@ var createReactClass = require('create-react-class');
 var onClickOutside = require('react-onclickoutside');
 const vdefMapV2 = require('./vdefmap.json')
 
+const SPARCBLUE1 = '#30A8E2'
+const FORTRESSPURPLE1 = '#362c66'
+const FORTRESSPURPLE2 = '#5d5480'
+
+Number.prototype.between = function(a, b, inclusive) {
+  var min = Math.min(a, b),
+    max = Math.max(a, b);
+
+  return inclusive ? this >= min && this <= max : this > min && this < max;
+}
+
+
 
 function yRangeFunc(range){
 	var max = 200;
@@ -403,6 +415,89 @@ class TickerBox extends React.Component{
 			<div className={path}>
 				<div className={block} style = {{left:50-(tickerVal/4)+'%',backgroundColor:color}}/>
 			</div>
+			</div>
+		)
+	}
+}
+class TrendBar extends React.Component{
+	constructor(props){
+		super(props)
+		this.state = {ticks:(this.props.low+this.props.high)/2}
+		this.update = this.update.bind(this)
+	}
+	update(data){
+		this.setState({ticks:data})
+	}
+	render(){
+		var target = (this.props.low+this.props.high)/2;
+		var tickerVal = this.state.ticks;
+		if(tickerVal < this.props.lowerbound){
+			tickerVal = this.props.lowerbound
+		}else if(tickerVal > this.props.upperbound){
+			tickerVal = this.props.upperbound
+		}
+		var ranges// = [];
+		var bgcolors// = [];
+		var colors//
+		var bgstr
+		var pctgs;
+		var range = this.props.upperbound - this.props.lowerbound
+		var color;
+		var labels;
+		var labclr = '#e1e1e1'
+		if(this.props.branding == 'SPARC'){
+			labclr = 'black'
+		}
+		if(this.props.yellow == true){
+			ranges = [this.props.t1,this.props.low,this.props.high,this.props.t2]
+			pctgs = [((this.props.t1 - this.props.lowerbound)*100)/range, ((this.props.low - this.props.lowerbound)*100)/range, ((this.props.high - this.props.lowerbound)*100)/range, ((this.props.t2 - this.props.lowerbound)*100)/range]
+			bgcolors = ['#800000','#806000','#008000','#806000','#800000']
+			colors = ['#ff0000','#ffdf00','#00ff00','#ffdf00','#ff0000']
+			bgstr = 'linear-gradient(90deg, #800000A0, #800000A0 ' + pctgs[0].toFixed(0) +  '%, #806000A0 '+ pctgs[0].toFixed(0)
+				+ '%, #806000A0 '+pctgs[1].toFixed(0)+'%, #008000A0 ' +pctgs[1].toFixed(0)
+				+ '%, #008000A0 '+pctgs[2].toFixed(0)+'%, #806000A0 ' +pctgs[2].toFixed(0) 
+				+ '%, #806000A0 '+pctgs[3].toFixed(0)+'%, #800000A0 ' +pctgs[3].toFixed(0) + '%, #800000A0)';
+			if(tickerVal < ranges[0]){
+				color = colors[0]
+			}else if(tickerVal < ranges[1]){
+				color = colors[1]
+			}else if(tickerVal <= ranges[2]){
+				color = colors[2]
+			}else if(tickerVal <= ranges[3]){
+				color = colors[3]
+			}else{
+				color = colors[4]
+			}
+			labels = ranges.map(function(r,i) {
+				// body...
+				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{r}</div>
+			})
+		}else{
+
+			pctgs = [((this.props.low - this.props.lowerbound)*100)/range, ((this.props.high - this.props.lowerbound)*100)/range]
+			ranges = [this.props.low,this.props.high]
+			bgcolors = ['#aa0000','#00aa00','#aa0000']
+			colors = ['#ff0000','#00ff00','#ff0000']
+			bgstr = 'linear-gradient(90deg, #aa0000, #aa0000 ' + pctgs[0].toFixed(0) +  '%, #00aa00 ' +pctgs[0].toFixed(0)
+				+ '%, #00aa00 '+pctgs[1].toFixed(0)+'%, #aa0000 ' +pctgs[1].toFixed(0) + '%, #aa0000)';
+
+			labels = ranges.map(function(r,i) {
+				// body...
+				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{r}</div>
+			})
+
+		}
+
+		var path = 'example_path'
+		var block = 'example_block'
+		//console.log(bgstr)
+		return (
+			<div className='tickerBox' style={{position:'relative', height:40, color:'#e1e1e1'}}>
+			<div style={{height:20,display:'block',fontSize:16}}>{labels}</div>
+			<div style={{background:'#000'}}><div className={path} style={{background:bgstr}}>
+				<div className={block} style = {{left:((tickerVal-this.props.lowerbound)*100)/range+'%',backgroundColor:color}}/>
+			</div></div>
+			
 			</div>
 		)
 	}
@@ -1130,6 +1225,7 @@ class CircButton extends React.Component{
 }
 
 module.exports = {}
+module.exports.TrendBar = TrendBar;
 module.exports.TickerBox = TickerBox;
 module.exports.CanvasElem = CanvasElem;
 module.exports.SlimGraph = SlimGraph;

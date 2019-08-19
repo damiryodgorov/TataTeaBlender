@@ -1,7 +1,7 @@
 'use strict'
 
 class FtiSockIo{
-	constructor(url){
+	constructor(url,cw){
 		this.sock = new WebSocket(url)
 		this.handlers = {}
 		var self = this;
@@ -16,8 +16,13 @@ class FtiSockIo{
 		this.sock.onopen = function (argument) {
 			// body...
 		//	self.emit('locateReq');
-			self.emit('getVersion');
-			self.emit('getPrefs');
+			self.emit('getVersion', cw);
+			if(cw){
+				self.emit('getPrefsCW')
+			}else{
+				self.emit('getPrefs');
+
+			}
 		}
 
 	}

@@ -10,6 +10,27 @@ const PASS_SEED2_OFFSET = 105
 const PASS_SEED3_OFFSET = 78
 const PASS_SEED4_OFFSET = 111
 class Params{
+  static int32_array(val){
+    var buf = Buffer.alloc(1200);
+    console.log(val.length)
+    for(var j = 0; j<val.length; j++){
+      buf.writeUInt16LE(val[j],j*2)
+    }
+    var arr = []
+    for(var i = 0; i<300;i++){
+      arr.push(buf.readInt32LE(i*4));
+    }
+    return arr;
+  }
+  static int32(val){
+    return val[1] << 16 | val[0]
+  }
+  static float(val){
+    var int = val[1] << 16 | val[0]
+    var buf = Buffer.alloc(4);
+    buf.writeInt32LE(int)
+    return buf.readFloatLE(0)
+  }
   static frac_value(int){
     return (int/(1<<15))
   }
@@ -298,6 +319,7 @@ function getVal(arr, rec, key, pVdef){
     var param = pVdef[rec][key]
     if(param['@bit_len']>16){
       pVdef = null;
+
       return wordValue(arr, param)
     }else{
       var val;
@@ -353,6 +375,8 @@ function wordValue(arr, p){
 
     }else if('EtherExtPorts' == p['@name']){
       return sa[0]
+    }else  if(p['@bit_len'] == 32){
+        return sa[1] << 16 | sa[0]
     }else{
       var str = sa.map(function(e){
       return (String.fromCharCode((e%256),(e>>8)));

@@ -2,6 +2,11 @@ var React = require('react');
 var ReactDom = require('react-dom')
 import {AlertModal} from './components.jsx'
 
+const SPARCBLUE2 = '#30A8E2'
+const SPARCBLUE1 = '#1C3746'
+const FORTRESSPURPLE1 = '#362c66'
+const FORTRESSPURPLE2 = '#5d5480'
+
 class ButtonWrapper extends React.Component{
 	constructor(props) {
 		super(props)
@@ -46,9 +51,17 @@ class CircularButton extends React.Component{
 		var border = '8px solid rgb(129, 138, 144)'
 		
 		var klass = 'circularButton'
-
+		var fontColor = '#e1e1e1'
 		if(this.state.touchActive){
 			klass = 'circularButton touchActive'
+		}
+		if(this.props.branding == 'SPARC'){
+			fontColor = SPARCBLUE1
+			border = '8px solid #e1e1e1'
+			var klass = 'circularButton_sp'
+			if(this.state.touchActive){
+				klass = 'circularButton_sp touchActive_sp'
+			}
 		}
 
 		if(this.props.isTransparent){
@@ -71,7 +84,7 @@ class CircularButton extends React.Component{
 		if(this.props.fSize){
 			fsize = this.props.fSize
 		}
-		var innerStyle = {display:'inline-block', position:'relative',top:-2,width:'100%', color:"#e1e1e1", fontSize:fsize,lineHeight:'50px'}
+		var innerStyle = {display:'inline-block', position:'relative',top:-2,width:'100%', color:fontColor, fontSize:fsize,lineHeight:'50px'}
 		if(this.props.innerStyle){
 			innerStyle = Object.assign({} ,this.props.innerStyle);
 		}

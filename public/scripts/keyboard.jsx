@@ -325,6 +325,8 @@ class CustomKey extends React.Component{
 		var klass = 'customKey'
 		if(this.props.mobile){
 			klass = 'customKey_m'
+		}else if(this.props.klass){
+			klass = this.props.klass
 		}
 		if(this.state.touchActive){
 			klass += ' keyDown'
@@ -358,7 +360,205 @@ class CustomKey extends React.Component{
 		
 	}
 }
+class EmbeddedKeyboard extends React.Component{
+	constructor(props){
+		super(props)
+		this.state = {value:"", shift:false}
+		this.onKeyPress = this.onKeyPress.bind(this);
+		this.onEnter = this.onEnter.bind(this);
+		this.onShift = this.onShift.bind(this);
+		this.onChange = this.onChange.bind(this);
+		this.liveUpdate = this.liveUpdate.bind(this);
+		this.onDelete = this.onDelete.bind(this);
+		this.clear = this.clear.bind(this);
 
+	}
+	componentDidMount(){
+		this.liveUpdate('');
+	}
+	onEnter() {
+		// body...
+		this.props.onChange(this.state.value)
+	}
+	onDelete() {
+		// body...
+		var self = this;
+		var value = this.state.value.slice(0,this.state.value.length - 1)
+		this.setState({value:value})
+		setTimeout(function (argument) {
+			// body...
+			self.liveUpdate(value)
+		},100)
+	}
+	clear() {
+		var self = this;
+		var value = ""
+		this.setState({value:value})
+		setTimeout(function (argument) {
+			// body...
+			self.liveUpdate(value)
+		},100)
+	}
+	onShift() {
+		this.setState({shift:!this.state.shift})
+	}
+	onChange(e){
+		var self = this;
+		var value = e.target.value;
+		this.setState({value:value})
+		setTimeout(function (argument) {
+			// body...
+			self.liveUpdate(value)
+		},100)
+	}
+	help(argument) {
+		this.refs.helpModal.toggle();	
+	}
+	liveUpdate(val){
+		if(this.props.liveUpdate){
+			this.props.liveUpdate(val)
+		}
+	}
+	onKeyPress(char) {
+		// body...
+		var self = this;
+		var value = this.state.value
+		
+		if(char == 'enter'){
+			this.onEnter();
+		}else if(char == 'shift'){
+			this.onShift();
+		}else if(char == 'cancel'){
+			this.close();
+		}else{
+			if(char == 'clear'){
+			//this.clear();
+				value = ""
+			}else if(char == 'del'){
+				value = value.slice(0,value.length -1)
+				//this.onDelete();
+			}else if((char == 'space' ) || (char == 'shortspace')){
+				if(value.length < 20){
+					value = value.concat(" ");
+				
+				}
+			}else{
+				if(value.length < 20){
+					value = value.concat(char)
+			}
+		}
+			this.setState({value:value})
+			setTimeout(function () {
+				// body...
+				self.liveUpdate(value)
+			},100)
+		}
+		
+	}
+	render(){
+		var self = this;
+		var NumericKeyset = [['7','8','9'],['4','5','6'],['1','2','3'],['.','0','-']]
+		var ANumericKeyset = [ ['1','2','3','4','5','6','7','8','9','0'],['q','w','e','r','t','y','u','i','o','p'],
+							['a','s','d','f','g','h','j','k','l','@'],['shift','z','x','c','v','b','n','m','-','.'],
+							['space','#','enter','cancel']]
+		var TimeKeySet = [['5','6','7','8','9'],['0','1','2','3','4'],['shortspace',':','/']]
+		var rows = ""
+		var width = 290;
+		var hidden = false;
+		var caps = this.state.shift
+			var helpModal;
+		var helpButton;
+		if(typeof this.props.tooltip != 'undefined'){
+			var helpWidth = 400;
+			var helpMargin = 15;
+			if(this.props.mobile){
+				helpWidth = '90%'
+				helpModal = 0;
+			}
+			helpButton = <div  style={{float:'right', display:'inline-block', marginLeft:-50, marginRight:helpMargin, marginTop:3}}><img src='assets/help.svg' onClick={this.help} width={30}/></div>
+	  		helpModal = <Modal mobile={self.props.mobile} ref='helpModal' Style={{color:'#e1e1e1',width:helpWidth, maxWidth:400}}>
+	  		<div>{this.props.tooltip}</div>
+	  		</Modal>
+		}
+		var but1 = ''//helpButton;
+		var but2 = helpButton;
+		var fbwidth = 290
+
+		if(this.props.datetime == true){
+			//console.log('datetime')
+			rows = TimeKeySet.map(function (row) {
+				var tds = row.map(function(k){
+					//////console.log(k)
+					return <CustomKey klass='customKey_sp' Key={k} mobile={self.props.mobile}  caps={false} onPress={self.onKeyPress}/>
+				})
+				return <tr>{tds}</tr>
+			})
+			fbwidth = 500;
+			width = 610;
+		}else if(this.props.num){
+			//but1= helpButton;
+			rows = NumericKeyset.map(function (row) {
+				var tds = row.map(function(k){
+					//////console.log(k)
+					return <CustomKey klass='customKey_sp' Key={k} mobile={self.props.mobile} caps={false} onPress={self.onKeyPress}/>
+				})
+				return <tr>{tds}</tr>
+			})
+		}else{
+			
+			hidden = true;
+			fbwidth = 765
+			//but2 = helpButton
+			rows = ANumericKeyset.map(function (row) {
+				var tds = row.map(function(key){
+					if(caps){
+						if (key.length == 1){
+							key = key.toUpperCase();
+						}
+						if(key == '-'){
+							key = '_';
+						}
+					}
+					return <CustomKey klass='customKey_sp' Key={key} caps={caps} onPress={self.onKeyPress}/>
+				})
+				return <tr>{tds}</tr>
+			})
+			width = 815
+		}
+		var dispval = this.state.value;
+		if(this.props.pwd){
+			dispval = this.state.value.split('').map(function(c){return '*'}).join('');
+		}
+		//var tooltiptext = 'This is a tooltip'
+		////console.log(this.props.vMap)
+		var label = 'Enter'
+		if(this.props.label && this.props.label.length > 0){
+			label = this.props.label;
+		}
+		var minW = 400;
+		if(this.props.mobile){
+			minW = 300
+		}
+
+		return <div style={{width:width, textAlign:'center', background:'#3f3f3f'}}>
+
+	<div style={{height:75, position:'relative'}}>		<svg style={{position:'absolute', top:18, marginLeft:3}} onClick={this.clear} xmlns="http://www.w3.org/2000/svg" height="40" version="1.1" viewBox="0 0 32 32" width="40"><g id="Layer_1"/><g id="x_x5F_alt"><path d="M16,0C7.164,0,0,7.164,0,16s7.164,16,16,16s16-7.164,16-16S24.836,0,16,0z M23.914,21.086   l-2.828,2.828L16,18.828l-5.086,5.086l-2.828-2.828L13.172,16l-5.086-5.086l2.828-2.828L16,13.172l5.086-5.086l2.828,2.828   L18.828,16L23.914,21.086z" fill="#3E3E40"/></g></svg>
+	<div style={{background:'rgba(150,150,150,0.3)',display:'inline-block',fontSize:25,lineHeight:'75px',textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:75,color:'#eee', whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}}>{dispval}</div>{but1}
+		<svg style={{position:'absolute', top:15, marginLeft:-52, width:50}} onClick={this.onDelete} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#3E3E40" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
+		</div>
+		<div style={{width:width,marginLeft:'auto',marginRight:'auto'}}>
+		<table style={{tableLayout:'fixed', position:'relative', top:0,width:width}}className='customKeyboardTable'><tbody style={{display:'table-row-group'}}>
+			{rows}
+		</tbody></table>
+		
+	  	
+		</div>
+		{helpModal}
+		<div hidden={hidden}><CircularButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
+		<CircularButton style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.close} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/></div>
+		</div>
+	}
+}
 class KeyboardInputTextButton extends React.Component{
 	constructor(props) {
 		super(props)
@@ -559,5 +759,6 @@ class KeyboardInputTextButton extends React.Component{
 
 
 module.exports = {}
+module.exports.EmbeddedKeyboard = EmbeddedKeyboard;
 module.exports.CustomKeyboard = CustomKeyboard;
 module.exports.KeyboardInputTextButton = KeyboardInputTextButton;

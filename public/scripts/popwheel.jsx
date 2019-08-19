@@ -10,6 +10,10 @@ import {CircularButton} from './buttons.jsx'
 const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CLEAR_WARNINGS','PHASE_HOLD','CIP_TEST','CIP_PLC','PROD_SEL1', 'PROD_SEL2', 'PROD_SEL3','PROD_SEL4']
 const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 
+const SPARCBLUE1 = '#30A8E2'
+const FORTRESSPURPLE1 = '#362c66'
+const FORTRESSPURPLE2 = '#5d5480'
+
 function setScrollTop(id, top) {document.getElementById(id).scrollTop = top;}
 
 class PopoutWheel extends React.Component{

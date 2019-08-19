@@ -334,6 +334,18 @@ li {
 
     display: inline-block;
 }
+.confbuttCell button{
+   height: 60px;
+}
+.confbuttCell button::after{
+    background-size: contain;
+    height: 48px;
+    width: 50px;
+    margin-top: -10px;
+    background-repeat: no-repeat;
+
+    display: inline-block;
+}
 .logbuttCell button{
    height: 50px;
 }
@@ -492,6 +504,25 @@ li {
 }
 .touchActive{
     background-color: #332a5f;
+}
+
+.circularButton_sp{
+    text-align: center;
+    width:191px;
+    background-color: #e1e1e1;
+    position: relative;
+    margin-top: 8px;
+    margin-right: auto;
+    margin-left: auto;
+    height:50px;
+    overflow: hidden;
+    border-radius: 32px;
+    padding: 3px;
+    border: 8px solid #818a90;
+    box-shadow: 0 0 6px black;
+}
+.touchActive_sp{
+    background-color: #2098d2;
 }
 /*.circularButton:hover{
     background-color: #383064;
@@ -1233,10 +1264,26 @@ li {
     border: 2px solid grey;
     font-size: 40px;
 }
+.customKey_sp{
+   /* padding: 5px;*/
+   /* width: 80px;*/
+     padding: 0px;
+    background:#e1e1e1;
+    height: 73px;
+    border: 2px solid grey;
+    font-size: 40px;
+}
 .customKey_m{
    /* padding: 5px;*/
    /* width: 80px;*/
      padding: 0px;
+    background:#ccc;
+    height: 67px;
+    border: 2px solid grey;
+    font-size: 40px;
+}
+.customKey_e{
+         padding: 0px;
     background:#ccc;
     height: 67px;
     border: 2px solid grey;
@@ -1437,11 +1484,6 @@ li {
    padding-bottom: 0px;
    text-align: center;
    border: none;
-    /*border: 1px solid gray;
-    border-radius: 10px;
-    margin: 5px;
-    min-height: 200px;
-    margin-top: -17px;*/
 
 }
 .defCont{
@@ -1639,12 +1681,6 @@ li {
     line-height: 57px;
 }
 
-/*.hasChild::before{
-    content: url('../assets/angle-right.svg');
-        display: inline-block;
-    height: 32px;
-    vertical-align: bottom;
-}*/
 .hasChild{
     border: 5px solid #818a90;
     background: rgba(240, 240, 240, 0.2);
@@ -1659,9 +1695,6 @@ li {
 .touchDown{
     background: rgba(100,100,100, 0.5)
 }
-/*.hasChild:hover{
-    background: rgba(160,160,160,0.4); 
-}*/
 
 .txtLeft{
     text-align: -webkit-right;
@@ -1779,6 +1812,11 @@ li {
     background: transparent;
     
 }
+.confbuttCell button{
+    border: none;
+    background: transparent;
+    
+}
 .logbuttCell button{
     border: none;
     background: transparent;
@@ -1800,6 +1838,10 @@ li {
     width: 200px;
 }
 .buttCell{
+    width: 46px;
+    height: 100px;
+}
+.confbuttCell{
     width: 46px;
     height: 100px;
 }
@@ -1826,6 +1868,7 @@ li {
     content: " ";
     background: url('../assets/config_w.svg');
 }
+
 .config_active::after{
     float: right;
      content: " ";
@@ -1872,22 +1915,6 @@ li {
     width: 136px;
     margin-bottom: 15px;
     height: 30px;
-}
-.menuCategory{
-  /*  border-top-width: 2px;
-    border-top-style: groove;
-    border-top: #c1c1c1*/
-}
-.collapsed::before{
-    
-   /* content:url('../assets/angle-down.svg');
-    position: relative;
-    top: 5px;*/
-}
-.expanded::before{
-  /* content:url('../assets/angle-up.svg');
-    position: relative;
-    top: 5px; */ 
 }
 .selectNode{
     padding-left: 15px;

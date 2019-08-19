@@ -162,7 +162,7 @@ function fletcherCheckBytes (data) {
     return [c1,c2];
 }
 var _wsurl = 'ws://' +location.host 
-var socket = new FtiSockIo(_wsurl);
+var socket = new FtiSockIo(_wsurl,false);
 var liveTimer = {}
 var myTimers = {}
 
@@ -651,7 +651,6 @@ class LandingPage extends React.Component{
 		this.renderDetector = this.renderDetector.bind(this);
 		this.showFinder = this.showFinder.bind(this);
 		this.switchUnit = this.switchUnit.bind(this);
-		this.addMBUnit = this.addMBUnit.bind(this);
 		this.editMb = this.editMb.bind(this);
 		this.addToTmp = this.addToTmp.bind(this);
 		this.addToTmpGroup = this.addToTmpGroup.bind(this);
@@ -845,7 +844,7 @@ class LandingPage extends React.Component{
 						nps[b.ip] = []
 					}
 					////////console.log('connectToUnit')
-					socket.emit('connectToUnit', b.ip)
+					socket.emit('connectToUnit', {ip:b.ip, app:b.app})
 				})
 			})
 		
@@ -1170,7 +1169,7 @@ class LandingPage extends React.Component{
 	loadPrefs() {
 		if(socket.sock.readyState  ==1){
 			//socket.emit('locateReq');
-			socket.emit('getVersion');
+			socket.emit('getVersion',false);
 			socket.emit('getPrefs');
       socket.emit('getDispSettings');
 
@@ -2931,7 +2930,7 @@ class SettingItem3 extends React.Component{
 				if(this.props.backdoor){
 					im = ''
 				}
-				var edctrl = <EditControl mobile={this.props.mobile} mac={this.props.mac}  ov={true} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={lkey}/>
+				var edctrl = <EditControl nameovr={namestring} mobile={this.props.mobile} mac={this.props.mac}  ov={true} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={lkey}/>
 				if(this.props.mobile){
 					sty.height = 51
 					sty.paddingRight = 5
@@ -3133,17 +3132,14 @@ class EditControl extends React.Component{
 					namestring = vMapV2[this.props.name]['@translations'][this.props.language]['name']
 				}
 			}
+      if(typeof this.props.nameovr != 'undefined'){
+        namestring = this.props.nameovr
+      }
 		if(this.props.data.length > 0	){
-			//if(Array.isArray(this.props.data[0])){
-				////////////console.log('1728')
-			//	return (<NestedEditControl mac={this.props.mac} language={this.props.language}  ip={this.props.ip} faultBits={this.props.faultBits} ioBits={this.props.ioBits} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
-			//		lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
-		//	}else{
-				////////////console.log('1732')
-				return (<MultiEditControl combo={this.props.combo} mobile={this.props.mobile} mac={this.props.mac} ov={this.props.ov} vMap={vMapV2[this.props.name]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
+
+				return (<MultiEditControl nameovr={namestring} combo={this.props.combo} mobile={this.props.mobile} mac={this.props.mac} ov={this.props.ov} vMap={vMapV2[this.props.name]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
 				 onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
-		//	}	
 		}
 		var fSize = 24;
 			if(namestring.length > 28){
@@ -3236,7 +3232,7 @@ class EditControl extends React.Component{
 class MultiEditControl extends React.Component{
 	constructor(props) {
 		super(props)
-		this.state = ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size})
+		this.state = ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size,touchActive:false})
 		this.switchMode = this.switchMode.bind(this)
 		this.deactivate = this.deactivate.bind(this)
 		this.selectChanged = this.selectChanged.bind(this);
@@ -3246,6 +3242,8 @@ class MultiEditControl extends React.Component{
 		this.onClick = this.onClear.bind(this);
 		this.openSelector = this.openSelector.bind(this);
 		this.valClick = this.valClick.bind(this);
+    this.onPointerDown = this.onPointerDown.bind(this);
+    this.onPointerUp = this.onPointerUp.bind(this);
 	}
 	componentWillReceiveProps(newProps){
 		this.setState({val:newProps.data.slice(0)})
@@ -3357,6 +3355,15 @@ class MultiEditControl extends React.Component{
 			}
 		}
 	}
+  onPointerDown(){
+    this.setState({touchActive:true})
+  }
+  onPointerUp(){
+    if(this.state.touchActive){
+         this.setState({touchActive:false})
+      
+    }
+  }
 	render() {
 		//////console.log(3243, this.props.mobile)
 		var namestring = this.props.name
@@ -3397,7 +3404,7 @@ class MultiEditControl extends React.Component{
 			}
 		}
 		var labWidth = (536/this.state.val.length)
-		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480',overflow:'hidden'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
 		if(this.props.mobile){
 			labWidth = parseInt(100/this.state.val.length) + '%'
@@ -3405,6 +3412,10 @@ class MultiEditControl extends React.Component{
 			lvst.verticalAlign = 'middle'
 			lvst.lineHeight = '25px'
 		}
+    if(this.state.touchActive){
+      lvst.background = '#56526c'
+      vlabelStyle.boxShadow = ' -50px 0px 0 0 #56526c'
+    }
     ////console.log(this.props.param, this.state.val)
 			var vLabels = this.state.val.map(function(d,i){  
 			var val = d;
@@ -3456,14 +3467,19 @@ class MultiEditControl extends React.Component{
       if(self.props.combo){
         val = <React.Fragment><div style={{color:'#e1e1e1', fontSize:self.props.vst.fontSize - 4}}>{self.props.vMap['@labels'][i]}</div><div>{val}</div></React.Fragment>
         st.lineHeight = '25px'
+
       }
-			return (<CustomLabel index={i} onClick={self.valClick} style={st}>{val}</CustomLabel>)
+       var _st = Object.assign({},st)
+        if(self.state.touchActive){
+          _st.background = 'rgba(100,100,100,0.5)'
+        }
+			return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val}</CustomLabel>)
 		})
 
 	
 		if(isInt){
-			vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480', background:'linear-gradient(75deg, rgb(129, 138, 144), rgb(129, 138, 144) 49.7%, rgb(72, 64, 116) 50.3%, rgb(72, 64, 116))'}
-		
+			vlabelStyle.background = 'linear-gradient(75deg, rgb(129, 138, 144), rgb(129, 138, 144) 49.7%, rgb(72, 64, 116) 50.3%, rgb(72, 64, 116))';//{display:'block', borderRadius:20,overflow:'hidden', boxShadow:' -50px 0px 0 0 #5d5480', background:'linear-gradient(75deg, rgb(129, 138, 144), rgb(129, 138, 144) 49.7%, rgb(72, 64, 116) 50.3%, rgb(72, 64, 116))'}
+
 		}
 		var acc = false
 		if(this.props.acc){
@@ -3473,7 +3489,7 @@ class MultiEditControl extends React.Component{
 		}}}
 		if(!acc){
 			return(<div><label style={lvst}>{namestring + ': '}</label>
-				<div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>)
+				<div style={vlabelswrapperStyle}  onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerLeave={this.onPointerUp}><div style={vlabelStyle}>{vLabels}</div></div></div>)
 
 		}else{
 				var multiDropdown = true;
@@ -3508,7 +3524,7 @@ class MultiEditControl extends React.Component{
 					})
 					options = <PopoutWheel mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={isInt} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
-					return(<div><div onClick={this.openSelector}><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
+					return(<div><div  onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerLeave={this.onPointerUp} onClick={this.openSelector}><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
 					<div style={{paddingLeft:this.props.lvst.width}}>
 						{options}
 					</div></div>)
@@ -3553,9 +3569,12 @@ class MultiEditControl extends React.Component{
 							return <CustomKeyboard mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={'input'+i} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
 						}
 					})
+          if(this.props.nameovr){
+            namestring = this.props.nameovr
+          }
 
 					return(<div><label style={lvst}>{namestring + ': '}</label>
-						<div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>
+						<div style={vlabelswrapperStyle} onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp}  onPointerLeave={this.onPointerUp}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>
 						
 					)
 				}
@@ -7050,7 +7069,6 @@ class InterceptorMainPageUI extends React.Component{
 							{logintext}	{logincell}
 							{!this.props.mobile &&
 								<td className="buttCell" style={{height:60}}><button onClick={this.gohome} className={home}/></td>
-				
 							}
 							</tr>
 						</tbody>
