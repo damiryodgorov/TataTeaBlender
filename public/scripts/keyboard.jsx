@@ -57,7 +57,7 @@ class CustomKeyboard extends React.Component{
 		var cont = "";
 
 		if(this.state.show){
-			cont = <CustomKeyboardCont ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
+			cont = <CustomKeyboardCont branding={this.props.branding} ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
 		}
 		return <div hidden={!this.state.show} className = 'pop-modal'>
 		{/*	<div className='modal-x' onClick={this.close}>
@@ -207,6 +207,15 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		var caps = this.state.shift
 			var helpModal;
 		var helpButton;
+		var klass = 'selectmodal-outer'
+		var vclr = '#a0a0a0'
+		var dvclr = '#eee'
+		if(this.props.branding == 'SPARC'){
+			klass = 'selectmodalo-sp'
+			vclr = '#1e1e1e'
+			dvclr = '#111'
+		}
+
 		if(typeof this.props.tooltip != 'undefined'){
 			var helpWidth = 400;
 			var helpMargin = 15;
@@ -228,7 +237,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			rows = TimeKeySet.map(function (row) {
 				var tds = row.map(function(k){
 					//////console.log(k)
-					return <CustomKey Key={k} mobile={self.props.mobile}  caps={false} onPress={self.onKeyPress}/>
+					return <CustomKey  klass='customKey_sp' branding={self.props.branding} Key={k} mobile={self.props.mobile}  caps={false} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -239,7 +248,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			rows = NumericKeyset.map(function (row) {
 				var tds = row.map(function(k){
 					//////console.log(k)
-					return <CustomKey Key={k} mobile={self.props.mobile} caps={false} onPress={self.onKeyPress}/>
+					return <CustomKey  klass='customKey_sp' branding={self.props.branding} Key={k} mobile={self.props.mobile} caps={false} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -260,7 +269,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 							key = '_';
 						}
 					}
-					return <CustomKey Key={key} caps={caps} onPress={self.onKeyPress}/>
+					return <CustomKey  klass='customKey_sp' branding={self.props.branding} Key={key} caps={caps} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -281,23 +290,23 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			minW = 300
 		}
 
-		return <div style={{paddingLeft:7,paddingRight:7}} className = 'selectmodal-outer'>
-		<div style={{minWidth:minW,fontSize:20}}><div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:'#a0a0a0',marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' style={{whiteSpace: 'nowrap'}}>
+		return <div style={{paddingLeft:7,paddingRight:7}} className = {klass}>
+		<div style={{minWidth:minW,fontSize:20}}><div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:vclr,marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' style={{whiteSpace: 'nowrap'}}>
 			{label}</span></div>{but2}</div>
 	<div style={{height:70, position:'relative'}}>		<svg style={{position:'absolute', top:14, marginLeft:3}} onClick={this.clear} xmlns="http://www.w3.org/2000/svg" height="40" version="1.1" viewBox="0 0 32 32" width="40"><g id="Layer_1"/><g id="x_x5F_alt"><path d="M16,0C7.164,0,0,7.164,0,16s7.164,16,16,16s16-7.164,16-16S24.836,0,16,0z M23.914,21.086   l-2.828,2.828L16,18.828l-5.086,5.086l-2.828-2.828L13.172,16l-5.086-5.086l2.828-2.828L16,13.172l5.086-5.086l2.828,2.828   L18.828,16L23.914,21.086z" fill="#3E3E40"/></g></svg>
-	<div style={{background:'rgba(150,150,150,0.3)',display:'inline-block',fontSize:25,lineHeight:'65px',textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:65,color:'#eee', whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}}>{dispval}</div>{but1}
+	<div style={{background:'rgba(150,150,150,0.3)',display:'inline-block',fontSize:25,lineHeight:'65px',textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:65,color:dvclr, whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}}>{dispval}</div>{but1}
 		<svg style={{position:'absolute', top:10, marginLeft:-52, width:50}} onClick={this.onDelete} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#3E3E40" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
 		</div>
 		<div style={{width:width,marginLeft:'auto',marginRight:'auto'}}>
-		<table style={{tableLayout:'fixed', position:'relative', top:0,width:width}}className='customKeyboardTable'><tbody style={{display:'table-row-group'}}>
+		<table style={{tableLayout:'fixed', position:'relative', top:0,width:width}} className='customKeyboardTable'><tbody style={{display:'table-row-group'}}>
 			{rows}
 		</tbody></table>
 		
 	  	
 		</div>
 		{helpModal}
-		<div hidden={hidden}><CircularButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
-		<CircularButton style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.close} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/></div>
+		<div hidden={hidden}><CircularButton branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
+		<CircularButton branding={this.props.branding} style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.close} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/></div>
 		</div>
 	  	
 	}
@@ -757,8 +766,9 @@ class KeyboardInputTextButton extends React.Component{
 	}
 }
 
-
+export {EmbeddedKeyboard, CustomKeyboard, KeyboardInputTextButton}
+/*
 module.exports = {}
 module.exports.EmbeddedKeyboard = EmbeddedKeyboard;
 module.exports.CustomKeyboard = CustomKeyboard;
-module.exports.KeyboardInputTextButton = KeyboardInputTextButton;
+module.exports.KeyboardInputTextButton = KeyboardInputTextButton;*/

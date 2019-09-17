@@ -1292,6 +1292,9 @@ class LandingPage extends React.Component{
 	onChange(argument) {
 	
 	}
+  reload(){
+    location.reload(true)
+  }
 	showDisplaySettings(){
 		this.refs.dispModal.toggle();
 	}
@@ -1334,7 +1337,7 @@ class LandingPage extends React.Component{
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
             <tbody>
               <tr>
-                <td><img style={{height: 50,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src='assets/NewFortressTechnologyLogo-WHT-trans.png'/></td>
+                <td><img onClick={this.reload} style={{height: 50,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:7}}  src='assets/NewFortressTechnologyLogo-WHT-trans.png'/></td>
 
                   <td className="buttCell"><button onClick={this.showFinder} className={find}/></td>
                 <td className="buttCell"><button onClick={this.showDisplaySettings} className={config}/></td>
@@ -1840,7 +1843,6 @@ class SettingsDisplay2 extends React.Component{
 		this.onRequestClose = this.onRequestClose.bind(this);
 		this.listenToMq = this.listenToMq.bind(this);
     this.goBack = this.goBack.bind(this);
-		//this.componentDidMount = this.component
 	}
 	componentWillUnmount(){
 		
@@ -1913,20 +1915,6 @@ class SettingsDisplay2 extends React.Component{
       }
     }
 
-		/*if(len > 6){
-			if((document.getElementById(this.props.Id).scrollTop) + 390 < len*65){
-				this.refs.arrowBot.show();
-				//////////console.log(['show arrow',document.getElementById(this.props.Id).scrollTop])
-			}else{
-				this.refs.arrowBot.hide();	
-				//////////console.log(document.getElementById(this.props.Id).scrollTop)
-			} 
-			if(document.getElementById(this.props.Id).scrollTop > 5){
-				this.refs.arrowTop.show();
-			}else{
-				this.refs.arrowTop.hide();
-			}
-		}	*/
 	}
 	scrollUp() {
 		_scrollById(this.props.Id,-260,300);
@@ -2652,6 +2640,7 @@ class SettingItem3 extends React.Component{
 						}
 					}	
 					if(pram['@bit_len']<=16){
+           
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
 				}else if(typeof pram['@decimal'] != 'undefined'){
@@ -2930,13 +2919,24 @@ class SettingItem3 extends React.Component{
 				if(this.props.backdoor){
 					im = ''
 				}
-				var edctrl = <EditControl nameovr={namestring} mobile={this.props.mobile} mac={this.props.mac}  ov={true} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={lkey}/>
-				if(this.props.mobile){
+			/*	var edctrl = <EditControl nameovr={namestring} mobile={this.props.mobile} mac={this.props.mac}  ov={true} language={this.props.language} ip={this.props.ip} 
+        ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} 
+        lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={lkey}/>
+        */
+
+				      var medctrl= (<MultiEditControl nameovr={namestring} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
+                mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
+         onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} 
+          lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
+          label={this.state.label} int={false} name={lkey}/>)
+
+
+        if(this.props.mobile){
 					sty.height = 51
 					sty.paddingRight = 5
 				}
         
-				return (<div className='sItem noChild' style={sty} onClick={this.onItemClick}> {edctrl}
+				return (<div className='sItem noChild' style={sty} onClick={this.onItemClick}> {medctrl}
 						{im}
 					
 					</div>)
@@ -2953,13 +2953,18 @@ class SettingItem3 extends React.Component{
 				sty.height = 51;
 				sty.paddingRight = 5;
 			}
-				var edctrl = <EditControl mobile={this.props.mobile} combo={(this.props.data['@combo'] == true)} mac={this.props.mac}  ov={false} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={this.props.lkey}/>
-				return (<div className='sItem noChild' style={sty}> {edctrl}
+			//	var edctrl = <EditControl mobile={this.props.mobile} combo={(this.props.data['@combo'] == true)} mac={this.props.mac}  ov={false} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={this.props.lkey}/>
+			  var medctrl= (<MultiEditControl combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} 
+          lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
+          label={this.state.label} int={false} name={this.props.lkey}/>)
+
+
+      	return (<div className='sItem noChild' style={sty}> {medctrl}
 					</div>)
 			
 		}
 	}
-}
+}/*
 class EditControl extends React.Component{
 	constructor(props) {
 		super(props)
@@ -3140,7 +3145,9 @@ class EditControl extends React.Component{
 				return (<MultiEditControl nameovr={namestring} combo={this.props.combo} mobile={this.props.mobile} mac={this.props.mac} ov={this.props.ov} vMap={vMapV2[this.props.name]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
 				 onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.props.activate} ref='ed' vst={this.props.vst} 
 					lvst={this.props.lvst} param={this.props.param} size={this.props.size} sendPacket={this.props.sendPacket} data={this.props.data} label={this.props.label} int={this.props.int} name={this.props.name}/>)
-		}
+		}else{
+      return <div></div>
+    }
 		var fSize = 24;
 			if(namestring.length > 28){
 				fSize = 18
@@ -3200,11 +3207,7 @@ class EditControl extends React.Component{
 						}
 					})
 				//	var lvst = this.props.lvst
-				/*	if((this.props.param[0]['@labels'] == 'FaultMaskBit')){
-						if(this.props.faultBits.indexOf(this.props.param[0]['@name'].slice(0,-4)) != -1){
-							lvst.color= '#ffa500'
-						}
-					}*/
+
 					return(
 						<div>
 						<div onClick={this.switchMode}>
@@ -3218,7 +3221,6 @@ class EditControl extends React.Component{
 							</div>)
 
 				}else{
-					/*<input width={10} onKeyPress={this._handleKeyPress} style={{fontSize:18}} onChange={this.valChanged} type='text' value={this.state.val[0]}></input>*/
 					var input = (<CustomKeyboard datetime={dt} language={this.props.language} ref={'keyboard'} tooltip={vMapV2[this.props.name]['@translations'][this.props.language]['description']} onInput={this.valChanged} label={this.state.val[0].toString()} value={this.state.val[0].toString()} num={num} onKeyPress={this._handleKeyPress} onFocus={this.onFocus} onRequestClose={this.onRequestClose} />)//
 					
 					return (<div> <div onClick={this.switchMode}><label style={lvst}>{namestring + ": "}</label><label style={this.props.vst}>{dval}</label></div>
@@ -3228,7 +3230,7 @@ class EditControl extends React.Component{
 		}
 	
 	}
-}
+}*/
 class MultiEditControl extends React.Component{
 	constructor(props) {
 		super(props)

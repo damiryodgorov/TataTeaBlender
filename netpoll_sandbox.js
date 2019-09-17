@@ -310,13 +310,9 @@ class NetPollEvents{
 			if (self.vdef && self.vdef[i] && self.vdef[i]['@net_poll_h']['NET_POLL_STREAM_EVENT'])
 			{
 				if (self.rpc_state[i] == 'START')
-				{
-					//console.log("Init KAPI_RPC_NETPOLLSTREAM. Ip: "+d.ip,LOG_RPC)			
-					//dsp[i].rpc0(DRPC_NUMBER,[self.vdef[i]['@rpc_map']['KAPI_RPC_NETPOLLSTREAM'][1][0],port]);
-					if (SET_DIFFERENT_PORTS_PER_DEVICE)
-						self.rpc.rpc_cb(DRPC_NUMBER,[self.vdef[i]['@rpc_map']['KAPI_RPC_NETPOLLSTREAM'][1][0],port],null,self.init_callback);
-					else
-						self.rpc.rpc_cb(DRPC_NUMBER,[self.vdef[i]['@rpc_map']['KAPI_RPC_NETPOLLSTREAM'][1][0],port],null, self.init_callback);
+				{	
+					self.rpc_state[i] = 'NP_REGISTERED'
+					self.rpc.rpc_cb(DRPC_NUMBER,[self.vdef[i]['@rpc_map']['KAPI_RPC_NETPOLLSTREAM'][1][0],port],null, self.init_callback);
 				}
 			}
 		})

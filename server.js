@@ -635,7 +635,10 @@ function getAccountsJSON(ip, callback){
 function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
    var rec_type = e.readUInt8(0)
   var buf = e.slice(1)
-  console.log(rec_type, 'cw')
+  if(rec_type != 2){
+    console.log(rec_type, 'cw')
+  }
+  //console.log(rec_type, 'cw')
   var n = e.length
 
   var pack;
@@ -715,6 +718,15 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
     })
 
     pack = {type:5, rec:rec}
+  }else if(rec_type == 15){
+    console.log(rec_type,'Prod Rec')
+    var prodNo = buf.readUInt16LE(0);
+    var pbuf = buf.slice(2)
+    nVdf[1].forEach(function(p) {
+      // body...
+      rec[p] = getVal(pbuf, 1, p, pVdef)
+    })
+    pack = {type:15,rec:rec,prodNo:prodNo, raw:pbuf}
   }
  // data = null;
   relayParamMsgCW({det:{ip:ip, mac:macs[ip]}, data:pack});
@@ -839,7 +851,8 @@ function udpConSing(ip,app){
 
           getVdef(ip, function(__ip,vdef){
       if(typeof nphandlers[__ip] == 'undefined'){
-        nphandlers[__ip] = new NetPollEvents([{'ip':__ip,'detector_name':"DET"}],[vdef],write_netpoll_events, relaySockMsg)
+        console.log('starting netpoll')
+       // nphandlers[__ip] = new NetPollEvents([{'ip':__ip,'detector_name':"DET"}],[vdef],write_netpoll_events, relaySockMsg)
       }
 
     },function(e){
@@ -856,7 +869,8 @@ function udpConSing(ip,app){
 
   getVdef(ip, function(__ip,vdef){
       if(typeof nphandlers[__ip] == 'undefined'){
-        nphandlers[__ip] = new NetPollEvents([{'ip':__ip,'detector_name':"DET"}],[vdef],write_netpoll_events, relaySockMsg)
+        console.log('starting netpoll')
+   //     nphandlers[__ip] = new NetPollEvents([{'ip':__ip,'detector_name':"DET"}],[vdef],write_netpoll_events, relaySockMsg)
       }
 
     },function(e){
@@ -1310,8 +1324,11 @@ wss.on('connection', function(scket, req){
   })
 
   function getProdList(ip) {
+    console.log('getting Prod List')
     if(vdefs[ip]){
+      console.log('vdef ok')
       if(udpClients[ip]){
+        console.log('udp cli ok')
         var rpc = vdefs[ip]['@rpc_map']['KAPI_PROD_DEF_FLAGS_READ']
         var packet = dsp_rpc_paylod_for(rpc[0], rpc[1])
         var buf = Buffer.from(packet)
@@ -1326,11 +1343,15 @@ wss.on('connection', function(scket, req){
               dat.push(i+1)
             }
           }
-          //console.log(dat.length + ' products found')
-          getProdName(ip,dat,0,function(ip,arr,list){
+          console.log(dat.length + ' products found')
+          if(dat.length != 0){
+            getProdName(ip,dat,0,function(ip,arr,list){
             socket.emit('prodNames',{ip:ip, names:arr, list:list})},[]);
           // body...
-        })
+         
+          }
+           })
+          
       }
     }else{
       socket.emit('noVdef', ip)
@@ -1931,6 +1952,7 @@ wss.on('connection', function(scket, req){
   });
   socket.on('getProdList', function (ip) {
   // body...
+  console.log('get Prod List')
   getProdList(ip)
   })
   socket.on('vdefReq', function(det){
@@ -1944,12 +1966,13 @@ wss.on('connection', function(scket, req){
     socket.emit('vdefDone','done')
   });
   socket.on('rpc', function(pack){
-           // //console.log(new Buffer(pack.data))
+           console.log(new Buffer(pack.data))
 
             if(udpClients[pack.ip]){
+              console.log('send rpc')
               
               udpClients[pack.ip].send_rpc(new Buffer(pack.data), function(e){
-                //console.log('Ack from ' + pack.ip)
+                console.log('Ack from ' + pack.ip)
 
                 relayRpcMsg({det:{ip:pack.ip, mac:macs[pack.ip]},data:{data:toArrayBuffer(e)}});
                 e = null;

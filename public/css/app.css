@@ -16,6 +16,7 @@ li.placeholder { background: rgb(255,240,120);}
 li.placeholder:before {
   content: "Drop here"; color: rgb(225,210,90);
 }
+
 button{
     height: 32px;
     font-size: inherit;
@@ -23,6 +24,9 @@ button{
     border-radius: 10px;
     padding: 2px 10px;
     border: none;
+}
+#content{
+    min-height: 100%
 }
 .notifications-class{
     color: #555;
@@ -1244,6 +1248,21 @@ li {
     padding-bottom: 10px;
     text-align: center
 }
+.selectmodalo-sp{
+    position: relative;
+    margin-top: 75px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    background:#e1e1e1;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    text-align: center
+}
+.sprc-prod{
+    display:block;
+    position: relative;
+}
 .alertmodal-outer{
     position: relative;
     margin-top: 85px;
@@ -1486,6 +1505,9 @@ li {
    border: none;
 
 }
+.settingsDiv table{
+    border-collapse: collapse;
+}
 .defCont{
     padding: 10px;
     border: 0px solid gray;
@@ -1690,6 +1712,17 @@ li {
     text-align: center;
 }
 .hasChild label{
+    margin-left: 2px
+}
+.hasChildSparc{
+    border: 5px solid #818a90;
+    background: #475C67;
+    color: #eee;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-align: center;
+}
+.hasChildSparc label{
     margin-left: 2px
 }
 .touchDown{

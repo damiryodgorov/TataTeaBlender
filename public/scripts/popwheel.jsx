@@ -45,7 +45,7 @@ class PopoutWheel extends React.Component{
 	}
 	render () {
 		var value = "placeholder"
-		return	<PopoutWheelModal mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
+		return	<PopoutWheelModal branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
 	}
 }
 class PopoutWheelModal extends React.Component{
@@ -76,7 +76,7 @@ class PopoutWheelModal extends React.Component{
 	render () {
 		var	cont = ""
 		if(this.state.show){
-		cont =  <PopoutWheelModalCont mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
+		cont =  <PopoutWheelModalCont branding={this.props.branding} mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
 			{cont}
@@ -260,18 +260,24 @@ class PopoutWheelModalC extends React.Component{
 		if(this.props.mobile){
 			fontSize -= 2
 		}
+		var klass = 'selectmodal-outer'
+		var klr = '#fefefe'
+		if(this.props.branding){
+			klass = 'selectmodalo-sp'
+			klr = '#010101'
+		}
 
 
 		////console.log(tooltiptext)
-	  return( <div className='selectmodal-outer' style={{minWidth:minW}}>
-	  		<div style={{display:'inline-block', marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', maxWidth:maxW, fontSize:fontSize}}>{this.props.name}</div>
+	  return( <div className={klass} style={{minWidth:minW, marginTop:60}}>
+	  		<div style={{display:'inline-block', marginRight:'auto', marginLeft:'auto', textAlign:'center', color:klr, maxWidth:maxW, fontSize:fontSize}}>{this.props.name}</div>
 	  		<div  style={helpStyle}><img src='assets/help.svg' onClick={this.help} width={30}/></div>
 	  		<div style={{textAlign:'center', padding:5}}>
 	  		{wheels}
 	  		</div>
 	  		<div>
-	  		<CircularButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
-		<CircularButton style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={()=> this.close(0)} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/>
+	  		<CircularButton branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
+		<CircularButton branding={this.props.branding} style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={()=> this.close(0)} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/>
 	  	</div>	<Modal ref='helpModal' Style={{color:'#e1e1e1',width:400}}>
 	  		<div>{tooltiptext}</div>
 	  		</Modal>
@@ -398,5 +404,4 @@ class SelectSCModalRow extends React.Component{
 	}
 }
 
-module.exports = {}
-module.exports.PopoutWheel = PopoutWheel;
+export {PopoutWheel}

@@ -196,8 +196,11 @@ class CustomAlertButton extends React.Component{
 	}
 }
 
+
+export {ButtonWrapper, CircularButton, CustomAlertButton, CustomAlertClassedButton}
+/*
 module.exports = {}
 module.exports.ButtonWrapper = ButtonWrapper;
 module.exports.CircularButton = CircularButton;
 module.exports.CustomAlertClassedButton = CustomAlertClassedButton
-module.exports.CustomAlertButton = CustomAlertButton
+module.exports.CustomAlertButton = CustomAlertButton*/

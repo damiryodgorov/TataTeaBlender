@@ -27,7 +27,7 @@
     "helmet": "^3.5.0",
     "http-string-parser": "0.0.5",
     "ifvisible": "^1.1.0",
-    "jquery": "^3.1.1",
+    "jquery": "^3.4.1",
     "jquery-ui": "^1.12.1",
     "lightning-pool": "^2.0.7",
     "minifyify": "^7.3.3",
@@ -53,8 +53,13 @@
     "ws": "^3.2.0"
   },
   "devDependencies": {
-    "babel-core": "^6.21.0",
-    "babel-loader": "^6.4.1",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-es2015": "^7.0.0-beta.53",
+    "@babel/preset-react": "^7.0.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.6",
     "babel-preset-env": "^1.1.8",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
@@ -62,7 +67,7 @@
     "css-loader": "^1.0.0",
     "node-loader": "^0.6.0",
     "style-loader": "^0.23.0",
-    "webpack": "^2.7.0",
+    "webpack": "^4.39.2",
     "webpack-cli": "^3.1.2"
   }
 }

@@ -4,6 +4,7 @@ class FtiSockIo{
 	constructor(url,cw){
 		this.sock = new WebSocket(url)
 		this.handlers = {}
+		this.cw = cw;
 		var self = this;
 		this.sock.onmessage = function (message) {
 			// body...
@@ -17,7 +18,7 @@ class FtiSockIo{
 			// body...
 		//	self.emit('locateReq');
 			self.emit('getVersion', cw);
-			if(cw){
+			if(self.cw){
 				self.emit('getPrefsCW')
 			}else{
 				self.emit('getPrefs');

@@ -82,13 +82,14 @@ module.exports = {
   },
   output: { path: __dirname+ '/public/', filename: '[name].bundle.js' },
   module: {
-    loaders: [
+    rules: [
       {
         test: /.jsx?$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
         query: {
-          presets: ['es2015', 'react','env']
+          presets: ['@babel/react','@babel/env'],
+          plugins: ['@babel/proposal-class-properties']
         }
       },
       {

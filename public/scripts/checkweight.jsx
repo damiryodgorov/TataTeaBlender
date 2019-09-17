@@ -16,8 +16,13 @@ import {XYPlot,MarkSeries, LabelSeries, XAxis, YAxis,VerticalGridLines, Horizont
 
 var createReactClass = require('create-react-class');
 
+const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CLEAR_WARNINGS','PHASE_HOLD','CIP_TEST','CIP_PLC','PROD_SEL1', 'PROD_SEL2', 'PROD_SEL3','PROD_SEL4']
+const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
+
+
 const SPARCBLUE2 = '#30A8E2'
 const SPARCBLUE1 = '#1C3746'
+const SPARCBLUE3 = '#475C67'
 const FORTRESSPURPLE1 = '#362c66'
 const FORTRESSPURPLE2 = '#5d5480'
 
@@ -35,7 +40,7 @@ var categories;
 var netMap = vdefMapV2['@netpollsmap']
 
 var vMapV2 = vdefMapV2["@vMap"]
-var categoriesV2 = [vdefMapV2["@categories"]]
+var categoriesV2 = [vdefMapV2["@cwsys"]]
 var catMapV2 = vdefMapV2["@catmap"]
 
 const FtiSockIo = require('./ftisockio.js')
@@ -51,7 +56,19 @@ Object.defineProperty(Array.prototype, 'chunk', {
 });
 
 const Params = require('./params.js')
+function setBufferBits(buf,v,byte_pos,bit_pos,bit_len){
+	if(bit_len == 8){
+		buf.writeUInt8(v,byte_pos + bit_pos/8)
+	}else if(bit_len == 16){
+		buf.writeUInt16LE(v, byte_pos)
+	}else if(bit_len > 16){
+		var tbuf = Buffer.from(v)
 
+		buf = Buffer.concat(buf.slice(0,byte_pos), tbuf, buf.slice(byte_pos+bit_len/8));
+	}else{
+
+	}
+}
 function toArrayBuffer(buffer) {
     var ab = new ArrayBuffer(buffer.length);
     var view = new Uint8Array(ab);
@@ -128,6 +145,10 @@ function dsp_rpc_paylod_for (n_func, i16_args, byte_data) {
           }         
         } else if (byte_data instanceof Array) {
           bytes = byte_data;
+         }else if (byte_data instanceof Buffer) {
+          for(var i=0; i<byte_data.length; i++) {
+              bytes.push(byte_data.readUInt8(i));
+          }
          }
         rpc[0] = n_func;
         rpc[1] = n_args;
@@ -157,6 +178,311 @@ function fletcherCheckBytes (data) {
         c2 += c1;      if (c2 >=255) c2 -= 255;
     }
     return [c1,c2];
+}
+
+function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
+	var params = []
+	//////////console.log(cat)
+	//////////console.log(pVdef)
+	cat.params.forEach(function(par) {
+		if(par.type == 0){
+
+			var p = par.val
+			//////////console.log(p)
+    		var _p = null//{'type':0, '@name':p, '@children':[], acc:par.acc}
+   			if(typeof pVdef[0][p] != 'undefined'){
+   				_p = {'type':0, '@name':p, '@data':sysRec[p], '@children':[], acc:par.acc}
+   			}else if(typeof pVdef[1][p] != 'undefined'){
+
+   				var data = prodRec[p]
+   				if(pVdef[1][p]['@labels'] == "FaultMaskBit"){
+   					if(prodRec[p.slice(0,-4) + "Warn"]){
+   						data = data + prodRec[p.slice(0,-4) + "Warn"];
+   					}
+   					
+   				}
+    			_p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+    			if(p == 'BeltSpeed'){
+   					//////console.log('653',par,_p)
+   				}
+    		}else if(typeof pVdef[2][p] != 'undefined'){
+    			_p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc}
+    		}else if(typeof pVdef[3][p] != 'undefined'){
+    			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
+    		}else if(par.val == 'Nif_ip'){
+    			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
+    		}else if(par.val == 'Nif_nm'){
+    			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
+    		}else if(par.val == 'Nif_gw'){
+    			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
+    		}else if(par.val == 'DCRate_A'){
+    			_p = {'type':0, '@name':p,'@data':prodRec[p], '@children':[], acc:par.acc}
+    		}    	//////////console.log(_vmap[p])
+    //	//console.log(p)
+    		if(_p != null){
+    		if(typeof _vmap[p] == 'undefined'){
+    	//	//console.log(p)
+    		}
+    		_vmap[p].children.forEach(function (ch) {
+    			var _ch;
+    			if(typeof pVdef[0][ch] != 'undefined'){
+    			_ch = sysRec[ch]
+    			}else if(typeof pVdef[1][ch] != 'undefined'){
+    			_ch = prodRec[ch]
+    			}else if(typeof pVdef[2][ch] != 'undefined'){
+    			
+    				_ch = dynRec[ch]
+    			}else if(typeof pVdef[3][ch] != 'undefined'){
+    			
+    				_ch = fram[ch]
+    			}else if(ch == 'DCRate_B'){
+    				_ch = prodRec[ch]
+    			}
+    			_p['@children'].push(_ch)	
+    		})
+    			params.push(_p)
+    		}else if(_vmap[p]['@interceptor']){
+        
+            var pname = p.slice(0,-4)
+        //    //console.log(pname, p, 342)
+              if(typeof pVdef[0][pname] != 'undefined'){
+                _p = {'type':0, '@name':p, '@data':sysRec[pname], '@children':[], acc:par.acc}
+              }else if(typeof pVdef[1][pname] != 'undefined'){
+
+                var data = prodRec[pname]
+                
+                _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              }else if(typeof pVdef[2][pname] != 'undefined'){
+                _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[pname], '@children':[], acc:par.acc}
+              }else if(typeof pVdef[3][pname] != 'undefined'){
+                _p = {'type':0, '@name':p, '@type':'fram','@data':fram[pname], '@children':[], acc:par.acc}
+              }else if(par.val == 'DCRate'){
+                _p = {'type':0, '@name':p,'@data':prodRec[pname], '@children':[], acc:par.acc}
+              }
+              if(_p!= null){
+                params.push(_p);
+              }
+          
+                 ///
+        }else if(_vmap[p]['@test']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                //////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@test'] = true; 
+              params.push(_p)
+          //    //console.log(335,_p)
+            }
+                 ///
+        }else if(_vmap[p]['@halo']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                //////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@halo'] = true; 
+              params.push(_p)
+              ////console.log(335,_p)
+            }
+                 ///
+        }else if(_vmap[p]['@input']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                //////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@input'] = true; 
+              params.push(_p)
+             // //console.log(335,_p)
+            }
+                 ///
+        }else if(_vmap[p]['@combo']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                //////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@combo'] = true; 
+              params.push(_p)
+             // //console.log(335,_p)
+            }
+                 ///
+        }
+    		
+    	}else if(par.type == 1){
+    		if(typeof par.child != 'undefined'){
+    			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc, child:par.child})
+    		}else{
+
+
+    			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc})
+    		}
+    	}else if(par.type == 2){
+    			if(typeof par.child != 'undefined'){
+    			params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc, child:par.child})
+    		}else{
+
+
+    			params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc})
+    		}
+    	}else if(par.type == 3){
+    		params.push({type:3, '@name':'Accounts', '@data':'get_accounts', acc:0})
+    	}
+    					
+    })
+	return params
+}
+function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
+	//////////console.log(['684',pVdef])
+  ////console.log('is int', int)
+	cat.params = getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram)
+	
+	return cat
 }
 var _wsurl = 'ws://' +location.host 
 var socket = new FtiSockIo(_wsurl,true);
@@ -198,7 +524,7 @@ console.log('on vdef')
 
     _pVdef = res;
     //if(json['@defines']['INTERCEPTOR']){
-        vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@categories"]], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
+        vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@cwsys"]], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
 
     //}else{
       //   vdefList[json['@version']] = [json, res, nVdf, categories, [vdefMapST['@categories']], vdefMapST['@vMap'], vdefMapST['@pages']]
@@ -250,7 +576,7 @@ class Clock extends React.Component{
 class LandingPage extends React.Component{
 	constructor(props){
 		super(props)
-		this.state = {updateCount:0,connected:false,start:true,x:null,branding:'SPARC', automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},
+		this.state = {stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,branding:'SPARC', automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'',level:5, version:'2018/07/30',pmsg:'',pON:false,percent:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
 	
@@ -268,6 +594,36 @@ class LandingPage extends React.Component{
 		this.tareWeight = this.tareWeight.bind(this);
 		this.calWeight = this.calWeight.bind(this);
 		this.onRMsg = this.onRMsg.bind(this);
+		this.pModalToggle = this.pModalToggle.bind(this);
+		this.sendPacket = this.sendPacket.bind(this);
+		this.calWeightSend = this.calWeightSend.bind(this);
+		this.getCob = this.getCob.bind(this);
+		this.settingClick = this.settingClick.bind(this);
+		this.changeView = this.changeView.bind(this);
+	}
+	changeView (d) {
+		var st = this.state.stack;
+		st.push([this.state.currentView, this.state.data]);
+		this.setState({currentView:d[0], data:d[1]})
+	}
+	settingClick (s,n) {
+		if((Array.isArray(s))&&(s[0] == 'get_accounts')){
+			//console.log('get accounts')
+			//this.refs.loginModal.toggle();
+		}else{
+			var set = this.state.data.slice(0)
+			if(Array.isArray(s)){
+				set.push(s)
+			}else{
+				set.push(s)
+				set.push(n)
+			}
+			var self = this;
+			setTimeout(function () {
+				self.changeView(['SettingsDisplay',set]);
+			},100)
+		}
+		
 	}
 	onRMsg(e,det){
 		console.log('onRMsg',e)
@@ -281,6 +637,24 @@ class LandingPage extends React.Component{
 
 		}
 	}
+	getCob (sys,prod,dyn, fram) {
+  
+		var vdef = vdefByMac[this.state.curDet.mac]
+		var _cvdf = JSON.parse(JSON.stringify(vdef[4][0]))
+		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
+		vdef = null;
+		_cvdf = null;
+		return cob
+	}
+	getPCob (sys,prod,dyn, fram) {
+  
+		var vdef = vdefByMac[this.state.curDet.mac]
+		var _cvdf = JSON.parse(JSON.stringify(vdef[6]['CWProd']))
+		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
+		vdef = null;
+		_cvdf = null;
+		return cob
+	}
 	shouldComponentUpdate(nextProps, nextState){
 		if(true ==  nextState.noupdate){
 			return false;
@@ -288,21 +662,180 @@ class LandingPage extends React.Component{
 		return true;
 	}
 	onParamMsg(e,u){
-		console.log('onParamMsg', e.type)
+		//console.log('onParamMsg', e.type)
 		if(this.state.curDet.ip == u.ip){
 			if(typeof e != 'undefined'){
 				if(e.type == 0){
-					this.setState({srec:e.rec})
+					this.setState({srec:e.rec, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
 				}else if(e.type == 1){
-					this.setState({prec:e.rec})
+					this.setState({prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
 				}else if(e.type == 2){
 					this.setState({rec:e.rec,updateCount:(this.state.updateCount+1)%10, noupdate:(this.state.updateCount != 0)})
+				}else if(e.type == 3){
+					e.rec.Nif_ip = this.state.nifip
+					e.rec.Nif_gw = this.state.nifgw
+					e.rec.Nif_nm = this.state.nifnm
+					this.setState({fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
 				}else if(e.type == 5){
 					//console.log('checkweighing pack')
+					var del = 25
+					var dur = 50
+					if(typeof this.state.prec.SampDel != 'undefined'){
+						del = this.state.prec.SampDel;
+						dur = this.state.prec.SampDur;
+					}
 					this.setState({crec:e.rec, noupdate:true})
-					this.refs.lg.parseDataset(e.rec['PackSamples'], Math.random()*100)
+					this.refs.lg.parseDataset(e.rec['PackSamples'].slice(0 - dur - del, 0 - del), Math.random()*100)
+				}else if(e.type == 15){
+					var prodList = this.state.prodList;
+					var prodListRaw = this.state.prodListRaw
+					prodList[e.prodNo] = Object.assign({},e.rec);
+					prodListRaw[e.prodNo] = e.raw
+					this.setState({prodList:prodList, prodListRaw:prodListRaw})
 				}
 			}
+		}
+	}
+	sendPacket(n,v){
+		console.log(n,v)
+		var vdef = vdefByMac[this.state.curDet.mac]
+		if(typeof n == 'string'){
+		if(n == 'switchProd'){
+			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NO_APIWRITE']
+			var pkt = rpc[1].map(function (r) {
+				if(!isNaN(r)){
+					return r
+				}else{
+					if(isNaN(v)){
+						return 0
+					}else{
+						return parseInt(v)
+					}
+				}
+			})
+			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+		}else if(n == 'copyCurrentProd'){
+			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
+			var pkt = rpc[1].map(function (r) {
+				if(!isNaN(r)){
+					return r
+				}else{
+					if(isNaN(v)){
+						return 0
+					}else{
+						return parseInt(v)
+					}
+				}
+			})
+			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+		
+		}else if(n == 'getProdSettings'){
+			var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
+			var pkt = rpc[1].map(function (r) {
+				if(!isNaN(r)){
+					return r
+				}else{
+					if(isNaN(v)){
+						return 0
+					}else{
+						return parseInt(v)
+					}
+				}
+			})
+			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+		
+		}
+		}else{
+			console.log('here')
+			if(n['@rpcs']['toggle']){
+
+			var arg1 = n['@rpcs']['toggle'][0];
+			var arg2 = [];
+			for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
+				if(!isNaN(n['@rpcs']['toggle'][1][i])){
+					arg2.push(n['@rpcs']['toggle'][1][i])
+				}else{
+					arg2.push(v)
+				}
+			}
+			var packet = dsp_rpc_paylod_for(arg1, arg2);
+			
+			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+		}else if(n['@rpcs']['apiwrite']){
+			var arg1 = n['@rpcs']['apiwrite'][0];
+			var arg2 = [];
+			var strArg = null;
+			for(var i = 0; i<n['@rpcs']['apiwrite'][1].length;i++){
+				if(!isNaN(n['@rpcs']['apiwrite'][1][i])){
+					arg2.push(n['@rpcs']['apiwrite'][1][i])
+				}else if(n['@rpcs']['apiwrite'][1][i] == n['@name']){
+					if(!isNaN(v)){
+						arg2.push(v)
+					}else{
+						strArg=v
+						
+					}
+				}
+			}
+			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+				
+			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+		}else if(n['@rpcs']['write']){
+			console.log('should be here')
+			var arg1 = n['@rpcs']['write'][0];
+			var arg2 = [];
+			var strArg = null;
+			var flag = false
+				////console.log('2281',v, n['@rpcs']['write'][1], n["@name"])
+			for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
+				if(!isNaN(n['@rpcs']['write'][1][i])){
+					////console.log('where')
+					arg2.push(n['@rpcs']['write'][1][i])
+				}else if(n['@rpcs']['write'][1][i] == n['@name']){
+					////console.log('the')
+					if(!isNaN(v)){
+						arg2.push(v)
+					}
+					else{
+						arg2.push(0)
+						strArg=v
+					}
+					flag = true;
+				}else{
+					////console.log('fuck')
+					var dep = n['@rpcs']['write'][1][i]
+					if(dep.charAt(0) == '%'){
+
+					}
+				}
+			}
+			if(n['@rpcs']['write'][2]){
+				if(Array.isArray(n['@rpcs']['write'][2])){
+					strArg = n['@rpcs']['write'][2]
+				}
+				else if(typeof n['@rpcs']['write'][2] == 'string'){
+					strArg = v
+				}
+				flag = true;
+			}
+			if(!flag){
+				strArg = v;
+			}
+
+			console.log(819, strArg, typeof strArg)
+		
+			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+			console.log(packet)
+				
+			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+		}else if(n['@rpcs']['clear']){
+			var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
+				
+			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+		}
 		}
 	}
 	componentDidMount(){
@@ -377,6 +910,13 @@ class LandingPage extends React.Component{
 		})
 		socket.on('notvisible', function(e){
 			toast('Detectors located, but network does not match')
+		})
+		socket.on('prodNames',function (pack) {
+			// body...
+			console.log('prodNames')
+			if(self.state.curDet.ip == pack.ip){
+				self.setState({pList:pack.list, prodNames:pack.names})
+			}
 		})
 		socket.on('locatedResp', function (e) {
 			console.log(e)
@@ -509,6 +1049,7 @@ class LandingPage extends React.Component{
 			var message = 'Call Fortress with ' + e.join(', ');
 			self.refs.msgm.show(message)
 		})
+
 	}
 	tareWeight(){
 		if(this.state.connected){
@@ -518,8 +1059,11 @@ class LandingPage extends React.Component{
 			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
 
 		}
-	}	
+	}
 	calWeight(){
+		this.refs.cwModal.toggle()
+	}	
+	calWeightSend(){
 		if(this.state.connected){
 			console.log(this.state.curDet, vdefByMac)
 			var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_USE']
@@ -633,6 +1177,7 @@ class LandingPage extends React.Component{
 	connectToUnit(det){
 		socket.emit('connectToUnit',det)
 		//socket.emit('vdefReq', det);
+	//	setTimeout(function(){socket.emit('getProdList',det.ip)},150)
 		this.setState({curDet:det, connected:true})
 	}
 	renderModal() {
@@ -689,6 +1234,13 @@ class LandingPage extends React.Component{
 					{nameEdit}
 					</div>)
 	}
+	pModalToggle(){
+		if(typeof this.state.curDet.ip != 'undefined'){
+				this.refs.pmodal.toggle();
+		socket.emit('getProdList', this.state.curDet.ip)
+		}
+	
+	}
 	render(){
 	
 
@@ -728,12 +1280,33 @@ class LandingPage extends React.Component{
     		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#00DD00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
 			stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#FA2222', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
-    	}    	
+    	}   
 
     	var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
 
+    	var sd = '' 
+    	var cald = ''
+    	var dets = <div style={{color:'#e1e1e1', fontSize:24}}>Connected to {this.state.curDet.name}</div>
+    	if(this.state.srec['SRecordDate']){
+    		sd =   	<div ><SettingsPageWSB branding={this.state.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={'english'} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+      		onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4}/>
+    		</div>
 
-		return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
+    		cald = (	<div style={{background:'#e1e1e1', padding:10}}>
+      		<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Calibrate Weight'} value={this.state.srec['CalWeight']+'g'} editable={true} onInput={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Over Weight Limit'} value={this.state.prec['OverWeightLim']+'g'} editable={true} onInput={this.sendPacket}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Under Weight Limit'} value={this.state.prec['UnderWeightLim']+'g'} editable={true} onInput={this.sendPacket}/></div>
+						
+					<CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={'Calibrate'}/>
+      		</div>
+      	)
+    	}else{
+    		dets = this.renderModal()
+    	}	
+
+
+		return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
+         <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
             <tbody>
               <tr>
@@ -755,7 +1328,8 @@ class LandingPage extends React.Component{
          	<StatSummary branding={this.state.branding} ref='ss'/>
           </td><td><div><SparcElem ref='se' branding={this.state.branding} value={this.state.rec['LiveWeight'] + 'g'} name={'Gross Weight'} width={616} font={40}/></div>
           <div>
-          </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}><LineGraph  branding={this.state.branding} ref='lg' prodName={'Crackers - 17g'}>
+          </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
+          <LineGraph  branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']}>
           <TrendBar branding={this.state.branding} lowerbound={15} upperbound={19} t1={15.5} t2={18.5} low={16.5} high={17.5} yellow={true} ref='tb'/></LineGraph></div>
           </td><td>
           	<HorizontalHisto branding={this.state.branding} ref='hh'/>
@@ -763,20 +1337,19 @@ class LandingPage extends React.Component{
           <div style={{display:'inline-block',padding:5, marginRight:10, marginLeft:10}} >{play}{stop}</div>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Check Weight'} onClick={this.calWeight}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Tare'} onClick={this.tareWeight}/>
-          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Product'} onClick={()=>this.refs.pmodal.toggle()}/>
+          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Product'} onClick={this.pModalToggle}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Log'} onClick={this.changeBranding}/>
       	<Modal ref='pmodal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
-      		<ProductSettings branding={this.state.branding}/>
+      		<ProductSettings mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
       	</Modal>
       	 <Modal ref='settingModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
-      		{this.renderModal()}
+      		<div style={{display:'inline-block',width:290, verticalAlign:'top'}}>{dets}
+      		</div>{sd}
       	</Modal>
       	<Modal ref='cwModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
-      		<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Calibrate Weight'} value={this.state.prec['CalWeight']+'g'}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Over Weight Limit'} value={this.state.prec['OverWeightLim']+'g'}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Under Weight Limit'} value={this.state.prec['UnderWeightLim']+'g'}/></div>
-						
+      	{cald}
       	</Modal>
+      	</div>
       </div>) 
 	}
 }
@@ -910,7 +1483,7 @@ class LineGraph extends React.Component{
 	constructor(props){
 		super(props)
 		this.parseDataset = this.parseDataset.bind(this);
-		this.state = {decisionRange:[12,18],max:20,dataSets:[[8,9,13,15,16,16,14,13,10,4],[9,10,12,14,15,14,13,11,9,3],[9,10,14,15,17,17,15,9,8,2]],reject:false,over:false,under:false}
+		this.state = {decisionRange:[12,18],max:20, min:0,dataSets:[[8,9,13,15,16,16,14,13,10,4],[9,10,12,14,15,14,13,11,9,3],[9,10,14,15,17,17,15,9,8,2]],reject:false,over:false,under:false}
 	}
 	parseDataset(data,pack){
 		var dataSets = this.state.dataSets;
@@ -931,7 +1504,7 @@ class LineGraph extends React.Component{
 			reject = true;
 	
 		}
-		this.setState({dataSets:dataSets, reject:reject,max:Math.max(...setMax), over:(max>17.5), under:(max<16.5)})
+		this.setState({dataSets:dataSets, reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(max>17.5), under:(max<16.5)})
 	}
 	render(){
 		var outerbg = '#818a90'
@@ -986,12 +1559,16 @@ class LineGraph extends React.Component{
 		<div style={{background:'black',width:580,marginLeft:'auto',marginRight:'auto'}}><div style={{background:bg2,color:'#e1e1e1',marginBottom:-47,marginLeft:'auto',marginRight:'auto',padding:4,width:572, height:75,lineHeight:'35px'}}><div style={{display:'inline-block', width:280}}><div style={{fontSize:16}}>Running Product</div><div style={{fontSize:24}}>{this.props.prodName}</div></div>
 		<div style={{display:'inline-block', width:280}} ><div style={{fontSize:16}}>Status</div><div style={{fontSize:24}}>{str}</div></div></div>
 		</div>
-	<XYPlot height={358} width={610} yDomain={[0,this.state.max]} stackBy='y' margin={{left:0,right:0,bottom:0,top:50}}>
+		<div style={{overflow:'hidden', marginTop:48}}>
+		<div style={{marginTop:-48}}>
+	<XYPlot height={358} width={610} yDomain={[this.state.min,this.state.max]} stackBy='y' margin={{left:0,right:0,bottom:0,top:50}}>
 		<XAxis hideTicks />
 		{graphs}
 		<VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:min,y:max,x0:this.state.decisionRange[0],x:this.state.decisionRange[1]}]}/>
 		
-		</XYPlot></div>
+		</XYPlot>
+		</div>
+		</div></div>
 	}
 }
 class StatSummary extends React.Component{
@@ -1058,8 +1635,25 @@ class ProductSettings extends React.Component{
 		this.updateFilterString = this.updateFilterString.bind(this);
 		this.toggleSearch = this.toggleSearch.bind(this);
 		this.selectProd = this.selectProd.bind(this);
+		this.copyCurrentProd = this.copyCurrentProd.bind(this);
 		this.onProdScroll = this.onProdScroll.bind(this);
-		this.state ={searchMode:false, filterString:'', filterList:[],selProd:1,prodList:[{name:'Crackers - 17g', no:1},{name:'Cookies - 100g',no:2},{name:'Chips - 35g',no:3},{name:'Lays - 40g',no:4},{name:'Doritos - 40g',no:5},{name:'Cheetos - 35g',no:6},{name:'Cereal - 200g',no:7},{name:'Bread - 200g',no:8},{name:'Eggos - 500g',no:9},{name:'Patties - 400g',no:10},{name:'Fries - 454g',no:11},{name:'Hot Dogs - 200g',no:12},{name:'Snickers - 35g',no:13},{name:'Cheese - 35g',no:14},{name:'Popcorn - 100g',no:15},{name:'Candy - 35g',no:16},{name:'Chocolate - 35g',no:17}]}
+		this.selectRunningProd = this.selectRunningProd.bind(this);
+		this.getPCob = this.getPCob.bind(this);
+		this.onAdvanced = this.onAdvanced.bind(this);
+		this.sendPacket = this.sendPacket.bind(this);
+		var prodList = [];
+		var prodNames = this.props.pNames
+		this.props.pList.forEach(function (pn,i) {
+			prodList.push({name:prodNames[i], no:pn})
+		})
+
+		this.state ={data:[],showAdvanceSettings:false,searchMode:false, filterString:'', filterList:[],selProd:1,prodList:prodList, cob2:this.getPCob(this.props.srec, this.props.curProd, this.props.drec, this.props.fram)}
+	}
+	sendPacket(n,v){
+		this.props.sendPacket(n,v)
+	}
+	onAdvanced(){
+		this.setState({showAdvanceSettings:!this.state.showAdvanceSettings})
 	}
 	componentDidMount(){
 		var self = this;
@@ -1069,22 +1663,48 @@ class ProductSettings extends React.Component{
 				scrollInd = i;
 			}
 		});
+		setTimeout(function(argument) {
+			self.props.sendPacket('getProdSettings', self.state.selProd)
+		},300)
+	
 		var el = document.getElementById('prodListScrollBox')
 		el.scrollTop = scrollInd*66
+	}
+	getPCob (sys,prod,dyn, fram) {
+  
+		var vdef = vdefByMac[this.props.mac]
+		var _cvdf = JSON.parse(JSON.stringify(vdef[6]['CWProd']))
+		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
+		vdef = null;
+		_cvdf = null;
+		return cob
+	}
+	componentWillReceiveProps(newProps){
+		var prodList = [];
+		var prodNames = newProps.pNames
+		newProps.pList.forEach(function (pn,i) {
+			// body...
+			prodList.push({name:prodNames[i], no:pn})
+		})
+		var curProd = newProps.curProd
+		if(newProps.prods[this.state.selProd]){
+			curProd = newProps.prods[this.state.selProd]
+			
+		}
+		console.log(curProd)
+		this.setState({prodList:prodList, cob2:this.getPCob(newProps.srec, curProd, newProps.drec, newProps.fram)});
+
 	}
 	updateFilterString(str){
 		var list = []
 		var self = this;
 		this.state.prodList.forEach(function(prod) {
-				// body...
-
+		
 				if(str.trim() == ''){
 					list.push(prod)
 				}else if(prod.name.toUpperCase().indexOf(str.toUpperCase()) != -1){
 					list.push(prod)
 				}
-
-
 			})
 		var scrollInd = 0;
 		list.forEach(function(prd,i){
@@ -1094,32 +1714,43 @@ class ProductSettings extends React.Component{
 		});
 
 		var el = document.getElementById('prodListScrollBox')
-				el.scrollTop = scrollInd*66
-		
+		el.scrollTop = scrollInd*66
 		
 		this.setState({filterString:str, filterList:list})
 	}
 	toggleSearch(){
 		this.setState({searchMode:!this.state.searchMode})
 	}
+	copyCurrentProd(){
+		var nextNum = this.props.pList[this.props.pList.length - 1] + 1;
+		this.props.sendPacket('copyCurrentProd',nextNum)
+	}
 	selectProd(p){
+		this.props.sendPacket('getProdSettings',p)
 		this.setState({selProd:p, searchMode:false, filterString:''})
-		
 	}
 	onProdScroll(){
-		     var el = document.getElementById('prodListScrollBox')   
-       if(el){
-      if(el.scrollTop > 5){
-        this.refs.arrowTop.show();
-      }else{
-        this.refs.arrowTop.hide();
-      }
-      if(el.scrollTop + el.offsetHeight < el.scrollHeight ){
-        this.refs.arrowBot.show();
-      }else{
-        this.refs.arrowBot.hide();
-      }
-    }
+	  var el = document.getElementById('prodListScrollBox')   
+      if(el){
+      		if(el.scrollTop > 5){
+        		this.refs.arrowTop.show();
+      		}else{
+        		this.refs.arrowTop.hide();
+      		}
+      		if(el.scrollTop + el.offsetHeight < el.scrollHeight ){
+        		this.refs.arrowBot.show();
+      		}else{
+        		this.refs.arrowBot.hide();
+      		}
+    	}
+	}
+	onValChange(p,v){
+		var curProd =Object.assign({},this.props.prods[this.state.selProd]) //this.props.prods[this.state.selProd];
+		curProd[p] = v
+
+	}
+	selectRunningProd(){
+		this.props.sendPacket('switchProd',this.state.selProd)
 	}
 	render(){
 		var self = this;
@@ -1131,13 +1762,7 @@ class ProductSettings extends React.Component{
 		if(this.state.searchMode){
 			var filterString = this.state.filterString
 			this.state.prodList.forEach(function(prod) {
-				// body...
-
-			/*	if(filterString.trim() == ''){
-					list.push(prod)
-				}else if(prod.name.toUpperCase().indexOf(filterString.toUpperCase()) != -1){
-					list.push(prod)
-				}*/
+		
 				if(self.state.selProd == prod.no){
 					sp = prod 
 				}
@@ -1147,6 +1772,10 @@ class ProductSettings extends React.Component{
 			content = <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6, height:480}}>
 			<EmbeddedKeyboard label={'Search Products'} liveUpdate={this.updateFilterString} language={'english'}/></div>
 		}else{
+			var curProd = {}
+			if(this.props.prods[this.state.selProd]){
+				curProd = this.props.prods[this.state.selProd]
+			}
 			list = this.state.prodList.slice(0)
 			list.forEach(function (pr) {
 				// body...
@@ -1154,6 +1783,9 @@ class ProductSettings extends React.Component{
 					sp = pr 
 				}
 			})
+			if(sp == null){
+				sp = {name:'NULL PROD', no:1}
+			}
 			content =( 
 			<div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
 				<div>
@@ -1168,9 +1800,9 @@ class ProductSettings extends React.Component{
 				</div>
 				<div>
 					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={'0g'}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={curProd['NominalWgt']+'g'} p={'NominalWgt'} onEdit={this.onValChange}/></div>
 						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={'0g'}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Product Tare'} value={'0g'}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Product Tare'} value={curProd['TareWeight']}/></div>
 						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={'0mm'}/></div>
 						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Measure Mode'} value={'Auto'}/></div>
 					</div>
@@ -1210,11 +1842,23 @@ class ProductSettings extends React.Component{
 					</div>
 				</div>
 				<div>
-					<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Advanced'}/>
+					<CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Advanced'}/>
           			<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Product'}/>
           
 				</div>
 			</div>)
+			if(this.state.showAdvanceSettings){
+				content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
+				<div style={{height:404}}>	<SettingsPage black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={'english'} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+      		onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={4}/>
+    		</div>
+      		<div>
+					<CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Advanced'}/>
+          			<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Product'}/>
+          
+				</div>
+    		</div>
+			}
 		}
 		
 		var scrollInd = 0
@@ -1232,19 +1876,29 @@ class ProductSettings extends React.Component{
 			prods = <div style={{textAlign:'center', width:297,padding:5}}>No Matching Products</div>
 		}
 		var spstr = ''
-		if(sp != null){
-			spstr = sp.no + '. '+sp.name;
+		if(this.props.runningProd){
+			var rp = {}
+			this.state.prodList.forEach(function(prod) {
+		
+				if(self.props.runningProd == prod.no){
+					rp = prod 
+				}
+
+			})
+			spstr = this.props.runningProd + '. '+rp.name;
 		}
 		var SA = (list.length > 8)
 		return <div style={{width:1155}}>
 			<div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Products</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:600}}>{'Current Product: '+spstr }</div></div>
-			<table><tbody>
+			<table style={{borderCollapse:'collapse'}}><tbody>
 				<tr>
-					<td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:813, padding:5, paddingTop:0, textAlign:'right'}}>			<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'}/>
+					<td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:813, padding:5, paddingTop:0, textAlign:'right'}}>			<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'} onClick={this.selectRunningProd}/>
           </div></td><td style={{verticalAlign:'top',textAlign:'center'}}>
           	<ScrollArrow ref='arrowTop' offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
 		
-          <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:557, background:'#e1e1e1',overflowY:'scroll'}}>{prods}</div>
+          <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:557, background:'#e1e1e1',overflowY:'scroll'}}>{prods}
+          <button onClick={this.copyCurrentProd}>copy Prod</button>
+          </div>
           <ScrollArrow ref='arrowBot' offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
 			
           </td>
@@ -1258,12 +1912,30 @@ class ProdSettingEdit extends React.Component{
 	constructor(props){
 		super(props);
 		this.onClick = this.onClick.bind(this);
+		this.onInput = this.onInput.bind(this);
 	}
 	onClick(){
+		if(this.props.editable){
+			this.refs.ed.toggle()
+		}
+	}
+	onInput(v){
+		var val = v;
+		if(this.props.param['@type'] == 'int32'){
+			var buf = Buffer.alloc(4)
+			buf.writeUInt32LE(parseInt(v),0)
+			val = buf;
+		}
+		this.props.onInput(this.props.param,val);
+	}
+	onRequestClose(){
+
+	}
+	onFocus(){
 
 	}
 	render(){
-		var ckb = <CustomKeyboard language={this.props.language} tooltip={this.props.tooltip} ref='input' onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label + lab2 +': ' + this.props.value}/>
+		var ckb = <CustomKeyboard ref='ed' language={'english'} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={true} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value}/>
 	
 		return <div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:this.props.w1,textAlign:'center'}}>
@@ -1272,6 +1944,7 @@ class ProdSettingEdit extends React.Component{
 			<div onClick={this.onClick} style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:this.props.w2}}>
 				{this.props.value}
 			</div>
+			{ckb}
 		</div>
 	}
 }
@@ -1326,4 +1999,1638 @@ class CustomLabel extends React.Component{
 		return <div onClick={this.onClick} style={style}>{this.props.children}</div>
 	}
 }
+class CatButton extends React.Component{
+	constructor(props){
+		super(props);
+		this.onClick = this.onClick.bind(this);
+	}
+	onClick(){
+		this.props.onClick(this.props.data, this.props.ind)
+	}
+	render(){
+			var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
+
+		return <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:300, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onClick} lab={this.props.data.val.cat}/>
+	}
+}
+class SettingsPageWSB extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {sel:-1, data:[], path:[]}
+		this.setPath = this.setPath.bind(this);
+	}
+	setPath(dat,i){
+		if(i == -1){
+			this.refs.sd.setPath([])
+		}else{
+			this.refs.sd.setPath([i])
+
+		}
+	}
+	render(){
+		var self = this;
+		
+
+		var cats = [<div><CatButton branding={self.props.branding} data={{val:{cat:'Home'}}} ind={-1} onClick={self.setPath}/></div>]
+		this.props.cvdf[0].params.forEach(function (c,i) {
+			// body...
+			//console.log(c)
+			if(c.type == 1){
+				cats.push(<div><CatButton branding={self.props.branding} data={c} ind={i} onClick={self.setPath}/></div>)
+			}
+		})
+		var cob;
+		if(this.state.sel == -1){
+			cob = this.props.cob2
+		}
+		var sd = <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={'english'} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+      		onHandleClick={this.settingClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+		return <div>
+			<table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td> <div style={{marginTop:54}}>{cats}</div></td><td style={{width:813, height:473,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
+		</div>
+	}
+}
+class SettingsPage extends React.Component{
+	constructor(props) {
+		super(props)
+
+		this.state = ({
+		 sysRec:this.props.sysSettings, prodRec:this.props.prodSettings, dynRec:this.props.dynSettings,font:2, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec,path:[]
+		});
+		this.handleItemclick = this.handleItemclick.bind(this);
+		this.scrollUp = this.scrollUp.bind(this);
+		this.scrollDown = this.scrollDown.bind(this);
+		this.handleScroll = this.handleScroll.bind(this);
+		this.sendPacket = this.sendPacket.bind(this);
+		this.parseInfo = this.parseInfo.bind(this);
+		this.activate = this.activate.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+	  	this.goBack = this.goBack.bind(this);
+	}
+	componentWillUnmount(){
+
+	}
+	componentWillReceiveProps(newProps){
+		this.setState({data:newProps.data, cob2:newProps.cob2, sysRec:newProps.sysSettings, prodRec:newProps.prodSettings, dynRec:newProps.dynSettings, framRec:newProps.framRec})
+	}
+	handleItemclick(dat, n){		
+		//console.log(dat,n,1763)
+    if(dat[0] == 'get_accounts'){
+      this.props.onHandleClick(dat,n)
+    }else{
+    var self = this;
+    var path = this.state.path;
+    path.push(dat[1])
+    setTimeout(function(){
+      document.getElementById(self.props.Id).scrollTop = 0;
+      self.setState({path:path})
+   
+      self.props.onHandleClick(dat, n);
+
+    },250)
+  }
+
+	}
+	  setPath(path){
+  	document.getElementById(this.props.Id).scrollTop = 0;
+  	this.setState({path:path})
+  }
+	parseInfo(sys, prd){
+		if((typeof sys != 'undefined') && (typeof prd != 'undefined')){
+			if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
+				this.setState({sysRec:sys, prodRec:prd})
+			}
+		}
+	}
+	componentDidMount() {
+		this.props.sendPacket('refresh',0);
+		//window.addEventListener('scroll', this.handleScroll)
+	}
+	
+	handleScroll(ev) {
+		// body...
+		//////////console.log(ev.srcElement.body)
+		var lvl = this.props.data.length
+		var len = 0;
+		if(lvl > 0){
+			len = this.props.data[lvl - 1 ][0].params.length
+		}
+		//	////////console.log(document.getElementById(this.props.Id).scrollTop)
+     var el = document.getElementById(this.props.Id)   
+       if(el){
+      if(el.scrollTop > 5){
+        this.refs.arrowTop.show();
+      }else{
+        this.refs.arrowTop.hide();
+      }
+      if(el.scrollTop + el.offsetHeight < el.scrollHeight ){
+        this.refs.arrowBot.show();
+      }else{
+        this.refs.arrowBot.hide();
+      }
+    }
+
+	}
+	scrollUp() {
+		_scrollById(this.props.Id,-260,300);
+	}
+	scrollDown() {
+		_scrollById(this.props.Id,260,300);
+	}
+	sendPacket(n,v) {
+		var self = this;
+		////console.log([n,v])
+		if(n['@rpcs']['toggle']){
+
+			var arg1 = n['@rpcs']['toggle'][0];
+			var arg2 = [];
+			for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
+				if(!isNaN(n['@rpcs']['toggle'][1][i])){
+					arg2.push(n['@rpcs']['toggle'][1][i])
+				}else{
+					arg2.push(v)
+				}
+			}
+			var packet = dsp_rpc_paylod_for(arg1, arg2);
+			
+			socket.emit('rpc', {ip:this.props.dsp, data:packet})
+		}else if(n['@rpcs']['apiwrite']){
+			var arg1 = n['@rpcs']['apiwrite'][0];
+			var arg2 = [];
+			var strArg = null;
+			for(var i = 0; i<n['@rpcs']['apiwrite'][1].length;i++){
+				if(!isNaN(n['@rpcs']['apiwrite'][1][i])){
+					arg2.push(n['@rpcs']['apiwrite'][1][i])
+				}else if(n['@rpcs']['apiwrite'][1][i] == n['@name']){
+					if(!isNaN(v)){
+						arg2.push(v)
+					}else{
+						strArg=v
+						
+					}
+				}
+			}
+				console.log(strArg, n, 2154)
+			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+				
+			socket.emit('rpc', {ip:this.props.dsp, data:packet})
+		}else if(n['@rpcs']['write']){
+			var arg1 = n['@rpcs']['write'][0];
+			var arg2 = [];
+			var strArg = null;
+			var flag = false
+				////console.log('2281',v, n['@rpcs']['write'][1], n["@name"])
+			for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
+				if(!isNaN(n['@rpcs']['write'][1][i])){
+					////console.log('where')
+					arg2.push(n['@rpcs']['write'][1][i])
+				}else if(n['@rpcs']['write'][1][i] == n['@name']){
+					////console.log('the')
+					if(!isNaN(v)){
+						arg2.push(v)
+					}
+					else{
+						arg2.push(0)
+						strArg=v
+					}
+					flag = true;
+				}else{
+					////console.log('fuck')
+					var dep = n['@rpcs']['write'][1][i]
+					if(dep.charAt(0) == '%'){
+
+					}
+				}
+			}
+			if(n['@rpcs']['write'][2]){
+				if(Array.isArray(n['@rpcs']['write'][2])){
+					strArg = n['@rpcs']['write'][2]
+				}
+				else if(typeof n['@rpcs']['write'][2] == 'string'){
+					strArg = v
+				}
+				flag = true;
+			}
+			if(!flag){
+				strArg = v;
+			}
+			console.log(strArg, n, 2154)
+			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+				
+			socket.emit('rpc', {ip:this.props.dsp, data:packet})
+		}else if(n['@rpcs']['clear']){
+			var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
+				
+			socket.emit('rpc', {ip:this.props.dsp, data:packet})
+		}
+	}
+	activate(n) {
+		// body...
+		var self = this;
+		////////console.log(['1466',n,this.props.cob2,this.props.data])
+		var list; 
+		if(this.props.data.length > 1){
+			list 	= this.props.data[this.props.data.length - 1][0].params
+		}else{
+			list = this.props.data[0][0].params
+		}
+	
+		list.forEach(function(p){
+			if(p['@name'] != n['@name']){
+				if(self.refs[p['@name']]){
+					self.refs[p['@name']].deactivate();
+				}
+			}
+		});
+	}
+	onFocus() {
+		// body...
+			this.props.setOverride(true)
+	}
+	onRequestClose() {
+		// body...
+		var self = this;
+			setTimeout(function () {
+				// body...
+				self.props.setOverride(false)
+			},100)
+			
+	}
+ 	goBack(){
+   	 var path = this.state.path.slice(0);
+    	if(path.length > 0){
+    	  	path.pop();
+      		this.setState({path:path})
+      		this.props.goBack();
+    	}
+	    ////console.log(this.props.data)
+	}
+	render(){
+		var self = this;
+    	var isInt = this.props.int
+ 		var data = [];
+
+	    if(this.props.data[0] == 'get_accounts'){
+	    	data = this.props.data
+	    }else{
+	   		data.push([this.state.cob2[0],0])
+		    if(typeof this.state.cob2[0].params != 'undefined'){
+		   		var _par = this.state.cob2[0].params.slice(0);
+		  	  	this.state.path.forEach(function (x,i) {
+			     // console.log(x)
+			      data.push([_par[x]['@data'],x])
+			      _par = _par[x]['@data'].params.slice(0);
+			      // body...
+			    }) 	
+		    }
+   
+  		}
+  		var titleColor = '#eee'
+  		if(this.props.black){
+  			titleColor = '#000'
+  		}
+
+		var lvl = data.length 
+		var handler = this.handleItemclick;
+		var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
+		var cvdf = this.props.cvdf
+		////////////console.log(lvl)
+		var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
+
+		var nodes;
+		var ft = 25;
+		if(this.state.font == 1){
+			ft = 20
+		}else if(this.state.font == 0){
+			ft = 18
+		}
+		var backText = vdefMapV2['@labels']['Back'][this.props.language].name
+		if(this.props.mobile){
+			backText = ''
+		}
+		var nav =''
+		var backBut = ''
+
+		var catList = [	]
+
+		var accLevel = 0;
+		var len = 0;
+		var SA = false;
+		if(lvl == 0){
+			nodes = [];
+			for(var i = 0; i < catList.length; i++){
+				var ct = catList[i]
+				nodes.push(<SettingItem3 int={isInt} mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+				
+			}
+			len = catList.length;
+			nav = nodes;
+		}else{
+
+			var cat = data[lvl - 1 ][0].cat;
+			var pathString = ''
+			lab = cat//catMap[cat]['@translations']['english']
+			if(lvl == 1){
+		    	
+		    	if(this.props.mode == 'config'){
+		    		label = vdefMapV2['@labels']['Settings'][this.props.language]['name']
+		    		pathString = ''
+		    	}else{
+		    		label = catMapV2[data[0][0].cat]['@translations'][this.props.language]
+		    		pathString = data[0][0].cat
+		    	}
+		    	//catMap[data[0]]['@translations']['english']
+		    }else if(lvl == 2){
+		    	if(this.props.mode == 'config'){
+		    		pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+		    		console.log(pathString)
+		    		label = catMapV2[pathString]['@translations'][this.props.language];
+		    	}else{
+		    		pathString = data.map(function (d) {return d[0].cat}).join('/')
+		    		label = catMapV2[pathString]['@translations'][this.props.language];
+		    	}
+		    
+					backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
+						<label style={{color:titleColor, fontSize:ft}}>{backText}</label></div>)
+			
+		    }else{
+		    	var bblab = ''
+		    	if(this.props.mode == 'config'){
+		    		pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+		    		//////console.log(pathString)
+		    		label = catMapV2[pathString]['@translations'][this.props.language];
+		    		bblab = catMapV2[data.slice(1,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
+		    	}else{
+		    		pathString = data.map(function (d) {return d[0].cat}).join('/')
+		    		label = catMapV2[pathString]['@translations'][this.props.language];
+		    		bblab = catMapV2[data.slice(0,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
+		    	}
+		    	backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
+		    		<label style={{color:'titleColor', fontSize:ft}}>{backText}</label></div>)
+			}
+			
+			nodes = []
+			data[lvl - 1 ][0].params.forEach(function (par,i) {
+				if(par.type == 0){
+          			var p = par
+          			var pname = par['@name']
+
+			        if(!self.props.int){
+			           if(pname.slice(-4) == '_INT'){
+			           	pname = pname.slice(0,-4)
+			           }
+			        }
+
+					var ind = 0;
+					var prms = self.props.cob2[ind].params;
+					
+					while(ind < lvl - 1){
+						ind = ind + 1
+						prms = prms[data[ind][1]]['@data'].params
+					}
+					var d = prms[i]
+				  	var ch = d['@children'].slice(0)
+
+          			if(d['@interceptor'] || d['@test'] || d['@halo'] || d['@input'] || d['@combo']){
+            			ch.unshift(d['@data'])
+          			}
+         			var	acc = false;
+					if((self.props.level > 3) || (p.acc <= self.props.level)){
+						acc = true;
+					}
+          //console.log(2158, isInt)
+					nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+						ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
+							children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
+					
+				}else if(par.type == 1){
+					var sc = par['@data']
+					////console.log('check this too',sc)
+          
+          			var	acc = false;
+					if((self.props.level > 3) || (par.acc <= self.props.level)){
+						acc = true;
+					}
+					if(typeof sc['child'] != 'undefined'){
+						var spar = sc.params[sc.child]
+            			var ch = spar['@children'].slice(0)
+          				if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input'] || spar['@combo']){
+            				ch.unshift(spar['@data'])
+          				} 
+                 		var spname = spar['@name']
+
+         				if(!isInt){
+            				if(spname.slice(-4) == '_INT'){
+              					spname = spname.slice(0,-4)
+            				}
+          				}
+							nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+								data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+			
+					}else{
+		      			if(self.props.wsb && lvl == 1){
+
+		      			}else{
+		      				nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+							data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+						
+		      			}
+					}
+				}else if(par.type == 2){
+					var sc = par['@data']
+					var	acc = false;
+					
+					if((self.props.level > 3)){
+						acc = true;
+					}
+					if(typeof sc['child'] != 'undefined'){
+						var spar = sc.params[sc.child]
+						var ch = spar['@children'].slice(0)
+          				if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input']||  spar['@combo']){
+            				ch.unshift(spar['@data'])
+          				}
+          				
+          				nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+							data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+				
+					}else{
+			 			nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+							data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+					}
+				}else if(par.type == 3){
+					var	acc = false;
+					if((self.props.level > 3)){
+						acc = true;
+					}
+					var sc = par['@data']
+						
+					nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={'Accounts'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
+						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+		
+				}
+			})
+
+			len = data[lvl - 1 ][0].params.length;
+			var ph = ""
+			if(len > 6){
+					ph = <div style={{display:'block', width:'100%', height:20}}></div>
+					SA = true;
+			}
+			nav = (
+					<div className='setNav' onScroll={this.handleScroll} id={this.props.Id}>
+						{nodes}
+						{ph}
+					</div>)
+		}
+
+		var className = "menuCategory expanded";
+		var tstl = {display:'inline-block', textAlign:'center'}
+		var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
+		if (this.state.font == 1){
+		    titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
+		}else if (this.state.font == 0){
+		   	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
+		}
+		catList = null;
+
+		return(
+			<div className='settingsDiv'>
+			<ScrollArrow ref='arrowTop' offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
+		
+			<div className={className}>
+				{titlediv}{nav}
+			</div>
+			<ScrollArrow ref='arrowBot' offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+			</div>
+		);
+	}
+}
+class SettingItem3 extends React.Component{
+	constructor(props) {
+		super(props)
+
+		this.sendPacket = this.sendPacket.bind(this);
+		this.onItemClick = this.onItemClick.bind(this);
+		this.activate = this.activate.bind(this);
+		this.deactivate = this.deactivate.bind(this);
+		this.getValue = this.getValue.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose =this.onRequestClose.bind(this);
+		this.parseValues = this.parseValues.bind(this);
+    	this.touchStart = this.touchStart.bind(this);
+    	this.touchEnd = this.touchEnd.bind(this);
+		var values = this.parseValues(this.props);
+		this.state = ({mode:0,font:this.props.font, val:values[0], pram:values[1], labels:values[2], touchActive:false})
+		
+
+	}
+  	touchStart(){
+    	this.setState({touchActive:true})
+  	}
+  	touchEnd(){
+    	this.setState({touchActive:false})
+  	}
+  	parseValues(props){
+  		var res = vdefByMac[props.mac];
+		var pVdef = _pVdef;
+		if(res){
+			pVdef = res[1];
+		}
+		var val = [], pram = [], label = false;
+		if(!props.hasChild){
+			if(typeof props.data == 'object'){
+				if(typeof props.data['@data'] == 'undefined'){
+			
+	  				if(typeof props.data[0]['child'] != 'undefined'){
+  						var lkey = props.data[0].params[props.data[0].child]['@name']
+        		
+	        			if((props.data[0].params[props.data[0].child]['@children'])&&(props.children[0].length == 2)){
+			            
+			    	        for(var i=0;i<props.children[0].length; i++){
+	              				val.push(this.getValue(props.children[1][i], props.children[0][i]))
+	          
+	            
+	              				if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+	                				pram.push(pVdef[0][props.children[0][i]])
+	              				}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+	                				pram.push(pVdef[1][props.children[0][i]])
+	              				}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+	                				pram.push(pVdef[2][props.children[0][i]])
+	              				}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+			                		pram.push(pVdef[3][props.children[0][i]])
+			              		}else if(lkey == 'Nif_ip'){
+			                		pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+			              		}else if(lkey == 'Nif_nm'){
+				                	pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+				            	}else if(lkey == 'Nif_gw'){
+				                	pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+				            	}else if(lkey == 'DCRate_INT'){
+				                	pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+				            	}else if(lkey == 'DCRate'){
+				              	 pram = [{'@name':'DCRate', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate",0],null]}}]
+				              //label = true;
+				            	}
+	            			}
+		          		}else{
+	            
+	            			val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
+	            			console.log(lkey,2504, pVdef[1][lkey])
+	  				  		if(typeof pVdef[0][lkey] != 'undefined'){
+	    						pram = [pVdef[0][lkey]]
+	    					}else if(typeof pVdef[1][lkey] != 'undefined'){
+	    						pram = [pVdef[1][lkey]]
+	    					}else if(typeof pVdef[2][lkey] != 'undefined'){
+	    						pram = [pVdef[2][lkey]]
+	    					}else if(typeof pVdef[3][lkey] != 'undefined'){
+	    						pram = [pVdef[3][lkey]]
+	    					}else if(lkey == 'Nif_ip'){
+	    						pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+	    					}else if(lkey == 'Nif_nm'){
+	    						pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+	    					}else if(lkey == 'Nif_gw'){
+	    						pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+	    					}
+
+				           	if(props.data[0].params[props.data[0].child]['@children']){
+				           		for(var i=0;i<props.children[0].length; i++){
+				              		val.push(this.getValue(props.children[1][i], props.children[0][i]))
+				              		if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+				                		pram.push(pVdef[0][props.children[0][i]])
+				              		}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+				                		pram.push(pVdef[1][props.children[0][i]])
+				              		}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+				                		pram.push(pVdef[2][props.children[0][i]])
+				              		}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+				                		pram.push(pVdef[3][props.children[0][i]])
+				              		}
+				            	}
+				           
+				          	}
+				        }
+      
+        				if(pram[0]['@labels']){
+							label = true
+						}	
+				
+					}
+				}else{
+	          		var lkey = props.lkey;
+	          		if((props.data['@children'])&&(props.children[0].length == 2)){
+	         			console.log(lkey, 2340, props.children)
+	         			for(var i=0;i<props.children[0].length;i++){
+	         		    	val.push(this.getValue(props.children[1][i], props.children[0][i]))
+		              		if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+		                		pram.push(pVdef[0][props.children[0][i]])
+		              		}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+		                		pram.push(pVdef[1][props.children[0][i]])
+		              		}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+		                		pram.push(pVdef[2][props.children[0][i]])
+		              		}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+		                		pram.push(pVdef[3][props.children[0][i]])
+		              		}
+	            		}
+	                }else{
+	         
+	    	 			val = [this.getValue(props.data['@data'], lkey)]
+	       
+	      				if(typeof pVdef[0][lkey] != 'undefined'){
+		    				pram = [pVdef[0][lkey]]
+		    			}else if(typeof pVdef[1][lkey] != 'undefined'){
+		    				pram = [pVdef[1][lkey]]
+		    			}else if(typeof pVdef[2][lkey] != 'undefined'){
+		    				pram = [pVdef[2][lkey]]
+		    			}else if(typeof pVdef[3][lkey] != 'undefined'){
+		    				pram = [pVdef[3][lkey]]
+		    			}else if(lkey == 'Nif_ip'){
+		    				pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+		    			}else if(lkey == 'Nif_nm'){
+		    				pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+		    			}else if(lkey == 'Nif_gw'){
+		    				pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+		    			}
+	          		}
+              	
+              		/*
+              		for(var i=0;i<props.children[0].length;i++){
+                		val.push(this.getValue(props.children[1][i], props.children[0][i]))
+                		if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+                  			pram.push(pVdef[0][props.children[0][i]])
+                		}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+                  			pram.push(pVdef[1][props.children[0][i]])
+                		}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+                  			pram.push(pVdef[2][props.children[0][i]])
+                		}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+                  			pram.push(pVdef[3][props.children[0][i]])
+               			}
+              		}
+              		*/
+          		
+          		}
+  			}
+      		
+  		}else{
+      		val = [this.getValue(props.data['@data'], props.lkey)]
+			if(typeof pVdef[0][props.lkey] != 'undefined'){
+				pram = [pVdef[0][props.lkey]]
+			}else if(typeof pVdef[1][props.lkey] != 'undefined'){
+				pram = [pVdef[1][props.lkey]]
+			}else if(typeof pVdef[2][props.lkey] != 'undefined'){
+				pram = [pVdef[2][props.lkey]]
+			}else if(typeof pVdef[3][props.lkey] != 'undefined'){
+				pram = [pVdef[3][props.lkey]]
+			}else if(props.lkey == 'Nif_ip'){
+				pram = [{'@name':'Nif_ip', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
+			}else if(props.lkey == 'Nif_nm'){
+				pram = [{'@name':'Nif_nm', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
+			}else if(props.lkey == 'Nif_gw'){
+				pram = [{'@name':'Nif_gw', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
+			}else if(props.lkey == 'DCRate_INT'){
+				pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
+			}
+			if(props.data['@children']){
+				////////////console.log(['1346', props.data.children])
+				for(var ch in props.data['@children']){
+					val.push(this.getValue(props.data['@children'][ch], ch))
+					if(typeof pVdef[0][ch] != 'undefined'){
+						pram.push(pVdef[0][ch])
+					}else if(typeof pVdef[1][ch] != 'undefined'){
+						pram.push(pVdef[1][ch])
+					}else if(typeof pVdef[2][ch] != 'undefined'){
+						pram.push(pVdef[2][ch])
+					}else if(typeof pVdef[3][ch] != 'undefined'){
+						pram.push(pVdef[3][ch])
+					}
+				}
+			}
+			
+		}	
+  		
+  		if(pram.length == 0){
+  			//console.log(props.lkey)
+  		}else if(pram[0]['@labels']){
+			label = true
+		}
+		return [val,pram,label]
+	}
+	sendPacket(n,v) {
+		//
+		var val = v
+		if(n['@name'] == 'Nif_ip'){
+			socket.emit('nifip', v.toString())
+		}else if(n['@name'] == 'Nif_nm'){
+			socket.emit('nifnm', v.toString())
+		}else if(n['@name'] == 'Nif_gw'){
+			socket.emit('nifgw', v.toString())
+		}else{
+			if(n['@type'] == 'ipv4_address'){
+				val = v.split('.').map(function(ip){
+					return ("000"+ip).slice(-3);
+				}).join('.')
+				setTimeout(function(){
+					socket.emit('locateReq');
+				},200)
+			}else if(n['@decimal']){}
+		this.props.sendPacket(n,val)	
+		}
+	}
+	componentWillReceiveProps (newProps) {
+		// body...
+		var values = this.parseValues(newProps);
+		
+		this.setState({font:newProps.font, val:values[0], pram:values[1], labels:values[2]})
+	}
+	onItemClick(){
+
+		if(this.props.hasChild || typeof this.props.data == 'object'){
+			////////console.log([this.props.data])
+			// accessControl
+			if(this.props.acc){
+				this.props.onItemClick(this.props.data, this.props.name)	
+			}else{
+
+				toast('Access Denied')	
+				}		
+			}
+	}
+	activate () {
+		this.props.activate(this.props.data)
+	}
+	deactivate () {
+		// body...
+		if(this.refs.ed){
+			this.refs.ed.deactivate()
+		}		
+	}
+	getValue(rval, pname){
+		var pram;
+			var val;
+			var label = false
+			var res = vdefByMac[this.props.mac];
+			var pVdef = _pVdef;
+			var dec = 0;
+			var self = this;
+			if(res){
+				pVdef = res[1];
+			}
+
+			if(typeof pVdef[0][pname] != 'undefined'){
+				pram = pVdef[0][pname]
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(d){
+							if(pVdef[6][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else{
+								return self.props.prodSettings[d];
+							}
+						});
+						if(f == 'mm'){
+							if(deps[0] == 0){
+								dec = 1
+							}
+						}
+					}	
+					if(pram['@bit_len']<=16){
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+				}else if(typeof pram['@decimal'] != 'undefined'){
+					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+				}
+				
+				if(pram["@labels"]){
+					label = true
+				}
+			}else if(typeof pVdef[1][pname] != 'undefined'){
+				
+				pram = pVdef[1][pname]
+				
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(dp){
+							var d = dp;
+							if(dp.indexOf('[0]') != -1){
+								if(pram['@name'].slice(-2) == '_A'){
+									d = dp.replace('[0]','[1]')
+								}
+							}
+							if(pVdef[6][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else{
+								return self.props.prodSettings[d];
+							}
+						});
+						if(pram['@name'] == 'BeltSpeed'){
+							deps.push(self.props.dynSettings['EncFreq'])
+						}
+					}
+					if(f == 'mm'){
+							if(deps[0] == 0){
+								dec = 1
+							}
+						}
+					if(pram['@bit_len']<=16){
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+					if(f == 'phase_offset'){
+						val = 	uintToInt(val,16)//?? phase is coming in with different format for dyn data
+					}
+					
+				}else if(pram["@name"].indexOf('DetThresh') != -1){
+					var dependancies = ['DetMode','PhaseMode','ThresR','ThresX']
+					var deps = dependancies.map(function(d) {
+						// body...
+						if(pram['@name'] == 'DetThresh_A'){
+							return self.props.prodSettings[d+'_A']
+						}else if(pram['@name'] == 'DetThresh_B'){
+							return self.props.prodSettings[d+'_B']
+						}
+					})
+					val = eval(funcJSON['@func']['det_thresh']).apply(this, [].concat.apply([],[val,deps]));
+					
+				}else if(typeof pram['@decimal'] != 'undefined'){
+					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+				}
+				if(pram["@labels"]){
+					label = true
+				}
+			}else if(typeof pVdef[2][pname] != 'undefined'){
+				
+				pram = pVdef[2][pname]
+				
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(f == 'phase'){
+						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+					}else{
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(dp){
+							var d = dp;
+							if(dp.indexOf('[0]') != -1){
+								if(pram['@name'].slice(-2) == '_A'){
+									d = dp.replace('[0]','[1]')
+								}
+							}	
+							if(pVdef[6][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else if(pVdef[6][d]["@rec"] == 1){
+								return self.props.prodSettings[d];
+							}else if(pVdef[6][d]["@rec"] == 2){
+								return self.props.dynSettings[d];
+							}
+						});
+					}
+					if(f == 'mm'){
+							if(deps[0] == 0){
+								dec = 1
+						}
+					}
+					if(pram['@bit_len']<=16){
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+				}
+					
+				}else if(pram['@name'] == 'RejExitDistEst'){
+					var dependancies = ['SysRec.MetricUnits']
+					deps = dependancies.map(function(d){
+						if(pVdef[6][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else if(pVdef[6][d]["@rec"] == 1){
+								return self.props.prodSettings[d];
+							}else if(pVdef[6][d]["@rec"] == 2){
+							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+								return self.props.dynSettings[d];
+							}
+					})
+					dec = 1
+					val = eval(funcJSON['@func']['mm']).apply(this, [].concat.apply([], [val, deps]));
+
+				}else if(typeof pram['@decimal'] != 'undefined'){
+					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+				}
+				if(pram["@labels"]){
+					label = true
+				}
+			}else if(typeof pVdef[3][pname] != 'undefined'){
+				
+				pram = pVdef[3][pname]
+				
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(f == 'phase'){
+						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+					}else{
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(d){
+							if(pVdef[6][d]["@rec"] == 0){
+								return self.props.sysSettings[d];
+							}else if(pVdef[6][d]["@rec"] == 1){
+								return self.props.prodSettings[d];
+							}else if(pVdef[6][d]["@rec"] == 2){
+							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+								return self.props.dynSettings[d];
+							}else if(pVdef[6][d]["@rec"] == 3){
+							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+								return self.props.framSettings[d];
+							}
+						});
+					}
+					if(pram['@bit_len']<=16){
+					//	////////console.log(f)
+						
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+				}
+					
+				}else if(typeof pram['@decimal'] != 'undefined'){
+					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+				}
+				if(pram["@labels"]){
+					label = true
+				}
+			}else{
+				val = rval
+			}
+			return val;
+	}
+	onFocus () {
+		// body...
+		this.props.onFocus();
+	}
+	onRequestClose () {
+		// body...
+		this.props.onRequestClose();
+	}
+	render(){
+		var ft = [16,20,24];
+		var wd = [150,260,297]
+		var vwd = [75,125,169]
+		var st = {display:'inline-block', fontSize:ft[this.state.font], width:wd[this.state.font]}
+		var vst = {display:'inline-block', fontSize:ft[this.state.font], width:vwd[this.state.font]}
+		var self = this;
+		var fSize = 24;
+		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+		var sty = {height:60}
+    	var klass = 'sItem'
+    	 
+			if(this.props.mobile){
+				sty.height = 45;
+				sty.lineHeight = '45px';
+			}
+			var res = vdefByMac[this.props.mac];
+			var pVdef = _pVdef;
+			if(res){
+				pVdef = res[1];
+			}
+			//////console.log('2885',pVdef,_pVdef)
+			var label = false;
+		if(this.props.hasChild){
+			var namestring = this.props.name;
+			var path = ""
+			if(this.props.path.length == 0){
+				path = namestring
+			}else{
+				path = this.props.path + '/'+ namestring
+			}
+			
+			if(typeof catMapV2[path] != 'undefined'){
+				////////////console.log('1270')
+				namestring = catMapV2[path]['@translations'][this.props.language]
+				////////////console.log('1272')
+
+			}
+			if(namestring.length > 28){
+				fSize = 18
+			}
+			else if(namestring.length > 24){
+				fSize= 20
+			}else if(namestring.length > 18){
+				fSize = 22
+			}
+			
+				var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+				if(this.props.mobile){
+					_st.lineHeight = '51px'
+					_st.height = 45
+				}
+			  klass += ' hasChild'
+        if(this.state.touchActive){
+          klass += ' touchDown'
+        }
+          if(this.props.branding == 'SPARC'){
+          	sty.backgroundColor = SPARCBLUE3
+          }
+			return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
+		}else{
+			var val, pram;
+			var namestring = this.props.name;
+
+		if(typeof this.props.data == 'object'){
+
+			if(typeof this.props.data['@data'] == 'undefined'){
+			var path = ""
+			if(this.props.path.length == 0){
+				path = namestring
+			}else{
+				path = this.props.path + '/'+ namestring
+			}
+			
+			if(typeof catMapV2[path] != 'undefined'){
+				namestring = catMapV2[path]['@translations'][this.props.language]
+			}
+			if(namestring.length > 28){
+				fSize = 18
+			}
+			else if(namestring.length > 24){
+				fSize= 20
+			}else if(namestring.length > 18){
+				fSize = 22
+			}
+			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+			if(this.props.mobile){
+				_st.lineHeight = '51px'
+				_st.height = 45
+			}
+			
+			if(typeof this.props.data[0]['child'] != 'undefined'){
+        klass  = 'sprc-prod'//+= ' noChild'
+
+				var lkey = this.props.data[0].params[this.props.data[0].child]['@name']
+				var im = <img  style={{position:'absolute', width:36,top:15, left:762, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
+				
+				if(this.props.mobile){
+					im = <img  style={{position:'absolute', width:'7%',height:'40%',top:'30%', left:'92%', strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
+				}
+		
+				if(this.props.backdoor){
+					im = ''
+				}
+			/*	var edctrl = <EditControl nameovr={namestring} mobile={this.props.mobile} mac={this.props.mac}  ov={true} language={this.props.language} ip={this.props.ip} 
+        ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} 
+        lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={lkey}/>
+        */
+
+				      var medctrl= (<MultiEditControl branding={this.props.branding} nameovr={namestring} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
+                mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
+         onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} 
+          lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
+          label={this.state.label} int={false} name={lkey}/>)
+
+
+        if(this.props.mobile){
+					sty.height = 51
+					sty.paddingRight = 5
+				}
+        
+        		sty.paddingBottom = 5
+				return (<div className='sprc-prod' style={sty} onClick={this.onItemClick}> {medctrl}
+						{im}
+					
+					</div>)
+				}
+
+		    klass = 'sItem hasChild'
+		    if(this.props.branding == 'SPARC'){
+          	klass = 'sItem hasChildSparc'
+          }
+        if(this.state.touchActive){
+          klass += ' touchDown'
+        }
+				return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
+			}
+			}
+			if(this.props.mobile){
+				sty.height = 51;
+				sty.paddingRight = 5;
+			}
+			//	var edctrl = <EditControl mobile={this.props.mobile} combo={(this.props.data['@combo'] == true)} mac={this.props.mac}  ov={false} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={this.props.lkey}/>
+			  var medctrl= (<MultiEditControl branding={this.props.branding} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} 
+          lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
+          label={this.state.label} int={false} name={this.props.lkey}/>)
+
+sty.paddingBottom = 5
+      	return (<div className='sprc-prod' style={sty}> {medctrl}
+					</div>)
+			
+		}
+	}
+}
+class MultiEditControl extends React.Component{
+	constructor(props) {
+		super(props)
+		this.state = ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size,touchActive:false})
+		this.switchMode = this.switchMode.bind(this)
+		this.deactivate = this.deactivate.bind(this)
+		this.selectChanged = this.selectChanged.bind(this);
+		this.valChanged = this.valChanged.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onRequestClose = this.onRequestClose.bind(this);
+		this.onClick = this.onClear.bind(this);
+		this.openSelector = this.openSelector.bind(this);
+		this.valClick = this.valClick.bind(this);
+    	this.onPointerDown = this.onPointerDown.bind(this);
+    	this.onPointerUp = this.onPointerUp.bind(this);
+    	this.renderSpElem = this.renderSpElem.bind(this);
+	}
+	componentWillReceiveProps(newProps){
+		this.setState({val:newProps.data.slice(0)})
+	}
+	switchMode () {
+		// body...
+		if(this.props.acc){
+			if(this.props.param[0]['@rpcs']){
+				if((this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])){
+					var m = Math.abs(this.state.mode - 1)
+					this.props.activate()
+					this.setState({mode:m})
+				}
+			}
+		}	
+	}
+	deactivate () {
+		this.setState({mode:0})
+	}
+	selectChanged(v,i){
+		var val = v//e.target.value//e.target.value;
+		if(this.props.bitLen == 16){
+			val = Params.swap16(parseInt(val))
+		}
+		this.props.sendPacket(this.props.param[i], parseInt(val));
+		var value = this.state.val;
+		value[i] = v// e.target.value
+	}
+	valChanged(v,i){
+		//console.log(['2734',v,i,this.props.param[i]])
+		var val;
+		if(!isNaN(v)){
+			val = parseFloat(v)
+		}else{ 
+			val = v;
+
+		}
+		console.log('2735', val)
+		if(this.props.param[i]['@type'] == 'mm'){
+			if(this.state.val[i].indexOf('in') != -1){
+				val = val*10;
+			}
+		}else if(this.props.param[i]['@name'].indexOf('PhaseAngleAuto') != -1){
+			val = val*Math.pow(10,this.props.param[i]['@decimal'])
+		}else if(this.props.param[i]['@decimal']){
+			val = val*Math.pow(10,this.props.param[i]['@decimal'])
+			////console.log('3149',v,val)
+		}else if(this.props.param[i]['@type'] == 'belt_speed'){
+			if(v.indexOf('.') != -1){
+				val = val*10
+			}
+		}
+		
+		if(this.props.bitLen == 16){
+			val = Params.swap16(parseFloat(val))
+		}
+		var value = this.state.val;	
+		value[i] = val;
+		this.setState({val:value})
+		if(this.props.param[i]['@bit_len'] > 16){
+			val = v//              "
+	      	if(this.props.param[i]['@type'] == 'dsp_name_u16_le' || this.props.param[i]['@type'] == 'prod_name_u16_le'){
+	      		val  = (v + "                    ").slice(0,20)
+	       	}
+			this.props.sendPacket(this.props.param[i], val)
+		}else if(!Number.isNaN(val)){
+			this.props.sendPacket(this.props.param[i], parseFloat(val));
+		}
+	}
+	onFocus () {
+		this.props.onFocus();
+	}
+	onRequestClose () {
+		this.props.onRequestClose();
+	}
+	onClear (id) {
+		////console.log(3040,id)
+		this.props.sendPacket(this.props.param[id])
+	}
+	openSelector () {
+		if(!this.props.ov){
+	
+			var self = this;
+			if(this.refs.pw){
+				setTimeout(function () {
+					self.refs.pw.toggleCont();
+				},100)
+				
+			}
+		}
+		
+	}
+	valClick (ind) {
+		if(!this.props.ov){
+			if(this.props.param[ind]['@rpcs']){
+				if(this.props.param[ind]['@rpcs']['clear']){
+					this.onClear(ind)
+				}else if(this.props.param[ind]['@rpcs']['start']){
+					this.onClear(ind)
+				}else if(this.refs['input' + ind]){
+					this.refs['input' + ind].toggle();
+				}
+			}else if(this.refs['input' + ind]){
+					this.refs['input' + ind].toggle();
+			}
+		}
+	}
+  	onPointerDown(){
+    	this.setState({touchActive:true})
+  	}
+  	onPointerUp(){
+    	if(this.state.touchActive){
+        	this.setState({touchActive:false})
+      
+    	}
+  	}
+  	renderSpElem(){
+  		var self = this;
+		
+		var namestring = this.props.name
+		
+		if(typeof vdefByMac[this.props.mac][5][this.props.name] != 'undefined'){
+			if(vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name'] != ''){
+				namestring =  vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name']
+			}
+		}
+
+		var dt = false;
+		var fSize = 20;
+		if(namestring.length > 24){
+			fSize = 14
+		}
+		else if(namestring.length > 20){
+			fSize= 16
+		}else if(namestring.length > 12){
+			fSize = 18
+		}
+		if(this.props.mobile){
+			fSize -= 7;
+			fSize = Math.max(13, fSize)
+		}
+		let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee', verticalAlign:'middle', lineHeight:'25px'}
+		if(this.props.branding == 'SPARC'){
+			lvst.background = SPARCBLUE2
+		}
+
+		var labWidth = (546/this.state.val.length)
+		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480',overflow:'hidden'}
+		if(this.props.branding == 'SPARC'){
+			lvst.background = SPARCBLUE2
+			vlabelStyle.boxShadow = ' -50px 0px 0 0 '+ SPARCBLUE2
+		}
+		var vlabelswrapperStyle = {width:546, overflow:'hidden', display:'table-cell'}
+		if(this.props.mobile){
+			labWidth = parseInt(100/this.state.val.length) + '%'
+			vlabelswrapperStyle.width = '60%'
+			lvst.verticalAlign = 'middle'
+			lvst.lineHeight = '25px'
+		}
+    	if(this.state.touchActive){
+      		lvst.background = '#56526c'
+      		vlabelStyle.boxShadow = ' -50px 0px 0 0 #56526c'
+
+      		if(this.props.branding == 'SPARC'){
+      			lvst.background = '#2098d2'
+      			vlabelStyle.boxShadow = ' -50px 0px 0 0 #2098d2'
+      		}
+	    }
+
+	    var vLabels = this.state.val.map(function(d,i){  
+			var val = d;
+			var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
+			st.width = labWidth
+			st.fontSize = self.props.vst.fontSize;
+			st.display = 'table-cell';//self.props.vst.display;
+			
+			if(self.props.mobile){
+				st.height = 51
+				st.lineHeight = '51px'
+				st.display = 'inline-block'
+			}
+	      	if(typeof self.props.param[i]['@labels'] != 'undefined'){
+				var list =  _pVdef[7][self.props.param[i]["@labels"]];
+				val = _pVdef[7][self.props.param[i]["@labels"]]['english'][d];
+				
+				if((self.props.language != 'english')&&(typeof list[self.props.language] != 'undefined')&&(typeof list[self.props.language][d] == 'string') &&(list[self.props.language][d].trim().length != 0)){
+					val = _pVdef[7][self.props.param[i]["@labels"]][self.props.language][d];
+				}
+				if((self.props.param[i]['@labels'] == 'InputSrc')){
+					if(self.props.ioBits[self.props.param[i]['@name'].slice(6)] == 0){
+						st.color = '#666'
+					}
+				}else if((self.props.param[i]['@labels'] == 'OutputSrc')){
+					if(self.props.ioBits[outputSrcArr[d]] == 0){
+						st.color = '#666'
+					}
+				}
+			}
+	      	if(self.props.param[i]['@units']){
+	        	val = val + ' ' + self.props.param[i]['@units']
+	      	}
+	      	if(self.props.combo){
+	        	val = <React.Fragment><div style={{color:'#aaa', fontSize:self.props.vst.fontSize - 4}}>{self.props.vMap['@labels'][i]}</div><div>{val}</div></React.Fragment>
+	        	st.lineHeight = '22px'
+	        }
+
+	        var _st = Object.assign({},st)
+	        if(self.state.touchActive){
+	        	_st.background = 'rgba(100,100,100,0.5)'
+	        }
+			
+			return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val}</CustomLabel>)
+		})
+
+		var acc = false
+		if(this.props.acc){
+			if(this.props.param[0]['@rpcs']){
+				if((this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])){
+					acc = true
+				}
+			}
+		}
+
+		if(!acc){
+			return <div>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+				{namestring}
+			</div>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+				{vLabels}
+			</div>
+			</div>
+		}else{
+
+			var multiDropdown = true;
+			this.props.param.forEach(function (p) {
+				if((typeof p['@labels'] == 'undefined') &&(p['@name'].indexOf('TestConfigCount') == -1)){
+					multiDropdown = false;
+				}
+			})
+				
+			var options;
+			
+			if(multiDropdown){
+				var lists = this.props.param.map(function (p) {
+					if(p['@name'].indexOf('TestConfigCount') != -1){
+						return [0,1,2,3,4,5,6,7,8,9]
+					}else{
+						var list = _pVdef[7][p["@labels"]]['english'].slice(0);
+						if(self.props.language != 'english'){
+							if(typeof _pVdef[7][p["@labels"]][self.props.language] != 'undefined'){
+								list.forEach(function(lb,i){
+									if((typeof _pVdef[7][p["@labels"]][self.props.language][i] == 'string') &&(_pVdef[7][p["@labels"]][self.props.language][i].trim().length != 0)){
+										list[i] = _pVdef[7][p["@labels"]][self.props.language][i]
+									}
+								})
+							}
+						}
+						return list
+					}
+				})
+				options = <PopoutWheel branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
+
+				
+
+				return  <div>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+				{namestring}
+			</div>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+				{vLabels}
+			</div>
+			{options}
+			</div>
+				/*(<div><div  onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerLeave={this.onPointerUp} onClick={this.openSelector}><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
+						<div style={{paddingLeft:this.props.lvst.width}}>
+							{options}
+						</div></div>)*/
+			}else{
+				options = this.state.val.map(function(v, i){
+					if(typeof self.props.param[i]['@labels'] != 'undefined'){
+						var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
+						
+						return <PopoutWheel branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
+					}else{
+						var num = true
+						if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){ num = false }
+						if(self.props.param[i]["@name"].indexOf('DateTime') != -1){dt = true;}
+						var lbl = namestring
+						if(self.props.combo){ lbl = lbl + [' Delay', ' Duration'][i]}
+							return <CustomKeyboard branding={self.props.branding} mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={'input'+i} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
+						}
+				})
+	          	if(this.props.nameovr){
+	            	namestring = this.props.nameovr
+	          	}
+
+	          					return <div>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+				{namestring}
+			</div>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+				{vLabels}
+			</div>
+			{options}
+			</div>
+			/*
+				return(<div><label style={lvst}>{namestring + ': '}</label>
+							<div style={vlabelswrapperStyle} onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp}  onPointerLeave={this.onPointerUp}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>)
+			*/
+			}
+		}
+  		
+  	}
+	render() {
+		return this.renderSpElem()
+		var self = this;
+		
+		var namestring = this.props.name
+		
+		if(typeof vdefByMac[this.props.mac][5][this.props.name] != 'undefined'){
+			if(vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name'] != ''){
+				namestring =  vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name']
+			}
+		}
+		
+		var dt = false;
+		var fSize = 24;
+		if(namestring.length > 24){
+			fSize = 18
+		}
+		else if(namestring.length > 20){
+			fSize= 20
+		}else if(namestring.length > 12){
+			fSize = 22
+		}
+		if(this.props.mobile){
+			fSize -= 7;
+			fSize = Math.max(13, fSize)
+		}
+		let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee', verticalAlign:'middle', lineHeight:'25px'}
+		if(this.props.branding == 'SPARC'){
+			lvst.background = SPARCBLUE2
+		}
+
+		var isInt = false
+		var colors = ['#000','#eee']
+
+		var labWidth = (536/this.state.val.length)
+		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480',overflow:'hidden'}
+		if(this.props.branding == 'SPARC'){
+			lvst.background = SPARCBLUE2
+			vlabelStyle.boxShadow = ' -50px 0px 0 0 '+ SPARCBLUE2
+		}
+		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+		if(this.props.mobile){
+			labWidth = parseInt(100/this.state.val.length) + '%'
+			vlabelswrapperStyle.width = '60%'
+			lvst.verticalAlign = 'middle'
+			lvst.lineHeight = '25px'
+		}
+    	if(this.state.touchActive){
+      		lvst.background = '#56526c'
+      		vlabelStyle.boxShadow = ' -50px 0px 0 0 #56526c'
+
+      		if(this.props.branding == 'SPARC'){
+      			lvst.background = '#2098d2'
+      			vlabelStyle.boxShadow = ' -50px 0px 0 0 #2098d2'
+      		}
+	    }
+
+	    var vLabels = this.state.val.map(function(d,i){  
+			var val = d;
+			var st = {textAlign:'center',lineHeight:'60px', verticalAlign:'middle', height:60}
+			st.width = labWidth
+			st.fontSize = self.props.vst.fontSize;
+			st.display = 'table-cell';//self.props.vst.display;
+			
+			if(self.props.mobile){
+				st.height = 51
+				st.lineHeight = '51px'
+				st.display = 'inline-block'
+			}
+	      	if(typeof self.props.param[i]['@labels'] != 'undefined'){
+				var list =  _pVdef[7][self.props.param[i]["@labels"]];
+				val = _pVdef[7][self.props.param[i]["@labels"]]['english'][d];
+				
+				if((self.props.language != 'english')&&(typeof list[self.props.language] != 'undefined')&&(typeof list[self.props.language][d] == 'string') &&(list[self.props.language][d].trim().length != 0)){
+					val = _pVdef[7][self.props.param[i]["@labels"]][self.props.language][d];
+				}
+				if((self.props.param[i]['@labels'] == 'InputSrc')){
+					if(self.props.ioBits[self.props.param[i]['@name'].slice(6)] == 0){
+						st.color = '#666'
+					}
+				}else if((self.props.param[i]['@labels'] == 'OutputSrc')){
+					if(self.props.ioBits[outputSrcArr[d]] == 0){
+						st.color = '#666'
+					}
+				}
+			}
+	      	if(self.props.param[i]['@units']){
+	        	val = val + ' ' + self.props.param[i]['@units']
+	      	}
+	      	if(self.props.combo){
+	        	val = <React.Fragment><div style={{color:'#e1e1e1', fontSize:self.props.vst.fontSize - 4}}>{self.props.vMap['@labels'][i]}</div><div>{val}</div></React.Fragment>
+	        	st.lineHeight = '25px'
+	        }
+
+	        var _st = Object.assign({},st)
+	        if(self.state.touchActive){
+	        	_st.background = 'rgba(100,100,100,0.5)'
+	        }
+			
+			return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val}</CustomLabel>)
+		})
+
+		var acc = false
+		if(this.props.acc){
+			if(this.props.param[0]['@rpcs']){
+				if((this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])){
+					acc = true
+				}
+			}
+		}
+		if(!acc){
+			return(<div><label style={lvst}>{namestring + ': '}</label>
+					<div style={vlabelswrapperStyle}  onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerLeave={this.onPointerUp}><div style={vlabelStyle}>{vLabels}</div></div></div>)
+
+		}else{
+			var multiDropdown = true;
+			this.props.param.forEach(function (p) {
+				if((typeof p['@labels'] == 'undefined') &&(p['@name'].indexOf('TestConfigCount') == -1)){
+					multiDropdown = false;
+				}
+			})
+				
+			var options;
+			
+			if(multiDropdown){
+				var lists = this.props.param.map(function (p) {
+					if(p['@name'].indexOf('TestConfigCount') != -1){
+						return [0,1,2,3,4,5,6,7,8,9]
+					}else{
+						var list = _pVdef[7][p["@labels"]]['english'].slice(0);
+						if(self.props.language != 'english'){
+							if(typeof _pVdef[7][p["@labels"]][self.props.language] != 'undefined'){
+								list.forEach(function(lb,i){
+									if((typeof _pVdef[7][p["@labels"]][self.props.language][i] == 'string') &&(_pVdef[7][p["@labels"]][self.props.language][i].trim().length != 0)){
+										list[i] = _pVdef[7][p["@labels"]][self.props.language][i]
+									}
+								})
+							}
+						}
+						return list
+					}
+				})
+				options = <PopoutWheel branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={isInt} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
+
+				return(<div><div  onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerLeave={this.onPointerUp} onClick={this.openSelector}><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
+						<div style={{paddingLeft:this.props.lvst.width}}>
+							{options}
+						</div></div>)
+			}else{
+				options = this.state.val.map(function(v, i){
+					if(typeof self.props.param[i]['@labels'] != 'undefined'){
+						var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
+						
+						return <PopoutWheel branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={isInt} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
+					}else{
+						var num = true
+						if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){ num = false }
+						if(self.props.param[i]["@name"].indexOf('DateTime') != -1){dt = true;}
+						var lbl = namestring
+						if(self.props.combo){ lbl = lbl + [' Delay', ' Duration'][i]}
+							return <CustomKeyboard branding={self.props.branding} mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={'input'+i} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
+						}
+				})
+	          	if(this.props.nameovr){
+	            	namestring = this.props.nameovr
+	          	}
+
+				return(<div><label style={lvst}>{namestring + ': '}</label>
+							<div style={vlabelswrapperStyle} onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp}  onPointerLeave={this.onPointerUp}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>)
+			}
+
+
+		}
+		
+	}
+}
+
 ReactDOM.render(<Container/>,document.getElementById('content'))
