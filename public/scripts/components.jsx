@@ -476,15 +476,23 @@ class TrendBar extends React.Component{
 
 			pctgs = [((this.props.low - this.props.lowerbound)*100)/range, ((this.props.high - this.props.lowerbound)*100)/range]
 			ranges = [this.props.low,this.props.high]
-			bgcolors = ['#aa0000','#00aa00','#aa0000']
+			bgcolors = ['#aa0000a0','#00aa00a0','#aa0000a0']
 			colors = ['#ff0000','#00ff00','#ff0000']
-			bgstr = 'linear-gradient(90deg, #aa0000, #aa0000 ' + pctgs[0].toFixed(0) +  '%, #00aa00 ' +pctgs[0].toFixed(0)
-				+ '%, #00aa00 '+pctgs[1].toFixed(0)+'%, #aa0000 ' +pctgs[1].toFixed(0) + '%, #aa0000)';
+			bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + pctgs[0].toFixed(0) +  '%, #00aa00a0 ' +pctgs[0].toFixed(0)
+				+ '%, #00aa00a0 '+pctgs[1].toFixed(0)+'%, #aa0000a0 ' +pctgs[1].toFixed(0) + '%, #aa0000a0)';
 
+			if(tickerVal < ranges[0]){
+				color = colors[0]
+			}else if(tickerVal <= ranges[1]){
+				color = colors[1]
+			}else{
+				color = colors[2]
+			}
 			labels = ranges.map(function(r,i) {
 				// body...
 				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{r}</div>
 			})
+
 
 		}
 
@@ -619,15 +627,7 @@ class DummyGraph extends React.Component{
 class SlimGraph extends React.Component{
 	constructor(props) {
 		super(props)
-		/*var mqls = [
-			window.matchMedia('(min-width: 300px)'),
-			window.matchMedia('(min-width: 444px)'),
-			window.matchMedia('(min-width: 600px)'),
-			window.matchMedia('(min-width: 850px)')
-		]
-		for (var i=0; i<mqls.length; i++){
-			mqls[i].addListener(this.listenToMq)
-		}*/
+
 		this.state = ({width:480, height:215, popUp:false})
 		this.toggle = this.toggle.bind(this);
 		this.stream = this.stream.bind(this);

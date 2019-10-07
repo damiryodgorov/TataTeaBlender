@@ -59,8 +59,7 @@ class UdpParamServer{
         }
       }
     })
-      //this.init_params_stream()
-      this.so.bind({address:'0.0.0.0',port:UDP_PORT})
+    this.so.bind({address:'0.0.0.0',port:UDP_PORT})
 
 
   }

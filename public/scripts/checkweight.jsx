@@ -20,6 +20,8 @@ const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'R
 const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 
 
+//radial-gradient(circle, #30A8E233 34%, #30A8E2);
+
 const SPARCBLUE2 = '#30A8E2'
 const SPARCBLUE1 = '#1C3746'
 const SPARCBLUE3 = '#475C67'
@@ -662,15 +664,21 @@ class LandingPage extends React.Component{
 		return true;
 	}
 	onParamMsg(e,u){
-		//console.log('onParamMsg', e.type)
+		console.log('onParamMsg', e.type)
 		if(this.state.curDet.ip == u.ip){
 			if(typeof e != 'undefined'){
 				if(e.type == 0){
+					console.log('Sys Rec')
 					this.setState({srec:e.rec, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
 				}else if(e.type == 1){
+					console.log('Prod Rec')
 					this.setState({prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
 				}else if(e.type == 2){
-					this.setState({rec:e.rec,updateCount:(this.state.updateCount+1)%10, noupdate:(this.state.updateCount != 0)})
+					this.setState({rec:e.rec,updateCount:(this.state.updateCount+1)%4, noupdate:(this.state.updateCount != 0)})
+					if(this.state.updateCount == 0){
+						this.refs.ss.setState({rec:e.rec, crec:this.state.crec})
+					}
+					
 				}else if(e.type == 3){
 					e.rec.Nif_ip = this.state.nifip
 					e.rec.Nif_gw = this.state.nifgw
@@ -680,12 +688,17 @@ class LandingPage extends React.Component{
 					//console.log('checkweighing pack')
 					var del = 25
 					var dur = 50
-					if(typeof this.state.prec.SampDel != 'undefined'){
-						del = this.state.prec.SampDel;
-						dur = this.state.prec.SampDur;
+					if(typeof this.state.prec["SampDelEnd"] != 'undefined'){
+						console.log('This should hit')
+						del = this.state.prec['SampDelEnd'];
+						dur = this.state.prec['SampDur'];
 					}
 					this.setState({crec:e.rec, noupdate:true})
-					this.refs.lg.parseDataset(e.rec['PackSamples'].slice(0 - dur - del, 0 - del), Math.random()*100)
+					this.refs.lg.parseDataset(e.rec['PackSamples'].slice(0), del, dur, e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], this.state.srec['TareWeight'], e.rec['PackWeight']);
+					this.refs.hh.parseCrec(e.rec)
+					this.refs.ss.setState({crec:e.rec})
+					this.refs.tb.update(e.rec['PackWeight']);
+		
 				}else if(e.type == 15){
 					var prodList = this.state.prodList;
 					var prodListRaw = this.state.prodListRaw
@@ -700,68 +713,83 @@ class LandingPage extends React.Component{
 		console.log(n,v)
 		var vdef = vdefByMac[this.state.curDet.mac]
 		if(typeof n == 'string'){
-		if(n == 'switchProd'){
-			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NO_APIWRITE']
-			var pkt = rpc[1].map(function (r) {
-				if(!isNaN(r)){
-					return r
-				}else{
-					if(isNaN(v)){
-						return 0
+			if(n == 'switchProd'){
+				var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NO_APIWRITE']
+				var pkt = rpc[1].map(function (r) {
+					if(!isNaN(r)){
+						return r
 					}else{
-						return parseInt(v)
+						if(isNaN(v)){
+							return 0
+						}else{
+							return parseInt(v)
+						}
 					}
-				}
-			})
-			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-		}else if(n == 'copyCurrentProd'){
-			var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
-			var pkt = rpc[1].map(function (r) {
-				if(!isNaN(r)){
-					return r
-				}else{
-					if(isNaN(v)){
-						return 0
+				})
+				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+			}else if(n == 'copyCurrentProd'){
+				var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
+				var pkt = rpc[1].map(function (r) {
+					if(!isNaN(r)){
+						return r
 					}else{
-						return parseInt(v)
+						if(isNaN(v)){
+							return 0
+						}else{
+							return parseInt(v)
+						}
 					}
-				}
-			})
-			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-		
-		}else if(n == 'getProdSettings'){
-			var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
-			var pkt = rpc[1].map(function (r) {
-				if(!isNaN(r)){
-					return r
-				}else{
-					if(isNaN(v)){
-						return 0
+				})
+				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+			
+			}else if(n == 'getProdSettings'){
+				var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
+				var pkt = rpc[1].map(function (r) {
+					if(!isNaN(r)){
+						return r
 					}else{
-						return parseInt(v)
+						if(isNaN(v)){
+							return 0
+						}else{
+							return parseInt(v)
+						}
 					}
-				}
-			})
-			var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-		
-		}
+				})
+				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+			
+			}else if(n == 'saveProduct'){
+				var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDWRITE']
+				var pkt = rpc[1].map(function (r) {
+					if(!isNaN(r)){
+						return r
+					}else{
+						if(isNaN(v)){
+							return 0
+						}else{
+							return parseInt(v)
+						}
+					}
+				})
+				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+			}
 		}else{
 			console.log('here')
 			if(n['@rpcs']['toggle']){
 
-			var arg1 = n['@rpcs']['toggle'][0];
-			var arg2 = [];
-			for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
-				if(!isNaN(n['@rpcs']['toggle'][1][i])){
-					arg2.push(n['@rpcs']['toggle'][1][i])
-				}else{
-					arg2.push(v)
+				var arg1 = n['@rpcs']['toggle'][0];
+				var arg2 = [];
+				for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
+					if(!isNaN(n['@rpcs']['toggle'][1][i])){
+						arg2.push(n['@rpcs']['toggle'][1][i])
+					}else{
+						arg2.push(v)
+					}
 				}
-			}
-			var packet = dsp_rpc_paylod_for(arg1, arg2);
+				var packet = dsp_rpc_paylod_for(arg1, arg2);
 			
 			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
 		}else if(n['@rpcs']['apiwrite']){
@@ -780,6 +808,15 @@ class LandingPage extends React.Component{
 					}
 				}
 			}
+			if(n['@type'] == 'int32'){
+				var buf = Buffer.alloc(4)
+				buf.writeUInt32LE(parseInt(v),0)
+				strArg = buf;
+			}else if(n['@type'] == 'float'){
+				var buf = Buffer.alloc(4)
+				buf.writeFloatLE(parseFloat(v),0)
+				strArg = buf;
+			}
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 				
 			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
@@ -789,7 +826,6 @@ class LandingPage extends React.Component{
 			var arg2 = [];
 			var strArg = null;
 			var flag = false
-				////console.log('2281',v, n['@rpcs']['write'][1], n["@name"])
 			for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
 				if(!isNaN(n['@rpcs']['write'][1][i])){
 					////console.log('where')
@@ -824,7 +860,15 @@ class LandingPage extends React.Component{
 			if(!flag){
 				strArg = v;
 			}
-
+			if(n['@type'] == 'int32'){
+				var buf = Buffer.alloc(4)
+				buf.writeUInt32LE(parseInt(v),0)
+				strArg = buf;
+			}else if(n['@type'] == 'float'){
+				var buf = Buffer.alloc(4)
+				buf.writeFloatLE(parseFloat(v),0)
+				strArg = buf;
+			}
 			console.log(819, strArg, typeof strArg)
 		
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
@@ -842,7 +886,7 @@ class LandingPage extends React.Component{
 		var self = this;
 		this.loadPrefs();
 		socket.on('resetConfirm', function (r) {
-			socket.emit('locateReq',true);
+			//socket.emit('locateReq',true);
 		})
 		socket.on('nif', function(iface){
 			////console.log('811', iface)
@@ -884,7 +928,7 @@ class LandingPage extends React.Component{
 				})
 			})
 			if(cnt == 1){
-				socket.emit('locateUnicast', _ip)
+				socket.emit('locateUnicast', _ip, true)
 			}else{
 				socket.emit('locateReq',true)
 			}
@@ -919,7 +963,7 @@ class LandingPage extends React.Component{
 			}
 		})
 		socket.on('locatedResp', function (e) {
-			console.log(e)
+			console.log(e,924)
 		try{
 		if(typeof e[0] != 'undefined'){
 			var dets = self.state.detL;
@@ -943,16 +987,17 @@ class LandingPage extends React.Component{
 
 			})
 			var mbunits = self.state.mbunits;
+			var cnt = 0;
+			var curbnk 
 			mbunits.forEach(function(u){
 				var banks = u.banks.map(function(b){
+					cnt++;
 					if(dets[b.mac]){
 						var _bank = dets[b.mac]
-            _bank.interceptor = false;
-            if(b.interceptor){
-              _bank.interceptor = true;
-            }
-					//	_bank.interceptor = b.interceptor
-						return dets[b.mac]
+           				_bank.interceptor = false;
+            			curbnk = _bank
+            			return _bank
+
 					}else{
 						return b
 					}
@@ -979,12 +1024,16 @@ class LandingPage extends React.Component{
 						nps[b.ip] = []
 					}
 					////////console.log('connectToUnit')
-							socket.emit('connectToUnit', {ip:b.ip, app:b.app})
-		
+					if(cnt == 1){
+					//	socket.emit('connectToUnit', {ip:b.ip, app_name:b.app, app:b.app})
+					//	self.setState({curDet:det, connected:true})
+
+					}
+								
 				})
 			})
 		
-			socket.emit('savePrefs', mbunits)
+			socket.emit('savePrefsCW', mbunits)
 			var nfip = self.state.nifip;
 			if(e.length > 1){
 				nfip = e[0].nif_ip
@@ -1175,7 +1224,8 @@ class LandingPage extends React.Component{
 		this.setState({tmpMB:mbUnits, detL:detL})
 	}
 	connectToUnit(det){
-		socket.emit('connectToUnit',det)
+
+		socket.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
 		//socket.emit('vdefReq', det);
 	//	setTimeout(function(){socket.emit('getProdList',det.ip)},150)
 		this.setState({curDet:det, connected:true})
@@ -1187,7 +1237,7 @@ class LandingPage extends React.Component{
 
 		var detectors = this.state.dets.map(function (det, i) {
 			// body...
-			return   <div> <CircularButton branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.name} onClick={()=> self.connectToUnit(det)}/></div>
+			return   <div> <CircularButton branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
        
 		})
 			//var MB = this.renderMBGroup(2)
@@ -1240,6 +1290,10 @@ class LandingPage extends React.Component{
 		socket.emit('getProdList', this.state.curDet.ip)
 		}
 	
+	}
+	imgClick(){
+		console.log('clicked')
+		location.reload();
 	}
 	render(){
 	
@@ -1304,13 +1358,17 @@ class LandingPage extends React.Component{
     		dets = this.renderModal()
     	}	
 
+    	var trendBar = [15,16.5,17.5,19,15.5,18.5]//upperbound={19} t1={15.5} t2={18.5} low={16.5} high={17.5} ]
+    	if(typeof this.state.prec['ProdName'] != 'undefined'){
+    		trendBar = [this.state.prec['NominalWgt']-(2*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (2*this.state.prec['OverWeightLim']), 165, 200]
+    	}
 
 		return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
          <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
             <tbody>
               <tr>
-                <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} onClick={()=> function(){location.reload()}}  src={img}/></td>
+                <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} onClick={this.imgClick}  src={img}/></td>
                 	<td style={{height:60, width:200, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{'Robert B.'}</div>
                 	<Clock style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
                 	<td className="logbuttCell" style={{height:60}}>
@@ -1329,8 +1387,8 @@ class LandingPage extends React.Component{
           </td><td><div><SparcElem ref='se' branding={this.state.branding} value={this.state.rec['LiveWeight'] + 'g'} name={'Gross Weight'} width={616} font={40}/></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph  branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']}>
-          <TrendBar branding={this.state.branding} lowerbound={15} upperbound={19} t1={15.5} t2={18.5} low={16.5} high={17.5} yellow={true} ref='tb'/></LineGraph></div>
+          <LineGraph max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']}>
+          <TrendBar prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref='tb'/></LineGraph></div>
           </td><td>
           	<HorizontalHisto branding={this.state.branding} ref='hh'/>
           </td></tr></tbody></table>
@@ -1340,7 +1398,7 @@ class LandingPage extends React.Component{
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Product'} onClick={this.pModalToggle}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Log'} onClick={this.changeBranding}/>
       	<Modal ref='pmodal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
-      		<ProductSettings mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
+      		<ProductSettings ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
       	</Modal>
       	 <Modal ref='settingModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
       		<div style={{display:'inline-block',width:290, verticalAlign:'top'}}>{dets}
@@ -1424,6 +1482,15 @@ class HorizontalHisto extends React.Component{
 		super(props)
 		this.state = {data:[0, 0, 0, 0, 0, 0, 0, 0]}
 	}
+	parseCrec(crec){
+		var data = this.state.data.slice(0);
+		data[0] = crec['TotalCnt']
+		data[1] = crec['PassWeightCnt'];
+		data[2] = crec['LowPassCnt'];
+		data[3] = crec['LowRejCnt']; 
+		data[4] = crec['HighCnt'];
+		this.setState({data:data})
+	}
 	parsePack(pack){
 		var data = this.state.data.slice(0)
 		data[0]++;
@@ -1455,7 +1522,7 @@ class HorizontalHisto extends React.Component{
 		}
 		var xDomain = [0,15]
 		var yDomin = [0, 5]
-		var data = [{x: this.state.data[0], y:'Total'}, {x: this.state.data[1], y:'Good'}, {x: this.state.data[2], y:'Under Weight'}, {x: this.state.data[3], y:'Over Weight'}, {x:this.state.data[4], y:'Unstable'}, {x:this.state.data[5], y:'Check Weights'}, {x:this.state.data[6], y:'Over Capacity'}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
+		var data = [{x: this.state.data[0], y:'Total'}, {x: this.state.data[1], y:'Good'}, {x: this.state.data[2], y:'Low Pass'}, {x: this.state.data[3], y:'Low Reject'}, {x:this.state.data[4], y:'High Weight'}, {x:this.state.data[5], y:'Check Weights'}, {x:this.state.data[6], y:'Over Capacity'}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
 		var labelData = data.map(function(d){
 			var lax = 'start'
 			if(d.x > (data[0].x*0.75)){
@@ -1485,7 +1552,7 @@ class LineGraph extends React.Component{
 		this.parseDataset = this.parseDataset.bind(this);
 		this.state = {decisionRange:[12,18],max:20, min:0,dataSets:[[8,9,13,15,16,16,14,13,10,4],[9,10,12,14,15,14,13,11,9,3],[9,10,14,15,17,17,15,9,8,2]],reject:false,over:false,under:false}
 	}
-	parseDataset(data,pack){
+	parseDataset(data, del, dur, pmax,pmin, calFactor, tareWeight, pweight){
 		var dataSets = this.state.dataSets;
 		if(dataSets.length > 5){
 			dataSets = dataSets.slice(-5)
@@ -1500,11 +1567,11 @@ class LineGraph extends React.Component{
 
 		var max = Math.max(...data)
 		var reject = false;
-		if((max > 17.5) || (max < 16.5)){
+		if((pweight > this.props.max) || (pweight < this.props.min)){
 			reject = true;
 	
 		}
-		this.setState({dataSets:dataSets, reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(max>17.5), under:(max<16.5)})
+		this.setState({dataSets:dataSets,pmax:(pmax/calFactor)+tareWeight, pmin:(pmin/calFactor)+tareWeight, decisionRange:[del, del+dur], reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(pweight>this.props.max), under:(pweight<this.props.min)})
 	}
 	render(){
 		var outerbg = '#818a90'
@@ -1526,9 +1593,9 @@ class LineGraph extends React.Component{
 		var min = 0;
 		var self = this;
 		if(dsl != 0){
-			var decSet =  this.state.dataSets[dsl-1].slice(this.state.decisionRange[0],this.state.decisionRange[1])
-			max = Math.max(...decSet);
-			min = Math.min(...decSet)
+			var decSet =  this.state.dataSets[dsl-1].slice(0-(this.state.decisionRange[0]+this.state.decisionRange[1]), 0-this.state.decisionRange[0])
+			max = this.state.pmax//Math.max(...decSet);
+			min = this.state.pmin//Math.min(...decSet)
 		}
 
 		var graphs = this.state.dataSets.map(function(set,i){
@@ -1564,7 +1631,7 @@ class LineGraph extends React.Component{
 	<XYPlot height={358} width={610} yDomain={[this.state.min,this.state.max]} stackBy='y' margin={{left:0,right:0,bottom:0,top:50}}>
 		<XAxis hideTicks />
 		{graphs}
-		<VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:min,y:max,x0:this.state.decisionRange[0],x:this.state.decisionRange[1]}]}/>
+		<VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:min,y:max,x0:300 - this.state.decisionRange[1],x:300 - this.state.decisionRange[0]}]}/>
 		
 		</XYPlot>
 		</div>
@@ -1575,7 +1642,7 @@ class StatSummary extends React.Component{
 	constructor(props){
 		super(props)
 		this.parsePack = this.parsePack.bind(this);
-		this.state = {count:0, grossWeight:0,currentWeight:0}
+		this.state = {count:0, grossWeight:0,currentWeight:0, rec:{},crec:{}}
 	}
 	parsePack(max){
 		this.setState({count:this.state.count+1,grossWeight:this.state.grossWeight + max,currentWeight:max})
@@ -1604,16 +1671,30 @@ class StatSummary extends React.Component{
 		}else{
 			grstr = (this.state.grossWeight/1000000).toFixed(3)+'t'
 		}
+		var grswt = 0;
+		var avg = 0;
+		var stdev = 0;
+		var tot = 0;
+		var gvb = 0;
+		var gvs = 0;
+		if(!isNaN(this.state.crec['PackWeight'])){
+			grswt = this.state.crec['PackWeight'].toFixed(1) + 'g'
+			avg = this.state.crec['AvgWeight'].toFixed(1) +'g'
+			stdev = this.state.crec['StdDev'].toFixed(1)+'g'
+			tot = this.state.crec['TotalWeight'].toFixed(1)+'g'
+			gvb = this.state.crec['GiveawayBatch'].toFixed(1)+'g'
+			gvs = this.state.crec['GiveawaySample'].toFixed(1)+'g'
+		}
 	return	<div style={{width:220,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
 
 			<div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16, color:fontColor}}>Summary</div></div>
-			<StatControl name='Gross Weight' value={grstr}/>
-			<StatControl name='Gross Weight (Live)' value={this.state.currentWeight.toFixed(1)+'g'}/>
+			<StatControl name='Gross Weight' value={grswt}/>
+			<StatControl name='Total Weight' value={tot}/>
 			<StatControl name='Net Weight' value='0g'/>
-			<StatControl name='Average Weight' value={av.toFixed(1)+'g'}/>
-			<StatControl name='Standard Deviation' value='0g'/>
-			<StatControl name='Giveaway (Batch)' value='0g'/>
-			<StatControl name='Giveaway (Sample)' value='0g'/>
+			<StatControl name='Average Weight' value={avg}/>
+			<StatControl name='Standard Deviation' value={stdev}/>
+			<StatControl name='Giveaway (Batch)' value={gvb}/>
+			<StatControl name='Giveaway (Sample)' value={gvs}/>
 			<StatControl name='Production Rate' value='150ppm'/>
 
 		</div>
@@ -1641,6 +1722,7 @@ class ProductSettings extends React.Component{
 		this.getPCob = this.getPCob.bind(this);
 		this.onAdvanced = this.onAdvanced.bind(this);
 		this.sendPacket = this.sendPacket.bind(this);
+		this.saveProduct = this.saveProduct.bind(this);
 		var prodList = [];
 		var prodNames = this.props.pNames
 		this.props.pList.forEach(function (pn,i) {
@@ -1691,7 +1773,7 @@ class ProductSettings extends React.Component{
 			curProd = newProps.prods[this.state.selProd]
 			
 		}
-		console.log(curProd)
+		//console.log(curProd)
 		this.setState({prodList:prodList, cob2:this.getPCob(newProps.srec, curProd, newProps.drec, newProps.fram)});
 
 	}
@@ -1745,12 +1827,15 @@ class ProductSettings extends React.Component{
     	}
 	}
 	onValChange(p,v){
-		var curProd =Object.assign({},this.props.prods[this.state.selProd]) //this.props.prods[this.state.selProd];
-		curProd[p] = v
+		//var curProd =Object.assign({},this.props.prods[this.state.selProd]) //this.props.prods[this.state.selProd];
+		//curProd[p] = v
 
 	}
 	selectRunningProd(){
 		this.props.sendPacket('switchProd',this.state.selProd)
+	}
+	saveProduct(){
+		this.props.sendPacket('saveProduct',this.state.selProd)
 	}
 	render(){
 		var self = this;
@@ -1800,11 +1885,11 @@ class ProductSettings extends React.Component{
 				</div>
 				<div>
 					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={curProd['NominalWgt']+'g'} p={'NominalWgt'} onEdit={this.onValChange}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={'0g'}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Product Tare'} value={curProd['TareWeight']}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={'0mm'}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit h1={40} w1={200} h2={51} w2={200} label={'Measure Mode'} value={'Auto'}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={curProd['NominalWgt']+'g'} param={vdefByMac[this.props.mac][1][1]['NominalWgt']}  onEdit={this.sendPacket} editable={true}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={'0g'}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Tare'} value={curProd['ProdTareWeight']}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={'0mm'}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Measure Mode'} value={'Auto'}/></div>
 					</div>
 
 					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
@@ -1843,7 +1928,7 @@ class ProductSettings extends React.Component{
 				</div>
 				<div>
 					<CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Advanced'}/>
-          			<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Product'}/>
+          			<CircularButton onClick={this.saveProduct} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Product'}/>
           
 				</div>
 			</div>)
@@ -1853,8 +1938,8 @@ class ProductSettings extends React.Component{
       		onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={4}/>
     		</div>
       		<div>
-					<CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Advanced'}/>
-          			<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Product'}/>
+					<CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Overview'}/>
+          			<CircularButton onClick={this.saveProduct} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Product'}/>
           
 				</div>
     		</div>
@@ -1921,12 +2006,12 @@ class ProdSettingEdit extends React.Component{
 	}
 	onInput(v){
 		var val = v;
-		if(this.props.param['@type'] == 'int32'){
+		/*if(this.props.param['@type'] == 'int32'){
 			var buf = Buffer.alloc(4)
 			buf.writeUInt32LE(parseInt(v),0)
 			val = buf;
-		}
-		this.props.onInput(this.props.param,val);
+		}*/
+		this.props.onEdit(this.props.param,val);
 	}
 	onRequestClose(){
 
@@ -1935,7 +2020,7 @@ class ProdSettingEdit extends React.Component{
 
 	}
 	render(){
-		var ckb = <CustomKeyboard ref='ed' language={'english'} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={true} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value}/>
+		var ckb = <CustomKeyboard branding={this.props.branding} ref='ed' language={'english'} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={true} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value}/>
 	
 		return <div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:this.props.w1,textAlign:'center'}}>
@@ -2013,6 +2098,36 @@ class CatButton extends React.Component{
 		return <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:300, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onClick} lab={this.props.data.val.cat}/>
 	}
 }
+class CatSelectItem extends React.Component{
+	constructor(props){
+		super(props)
+		this.onClick = this.onClick.bind(this);
+	}
+	onClick(){
+		this.props.onClick(this.props.data, this.props.ind)
+	}
+	render () {
+		// body..
+		
+		var check= ""
+		var dsW = 300;
+		var stW = 227;
+		var ds = {paddingLeft:7,paddingRight:7, display:'inline-block', width:dsW, background:"transparent"}
+		var st = {padding:7,display:'inline-block', width:stW, height:50, lineHeight:'50px',fontSize:22,borderBottom:'2px solid #bbbbbbaa'}
+		var mgl = -90
+		var buttons// = <button className='deleteButton' onClick={this.deleteProd}/>
+		if(this.props.selected){
+			check = <img src="assets/Check_mark.svg"/>
+			ds = {paddingLeft:7,paddingRight:7,display:'inline-block', width:dsW,	 background:"#30A8E2"}
+			//st = {color:'green', padding:7, display:'inline-block', width:200}
+			mgl = -160
+
+		}
+
+		return (<div style={{background:"transparent", color:"#000", position:'relative', textAlign:'center'}}><div style={ds} ><label onClick={this.onClick} style={st}>{this.props.data.val.cat}</label></div>
+			</div>)
+	}
+}
 class SettingsPageWSB extends React.Component{
 	constructor(props){
 		super(props);
@@ -2026,19 +2141,22 @@ class SettingsPageWSB extends React.Component{
 			this.refs.sd.setPath([i])
 
 		}
+		this.setState({sel:i})
 	}
 	render(){
 		var self = this;
 		
 
-		var cats = [<div><CatButton branding={self.props.branding} data={{val:{cat:'Home'}}} ind={-1} onClick={self.setPath}/></div>]
+		var cats = [<div><CatSelectItem branding={self.props.branding} data={{val:{cat:'Home'}}} selected={this.state.sel == -1} ind={-1} onClick={self.setPath}/></div>]
 		this.props.cvdf[0].params.forEach(function (c,i) {
 			// body...
 			//console.log(c)
 			if(c.type == 1){
-				cats.push(<div><CatButton branding={self.props.branding} data={c} ind={i} onClick={self.setPath}/></div>)
+				cats.push(<div><CatSelectItem branding={self.props.branding} data={c} selected={self.state.sel == i} ind={i} onClick={self.setPath}/></div>)
 			}
 		})
+
+		// bkmkthis
 		var cob;
 		if(this.state.sel == -1){
 			cob = this.props.cob2
@@ -2046,7 +2164,7 @@ class SettingsPageWSB extends React.Component{
 		var sd = <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={'english'} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
       		onHandleClick={this.settingClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
 		return <div>
-			<table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td> <div style={{marginTop:54}}>{cats}</div></td><td style={{width:813, height:473,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
+			<table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{marginTop:54, height:480, background:'#e1e1e1'}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
 		</div>
 	}
 }
@@ -2159,6 +2277,7 @@ class SettingsPage extends React.Component{
 			var arg1 = n['@rpcs']['apiwrite'][0];
 			var arg2 = [];
 			var strArg = null;
+			
 			for(var i = 0; i<n['@rpcs']['apiwrite'][1].length;i++){
 				if(!isNaN(n['@rpcs']['apiwrite'][1][i])){
 					arg2.push(n['@rpcs']['apiwrite'][1][i])
@@ -2170,6 +2289,15 @@ class SettingsPage extends React.Component{
 						
 					}
 				}
+			}
+			if(n['@type'] == 'int32'){
+				var buf = Buffer.alloc(4)
+				buf.writeUInt32LE(parseInt(v),0)
+				strArg = buf;
+			}else if(n['@type'] == 'float'){
+				var buf = Buffer.alloc(4)
+				buf.writeFloatLE(parseFloat(v),0)
+				strArg = buf;
 			}
 				console.log(strArg, n, 2154)
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
@@ -2215,9 +2343,18 @@ class SettingsPage extends React.Component{
 			if(!flag){
 				strArg = v;
 			}
-			console.log(strArg, n, 2154)
+			if(n['@type'] == 'int32'){
+				var buf = Buffer.alloc(4)
+				buf.writeUInt32LE(parseInt(v),0)
+				strArg = buf;
+			}else if(n['@type'] == 'float'){
+				var buf = Buffer.alloc(4)
+				buf.writeFloatLE(parseFloat(v),0)
+				strArg = buf;
+			}
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-				
+				console.log(strArg, packet, n, 2154)
+		
 			socket.emit('rpc', {ip:this.props.dsp, data:packet})
 		}else if(n['@rpcs']['clear']){
 			var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
@@ -2290,7 +2427,10 @@ class SettingsPage extends React.Component{
   		if(this.props.black){
   			titleColor = '#000'
   		}
-
+  		var maxHeight = 418;
+  		if(this.props.wsb){
+  			maxHeight = 462;
+  		}
 		var lvl = data.length 
 		var handler = this.handleItemclick;
 		var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
@@ -2344,7 +2484,7 @@ class SettingsPage extends React.Component{
 		    }else if(lvl == 2){
 		    	if(this.props.mode == 'config'){
 		    		pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-		    		console.log(pathString)
+		    		//console.log(pathString)
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    	}else{
 		    		pathString = data.map(function (d) {return d[0].cat}).join('/')
@@ -2478,7 +2618,7 @@ class SettingsPage extends React.Component{
 					SA = true;
 			}
 			nav = (
-					<div className='setNav' onScroll={this.handleScroll} id={this.props.Id}>
+					<div className='setNav' style={{maxHeight:maxHeight}} onScroll={this.handleScroll} id={this.props.Id}>
 						{nodes}
 						{ph}
 					</div>)
@@ -2575,8 +2715,7 @@ class SettingItem3 extends React.Component{
 		          		}else{
 	            
 	            			val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
-	            			console.log(lkey,2504, pVdef[1][lkey])
-	  				  		if(typeof pVdef[0][lkey] != 'undefined'){
+	            			if(typeof pVdef[0][lkey] != 'undefined'){
 	    						pram = [pVdef[0][lkey]]
 	    					}else if(typeof pVdef[1][lkey] != 'undefined'){
 	    						pram = [pVdef[1][lkey]]
@@ -2617,7 +2756,6 @@ class SettingItem3 extends React.Component{
 				}else{
 	          		var lkey = props.lkey;
 	          		if((props.data['@children'])&&(props.children[0].length == 2)){
-	         			console.log(lkey, 2340, props.children)
 	         			for(var i=0;i<props.children[0].length;i++){
 	         		    	val.push(this.getValue(props.children[1][i], props.children[0][i]))
 		              		if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
@@ -2730,7 +2868,7 @@ class SettingItem3 extends React.Component{
 				setTimeout(function(){
 					socket.emit('locateReq');
 				},200)
-			}else if(n['@decimal']){}
+			}
 		this.props.sendPacket(n,val)	
 		}
 	}
@@ -3029,7 +3167,9 @@ class SettingItem3 extends React.Component{
           klass += ' touchDown'
         }
           if(this.props.branding == 'SPARC'){
-          	sty.backgroundColor = SPARCBLUE3
+          	sty.backgroundColor = SPARCBLUE2
+          	sty.color = 'black'
+          	sty.height = 50
           }
 			return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
 		}else{
@@ -3039,87 +3179,87 @@ class SettingItem3 extends React.Component{
 		if(typeof this.props.data == 'object'){
 
 			if(typeof this.props.data['@data'] == 'undefined'){
-			var path = ""
-			if(this.props.path.length == 0){
-				path = namestring
-			}else{
-				path = this.props.path + '/'+ namestring
-			}
-			
-			if(typeof catMapV2[path] != 'undefined'){
-				namestring = catMapV2[path]['@translations'][this.props.language]
-			}
-			if(namestring.length > 28){
-				fSize = 18
-			}
-			else if(namestring.length > 24){
-				fSize= 20
-			}else if(namestring.length > 18){
-				fSize = 22
-			}
-			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
-			if(this.props.mobile){
-				_st.lineHeight = '51px'
-				_st.height = 45
-			}
-			
-			if(typeof this.props.data[0]['child'] != 'undefined'){
-        klass  = 'sprc-prod'//+= ' noChild'
-
-				var lkey = this.props.data[0].params[this.props.data[0].child]['@name']
-				var im = <img  style={{position:'absolute', width:36,top:15, left:762, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
+				var path = ""
+				if(this.props.path.length == 0){
+					path = namestring
+				}else{
+					path = this.props.path + '/'+ namestring
+				}
 				
+				if(typeof catMapV2[path] != 'undefined'){
+					namestring = catMapV2[path]['@translations'][this.props.language]
+				}
+				if(namestring.length > 28){
+					fSize = 18
+				}
+				else if(namestring.length > 24){
+					fSize= 20
+				}else if(namestring.length > 18){
+					fSize = 22
+				}
+				var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 				if(this.props.mobile){
-					im = <img  style={{position:'absolute', width:'7%',height:'40%',top:'30%', left:'92%', strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
+					_st.lineHeight = '51px'
+					_st.height = 45
 				}
-		
-				if(this.props.backdoor){
-					im = ''
-				}
-			/*	var edctrl = <EditControl nameovr={namestring} mobile={this.props.mobile} mac={this.props.mac}  ov={true} language={this.props.language} ip={this.props.ip} 
-        ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} 
-        lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={lkey}/>
-        */
+				
+				if(typeof this.props.data[0]['child'] != 'undefined'){
+	        		klass  = 'sprc-prod'//+= ' noChild'
 
-				      var medctrl= (<MultiEditControl branding={this.props.branding} nameovr={namestring} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
-                mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
-         onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} 
-          lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
-          label={this.state.label} int={false} name={lkey}/>)
-
-
-        if(this.props.mobile){
-					sty.height = 51
-					sty.paddingRight = 5
-				}
-        
-        		sty.paddingBottom = 5
-				return (<div className='sprc-prod' style={sty} onClick={this.onItemClick}> {medctrl}
-						{im}
+					var lkey = this.props.data[0].params[this.props.data[0].child]['@name']
+					var im = <img  style={{position:'absolute', width:36,top:15, left:762, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
 					
-					</div>)
+					if(this.props.mobile){
+						im = <img  style={{position:'absolute', width:'7%',height:'40%',top:'30%', left:'92%', strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
+					}
+			
+					if(this.props.backdoor){
+						im = ''
+					}
+		
+
+					var medctrl= (<MultiEditControl branding={this.props.branding} nameovr={namestring} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
+	    		            mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
+	         				onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} 
+	          				lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
+	          				label={this.state.label} int={false} name={lkey}/>)
+
+
+	        		if(this.props.mobile){
+						sty.height = 51
+						sty.paddingRight = 5
+					}
+	        
+	        		//sty.paddingBottom = 5
+					return (<div className='sprc-prod' style={sty} onClick={this.onItemClick}> {medctrl}
+							{im}
+						
+						</div>)
 				}
 
-		    klass = 'sItem hasChild'
-		    if(this.props.branding == 'SPARC'){
-          	klass = 'sItem hasChildSparc'
-          }
-        if(this.state.touchActive){
-          klass += ' touchDown'
-        }
+			    klass = 'sItem hasChild'
+			    if(this.props.branding == 'SPARC'){
+	          		klass = 'sItem hasChildSparc'
+	          		sty.color = 'black'
+	          		sty.background = SPARCBLUE2
+	          		sty.height = 50;
+	          	}
+	    		if(this.state.touchActive){
+	          		klass += ' touchDown'
+	        	}
 				return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
 			}
-			}
-			if(this.props.mobile){
-				sty.height = 51;
-				sty.paddingRight = 5;
-			}
-			//	var edctrl = <EditControl mobile={this.props.mobile} combo={(this.props.data['@combo'] == true)} mac={this.props.mac}  ov={false} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} acc={this.props.acc} onFocus={this.onFocus} onRequestClose={this.onRequestClose} activate={this.activate} ref='ed' vst={vst} lvst={st} param={this.state.pram} size={this.state.font} sendPacket={this.sendPacket} data={this.state.val} label={this.state.label} int={false} name={this.props.lkey}/>
-			  var medctrl= (<MultiEditControl branding={this.props.branding} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} 
+		}
+		if(this.props.mobile){
+			sty.height = 51;
+			sty.paddingRight = 5;
+		}
+		var medctrl= (<MultiEditControl branding={this.props.branding} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} 
           lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
           label={this.state.label} int={false} name={this.props.lkey}/>)
 
-sty.paddingBottom = 5
+		//sty.paddingBottom = 5
+     
       	return (<div className='sprc-prod' style={sty}> {medctrl}
 					</div>)
 			
@@ -3179,7 +3319,6 @@ class MultiEditControl extends React.Component{
 			val = v;
 
 		}
-		console.log('2735', val)
 		if(this.props.param[i]['@type'] == 'mm'){
 			if(this.state.val[i].indexOf('in') != -1){
 				val = val*10;
@@ -3235,6 +3374,7 @@ class MultiEditControl extends React.Component{
 		
 	}
 	valClick (ind) {
+		var self = this;
 		if(!this.props.ov){
 			if(this.props.param[ind]['@rpcs']){
 				if(this.props.param[ind]['@rpcs']['clear']){
@@ -3242,10 +3382,27 @@ class MultiEditControl extends React.Component{
 				}else if(this.props.param[ind]['@rpcs']['start']){
 					this.onClear(ind)
 				}else if(this.refs['input' + ind]){
-					this.refs['input' + ind].toggle();
+					setTimeout(function (argument) {
+						// body...
+						self.refs['input' + ind].toggle();
+					}, 100);
+					//this.refs['input' + ind].toggle();
+				}else if(this.refs.pw){
+					setTimeout(function(){
+						self.refs.pw.toggle();
+			
+					},100)
 				}
 			}else if(this.refs['input' + ind]){
-					this.refs['input' + ind].toggle();
+					setTimeout(function (argument) {
+						// body...
+						self.refs['input' + ind].toggle();
+					}, 100);
+			}else if(this.refs.pw){
+				setTimeout(function(){
+						self.refs.pw.toggle();
+			
+					},100)
 			}
 		}
 	}

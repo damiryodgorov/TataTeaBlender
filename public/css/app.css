@@ -1262,6 +1262,8 @@ li {
 .sprc-prod{
     display:block;
     position: relative;
+    margin-top: 3px;
+    margin-bottom: 2px; 
 }
 .alertmodal-outer{
     position: relative;

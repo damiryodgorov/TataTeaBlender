@@ -468,6 +468,7 @@ const udpCallback = function(_ip,e,app){
       if(e){
  
       if(vdefs[_ip]){
+      //  console.log(471, app)
         if(app == 'FTI_CW'){
           processParamCW(e,vdefs[_ip],nVdfs[_ip],pVdefs[_ip],_ip)
       }else{
@@ -652,7 +653,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
     pack = {type:0, rec:rec}
     //system
   }else if(rec_type == 1){
-    console.log('PROD REC')
+    console.log('PROD REC CW')
     nVdf[1].forEach(function (p) {
       rec[p] = getVal(buf, 1, p, pVdef)
       // body...
@@ -729,6 +730,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
     pack = {type:15,rec:rec,prodNo:prodNo, raw:pbuf}
   }
  // data = null;
+
   relayParamMsgCW({det:{ip:ip, mac:macs[ip]}, data:pack});
  
   nVdf = null;
@@ -833,6 +835,7 @@ function processParam(e, _Vdef, nVdf, pVdef, ip) {
 }
 
 function udpConSing(ip,app){
+  //console.log()
   console.log(typeof udpClients[ip])
   console.log(udpClients[ip] == null)
   //console.log(udpClients[ip].ip)
@@ -844,7 +847,7 @@ function udpConSing(ip,app){
     _tempAccounts[ip].push({phash:null,preset:0})
   }
   if(typeof udpClients[ip] == 'undefined'){
-    console.log('Why here?')
+    console.log('Why here?', app)
    
     udpClients[ip] = null;
        udpClients[ip] = new UdpParamServer(ip ,udpCallback, vdefs[ip], app)
@@ -1057,7 +1060,7 @@ function update(det){
     }
 }
 
-function locateUnicast (addr,cb) {
+function locateUnicast (addr,cb, cw) {
 
   var ifaces = os.networkInterfaces();  
   var iface = 'eth0'
@@ -1098,7 +1101,14 @@ function locateUnicast (addr,cb) {
       if(!((ip[0] == nifip[0]) && (ip[1] == nifip[1]) && (ip[2] == nifip[2]))){
         //dsp not visible
         //console.log('dsp not visible')
-        nvdspips.push(e[i])
+        if(cw){
+          if(e[i].app_name == 'FTI_CW'){
+            nvdspips.push(e[i])
+          }
+        }else{
+          nvdspips.push(e[i])
+        }
+        
 
        
         }else if(e[i].ver == '20.17.4.27'){
@@ -1106,10 +1116,19 @@ function locateUnicast (addr,cb) {
           //console.log('ignore this version')
         }else{
           //console.log('dsp visible')
-          dspip = ip.join('.');
+          if(cw){
+            if(e[i].app_name == 'FTI_CW'){
+              dspip = ip.join('.');
+              macs[dspip] = e[i].mac
+              dspips.push(e[i]);
+            }
+          }else{
+            dspip = ip.join('.');
           macs[dspip] = e[i].mac
          // //console.log(dspip);
-          dspips.push(e[i]);
+          dspips.push(e[i]);  
+          }
+          
         }
        }
      }
@@ -1132,26 +1151,8 @@ function locateUnicast (addr,cb) {
 }
 
 
-function autoIP(){
- // var prefData = prefs
- /*
-  if(fs.existsSync(path.join(__dirname, 'json/prefData.json'))){
-    fs.readFile(path.join(__dirname, 'json/prefData.json'), (err,data) =>{
-      try{
-         prefs = JSON.parse(data)
-         if(prefs.length == 1){
-          if(prefs.banks.length == 1){
-            var addr = prefs[0].banks[0].ip
-            locateUnicast(addr)
-          }
-         }
-      }catch(e){
-        
-      }
-    })
-    }else{
-      
-    }*/
+function autoIP(cw){
+
 
     relaySockMsg('notify', 'Attempting to autoconnect')
     locateUnicast('255.255.255.255', function(dets){
@@ -1160,7 +1161,15 @@ function autoIP(){
       //console.log(dets)
       dets.forEach(function(d, i){
         if(d.ip != d.nif_ip){
-           ips.push(d.ip)
+          if(cw){
+            if(d.app_name == 'FTI_CW'){
+              ips.push(d.ip)
+
+            }
+          }else{
+            ips.push(d.ip)
+          }
+           
         if((d.dir_conn != 0) &&(d.board_type ==1)){
           x = i
         }
@@ -1203,7 +1212,10 @@ function autoIP(){
                  prefs = [{name:det.name, type:'single', banks:[det]}];
                 
                 relaySockMsg('prefs',prefs)
-                locateUnicast(ip4)
+                locateUnicast(ip4, function (argument) {
+                  // body...
+                  console.log('located unicast')
+                },cw)
               }
              },function(){})
             })
@@ -1866,12 +1878,15 @@ wss.on('connection', function(scket, req){
     loginLevel = 0;
     socket.emit('logOut','logged out')
   })
-  socket.on('locateUnicast', function (addr) {
-    locateUnicast(addr)
+  socket.on('locateUnicast', function (addr, cw) {
+    console.log('locate Unicast')
+    locateUnicast(addr,function(){ console.log('located')}, cw)
   });
   socket.on('locateReq', function (cw) {
     if(cw == true){
       console.log('locate Req for CW')
+    }else{
+      console.log('locate Req for... MD...?')
     }
     //console.log('locate req')
     var ifaces = os.networkInterfaces();  
@@ -1966,7 +1981,7 @@ wss.on('connection', function(scket, req){
     socket.emit('vdefDone','done')
   });
   socket.on('rpc', function(pack){
-           console.log(new Buffer(pack.data))
+           console.log(new Buffer(pack.data), pack)
 
             if(udpClients[pack.ip]){
               console.log('send rpc')
@@ -1997,7 +2012,7 @@ wss.on('connection', function(scket, req){
         }
         if(prefs.length == 0){
           if(dispSettings.mode == 0){
-            autoIP();  
+            autoIP(false);  
           }else{
             socket.emit('notify', 'Display is in static mode')
           }
@@ -2022,7 +2037,9 @@ wss.on('connection', function(scket, req){
         }
         if(prefs.length == 0){
           if(dispSettings.mode == 0){
-            autoIP();  
+           //autoIP(true);  
+           //no autoIP for now...
+
           }else{
             socket.emit('notify', 'Display is in static mode')
           }
@@ -2042,8 +2059,8 @@ wss.on('connection', function(scket, req){
     })
   })
   socket.on('connectToUnit', function(u){
-    //console.log('connect sing!! '+ ip)
-    udpConSing(u.ip,u.app_name)
+    console.log('connect sing!! ', JSON.stringify(u))
+    udpConSing(u.ip,u.app)
     getAccountsJSON(u.ip,function(json){
       socket.emit('accounts', {data:json,ip:u.ip, mac:macs[ip]})
     })
@@ -2231,6 +2248,11 @@ wss.on('connection', function(scket, req){
     // body...
     //console.log(f)
     fs.writeFile(path.join(__dirname, 'json/prefData.json') , JSON.stringify(f));
+  })
+  socket.on('savePrefsCW', function (f) {
+    // body...
+    //console.log(f)
+    fs.writeFile(path.join(__dirname, 'json/cwprefData.json') , JSON.stringify(f));
   })
   socket.on('hello', function(f){
     socket.emit('connected', "CONNECTION");
