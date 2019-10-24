@@ -57,7 +57,7 @@ class CustomKeyboard extends React.Component{
 		var cont = "";
 
 		if(this.state.show){
-			cont = <CustomKeyboardCont branding={this.props.branding} ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
+			cont = <CustomKeyboardCont preload={this.props.preload} branding={this.props.branding} ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
 		}
 		return <div hidden={!this.state.show} className = 'pop-modal'>
 		{/*	<div className='modal-x' onClick={this.close}>
@@ -72,14 +72,23 @@ class CustomKeyboard extends React.Component{
 var CustomKeyboardCont = onClickOutside(createReactClass({
 	getInitialState:function () {
 		// body...
-		return{value:"", shift:false}
+		var value = "";
+		if(this.props.preload){
+			value = this.props.value
+		}
+		return{value:value, shift:false}
 	},
+
 	componentDidMount:function () {
 		// body...
 		if(this.props.mobile && !this.props.num ){
 			document.getElementById('inp').focus();
 		}
-		this.setState({value:"", shift:false})
+		var value = "";
+		if(this.props.preload){
+			value = this.props.value
+		}
+		this.setState({value:value, shift:false})
 	},
 	handleClickOutside:function (e) {
 		// body...

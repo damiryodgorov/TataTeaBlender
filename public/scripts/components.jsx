@@ -976,6 +976,10 @@ class AlertModalC extends React.Component{
 }
 var AlertModalCont =  onClickOutside(AlertModalC);
 
+
+
+
+
 class MessageConsole extends React.Component{
 	constructor(props){
 		super(props)

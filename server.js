@@ -265,6 +265,7 @@ function getVdef(ip, callback,failed){
         vdef['@params'].forEach(function (p) {
           // body...
           if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
+            console.log(7, p['@name'])
             nvdf[7].push(p['@name'])
             pVdef[7][p['@name']] = p
           }else{
@@ -686,10 +687,10 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
       // body...
     })
    
-    nVdf[6].forEach(function (p) {
+    nVdf[7].forEach(function (p) {
       //need to account for user objects here. 
      // if(p)
-      userrec[p] = getVal(buf, 6, p, pVdef)
+      userrec[p] = getVal(buf, 7, p, pVdef)
       // body...
     })
     var usernames = []
@@ -701,7 +702,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
    // _tempAccounts[ip] = accArray.slice(0)
     _accounts[ip] = accArray.slice(0)
 
-    relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:5, rec:userrec, array:usernames}}})
+    relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:6, rec:userrec, array:usernames}}})
 
     pack = {type:3, rec:rec}
     
@@ -955,7 +956,7 @@ function relayParamMsgCW(packet){
 }
 function relayUserNames(packet){
   ////console.log('relay param msg 2')
-
+  console.log('relay User Names')
   for(var pid in passocs){
     ////console.log(packet)
 
@@ -1432,6 +1433,7 @@ wss.on('connection', function(scket, req){
     socket.emit('paramMsgCW',p)
   }
   var relayUserNamesFunc = function (p) {
+    console.log('relay un func',p)
     socket.emit('userNames',p)
     p = null;
   }

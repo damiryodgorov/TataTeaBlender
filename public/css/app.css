@@ -1276,6 +1276,18 @@ li {
     padding-bottom: 10px;
     text-align: center
 }
+
+.alertmodal-outer-sp{
+    position: relative;
+    margin-top: 85px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    background:#e1e1e1;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    text-align: center
+}
 .customKey{
    /* padding: 5px;*/
    /* width: 80px;*/
