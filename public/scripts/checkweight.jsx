@@ -46,7 +46,11 @@ var categoriesV2 = [vdefMapV2["@cwsys"]]
 var catMapV2 = vdefMapV2["@catmap"]
 
 const FtiSockIo = require('./ftisockio.js')
-
+const FastZoom = cssTransition({ 
+	enter: 'zoomIn',
+  exit: 'zoomOut',
+  duration: 300  
+})
 Object.defineProperty(Array.prototype, 'chunk', {
     value: function(chunkSize){
         var temporal = [];
@@ -552,7 +556,11 @@ class Container extends React.Component {
 		super(props)
 	}
 	render(){
-		return <LandingPage/>
+		return <div><LandingPage/>
+				<ToastContainer position="top-center" autoClose={1500} hideProgressBar newestOnTop closeOnClick closeButton={false} rtl={false}
+			pauseOnVisibilityChange draggable pauseOnHover transition={FastZoom} toastClassName='notifications-class'/>
+			
+		</div>
 	}
 }
 class Clock extends React.Component{
@@ -662,7 +670,7 @@ class LandingPage extends React.Component{
 	}
 	settingClick (s,n) {
 		if((Array.isArray(s))&&(s[0] == 'get_accounts')){
-			//console.log('get accounts')
+			console.log('get accounts')
 			//this.refs.loginModal.toggle();
 		}else{
 			var set = this.state.data.slice(0)
@@ -721,21 +729,26 @@ class LandingPage extends React.Component{
 			if(typeof e != 'undefined'){
 				if(e.type == 0){
 					console.log('Sys Rec')
-					this.setState({srec:e.rec, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
+					this.setState({noupdate:false,srec:e.rec, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
 				}else if(e.type == 1){
 					console.log('Prod Rec')
-					this.setState({prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
+					this.setState({noupdate:false,prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
 				}else if(e.type == 2){
-					this.setState({rec:e.rec,updateCount:(this.state.updateCount+1)%4, noupdate:(this.state.updateCount != 0)})
+					this.setState({rec:e.rec,updateCount:(this.state.updateCount+1)%4, noupdate:true})
 					if(this.state.updateCount == 0){
 						this.refs.ss.setState({rec:e.rec, crec:this.state.crec})
+					var lw = 0;
+    				if(typeof e.rec['LiveWeight'] != 'undefined'){
+    					lw = e.rec['LiveWeight']
+    				}
+						this.refs.se.setState({value:(lw).toFixed(1) + 'g'})
 					}
 					
 				}else if(e.type == 3){
 					e.rec.Nif_ip = this.state.nifip
 					e.rec.Nif_gw = this.state.nifgw
 					e.rec.Nif_nm = this.state.nifnm
-					this.setState({fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
+					this.setState({noupdate:false,fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
 				}else if(e.type == 5){
 					//console.log('checkweighing pack')
 					var del = 25
@@ -1002,6 +1015,7 @@ class LandingPage extends React.Component{
 			self.setState({mbunits:f, detL:detL})
 		})
 		socket.on('notify',function(msg){
+			console.log(msg)
 			toast(msg)
 		})
 		socket.on('progressNotify',function(pk){
@@ -1407,7 +1421,7 @@ class LandingPage extends React.Component{
     	if(this.state.srec['SRecordDate']){
     		language = vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]
     		sd =   	<div ><SettingsPageWSB branding={this.state.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
-      		onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4}/>
+      		onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} />
     		</div>
 
     		cald = (	<div style={{background:'#e1e1e1', padding:10}}>
@@ -1435,6 +1449,11 @@ class LandingPage extends React.Component{
     	if(this.state.user == -1){
     		logklass = 'login'
     	}
+
+    	var lw = 0;
+    	if(typeof this.state.rec['LiveWeight'] != 'undefined'){
+    		lw = this.state.rec['LiveWeight']
+    	}
 		return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
          <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
@@ -1456,7 +1475,7 @@ class LandingPage extends React.Component{
           </table>
           <table><tbody><tr style={{verticalAlign:'top'}}><td>
          	<StatSummary branding={this.state.branding} ref='ss'/>
-          </td><td><div><SparcElem ref='se' branding={this.state.branding} value={this.state.rec['LiveWeight'] + 'g'} name={'Gross Weight'} width={616} font={40}/></div>
+          </td><td><div><SparcElem ref='se' branding={this.state.branding} value={lw.toFixed(1) + 'g'} name={'Gross Weight'} width={616} font={40}/></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
           <LineGraph winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
@@ -1470,7 +1489,7 @@ class LandingPage extends React.Component{
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Product'} onClick={this.pModalToggle}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Log'} onClick={this.changeBranding}/>
       	<Modal ref='pmodal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
-      		<ProductSettings editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
+      		<ProductSettings  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
       	</Modal>
       	 <Modal ref='settingModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
       		<div style={{display:'inline-block',width:290, verticalAlign:'top'}}>{dets}
@@ -1479,6 +1498,7 @@ class LandingPage extends React.Component{
       	<Modal ref='cwModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
       	{cald}
       	</Modal>
+      
       	<LogInControl2 branding={this.state.branding} ref='lgctl' onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
       	</div>
       </div>) 
@@ -2284,8 +2304,10 @@ class CatSelectItem extends React.Component{
 class SettingsPageWSB extends React.Component{
 	constructor(props){
 		super(props);
-		this.state = {sel:-1, data:[], path:[]}
+		this.state = {sel:-1, data:[], path:[],showAccounts:false}
 		this.setPath = this.setPath.bind(this);
+		this.onHandleClick = this.onHandleClick.bind(this);
+		this.backAccount = this.backAccount.bind(this);
 	}
 	setPath(dat,i){
 		if(i == -1){
@@ -2294,7 +2316,17 @@ class SettingsPageWSB extends React.Component{
 			this.refs.sd.setPath([i])
 
 		}
-		this.setState({sel:i})
+		this.setState({sel:i, showAccounts:false})
+	}
+	backAccount(){
+		this.setState({showAccounts:false})
+	}
+	onHandleClick(dat, n){
+		if(dat[0] == 'get_accounts'){
+			this.setState({showAccounts:true})
+		}else{
+			this.props.onHandleClick(dat,n)
+		}
 	}
 	render(){
 		var self = this;
@@ -2314,8 +2346,19 @@ class SettingsPageWSB extends React.Component{
 		if(this.state.sel == -1){
 			cob = this.props.cob2
 		}
-		var sd = <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
-      		onHandleClick={this.settingClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+		var sd =<React.Fragment><div > <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+      		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+			</div>
+			<div style={{display:'none'}}> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
+</div></React.Fragment>
+		if(this.state.showAccounts){
+			sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+      		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+			</div>
+			<div> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
+</div></React.Fragment>
+		}
+
 		return <div>
 			<table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{marginTop:54, height:480, background:'#e1e1e1'}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
 		</div>
@@ -4122,11 +4165,6 @@ class PromptModal extends React.Component{
 		cont =  <PromptModalCont branding={this.props.branding} vMap={this.props.vMap} discard={this.discard} save={this.save} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</PromptModalCont>
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
-	{/*	<div className='modal-x' onClick={this.close}>
-			 	 <svg viewbox="0 0 40 40">
-    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
-  				</svg>
-			</div>*/}
 			{cont}
 		</div>
 	}
@@ -4195,6 +4233,7 @@ class PromptModalC extends React.Component{
 		}
 		
 	  return( <div className={klass}>
+	  			<div style={{padding:10}}>
 	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
 	  			{this.props.children}
 				<div>
@@ -4203,9 +4242,287 @@ class PromptModalC extends React.Component{
           			<CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
           
 	</div>
-	  		
+	  		</div>
 		  </div>)
 
+	}
+}
+class AccountControl extends React.Component{
+	constructor(props){
+		super(props)
+		this.state = ({accounts:this.props.accounts, curlevel:0, username:'', pswd:'', newUser:false})
+		this.selectChanged = this.selectChanged.bind(this);
+		this.addAccount = this.addAccount.bind(this);
+		this.removeAccount = this.removeAccount.bind(this);
+	//	this.addNewUser = this.addNewUser.bind(this);
+		this.goBack = this.goBack.bind(this);
+	}
+	goBack(){
+		this.props.goBack();
+	}
+	selectChanged(v){
+		this.setState({curlevel:v})
+	}
+	addAccount(){
+		socket.emit('addAccount', {user:{user:this.state.username, acc:this.state.curlevel, password:this.state.pswd}, ip:this.props.ip})
+	}
+	removeAccount(account){
+		socket.emit('removeAccount', {ip:this.props.ip, user:account})
+	}
+	onFocus(){
+
+	}
+	onUserChange(v){
+		this.setState({username:v})
+	}
+	onPswdChange(v){
+		this.setState({pswd:v})
+	}
+	onRequestClose(){
+
+	}
+	setLevel(){
+		this.refs.pw.toggle();
+	}
+	setUserName(){
+		this.refs.username.toggle();
+	}
+	setPassword(){
+		this.refs.pswd.toggle();
+	}
+	render(){
+		var self = this;
+		var levels = ['none','operator','technician','engineer']
+		var pw 	   =  <PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref='pw' val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
+		var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='user' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
+		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
+		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+		var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+
+		var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
+		var st = {padding:7,display:'inline-block', width:180}
+		
+		var accTableRows = [];
+		
+		this.props.accounts.forEach(function(ac,i){
+			accTableRows.push(<AccountRow mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > ac.acc} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
+		})
+		
+		var backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
+						<label style={{color:'#000', fontSize:24}}>{'Back'}</label></div>)
+		var tstl = {display:'inline-block', textAlign:'center'}
+	    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+	    
+	    if (this.state.font == 1){
+	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+	    }else if (this.state.font == 0){
+	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+	    }
+
+		return <div>
+			{userkb}
+			{pswdkb}
+			{pw}
+		
+		<div style={{height:525,background:'#e1e1e1'}}>	
+		{titlediv}
+		<div style={{ overflowY:'scroll',maxHeight:475}}>
+		{accTableRows}
+			</div>
+			</div>	
+		</div>
+	}
+}
+
+
+
+
+class AccountRow extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {username:this.props.username, acc:this.props.acc, password:this.props.password, changed:false}
+		this.onUserChange = this.onUserChange.bind(this);
+		this.onPswdChange = this.onPswdChange.bind(this);
+		this.setLevel = this.setLevel.bind(this);
+		this.setUserName = this.setUserName.bind(this);
+		this.setPassword = this.setPassword.bind(this);
+		this.remove = this.remove.bind(this);
+		this.saveChanges = this.saveChanges.bind(this);
+		this.addAccount = this.addAccount.bind(this);
+		this.valClick = this.valClick.bind(this);
+		this.selectChanged = this.selectChanged.bind(this);
+	}
+	componentWillReceiveProps(props){
+		this.setState({username:props.username, acc:props.acc, password:props.password})
+	}
+	valClick(){
+		//toast('Value Clicked')
+	   this.setState({changed:false})
+		this.refs.ed.toggle();
+	}
+	onUserChange(v){
+		this.setState({username:v})
+	}
+	onPswdChange(v){
+		var pswd = (v+'000000').slice(0,6)
+		this.setState({password:pswd})//, changed:true})
+	}
+	setLevel(){
+		if(this.props.change){
+		
+			var self = this;
+			setTimeout(function(){
+		
+			self.refs.pw.toggleCont();
+			},80);
+		}
+	}
+	selectChanged(v){
+		this.setState({acc:v})//, changed:true})
+	}
+	setUserName(){
+		if(this.props.change){
+		
+		var self = this;
+		setTimeout(function(){
+			self.refs.username.toggle();
+		},80)
+		}
+	}
+	setPassword(){
+		if(this.props.change){
+			var self = this;
+			setTimeout(function(){
+				self.refs.pswd.toggle();
+			},80)
+		}
+	}
+	remove(){
+		if(this.props.saved){
+			socket.emit('removeAccount', {ip:this.props.ip, user:this.state.username})
+		}else{
+			this.setState({username:this.props.username, acc:this.props.acc, password:this.props.password})
+		}
+	}
+	saveChanges(){
+		this.addAccount();
+	
+	}
+	addAccount(){
+    console.log(8200, 'writeUserData', this.props.uid)
+		socket.emit('writeUserData', {data:{username:this.state.username, acc:this.state.acc, password:this.state.password, user:this.props.uid}, ip:this.props.ip})
+		
+    //this.setState({changed:false})
+	}
+	render() {
+		//////console.log(3243, this.props.mobile)
+		var levels = ['0','1','2','3','4']
+		
+		var namestring = 'User'+ this.props.uid
+		//////////console.log(['2692',namestring])
+			
+		var dt = false;
+		var self = this;
+		var fSize = 24;
+		if(namestring.length > 24){
+			fSize = 18
+		}
+		else if(namestring.length > 20){
+			fSize= 20
+		}else if(namestring.length > 12){
+			fSize = 22
+		}
+		if(this.props.mobile){
+			fSize -= 7;
+			fSize = Math.max(13, fSize)
+		}
+		let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}
+
+		var labWidth = (536/2)
+
+		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+			var st = {textAlign:'center',lineHeight:'60px', height:60, width:536}
+
+			
+			st.fontSize = fSize//self.props.vst.fontSize;
+			st.display = 'table-cell';//self.props.vst.display;
+			
+		if(this.props.mobile){
+			labWidth = parseInt(100/2) + '%'
+			vlabelswrapperStyle.width = '60%'
+			lvst.verticalAlign = 'middle'
+			lvst.lineHeight = '25px'
+			st.height = 51
+			st.lineHeight = '51px'
+			st.display = 'inline-block'
+			st.width = '100%'
+			
+		}
+		//st.width = '100%'
+		
+		var valArray = [this.state.username, this.state.acc]
+		
+			var vLabels = valArray.map(function(d,i){
+			var val = d;
+			var cst = Object.assign({},st)
+			cst.width = labWidth
+			return (<CustomLabel index={i} onClick={self.valClick} style={cst}>{val}</CustomLabel>)
+		})
+
+
+		/*
+				          					return <div>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+				{'Username: '}
+			</div>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+				{vLabels}
+			</div>
+			{options}
+
+			</div>
+
+			<div className={'sItem noChild'} onClick={() => this.refs.pswd.toggle()}><div><label style={lvst}>{'Password: '}</label>
+						<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div></div></div>
+				<div className={'sItem noChild'} onClick={() => this.refs.pw.toggle()}><div><label style={lvst}>{'Level: '}</label>
+						<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={st}>{this.state.acc}</label></div></div></div></div>
+		
+
+		*/
+
+			var pw = 	<PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref='pw' val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+		var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='username' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
+		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
+	
+			var edit = <Modal mobile={this.props.mobile} ref='ed' onClose={this.saveChanges} innerStyle={{background:SPARCBLUE1}}>
+			<div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
+
+				<div style={{marginTop:5}} onClick={() => this.refs.username.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}} >{'Username: '}
+				</div>		<div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.username}</label></div></div>
+				<div style={{marginTop:5}} onClick={() => this.refs.pswd.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}} >{'Password: '}
+				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div>
+				<div style={{marginTop:5}} onClick={() => this.refs.pw.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}} >{'Level: '}
+				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.acc}</label></div></div>
+						</div>
+				{pw}{userkb}{pswdkb}
+			</Modal>
+				
+			var num = true
+			var lbl = namestring
+
+
+			return(<div style={{marginTop:5}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+				{namestring}
+			</div>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+				{vLabels}
+			</div>
+			{edit}
+			</div>)
+			//return(<div className={'sItem noChild'}><div><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>{edit}</div>)
 	}
 }
 var PromptModalCont =  onClickOutside(PromptModalC);

@@ -257,6 +257,11 @@ function getVdef(ip, callback,failed){
                      // //console.log(get.headers['content-encoding'])
       var buffer = Buffer.concat(rawVdef)
       zlib.unzip(buffer, function(er,b){
+        if(typeof b == 'undefined'){
+          console.log('vdef is undefined')
+          console.log('er')
+          return;
+        }
         var vdef = JSON.parse(b.toString())
         if(vdef['@defines']['CHECK_WEIGHER']){
                   vdefs[ip] = vdef; 
@@ -637,9 +642,9 @@ function getAccountsJSON(ip, callback){
 function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
    var rec_type = e.readUInt8(0)
   var buf = e.slice(1)
-  if(rec_type != 2){
-    console.log(rec_type, 'cw')
-  }
+ // if(rec_type != 2){
+    //console.log(rec_type, 'cw')
+  //}
   //console.log(rec_type, 'cw')
   var n = e.length
 

@@ -8137,43 +8137,6 @@ class AccountControl extends React.Component{
 	setPassword(){
 		this.refs.pswd.toggle();
 	}
-	addNewUser(){
-		//this.setState({newUser:true})
-	}
-	render1(){
-		var self = this;
-		var levels = ['none','operator','technician','engineer']
-		var pw = 	<PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref='pw' val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
-		var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='user' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
-			var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
-		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-			var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
-
-		    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#eee"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
-		var st = {padding:7,display:'inline-block', width:180}
-		
-		////console.log(this.props.accounts)
-		var accTableRows = [];
-		this.props.accounts.forEach(function(ac,i){
-			accTableRows.push(<AccountRow mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > ac.acc} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
-		})
-
-		return <div style={{maxHeight:350, overflowY:'scroll'}}>
-			{userkb}
-			{pswdkb}
-			{pw}
-			<div className='sItem noChild' hidden onClick={this.login}><label style={{display: 'table-cell',fontSize: 24,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{'User Group'}</label>
-			<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>{levels[this.props.val]}</label></div></div>
-			</div>
-			<table style={{borderCollapse:'collapse',background:"#d1d1d1", width:860}}>
-			<tbody>
-			<tr ><th>Username</th><th>Passcode</th><th>Level</th></tr>
-			{accTableRows}
-			</tbody>
-			</table>	
-		</div>
-	}
 	render(){
 		var self = this;
 		var levels = ['none','operator','technician','engineer']
