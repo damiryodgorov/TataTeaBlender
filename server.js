@@ -53,7 +53,7 @@ var writeFtiFilesToUsb = Helpers.writeFtiFilesToUsb;
 var toArrayBuffer = Helpers.toArrayBuffer;
 var swap16 = Helpers.swap16;
 var dsp_rpc_paylod_for = Helpers.dsp_rpc_paylod_for;
-//import {uintToInt,getVal,passReset,getBinarySize,putJSONStringTftp,getFileTftp,checkAndMkdir,tftpPollForSCDList,tftpPollForFDDList} from './helpers.js'
+
 
 let passocs = {}
 let rassocs = {}
@@ -704,7 +704,10 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
       usernames.push({username:userrec['UserName'+i], acc:userrec['UserOptions'+i],preset:userrec['UserPassReset'+i]});
       accArray.push({username:userrec['UserName'+i], opt:userrec['UserOptions'+i], phash:userrec['PasswordHash'+i],preset:userrec['UserPassReset'+i]})
     }
-   // _tempAccounts[ip] = accArray.slice(0)
+    if(typeof _tempAccounts[ip] == 'undefined'){
+     _tempAccounts[ip] = accArray.slice(0)     
+    }
+
     _accounts[ip] = accArray.slice(0)
 
     relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:6, rec:userrec, array:usernames}}})
@@ -812,7 +815,10 @@ function processParam(e, _Vdef, nVdf, pVdef, ip) {
       usernames.push({username:userrec['UserName'+i], acc:userrec['UserOptions'+i],preset:userrec['UserPassReset'+i]});
       accArray.push({username:userrec['UserName'+i], opt:userrec['UserOptions'+i], phash:userrec['PasswordHash'+i],preset:userrec['UserPassReset'+i]})
     }
-   // _tempAccounts[ip] = accArray.slice(0)
+    if(typeof _tempAccounts[ip] == 'undefined'){
+       _tempAccounts[ip] = accArray.slice(0)
+      
+    }
     _accounts[ip] = accArray.slice(0)
 
     relayUserNames({det:{ip:ip, mac:macs[ip], data:{type:5, rec:userrec, array:usernames}}})
@@ -1215,9 +1221,16 @@ function autoIP(cw){
                 if(vdf['@defines']['FINAL_FRAM_STRUCT_SIZE']){
                   det.ts_login = true;   
                 }
-                 prefs = [{name:det.name, type:'single', banks:[det]}];
+                if(cw){
+
+                 cwprefs = [{name:det.name, type:'single', banks:[det]}];
+                 relaySockMsg('prefs',cwprefs)
+                }else{
+                  prefs = [{name:det.name, type:'single', banks:[det]}];
+                  relaySockMsg('prefs',prefs)
+                }
                 
-                relaySockMsg('prefs',prefs)
+                
                 locateUnicast(ip4, function (argument) {
                   // body...
                   console.log('located unicast')
@@ -2032,7 +2045,8 @@ wss.on('connection', function(scket, req){
       socket.emit('prefs',prefs)
     }
   })
-    socket.on('getPrefsCW', function (cw) {
+  socket.on('getPrefsCW', function (cw) {
+    console.log('req prefs')
     var fnm = 'json/cwprefData.json'
   
     if(fs.existsSync(path.join(__dirname, fnm))){
@@ -2042,9 +2056,9 @@ wss.on('connection', function(scket, req){
         }catch(e){
         
         }
-        if(prefs.length == 0){
+        if(cwprefs.length == 0){
           if(dispSettings.mode == 0){
-           //autoIP(true);  
+           autoIP(true);  
            //no autoIP for now...
 
           }else{
@@ -2052,10 +2066,12 @@ wss.on('connection', function(scket, req){
           }
           
         }else{
+          console.log('send prefs')
           socket.emit('prefs', cwprefs)  
         }
       })
     }else{
+      console.log('send prefs')
       socket.emit('prefs',cwprefs)
     }
   })
@@ -2078,15 +2094,28 @@ wss.on('connection', function(scket, req){
               }
   })
   socket.on('authenticate', function(packet){
-    //console.log('authenticate this packet')
+    console.log('authenticate this packet')
     //console.log(packet)
     var hash = crypto.createHash('sha1').update(Buffer.from((packet.pswd + '000000').slice(0,6),'ascii')).digest().slice(0,8)
+    console.log('hash',hash)
     var ap = _accounts[packet.ip][packet.user].phash
-    var tempUser = _tempAccounts[packet.ip][packet.user]
-    //console.log(hash)
+
+    var tempUser;
+    if(typeof _tempAccounts[packet.ip] != 'undefined'){
+      tempUser  = _tempAccounts[packet.ip][packet.user]
+    
+    }else{
+      var tmpArr = []
+      for(var i = 0; i < 50; i++){
+        tmpArr.push({phash:null,preset:0})
+      }
+      _tempAccounts[packet.ip] = tmpArr;
+    } 
+    console.log('get tmpuser',hash)
     //console.log(_accounts[packet.ip][packet.user].phash)
     if(ap.equals(hash)){
-      //console.log('success')
+      console.log('success')
+      _tempAccounts[packet.ip][packet.user] = {..._accounts[packet.ip][packet.user]}
       _tempAccounts[packet.ip][packet.user].preset = 0;
       socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:_accounts[packet.ip][packet.user].preset, ip:packet.ip})
       
@@ -2258,8 +2287,11 @@ wss.on('connection', function(scket, req){
   })
   socket.on('savePrefsCW', function (f) {
     // body...
-    //console.log(f)
-    fs.writeFile(path.join(__dirname, 'json/cwprefData.json') , JSON.stringify(f));
+    console.log(JSON.stringify(f))
+    fs.writeFile(path.join(__dirname, 'json/cwprefData.json') , JSON.stringify(f),(err) => {
+      if (err) throw err;
+      console.log('The file has been saved!');
+  });
   })
   socket.on('hello', function(f){
     socket.emit('connected', "CONNECTION");

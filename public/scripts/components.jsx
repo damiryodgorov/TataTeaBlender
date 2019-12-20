@@ -470,7 +470,7 @@ class TrendBar extends React.Component{
 			}
 			labels = ranges.map(function(r,i) {
 				// body...
-				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{r}</div>
+				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{r.toFixed(1)}</div>
 			})
 		}else{
 
@@ -490,7 +490,7 @@ class TrendBar extends React.Component{
 			}
 			labels = ranges.map(function(r,i) {
 				// body...
-				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{r}</div>
+				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{r.toFixed(1)}</div>
 			})
 
 
@@ -1018,7 +1018,11 @@ class MessageConsole extends React.Component{
 		var bgColor = 'rgba(150,150,150,0.3)'
 		var style = {width:345,height:220,background:'rgb(225,225,225)',marginLeft:'auto',marginRight:'auto'}
 		var wrapper = {width:'100%', height:88, marginLeft:'auto', marginRight:'auto', marginTop:10}
-		var line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{vdefMapV2['@labels']['Running Product'][this.props.language]['name']}</div>
+		var rptxt = vdefMapV2['@labels']['Running Product'][this.props.language]['name'];
+		if(!this.props.live){
+			rptxt = 'Not Connected'
+		}
+		var line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{rptxt}</div>
 		var line2 = 	<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{this.props.prodName}</div>
 		var textColor = '#eee'
 		if(fActive){

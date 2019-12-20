@@ -16,10 +16,15 @@ import {XYPlot,MarkSeries, LabelSeries, XAxis, YAxis,VerticalGridLines, Horizont
 
 var createReactClass = require('create-react-class');
 
-const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CLEAR_WARNINGS','PHASE_HOLD','CIP_TEST','CIP_PLC','PROD_SEL1', 'PROD_SEL2', 'PROD_SEL3','PROD_SEL4']
-const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
+let inputSrcArr = ["NONE","TACH","EYE","RC1","RC2","ISO_1","IO_PL8_01","IO_PL8_02","IO_PL8_03","IO_PL8_04","IO_PL8_05","IO_PL8_06","IO_PL8_07","IO_PL8_08","IO_PL8_09","IO_PL6_01","IO_PL6_02","IO_PL6_03"];
+let outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
+
+const _ioBits = ['TACH','EYE','RC_1','RC_2','REJ_EYE','AIR_PRES','REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CLEAR_WARNINGS','PHASE_HOLD','CIP','CIP_TEST','CIP_PLC','PROD_SEL1','PROD_SEL2','PROD_SEL3','PROD_SEL4',
+                  'TEST','NONE','REJ_MAIN','REJ_ALT','FAULT','TEST_REQ','HALO_FE', 'HALO_SS', 'LS_RED','LS_YEL','LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 
 
+var liveTimer = {}
+var myTimers = {}
 //radial-gradient(circle, #30A8E233 34%, #30A8E2);
 
 const SPARCBLUE2 = '#30A8E2'
@@ -529,6 +534,9 @@ console.log('on vdef')
     }
 
     _pVdef = res;
+    if(json['@defines']['LOGICAL_OUTPUT_NAMES']){
+    	outputSrcArr = json['@defines']['LOGICAL_OUTPUT_NAMES'].slice(0)
+    }
     //if(json['@defines']['INTERCEPTOR']){
         vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@cwsys"]], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
 
@@ -537,7 +545,8 @@ console.log('on vdef')
        // vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapST["@categories"]], vdefMapST['@vMap'], vdefMapST['@pages']]
 
     //}
-   ////console.log('552',vdefByMac)
+
+  	console.log('552',vdefByMac)
     isVdefSet = true;
 })
 
@@ -546,7 +555,7 @@ function tickFormatter(t,i) {
 	var text = t.split(' ').map(function(v,j){
 		return <tspan x="0" dy={j+'em'}>{v}</tspan>
 	})
-  return (<text x="0"  transform='translate(-5,-5)' style={{textAnchor:"end", fontSize:16}}>
+  return (<text x="0"  transform='translate(-5,-5)' style={{textAnchor:"end", fontSize:14}}>
     {text}
   </text>);
 }
@@ -586,7 +595,7 @@ class Clock extends React.Component{
 class LandingPage extends React.Component{
 	constructor(props){
 		super(props)
-		this.state = {username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,branding:'SPARC', automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
+		this.state = {faultArray:[],warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,branding:'SPARC', automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
 		this.authenticate = this.authenticate.bind(this);
@@ -616,6 +625,7 @@ class LandingPage extends React.Component{
 		this.authenticate = this.authenticate.bind(this);
 		this.setAuthAccount = this.setAuthAccount.bind(this);
 		this.logout = this.logout.bind(this);
+		this.clearFaults = this.clearFaults.bind(this);
 	}
 
 	toggleLogin(){
@@ -641,7 +651,7 @@ class LandingPage extends React.Component{
 	login(v){
 		this.setState({level:v,update:true})
 	}
-		setAuthAccount(pack){
+	setAuthAccount(pack){
 		var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGIN']
 		var pkt = rpc[1].map(function (r) {
 			if(!isNaN(r)){
@@ -658,6 +668,7 @@ class LandingPage extends React.Component{
 		
 	}
 	authenticate(user,pswd){
+		console.log('authenticate here')
 		socket.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.state.curDet.ip})
 	}
 	loginClosed(){
@@ -691,7 +702,9 @@ class LandingPage extends React.Component{
 		console.log('onRMsg',e)
 	}
 	loadPrefs() {
+		console.log('is this ready')
 		if(socket.sock.readyState  ==1){
+			console.log('load Prefs')
 			//socket.emit('locateReq');
 			socket.emit('getVersion',true);
 			socket.emit('getPrefsCW',true);
@@ -724,9 +737,13 @@ class LandingPage extends React.Component{
 		return true;
 	}
 	onParamMsg(e,u){
-		console.log('onParamMsg', e.type)
+		//console.log('onParamMsg', e.type)
 		if(this.state.curDet.ip == u.ip){
+			var self = this;
+			liveTimer[this.state.curDet.mac] = Date.now()
 			if(typeof e != 'undefined'){
+				var pVdef = vdefByMac[this.state.curDet.mac][1]
+				var vdf = vdefByMac[this.state.curDet.mac][0]
 				if(e.type == 0){
 					console.log('Sys Rec')
 					this.setState({noupdate:false,srec:e.rec, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
@@ -734,7 +751,65 @@ class LandingPage extends React.Component{
 					console.log('Prod Rec')
 					this.setState({noupdate:false,prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
 				}else if(e.type == 2){
-					this.setState({rec:e.rec,updateCount:(this.state.updateCount+1)%4, noupdate:true})
+					var iobits = {}
+					var noupdate = true
+					if (vdf['@defines']['PHYSICAL_INPUT_NAMES']){
+						vdf['@defines']['PHYSICAL_INPUT_NAMES'].forEach(function (b) {
+							// body...
+						if(typeof e.rec[b] != 'undefined'){
+    							iobits[b] = e.rec[b]
+    						}
+						})
+						vdf['@defines']['LOGICAL_OUTPUT_NAMES'].forEach(function (b) {
+							// body...
+						if(typeof e.rec[b] != 'undefined'){
+    							iobits[b] = e.rec[b]
+    						}
+						})
+						if(isDiff(iobits,this.state.ioBITs)){
+    						noupdate = false;
+
+    					}
+    			
+					}
+					/*if(_ioBits){
+	   					_ioBits.forEach(function(b){
+    						if(typeof e.rec[b] != 'undefined'){
+    							iobits[b] = e.rec[b]
+    						}
+    					})
+    				}*/
+    				var faultArray = [];
+				  	var warningArray = [];
+
+					pVdef[8].forEach(function(f){
+					if(e.rec[f] != 0){
+						faultArray.push(f)
+							if(self.state.prec[f+'Warn'] == 1){
+								warningArray.push(f)
+							}
+						}
+					});
+					
+  					if(this.state.faultArray.length != faultArray.length){
+  						noupdate = false;
+  					}else if(this.state.warningArray.length != warningArray.length){
+  						noupdate = false;
+  					}else{
+  						faultArray.forEach(function (f) {
+  							if(self.state.faultArray.indexOf(f) == -1){
+  								noupdate = false;	
+  							}
+  						})
+  						warningArray.forEach(function (w) {
+  							// body...
+  							if(self.state.warningArray.indexOf(w) == -1){
+  								noupdate = false;
+  							}
+  						})
+  					}
+
+					this.setState({faultArray:faultArray,warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
 					if(this.state.updateCount == 0){
 						this.refs.ss.setState({rec:e.rec, crec:this.state.crec})
 					var lw = 0;
@@ -759,7 +834,8 @@ class LandingPage extends React.Component{
 						dur = this.state.prec['SampDur'];
 					}
 					this.setState({crec:e.rec, noupdate:true})
-					this.refs.lg.parseDataset(e.rec['PackSamples'].slice(0), del, dur, e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], this.state.srec['TareWeight'], e.rec['PackWeight']);
+					this.refs.lg.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+							this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd']);
 					this.refs.hh.parseCrec(e.rec)
 					this.refs.ss.setState({crec:e.rec})
 					this.refs.tb.update(e.rec['PackWeight']);
@@ -769,7 +845,7 @@ class LandingPage extends React.Component{
 					var prodListRaw = this.state.prodListRaw
 					prodList[e.prodNo] = Object.assign({},e.rec);
 					prodListRaw[e.prodNo] = e.raw
-					this.setState({prodList:prodList, prodListRaw:prodListRaw})
+					this.setState({prodList:prodList, prodListRaw:prodListRaw, noupdate:false})
 				}
 			}
 		}
@@ -797,6 +873,22 @@ class LandingPage extends React.Component{
 				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
 			}else if(n == 'copyCurrentProd'){
 				var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
+				var pkt = rpc[1].map(function (r) {
+					if(!isNaN(r)){
+						return r
+					}else{
+						if(isNaN(v)){
+							return 0
+						}else{
+							return parseInt(v)
+						}
+					}
+				})
+				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+			
+			}else if(n == 'clearFaults'){
+				var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARFAULTS']
 				var pkt = rpc[1].map(function (r) {
 					if(!isNaN(r)){
 						return r
@@ -848,6 +940,10 @@ class LandingPage extends React.Component{
 					socket.emit('getProdList', self.state.curDet.ip)
 				},150)
 			//}
+			}else if( n == 'refresh'){
+			var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
+			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+			socket.emit('rpc',{ip:this.state.curDet.ip, data:packet})	
 			}
 		}else{
 			console.log('here')
@@ -958,7 +1054,22 @@ class LandingPage extends React.Component{
 	}
 	componentDidMount(){
 		var self = this;
-		this.loadPrefs();
+
+		this.state.timer = setInterval(function(){
+			//////console.log('4596', self.state.rpcResp)
+			if(self.state.connected){
+				if((Date.now() - liveTimer[self.state.curDet.mac]) > 1500){
+					self.setState({live:false, noupdate:false})
+				}
+			
+			}
+
+		}, 1500)
+
+		setTimeout(function (argument) {
+			
+			self.loadPrefs();
+		}, 500)		
 		socket.on('userNames', function(p){
 			console.log(['808', p])
 			self.setState({usernames:p.det.data.array})//, update:true})
@@ -996,6 +1107,8 @@ class LandingPage extends React.Component{
 		})
 		socket.on('prefs', function(f) {
 			////////////console.log(f)
+
+			console.log('prefs',f)
 			var detL = self.state.detL
 			var cnt = 0;
 			var _ip = ''
@@ -1011,6 +1124,33 @@ class LandingPage extends React.Component{
 			}else{
 				socket.emit('locateReq',true)
 			}
+			setTimeout(function (argument) {
+			// body...
+			if(f.length == 1){
+				if(!self.state.connected){
+					if(f[0].banks.length == 1){
+						if(vdefByMac[f[0].banks[0].mac]){
+							////console.log('try first here?')
+							self.connectToUnit(f[0].banks[0])
+						}else{
+							console.log('no vdef', vdefByMac)
+							setTimeout(function () {
+								// body...
+								if(!self.state.connected){
+									////console.log('switch?')
+									if(vdefByMac[f[0].banks[0].mac]){
+										self.connectToUnit(f[0].banks[0])
+									}else{
+										console.log('no vdef', vdefByMac)
+									}
+								}
+							},4000)
+						}
+					}
+					
+				}	
+			}
+		},800)
 
 			self.setState({mbunits:f, detL:detL})
 		})
@@ -1113,7 +1253,7 @@ class LandingPage extends React.Component{
 				})
 			})
 		
-			socket.emit('savePrefsCW', mbunits)
+			//socket.emit('savePrefsCW', mbunits)
 			var nfip = self.state.nifip;
 			if(e.length > 1){
 				nfip = e[0].nif_ip
@@ -1163,7 +1303,7 @@ class LandingPage extends React.Component{
 			}
 		})
 		socket.on('authFail', function(pack){
-			//toast('Authentication failed')
+			toast('Authentication failed')
 			//self.refs.am.show(pack.user, pack.ip)
 			self.setAuthAccount({user:'Not Logged In', level:0, user:-1})
 		})
@@ -1254,6 +1394,9 @@ class LandingPage extends React.Component{
 	}
 	showDisplaySettings(){
 		var self = this;
+		if(this.state.connected){
+			this.sendPacket('refresh')
+		}
 		setTimeout(function () {
 			self.refs.settingModal.toggle()
 		},100)
@@ -1298,9 +1441,20 @@ class LandingPage extends React.Component{
 		this.setState({tmpMB:mbUnits, detL:detL})
 	}
 	connectToUnit(det){
-
+		var self = this;
 		socket.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
+
+		var unit = {name:det.name, type:'single', banks:[det]}
 		//socket.emit('vdefReq', det);
+		setTimeout(function (argument) {
+			// body...
+			console.log(1308, unit)
+			socket.emit('savePrefsCW', [unit])
+		},150)
+		setTimeout(function (argument) {
+			// body...
+			self.sendPacket('refresh')
+		},300)
 	//	setTimeout(function(){socket.emit('getProdList',det.ip)},150)
 		this.setState({curDet:det, connected:true})
 	}
@@ -1369,7 +1523,12 @@ class LandingPage extends React.Component{
 		console.log('clicked')
 		location.reload();
 	}
+	clearFaults(){
+		this.sendPacket('clearFaults')
+	}
+	openBatch(){
 
+	}
 	render(){
 		//LandingPage.render
 
@@ -1392,6 +1551,9 @@ class LandingPage extends React.Component{
     	var language = 'english'
     	if(this.state.branding == 'FORTRESS'){
     		backgroundColor = FORTRESSPURPLE1
+    		grbrdcolor = '#e1e1e1'
+    		psbtcolor = '#1C3746'
+    		psbtklass = 'circularButton_sp'
     	}else{
     		grbrdcolor = '#e1e1e1'
     		psbtcolor = '#1C3746'
@@ -1417,10 +1579,10 @@ class LandingPage extends React.Component{
 
     	var sd = '' 
     	var cald = ''
-    	var dets = <div style={{color:'#e1e1e1', fontSize:24}}>Connected to {this.state.curDet.name}</div>
+    	var dets = <div style={{color:'#e1e1e1', fontSize:24}} onClick={() => this.refs.locateModal.toggle()}>Connected to {this.state.curDet.name}</div>
     	if(this.state.srec['SRecordDate']){
     		language = vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]
-    		sd =   	<div ><SettingsPageWSB branding={this.state.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+    		sd =   	<div ><SettingsPageWSB onCal={this.calWeight} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
       		onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} />
     		</div>
 
@@ -1442,8 +1604,8 @@ class LandingPage extends React.Component{
     	
     	if(typeof this.state.prec['ProdName'] != 'undefined'){
     		trendBar = [this.state.prec['NominalWgt']-(2*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (2*this.state.prec['OverWeightLim']), 165, 200]
- 			winStart = this.state.prec['WindowStart'];
- 			winEnd = this.state.prec['WindowEnd'];   	
+ 			winStart = 0//this.state.prec['WindowStart'];
+ 			winEnd = 300//this.state.prec['WindowEnd'];   	
     	}
     	var logklass = 'logout'
     	if(this.state.user == -1){
@@ -1452,6 +1614,7 @@ class LandingPage extends React.Component{
 
     	var lw = 0;
     	if(typeof this.state.rec['LiveWeight'] != 'undefined'){
+    		//console.log( this.state.rec, 'rec')
     		lw = this.state.rec['LiveWeight']
     	}
 		return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
@@ -1478,13 +1641,13 @@ class LandingPage extends React.Component{
           </td><td><div><SparcElem ref='se' branding={this.state.branding} value={lw.toFixed(1) + 'g'} name={'Gross Weight'} width={616} font={40}/></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
-          <TrendBar prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref='tb'/></LineGraph></div>
+          <LineGraph clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
+          <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref='tb'/></LineGraph></div>
           </td><td>
           	<HorizontalHisto branding={this.state.branding} ref='hh'/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',padding:5, marginRight:10, marginLeft:10}} >{play}{stop}</div>
-          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Check Weight'} onClick={this.calWeight}/>
+          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Batch'} onClick={this.openBatch}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Tare'} onClick={this.tareWeight}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Product'} onClick={this.pModalToggle}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Log'} onClick={this.changeBranding}/>
@@ -1494,6 +1657,9 @@ class LandingPage extends React.Component{
       	 <Modal ref='settingModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
       		<div style={{display:'inline-block',width:290, verticalAlign:'top'}}>{dets}
       		</div>{sd}
+      	</Modal>
+      	<Modal ref='locateModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
+      		{this.renderModal()}
       	</Modal>
       	<Modal ref='cwModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
       	{cald}
@@ -1533,12 +1699,12 @@ class SparcElem extends React.Component{
 	}
 
 	render(){
-		var outerbg = '#818a90'
+		var outerbg ='#e1e1e1'// '#818a90'
 		var innerbg = '#5d5480'
 		var fontColor = '#e1e1e1'
 
 		if(this.props.branding == 'SPARC'){
-			outerbg = '#e1e1e1'
+		//	outerbg = '#e1e1e1'
 			innerbg = SPARCBLUE2
 			fontColor = 'black'
 		}
@@ -1582,6 +1748,8 @@ class HorizontalHisto extends React.Component{
 		data[2] = crec['LowPassCnt'];
 		data[3] = crec['LowRejCnt']; 
 		data[4] = crec['HighCnt'];
+		data[5] = crec['UnsettledCnt']
+		data[6] = crec['ImprobableCnt']
 		this.setState({data:data})
 	}
 	parsePack(pack){
@@ -1603,19 +1771,19 @@ class HorizontalHisto extends React.Component{
 		this.setState({data:data})
 	}	
 	render(){
-		var outerbg = '#818a90'
+		var outerbg = '#e1e1e1'
+			
 		var innerbg = '#5d5480'
 		var fontColor = '#e1e1e1'
 		var graphColor = FORTRESSPURPLE1
 		if(this.props.branding == 'SPARC'){
-			outerbg = '#e1e1e1'
 			innerbg = SPARCBLUE2
 			fontColor = 'black'
 			graphColor = SPARCBLUE2;
 		}
 		var xDomain = [0,15]
 		var yDomin = [0, 5]
-		var data = [{x: this.state.data[0], y:'Total'}, {x: this.state.data[1], y:'Good'}, {x: this.state.data[2], y:'Low Pass'}, {x: this.state.data[3], y:'Low Reject'}, {x:this.state.data[4], y:'High Weight'}, {x:this.state.data[5], y:'Check Weights'}, {x:this.state.data[6], y:'Over Capacity'}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
+		var data = [{x: this.state.data[0], y:'Total'}, {x: this.state.data[1], y:'Good'}, {x: this.state.data[2], y:'Low Pass'}, {x: this.state.data[3], y:'Low Reject'}, {x:this.state.data[4], y:'High Weight'}, {x:this.state.data[5], y:'Unsettled'}, {x:this.state.data[6], y:'Improbable Weight'}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
 		var labelData = data.map(function(d){
 			var lax = 'start'
 			if(d.x > (data[0].x*0.75)){
@@ -1643,9 +1811,12 @@ class LineGraph extends React.Component{
 	constructor(props){
 		super(props)
 		this.parseDataset = this.parseDataset.bind(this);
-		this.state = {pmax:2000, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[[8,9,13,15,16,16,14,13,10,4],[9,10,12,14,15,14,13,11,9,3],[9,10,14,15,17,17,15,9,8,2]],reject:false,over:false,under:false}
+		this.clearFaults = this.clearFaults.bind(this);
+		this.maskFault = this.maskFault.bind(this);
+		this.statusClick = this.statusClick.bind(this);
+		this.state = {weightPassed:0,pmax:2000, pstrt:0,pend:300, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[[8,9,13,15,16,16,14,13,10,4],[9,10,12,14,15,14,13,11,9,3],[9,10,14,15,17,17,15,9,8,2]],reject:false,over:false,under:false}
 	}
-	parseDataset(data, del, dur, pmax,pmin, calFactor, tareWeight, pweight){
+	parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend){
 		var dataSets = this.state.dataSets;
 		if(dataSets.length > 5){
 			dataSets = dataSets.slice(-5)
@@ -1664,7 +1835,18 @@ class LineGraph extends React.Component{
 			reject = true;
 	
 		}
-		this.setState({dataSets:dataSets,pmax:(pmax/calFactor)+tareWeight, pmin:(pmin/calFactor)+tareWeight, decisionRange:[del, del+dur], reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(pweight>this.props.max), under:(pweight<this.props.min), calFactor:calFactor, tareWeight:tareWeight})
+		this.setState({dataSets:dataSets,pmax:(pmax/calFactor)+tareWeight, pmin:(pmin/calFactor)+tareWeight, pstrt:pstrt, pend:pend, decisionRange:[strt, stend], reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(pweight>this.props.max), under:(pweight<this.props.min), calFactor:calFactor, tareWeight:tareWeight, weightPassed:weightPassed})
+	}
+	clearFaults(){
+		this.props.clearFaults();
+	}
+	maskFault(){
+		this.props.maskFault();
+	}
+	statusClick(){
+		if(this.props.faults.length != 0){
+			this.refs.fModal.toggle();
+		}
 	}
 	render(){
 		var outerbg = '#818a90'
@@ -1689,11 +1871,17 @@ class LineGraph extends React.Component{
 		if(winLength == 0){
 			winLength = 300
 		}
+		var decMax = 0;
+		var decMin = 0;
 		var self = this;
 		if(dsl != 0){
-			var decSet =  this.state.dataSets[dsl-1].slice(0-(this.state.decisionRange[0]+this.state.decisionRange[1]), 0-this.state.decisionRange[0])
+			var decSet =  this.state.dataSets[dsl-1].slice(this.state.pstrt, this.state.pend)
 			max = this.state.pmax//Math.max(...decSet);
 			min = this.state.pmin//Math.min(...decSet)
+			decMin = Math.min(...decSet);
+			decMax = Math.max(...decSet)
+			
+			//console.log('min, max',decMin,decMax)
 		}
 
 		var graphs = this.state.dataSets.map(function(set,i){
@@ -1716,15 +1904,29 @@ class LineGraph extends React.Component{
 		})
 	var bg = 'transparent';
 	var str = 'Good Weight'
+	var fault = false
 	if(this.state.reject){
 		bg = 'rgba(255,255,0,0.2)'
 		bg2 = 'rgba(255,255,0,0.3)'
 	}
-	if(this.state.over){
-		str = 'Over Weight'
-	}else if(this.state.under){
-		str = 'Under Weight'
+
+
+	//if(this.)
+	if(vdefByMac[this.props.det.mac]){
+		str = vdefByMac[this.props.det.mac][0]['@labels']['WeightPassed']['english'][this.state.weightPassed]
 	}
+	if(this.props.faults.length != 0){
+		bg = 'rgba(255,0,0,0.2)'
+		bg2 = 'rgba(255,0,0,0.3)'
+		if(this.props.faults.length == 1){
+			str = this.props.faults[0] + ' active'
+		}else{
+			str = this.props.faults.length + ' faults active'
+		}
+		fault == true
+	}
+
+	//str = vdefByMac[]
 
 	var nominalLine = <LineSeries color="red" strokeStyle='dashed' data={[{y:this.props.nominalWeight/this.state.calFactor + this.state.tareWeight,x:0},{y:this.props.nominalWeight/this.state.calFactor + this.state.tareWeight,x:winLength}]}/>
 
@@ -1745,24 +1947,32 @@ class LineGraph extends React.Component{
 				return {x:d.x,y:d.y,label:d.x, xOffset:-10, yOffset:0, size:0, style:{fill:'#e1e1e1',textAnchor:lax}}
 			}
 			return	{x:d.x,y:d.y,label:d.x, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
+				<LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
+	
 		}*/
 	return	<div style={{background:bg, textAlign:'center'}}>
 		<div style={{width:580,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 		<div style={{background:'black',width:580,marginLeft:'auto',marginRight:'auto'}}><div style={{background:bg2,color:'#e1e1e1',marginBottom:-47,marginLeft:'auto',marginRight:'auto',padding:4,width:572, height:75,lineHeight:'35px'}}><div style={{display:'inline-block', width:280}}><div style={{fontSize:16}}>Running Product</div><div style={{fontSize:24}}>{this.props.prodName}</div></div>
-		<div style={{display:'inline-block', width:280}} ><div style={{fontSize:16}}>Status</div><div style={{fontSize:24}}>{str}</div></div></div>
+		<div style={{display:'inline-block', width:280}} onClick={this.statusClick} ><div style={{fontSize:16}}>Status</div><div style={{fontSize:24}}>{str}</div></div></div>
 		</div>
 		<div style={{overflow:'hidden', marginTop:48}}>
 		<div style={{marginTop:-48}}>
 	<XYPlot height={358} width={610} yDomain={ydm} stackBy='y' margin={{left:0,right:0,bottom:0,top:50}}>
+		<YAxis/>
 		<XAxis hideTicks />
 		{graphs}
-		{nominalLine}
-		<VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:min,y:max,x0:300 - this.props.winStart - this.state.decisionRange[1],x:300 - this.props.winStart - this.state.decisionRange[0]}]}/>
+		{/*nominalLine*/}
+		<VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:min,y:max,x0:this.state.decisionRange[0],x:this.state.decisionRange[1]}]}/>
+		<VerticalRectSeries curve='curveMonotoneX' strokeStyle='dashed' stack={true} opacity={0.8} stroke="#ffa500" fill='transparent' strokeWidth={3} data={[{y0:decMin,y:decMax,x0:this.state.pstrt,x:this.state.pend}]}/>
+		
 
-		<LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
 		</XYPlot>
 		</div>
-		</div></div>
+		</div>
+			<Modal ref='fModal' innerStyle={{background:SPARCBLUE1}}>
+					<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults}/>
+				</Modal>
+		</div>
 	}
 }
 class StatSummary extends React.Component{
@@ -1780,11 +1990,13 @@ class StatSummary extends React.Component{
 		var innerbg = '#5d5480'
 		var fontColor = '#e1e1e1'
 
-		if(this.props.branding == 'SPARC'){
+		//if(this.props.branding == 'SPARC'){
 			outerbg = '#e1e1e1'
-			innerbg = SPARCBLUE2
+		
+		if(this.props.branding == 'SPARC'){ innerbg = SPARCBLUE2
 			fontColor = 'black'
 		}
+		//}
 
 		var av = 0;
 		if(this.state.count != 0){
@@ -1851,13 +2063,19 @@ class ProductSettings extends React.Component{
 		this.sendPacket = this.sendPacket.bind(this);
 		this.saveProduct = this.saveProduct.bind(this);
 		this.saveProductPassThrough = this.saveProductPassThrough.bind(this);
+		this.getValue = this.getValue.bind(this);
+		this.showAllProd = this.showAllProd.bind(this);
+		this.copyTo = this.copyTo.bind(this);
+		this.copyAlert = this.copyAlert.bind(this);
+		this.copyConfirm = this.copyConfirm.bind(this);
 		var prodList = [];
 		var prodNames = this.props.pNames
 		this.props.pList.forEach(function (pn,i) {
 			prodList.push({name:prodNames[i], no:pn})
 		})
 
-		this.state ={data:[],showAdvanceSettings:false,searchMode:false, filterString:'', filterList:[],selProd:1,prodList:prodList, cob2:this.getPCob(this.props.srec, this.props.curProd, this.props.drec, this.props.fram)}
+		this.state ={data:[],showAdvanceSettings:false,searchMode:false, filterString:'', filterList:[],selProd:this.props.editProd,prodList:prodList, showAllProd:false,
+		cob2:this.getPCob(this.props.srec, this.props.curProd, this.props.drec, this.props.fram)}
 	}
 	sendPacket(n,v){
 		var self = this;
@@ -1876,7 +2094,7 @@ class ProductSettings extends React.Component{
 			}
 		});
 		setTimeout(function(argument) {
-			self.props.sendPacket('getProdSettings', self.state.selProd)
+			self.props.sendPacket('getProdSettings', self.props.editProd)
 		},300)
 	
 		var el = document.getElementById('prodListScrollBox')
@@ -1933,8 +2151,11 @@ class ProductSettings extends React.Component{
 	toggleSearch(){
 		this.setState({searchMode:!this.state.searchMode})
 	}
-	copyCurrentProd(){
+	copyCurrentProd(target=-1){
 		var nextNum = this.props.pList[this.props.pList.length - 1] + 1;
+		if(target != -1){
+			nextNum = target;
+		}
 		this.props.sendPacket('copyCurrentProd',nextNum)
 	}
 	selectProd(p){
@@ -1992,6 +2213,238 @@ class ProductSettings extends React.Component{
 	passThrough(f){
 		f();
 	}
+	getValue(rval, pname){
+		var curProd = {}
+		if(this.props.prods[this.state.selProd]){
+			curProd = this.props.prods[this.state.selProd]
+		}
+
+		var pram;
+			var val;
+			var label = false
+			var res = vdefByMac[this.props.mac];
+			var pVdef = _pVdef;
+			var dec = 0;
+			var self = this;
+			if(res){
+				pVdef = res[1];
+			}
+
+			if(typeof pVdef[0][pname] != 'undefined'){
+				pram = pVdef[0][pname]
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(d){
+							if(pVdef[6][d]["@rec"] == 0){
+								return self.props.srec[d];
+							}else{
+								return curProd[d];
+							}
+						});
+						if(f == 'mm'){
+							if(deps[0] == 0){
+								dec = 1
+							}
+						}
+					}	
+					if(pram['@bit_len']<=16){
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+				}else if(typeof pram['@decimal'] != 'undefined'){
+					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+				}
+				
+				if(pram["@labels"]){
+					label = true
+				}
+			}else if(typeof pVdef[1][pname] != 'undefined'){
+				
+				pram = pVdef[1][pname]
+				
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(dp){
+							var d = dp;
+							if(dp.indexOf('[0]') != -1){
+								if(pram['@name'].slice(-2) == '_A'){
+									d = dp.replace('[0]','[1]')
+								}
+							}
+							if(pVdef[6][d]["@rec"] == 0){
+								return self.props.srec[d];
+							}else{
+								return curProd[d];
+							}
+						});
+						if(pram['@name'] == 'BeltSpeed'){
+							deps.push(self.props.drec['EncFreq'])
+							//deps.push(1000)
+							console.log(3243,deps)
+						}else if(pram['@type'] == 'rej_del'){
+							deps.push(1000)
+						}
+					}
+					if(f == 'mm'){
+							if(deps[0] == 0){
+								dec = 1
+							}
+						}
+					if(pram['@bit_len']<=16){
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+					if(f == 'phase_offset'){
+						val = 	uintToInt(val,16)//?? phase is coming in with different format for dyn data
+					}
+					
+				}else if(pram["@name"].indexOf('DetThresh') != -1){
+					var dependancies = ['DetMode','PhaseMode','ThresR','ThresX']
+					var deps = dependancies.map(function(d) {
+						// body...
+						if(pram['@name'] == 'DetThresh_A'){
+							return curProd[d+'_A']
+						}else if(pram['@name'] == 'DetThresh_B'){
+							return curProd[d+'_B']
+						}
+					})
+					val = eval(funcJSON['@func']['det_thresh']).apply(this, [].concat.apply([],[val,deps]));
+					
+				}else if(typeof pram['@decimal'] != 'undefined'){
+					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+				}
+				if(pram["@labels"]){
+					label = true
+				}
+			}else if(typeof pVdef[2][pname] != 'undefined'){
+				
+				pram = pVdef[2][pname]
+				
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(f == 'phase'){
+						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+					}else{
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(dp){
+							var d = dp;
+							if(dp.indexOf('[0]') != -1){
+								if(pram['@name'].slice(-2) == '_A'){
+									d = dp.replace('[0]','[1]')
+								}
+							}	
+							if(pVdef[6][d]["@rec"] == 0){
+								return self.props.srec[d];
+							}else if(pVdef[6][d]["@rec"] == 1){
+								return curProd[d];
+							}else if(pVdef[6][d]["@rec"] == 2){
+								return self.props.drec[d];
+							}
+						});
+					}
+					if(f == 'mm'){
+							if(deps[0] == 0){
+								dec = 1
+						}
+					}
+					if(pram['@bit_len']<=16){
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+				}
+					
+				}else if(pram['@name'] == 'RejExitDistEst'){
+					var dependancies = ['SysRec.MetricUnits']
+					deps = dependancies.map(function(d){
+						if(pVdef[6][d]["@rec"] == 0){
+								return self.props.srec[d];
+							}else if(pVdef[6][d]["@rec"] == 1){
+								return curProd[d];
+							}else if(pVdef[6][d]["@rec"] == 2){
+							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+								return self.props.drec[d];
+							}
+					})
+					dec = 1
+					val = eval(funcJSON['@func']['mm']).apply(this, [].concat.apply([], [val, deps]));
+
+				}else if(typeof pram['@decimal'] != 'undefined'){
+					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+				}
+				if(pram["@labels"]){
+					label = true
+				}
+			}else if(typeof pVdef[3][pname] != 'undefined'){
+				
+				pram = pVdef[3][pname]
+				
+				var deps = []
+				val = rval
+				if(pram["@type"]){
+					var f =	pram["@type"]
+					if(f == 'phase'){
+						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+					}else{
+					if(pram["@dep"]){
+						deps = pram["@dep"].map(function(d){
+							if(pVdef[6][d]["@rec"] == 0){
+								return self.props.srec[d];
+							}else if(pVdef[6][d]["@rec"] == 1){
+								return curProd[d];
+							}else if(pVdef[6][d]["@rec"] == 2){
+							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+								return self.props.drec[d];
+							}else if(pVdef[6][d]["@rec"] == 3){
+							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+								return self.props.fram[d];
+							}
+						});
+					}
+					if(pram['@bit_len']<=16){
+					//	////////console.log(f)
+						
+						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+					}
+				}
+					
+				}else if(typeof pram['@decimal'] != 'undefined'){
+					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+				}
+				if(pram["@labels"]){
+					label = true
+				}
+			}else{
+				val = rval
+			}
+			return val;
+	}
+	showAllProd(){
+		this.setState({showAllProd:!this.state.showAllProd})
+	}
+	copyTo(){
+		this.refs.cfTo.toggle();
+	}
+	copyConfirm(target){
+		var prodNos = this.props.pList.slice(0)
+		
+		console.log(2322, prodNos, prodNos.indexOf(target), target)
+
+		if(prodNos.indexOf(target) != -1){
+			this.copyAlert(target)
+		}else{
+			this.copyCurrentProd(target)
+		}
+	}
+	copyAlert(target){
+		var alertMessage = 'Product '+ target+' will be overwritten. Continue?'
+
+		this.refs.cfModal.show(this.copyConfirm, target, alertMessage)
+	}
 	render(){
 		var self = this;
 		var list = [];
@@ -2016,7 +2469,23 @@ class ProductSettings extends React.Component{
 			if(this.props.prods[this.state.selProd]){
 				curProd = this.props.prods[this.state.selProd]
 			}
-			list = this.state.prodList.slice(0)
+			var pList = [];
+			for(var i=1;i<101;i++){
+				pList.push({name:'NULL PROD',no:i, null:true})
+			}
+			this.state.prodList.forEach(function (p) {
+				pList[p.no - 1] = p;
+				// body...
+			})
+			var showText = 'Show All Products'
+			if(this.state.showAllProd){
+				list = pList.slice(0)
+				showText = 'Hide Inactive Products'
+			}else{
+				list = this.state.prodList.slice(0)
+			}
+			//this.state.prodList.slice(0);
+			
 			list.forEach(function (pr) {
 				// body...
 				if(self.state.selProd == pr.no){
@@ -2024,7 +2493,7 @@ class ProductSettings extends React.Component{
 				}
 			})
 			if(sp == null){
-				sp = {name:'NULL PROD', no:1}
+				sp = {name:'NULL PROD', no:1, null:true}
 			}
 			content =( 
 			<div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
@@ -2042,15 +2511,15 @@ class ProductSettings extends React.Component{
 					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
 						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={curProd['NominalWgt']+'g'} param={vdefByMac[this.props.mac][1][1]['NominalWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
 						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={'0g'}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Tare'} value={curProd['ProdTareWeight']}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={'0mm'}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Package Weight'} value={curProd['PkgWeight']+'g'} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
 						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Measure Mode'} value={'Auto'}/></div>
 					</div>
 
 					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
 						<div style={{width:'90%',padding:'2.5%',margin:'2.5%',background:'linear-gradient(90deg,#919aa0, #e1e1e1)'}}>
-							<div><div style={{width:'60%',display:'inline-block'}}>Overweight Accept</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>Enabled</div></div>
-							<div><div style={{width:'60%',display:'inline-block'}}>Product Speed</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>60m/min</div></div>
+							<div><div style={{width:'60%',display:'inline-block'}}>Overweight Accept</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{curProd['OverWeightAllowed']}</div></div>
+							<div><div style={{width:'60%',display:'inline-block'}}>Product Speed</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{this.getValue(curProd['BeltSpeed'],'BeltSpeed')}</div></div>
 							<div><div style={{width:'60%',display:'inline-block'}}>Feedback Control</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>Pulse</div></div>
 							<div><div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
 								
@@ -2086,6 +2555,7 @@ class ProductSettings extends React.Component{
           			<CircularButton onClick={this.saveProduct} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Product'}/>
           
 				</div>
+				
 			</div>)
 			if(this.state.showAdvanceSettings){
 				content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
@@ -2106,7 +2576,7 @@ class ProductSettings extends React.Component{
 			if(prd.no == self.state.selProd){
 				scrollInd = i;
 			}
-			return <div> <ProductSelectItem name={prd.name} p={prd.no} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
+			return <div> <ProductSelectItem name={prd.name} p={prd.no} isNull={prd.null} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
          </div>
 		})
 
@@ -2134,8 +2604,11 @@ class ProductSettings extends React.Component{
           </div></td><td style={{verticalAlign:'top',textAlign:'center'}}>
           	<ScrollArrow ref='arrowTop' offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
 		
-          <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:557, background:'#e1e1e1',overflowY:'scroll'}}>{prods}
-          <button onClick={this.copyCurrentProd}>copy Prod</button>
+          <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:489, background:'#e1e1e1',overflowY:'scroll'}}>{prods}
+          </div>
+          <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #ccc'}}>
+         	<div onClick={this.copyTo} style={{display:'table-cell',height:66, borderRight:'2px solid #ccc', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
+         	<div onClick={this.showAllProd} style={{display:'table-cell',height:66, borderLeft:'2px solid #ccc',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>{showText}</div>
           </div>
           <ScrollArrow ref='arrowBot' offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
 			
@@ -2143,6 +2616,9 @@ class ProductSettings extends React.Component{
 				</tr>
 			</tbody></table>
 			<PromptModal branding={this.props.branding} ref='pmd' save={this.saveProductPassThrough} discard={this.passThrough}/>
+			<CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'cfTo'} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
+
+			<CopyModal ref='cfModal'  branding={this.props.branding}/>
 		</div>
 	}
 }
@@ -2172,6 +2648,7 @@ class ProdSettingEdit extends React.Component{
 	onFocus(){
 
 	}
+
 	render(){
 		var self = this;
 		var ckb;
@@ -2181,7 +2658,7 @@ class ProdSettingEdit extends React.Component{
 
 				var lists = [list]
 
-				ckb = <PopoutWheel branding={this.props.branding} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={'english'}  interceptor={false} name={this.props.label} ref='ed' val={[this.state.value]} options={lists} onChange={this.selectChanged}/>
+				ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={'english'}  interceptor={false} name={this.props.label} ref='ed' val={[this.state.value]} options={lists} onChange={this.selectChanged}/>
 
 			}else{
 				ckb = <CustomKeyboard preload={this.props.param['@name'] == 'ProdName'} branding={this.props.branding} ref='ed' language={'english'} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value}/>
@@ -2208,7 +2685,10 @@ class ProductSelectItem extends React.Component{
 	switchProd(){
 		var self = this;
 		setTimeout(function(){
+			if(!self.props.isNull){
 			self.props.selectProd(self.props.p)
+				
+			}
 		},150)
 	}
 	render () {
@@ -2235,9 +2715,24 @@ class ProductSelectItem extends React.Component{
 		if(this.props.name.length > 0){
 			name = this.props.name
 		}
-		
-		return (<div style={{background:"transparent", color:"#000", position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-block', width:22}}>{check}</div><label onClick={this.switchProd} style={st}>{this.props.p + '.  ' +name}</label></div>
+		var color = '#000'
+		if (this.props.isNull){
+			color = '#aaa'
+		}
+		return (<div style={{background:"transparent", color:color, position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-block', width:22}}>{check}</div><label onClick={this.switchProd} style={st}>{this.props.p + '.  ' +name}</label></div>
 			</div>)
+	}
+}
+class ProdCopy extends React.Component{
+	constructor(props){
+		super(props);
+		this.prodCopy = this.prodCopy.bind(this);
+	}
+	prodCopy(target){
+		this.props.sendPacket('copyCurrentProd',target)
+	}
+	render(){
+		return <div></div>
 	}
 }
 class CustomLabel extends React.Component{
@@ -2340,19 +2835,20 @@ class SettingsPageWSB extends React.Component{
 				cats.push(<div><CatSelectItem branding={self.props.branding} data={c} selected={self.state.sel == i} ind={i} onClick={self.setPath}/></div>)
 			}
 		})
+		cats.push(<div><CatSelectItem branding={self.props.branding} data={{val:{cat:'Check Weight'}}} selected={false} ind={-2} onClick={this.props.onCal} /></div>)
 
 		// bkmkthis
 		var cob;
 		if(this.state.sel == -1){
 			cob = this.props.cob2
 		}
-		var sd =<React.Fragment><div > <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+		var sd =<React.Fragment><div > <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
       		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
 			</div>
 			<div style={{display:'none'}}> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
 </div></React.Fragment>
 		if(this.state.showAccounts){
-			sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+			sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
       		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
 			</div>
 			<div> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
@@ -2661,7 +3157,7 @@ class SettingsPage extends React.Component{
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem3 int={isInt} mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+				nodes.push(<SettingItem3 ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 				
 			}
 			len = catList.length;
@@ -2695,9 +3191,10 @@ class SettingsPage extends React.Component{
 		    		pathString = data.map(function (d) {return d[0].cat}).join('/')
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    	}
-		    
+		    	if(this.props.wsb != true){
 					backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
 						<label style={{color:titleColor, fontSize:ft}}>{backText}</label></div>)
+		    	}
 			
 		    }else{
 		    	var bblab = ''
@@ -3171,6 +3668,10 @@ class SettingItem3 extends React.Component{
 						});
 						if(pram['@name'] == 'BeltSpeed'){
 							deps.push(self.props.dynSettings['EncFreq'])
+							//deps.push(1000)
+							console.log(3243,deps)
+						}else if(pram['@type'] == 'rej_del'){
+							deps.push(1000)
 						}
 					}
 					if(f == 'mm'){
@@ -3696,7 +4197,7 @@ class MultiEditControl extends React.Component{
 					val = _pVdef[7][self.props.param[i]["@labels"]][self.props.language][d];
 				}
 				if((self.props.param[i]['@labels'] == 'InputSrc')){
-					if(self.props.ioBits[self.props.param[i]['@name'].slice(6)] == 0){
+					if(self.props.ioBits[inputSrcArr[d]] == 0){
 						st.color = '#666'
 					}
 				}else if((self.props.param[i]['@labels'] == 'OutputSrc')){
@@ -3768,7 +4269,7 @@ class MultiEditControl extends React.Component{
 						return list
 					}
 				})
-				options = <PopoutWheel branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
+				options = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
 				
 
@@ -3793,7 +4294,7 @@ class MultiEditControl extends React.Component{
 				}
 						var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
 						
-						return <PopoutWheel branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
+						return <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
 					}else{
 						var num = true
 						if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){ num = false }
@@ -3969,7 +4470,7 @@ class MultiEditControl extends React.Component{
 						return list
 					}
 				})
-				options = <PopoutWheel branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={isInt} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
+				options = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={isInt} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
 				return(<div><div  onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerLeave={this.onPointerUp} onClick={this.openSelector}><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
 						<div style={{paddingLeft:this.props.lvst.width}}>
@@ -3980,7 +4481,7 @@ class MultiEditControl extends React.Component{
 					if(typeof self.props.param[i]['@labels'] != 'undefined'){
 						var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
 						
-						return <PopoutWheel branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={isInt} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
+						return <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={isInt} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
 					}else{
 						var num = true
 						if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){ num = false }
@@ -4119,7 +4620,7 @@ class LogInControl2 extends React.Component{
 	render(){
 		var list = this.state.list
 		var namestring = 'Select User'
-		var pw = <PopoutWheel branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref='pw' val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
+		var pw = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref='pw' val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
 
 		return <React.Fragment>{pw}
 			<CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'psw'} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
@@ -4127,7 +4628,108 @@ class LogInControl2 extends React.Component{
 		</React.Fragment> 
 	}
 }
+class CopyModal extends React.Component{
+	constructor(props){
+		super(props)
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false, func: (function () {}),arg:-1, alertMessage:''});
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+		this.do = this.do.bind(this);
+	}
+	show(func, arg, alertMessage){
+		this.setState({show:true,func:func, arg:arg, alertMessage:alertMessage})
+	}
+	close () {
+		var self = this;
+		setTimeout(function () {
+			self.setState({show:false})
+		},100)
+		
+	}
+	do(){
+		this.state.func(this.state.arg)
+	}
+	render () {
+		var	cont = ""
+		if(this.state.show){
+		cont =  <CopyModalCont branding={this.props.branding} vMap={this.props.vMap} do={this.do} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.state.alertMessage}</CopyModalCont>
+		}
+		return <div hidden={!this.state.show} className= 'pop-modal'>
+			{cont}
+		</div>
+	}
+}
+class CopyModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.handleClickOutside = this.handleClickOutside.bind(this)
+		this.close = this.close.bind(this);
+		this.do = this.do.bind(this);
+	//	this.discard = this.discard.bind(this);
+		this.cancel = this.cancel.bind(this);
+	}
+	componentDidMount() {
+		// body...
+	}
+	handleClickOutside(e) {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+		
+	}
+	close() {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+	}
+	do(){
+		var self = this;
+		this.props.do();
+		setTimeout(function(){
+			if(self.props.show){
+			self.props.close();
+			}
+		}, 100)
+		
+	}
+	cancel(){
+		var self = this;
+		setTimeout(function(){
+			self.close();
+			
+		}, 100)
+	}
+	render () {
+		// body...
+		var self = this;
+				var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
+		var klass = 'alertmodal-outer'
+		var clr = '#fefefe'
+		if(this.props.branding == 'SPARC'){
+			klass = 'alertmodal-outer-sp'
+			clr = '#a1a1a1'
+		}
+		
+	  return( <div className={klass}>
+	  			<div style={{padding:10}}>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
+	  			{this.props.children}
+				<div>
+					<CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
+          			<CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+          
+	</div>
+	  		</div>
+		  </div>)
 
+	}
+}
 class PromptModal extends React.Component{
 	constructor(props){
 		super(props)
@@ -4293,7 +4895,7 @@ class AccountControl extends React.Component{
 	render(){
 		var self = this;
 		var levels = ['none','operator','technician','engineer']
-		var pw 	   =  <PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref='pw' val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
+		var pw 	   =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref='pw' val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
 		var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='user' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
 		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
@@ -4492,7 +5094,7 @@ class AccountRow extends React.Component{
 
 		*/
 
-			var pw = 	<PopoutWheel vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref='pw' val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+			var pw = 	<PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref='pw' val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
 		var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='username' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
 		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
 	
@@ -4525,5 +5127,66 @@ class AccountRow extends React.Component{
 			//return(<div className={'sItem noChild'}><div><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>{edit}</div>)
 	}
 }
+class MotorControl extends React.Component{
+	constructor(props){
+		super(props);
+	}
+	testMotor(i){
+		this.props.testMotor(i)
+	}
+	render(){
+		var motors = this.props.motors.map(function (m,i) {
+			// body...
+			return <div><div style={{display:'inline-block'}}>Motor {i}</div> </div>
+
+		})
+		return <div></div>
+	}
+}
+
+class FaultDiv extends React.Component{
+	constructor(props) {
+		super(props)
+		this.clearFaults = this.clearFaults.bind(this)
+		this.maskFault = this.maskFault.bind(this)
+	}
+	clearFaults () {
+		this.props.clearFaults()
+	}
+	maskFault (f) {
+		this.props.maskFault(f)
+	}
+	render () {
+		var self = this;
+		var cont;
+		var clButton;
+		if(this.props.faults.length == 0){
+			cont = (<div><label>No Faults</label></div>)
+		}else{
+			    	var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
+
+			clButton =<div> <CircularButton branding={'SPARC'} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Clear Faults'} onClick={this.clearFaults}/></div>
+       
+			cont = this.props.faults.map(function(f){
+				return <FaultItem maskFault={self.maskFault} fault={f}/>
+			})
+		}
+		return(<div>
+			{cont}
+			{clButton}
+		</div>)
+	}
+}
+class FaultItem extends React.Component{
+	constructor(props) {
+		super(props)
+	}
+	render(){
+		var type = this.props.fault
+		return <div><label style={{color:'#e1e1e1'}}>{"Fault type: " + type}</label>
+		</div>
+	}
+}
 var PromptModalCont =  onClickOutside(PromptModalC);
+var CopyModalCont =  onClickOutside(CopyModalC);
 ReactDOM.render(<Container/>,document.getElementById('content'))

@@ -7,7 +7,7 @@ const vdefMapV2 = require('./vdefmap.json')
 import {Modal, ScrollArrow} from './components.jsx'
 import {CircularButton} from './buttons.jsx'
 
-const inputSrcArr = ['NONE','TACH','EYE','RC_1','RC_2','REJ_EYE', 'AIR_PRES' ,'REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CLEAR_WARNINGS','PHASE_HOLD','CIP_TEST','CIP_PLC','PROD_SEL1', 'PROD_SEL2', 'PROD_SEL3','PROD_SEL4']
+let inputSrcArr = ["NONE","TACH","EYE","RC1","RC2","ISO_1","IO_PL8_01","IO_PL8_02","IO_PL8_03","IO_PL8_04","IO_PL8_05","IO_PL8_06","IO_PL8_07","IO_PL8_08","IO_PL8_09","IO_PL6_01","IO_PL6_02","IO_PL6_03"];
 const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 
 const SPARCBLUE1 = '#30A8E2'
@@ -45,7 +45,7 @@ class PopoutWheel extends React.Component{
 	}
 	render () {
 		var value = "placeholder"
-		return	<PopoutWheelModal branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
+		return	<PopoutWheelModal inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
 	}
 }
 class PopoutWheelModal extends React.Component{
@@ -76,7 +76,7 @@ class PopoutWheelModal extends React.Component{
 	render () {
 		var	cont = ""
 		if(this.state.show){
-		cont =  <PopoutWheelModalCont branding={this.props.branding} mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
+		cont =  <PopoutWheelModalCont inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
 			{cont}
@@ -211,7 +211,7 @@ class PopoutWheelModalC extends React.Component{
 					params = self.props.params[i]
 				}
 			// body...
-			return <PopoutWheelSelector params={params}  height={height} ioBits={self.props.ioBits} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
+			return <PopoutWheelSelector inputs={self.props.inputs} outputs={self.props.outputs} params={params}  height={height} ioBits={self.props.ioBits} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
 			})
 		}else{
 			wheels  = this.state.value.map(function (m,i) {
@@ -229,7 +229,7 @@ class PopoutWheelModalC extends React.Component{
 					//console.log(params)
 				}
 			// body...
-			return <PopoutWheelSelector params={params}  height={height} ioBits={self.props.ioBits} label={lb} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
+			return <PopoutWheelSelector inputs={self.props.inputs} outputs={self.props.outputs} params={params}  height={height} ioBits={self.props.ioBits} label={lb} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
 			})
 		}
 		
@@ -340,11 +340,19 @@ class PopoutWheelSelector extends React.Component{
 			if(self.props.ioBits){
 				if(self.props.params){
 					if(self.props.params['@labels'] == 'InputSrc'){
-						if(self.props.ioBits[inputSrcArr[i]] == 0){
+						if(typeof self.props.inputs != 'undefined'){
+							if(self.props.ioBits[self.props.inputs[i]] == 0){
+								active = false;
+							}
+						}else if(self.props.ioBits[inputSrcArr[i]] == 0){
 							active = false;
 						}
 					}else if(self.props.params['@labels'] == 'OutputSrc'){
-						if(self.props.ioBits[outputSrcArr[i]]==0){
+						if(typeof self.props.outputs != 'undefined'){
+							if(self.props.ioBits[self.props.outputs[i]] == 0){
+								active = false;
+							}
+						}else if(self.props.ioBits[outputSrcArr[i]]==0){
 							active = false;
 						}
 					}
