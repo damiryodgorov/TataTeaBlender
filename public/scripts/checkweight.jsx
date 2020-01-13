@@ -190,7 +190,368 @@ function fletcherCheckBytes (data) {
     }
     return [c1,c2];
 }
+function getParams3(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch){
+  var params = []
+  //////////console.log(cat)
+  //////////console.log(pVdef)
+  cat.params.forEach(function(par) {
+    if(par.type == 0){
 
+      var p = par.val
+      //////////console.log(p)
+        var _p = null//{'type':0, '@name':p, '@children':[], acc:par.acc}
+        if(typeof pVdef[0][p] != 'undefined'){
+          _p = {'type':0, '@name':p, '@data':sysRec[p], '@children':[], acc:par.acc}
+        }else if(typeof pVdef[1][p] != 'undefined'){
+
+          var data = prodRec[p]
+          if(pVdef[1][p]['@labels'] == "FaultMaskBit"){
+            if(prodRec[p.slice(0,-4) + "Warn"]){
+              data = data + prodRec[p.slice(0,-4) + "Warn"];
+            }
+            
+          }
+          _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+          if(p == 'BeltSpeed'){
+            //////console.log('653',par,_p)
+          }
+        }else if(typeof pVdef[2][p] != 'undefined'){
+          _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc}
+        }else if(typeof pVdef[3][p] != 'undefined'){
+          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
+        }else if(typeof pVdef[5][p] != 'undefined'){
+          _p = {'type':0, '@name':p, '@type':'batch','@data':batch[p], '@children':[], acc:par.acc}
+          
+        }else if(par.val == 'Nif_ip'){
+          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
+        }else if(par.val == 'Nif_nm'){
+          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
+        }else if(par.val == 'Nif_gw'){
+          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
+        }else if(par.val == 'DCRate_A'){
+          _p = {'type':0, '@name':p,'@data':prodRec[p], '@children':[], acc:par.acc}
+        }     //////////console.log(_vmap[p])
+    //  //console.log(p)
+        if(_p != null){
+        if(typeof _vmap[p] == 'undefined'){
+      //  //console.log(p)
+        }
+        _vmap[p].children.forEach(function (ch) {
+          var _ch;
+          if(typeof pVdef[0][ch] != 'undefined'){
+          _ch = sysRec[ch]
+          }else if(typeof pVdef[1][ch] != 'undefined'){
+          _ch = prodRec[ch]
+          }else if(typeof pVdef[2][ch] != 'undefined'){
+          
+            _ch = dynRec[ch]
+          }else if(typeof pVdef[3][ch] != 'undefined'){
+          
+            _ch = fram[ch]
+          }else if(typeof pVdef[5][ch] != 'undefined'){
+          
+            _ch = batch[ch]
+          }else if(ch == 'DCRate_B'){
+            _ch = prodRec[ch]
+          }
+          _p['@children'].push(_ch) 
+        })
+          params.push(_p)
+        }else if(_vmap[p]['@interceptor']){
+        
+            var pname = p.slice(0,-4)
+        //    //console.log(pname, p, 342)
+              if(typeof pVdef[0][pname] != 'undefined'){
+                _p = {'type':0, '@name':p, '@data':sysRec[pname], '@children':[], acc:par.acc}
+              }else if(typeof pVdef[1][pname] != 'undefined'){
+
+                var data = prodRec[pname]
+                
+                _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              }else if(typeof pVdef[2][pname] != 'undefined'){
+                _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[pname], '@children':[], acc:par.acc}
+              }else if(typeof pVdef[3][pname] != 'undefined'){
+                _p = {'type':0, '@name':p, '@type':'fram','@data':fram[pname], '@children':[], acc:par.acc}
+              }else if(typeof pVdef[5][pname] != 'undefined'){
+                _p = {'type':0, '@name':p, '@type':'batch','@data':batch[pname], '@children':[], acc:par.acc}
+              }else if(par.val == 'DCRate'){
+                _p = {'type':0, '@name':p,'@data':prodRec[pname], '@children':[], acc:par.acc}
+              }
+              if(_p!= null){
+                params.push(_p);
+              }
+          
+                 ///
+        }else if(_vmap[p]['@test']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                //////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[5][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'batch','@data':batch[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(typeof pVdef[5][ch] != 'undefined'){
+              
+                _ch = batch[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@test'] = true; 
+              params.push(_p)
+          //    //console.log(335,_p)
+            }
+                 ///
+        }else if(_vmap[p]['@halo']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                //////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@halo'] = true; 
+              params.push(_p)
+              ////console.log(335,_p)
+            }
+                 ///
+        }else if(_vmap[p]['@input']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                //////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@input'] = true; 
+              params.push(_p)
+             // //console.log(335,_p)
+            }
+                 ///
+        }else if(_vmap[p]['@combo']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                //////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@combo'] = true; 
+              params.push(_p)
+             // //console.log(335,_p)
+            }
+                 ///
+        }else if(_vmap[p]['@batch']){
+          var a = _vmap[p].children[0];
+                if(typeof pVdef[0][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[1][a] != 'undefined'){
+
+              var data = prodRec[a]
+              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
+                if(prodRec[a.slice(0,-4) + "Warn"]){
+                  data = data + prodRec[a.slice(0,-4) + "Warn"];
+                }
+                
+              }
+              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
+              if(p == 'BeltSpeed'){
+                //////console.log('653',par,_p)
+              }
+            }else if(typeof pVdef[2][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[3][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
+            }else if(typeof pVdef[5][a] != 'undefined'){
+              _p = {'type':0, '@name':p, '@type':'batch','@data':batch[a], '@children':[], acc:par.acc}
+            }else if(par.val == 'DCRate_A'){
+              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
+            }
+            if(_p != null){
+              var ch = _vmap[p].children[1];
+
+              var _ch;
+              if(typeof pVdef[0][ch] != 'undefined'){
+              _ch = sysRec[ch]
+              }else if(typeof pVdef[1][ch] != 'undefined'){
+              _ch = prodRec[ch]
+              }else if(typeof pVdef[2][ch] != 'undefined'){
+              
+                _ch = dynRec[ch]
+              }else if(typeof pVdef[3][ch] != 'undefined'){
+              
+                _ch = fram[ch]
+              }else if(typeof pVdef[5][ch] != 'undefined'){
+              
+                _ch = batch[ch]
+              }else if(ch == 'DCRate_B'){
+                _ch = prodRec[ch]
+              }
+              _p['@children'].push(_ch)
+              _p['@combo'] = true; 
+              params.push(_p)
+             // //console.log(335,_p)
+            }
+                 ///
+        }
+        
+      }else if(par.type == 1){
+        if(typeof par.child != 'undefined'){
+          params.push({type:1, '@data':iterateCats3(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch), acc:par.acc, child:par.child})
+        }else{
+
+
+          params.push({type:1, '@data':iterateCats3(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch), acc:par.acc})
+        }
+      }else if(par.type == 2){
+          if(typeof par.child != 'undefined'){
+          params.push({type:2, '@data':iterateCats3(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch), acc:par.acc, child:par.child})
+        }else{
+
+
+          params.push({type:2, '@data':iterateCats3(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch), acc:par.acc})
+        }
+      }else if(par.type == 3){
+        params.push({type:3, '@name':'Accounts', '@data':'get_accounts', acc:0})
+      }
+              
+    })
+  return params
+}
 function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
 	var params = []
 	//////////console.log(cat)
@@ -495,6 +856,13 @@ function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
 	
 	return cat
 }
+function iterateCats3(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram,batch){
+  //////////console.log(['684',pVdef])
+  ////console.log('is int', int)
+  cat.params = getParams3(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram,batch)
+  
+  return cat
+}
 var _wsurl = 'ws://' +location.host 
 var socket = new FtiSockIo(_wsurl,true);
 
@@ -595,7 +963,7 @@ class Clock extends React.Component{
 class LandingPage extends React.Component{
 	constructor(props){
 		super(props)
-		this.state = {faultArray:[],warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,branding:'SPARC', automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
+		this.state = {faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,branding:'SPARC', automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
 		this.authenticate = this.authenticate.bind(this);
@@ -626,6 +994,9 @@ class LandingPage extends React.Component{
 		this.setAuthAccount = this.setAuthAccount.bind(this);
 		this.logout = this.logout.bind(this);
 		this.clearFaults = this.clearFaults.bind(this);
+		this.saveProductPassThrough = this.saveProductPassThrough.bind(this);
+		this.onPmdClose = this.onPmdClose.bind(this);
+
 	}
 
 	toggleLogin(){
@@ -644,12 +1015,12 @@ class LandingPage extends React.Component{
 			var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGOUT']
 			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
 			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-			this.setState({level:0, userid:0,user:-1, username:'Not Logged In',update:true})
+			this.setState({level:0, userid:0,user:-1, username:'Not Logged In',noupdate:false})
 
 		}
 	}
 	login(v){
-		this.setState({level:v,update:true})
+		this.setState({level:v,noupdate:false})
 	}
 	setAuthAccount(pack){
 		var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGIN']
@@ -662,9 +1033,10 @@ class LandingPage extends React.Component{
 		});
 		var packet = dsp_rpc_paylod_for(rpc[0],pkt);
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
-		if(this.state.userid != pack.user+1){
-			this.setState({level:pack.level, username:pack.username, update:true, userid:pack.user+1, user:pack.user})
-		}		
+    console.log(pack,668)
+		//if(this.state.userid != pack.user+1){
+			this.setState({level:pack.level, username:pack.username,noupdate:false, update:true, userid:pack.user+1, user:pack.user})
+		//}		
 		
 	}
 	authenticate(user,pswd){
@@ -746,7 +1118,8 @@ class LandingPage extends React.Component{
 				var vdf = vdefByMac[this.state.curDet.mac][0]
 				if(e.type == 0){
 					console.log('Sys Rec')
-					this.setState({noupdate:false,srec:e.rec, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
+          var language = vdf['@labels']['Language']['english'][e.rec['Language']];
+					this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
 				}else if(e.type == 1){
 					console.log('Prod Rec')
 					this.setState({noupdate:false,prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
@@ -772,6 +1145,9 @@ class LandingPage extends React.Component{
     					}
     			
 					}
+          if(e.rec['EditProdNeedToSave'] != self.state.rec['EditProdNeedToSave']){
+            noupdate=false;
+          }
 					/*if(_ioBits){
 	   					_ioBits.forEach(function(b){
     						if(typeof e.rec[b] != 'undefined'){
@@ -871,7 +1247,24 @@ class LandingPage extends React.Component{
 				})
 				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
 				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-			}else if(n == 'copyCurrentProd'){
+			}else if(n== 'getProdList'){
+        socket.emit('getProdList', this.state.curDet.ip)
+      }else if(n=='deleteProd'){
+      var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEL_NO_WRITE']
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          if(isNaN(v)){
+            return 0
+          }else{
+            return parseInt(v)
+          }
+        }
+      })
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }else if(n == 'copyCurrentProd'){
 				var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
 				var pkt = rpc[1].map(function (r) {
 					if(!isNaN(r)){
@@ -1179,7 +1572,7 @@ class LandingPage extends React.Component{
 			// body...
 			console.log('prodNames')
 			if(self.state.curDet.ip == pack.ip){
-				self.setState({pList:pack.list, prodNames:pack.names})
+				self.setState({pList:pack.list, prodNames:pack.names, noupdate:false})
 			}
 		})
 		socket.on('locatedResp', function (e) {
@@ -1529,6 +1922,15 @@ class LandingPage extends React.Component{
 	openBatch(){
 
 	}
+	onPmdClose(){
+		if(this.state.rec['EditProdNeedToSave'] == 1){
+	
+		this.refs.pmd.show(function () {
+			// body...
+
+		});
+		}	
+	}
 	render(){
 		//LandingPage.render
 
@@ -1548,7 +1950,7 @@ class LandingPage extends React.Component{
     	var psbtcolor = 'black'
     	var grbrdcolor = '#818a90'
 
-    	var language = 'english'
+    	var language = this.state.language
     	if(this.state.branding == 'FORTRESS'){
     		backgroundColor = FORTRESSPURPLE1
     		grbrdcolor = '#e1e1e1'
@@ -1579,17 +1981,17 @@ class LandingPage extends React.Component{
 
     	var sd = '' 
     	var cald = ''
-    	var dets = <div style={{color:'#e1e1e1', fontSize:24}} onClick={() => this.refs.locateModal.toggle()}>Connected to {this.state.curDet.name}</div>
+    	var dets = ''// <div style={{color:'#e1e1e1', fontSize:24}} onClick={() => this.refs.locateModal.toggle()}>Connected to {this.state.curDet.name}</div>
     	if(this.state.srec['SRecordDate']){
-    		language = vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]
-    		sd =   	<div ><SettingsPageWSB onCal={this.calWeight} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+    		//language = vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]
+    		sd =   	<div ><SettingsPageWSB onCal={this.calWeight} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
       		onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} />
     		</div>
 
     		cald = (	<div style={{background:'#e1e1e1', padding:10}}>
-      		<div style={{marginTop:5}}><ProdSettingEdit branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={'Calibrate Weight'} value={this.state.srec['CalWeight']+'g'} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={'Over Weight Limit'} value={this.state.prec['OverWeightLim']+'g'} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={'Under Weight Limit'} value={this.state.prec['UnderWeightLim']+'g'} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
+      		<div style={{marginTop:5}}><ProdSettingEdit language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['CalWeight']['@translations'][this.state.language]['name']} value={this.state.srec['CalWeight']+'g'} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']} num={true}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['OverWeightLim']['@translations'][this.state.language]['name']} value={this.state.prec['OverWeightLim']+'g'} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['UnderWeightLim']['@translations'][this.state.language]['name']} value={this.state.prec['UnderWeightLim']+'g'} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
 						
 					<CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={'Calibrate'}/>
       		</div>
@@ -1637,21 +2039,21 @@ class LandingPage extends React.Component{
             </tbody>
           </table>
           <table><tbody><tr style={{verticalAlign:'top'}}><td>
-         	<StatSummary branding={this.state.branding} ref='ss'/>
+         	<StatSummary language={language} branding={this.state.branding} ref='ss'/>
           </td><td><div><SparcElem ref='se' branding={this.state.branding} value={lw.toFixed(1) + 'g'} name={'Gross Weight'} width={616} font={40}/></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
+          <LineGraph language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
           <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref='tb'/></LineGraph></div>
           </td><td>
-          	<HorizontalHisto branding={this.state.branding} ref='hh'/>
+          	<HorizontalHisto language={language} branding={this.state.branding} ref='hh'/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',padding:5, marginRight:10, marginLeft:10}} >{play}{stop}</div>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Batch'} onClick={this.openBatch}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Tare'} onClick={this.tareWeight}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Product'} onClick={this.pModalToggle}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Log'} onClick={this.changeBranding}/>
-      	<Modal ref='pmodal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
+      	<Modal ref='pmodal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}} onClose={this.onPmdClose}>
       		<ProductSettings  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
       	</Modal>
       	 <Modal ref='settingModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
@@ -1660,14 +2062,25 @@ class LandingPage extends React.Component{
       	</Modal>
       	<Modal ref='locateModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
       		{this.renderModal()}
-      	</Modal>
+      	</Modal> 
       	<Modal ref='cwModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
       	{cald}
       	</Modal>
+
+      	<PromptModal language={language} branding={this.state.branding} ref='pmd' save={this.saveProductPassThrough} discard={this.passThrough}/>
+		
       
-      	<LogInControl2 branding={this.state.branding} ref='lgctl' onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
+      	<LogInControl2 language={language} branding={this.state.branding} ref='lgctl' onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
       	</div>
       </div>) 
+	}
+	saveProductPassThrough(){
+		if(this.state.rec['EditProdNeedToSave'] == 1){
+			this.sendPacket('saveProduct', this.state.srec['EditProdNo'])	
+		}
+	}
+	passThrough(){
+
 	}
 }
 class DetItemView extends React.Component{
@@ -1783,7 +2196,7 @@ class HorizontalHisto extends React.Component{
 		}
 		var xDomain = [0,15]
 		var yDomin = [0, 5]
-		var data = [{x: this.state.data[0], y:'Total'}, {x: this.state.data[1], y:'Good'}, {x: this.state.data[2], y:'Low Pass'}, {x: this.state.data[3], y:'Low Reject'}, {x:this.state.data[4], y:'High Weight'}, {x:this.state.data[5], y:'Unsettled'}, {x:this.state.data[6], y:'Improbable Weight'}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
+		var data = [{x: this.state.data[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: this.state.data[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: this.state.data[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']}, {x: this.state.data[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:this.state.data[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:this.state.data[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:this.state.data[6], y:vMapV2['ImprobableCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
 		var labelData = data.map(function(d){
 			var lax = 'start'
 			if(d.x > (data[0].x*0.75)){
@@ -1919,7 +2332,12 @@ class LineGraph extends React.Component{
 		bg = 'rgba(255,0,0,0.2)'
 		bg2 = 'rgba(255,0,0,0.3)'
 		if(this.props.faults.length == 1){
-			str = this.props.faults[0] + ' active'
+			if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' active'
+      }else{
+        str = this.props.faults[0] + ' active'  
+      }
+      
 		}else{
 			str = this.props.faults.length + ' faults active'
 		}
@@ -1935,6 +2353,33 @@ class LineGraph extends React.Component{
 			ydm = [this.state.tareWeight + (this.props.winMin)/this.state.calFactor, this.props.winMax/this.state.calFactor + this.state.tareWeight]
 
 	}
+  var grng = ydm.map(function (y) {
+    return (y - self.state.tareWeight)*self.state.calFactor;
+    // body...
+  })
+  var range = grng[1] - grng[0]
+  var divs = 5
+  while(range/divs > 5){
+    if((divs%2 == 0) &&(range/divs > 20)){
+      divs *= 5
+    }else{
+      divs *= 2
+    }
+  }
+  var tcks = []
+  if(grng[0]%divs == 0){
+    grng[0] += 1
+  }
+  var strttick = Math.ceil((grng[0])/divs)*divs
+  while(strttick < grng[1]){
+    tcks.push(strttick);
+    strttick += divs;
+  }
+
+  var tickData = tcks.map(function(t) {
+    // body...
+    return {x:0, y:t/self.state.calFactor + self.state.tareWeight, label:t + 'g', xOffset:10}
+  })
 	//var ydm = [(Math.max(this.props.min - 3*(this.props.nominalWeight - this.props.min),0)/this.state.calFactor) + this.state.tareWeight, 
 		//		((4*this.props.max - 3*this.props.nominalWeight)/this.state.calFactor) - this.state.tareWeight]
 		//		<YAxis tickFormat={v => (v-this.state.tareWeight)*this.state.calFactor} tickValues={[min, max]}/>
@@ -1964,7 +2409,8 @@ class LineGraph extends React.Component{
 		{/*nominalLine*/}
 		<VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:min,y:max,x0:this.state.decisionRange[0],x:this.state.decisionRange[1]}]}/>
 		<VerticalRectSeries curve='curveMonotoneX' strokeStyle='dashed' stack={true} opacity={0.8} stroke="#ffa500" fill='transparent' strokeWidth={3} data={[{y0:decMin,y:decMax,x0:this.state.pstrt,x:this.state.pend}]}/>
-		
+		<LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/>
+  
 
 		</XYPlot>
 		</div>
@@ -2022,7 +2468,7 @@ class StatSummary extends React.Component{
 			stdev = this.state.crec['StdDev'].toFixed(1)+'g'
 			tot = this.state.crec['TotalWeight'].toFixed(1)+'g'
 			gvb = this.state.crec['GiveawayBatch'].toFixed(1)+'g'
-			gvs = this.state.crec['GiveawaySample'].toFixed(1)+'g'
+			gvs = this.state.crec['SampleGiveawayBatch'].toFixed(1)+'g'
 		}
 	return	<div style={{width:220,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
 
@@ -2068,6 +2514,8 @@ class ProductSettings extends React.Component{
 		this.copyTo = this.copyTo.bind(this);
 		this.copyAlert = this.copyAlert.bind(this);
 		this.copyConfirm = this.copyConfirm.bind(this);
+    this.deleteProd = this.deleteProd.bind(this);
+    this.deleteProdConfirm = this.deleteProdConfirm.bind(this);
 		var prodList = [];
 		var prodNames = this.props.pNames
 		this.props.pList.forEach(function (pn,i) {
@@ -2109,6 +2557,14 @@ class ProductSettings extends React.Component{
 		_cvdf = null;
 		return cob
 	}
+  getBatch(sys,prod,dyn,batch,fram){
+    var vdef = vdefByMac[this.props.mac]
+    var _cvdf = JSON.parse(JSON.stringify(vdef[6]['Batch']))
+    var cob = iterateCats2(_cvdf, vdef[1], sys, prod, vdef[5], dyn, fram, batch)
+    vdef = null;
+    _cvdf = null;
+    return cob
+  }
 	componentWillReceiveProps(newProps){
 		var prodList = [];
 		var prodNames = newProps.pNames
@@ -2152,11 +2608,16 @@ class ProductSettings extends React.Component{
 		this.setState({searchMode:!this.state.searchMode})
 	}
 	copyCurrentProd(target=-1){
-		var nextNum = this.props.pList[this.props.pList.length - 1] + 1;
+		var self = this;
+    var nextNum = this.props.pList[this.props.pList.length - 1] + 1;
 		if(target != -1){
 			nextNum = target;
 		}
 		this.props.sendPacket('copyCurrentProd',nextNum)
+    setTimeout(function (argument) {
+      // body...
+      self.props.sendPacket('getProdList')
+    },300)
 	}
 	selectProd(p){
 		var self = this;
@@ -2445,6 +2906,17 @@ class ProductSettings extends React.Component{
 
 		this.refs.cfModal.show(this.copyConfirm, target, alertMessage)
 	}
+  deleteProd(p){
+    this.refs.dltModal.show(p)
+  }
+  deleteProdConfirm(p){
+    var self = this;
+    this.sendPacket('deleteProd',p)
+    setTimeout(function(argument) {
+      // body...
+      self.sendPacket('getProdList')
+    },300)
+  }
 	render(){
 		var self = this;
 		var list = [];
@@ -2463,7 +2935,7 @@ class ProductSettings extends React.Component{
 			})
 			list = this.state.filterList.slice(0)
 			content = <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6, height:480}}>
-			<EmbeddedKeyboard label={'Search Products'} liveUpdate={this.updateFilterString} language={'english'}/></div>
+			<EmbeddedKeyboard label={'Search Products'} liveUpdate={this.updateFilterString} language={this.props.language}/></div>
 		}else{
 			var curProd = {}
 			if(this.props.prods[this.state.selProd]){
@@ -2498,7 +2970,7 @@ class ProductSettings extends React.Component{
 			content =( 
 			<div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
 				<div>
-				<div style={{display:'inline-block', verticalAlign:'top'}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={60} w2={400} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
+				<div style={{display:'inline-block', verticalAlign:'top'}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={400} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
 				<div style={{display:'inline-block', marginLeft:87, marginBottom:-10}}>
 					<div style={{position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
 						<div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%,#1C3746 26%, #1C3746)'}}/>
@@ -2509,11 +2981,11 @@ class ProductSettings extends React.Component{
 				</div>
 				<div>
 					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={curProd['NominalWgt']+'g'} param={vdefByMac[this.props.mac][1][1]['NominalWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={'0g'}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Package Weight'} value={curProd['PkgWeight']+'g'} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Measure Mode'} value={'Auto'}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={curProd['NominalWgt']+'g'} param={vdefByMac[this.props.mac][1][1]['NominalWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={'0g'}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Package Weight'} value={curProd['PkgWeight']+'g'} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Measure Mode'} value={'Auto'}/></div>
 					</div>
 
 					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
@@ -2576,7 +3048,7 @@ class ProductSettings extends React.Component{
 			if(prd.no == self.state.selProd){
 				scrollInd = i;
 			}
-			return <div> <ProductSelectItem name={prd.name} p={prd.no} isNull={prd.null} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
+			return <div> <ProductSelectItem name={prd.name} p={prd.no} isNull={prd.null} deleteProd={self.deleteProd} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
          </div>
 		})
 
@@ -2619,8 +3091,20 @@ class ProductSettings extends React.Component{
 			<CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'cfTo'} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
 
 			<CopyModal ref='cfModal'  branding={this.props.branding}/>
+      <DeleteModal ref= 'dltModal' branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
 		</div>
 	}
+}
+class BatchControl extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {batchSettings:{}}
+  }
+  render(){
+    return <div>
+      <div></div>
+    </div>
+  }
 }
 class ProdSettingEdit extends React.Component{
 	constructor(props){
@@ -2658,10 +3142,10 @@ class ProdSettingEdit extends React.Component{
 
 				var lists = [list]
 
-				ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={'english'}  interceptor={false} name={this.props.label} ref='ed' val={[this.state.value]} options={lists} onChange={this.selectChanged}/>
+				ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref='ed' val={[this.state.value]} options={lists} onChange={this.selectChanged}/>
 
 			}else{
-				ckb = <CustomKeyboard preload={this.props.param['@name'] == 'ProdName'} branding={this.props.branding} ref='ed' language={'english'} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value}/>
+				ckb = <CustomKeyboard preload={this.props.param['@name'] == 'ProdName'} branding={this.props.branding} ref='ed' language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value}/>
 
 			}
 		
@@ -2681,7 +3165,8 @@ class ProductSelectItem extends React.Component{
 	constructor(props){
 		super(props)
 		this.switchProd = this.switchProd.bind(this);
-	}
+	  this.deleteProd = this.deleteProd.bind(this);
+  }
 	switchProd(){
 		var self = this;
 		setTimeout(function(){
@@ -2691,11 +3176,21 @@ class ProductSelectItem extends React.Component{
 			}
 		},150)
 	}
+  deleteProd(){
+    var self = this;
+    setTimeout(function(){
+      if(!self.props.isNull){
+      self.props.deleteProd(self.props.p)
+        
+      }
+    },150)
+  }
 	render () {
 		// body..
 		
 		var check= ""
-		var dsW = 300;
+     var  del = <img onClick={this.deleteProd} src="assets/trash.svg"/>
+	var dsW = 300;
 		var stW = 227;
 		var ds = {paddingLeft:7, display:'inline-block', width:dsW, background:"transparent"}
 		var st = {padding:7,display:'inline-block', width:stW, height:50, lineHeight:'50px',fontSize:22,borderBottom:'2px solid #bbbbbbaa'}
@@ -2706,11 +3201,12 @@ class ProductSelectItem extends React.Component{
 			ds = {paddingLeft:7,display:'inline-block', width:dsW,	 background:"#7ccc7c"}
 			//st = {color:'green', padding:7, display:'inline-block', width:200}
 			mgl = -160
-
+      del = ""
 		}
 		if(this.props.running){
 			check =  <img src="assets/Check_mark.svg"/>
-		}
+		  del = ""
+    }
 		var name = 'Product '+this.props.p
 		if(this.props.name.length > 0){
 			name = this.props.name
@@ -2719,7 +3215,7 @@ class ProductSelectItem extends React.Component{
 		if (this.props.isNull){
 			color = '#aaa'
 		}
-		return (<div style={{background:"transparent", color:color, position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-block', width:22}}>{check}</div><label onClick={this.switchProd} style={st}>{this.props.p + '.  ' +name}</label></div>
+		return (<div style={{background:"transparent", color:color, position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-block', width:22}}>{check}</div><label onClick={this.switchProd} style={st}>{this.props.p + '.  ' +name}</label> <div style={{display:'inline-block', width:22}}>{del}</div></div>
 			</div>)
 	}
 }
@@ -4173,7 +4669,9 @@ class MultiEditControl extends React.Component{
       			vlabelStyle.boxShadow = ' -50px 0px 0 0 #2098d2'
       		}
 	    }
-
+      var iod = false;
+      var iogreen = true;
+      var ioindicator = '';
 	    var vLabels = this.state.val.map(function(d,i){  
 			var val = d;
 			var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
@@ -4197,12 +4695,16 @@ class MultiEditControl extends React.Component{
 					val = _pVdef[7][self.props.param[i]["@labels"]][self.props.language][d];
 				}
 				if((self.props.param[i]['@labels'] == 'InputSrc')){
+          iod = true
 					if(self.props.ioBits[inputSrcArr[d]] == 0){
 						st.color = '#666'
+            iogreen = false;
 					}
 				}else if((self.props.param[i]['@labels'] == 'OutputSrc')){
+           iod = true
 					if(self.props.ioBits[outputSrcArr[d]] == 0){
 						st.color = '#666'
+            iogreen = false;
 					}
 				}
 			}
@@ -4221,6 +4723,7 @@ class MultiEditControl extends React.Component{
 			
 			return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val}</CustomLabel>)
 		})
+    
 
 		var acc = false
 		if(this.props.acc){
@@ -4231,13 +4734,20 @@ class MultiEditControl extends React.Component{
 			}
 		}
 
+  if(iod){
+      if(iogreen){
+        ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#5d5'}}></div>
+      }else{
+         ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#555'}}></div>
+      }
+      }
 		if(!acc){
 			return <div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
 				{namestring}
 			</div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
-				{vLabels}
+				{vLabels}{ioindicator}
 			</div>
 			</div>
 		}else{
@@ -4278,7 +4788,7 @@ class MultiEditControl extends React.Component{
 				{namestring}
 			</div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
-				{vLabels}
+				{vLabels}{ioindicator}
 			</div>
 			{options}
 			</div>
@@ -4313,7 +4823,7 @@ class MultiEditControl extends React.Component{
 				{namestring}
 			</div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
-				{vLabels}
+				{vLabels}{ioindicator}
 			</div>
 			{options}
 			</div>
@@ -4730,6 +5240,113 @@ class CopyModalC extends React.Component{
 
 	}
 }
+class DeleteModal extends React.Component{
+  constructor(props){
+    super(props)
+    var klass = 'custom-modal'
+    if(this.props.className){
+      klass = this.props.className
+    }
+    this.state = ({className:klass, show:false, override:false ,keyboardVisible:false, p:-1});
+    this.show = this.show.bind(this);
+    this.close = this.close.bind(this);
+    this.delete = this.delete.bind(this);
+    //this.discard = this.discard.bind(this);
+  }
+  show (p) {
+    console.log(p)
+    this.setState({show:true, p:p})
+  }
+  close () {
+    var self = this;
+    setTimeout(function () {
+      self.setState({show:false})
+    },100)
+    
+  }
+  delete(){
+    this.props.deleteProd(this.state.p);
+  }
+  render () {
+    var cont = ""
+    if(this.state.show){
+    cont =  <DeleteModalCont branding={this.props.branding} vMap={this.props.vMap} delete={this.delete} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{'Delete Selected Product?'}</DeleteModalCont>
+    }
+    return <div hidden={!this.state.show} className= 'pop-modal'>
+      {cont}
+    </div>
+  }
+}
+class DeleteModalC extends React.Component{
+  constructor(props){
+    super(props);
+    this.handleClickOutside = this.handleClickOutside.bind(this)
+    this.close = this.close.bind(this);
+    this.delete = this.delete.bind(this);
+    this.cancel = this.cancel.bind(this);
+  }
+  componentDidMount() {
+    // body...
+  }
+  handleClickOutside(e) {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+    
+  }
+  close() {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+  }
+  delete(){
+    var self = this;
+    this.props.delete();
+    setTimeout(function(){
+      if(self.props.show){
+      self.props.close();
+      }
+    }, 100)
+    
+  }
+  cancel(){
+    var self = this;
+    setTimeout(function(){
+      self.close();
+      
+    }, 100)
+  }
+  render () {
+    // body...
+    var self = this;
+        var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
+    var klass = 'alertmodal-outer'
+    var clr = '#fefefe'
+    if(this.props.branding == 'SPARC'){
+      klass = 'alertmodal-outer-sp'
+      clr = '#a1a1a1'
+    }
+    
+    return( <div className={klass}>
+          <div style={{padding:10}}>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
+          <div>
+          {this.props.children}
+          </div>
+        <div>
+                <CircularButton onClick={this.delete} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Delete Product'}/>
+                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+          
+  </div>
+        </div>
+      </div>)
+
+  }
+}
+
+
 class PromptModal extends React.Component{
 	constructor(props){
 		super(props)
@@ -5183,10 +5800,15 @@ class FaultItem extends React.Component{
 	}
 	render(){
 		var type = this.props.fault
+    if(typeof vMapV2[this.props.fault+'Mask'] != 'undefined'){
+        type = vMapV2[this.props.fault+'Mask']['@translations']['english']['name'];
+      }
+
 		return <div><label style={{color:'#e1e1e1'}}>{"Fault type: " + type}</label>
 		</div>
 	}
 }
 var PromptModalCont =  onClickOutside(PromptModalC);
+var DeleteModalCont =  onClickOutside(DeleteModalC);
 var CopyModalCont =  onClickOutside(CopyModalC);
 ReactDOM.render(<Container/>,document.getElementById('content'))
