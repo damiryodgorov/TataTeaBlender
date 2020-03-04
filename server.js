@@ -29,10 +29,13 @@ const usb = require('usb');
 const sys = require('sys');
 const exec = require('child_process').exec;
 const crc = require('crc');
+const timezones = require('./timezones.json')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 var Helpers = require('./helpers.js');
 
 var dispSettings = require('./displaySetting.json')
+
+
 var uintToInt = Helpers.uintToInt;
 var getVal = Helpers.getVal;
 var passReset = Helpers.passReset;
@@ -232,8 +235,8 @@ function initSocks(arr, cb){
   clients = {};
   nphandlers = {};
   accountJSONs = {};
-  _accounts = {};
-  _tempAccounts = {};
+ // _accounts = {};
+ // _tempAccounts = {};
   //console.log('dsp_ips')
   for(var i = 0; i<arr.length; i++){
    // //console.log(arr)
@@ -278,6 +281,7 @@ function getVdef(ip, callback,failed){
 
             nvdf[p["@rec"]].push(p['@name'])
             pVdef[p['@rec']][p['@name']] = p
+
           }
         })
         for(var p in vdef['@deps']){
@@ -376,6 +380,9 @@ function getVdefCW(ip, callback,failed){
 
             nvdf[p["@rec"]].push(p['@name'])
             pVdef[p['@rec']][p['@name']] = p
+            if(p['@name'] == 'Timezone'){
+              pVdef[p['@rec']][p['@name']]['@type'] = 'int16'
+            }
           }
         })
         for(var p in vdef['@deps']){
@@ -698,6 +705,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
       userrec[p] = getVal(buf, 7, p, pVdef)
       // body...
     })
+    console.log('user rec', userrec)
     var usernames = []
     var accArray = []
     for(var i = 0; i< _Vdef['@defines']['MAX_USERNAMES']; i++){
@@ -1353,6 +1361,10 @@ wss.on('connection', function(scket, req){
   socket.on('getDispSettings', function(){
     socket.emit('dispSettings',dispSettings)
   })
+  socket.on('getTimezones', function(){
+    socket.emit('timezones',timezones)
+  })
+
 
   function getProdList(ip) {
     console.log('getting Prod List')
@@ -2098,6 +2110,12 @@ wss.on('connection', function(scket, req){
     //console.log(packet)
     var hash = crypto.createHash('sha1').update(Buffer.from((packet.pswd + '000000').slice(0,6),'ascii')).digest().slice(0,8)
     console.log('hash',hash)
+    if(typeof _accounts[packet.ip] == 'undefined'){
+        socket.emit('notify', 'Authentication Error')
+    }else if(typeof _accounts[packet.ip][packet.user] == 'undefined'){
+
+        socket.emit('notify', 'Authentication Error')
+    }
     var ap = _accounts[packet.ip][packet.user].phash
 
     var tempUser;
@@ -2109,7 +2127,8 @@ wss.on('connection', function(scket, req){
       for(var i = 0; i < 50; i++){
         tmpArr.push({phash:null,preset:0})
       }
-      _tempAccounts[packet.ip] = tmpArr;
+      _tempAccounts[packet.ip] = tmpArr.slice(0);
+      tempUser  = _tempAccounts[packet.ip][packet.user]
     } 
     console.log('get tmpuser',hash)
     //console.log(_accounts[packet.ip][packet.user].phash)

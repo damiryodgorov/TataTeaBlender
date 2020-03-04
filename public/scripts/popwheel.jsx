@@ -45,7 +45,7 @@ class PopoutWheel extends React.Component{
 	}
 	render () {
 		var value = "placeholder"
-		return	<PopoutWheelModal inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
+		return	<PopoutWheelModal ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
 	}
 }
 class PopoutWheelModal extends React.Component{
@@ -76,7 +76,7 @@ class PopoutWheelModal extends React.Component{
 	render () {
 		var	cont = ""
 		if(this.state.show){
-		cont =  <PopoutWheelModalCont inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
+		cont =  <PopoutWheelModalCont ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
 			{cont}
@@ -211,7 +211,7 @@ class PopoutWheelModalC extends React.Component{
 					params = self.props.params[i]
 				}
 			// body...
-			return <PopoutWheelSelector inputs={self.props.inputs} outputs={self.props.outputs} params={params}  height={height} ioBits={self.props.ioBits} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
+			return <PopoutWheelSelector ovWidth={self.props.ovWidth} inputs={self.props.inputs} outputs={self.props.outputs} params={params}  height={height} ioBits={self.props.ioBits} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
 			})
 		}else{
 			wheels  = this.state.value.map(function (m,i) {
@@ -229,7 +229,7 @@ class PopoutWheelModalC extends React.Component{
 					//console.log(params)
 				}
 			// body...
-			return <PopoutWheelSelector inputs={self.props.inputs} outputs={self.props.outputs} params={params}  height={height} ioBits={self.props.ioBits} label={lb} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
+			return <PopoutWheelSelector ovWidth={self.props.ovWidth} inputs={self.props.inputs} outputs={self.props.outputs} params={params}  height={height} ioBits={self.props.ioBits} label={lb} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
 			})
 		}
 		
@@ -262,11 +262,11 @@ class PopoutWheelModalC extends React.Component{
 		}
 		var klass = 'selectmodal-outer'
 		var klr = '#fefefe'
-		if(this.props.branding){
+		if(this.props.branding  == 'SPARC'){
 			klass = 'selectmodalo-sp'
 			klr = '#010101'
 		}
-
+		var st = {minWidth:minW, marginTop:60}
 
 		////console.log(tooltiptext)
 	  return( <div className={klass} style={{minWidth:minW, marginTop:60}}>
@@ -361,20 +361,24 @@ class PopoutWheelSelector extends React.Component{
 			// body...
 			if(i == self.props.value){
 
-				return <SelectSCModalRow active={active} ref={o.toString()} onClick={self.select} value={o} index={i} selected={true}/>
+				return <SelectSCModalRow ovWidth={self.props.ovWidth} active={active} ref={o.toString()} onClick={self.select} value={o} index={i} selected={true}/>
 			}else{
-				return <SelectSCModalRow active={active} ref={o.toString()} onClick={self.select} value={o} index={i} selected={false}/>
+				return <SelectSCModalRow ovWidth={self.props.ovWidth} active={active} ref={o.toString()} onClick={self.select} value={o} index={i} selected={false}/>
 			}
 		})
 		var ul;
 		if(this.props.label){
 			ul = <div style={{color:"#ccc", marginTop:-16, lineHeight:1.5,display:'block'}}>{this.props.label}</div>
 		}
+		var width = 230
+		if(typeof this.props.ovWidth != 'undefined'){
+			width = this.props.ovWidth + 50
+		}
 		return(
 			<div style={{display:'inline-block'}}>
 			{ul}
 			<ScrollArrow ref='arrowTop' active={sa} offset={48} width={48} marginTop={-25}  mode={'top'} onClick={this.scrollUp}/>
-			<div id={this.props.Id} onScroll={this.handleScroll} style={{width:230, height:this.props.height, overflowY:'scroll', padding:5, marginLeft:5, marginRight:5, background:'rgba(200,200,200,1)'}}>
+			<div id={this.props.Id} onScroll={this.handleScroll} style={{width:width, height:this.props.height, overflowY:'scroll', padding:5, marginLeft:5, marginRight:5, background:'rgba(200,200,200,1)'}}>
 				{options}
 			</div>
 			<ScrollArrow ref='arrowBot' active={sa} offset={48} width={48} marginTop={-20} mode={'bot'} onClick={this.scrollDown}/>
@@ -408,7 +412,11 @@ class SelectSCModalRow extends React.Component{
 		if(!this.props.active){
 				style.color = "#666"
 			}
-		return (<div onClick={this.onClick} style={style}><div style={{width:22, display:'table-cell'}}>{check}</div><div style={{width:180, display:'table-cell', lineHeight:'54px', height:54}}>{this.props.value}</div><div style={{width:22, display:'table-cell'}}></div></div>)
+		var width = 180
+		if(typeof this.props.ovWidth != 'undefined'){
+			width = this.props.ovWidth
+		}
+		return (<div onClick={this.onClick} style={style}><div style={{width:22, display:'table-cell'}}>{check}</div><div style={{width:width, display:'table-cell', lineHeight:'54px', height:54}}>{this.props.value}</div><div style={{width:22, display:'table-cell'}}></div></div>)
 	}
 }
 

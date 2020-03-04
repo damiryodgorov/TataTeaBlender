@@ -506,6 +506,21 @@ li {
     border: 8px solid rgb(129,138,144);
     box-shadow: 0 0 6px black;
 }
+.circularButton_FT{
+    text-align: center;
+    width:191px;
+    background-color: #e1e1e1;
+    position: relative;
+    margin-top: 8px;
+    margin-right: auto;
+    margin-left: auto;
+    height:50px;
+    overflow: hidden;
+    border-radius: 32px;
+    padding: 3px;
+    border: 8px solid rgb(129,138,144);
+    box-shadow: 0 0 6px black;
+}
 .touchActive{
     background-color: #332a5f;
 }
@@ -527,6 +542,9 @@ li {
 }
 .touchActive_sp{
     background-color: #2098d2;
+}
+.touchActive_FT{
+    background-color: #5d5480;
 }
 /*.circularButton:hover{
     background-color: #383064;

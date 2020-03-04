@@ -10,6 +10,19 @@ const PASS_SEED2_OFFSET = 105
 const PASS_SEED3_OFFSET = 78
 const PASS_SEED4_OFFSET = 111
 class Params{
+ 
+  static int64(val){
+    var buf = Buffer.alloc(8)
+    for(var j = 0; j<4; j++){
+      buf.writeUInt16LE(val[j], j*2)
+    }
+  // var arr = []
+   // for (var i = 0; i<2; i++){
+
+    //  arr.push(buf.readInt32LE(i*4))
+   // }
+    return buf//val[1] << 48 | val[0] << 32 | val[3] << 16 | val[2]
+  }
   static int32_array(val){
     var buf = Buffer.alloc(1200);
     console.log(val.length)
@@ -22,8 +35,23 @@ class Params{
     }
     return arr;
   }
+  static float_array(val){
+    var buf = Buffer.alloc(1200);
+    console.log(val.length)
+    for(var j = 0; j<val.length; j++){
+      buf.writeUInt16LE(val[j],j*2)
+    }
+    var arr = []
+    for(var i = 0; i<300;i++){
+      arr.push(buf.readFloatLE(i*4));
+    }
+    return arr;
+  }
   static int32(val){
     return val[1] << 16 | val[0]
+  }
+  static int16(val){
+    return uintToInt(val,16)
   }
   static float(val){
     var int = val[1] << 16 | val[0]
@@ -334,6 +362,10 @@ function getVal(arr, rec, key, pVdef){
 
               val = uintToInt(val,16)
             
+            }else if(param['@type'] == 'int16'){
+              val = uintToInt(val,16)
+            }else if(param['@name'] == 'Timezone'){
+              val = uintToInt(val, 16)
             }
           }
       } 

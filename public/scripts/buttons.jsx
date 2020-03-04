@@ -24,10 +24,18 @@ class CircularButton extends React.Component{
 	constructor(props) {
 
 		super(props)
-		this.state = {touchActive:false}
+		this.state = {touchActive:false, lab:props.lab}
 		this.onClick = this.onClick.bind(this)
 		this.onTouchStart = this.onTouchStart.bind(this);
 		this.onTouchEnd = this.onTouchEnd.bind(this);
+		this.simTouch = this.simTouch.bind(this);
+		this.tStart = this.tStart.bind(this);
+		this.tEnd = this.tEnd.bind(this);
+	}
+	componentWillReceiveProps(newProps){
+		if(newProps.lab != this.props.lab){
+			this.setState({lab:newProps.lab})
+		}
 	}
 	onClick () {
 		if(!this.props.disabled){
@@ -36,12 +44,29 @@ class CircularButton extends React.Component{
 			toast('Test is not configured')
 		}
 	}
+	simTouch(ms=1000){
+		var self = this;
+		this.onTouchStart();
+		setTimeout(function () {
+			self.onTouchEnd();
+		},ms)
+	}
 	onTouchStart (){
 		this.setState({touchActive:true})
 	}
+	tStart(str){
+		this.setState({touchActive:true, lab:str})
+	}
+	tEnd(){
 
+		this.setState({touchActive:false, lab:this.props.lab})
+	}
 	onTouchEnd (){
-		this.setState({touchActive:false})
+		if(this.props.override){
+
+		}else{
+			this.setState({touchActive:false})
+		}
 	}
 	render () {
 		var bg = '#818a90'
@@ -54,6 +79,13 @@ class CircularButton extends React.Component{
 		var fontColor = '#e1e1e1'
 		if(this.state.touchActive){
 			klass = 'circularButton touchActive'
+		}
+		if(this.props.branding == 'FORTRESS'){
+			klass = 'circularButton_FT'
+			fontColor = SPARCBLUE1
+			if(this.state.touchActive){
+				klass = 'circularButton_FT touchActive_FT'
+			}	
 		}
 		if(this.props.branding == 'SPARC'){
 			fontColor = SPARCBLUE1
@@ -95,13 +127,13 @@ class CircularButton extends React.Component{
 			bstyle.background = '#818a90'
 			innerStyle.color = "#bbb"
 			return(<div  className={klass} onClick={this.onClick} style={bstyle}>
-				<div style={innerStyle}>{this.props.lab}</div>
+				<div style={innerStyle}>{this.state.lab}</div>
 			</div>)
 		}	
 
 		//if(this.props.inverted){
 			return(<div  className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onClick={this.onClick} style={bstyle}>
-				<div style={innerStyle}>{this.props.lab}</div>
+				<div style={innerStyle}>{this.state.lab}</div>
 			</div>)
 		//}else{
 		//	return(<div  className={klass} onMouseDown={this.onTouchStart} onMouseUp={this.onTouchEnd} onClick={this.onClick} style={bstyle}>

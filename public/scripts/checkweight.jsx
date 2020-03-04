@@ -13,7 +13,7 @@ import {ToastContainer, toast,Zoom, cssTransition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {css} from 'glamor'
 import {XYPlot,MarkSeries, LabelSeries, XAxis, YAxis,VerticalGridLines, HorizontalGridLines, LineSeries, HorizontalRectSeries, VerticalRectSeries, HorizontalBarSeries, AreaSeries, VerticalBarSeries} from 'react-vis';
-
+import {Uint64LE, Int64LE, Uint64BE, Int64BE} from 'int64-buffer';
 var createReactClass = require('create-react-class');
 
 let inputSrcArr = ["NONE","TACH","EYE","RC1","RC2","ISO_1","IO_PL8_01","IO_PL8_02","IO_PL8_03","IO_PL8_04","IO_PL8_05","IO_PL8_06","IO_PL8_07","IO_PL8_08","IO_PL8_09","IO_PL6_01","IO_PL6_02","IO_PL6_03"];
@@ -30,8 +30,10 @@ var myTimers = {}
 const SPARCBLUE2 = '#30A8E2'
 const SPARCBLUE1 = '#1C3746'
 const SPARCBLUE3 = '#475C67'
-const FORTRESSPURPLE1 = '#362c66'
+const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
+const FORTRESSPURPLE3 = '#6d6490'
+const FORTRESSGRAPH = '#b8860b'
 
 const vdefMapV2 = require('./vdefmap.json')
 const funcJSON = require('./funcjson.json')
@@ -593,7 +595,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     //	//console.log(p)
     		if(_p != null){
     		if(typeof _vmap[p] == 'undefined'){
-    	//	//console.log(p)
+    	     console.log(p)
     		}
     		_vmap[p].children.forEach(function (ch) {
     			var _ch;
@@ -891,8 +893,16 @@ console.log('on vdef')
    
     }
     );
+
+     var bob = {}
+    bob['@name'] = '@branding'
+    bob['@labels'] = 'theme'
+    bob['@rpcs'] = {'theme':[0]}
+    res[0]['@branding'] =  bob//{'@name':'@branding', '@labels':'theme','@rpcs':{'theme':[0]}}
+    res[9]['@branding'] =  bob//{'@name':'@branding', '@labels':'theme','@rpcs':{'theme':[0]}}
     res[6] = json["@deps"];
     res[7] = json["@labels"]
+    res[7]['theme'] = {'english':['SPARC','FORTRESS']}
     res[8] = [];
    for(var par in res[2]){  
       if(par.indexOf('Fault') != -1){
@@ -904,6 +914,7 @@ console.log('on vdef')
     _pVdef = res;
     if(json['@defines']['LOGICAL_OUTPUT_NAMES']){
     	outputSrcArr = json['@defines']['LOGICAL_OUTPUT_NAMES'].slice(0)
+      inputSrcArr = json['@defines']['PHYSICAL_INPUT_NAMES'].slice(0)
     }
     //if(json['@defines']['INTERCEPTOR']){
         vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@cwsys"]], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
@@ -960,10 +971,217 @@ class Clock extends React.Component{
 		return <div style={style}>{this.state.date}</div>
 	}
 }
+class FatClock extends React.Component{
+  constructor(props){
+    super(props)
+    var dateStr = new Date().toISOString();
+    this.setDate = this.setDate.bind(this);
+    this.state = {date:dateStr.slice(0,10) + ' '+ dateStr.slice(11,19)}
+    this.changeDT = this.changeDT.bind(this);
+    this.toggleCK = this.toggleCK.bind(this);
+    this.setDT = this.setDT.bind(this);
+    this.setDST = this.setDST.bind(this);
+    this.setTz = this.setTz.bind(this);
+  }
+  componentDidMount(){
+    //socket.emit('getTimezones')
+  }
+  setTz(tz){
+    this.props.sendPacket('Timezone',tz)
+  }
+  setDST(dst){
+    this.props.sendPacket('DaylightSavings',dst)
+    this.refs.dtsModal.close();
+  }
+  setDT(dt){
+    var self = this;
+    this.setState({dt:dt, tick:0})
+    setTimeout(function(){
+      self.setState({tick:1})
+    },1000)
+  }
+  changeDT(dt){
+    this.props.sendPacket('DateTime', dt)
+    this.refs.dtsModal.close();
+  }
+  toggleCK(){
+    var self = this;
+    //this.refs.ck.toggle()
+    this.refs.dtsModal.toggle();
+    setTimeout(function(){
+      self.refs.dts.getDT(self.state.date)
+      socket.emit('getTimezones')
+    },200)
+  }
+  setDate(date){
+    var self = this;
+    this.setState({date:date})
+
+    setTimeout(function () {
+      // body...
+      var sec = parseInt(date.slice(-1)) + 1;
+      self.setState({date:date.slice(0,-1)+sec.toString()})
+    },1000)
+  }
+  //componentDidMount(){
+    //var self = this;
+    //setInterval(function () {
+      // body...
+     // var dateStr = new Date().toISOString();
+      //self.setState({date:dateStr.slice(0,10) + ' '+ dateStr.slice(11,19)})
+    //},1000)
+  //}
+  render(){
+    var style = Object.assign({}, this.props.style);
+
+    return <React.Fragment>
+    <div style={style} onClick={this.toggleCK}>{this.state.date}</div>
+      <Modal ref='dtsModal' innerStyle={{background:'#e1e1e1'}}>
+        <DateTimeSelect setTz={this.setTz} timezones={this.props.timezones} timeZone={this.props.timeZone} branding={this.props.branding} setDST={this.setDST} dst={this.props.dst} language={this.props.language} setDT={this.changeDT} ref='dts'/>
+      </Modal>
+      </React.Fragment>
+  }
+}
+class DateTimeSelect extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {year:'1996',month:'01',day:'01', hour:'00',minute:'00',sec:'00'}
+    this.getDT = this.getDT.bind(this);
+    this.setDT = this.setDT.bind(this);
+    this.onDateChange = this.onDateChange.bind(this);
+    this.onTimeChange = this.onTimeChange.bind(this);
+    this.onDSTChange = this.onDSTChange.bind(this);
+    this.onTzChange = this.onTzChange.bind(this);
+  }
+  getDT(dtstring='1996/01/01 00:00:00'){
+    var dtarray = dtstring.split(' ');
+    var date = dtarray[0].split('/');
+    var time = dtarray[1].split(':')
+    this.setState({year:date[0],month:date[1],day:date[2],hour:time[0],minute:time[1],sec:time[2]})
+  }
+  setDT(){
+    var dt = this.state.year +'/'+this.state.month+'/'+this.state.day + ' ' + this.state.hour +':'+this.state.minute+':'+this.state.sec
+    this.props.setDT(dt)
+  }
+  onDateChange(_date,i){
+    var date = [parseInt(this.state.year)-1996,parseInt(this.state.month),parseInt(this.state.day)]
+    if(i != 0){
+      _date ++
+    }
+    date[i] = _date;
+    console.log(_date, date, i)
+    this.setState({year:(date[0] + 1996).toString(), month:('00'+ date[1]).slice(-2).toString(), day:('00'+ date[2]).slice(-2).toString()})
+  }
+  onTimeChange(_time,i){
+    var time = [parseInt(this.state.hour),parseInt(this.state.minute),parseInt(this.state.sec)]
+    time[i] = _time;
+    ////console.log(1532131312, [_time,i])
+    this.setState({hour:('00'+ time[0]).slice(-2).toString(), minute:('00'+ time[1]).slice(-2).toString(), sec:('00'+ time[2]).slice(-2).toString()})
+  }
+  onDSTChange(dst,i){
+    ////console.log(dst)
+    this.props.setDST(dst)
+  }
+  onTzChange(tz){
+    this.props.setTz(tz)
+  }
+  render(){
+
+    var years = [];
+    var months = [];
+    var days = [];
+    var hours = [];
+    var minutes = [];
+    var secs = [];
+
+    for(var i = 0; i < 40; i++){
+      years.push( (1996+i).toString());
+    }
+    for(var i=0; i<12;i++){
+      months.push(('00'+(i+1)).slice(-2));
+    }
+    for(var i=0; i<31;i++){
+      days.push(('00'+(i+1)).slice(-2));
+    }
+    for(var i=0; i<24;i++){
+      hours.push(('00'+i).slice(-2));
+    }
+    for(var i=0; i<60;i++){
+      minutes.push(('00'+i).slice(-2));
+    }
+    for(var i=0; i<60;i++){
+      secs.push(('00'+i).slice(-2));
+    }
+    var date = [years.indexOf(this.state.year), months.indexOf(this.state.month), days.indexOf(this.state.day)];
+    var time = [hours.indexOf(this.state.hour), minutes.indexOf(this.state.minute), secs.indexOf(this.state.sec)]
+    var tg = ['off','on']
+    var namestring = 'Select User'
+    var dpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['Date']} language={this.props.language} interceptor={false} name={'Date'} ref='dpw' val={date} options={[years,months,days]} onChange={this.onDateChange}/>
+    var tpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['Time']} language={this.props.language} interceptor={false} name={'Time'} ref='tpw' val={time} options={[hours,minutes,secs]} onChange={this.onTimeChange}/>
+    var dstpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['DST']} language={this.props.language} interceptor={false} name={'Daylight Savings'} ref='dstpw' val={[this.props.dst]} options={[['off','on']]} onChange={this.onDSTChange}/>
+    var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 '+ SPARCBLUE1}
+    var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+      var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+
+      var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
+      st.width = 546
+      st.fontSize = 24
+      st.display = 'table-cell';//self.props.vst.display;
+      
+
+
+        
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#000"}} >
+      <div style={{display:'inline-block', textAlign:'center'}}>DateTime</div></h2></span>)
+    var clr = "#e1e1e1"
+   /* var dateItem =  (<div className='sItem noChild' style={{borderCollapse:'collapse'}} onClick={()=>this.refs.dpw.toggle()}>
+      <label style={{display: 'table-cell',fontSize: 24,width: '310',background: SPARCBLUE1,borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{'Date'}</label>
+      <div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>{this.state.year +'/'+this.state.month+'/'+this.state.day}</label></div></div>
+      </div>)*/
+ var dateItem = (<div style={{margin:2}} onClick={()=>this.refs.dpw.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+        {'Date'}
+      </div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+        <div style={st}>{this.state.year +'/'+this.state.month+'/'+this.state.day}</div>
+      </div>
+      </div>)
+
+    var timeItem = (<div style={{margin:2}} onClick={()=>this.refs.tpw.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+        {'Time'}
+      </div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+        <div style={st}>{this.state.hour +':'+this.state.minute+':'+this.state.sec}</div>
+      </div>
+      </div>)
+    var dstItem =  (<div style={{margin:2}} onClick={()=>this.refs.dstpw.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+        {'Daylight Savings'}
+      </div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+        <div style={st}>{tg[this.props.dst]}</div>
+      </div>
+      </div>)
+
+    return <div style={{position:'relative', color:'black'}}>{tpw}{dpw}{dstpw}
+    <div>
+    {titlediv}
+    
+    </div>
+      {dateItem}
+      {timeItem}
+      {dstItem}
+      <TimezoneControl timezones={this.props.timezones} timeZone={this.props.timeZone} onTzChange={this.onTzChange} language={this.props.language} branding={this.props.branding}/>
+      <button className='customAlertButton' onClick={this.setDT}>Set DateTime</button>
+    </div> 
+  }
+}
 class LandingPage extends React.Component{
 	constructor(props){
 		super(props)
-		this.state = {faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,branding:'SPARC', automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
+		this.state = {calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,
+      branding:'FORTRESS', automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
 		this.authenticate = this.authenticate.bind(this);
@@ -996,6 +1214,10 @@ class LandingPage extends React.Component{
 		this.clearFaults = this.clearFaults.bind(this);
 		this.saveProductPassThrough = this.saveProductPassThrough.bind(this);
 		this.onPmdClose = this.onPmdClose.bind(this);
+    this.checkweight = this.checkweight.bind(this);
+    this.setTheme = this.setTheme.bind(this);
+    this.openBatch = this.openBatch.bind(this);
+    this.closeCWModal = this.closeCWModal.bind(this);
 
 	}
 
@@ -1119,6 +1341,19 @@ class LandingPage extends React.Component{
 				if(e.type == 0){
 					console.log('Sys Rec')
           var language = vdf['@labels']['Language']['english'][e.rec['Language']];
+          if(language == 'russian' || language == 'polish' || language == 'chinese'){
+            language = 'korean'
+          }
+          if(this.state.branding == 'SPARC'){
+            e.rec['@branding'] = 0
+          }else{
+            e.rec['@branding'] = 1
+          }
+          console.log(language)
+          if(e.rec['TareWeight']!= this.state.srec['TareWeight']){
+           // toast('Taring...')
+           // this.refs.tBut.simTouch();
+          }
 					this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
 				}else if(e.type == 1){
 					console.log('Prod Rec')
@@ -1141,7 +1376,7 @@ class LandingPage extends React.Component{
 						})
 						if(isDiff(iobits,this.state.ioBITs)){
     						noupdate = false;
-
+                console.log(1347, iobits)
     					}
     			
 					}
@@ -1184,16 +1419,62 @@ class LandingPage extends React.Component{
   							}
   						})
   					}
+          if(e.rec['Taring'] != this.state.rec['Taring']){
+            if(e.rec['Taring'] == 1){
+              //toast('Taring..')
+              this.refs.tBut.tStart('Taring');
+            }else{
+              this.refs.tBut.tEnd();
+            }
+          }
+          var pw = 0;
+          if(typeof this.state.crec['PackWeight'] != 'undefined'){
+            pw = this.state.crec['PackWeight']
+          }
+           if((e.rec['CheckingWeight'] != this.state.rec['CheckingWeight']) && (typeof this.state.rec['CheckingWeight'] != 'undefined')){
+            if(e.rec['CheckingWeight'] == 1){
+              //toast('Taring..')
+              this.refs.chBut.tStart('Check Weight');
+              this.refs.cwModal.show();
+           //  setTimeout(function (argument) {
+               // body...
+               this.setState({waitCwgt:true, noupdate:false})
+             //},150)
+            }else{
+              this.refs.chBut.tEnd();
 
-					this.setState({faultArray:faultArray,warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
+             this.refs.cwModal.show();
+             //setTimeout(function (argument) {
+               // body...
+               //this.setState({cw:pw, waiting:false})
+             //},150)
+              this.setState({waitCwgt:false, noupdate:false})
+          
+          
+            }
+          }
+          if(e.rec['DateTime'] != this.state.rec['DateTime']){
+            this.refs.fclck.setDate(e.rec['DateTime'])
+          }
 					if(this.state.updateCount == 0){
-						this.refs.ss.setState({rec:e.rec, crec:this.state.crec})
-					var lw = 0;
+						var lw = 0;
     				if(typeof e.rec['LiveWeight'] != 'undefined'){
     					lw = e.rec['LiveWeight']
     				}
-						this.refs.se.setState({value:(lw).toFixed(1) + 'g'})
+					//	this.refs.se.setState({value:(this.state).toFixed(1) + 'g'})
+              //console.log(1437, this.refs.sd)//, this.refs.ss)
+              this.refs.ss.setState({rec:e.rec, crec:this.state.crec, lw:(lw).toFixed(1) + 'g'})
+              if(this.refs.sd){
+                console.log('update Live Weight')
+                this.refs.sd.updateLiveWeight(lw)
+              }
+        
 					}
+          if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
+            noupdate = false;
+          }
+          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
+          
 					
 				}else if(e.type == 3){
 					e.rec.Nif_ip = this.state.nifip
@@ -1201,7 +1482,7 @@ class LandingPage extends React.Component{
 					e.rec.Nif_nm = this.state.nifnm
 					this.setState({noupdate:false,fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
 				}else if(e.type == 5){
-					//console.log('checkweighing pack')
+					console.log('checkweighing pack')
 					var del = 25
 					var dur = 50
 					if(typeof this.state.prec["SampDelEnd"] != 'undefined'){
@@ -1209,12 +1490,46 @@ class LandingPage extends React.Component{
 						del = this.state.prec['SampDelEnd'];
 						dur = this.state.prec['SampDur'];
 					}
-					this.setState({crec:e.rec, noupdate:true})
+          var ms = new Uint64LE(e.rec['BatchStartMS'].data)
+          var sms = new Uint64LE(e.rec['SampleStartMS'].data)
+          console.log(inputSrcArr, outputSrcArr)
+          console.log(1217, ms.toString(), Date.now())
+					console.log('passed')
+          var tz = -500
+          var tzms = (tz/100)*60*60*1000
+          var neg = true
+          if(typeof this.state.srec['Timezone'] != 'undefined'){
+            tz = uintToInt(this.state.srec['Timezone'], 16)
+            var neg = (tz < 0)
+          }
+          
+          var hours = Math.floor(Math.abs(tz)/100)*60*60*1000
+          var mins = ((Math.abs(tz)%100)/100)*60*60*1000
+
+          if(neg){
+            hours = hours * -1
+            mins = mins * -1
+          }
+          
+
+          e.rec['BatchStartDate'] = new Date(parseInt(ms.toString()) + hours + mins)
+          e.rec['SampleStartDate'] = new Date(parseInt(sms.toString()) + hours + mins)
+          e.rec['BatchStartMS'] = parseInt(ms.toString())
+          e.rec['SampleStartMS'] = parseInt(sms.toString())
+          this.setState({crec:e.rec, noupdate:true})
 					this.refs.lg.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
 							this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd']);
 					this.refs.hh.parseCrec(e.rec)
+          if(this.refs.btc){
+            this.refs.btc.parseCrec(e.rec)
+          }
 					this.refs.ss.setState({crec:e.rec})
+          this.refs.se.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
 					this.refs.tb.update(e.rec['PackWeight']);
+          //cwc check
+          if(e.rec['WeightPassed'] == 9){
+            this.setState({cwgt:e.rec['PackWeight'], noupdate:false})
+          }
 		
 				}else if(e.type == 15){
 					var prodList = this.state.prodList;
@@ -1281,22 +1596,38 @@ class LandingPage extends React.Component{
 				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
 			
 			}else if(n == 'clearFaults'){
-				var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARFAULTS']
-				var pkt = rpc[1].map(function (r) {
-					if(!isNaN(r)){
-						return r
-					}else{
-						if(isNaN(v)){
-							return 0
-						}else{
-							return parseInt(v)
-						}
-					}
-				})
-				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-			
-			}else if(n == 'getProdSettings'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARFAULTS']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'checkWeight'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'getProdSettings'){
 				var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
 				var pkt = rpc[1].map(function (r) {
 					if(!isNaN(r)){
@@ -1334,10 +1665,57 @@ class LandingPage extends React.Component{
 				},150)
 			//}
 			}else if( n == 'refresh'){
-			var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
-			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
-			socket.emit('rpc',{ip:this.state.curDet.ip, data:packet})	
-			}
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if( n == 'BatchStart'){
+      toast('Batch Started')
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if( n == 'BatchEnd'){
+        toast('Batch Stopped')
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STOPBATCH']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if(n=='DateTime'){
+        var rpc = vdef[0]['@rpc_map']['LOCF_DATE_TIME_WRITE']
+  
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
+      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if(n=='DaylightSavings'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
+  
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          if(isNaN(v)){
+            return 0
+          }else{
+            return parseInt(v)
+          }
+        }
+      })
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if(n=='Timezone'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_TIMEZONE_WRITE']
+  
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          if(isNaN(v)){
+            return 0
+          }else{
+            return parseInt(v)
+          }
+        }
+      })
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }
 		}else{
 			console.log('here')
 			if(n['@rpcs']['toggle']){
@@ -1403,7 +1781,7 @@ class LandingPage extends React.Component{
 				buf.writeFloatLE(parseFloat(v),0)
 				strArg = buf;
 			}
-			console.log(819, strArg, typeof strArg)
+			console.log(819, strArg, typeof strArg, v)
 		
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 			console.log(packet)
@@ -1657,6 +2035,7 @@ class LandingPage extends React.Component{
 			////console.log(914,er)
 			//	toast(er.message)
 			}
+      socket.emit('getTimezones')
 		});
    		socket.on('dispSettings', function(disp){
       	self.setState({automode:disp.mode})
@@ -1705,6 +2084,10 @@ class LandingPage extends React.Component{
 			var message = 'Call Fortress with ' + e.join(', ');
 			self.refs.msgm.show(message)
 		})
+    socket.on('timezones',function (e) {
+      // body...
+      self.setState({timezones:e})
+    })
 
 	}
 	tareWeight(){
@@ -1761,15 +2144,22 @@ class LandingPage extends React.Component{
 
 	}
 	start(){
-		if(this.state.start){
-			this.simStart()
-		}
-	}
+		//if(this.state.start){
+		//	this.simStart()
+		//}
+    this.sendPacket('BatchStart')
+	 
+    this.setState({start:false})
+
+  }
 	stop(){
-		if(!this.state.start){
-			this.simStart()
-		}
-	}
+		//if(!this.state.start){
+		//	this.simStart()
+		//}
+    this.sendPacket('BatchEnd')
+	   
+    this.setState({start:true})
+  }
 	simStart(){
 		var self = this;
 		var x = this.state.x
@@ -1917,10 +2307,11 @@ class LandingPage extends React.Component{
 		location.reload();
 	}
 	clearFaults(){
-		this.sendPacket('clearFaults')
+		this.sendPacket('clearFaults');
+
 	}
 	openBatch(){
-
+    this.refs.batModal.toggle();
 	}
 	onPmdClose(){
 		if(this.state.rec['EditProdNeedToSave'] == 1){
@@ -1931,6 +2322,24 @@ class LandingPage extends React.Component{
 		});
 		}	
 	}
+  checkweight(){
+    this.sendPacket('checkWeight')
+  }
+  setTheme(v){
+    var srec = this.state.srec
+
+      srec['@branding'] = v
+    if(v == 0){
+      this.setState({branding:'SPARC',noupdate:false, srec:srec,cob:this.getCob(srec, this.state.prec, this.state.rec,this.state.fram)})
+    }else if(v == 1){
+      this.setState({branding:'FORTRESS',noupdate:false, srec:srec,cob:this.getCob(srec, this.state.prec, this.state.rec,this.state.fram)})
+    }
+  }
+  closeCWModal(){
+    if(this.refs.cwModal){
+      this.refs.cwModal.close();
+    }
+  }
 	render(){
 		//LandingPage.render
 
@@ -1944,11 +2353,12 @@ class LandingPage extends React.Component{
     	var pl = 'assets/play-arrow-fti.svg'
     	var stp = 'assets/stop-fti.svg'
     	var backgroundColor;
-    	var grbg = 'black'
+    	var grbg = '#e1e1e1'
     	var img = 'assets/NewFortressTechnologyLogo-WHT-trans.png'
     	var psbtklass = 'circularButton'
     	var psbtcolor = 'black'
-    	var grbrdcolor = '#818a90'
+    	var grbrdcolor = '#e1e1e1'
+      var raptor = '';
 
     	var language = this.state.language
     	if(this.state.branding == 'FORTRESS'){
@@ -1956,6 +2366,7 @@ class LandingPage extends React.Component{
     		grbrdcolor = '#e1e1e1'
     		psbtcolor = '#1C3746'
     		psbtklass = 'circularButton_sp'
+        raptor = <div style={{fontSize:45, color:'#e1e1e1', textAlign:'center'}}><span style={{fontSize:66, verticalAlign:'bottom', lineHeight:'76px'}}>R</span><span>APTOR</span></div>
     	}else{
     		grbrdcolor = '#e1e1e1'
     		psbtcolor = '#1C3746'
@@ -1968,12 +2379,12 @@ class LandingPage extends React.Component{
     	}
     	var play, stop;
     	if(this.state.start){
-    		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#00DD00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+    		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
     		stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#FA2222', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
     	}else{
-    		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#00DD00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
-			stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#FA2222', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+    		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#00FF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+			stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#F04040', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
     	}   
 
@@ -1984,7 +2395,7 @@ class LandingPage extends React.Component{
     	var dets = ''// <div style={{color:'#e1e1e1', fontSize:24}} onClick={() => this.refs.locateModal.toggle()}>Connected to {this.state.curDet.name}</div>
     	if(this.state.srec['SRecordDate']){
     		//language = vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]
-    		sd =   	<div ><SettingsPageWSB onCal={this.calWeight} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+    		sd =   	<div ><SettingsPageWSB calibState={this.state.calibState} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
       		onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} />
     		</div>
 
@@ -2006,8 +2417,8 @@ class LandingPage extends React.Component{
     	
     	if(typeof this.state.prec['ProdName'] != 'undefined'){
     		trendBar = [this.state.prec['NominalWgt']-(2*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (2*this.state.prec['OverWeightLim']), 165, 200]
- 			winStart = 0//this.state.prec['WindowStart'];
- 			winEnd = 300//this.state.prec['WindowEnd'];   	
+ 			winStart = this.state.prec['WindowStart'];
+ 			winEnd = this.state.prec['WindowEnd'];   	
     	}
     	var logklass = 'logout'
     	if(this.state.user == -1){
@@ -2015,18 +2426,25 @@ class LandingPage extends React.Component{
     	}
 
     	var lw = 0;
-    	if(typeof this.state.rec['LiveWeight'] != 'undefined'){
-    		//console.log( this.state.rec, 'rec')
-    		lw = this.state.rec['LiveWeight']
-    	}
+    	if(typeof this.state.crec['PackWeight'] != 'undefined'){
+    		
+        //console.log( this.state.rec, 'rec')
+    		if(this.state.crec['PackWeight']){
+          lw = this.state.crec['PackWeight']
+        }
+
+    	   //console.log(2353, lw)
+      }
+
 		return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
          <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
             <tbody>
               <tr>
                 <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} onClick={this.imgClick}  src={img}/></td>
+                <td style={{width:600}}>{raptor}</td>
                 	<td style={{height:60, width:200, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
-                	<Clock style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
+                	<FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref='fclck' style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
                 	<td className="logbuttCell" style={{height:60}}>
                 	<div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
                 	<button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
@@ -2043,29 +2461,32 @@ class LandingPage extends React.Component{
           </td><td><div><SparcElem ref='se' branding={this.state.branding} value={lw.toFixed(1) + 'g'} name={'Gross Weight'} width={616} font={40}/></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
+          <LineGraph cwShow={() => this.refs.cwModal.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
           <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref='tb'/></LineGraph></div>
           </td><td>
           	<HorizontalHisto language={language} branding={this.state.branding} ref='hh'/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',padding:5, marginRight:10, marginLeft:10}} >{play}{stop}</div>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Batch'} onClick={this.openBatch}/>
-          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Tare'} onClick={this.tareWeight}/>
+          <CircularButton override={true} ref='tBut' branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Tare'} onClick={this.tareWeight}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Product'} onClick={this.pModalToggle}/>
-          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Log'} onClick={this.changeBranding}/>
-      	<Modal ref='pmodal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}} onClose={this.onPmdClose}>
+          <CircularButton override={true} ref='chBut' branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Check Weight'} onClick={this.checkweight}/>
+      	<Modal ref='pmodal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}} onClose={this.onPmdClose}>
       		<ProductSettings  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
       	</Modal>
-      	 <Modal ref='settingModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
+      	 <Modal ref='settingModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
       		<div style={{display:'inline-block',width:290, verticalAlign:'top'}}>{dets}
       		</div>{sd}
       	</Modal>
-      	<Modal ref='locateModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
+      	<Modal ref='locateModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
       		{this.renderModal()}
       	</Modal> 
-      	<Modal ref='cwModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:SPARCBLUE1, maxHeight:650, height:620}}>
-      	{cald}
-      	</Modal>
+        <Modal ref='cwModal' Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
+         <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref='cwc' cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
+        </Modal>
+        <Modal ref='batModal' Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
+         <BatchControl startB={this.start} stopB={this.stop} start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref='btc'/>
+        </Modal>
 
       	<PromptModal language={language} branding={this.state.branding} ref='pmd' save={this.saveProductPassThrough} discard={this.passThrough}/>
 		
@@ -2152,10 +2573,12 @@ class RotatedArea extends React.Component{
 class HorizontalHisto extends React.Component{
 	constructor(props){
 		super(props)
-		this.state = {data:[0, 0, 0, 0, 0, 0, 0, 0]}
+    this.toggle = this.toggle.bind(this);
+		this.state = {batchData:[0, 0, 0, 0, 0, 0, 0, 0,0], sampleData:[0, 0, 0, 0, 0, 0, 0, 0,0],batch:true, batchStartTime:'', sampleStartTime:''}
 	}
 	parseCrec(crec){
-		var data = this.state.data.slice(0);
+		var data = this.state.batchData.slice(0);
+    var sampleData = this.state.sampleData.slice(0);
 		data[0] = crec['TotalCnt']
 		data[1] = crec['PassWeightCnt'];
 		data[2] = crec['LowPassCnt'];
@@ -2163,10 +2586,20 @@ class HorizontalHisto extends React.Component{
 		data[4] = crec['HighCnt'];
 		data[5] = crec['UnsettledCnt']
 		data[6] = crec['ImprobableCnt']
-		this.setState({data:data})
+
+    data[7] = crec['CheckWeightCnt']
+    sampleData[0] = crec['SampleTotalCnt']
+    sampleData[1] = crec['SamplePassWeightCnt']
+    sampleData[2] = crec['SampleLowPassCnt']
+    sampleData[3] = crec['SampleLowRejCnt']
+    sampleData[4] = crec['SampleHighCnt']
+    sampleData[5] = crec['SampleUnsettledCnt']
+    sampleData[6] = crec['SampleImprobableCnt']
+    sampleData[7] = crec['SampleCheckWeightCnt']
+    this.setState({batchData:data, sampleData:sampleData, batchStartTime:crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' '),sampleStartTime:crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' ')})
 	}
 	parsePack(pack){
-		var data = this.state.data.slice(0)
+		var data = [0,0,0,0,0,0,0]//this.state.data.slice(0)
 		data[0]++;
 		if(pack<85){
 			data[1]++;
@@ -2181,14 +2614,17 @@ class HorizontalHisto extends React.Component{
 		}else if(pack<100){
 			data[6]++
 		}
-		this.setState({data:data})
+		//this.setState({data:data})
 	}	
+  toggle(){
+    this.setState({batch:!this.state.batch})
+  }
 	render(){
 		var outerbg = '#e1e1e1'
 			
 		var innerbg = '#5d5480'
 		var fontColor = '#e1e1e1'
-		var graphColor = FORTRESSPURPLE1
+		var graphColor = FORTRESSPURPLE2
 		if(this.props.branding == 'SPARC'){
 			innerbg = SPARCBLUE2
 			fontColor = 'black'
@@ -2196,7 +2632,21 @@ class HorizontalHisto extends React.Component{
 		}
 		var xDomain = [0,15]
 		var yDomin = [0, 5]
-		var data = [{x: this.state.data[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: this.state.data[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: this.state.data[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']}, {x: this.state.data[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:this.state.data[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:this.state.data[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:this.state.data[6], y:vMapV2['ImprobableCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
+    var selData;
+    var bText;
+    var bsttxt = 'Batch Started at: '+this.state.batchStartTime
+    if(this.state.batch){
+      bText = 'Batch'
+
+      selData = this.state.batchData.slice(0)
+    }else{
+      bText = 'Sample'
+      bsttxt = 'Sample Started at: '+this.state.sampleStartTime
+      selData = this.state.sampleData.slice(0)
+    }
+		var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
+     {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['ImprobableCnt']['@translations'][this.props.language]['name']}
+     ,{x:selData[7], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
 		var labelData = data.map(function(d){
 			var lax = 'start'
 			if(d.x > (data[0].x*0.75)){
@@ -2205,12 +2655,14 @@ class HorizontalHisto extends React.Component{
 			}
 			return	{x:d.x,y:d.y,label:d.x, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
 		})
+    var butt = <div onClick={this.toggle} style={{width:77, fontSize:18, textAlign:'center'}}>{bText}</div>
 		//var hh = 
-		return <div style={{width:400, height:515,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
+		return <div style={{position:'relative',width:380, height:515,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
 			<div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>Statistics</div></div>
-
-		<XYPlot	height={430} width= {400} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal'>		
+      <div style={{position:'absolute', left:295, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
+      <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
+		<XYPlot	height={430} width= {380} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal'>		
   
   <HorizontalBarSeries data={data} color={graphColor} />
   <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
@@ -2227,7 +2679,11 @@ class LineGraph extends React.Component{
 		this.clearFaults = this.clearFaults.bind(this);
 		this.maskFault = this.maskFault.bind(this);
 		this.statusClick = this.statusClick.bind(this);
-		this.state = {weightPassed:0,pmax:2000, pstrt:0,pend:300, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[[8,9,13,15,16,16,14,13,10,4],[9,10,12,14,15,14,13,11,9,3],[9,10,14,15,17,17,15,9,8,2]],reject:false,over:false,under:false}
+    var dtst = []
+    for(var i = 0; i < 300; i++){
+      dtst.push(0)
+    }
+		this.state = {weightPassed:0,pmax:2000, pstrt:0,pend:299, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[dtst,dtst.slice(0), dtst.slice(0)],reject:false,over:false,under:false}
 	}
 	parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend){
 		var dataSets = this.state.dataSets;
@@ -2252,6 +2708,7 @@ class LineGraph extends React.Component{
 	}
 	clearFaults(){
 		this.props.clearFaults();
+        this.refs.fModal.toggle();
 	}
 	maskFault(){
 		this.props.maskFault();
@@ -2259,14 +2716,16 @@ class LineGraph extends React.Component{
 	statusClick(){
 		if(this.props.faults.length != 0){
 			this.refs.fModal.toggle();
-		}
+		}else if(this.state.weightPassed == 9){
+      this.props.cwShow()
+    }
 	}
 	render(){
 		var outerbg = '#818a90'
 		var innerbg = '#5d5480'
 		var fontColor = '#e1e1e1'
-		var graphColor = FORTRESSPURPLE1
-		var bg2 = 'rgba(150,150,150,0.3)'
+		var graphColor = 'darkturquoise'//FORTRESSGRAPH
+		var bg2 = 'rgba(150,150,150,0.5)'
 	
 		if(this.props.branding == 'SPARC'){
 			outerbg = '#e1e1e1'
@@ -2280,7 +2739,7 @@ class LineGraph extends React.Component{
 		var max = 0;
 		var min = 0;
 
-		var winLength = this.props.winEnd - this.props.winStart
+		var winLength = this.props.winEnd - this.props.winStart + 1
 		if(winLength == 0){
 			winLength = 300
 		}
@@ -2289,30 +2748,26 @@ class LineGraph extends React.Component{
 		var self = this;
 		if(dsl != 0){
 			var decSet =  this.state.dataSets[dsl-1].slice(this.state.pstrt, this.state.pend)
-			max = this.state.pmax//Math.max(...decSet);
-			min = this.state.pmin//Math.min(...decSet)
 			decMin = Math.min(...decSet);
 			decMax = Math.max(...decSet)
-			
+		  max = decMax  + (decMax - decMin)*0.2//Math.max(...decSet);
+      min = decMin - (decMax - decMin)*0.2//Math.min(...decSet)
+    	
 			//console.log('min, max',decMin,decMax)
 		}
 
 		var graphs = this.state.dataSets.map(function(set,i){
-			var st;
-			if(winLength != 0){
-				st = set.slice(self.props.winStart,self.props.winEnd)
-			}else{
-				st = set.slice(0)
-			}
+			var st = set.slice(self.props.winStart,300)
+			
 			var data = st.map(function(d,j){
 				return {y:d, x:j}
 			})
 			if(i+1 == dsl){
 				
-				return <AreaSeries curve='curveMonotoneX' opacity={opc[dsl-1-i]} color={graphColor} data={data}/>
+				return <AreaSeries curve='curveBasis' opacity={opc[dsl-1-i]} color={graphColor} data={data}/>
 			}else{
 				
-				return <AreaSeries curve='curveMonotoneX' opacity={opc[dsl-1-i]} color="#818a90" data={data}/>
+				return <AreaSeries curve='curveBasis' opacity={opc[dsl-1-i]} color="#818a90" data={data}/>
 			}
 		})
 	var bg = 'transparent';
@@ -2358,9 +2813,10 @@ class LineGraph extends React.Component{
     // body...
   })
   var range = grng[1] - grng[0]
-  var divs = 5
+  var divs = 0.1
   while(range/divs > 5){
-    if((divs%2 == 0) &&(range/divs > 20)){
+
+    if((((divs < 1) && ((divs*10)%2 == 0))||(divs%2 == 0)) &&(range/divs > 20)){
       divs *= 5
     }else{
       divs *= 2
@@ -2370,7 +2826,7 @@ class LineGraph extends React.Component{
   if(grng[0]%divs == 0){
     grng[0] += 1
   }
-  var strttick = Math.ceil((grng[0])/divs)*divs
+  var strttick = Math.ceil(grng[0]/divs)*divs;
   while(strttick < grng[1]){
     tcks.push(strttick);
     strttick += divs;
@@ -2378,13 +2834,11 @@ class LineGraph extends React.Component{
 
   var tickData = tcks.map(function(t) {
     // body...
-    return {x:0, y:t/self.state.calFactor + self.state.tareWeight, label:t + 'g', xOffset:10}
+    return {x:0, y:t/self.state.calFactor + self.state.tareWeight, label:t.toFixed(1) + 'g', xOffset:10}
   })
 	//var ydm = [(Math.max(this.props.min - 3*(this.props.nominalWeight - this.props.min),0)/this.state.calFactor) + this.state.tareWeight, 
 		//		((4*this.props.max - 3*this.props.nominalWeight)/this.state.calFactor) - this.state.tareWeight]
 		//		<YAxis tickFormat={v => (v-this.state.tareWeight)*this.state.calFactor} tickValues={[min, max]}/>
-		var labelData = [{x:300 - this.props.winStart - this.state.decisionRange[0], y:min, label: ((min-this.state.tareWeight)*this.state.calFactor).toFixed(1) + 'g' , xOffset:10, yOffset:-10}
-						,{x:300 - this.props.winStart - this.state.decisionRange[0], y:max, label: ((max-this.state.tareWeight)*this.state.calFactor).toFixed(1) + 'g', xOffset:10, yOffset:10}]
 		/*data.map(function(d){   
 			var lax = 'start'
 			if(d.x > (data[0].x*0.75)){
@@ -2398,7 +2852,7 @@ class LineGraph extends React.Component{
 	return	<div style={{background:bg, textAlign:'center'}}>
 		<div style={{width:580,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 		<div style={{background:'black',width:580,marginLeft:'auto',marginRight:'auto'}}><div style={{background:bg2,color:'#e1e1e1',marginBottom:-47,marginLeft:'auto',marginRight:'auto',padding:4,width:572, height:75,lineHeight:'35px'}}><div style={{display:'inline-block', width:280}}><div style={{fontSize:16}}>Running Product</div><div style={{fontSize:24}}>{this.props.prodName}</div></div>
-		<div style={{display:'inline-block', width:280}} onClick={this.statusClick} ><div style={{fontSize:16}}>Status</div><div style={{fontSize:24}}>{str}</div></div></div>
+		<div style={{display:'inline-block', width:280}} onClick={this.statusClick} ><div style={{fontSize:16}}>Status</div><div style={{fontSize:20}}>{str}</div></div></div>
 		</div>
 		<div style={{overflow:'hidden', marginTop:48}}>
 		<div style={{marginTop:-48}}>
@@ -2407,8 +2861,8 @@ class LineGraph extends React.Component{
 		<XAxis hideTicks />
 		{graphs}
 		{/*nominalLine*/}
-		<VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:min,y:max,x0:this.state.decisionRange[0],x:this.state.decisionRange[1]}]}/>
-		<VerticalRectSeries curve='curveMonotoneX' strokeStyle='dashed' stack={true} opacity={0.8} stroke="#ffa500" fill='transparent' strokeWidth={3} data={[{y0:decMin,y:decMax,x0:this.state.pstrt,x:this.state.pend}]}/>
+		<VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:this.state.pmin,y:this.state.pmax,x0:this.state.decisionRange[0] - this.props.winStart,x:this.state.decisionRange[1] - this.props.winStart}]}/>
+		<VerticalRectSeries curve='curveMonotoneX' strokeStyle='dashed' stack={true} opacity={0.8} stroke="#ffa500" fill='transparent' strokeWidth={3} data={[{y0:decMin,y:decMax,x0:this.state.pstrt - this.props.winStart,x:this.state.pend - this.props.winStart}]}/>
 		<LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/>
   
 
@@ -2425,7 +2879,7 @@ class StatSummary extends React.Component{
 	constructor(props){
 		super(props)
 		this.parsePack = this.parsePack.bind(this);
-		this.state = {count:0, grossWeight:0,currentWeight:0, rec:{},crec:{}}
+		this.state = {count:0, grossWeight:0,currentWeight:0, rec:{},crec:{},lw:'0.0g'}
 	}
 	parsePack(max){
 		this.setState({count:this.state.count+1,grossWeight:this.state.grossWeight + max,currentWeight:max})
@@ -2462,25 +2916,36 @@ class StatSummary extends React.Component{
 		var tot = 0;
 		var gvb = 0;
 		var gvs = 0;
+    var savg = 0;
+    var sstdev = 0;
+    var stot = 0;
+    var ppm = 0;
+    var sppm = 0;
 		if(!isNaN(this.state.crec['PackWeight'])){
 			grswt = this.state.crec['PackWeight'].toFixed(1) + 'g'
 			avg = this.state.crec['AvgWeight'].toFixed(1) +'g'
-			stdev = this.state.crec['StdDev'].toFixed(1)+'g'
+      savg = this.state.crec['SampleAvgWeight'].toFixed(1) + 'g'
+			stdev = this.state.crec['StdDev'].toFixed(2)+'g'
+      sstdev = this.state.crec['SampleStdDev'].toFixed(2)+'g'
 			tot = this.state.crec['TotalWeight'].toFixed(1)+'g'
+      stot = this.state.crec['SampleTotalWeight'].toFixed(1)+'g'
 			gvb = this.state.crec['GiveawayBatch'].toFixed(1)+'g'
 			gvs = this.state.crec['SampleGiveawayBatch'].toFixed(1)+'g'
+      ppm = this.state.crec['Batch_PPM'].toFixed(0) + 'ppm'
+      sppm = this.state.crec['Sample_PPM'].toFixed(0) + 'ppm'
 		}
-	return	<div style={{width:220,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
+	return	<div style={{width:240,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
 
 			<div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
-			<StatControl name='Gross Weight' value={grswt}/>
-			<StatControl name='Total Weight' value={tot}/>
-			<StatControl name='Net Weight' value='0g'/>
-			<StatControl name='Average Weight' value={avg}/>
-			<StatControl name='Standard Deviation' value={stdev}/>
-			<StatControl name='Giveaway (Batch)' value={gvb}/>
-			<StatControl name='Giveaway (Sample)' value={gvs}/>
-			<StatControl name='Production Rate' value='150ppm'/>
+			<StatControl name='Live Weight' value={this.state.lw}/>
+			<StatControl name='Total Weight (Batch)' value={tot}/>
+			<StatControl name='Total Weight (Sample)' value={stot}/>
+      <StatControl name='Net Weight' value='0g'/>
+			<BatchStatControl name='Average Weight' batch={avg} sample={savg}/>
+			<BatchStatControl name='Standard Deviation' batch={stdev} sample={sstdev}/>
+			<BatchStatControl name='Giveaway' batch={gvb} sample={gvs}/>
+			
+			<BatchStatControl name='Production Rate' batch={ppm} sample={sppm}/>
 
 		</div>
 	}
@@ -2494,6 +2959,16 @@ class StatControl extends React.Component{
 		<div style={{textAlign:'left', paddingLeft:2, fontSize:16}}>{this.props.name}</div>
 		<div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:25}}>{this.props.value}</div></div>
 	}
+}
+class BatchStatControl extends React.Component{
+  constructor(props){
+    super(props)
+  }
+  render(){
+    return <div style={{height:61}}>
+    <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}>{this.props.name}</div>
+    <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:25}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div></div>
+  }
 }
 class ProductSettings extends React.Component{
 	constructor(props){
@@ -2527,6 +3002,7 @@ class ProductSettings extends React.Component{
 	}
 	sendPacket(n,v){
 		var self = this;
+    console.log(n,v)
 		this.props.sendPacket(n,v)
 	
 	}
@@ -2560,7 +3036,7 @@ class ProductSettings extends React.Component{
   getBatch(sys,prod,dyn,batch,fram){
     var vdef = vdefByMac[this.props.mac]
     var _cvdf = JSON.parse(JSON.stringify(vdef[6]['Batch']))
-    var cob = iterateCats2(_cvdf, vdef[1], sys, prod, vdef[5], dyn, fram, batch)
+    var cob = iterateCats3(_cvdf, vdef[1], sys, prod, vdef[5], dyn, fram, batch)
     vdef = null;
     _cvdf = null;
     return cob
@@ -2924,6 +3400,10 @@ class ProductSettings extends React.Component{
 		var content = ''
 			var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
 
+    var searchColor = SPARCBLUE1;
+    if(this.props.branding == 'FORTRESS'){
+      searchColor = FORTRESSPURPLE2
+    }
 		if(this.state.searchMode){
 			var filterString = this.state.filterString
 			this.state.prodList.forEach(function(prod) {
@@ -2973,8 +3453,8 @@ class ProductSettings extends React.Component{
 				<div style={{display:'inline-block', verticalAlign:'top'}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={400} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
 				<div style={{display:'inline-block', marginLeft:87, marginBottom:-10}}>
 					<div style={{position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
-						<div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%,#1C3746 26%, #1C3746)'}}/>
-						<div style={{height:35, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%,#1C3746 26%, #1C3746)'}}/>
+						<div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
+						<div style={{height:35, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
 						<div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
 					</div>
 				</div>
@@ -3098,11 +3578,59 @@ class ProductSettings extends React.Component{
 class BatchControl extends React.Component{
   constructor(props){
     super(props)
-    this.state = {batchSettings:{}}
+    this.state = {start:this.props.start,stop:this.props.stop,batchData:[0, 0, 0, 0, 0, 0, 0, 0,0], sampleData:[0, 0, 0, 0, 0, 0, 0, 0,0],batch:true, batchStartTime:'', sampleStartTime:'',batchMin:0,sampleMin:0}
+  }
+  parseCrec(crec){
+    var data = this.state.batchData.slice(0);
+    var sampleData = this.state.sampleData.slice(0);
+    data[0] = crec['TotalCnt']
+    data[1] = crec['PassWeightCnt'];
+    data[2] = crec['LowPassCnt'];
+    data[3] = crec['LowRejCnt']; 
+    data[4] = crec['HighCnt'];
+    data[5] = crec['UnsettledCnt']
+    data[6] = crec['ImprobableCnt']
+
+    data[7] = crec['CheckWeightCnt']
+    sampleData[0] = crec['SampleTotalCnt']
+    sampleData[1] = crec['SamplePassWeightCnt']
+    sampleData[2] = crec['SampleLowPassCnt']
+    sampleData[3] = crec['SampleLowRejCnt']
+    sampleData[4] = crec['SampleHighCnt']
+    sampleData[5] = crec['SampleUnsettledCnt']
+    sampleData[6] = crec['SampleImprobableCnt']
+    sampleData[7] = crec['SampleCheckWeightCnt']
+    this.setState({batchData:data, sampleData:sampleData, batchStartTime:crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' '),sampleStartTime:crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' '),batchMin:crec['BatchMinutes'], sampleMin:crec['SampleMinutes']})
   }
   render(){
-    return <div>
-      <div></div>
+
+    var pl = 'assets/play-arrow-fti.svg'
+      var stp = 'assets/stop-fti.svg'
+      var batchInfo = <div style={{height:315}}>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
+      <div style={{padding:5}}>Batch stopped</div></div>
+      var play, stop;
+      if(this.props.start){
+        play = <div onClick={this.props.startB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+        stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FA2222', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+
+      }else{
+        play = <div onClick={this.props.startB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#00FF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+      stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#F04040', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+      batchInfo =  <div style={{height:315}}>
+         <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
+   
+      <div style={{padding:5}}>
+      <div>Batch ID: 25132</div>
+       <div>{'Batch running for '+ this.state.batchMin.toFixed(1) + ' minutes'}</div>
+       <div>{'Sample running for '+ this.state.sampleMin.toFixed(1) + ' minutes'}</div></div>
+    </div>
+      }   
+
+    return <div style={{background:'#e1e1e1', height:400, padding:5}}>
+          {batchInfo}
+         <div>{play}{stop}</div>
+      
     </div>
   }
 }
@@ -3124,6 +3652,13 @@ class ProdSettingEdit extends React.Component{
 			buf.writeUInt32LE(parseInt(v),0)
 			val = buf;
 		}*/
+    if(typeof this.props.param['@decimal'] != 'undefined'){
+      if(this.props.param['@decimal'] > 0){
+          val = val * Math.pow(10,this.props.param['@decimal'])
+        
+      }
+    }
+    console.log(val,v)
 		this.props.onEdit(this.props.param,val);
 	}
 	onRequestClose(){
@@ -3150,8 +3685,14 @@ class ProdSettingEdit extends React.Component{
 			}
 		
 		}
+    var bgClr = SPARCBLUE2
+    var txtClr = '#000'
+    if(this.props.branding == 'FORTRESS'){
+      bgClr = FORTRESSPURPLE2
+      txtClr = '#e1e1e1'
+    }
 		return <div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:this.props.w1,textAlign:'center'}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:20,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:this.props.w1,textAlign:'center'}}>
 				{this.props.label}
 			</div>
 			<div onClick={this.onClick} style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:this.props.w2}}>
@@ -3160,6 +3701,51 @@ class ProdSettingEdit extends React.Component{
 			{ckb}
 		</div>
 	}
+}
+class CheckWeightControl extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {cw:0,cwset:0, waiting:false}
+    this.setCW = this.setCW.bind(this);
+    this.sendPacket = this.sendPacket.bind(this);
+    this.sendCW = this.sendCW.bind(this);
+  }
+  setCW(n,v){
+    var self = this;
+    if(typeof v != 'undefined'){
+
+
+      if(v != null){
+        console.log(v)
+        this.setState({cwset:parseFloat(v)})
+        setTimeout(function (argument) {
+          // body...
+          self.props.close()
+        },150)
+      }
+    }
+  }
+  sendCW(){
+    this.props.close();
+  }
+  sendPacket(n,v){
+    this.props.sendPacket(n,v)
+  }
+  render(){
+    var cw = this.props.cw.toFixed(1)+'g'
+    if(this.props.waiting){
+      cw = 'Waiting for Weight'
+    }
+    return <div>
+        <div style={{background:'#e1e1e1', padding:5, height:400}}>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Check Weight'}</div></h2></span>
+       <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Check Weight'} value={cw} editable={false} onEdit={this.sendPacket} num={true}/></div>
+         <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Measured Value'} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={'checkweightmeasure'} num={true}/></div>
+        <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={'Confirm'}/>
+        </div>
+        </div>
+    </div>
+  }
 }
 class ProductSelectItem extends React.Component{
 	constructor(props){
@@ -3280,12 +3866,21 @@ class CatSelectItem extends React.Component{
 		var st = {padding:7,display:'inline-block', width:stW, height:50, lineHeight:'50px',fontSize:22,borderBottom:'2px solid #bbbbbbaa'}
 		var mgl = -90
 		var buttons// = <button className='deleteButton' onClick={this.deleteProd}/>
+    var selBG = SPARCBLUE2
+
+    if(this.props.branding == 'FORTRESS'){
+      selBG = FORTRESSPURPLE2
+      //st.color = '#e1e1e1'
+    }
 		if(this.props.selected){
 			check = <img src="assets/Check_mark.svg"/>
-			ds = {paddingLeft:7,paddingRight:7,display:'inline-block', width:dsW,	 background:"#30A8E2"}
+			ds = {paddingLeft:7,paddingRight:7,display:'inline-block', width:dsW,	 background:selBG}
 			//st = {color:'green', padding:7, display:'inline-block', width:200}
 			mgl = -160
-
+      if(this.props.branding == 'FORTRESS'){
+     // selBG = FORTRESSPURPLE2
+      st.color = '#e1e1e1'
+    }
 		}
 
 		return (<div style={{background:"transparent", color:"#000", position:'relative', textAlign:'center'}}><div style={ds} ><label onClick={this.onClick} style={st}>{this.props.data.val.cat}</label></div>
@@ -3295,11 +3890,27 @@ class CatSelectItem extends React.Component{
 class SettingsPageWSB extends React.Component{
 	constructor(props){
 		super(props);
-		this.state = {sel:-1, data:[], path:[],showAccounts:false}
+		this.state = {sel:-1, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0}
 		this.setPath = this.setPath.bind(this);
 		this.onHandleClick = this.onHandleClick.bind(this);
 		this.backAccount = this.backAccount.bind(this);
+    this.onCal = this.onCal.bind(this);
+    this.backCal = this.backCal.bind(this);
+    this.updateLiveWeight = this.updateLiveWeight.bind(this);
 	}
+  componentWillReceiveProps(newProps){
+    this.setState({update:true})
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    return  (nextState.update == true)
+  }
+  updateLiveWeight(lv){
+    if(this.state.cal){
+      this.setState({liveWeight:lv, update:true})
+    }else{
+      this.setState({liveWeight:lv, update:false})
+    }
+  }
 	setPath(dat,i){
 		if(i == -1){
 			this.refs.sd.setPath([])
@@ -3307,21 +3918,42 @@ class SettingsPageWSB extends React.Component{
 			this.refs.sd.setPath([i])
 
 		}
-		this.setState({sel:i, showAccounts:false})
+		this.setState({sel:i, showAccounts:false, cal:false, update:true})
 	}
 	backAccount(){
-		this.setState({showAccounts:false})
+		this.setState({showAccounts:false, update:true})
 	}
 	onHandleClick(dat, n){
 		if(dat[0] == 'get_accounts'){
-			this.setState({showAccounts:true})
+			this.setState({showAccounts:true, cal:false, update:true})
 		}else{
 			this.props.onHandleClick(dat,n)
 		}
 	}
+  onCal(){
+    this.setState({cal:true,sel:-2, showAccounts:false, update:true})
+  }
+  backCal(){
+    this.setState({cal:false, update:true})
+  }
 	render(){
 		var self = this;
-		
+		var calStr = 'Press calibrate to start calibration';
+    if(this.props.calibState == 1){
+      calStr = 'Taring..'
+    }else if(this.props.calibState == 2){
+      calStr = 'Place calibration weight on loadcell and press Calibrate'
+    }else if(this.props.calibState == 3){
+      calStr = 'Calibrating..'
+    }else if(this.props.calibState == 4){
+      calStr = 'Remove weight and hit Calibrate to tare'
+    }else if(this.props.calibState == 5){
+      calStr = 'Taring..'
+    }else if(this.props.calibState == 6){
+      calStr = 'Calibration Successful'
+    }else if(this.props.calibState == 7){
+      calStr = 'Calibration Failed'
+    }
 
 		var cats = [<div><CatSelectItem branding={self.props.branding} data={{val:{cat:'Home'}}} selected={this.state.sel == -1} ind={-1} onClick={self.setPath}/></div>]
 		this.props.cvdf[0].params.forEach(function (c,i) {
@@ -3331,25 +3963,42 @@ class SettingsPageWSB extends React.Component{
 				cats.push(<div><CatSelectItem branding={self.props.branding} data={c} selected={self.state.sel == i} ind={i} onClick={self.setPath}/></div>)
 			}
 		})
-		cats.push(<div><CatSelectItem branding={self.props.branding} data={{val:{cat:'Check Weight'}}} selected={false} ind={-2} onClick={this.props.onCal} /></div>)
+		cats.push(<div><CatSelectItem branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} /></div>)
 
 		// bkmkthis
 		var cob;
 		if(this.state.sel == -1){
 			cob = this.props.cob2
 		}
-		var sd =<React.Fragment><div > <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+		var sd =<React.Fragment><div > <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
       		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
 			</div>
 			<div style={{display:'none'}}> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
 </div></React.Fragment>
 		if(this.state.showAccounts){
-			sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+			sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
       		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
 			</div>
 			<div> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
 </div></React.Fragment>
-		}
+		}else if(this.state.cal){
+     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+      </div>
+      <div>
+        <div style={{background:'#e1e1e1', padding:10}}>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
+          
+         
+          <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={'Live Weight'} value={this.state.liveWeight.toFixed(1)+'g'} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true}/></div>
+          <div style={{marginTop:100, fontSize:20, textAlign:'center'}}>{calStr}</div>
+          <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCal} lab={'Calibrate'}/>
+          </div>
+          </div>
+      </div></React.Fragment>
+    }
 
 		return <div>
 			<table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{marginTop:54, height:480, background:'#e1e1e1'}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
@@ -3448,6 +4097,7 @@ class SettingsPage extends React.Component{
 	sendPacket(n,v) {
 		var self = this;
 		////console.log([n,v])
+
 		if(n['@rpcs']['toggle']){
 
 			var arg1 = n['@rpcs']['toggle'][0];
@@ -3549,7 +4199,9 @@ class SettingsPage extends React.Component{
 			var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
 				
 			socket.emit('rpc', {ip:this.props.dsp, data:packet})
-		}
+		}else if(n['@rpcs']['theme']){
+      this.props.setTheme(v)
+    }
 	}
 	activate(n) {
 		// body...
@@ -3653,7 +4305,7 @@ class SettingsPage extends React.Component{
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem3 ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+				nodes.push(<SettingItem3 branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 				
 			}
 			len = catList.length;
@@ -3681,10 +4333,11 @@ class SettingsPage extends React.Component{
 		    }else if(lvl == 2){
 		    	if(this.props.mode == 'config'){
 		    		pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-		    		//console.log(pathString)
+		    		console.log(pathString)
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    	}else{
 		    		pathString = data.map(function (d) {return d[0].cat}).join('/')
+
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    	}
 		    	if(this.props.wsb != true){
@@ -4321,7 +4974,7 @@ class SettingItem3 extends React.Component{
 		var fSize = 24;
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-		var sty = {height:60}
+		var sty = {height:60}//, backgroundColor:FORTRESSPURPLE2}
     	var klass = 'sItem'
     	 
 			if(this.props.mobile){
@@ -4368,6 +5021,7 @@ class SettingItem3 extends React.Component{
         if(this.state.touchActive){
           klass += ' touchDown'
         }
+        sty.backgroundColor = FORTRESSPURPLE2;
           if(this.props.branding == 'SPARC'){
           	sty.backgroundColor = SPARCBLUE2
           	sty.color = 'black'
@@ -4427,7 +5081,7 @@ class SettingItem3 extends React.Component{
 	          				label={this.state.label} int={false} name={lkey}/>)
 
 
-	        		if(this.props.mobile){
+	        if(this.props.mobile){
 						sty.height = 51
 						sty.paddingRight = 5
 					}
@@ -4440,6 +5094,7 @@ class SettingItem3 extends React.Component{
 				}
 
 			    klass = 'sItem hasChild'
+          sty.backgroundColor = FORTRESSPURPLE2
 			    if(this.props.branding == 'SPARC'){
 	          		klass = 'sItem hasChildSparc'
 	          		sty.color = 'black'
@@ -4483,7 +5138,7 @@ class MultiEditControl extends React.Component{
 		this.valClick = this.valClick.bind(this);
     	this.onPointerDown = this.onPointerDown.bind(this);
     	this.onPointerUp = this.onPointerUp.bind(this);
-    	this.renderSpElem = this.renderSpElem.bind(this);
+    	//this.renderSpElem = this.renderSpElem.bind(this);
 	}
 	componentWillReceiveProps(newProps){
 		this.setState({val:newProps.data.slice(0)})
@@ -4617,7 +5272,7 @@ class MultiEditControl extends React.Component{
       
     	}
   	}
-  	renderSpElem(){
+  	render(){
   		var self = this;
 		
 		var namestring = this.props.name
@@ -4696,10 +5351,18 @@ class MultiEditControl extends React.Component{
 				}
 				if((self.props.param[i]['@labels'] == 'InputSrc')){
           iod = true
-					if(self.props.ioBits[inputSrcArr[d]] == 0){
+					
+          if(d == 0){
+            st.color = '#666'
+            iogreen = false;
+            
+          }else if((self.props.ioBits[inputSrcArr[d]] == 0) && (self.state.val[1] == 0)){
 						st.color = '#666'
             iogreen = false;
-					}
+					}else if((self.props.ioBits[inputSrcArr[d]] != 0) && (self.state.val[1] != 0)){
+            st.color = '#666'
+            iogreen = false;
+          }
 				}else if((self.props.param[i]['@labels'] == 'OutputSrc')){
            iod = true
 					if(self.props.ioBits[outputSrcArr[d]] == 0){
@@ -4728,7 +5391,7 @@ class MultiEditControl extends React.Component{
 		var acc = false
 		if(this.props.acc){
 			if(this.props.param[0]['@rpcs']){
-				if((this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])){
+				if((this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])||(this.props.param[0]['@rpcs']['theme'])){
 					acc = true
 				}
 			}
@@ -4742,8 +5405,14 @@ class MultiEditControl extends React.Component{
       }
       }
 		if(!acc){
+        var bgClr = FORTRESSPURPLE2
+        var txtClr = '#e1e1e1'
+        if(this.props.branding == 'SPARC'){
+          bgClr = SPARCBLUE2
+          txtClr = '#000'
+        }
 			return <div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
 				{namestring}
 			</div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
@@ -4781,10 +5450,14 @@ class MultiEditControl extends React.Component{
 				})
 				options = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
-				
-
+			        var bgClr = FORTRESSPURPLE2
+        var txtClr = '#e1e1e1'
+        if(this.props.branding == 'SPARC'){
+          bgClr = SPARCBLUE2
+          txtClr = '#000'
+        }
 				return  <div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
 				{namestring}
 			</div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
@@ -4817,9 +5490,14 @@ class MultiEditControl extends React.Component{
 	          	if(this.props.nameovr){
 	            	namestring = this.props.nameovr
 	          	}
-
+               var bgClr = FORTRESSPURPLE2
+        var txtClr = '#e1e1e1'
+        if(this.props.branding == 'SPARC'){
+          bgClr = SPARCBLUE2
+          txtClr = '#000'
+        }
 	          					return <div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
 				{namestring}
 			</div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
@@ -4835,184 +5513,7 @@ class MultiEditControl extends React.Component{
 		}
   		
   	}
-	render() {
-		return this.renderSpElem()
-		var self = this;
-		
-		var namestring = this.props.name
-		
-		if(typeof vdefByMac[this.props.mac][5][this.props.name] != 'undefined'){
-			if(vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name'] != ''){
-				namestring =  vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name']
-			}
-		}
-		
-		var dt = false;
-		var fSize = 24;
-		if(namestring.length > 24){
-			fSize = 18
-		}
-		else if(namestring.length > 20){
-			fSize= 20
-		}else if(namestring.length > 12){
-			fSize = 22
-		}
-		if(this.props.mobile){
-			fSize -= 7;
-			fSize = Math.max(13, fSize)
-		}
-		let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee', verticalAlign:'middle', lineHeight:'25px'}
-		if(this.props.branding == 'SPARC'){
-			lvst.background = SPARCBLUE2
-		}
-
-		var isInt = false
-		var colors = ['#000','#eee']
-
-		var labWidth = (536/this.state.val.length)
-		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480',overflow:'hidden'}
-		if(this.props.branding == 'SPARC'){
-			lvst.background = SPARCBLUE2
-			vlabelStyle.boxShadow = ' -50px 0px 0 0 '+ SPARCBLUE2
-		}
-		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-		if(this.props.mobile){
-			labWidth = parseInt(100/this.state.val.length) + '%'
-			vlabelswrapperStyle.width = '60%'
-			lvst.verticalAlign = 'middle'
-			lvst.lineHeight = '25px'
-		}
-    	if(this.state.touchActive){
-      		lvst.background = '#56526c'
-      		vlabelStyle.boxShadow = ' -50px 0px 0 0 #56526c'
-
-      		if(this.props.branding == 'SPARC'){
-      			lvst.background = '#2098d2'
-      			vlabelStyle.boxShadow = ' -50px 0px 0 0 #2098d2'
-      		}
-	    }
-
-	    var vLabels = this.state.val.map(function(d,i){  
-			var val = d;
-			var st = {textAlign:'center',lineHeight:'60px', verticalAlign:'middle', height:60}
-			st.width = labWidth
-			st.fontSize = self.props.vst.fontSize;
-			st.display = 'table-cell';//self.props.vst.display;
-			
-			if(self.props.mobile){
-				st.height = 51
-				st.lineHeight = '51px'
-				st.display = 'inline-block'
-			}
-	      	if(typeof self.props.param[i]['@labels'] != 'undefined'){
-				var list =  _pVdef[7][self.props.param[i]["@labels"]];
-				if(typeof _pVdef[7][self.props.param[i]["@labels"]]['english'] == 'undefined'){
-					console.log(self.props.param[i])
-				}
-				val = _pVdef[7][self.props.param[i]["@labels"]]['english'][d];
-				
-				if((self.props.language != 'english')&&(typeof list[self.props.language] != 'undefined')&&(typeof list[self.props.language][d] == 'string') &&(list[self.props.language][d].trim().length != 0)){
-					val = _pVdef[7][self.props.param[i]["@labels"]][self.props.language][d];
-				}
-				if((self.props.param[i]['@labels'] == 'InputSrc')){
-					if(self.props.ioBits[self.props.param[i]['@name'].slice(6)] == 0){
-						st.color = '#666'
-					}
-				}else if((self.props.param[i]['@labels'] == 'OutputSrc')){
-					if(self.props.ioBits[outputSrcArr[d]] == 0){
-						st.color = '#666'
-					}
-				}
-			}
-	      	if(self.props.param[i]['@units']){
-	        	val = val + ' ' + self.props.param[i]['@units']
-	      	}
-	      	if(self.props.combo){
-	        	val = <React.Fragment><div style={{color:'#e1e1e1', fontSize:self.props.vst.fontSize - 4}}>{self.props.vMap['@labels'][i]}</div><div>{val}</div></React.Fragment>
-	        	st.lineHeight = '25px'
-	        }
-
-	        var _st = Object.assign({},st)
-	        if(self.state.touchActive){
-	        	_st.background = 'rgba(100,100,100,0.5)'
-	        }
-			
-			return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val}</CustomLabel>)
-		})
-
-		var acc = false
-		if(this.props.acc){
-			if(this.props.param[0]['@rpcs']){
-				if((this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])){
-					acc = true
-				}
-			}
-		}
-		if(!acc){
-			return(<div><label style={lvst}>{namestring + ': '}</label>
-					<div style={vlabelswrapperStyle}  onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerLeave={this.onPointerUp}><div style={vlabelStyle}>{vLabels}</div></div></div>)
-
-		}else{
-			var multiDropdown = true;
-			this.props.param.forEach(function (p) {
-				if((typeof p['@labels'] == 'undefined') &&(p['@name'].indexOf('TestConfigCount') == -1)){
-					multiDropdown = false;
-				}
-			})
-				
-			var options;
-			
-			if(multiDropdown){
-				var lists = this.props.param.map(function (p) {
-					if(p['@name'].indexOf('TestConfigCount') != -1){
-						return [0,1,2,3,4,5,6,7,8,9]
-					}else{
-						var list = _pVdef[7][p["@labels"]]['english'].slice(0);
-						if(self.props.language != 'english'){
-							if(typeof _pVdef[7][p["@labels"]][self.props.language] != 'undefined'){
-								list.forEach(function(lb,i){
-									if((typeof _pVdef[7][p["@labels"]][self.props.language][i] == 'string') &&(_pVdef[7][p["@labels"]][self.props.language][i].trim().length != 0)){
-										list[i] = _pVdef[7][p["@labels"]][self.props.language][i]
-									}
-								})
-							}
-						}
-						return list
-					}
-				})
-				options = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={isInt} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
-
-				return(<div><div  onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerLeave={this.onPointerUp} onClick={this.openSelector}><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>
-						<div style={{paddingLeft:this.props.lvst.width}}>
-							{options}
-						</div></div>)
-			}else{
-				options = this.state.val.map(function(v, i){
-					if(typeof self.props.param[i]['@labels'] != 'undefined'){
-						var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
-						
-						return <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={isInt} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
-					}else{
-						var num = true
-						if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){ num = false }
-						if(self.props.param[i]["@name"].indexOf('DateTime') != -1){dt = true;}
-						var lbl = namestring
-						if(self.props.combo){ lbl = lbl + [' Delay', ' Duration'][i]}
-							return <CustomKeyboard branding={self.props.branding} mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={'input'+i} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
-						}
-				})
-	          	if(this.props.nameovr){
-	            	namestring = this.props.nameovr
-	          	}
-
-				return(<div><label style={lvst}>{namestring + ': '}</label>
-							<div style={vlabelswrapperStyle} onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp}  onPointerLeave={this.onPointerUp}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>)
-			}
-
-
-		}
-		
-	}
+	
 }
 class LogInControl2 extends React.Component{
 	constructor(props){
@@ -5778,7 +6279,7 @@ class FaultDiv extends React.Component{
 		var cont;
 		var clButton;
 		if(this.props.faults.length == 0){
-			cont = (<div><label>No Faults</label></div>)
+			cont = (<div style={{color:'#e1e1e1'}}><label>No Faults</label></div>)
 		}else{
 			    	var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
 
@@ -5807,6 +6308,49 @@ class FaultItem extends React.Component{
 		return <div><label style={{color:'#e1e1e1'}}>{"Fault type: " + type}</label>
 		</div>
 	}
+}
+class TimezoneControl extends React.Component{
+  constructor(props){
+    super(props);
+    this.onTzChange = this.onTzChange.bind(this);
+    this.state = {timeZone:props.timeZone, tzlist:props.timezones.map(function (tz) {
+      // body...
+      return tz.text;
+    })}
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({timeZone:newProps.timeZone, tzlist:newProps.timezones.map(function(tz) {
+      // body...
+      return tz.text
+    })})
+  }
+  onTzChange(v){
+    this.props.onTzChange(this.props.timezones[v].index)
+  }
+  render(){
+    var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
+    st.width = 546
+    st.fontSize = 24
+    st.display = 'table-cell';//self.props.vst.display;
+
+    var tz = <PopoutWheel ovWidth={600} branding={this.props.branding} vMap={vMapV2['Timezone']} language={this.props.language} interceptor={false} name={'Timezone'} ref='tz' val={[this.state.timeZone]} options={[this.state.tzlist]} onChange={this.onTzChange}/>
+  
+    var tzTxt = ''
+    if(this.props.timezones[this.state.timeZone]){
+      tzTxt = this.props.timezones[this.state.timeZone-1].text;
+    }
+    var tzItem = (<div style={{margin:2}} onClick={()=>this.refs.tz.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+        {'Time Zone'}
+      </div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+        <div style={st}>{tzTxt}</div>
+      </div>
+      </div>)
+
+
+    return <React.Fragment>{tzItem}{tz}</React.Fragment>
+  }
 }
 var PromptModalCont =  onClickOutside(PromptModalC);
 var DeleteModalCont =  onClickOutside(DeleteModalC);

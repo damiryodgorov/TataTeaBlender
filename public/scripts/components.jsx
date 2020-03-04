@@ -444,7 +444,7 @@ class TrendBar extends React.Component{
 		var range = this.props.upperbound - this.props.lowerbound
 		var color;
 		var labels;
-		var labclr = '#e1e1e1'
+		var labclr = 'black'
 		if(this.props.branding == 'SPARC'){
 			labclr = 'black'
 		}
