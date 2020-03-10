@@ -2485,7 +2485,7 @@ class LandingPage extends React.Component{
          <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref='cwc' cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
         </Modal>
         <Modal ref='batModal' Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
-         <BatchControl startB={this.start} stopB={this.stop} start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref='btc'/>
+         <BatchControl prod={this.state.prec} startB={this.start} stopB={this.stop} start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref='btc'/>
         </Modal>
 
       	<PromptModal language={language} branding={this.state.branding} ref='pmd' save={this.saveProductPassThrough} discard={this.passThrough}/>
@@ -2937,9 +2937,9 @@ class StatSummary extends React.Component{
 	return	<div style={{width:240,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
 
 			<div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
-			<StatControl name='Live Weight' value={this.state.lw}/>
-			<StatControl name='Total Weight (Batch)' value={tot}/>
-			<StatControl name='Total Weight (Sample)' value={stot}/>
+			<StatControl name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw}/>
+			<StatControl name={vMapV2['TotalWeight']['@translations'][this.props.language]['name']} value={tot}/>
+			<StatControl name={vMapV2['SampleTotalWeight']['@translations'][this.props.language]['name']} value={stot}/>
       <StatControl name='Net Weight' value='0g'/>
 			<BatchStatControl name='Average Weight' batch={avg} sample={savg}/>
 			<BatchStatControl name='Standard Deviation' batch={stdev} sample={sstdev}/>
@@ -3575,6 +3575,73 @@ class ProductSettings extends React.Component{
 		</div>
 	}
 }
+class LiveGraph extends React.Component{
+  constructor(props){
+    super(props)
+  }
+  update(lw){
+    this.refs.cv.stream({t:Date.now(),val:lw})
+  }
+  render(){
+    return <div>
+      <CanvElem ref='cv' canvasId='liveGraph' h={400} w={600}/>
+    </div>
+  }
+}
+
+class CanvElem extends React.Component{
+  constructor(props){ 
+    super(props)
+    this.line = new TimeSeries();
+    this.smoothie = new SmoothieChart({millisPerPixel:this.props.mpp,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
+      horizontalLines:[{color:'#000000',lineWidth:1,value:0}],
+      labels:{fillStyle:'#808a90'}, grid:{millisPerLine:2000,fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc, maxDataSetLength:700, minDataSetLength:300, limitFPS:15});
+    
+    this.state =  ({update:true})
+    this.stream = this.stream.bind(this);
+    this.pauseGraph = this.pauseGraph.bind(this);
+    this.restart = this.restart.bind(this);
+  }
+  componentWillUnmount(){
+    this.smoothie.stop();
+    this.smoothie = null;
+    this.line = null;
+  }
+  shouldComponentUpdate(){
+    return false;
+  }
+  pauseGraph(){
+    this.setState({update:false})
+    this.smoothie.stop()
+    //this.state.smoothie.setTargetFPS(8)
+  }
+  restart(){
+    this.setState({update:true})
+    this.smoothie.start()
+    //this.state.smoothie.setTargetFPS(15)
+  }
+  componentDidMount(){
+    //comebackhere
+    this.smoothie.streamTo(document.getElementById(this.props.canvasId));
+      this.smoothie.addTimeSeries(this.line, {lineWidth:2,strokeStyle:'#darkturquoise', fillStyle:'darkturquoise'});
+  
+  }
+  stream(dat) {
+    if(this.state.update){
+      this.line.append(dat.t, dat.val);
+    }
+
+  }
+
+    render(){
+      console.log('rendering canvas')
+    return(
+      <div className="canvElem">
+        <canvas id={this.props.canvasId} height={this.props.h} width={this.props.w}></canvas>
+      </div>
+    );
+  }
+}
 class BatchControl extends React.Component{
   constructor(props){
     super(props)
@@ -3621,9 +3688,12 @@ class BatchControl extends React.Component{
          <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
    
       <div style={{padding:5}}>
-      <div>Batch ID: 25132</div>
+      <div>Batch Number: {this.props.prod['BatchNumber']}</div>
+      <div>Batch Ref: {this.props.prod['BatchRef']}</div>
        <div>{'Batch running for '+ this.state.batchMin.toFixed(1) + ' minutes'}</div>
-       <div>{'Sample running for '+ this.state.sampleMin.toFixed(1) + ' minutes'}</div></div>
+       <div>{'Sample running for '+ this.state.sampleMin.toFixed(1) + ' minutes'}</div>
+       <div></div>
+       </div>
     </div>
       }   
 
@@ -3751,7 +3821,7 @@ class ProductSelectItem extends React.Component{
 	constructor(props){
 		super(props)
 		this.switchProd = this.switchProd.bind(this);
-	  this.deleteProd = this.deleteProd.bind(this);
+	  this.deleteProd = this.deleteProd.bind(this); 
   }
 	switchProd(){
 		var self = this;
@@ -3882,8 +3952,12 @@ class CatSelectItem extends React.Component{
       st.color = '#e1e1e1'
     }
 		}
+    var catSt = this.props.data.val.cat
+    if(vdefMapV2['@catmap'][catSt]){
+     catSt =  vdefMapV2['@catmap'][catSt]['@translations'][this.props.language]
+    }
 
-		return (<div style={{background:"transparent", color:"#000", position:'relative', textAlign:'center'}}><div style={ds} ><label onClick={this.onClick} style={st}>{this.props.data.val.cat}</label></div>
+		return (<div style={{background:"transparent", color:"#000", position:'relative', textAlign:'center'}}><div style={ds} ><label onClick={this.onClick} style={st}>{catSt}</label></div>
 			</div>)
 	}
 }
@@ -3955,15 +4029,15 @@ class SettingsPageWSB extends React.Component{
       calStr = 'Calibration Failed'
     }
 
-		var cats = [<div><CatSelectItem branding={self.props.branding} data={{val:{cat:'Home'}}} selected={this.state.sel == -1} ind={-1} onClick={self.setPath}/></div>]
+		var cats = [<div><CatSelectItem language={this.props.language} branding={self.props.branding} data={{val:{cat:'Home'}}} selected={this.state.sel == -1} ind={-1} onClick={self.setPath}/></div>]
 		this.props.cvdf[0].params.forEach(function (c,i) {
 			// body...
 			//console.log(c)
 			if(c.type == 1){
-				cats.push(<div><CatSelectItem branding={self.props.branding} data={c} selected={self.state.sel == i} ind={i} onClick={self.setPath}/></div>)
+				cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={c} selected={self.state.sel == i} ind={i} onClick={self.setPath}/></div>)
 			}
 		})
-		cats.push(<div><CatSelectItem branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} /></div>)
+		cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} /></div>)
 
 		// bkmkthis
 		var cob;
@@ -3990,7 +4064,7 @@ class SettingsPageWSB extends React.Component{
        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
           
          
-          <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={'Live Weight'} value={this.state.liveWeight.toFixed(1)+'g'} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.liveWeight.toFixed(1)+'g'} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true}/></div>
           <div style={{marginTop:100, fontSize:20, textAlign:'center'}}>{calStr}</div>

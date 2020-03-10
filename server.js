@@ -227,7 +227,7 @@ function write_netpoll_events(message, ip){
   ip = null;
   message = null;
 }
-function initSocks(arr, cb){
+function initSocks(arr,cw, cb){
   dsp_ips = [];
   vdefs = {};
   nVdfs = {};
@@ -235,6 +235,8 @@ function initSocks(arr, cb){
   clients = {};
   nphandlers = {};
   accountJSONs = {};
+
+  console.log(239, arr)
  // _accounts = {};
  // _tempAccounts = {};
   //console.log('dsp_ips')
@@ -242,7 +244,7 @@ function initSocks(arr, cb){
    // //console.log(arr)
     dsp_ips.push(arr[i].ip)
   }
-  udpCon('init', cb)
+  udpCon('init',cw, cb)
 }
 function getVdef(ip, callback,failed){
   var tclient = tftp.createClient({host:ip ,retries:10, timeout:1000})
@@ -266,47 +268,52 @@ function getVdef(ip, callback,failed){
           return;
         }
         var vdef = JSON.parse(b.toString())
+        if(typeof vdef['@defines'] != 'undefined'){
         if(vdef['@defines']['CHECK_WEIGHER']){
+         //  console.log(ip)
+       // console.log(vdef)
+        
                   vdefs[ip] = vdef; 
-        var nvdf = [[],[],[],[],[],[],[],[]];
-        var pVdef = [{},{},{},{},{},{},{},{}];
-        vdef['@params'].forEach(function (p) {
-          // body...
-          if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
-            console.log(7, p['@name'])
-            nvdf[7].push(p['@name'])
-            pVdef[7][p['@name']] = p
-          }else{
+          var nvdf = [[],[],[],[],[],[],[],[]];
+          var pVdef = [{},{},{},{},{},{},{},{}];
+          vdef['@params'].forEach(function (p) {
+            // body...
+            if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
+              //console.log(7, p['@name'])
+              nvdf[7].push(p['@name'])
+              pVdef[7][p['@name']] = p
+            }else{
 
 
-            nvdf[p["@rec"]].push(p['@name'])
-            pVdef[p['@rec']][p['@name']] = p
+              nvdf[p["@rec"]].push(p['@name'])
+              pVdef[p['@rec']][p['@name']] = p
 
-          }
-        })
-        for(var p in vdef['@deps']){
+            }
+          })
+          for(var p in vdef['@deps']){
           ////console.log(p)
          // //console.log(vdef['@deps'][p]['@rec'])
-          nvdf[vdef['@deps'][p]['@rec']].push(p)
-          pVdef[vdef['@deps'][p]['@rec']][p] = vdef['@deps'][p]
+            nvdf[vdef['@deps'][p]['@rec']].push(p)
+            pVdef[vdef['@deps'][p]['@rec']][p] = vdef['@deps'][p]
 
-        }
-        pVdef[6] = vdef["@deps"]
+          }
+          pVdef[6] = vdef["@deps"]
 
-        nVdfs[ip] = nvdf
-        pVdefs[ip] = pVdef
-        callback(ip,vdef) 
-        vdef = null;
-        b = null;
-        get.abort()     
-        tclient = null; 
+          nVdfs[ip] = nvdf
+          pVdefs[ip] = pVdef
+          console.log(304,'callback')
+          callback(ip,vdef) 
+          vdef = null;
+          b = null;
+          get.abort()     
+          tclient = null; 
         }else{
 
 
-        vdefs[ip] = vdef; 
-        var nvdf = [[],[],[],[],[],[],[]];
-        var pVdef = [{},{},{},{},{},{},{}];
-        vdef['@params'].forEach(function (p) {
+          vdefs[ip] = vdef; 
+          var nvdf = [[],[],[],[],[],[],[]];
+          var pVdef = [{},{},{},{},{},{},{}];
+          vdef['@params'].forEach(function (p) {
           // body...
           if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
             nvdf[6].push(p['@name'])
@@ -334,14 +341,16 @@ function getVdef(ip, callback,failed){
         b = null;
         get.abort()     
         tclient = null;   
-        }      
+        } 
+        }
+        failed(ip)     
       })
       rawVdef = null;
       buffer = null;
      
     })
      get.on('error',(e)=>{
-        //console.log(e)
+        console.log(352,e)
         rawVdef = null;
         tclient = null;
         if(failed){
@@ -903,9 +912,11 @@ function udpConSing(ip,app){
      
   
 }
-function udpCon(ip, cb){
+function udpCon(ip,cw, cb){
   if(ip == 'init'){
+    console.log('init')
     if(dsp_ips.length != 0){
+
       /*//console.log('udp://'+ dsp_ips[0])
       udpClients[dsp_ips[0]] = null;
       udpClients[dsp_ips[0]] = new UdpParamServer(dsp_ips[0], function(__ip,e){
@@ -916,29 +927,32 @@ function udpCon(ip, cb){
         
       })*/
       getVdef(dsp_ips[0], function(_ip,vdef){
-        //console.log('this is the first one')
+        console.log('this is the first one')
         vdef = null;
      //   nphandlers[_ip] = new NetPollEvents(_ip,vdef,write_netpoll_events)
-        udpCon(_ip, cb)
+        udpCon(_ip,cw, cb)
       },function(_ip){
         //console.log('timeout for vdef')
-        udpCon(_ip, cb)
+        udpCon(_ip,cw, cb)
       })
       
 
+    }else{
+      console.log('what is happening')
+      cb()
     }
   }else if(dsp_ips.indexOf(ip) != -1){
     var ind = dsp_ips.indexOf(ip);
     if(ind + 1 <dsp_ips.length){
-        //console.log('currently grabbing vdef for ' + (ind+1))
+        console.log('currently grabbing vdef for ' + (ind+1))
   
      
       getVdef(dsp_ips[ind+1], function(_ip,vdef){
         vdef = null;
-        udpCon(_ip, cb)
+        udpCon(_ip,cw, cb)
       },function(_ip){
         //console.log('timeout for vdef')
-        udpCon(_ip,cb)
+        udpCon(_ip,cw,cb)
       })
       
     }else{
@@ -1164,7 +1178,7 @@ function locateUnicast (addr,cb, cw) {
     if((dspips.length == 0)&&(nvdspips.length >0)){
       relaySockMsg('notvisible', nvdspips);
     }
-    initSocks(dsps.slice(0), function(){relaySockMsg('locatedResp', dspips);});
+    initSocks(dsps.slice(0),cw, function(){relaySockMsg('locatedResp', dspips);});
        
     if(cb){cb(e.slice(0))}    
   },addr);
@@ -1970,7 +1984,7 @@ wss.on('connection', function(scket, req){
             if(cw){
               console.log(e[i].app_name)
               if(e[i].app_name == 'FTI_CW'){
-                console.log(1804, e[i])
+                console.log(1804, JSON.stringify(e[i]))
                 cwips.push(e[i])
               }
             }
@@ -1986,10 +2000,13 @@ wss.on('connection', function(scket, req){
       if((dspips.length == 0)&&(nvdspips.length >0)){
         socket.emit('notvisible', nvdspips);
       }
-      initSocks(dsps.slice(0), function(){
+      initSocks(dsps.slice(0),cw, function(){
         if(cw){
+          console.log('should come here')
           socket.emit('locatedResp',cwips)
         }else{
+
+          console.log('is it coming here?')
           socket.emit('locatedResp', dspips);
          
         }
