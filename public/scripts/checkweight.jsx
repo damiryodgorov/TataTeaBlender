@@ -1473,7 +1473,10 @@ class LandingPage extends React.Component{
           if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
             noupdate = false;
           }
-          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
+          if(e.rec['BatchRunning'] != this.state.rec['BatchRunning']){
+            noupdate = false
+          }
+          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] == 0), stop:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
           
 					
 				}else if(e.type == 3){
@@ -1744,7 +1747,7 @@ class LandingPage extends React.Component{
 					arg2.push(n['@rpcs']['write'][1][i])
 				}else if(n['@rpcs']['write'][1][i] == n['@name']){
 					////console.log('the')
-					if(!isNaN(v)){
+					if(!isNaN(v) && (n['@type'] != 'int32')){
 						arg2.push(v)
 					}
 					else{
@@ -2485,7 +2488,7 @@ class LandingPage extends React.Component{
          <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref='cwc' cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
         </Modal>
         <Modal ref='batModal' Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
-         <BatchControl prod={this.state.prec} startB={this.start} stopB={this.stop} start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref='btc'/>
+         <BatchControl selfProd={this.state.srec['EditProdNo']} prod={this.state.prec} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref='btc'/>
         </Modal>
 
       	<PromptModal language={language} branding={this.state.branding} ref='pmd' save={this.saveProductPassThrough} discard={this.passThrough}/>
@@ -3646,6 +3649,7 @@ class BatchControl extends React.Component{
   constructor(props){
     super(props)
     this.state = {start:this.props.start,stop:this.props.stop,batchData:[0, 0, 0, 0, 0, 0, 0, 0,0], sampleData:[0, 0, 0, 0, 0, 0, 0, 0,0],batch:true, batchStartTime:'', sampleStartTime:'',batchMin:0,sampleMin:0}
+    this.sendPacket = this.sendPacket.bind(this);
   }
   parseCrec(crec){
     var data = this.state.batchData.slice(0);
@@ -3669,8 +3673,17 @@ class BatchControl extends React.Component{
     sampleData[7] = crec['SampleCheckWeightCnt']
     this.setState({batchData:data, sampleData:sampleData, batchStartTime:crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' '),sampleStartTime:crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' '),batchMin:crec['BatchMinutes'], sampleMin:crec['SampleMinutes']})
   }
+  sendPacket(n,v){
+    var self = this;
+    this.props.sendPacket(n,parseInt(v))
+    setTimeout(function (argument) {
+      // body...
+      self.props.sendPacket('saveProduct',self.props.selProd)
+    }, 1000)
+  }
   render(){
-
+    // <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}/></div>
+          
     var pl = 'assets/play-arrow-fti.svg'
       var stp = 'assets/stop-fti.svg'
       var batchInfo = <div style={{height:315}}>
@@ -3688,8 +3701,9 @@ class BatchControl extends React.Component{
          <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
    
       <div style={{padding:5}}>
-      <div>Batch Number: {this.props.prod['BatchNumber']}</div>
-      <div>Batch Ref: {this.props.prod['BatchRef']}</div>
+      <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={250} h2={51} w2={400} label={vMapV2['BatchNumber']['@translations'][this.props.language]['name']} value={this.props.prod['BatchNumber']} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.props.mac][1][1]['BatchNumber']} num={true}/></div>
+       <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={250} h2={51} w2={400} label={vMapV2['BatchRef']['@translations'][this.props.language]['name']} value={this.props.prod['BatchRef']} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.props.mac][1][1]['BatchRef']} num={true}/></div>
+       
        <div>{'Batch running for '+ this.state.batchMin.toFixed(1) + ' minutes'}</div>
        <div>{'Sample running for '+ this.state.sampleMin.toFixed(1) + ' minutes'}</div>
        <div></div>
