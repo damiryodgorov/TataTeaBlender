@@ -2184,12 +2184,13 @@ wss.on('connection', function(scket, req){
       phash.writeUInt16BE(_phash.readUInt16LE(6),4);
       phash.writeUInt16BE(_phash.readUInt16LE(4),6);
       var useropt = Buffer.alloc(2);
-      var opt = parseInt(users[i].opt) & 0xf
-      useropt.writeUInt16LE(parseInt(users[i].opt),0)
+      var opt = parseInt(users[i].opt) & 0b1111
+      useropt.writeUInt8(parseInt(users[i].opt),0)
       _users.push(Buffer.concat([user,phash,useropt]))
     }
     var buf = Buffer.concat(_users);
     if(buf.length != vdefs[packet.ip]['@defines']['USER_STRUCT_SIZE']){
+      console.log('wrong size')
       socket.emit('notify','Error updating users' + buf.length + ' ' + vdefs[packet.ip]['@defines']['USER_STRUCT_SIZE'])
     }else{
       var pkt = dsp_rpc_paylod_for(vdefs[packet.ip]['@rpc_map']['KAPI_RPC_USERSTRUCTWRITE'][0],vdefs[packet.ip]['@rpc_map']['KAPI_RPC_USERSTRUCTWRITE'][1],buf)
@@ -2223,8 +2224,8 @@ wss.on('connection', function(scket, req){
       phash.writeUInt16BE(_phash.readUInt16LE(6),4);
       phash.writeUInt16BE(_phash.readUInt16LE(4),6);
       var useropt = Buffer.alloc(2);
-      var opt = parseInt(users[i].opt) & 0xf
-      useropt.writeUInt16LE(parseInt(users[i].opt),0)
+      var opt = parseInt(users[i].opt) & 0b1111
+      useropt.writeUInt8(parseInt(users[i].opt),0)
       _users.push(Buffer.concat([user,phash,useropt]))
     }
     var buf = Buffer.concat(_users);

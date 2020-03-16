@@ -1474,6 +1474,11 @@ class LandingPage extends React.Component{
             noupdate = false;
           }
           if(e.rec['BatchRunning'] != this.state.rec['BatchRunning']){
+            if(e.rec['BatchRunning'] == 1){
+               toast('Batch Started');
+            }else{
+                 toast('Batch Stopped')
+            }
             noupdate = false
           }
           this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] == 0), stop:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
@@ -1672,12 +1677,12 @@ class LandingPage extends React.Component{
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchStart'){
-      toast('Batch Started')
+     
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchEnd'){
-        toast('Batch Stopped')
+        //toast('Batch Stopped')
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STOPBATCH']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
@@ -2314,7 +2319,9 @@ class LandingPage extends React.Component{
 
 	}
 	openBatch(){
-    this.refs.batModal.toggle();
+    if(typeof this.state.curDet.ip != 'undefined'){
+      this.refs.batModal.toggle();
+    }
 	}
 	onPmdClose(){
 		if(this.state.rec['EditProdNeedToSave'] == 1){
@@ -2383,17 +2390,17 @@ class LandingPage extends React.Component{
     	var play, stop;
     	if(this.state.start){
     		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
-    		stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#FA2222', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+    		stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
     	}else{
     		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#00FF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
-			stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#F04040', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+			stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
     	}   
 
     	var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
 
-    	var sd = '' 
+    	var sd = <div><DisplaySettings nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/></div>
     	var cald = ''
     	var dets = ''// <div style={{color:'#e1e1e1', fontSize:24}} onClick={() => this.refs.locateModal.toggle()}>Connected to {this.state.curDet.name}</div>
     	if(this.state.srec['SRecordDate']){
@@ -2464,7 +2471,7 @@ class LandingPage extends React.Component{
           </td><td><div><SparcElem ref='se' branding={this.state.branding} value={lw.toFixed(1) + 'g'} name={'Gross Weight'} width={616} font={40}/></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph cwShow={() => this.refs.cwModal.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
+          <LineGraph connected={this.state.connected} cwShow={() => this.refs.cwModal.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
           <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref='tb'/></LineGraph></div>
           </td><td>
           	<HorizontalHisto language={language} branding={this.state.branding} ref='hh'/>
@@ -2729,10 +2736,11 @@ class LineGraph extends React.Component{
 		var fontColor = '#e1e1e1'
 		var graphColor = 'darkturquoise'//FORTRESSGRAPH
 		var bg2 = 'rgba(150,150,150,0.5)'
-	
+	 var modBg = FORTRESSPURPLE1
 		if(this.props.branding == 'SPARC'){
 			outerbg = '#e1e1e1'
 			innerbg = SPARCBLUE2
+      modBg = SPARCBLUE2
 			fontColor = 'black'
 			graphColor = SPARCBLUE2;
 			bg2 = 'rgba(150,150,150,0.5)'
@@ -2852,6 +2860,9 @@ class LineGraph extends React.Component{
 				<LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
 	
 		}*/
+  if(this.props.connected == false){
+    str = 'Not Connected'
+  }
 	return	<div style={{background:bg, textAlign:'center'}}>
 		<div style={{width:580,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 		<div style={{background:'black',width:580,marginLeft:'auto',marginRight:'auto'}}><div style={{background:bg2,color:'#e1e1e1',marginBottom:-47,marginLeft:'auto',marginRight:'auto',padding:4,width:572, height:75,lineHeight:'35px'}}><div style={{display:'inline-block', width:280}}><div style={{fontSize:16}}>Running Product</div><div style={{fontSize:24}}>{this.props.prodName}</div></div>
@@ -2872,7 +2883,7 @@ class LineGraph extends React.Component{
 		</XYPlot>
 		</div>
 		</div>
-			<Modal ref='fModal' innerStyle={{background:SPARCBLUE1}}>
+			<Modal ref='fModal' innerStyle={{background:modBg}}>
 					<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults}/>
 				</Modal>
 		</div>
@@ -3978,12 +3989,13 @@ class CatSelectItem extends React.Component{
 class SettingsPageWSB extends React.Component{
 	constructor(props){
 		super(props);
-		this.state = {sel:-1, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0}
+		this.state = {sel:-1, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0,mot:false}
 		this.setPath = this.setPath.bind(this);
 		this.onHandleClick = this.onHandleClick.bind(this);
 		this.backAccount = this.backAccount.bind(this);
     this.onCal = this.onCal.bind(this);
     this.backCal = this.backCal.bind(this);
+    this.onMot = this.onMot.bind(this);
     this.updateLiveWeight = this.updateLiveWeight.bind(this);
 	}
   componentWillReceiveProps(newProps){
@@ -4006,27 +4018,30 @@ class SettingsPageWSB extends React.Component{
 			this.refs.sd.setPath([i])
 
 		}
-		this.setState({sel:i, showAccounts:false, cal:false, update:true})
+		this.setState({sel:i, showAccounts:false, cal:false, update:true,mot:false})
 	}
 	backAccount(){
 		this.setState({showAccounts:false, update:true})
 	}
 	onHandleClick(dat, n){
 		if(dat[0] == 'get_accounts'){
-			this.setState({showAccounts:true, cal:false, update:true})
+			this.setState({showAccounts:true, cal:false, update:true,mot:false})
 		}else{
 			this.props.onHandleClick(dat,n)
 		}
 	}
   onCal(){
-    this.setState({cal:true,sel:-2, showAccounts:false, update:true})
+    this.setState({mot:false,cal:true,sel:-2, showAccounts:false, update:true})
+  }  
+  onMot(){
+    this.setState({cal:false,mot:true,sel:-3, showAccounts:false, update:true})
   }
   backCal(){
     this.setState({cal:false, update:true})
   }
 	render(){
 		var self = this;
-		var calStr = 'Press calibrate to start calibration';
+		var calStr = 'Press calibrate to start calibration. Ensure no load is on the loadcell before starting.';
     if(this.props.calibState == 1){
       calStr = 'Taring..'
     }else if(this.props.calibState == 2){
@@ -4052,6 +4067,7 @@ class SettingsPageWSB extends React.Component{
 			}
 		})
 		cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} /></div>)
+    cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Motor Control'}}} selected={this.state.mot} ind={-3} onClick={this.onMot} /></div>)
 
 		// bkmkthis
 		var cob;
@@ -4086,6 +4102,24 @@ class SettingsPageWSB extends React.Component{
           </div>
           </div>
       </div></React.Fragment>
+    }else if(this.state.mot){
+      sd = <React.Fragment>
+        <div style={{display:'none'}}> <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+      </div>
+
+      <div>
+        <div style={{background:'#e1e1e1', padding:10}}>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Motor Control'}</div></h2></span>
+          
+        <div style={{marginTop:5}}>
+          <MotorControl motors={[{name:'Infeed Belt'},{name:'Load Belt'},{name:'Exit Belt'}]}/>
+        </div>
+
+         </div>
+
+         </div>
+      </React.Fragment>
     }
 
 		return <div>
@@ -6062,7 +6096,6 @@ class AccountControl extends React.Component{
 		this.selectChanged = this.selectChanged.bind(this);
 		this.addAccount = this.addAccount.bind(this);
 		this.removeAccount = this.removeAccount.bind(this);
-	//	this.addNewUser = this.addNewUser.bind(this);
 		this.goBack = this.goBack.bind(this);
 	}
 	goBack(){
@@ -6114,7 +6147,7 @@ class AccountControl extends React.Component{
 		var accTableRows = [];
 		
 		this.props.accounts.forEach(function(ac,i){
-			accTableRows.push(<AccountRow mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > ac.acc} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
+			accTableRows.push(<AccountRow branding={self.props.branding} mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > ac.acc} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
 		})
 		
 		var backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
@@ -6232,15 +6265,15 @@ class AccountRow extends React.Component{
 			
 		var dt = false;
 		var self = this;
-		var fSize = 24;
-		if(namestring.length > 24){
-			fSize = 18
-		}
-		else if(namestring.length > 20){
-			fSize= 20
-		}else if(namestring.length > 12){
-			fSize = 22
-		}
+		var fSize = 20;
+    if(namestring.length > 24){
+      fSize = 14
+    }
+    else if(namestring.length > 20){
+      fSize= 16
+    }else if(namestring.length > 12){
+      fSize = 18
+    }
 		if(this.props.mobile){
 			fSize -= 7;
 			fSize = Math.max(13, fSize)
@@ -6251,7 +6284,7 @@ class AccountRow extends React.Component{
 
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-			var st = {textAlign:'center',lineHeight:'60px', height:60, width:536}
+			var st = {textAlign:'center',lineHeight:'51px', height:60, width:536}
 
 			
 			st.fontSize = fSize//self.props.vst.fontSize;
@@ -6300,18 +6333,26 @@ class AccountRow extends React.Component{
 
 		*/
 
-			var pw = 	<PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref='pw' val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
-		var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='username' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
+     var bgClr = FORTRESSPURPLE2
+     var modBG = FORTRESSPURPLE1
+        var txtClr = '#e1e1e1'
+        if(this.props.branding == 'SPARC'){
+          modBG = SPARCBLUE1
+          bgClr = SPARCBLUE2
+          txtClr = '#000'
+        }
+			var pw = 	<PopoutWheel branding={this.props.branding} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref='pw' val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+		var userkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='username' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
+		var pswdkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
 	
-			var edit = <Modal mobile={this.props.mobile} ref='ed' onClose={this.saveChanges} innerStyle={{background:SPARCBLUE1}}>
+			var edit = <Modal mobile={this.props.mobile} ref='ed' onClose={this.saveChanges} innerStyle={{background:modBG}}>
 			<div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
 
-				<div style={{marginTop:5}} onClick={() => this.refs.username.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}} >{'Username: '}
+				<div style={{marginTop:5}} onClick={() => this.refs.username.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Username: '}
 				</div>		<div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.username}</label></div></div>
-				<div style={{marginTop:5}} onClick={() => this.refs.pswd.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}} >{'Password: '}
+				<div style={{marginTop:5}} onClick={() => this.refs.pswd.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Password: '}
 				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div>
-				<div style={{marginTop:5}} onClick={() => this.refs.pw.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}} >{'Level: '}
+				<div style={{marginTop:5}} onClick={() => this.refs.pw.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Level: '}
 				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.acc}</label></div></div>
 						</div>
 				{pw}{userkb}{pswdkb}
@@ -6322,7 +6363,7 @@ class AccountRow extends React.Component{
 
 
 			return(<div style={{marginTop:5}}>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}}>
 				{namestring}
 			</div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
@@ -6332,6 +6373,51 @@ class AccountRow extends React.Component{
 			</div>)
 			//return(<div className={'sItem noChild'}><div><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>{edit}</div>)
 	}
+}
+class DisplaySettings extends React.Component{
+  constructor(props){
+    super(props)
+
+  }
+  editIP(v){
+    console.log(v)
+  }
+  editNM(v){
+    console.log(v)
+  }
+  editGW(v){
+    console.log(v)
+  }
+  activate(){
+    console.log('activate clicked')
+  }
+  sendPacket(n,v){
+
+  }
+  render(){
+    var titleColor = '#000'
+      var className = "menuCategory expanded";
+    var tstl = {display:'inline-block', textAlign:'center'}
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}}>
+      <div style={tstl}>{'Display Settings'}</div></h2></span>)
+
+ var nav = (<div className='setNav'>
+                <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['Nif_ip']['@translations'][this.props.language]['name']} value={this.props.nifip} editable={true} onEdit={this.editIP} param={{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
+                <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['Nif_nm']['@translations'][this.props.language]['name']} value={this.props.nifip} editable={true} onEdit={this.editNM} param={{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
+                <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['Nif_ip']['@translations'][this.props.language]['name']} value={this.props.nifip} editable={true} onEdit={this.editGW} param={{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
+       
+          </div>)
+
+    return(
+      <div className='settingsDiv'>
+     
+      <div className={className}>
+        {titlediv}{nav}
+      </div>
+      </div>
+    );
+
+  }
 }
 class MotorControl extends React.Component{
 	constructor(props){
@@ -6343,10 +6429,12 @@ class MotorControl extends React.Component{
 	render(){
 		var motors = this.props.motors.map(function (m,i) {
 			// body...
-			return <div><div style={{display:'inline-block'}}>Motor {i}</div> </div>
+			return <div><div style={{display:'inline-block', width:200}}>{m.name}</div><div style={{display:'inline-block', width:200}}>Start/Stop</div> </div>
 
 		})
-		return <div></div>
+		return <div>
+      {motors}  
+    </div>
 	}
 }
 
