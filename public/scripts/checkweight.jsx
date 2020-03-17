@@ -6366,7 +6366,7 @@ class AccountRow extends React.Component{
 			var num = true
 			var lbl = namestring
 
-
+//ssl no verify test
 			return(<div style={{marginTop:5}}>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}}>
 				{namestring}
