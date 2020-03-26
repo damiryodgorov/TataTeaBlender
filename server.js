@@ -58,6 +58,7 @@ var swap16 = Helpers.swap16;
 var dsp_rpc_paylod_for = Helpers.dsp_rpc_paylod_for;
 
 
+
 let passocs = {}
 let rassocs = {}
 let nassocs = {}
@@ -103,13 +104,13 @@ class FtiSockIOServer{
        // body..
       sock.removeAllListeners();
       passocs[self.id] = null;
-      
+    //  clients[self.id] = null;
       rassocs[self.id] = null;
       nassocs[self.id] = null;
       sockrelays[self.id] = null;
      //  self.destroy();
      delete passocs[self.id]
-
+  //   delete clients[self.id]
      delete rassocs[self.id]
 
      delete nassocs[self.id]
@@ -138,13 +139,13 @@ class FtiSockIOServer{
   destroy(){
     var self = this;
          passocs[self.id] = null;
-      
+     //   clients[self.id] = null;
         rassocs[self.id] = null;
       nassocs[self.id] = null;
       sockrelays[self.id] = null;
      //  self.destroy();
      delete passocs[self.id]
-
+ //    delete clients[self.id]
      delete rassocs[self.id]
 
      delete nassocs[self.id]
@@ -1357,6 +1358,7 @@ wss.on('error', function(error){
 })
 //wss.on('')
 wss.on('connection', function(scket, req){ 
+  console.log(1360, scket)
   let loginLevel = 0;
   let curUser = '';
   var fileVer = 0;
@@ -1367,7 +1369,7 @@ wss.on('connection', function(scket, req){
   req.on('error', function(err){
   })
   var socket = new FtiSockIOServer(scket)
-
+  //clients[socket.id] = req.connection.remoteAddress;
   socket.on('close',function(){
     socket.destroy();
     socket = null;  
@@ -1378,6 +1380,9 @@ wss.on('connection', function(scket, req){
   socket.on('getTimezones', function(){
     socket.emit('timezones',timezones)
   })
+  socket.on('getConnectedClients',function(){
+    socket.emit('connectedClients',Object.keys(passocs).length);
+  });
 
 
   function getProdList(ip) {
@@ -1493,6 +1498,7 @@ wss.on('connection', function(scket, req){
     socket.emit(ev,arg)
   }
 
+  
   passocs[socket.id] = {relay:relayFunc, relayParsed:relayFuncP, relayParsedCW:relayFuncCW, relayUserNames:relayUserNamesFunc}
   rassocs[socket.id] = {relay:relayRpcFunc}
   nassocs[socket.id] = {relay:relayNetFunc}

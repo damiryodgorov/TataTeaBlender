@@ -150,12 +150,13 @@ class CustomAlertClassedButton extends React.Component{
 		this.accept = this.accept.bind(this);
 		this.onTouchStart = this.onTouchStart.bind(this);
 		this.onTouchEnd = this.onTouchEnd.bind(this);
+		this.cfmodal = React.createRef();
 
 	}
 	onClick () {
 		var self = this;
 		setTimeout(function(){
-			self.refs.cfmodal.show();
+			self.cfmodal.current.show();
 		},100)	
 	}
 	onTouchStart (){
@@ -179,7 +180,7 @@ class CustomAlertClassedButton extends React.Component{
 		return	(<div style={style}><button className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} style={style} onClick={this.onClick} >{this.props.children}
 		
 		</button>
-			<AlertModal ref='cfmodal' accept={this.accept}>
+			<AlertModal ref={this.cfmodal} accept={this.accept}>
 					<div style={{color:'#e1e1e1'}}>{this.props.alertMessage}</div>
 				</AlertModal>
 		</div>)
@@ -193,11 +194,12 @@ class CustomAlertButton extends React.Component{
 		this.accept = this.accept.bind(this);
 		this.onTouchStart = this.onTouchStart.bind(this);
 		this.onTouchEnd = this.onTouchEnd.bind(this);
+		this.cfmodal = React.createRef();
 	}
 	onClick () {
 		var self = this;
 		setTimeout(function(){
-			self.refs.cfmodal.show();
+			self.cfmodal.current.show();
 		},100)	
 	}
 	accept (){
@@ -221,7 +223,7 @@ class CustomAlertButton extends React.Component{
 		return	(<div className={klass} style={style}><div onClick={this.onClick} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} >{this.props.children}
 		
 		</div>
-			<AlertModal ref='cfmodal' accept={this.accept}>
+			<AlertModal ref={this.cfmodal} accept={this.accept}>
 					<div>{this.props.alertMessage}</div>
 				</AlertModal>
 		</div>)

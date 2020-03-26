@@ -982,6 +982,8 @@ class FatClock extends React.Component{
     this.setDT = this.setDT.bind(this);
     this.setDST = this.setDST.bind(this);
     this.setTz = this.setTz.bind(this);
+    this.dtsModal = React.createRef();
+    this.dts = React.createRef();
   }
   componentDidMount(){
     //socket.emit('getTimezones')
@@ -991,7 +993,7 @@ class FatClock extends React.Component{
   }
   setDST(dst){
     this.props.sendPacket('DaylightSavings',dst)
-    this.refs.dtsModal.close();
+    this.dtsModal.current.close();
   }
   setDT(dt){
     var self = this;
@@ -1002,14 +1004,13 @@ class FatClock extends React.Component{
   }
   changeDT(dt){
     this.props.sendPacket('DateTime', dt)
-    this.refs.dtsModal.close();
+    this.dtsModal.current.close();
   }
   toggleCK(){
     var self = this;
-    //this.refs.ck.toggle()
-    this.refs.dtsModal.toggle();
+    this.dtsModal.current.toggle();
     setTimeout(function(){
-      self.refs.dts.getDT(self.state.date)
+      self.dts.current.getDT(self.state.date)
       socket.emit('getTimezones')
     },200)
   }
@@ -1036,8 +1037,8 @@ class FatClock extends React.Component{
 
     return <React.Fragment>
     <div style={style} onClick={this.toggleCK}>{this.state.date}</div>
-      <Modal ref='dtsModal' innerStyle={{background:'#e1e1e1'}}>
-        <DateTimeSelect setTz={this.setTz} timezones={this.props.timezones} timeZone={this.props.timeZone} branding={this.props.branding} setDST={this.setDST} dst={this.props.dst} language={this.props.language} setDT={this.changeDT} ref='dts'/>
+      <Modal ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
+        <DateTimeSelect setTz={this.setTz} timezones={this.props.timezones} timeZone={this.props.timeZone} branding={this.props.branding} setDST={this.setDST} dst={this.props.dst} language={this.props.language} setDT={this.changeDT} ref={this.dts}/>
       </Modal>
       </React.Fragment>
   }
@@ -1052,6 +1053,9 @@ class DateTimeSelect extends React.Component{
     this.onTimeChange = this.onTimeChange.bind(this);
     this.onDSTChange = this.onDSTChange.bind(this);
     this.onTzChange = this.onTzChange.bind(this);
+    this.dstpw = React.createRef();
+    this.dpw = React.createRef();
+    this.tpw = React.createRef();
   }
   getDT(dtstring='1996/01/01 00:00:00'){
     var dtarray = dtstring.split(' ');
@@ -1086,7 +1090,12 @@ class DateTimeSelect extends React.Component{
     this.props.setTz(tz)
   }
   render(){
-
+    var bgClr = FORTRESSPURPLE2
+    var txtClr = '#e1e1e1'
+    if(this.props.branding == 'SPARC'){
+      bgClr = SPARCBLUE2
+      txtClr = '#000'
+    }
     var years = [];
     var months = [];
     var days = [];
@@ -1116,9 +1125,9 @@ class DateTimeSelect extends React.Component{
     var time = [hours.indexOf(this.state.hour), minutes.indexOf(this.state.minute), secs.indexOf(this.state.sec)]
     var tg = ['off','on']
     var namestring = 'Select User'
-    var dpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['Date']} language={this.props.language} interceptor={false} name={'Date'} ref='dpw' val={date} options={[years,months,days]} onChange={this.onDateChange}/>
-    var tpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['Time']} language={this.props.language} interceptor={false} name={'Time'} ref='tpw' val={time} options={[hours,minutes,secs]} onChange={this.onTimeChange}/>
-    var dstpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['DST']} language={this.props.language} interceptor={false} name={'Daylight Savings'} ref='dstpw' val={[this.props.dst]} options={[['off','on']]} onChange={this.onDSTChange}/>
+    var dpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['Date']} language={this.props.language} interceptor={false} name={'Date'} ref={this.dpw} val={date} options={[years,months,days]} onChange={this.onDateChange}/>
+    var tpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['Time']} language={this.props.language} interceptor={false} name={'Time'} ref={this.tpw} val={time} options={[hours,minutes,secs]} onChange={this.onTimeChange}/>
+    var dstpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['DST']} language={this.props.language} interceptor={false} name={'Daylight Savings'} ref={this.dstpw} val={[this.props.dst]} options={[['off','on']]} onChange={this.onDSTChange}/>
     var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 '+ SPARCBLUE1}
     var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
       var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
@@ -1134,12 +1143,9 @@ class DateTimeSelect extends React.Component{
     var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#000"}} >
       <div style={{display:'inline-block', textAlign:'center'}}>DateTime</div></h2></span>)
     var clr = "#e1e1e1"
-   /* var dateItem =  (<div className='sItem noChild' style={{borderCollapse:'collapse'}} onClick={()=>this.refs.dpw.toggle()}>
-      <label style={{display: 'table-cell',fontSize: 24,width: '310',background: SPARCBLUE1,borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}}>{'Date'}</label>
-      <div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={_st}>{this.state.year +'/'+this.state.month+'/'+this.state.day}</label></div></div>
-      </div>)*/
- var dateItem = (<div style={{margin:2}} onClick={()=>this.refs.dpw.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+ 
+ var dateItem = (<div style={{margin:2}} onClick={()=>this.dpw.current.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:250,textAlign:'center'}}>
         {'Date'}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
@@ -1147,16 +1153,16 @@ class DateTimeSelect extends React.Component{
       </div>
       </div>)
 
-    var timeItem = (<div style={{margin:2}} onClick={()=>this.refs.tpw.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+    var timeItem = (<div style={{margin:2}} onClick={()=>this.tpw.current.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:250,textAlign:'center'}}>
         {'Time'}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
         <div style={st}>{this.state.hour +':'+this.state.minute+':'+this.state.sec}</div>
       </div>
       </div>)
-    var dstItem =  (<div style={{margin:2}} onClick={()=>this.refs.dstpw.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+    var dstItem =  (<div style={{margin:2}} onClick={()=>this.dstpw.current.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:250,textAlign:'center'}}>
         {'Daylight Savings'}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
@@ -1180,7 +1186,7 @@ class DateTimeSelect extends React.Component{
 class LandingPage extends React.Component{
 	constructor(props){
 		super(props)
-		this.state = {calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,
+		this.state = {connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,
       branding:'FORTRESS', automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
@@ -1218,13 +1224,31 @@ class LandingPage extends React.Component{
     this.setTheme = this.setTheme.bind(this);
     this.openBatch = this.openBatch.bind(this);
     this.closeCWModal = this.closeCWModal.bind(this);
+    this.lgctl = React.createRef();
+    this.tBut = React.createRef();
+    this.cwModal = React.createRef();
+    this.chBut = React.createRef();
+    this.fclck = React.createRef();
+    this.ss = React.createRef();
+    this.sd = React.createRef();
+    this.lg = React.createRef();
+    this.btc = React.createRef();
+    this.se = React.createRef();
+    this.hh = React.createRef();
+    this.tb = React.createRef();
+    this.pmodal = React.createRef();
+    this.settingModal = React.createRef();
+    this.locateModal = React.createRef();
+    this.batModal = React.createRef();
+    this.pmd = React.createRef();
+    this.cwc = React.createRef();
+
 
 	}
 
 	toggleLogin(){
-		//this.refs.loginModal.toggle()
 		if(this.state.user == -1){
-			this.refs.lgctl.login();
+			this.lgctl.current.login();
 			this.setState({loginOpen:true})
 		}else{
 			this.logout()
@@ -1256,10 +1280,7 @@ class LandingPage extends React.Component{
 		var packet = dsp_rpc_paylod_for(rpc[0],pkt);
 		socket.emit('rpc', {ip:this.props.ip, data:packet})
     console.log(pack,668)
-		//if(this.state.userid != pack.user+1){
-			this.setState({level:pack.level, username:pack.username,noupdate:false, update:true, userid:pack.user+1, user:pack.user})
-		//}		
-		
+		this.setState({level:pack.level, username:pack.username,noupdate:false, update:true, userid:pack.user+1, user:pack.user})	
 	}
 	authenticate(user,pswd){
 		console.log('authenticate here')
@@ -1276,7 +1297,6 @@ class LandingPage extends React.Component{
 	settingClick (s,n) {
 		if((Array.isArray(s))&&(s[0] == 'get_accounts')){
 			console.log('get accounts')
-			//this.refs.loginModal.toggle();
 		}else{
 			var set = this.state.data.slice(0)
 			if(Array.isArray(s)){
@@ -1352,7 +1372,6 @@ class LandingPage extends React.Component{
           console.log(language)
           if(e.rec['TareWeight']!= this.state.srec['TareWeight']){
            // toast('Taring...')
-           // this.refs.tBut.simTouch();
           }
 					this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
 				}else if(e.type == 1){
@@ -1422,9 +1441,9 @@ class LandingPage extends React.Component{
           if(e.rec['Taring'] != this.state.rec['Taring']){
             if(e.rec['Taring'] == 1){
               //toast('Taring..')
-              this.refs.tBut.tStart('Taring');
+              this.tBut.current.tStart('Taring');
             }else{
-              this.refs.tBut.tEnd();
+              this.tBut.current.tEnd();
             }
           }
           var pw = 0;
@@ -1434,16 +1453,16 @@ class LandingPage extends React.Component{
            if((e.rec['CheckingWeight'] != this.state.rec['CheckingWeight']) && (typeof this.state.rec['CheckingWeight'] != 'undefined')){
             if(e.rec['CheckingWeight'] == 1){
               //toast('Taring..')
-              this.refs.chBut.tStart('Check Weight');
-              this.refs.cwModal.show();
+              this.chBut.current.tStart('Check Weight');
+              this.cwModal.current.show();
            //  setTimeout(function (argument) {
                // body...
                this.setState({waitCwgt:true, noupdate:false})
              //},150)
             }else{
-              this.refs.chBut.tEnd();
+              this.chBut.current.tEnd();
 
-             this.refs.cwModal.show();
+             this.cwModal.current.show();
              //setTimeout(function (argument) {
                // body...
                //this.setState({cw:pw, waiting:false})
@@ -1454,19 +1473,17 @@ class LandingPage extends React.Component{
             }
           }
           if(e.rec['DateTime'] != this.state.rec['DateTime']){
-            this.refs.fclck.setDate(e.rec['DateTime'])
+            this.fclck.current.setDate(e.rec['DateTime'])
           }
 					if(this.state.updateCount == 0){
 						var lw = 0;
     				if(typeof e.rec['LiveWeight'] != 'undefined'){
     					lw = e.rec['LiveWeight']
     				}
-					//	this.refs.se.setState({value:(this.state).toFixed(1) + 'g'})
-              //console.log(1437, this.refs.sd)//, this.refs.ss)
-              this.refs.ss.setState({rec:e.rec, crec:this.state.crec, lw:(lw).toFixed(1) + 'g'})
-              if(this.refs.sd){
+				      this.ss.current.setState({rec:e.rec, crec:this.state.crec, lw:(lw).toFixed(1) + 'g'})
+              if(this.sd.current){
                 console.log('update Live Weight')
-                this.refs.sd.updateLiveWeight(lw)
+                this.sd.current.updateLiveWeight(lw)
               }
         
 					}
@@ -1474,12 +1491,14 @@ class LandingPage extends React.Component{
             noupdate = false;
           }
           if(e.rec['BatchRunning'] != this.state.rec['BatchRunning']){
-            if(e.rec['BatchRunning'] == 1){
-               toast('Batch Started');
-            }else{
+            if(typeof this.state.rec['BatchRunning'] != 'undefined'){
+              if(e.rec['BatchRunning'] == 1){
+                toast('Batch Started');
+              }else{
                  toast('Batch Stopped')
+              }
+              noupdate = false
             }
-            noupdate = false
           }
           this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] == 0), stop:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
           
@@ -1488,6 +1507,7 @@ class LandingPage extends React.Component{
 					e.rec.Nif_ip = this.state.nifip
 					e.rec.Nif_gw = this.state.nifgw
 					e.rec.Nif_nm = this.state.nifnm
+          e.rec.ConnectedClients = this.state.connectedClients
 					this.setState({noupdate:false,fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
 				}else if(e.type == 5){
 					console.log('checkweighing pack')
@@ -1525,15 +1545,15 @@ class LandingPage extends React.Component{
           e.rec['BatchStartMS'] = parseInt(ms.toString())
           e.rec['SampleStartMS'] = parseInt(sms.toString())
           this.setState({crec:e.rec, noupdate:true})
-					this.refs.lg.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+					this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
 							this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd']);
-					this.refs.hh.parseCrec(e.rec)
-          if(this.refs.btc){
-            this.refs.btc.parseCrec(e.rec)
+					this.hh.current.parseCrec(e.rec)
+          if(this.btc.current){
+            this.btc.current.parseCrec(e.rec)
           }
-					this.refs.ss.setState({crec:e.rec})
-          this.refs.se.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
-					this.refs.tb.update(e.rec['PackWeight']);
+					this.ss.current.setState({crec:e.rec})
+          this.se.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
+					this.tb.current.update(e.rec['PackWeight']);
           //cwc check
           if(e.rec['WeightPassed'] == 9){
             this.setState({cwgt:e.rec['PackWeight'], noupdate:false})
@@ -1676,6 +1696,7 @@ class LandingPage extends React.Component{
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      
       }else if( n == 'BatchStart'){
      
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
@@ -1854,6 +1875,12 @@ class LandingPage extends React.Component{
 			self.setState({usernames:p.det.data.array})//, update:true})
 			
 		})
+    socket.on('connectedClients',function (c) {
+      var fram = self.state.fram
+      fram.ConnectedClients = c
+      self.setState({connectedClients:c,fram:fram, noupdate:false})
+      // body...
+    })
 		socket.on('resetConfirm', function (r) {
 			//socket.emit('locateReq',true);
 		})
@@ -1870,7 +1897,7 @@ class LandingPage extends React.Component{
 			self.setState({nifgw:gw})
 		})
 		socket.on('displayUpdate', function(){
-			self.refs.updateModal.toggle();
+		//	self.refs.updateModal.toggle();
 		})
 		socket.on('updateProgress',function(r){
 			self.setState({progress:r})
@@ -2061,7 +2088,7 @@ class LandingPage extends React.Component{
 			data = null;
 		})
 		socket.on('loggedIn', function(data){
-			self.refs.logIn.toggle();
+			//self.refs.logIn.toggle();
 			self.setState({curUser:data.id, level:data.level})
 		})
 
@@ -2075,7 +2102,6 @@ class LandingPage extends React.Component{
 
 		socket.on('authResp', function(pack){
 			if(pack.reset){
-				//self.refs.resetPass.show(pack)
 				self.setAuthAccount(pack)
 			}else{
 				self.setAuthAccount(pack)
@@ -2084,13 +2110,12 @@ class LandingPage extends React.Component{
 		})
 		socket.on('authFail', function(pack){
 			toast('Authentication failed')
-			//self.refs.am.show(pack.user, pack.ip)
 			self.setAuthAccount({user:'Not Logged In', level:0, user:-1})
 		})
 		socket.on('passwordNotify',function(e){
 			console.log(1117,e)
 			var message = 'Call Fortress with ' + e.join(', ');
-			self.refs.msgm.show(message)
+			//self.refs.msgm.show(message)
 		})
     socket.on('timezones',function (e) {
       // body...
@@ -2108,7 +2133,7 @@ class LandingPage extends React.Component{
 		}
 	}
 	calWeight(){
-		this.refs.cwModal.toggle()
+		this.cwModal.current.toggle()
 	}	
 	calWeightSend(){
 		if(this.state.connected){
@@ -2134,12 +2159,12 @@ class LandingPage extends React.Component{
 			data.push(x + Math.random()*3*(17-x)/15 + skew);
 		}
 		var pack = Math.random()*100
-		this.refs.hh.parsePack(pack)
+		this.hh.current.parsePack(pack)
 		var max = Math.max(...data)
-		this.refs.ss.parsePack(max);
-		this.refs.tb.update(max);
-		this.refs.se.setState({value:max.toFixed(1)+' g'})
-		this.refs.lg.parseDataset(data, pack)
+		this.ss.current.parsePack(max);
+		this.tb.current.update(max);
+		this.se.current.setState({value:max.toFixed(1)+' g'})
+		this.lg.current.parseDataset(data, pack)
 
 	}
 	changeBranding(){
@@ -2189,8 +2214,12 @@ class LandingPage extends React.Component{
 			this.sendPacket('refresh')
 		}
 		setTimeout(function () {
-			self.refs.settingModal.toggle()
+			self.settingModal.current.toggle()
 		},100)
+    setTimeout(function () {
+        // body...
+        socket.emit('getConnectedClients')
+      },200)
 		socket.emit('locateReq',true)
 		
 	}
@@ -2305,7 +2334,7 @@ class LandingPage extends React.Component{
 	}
 	pModalToggle(){
 		if(typeof this.state.curDet.ip != 'undefined'){
-				this.refs.pmodal.toggle();
+				this.pmodal.current.toggle();
 		socket.emit('getProdList', this.state.curDet.ip)
 		}
 	
@@ -2320,13 +2349,13 @@ class LandingPage extends React.Component{
 	}
 	openBatch(){
     if(typeof this.state.curDet.ip != 'undefined'){
-      this.refs.batModal.toggle();
+      this.batModal.current.toggle();
     }
 	}
 	onPmdClose(){
 		if(this.state.rec['EditProdNeedToSave'] == 1){
 	
-		this.refs.pmd.show(function () {
+		this.pmd.current.show(function () {
 			// body...
 
 		});
@@ -2346,8 +2375,8 @@ class LandingPage extends React.Component{
     }
   }
   closeCWModal(){
-    if(this.refs.cwModal){
-      this.refs.cwModal.close();
+    if(this.cwModal.current){
+      this.cwModal.current.close();
     }
   }
 	render(){
@@ -2406,7 +2435,7 @@ class LandingPage extends React.Component{
     	var dets = ''// <div style={{color:'#e1e1e1', fontSize:24}} onClick={() => this.refs.locateModal.toggle()}>Connected to {this.state.curDet.name}</div>
     	if(this.state.srec['SRecordDate']){
     		//language = vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]
-    		sd =   	<div ><SettingsPageWSB calibState={this.state.calibState} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+    		sd =   	<div ><SettingsPageWSB calibState={this.state.calibState} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
       		onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} />
     		</div>
         cont = sd;
@@ -2439,19 +2468,12 @@ class LandingPage extends React.Component{
     	}
 
     	var lw = 0;
-    	if(typeof this.state.crec['PackWeight'] != 'undefined'){
-    		
-        //console.log( this.state.rec, 'rec')
+    	if(typeof this.state.crec['PackWeight'] != 'undefined'){    		
     		if(this.state.crec['PackWeight']){
           lw = this.state.crec['PackWeight']
         }
-
-    	   //console.log(2353, lw)
       }
-/*
- <div style={{display:'inline-block',width:290, verticalAlign:'top'}}>{dets}
-          </div>{sd}
-*/
+
 		return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
          <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
@@ -2460,7 +2482,7 @@ class LandingPage extends React.Component{
                 <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} onClick={this.imgClick}  src={img}/></td>
                 <td style={{width:600}}>{raptor}</td>
                 	<td style={{height:60, width:200, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
-                	<FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref='fclck' style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
+                	<FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
                 	<td className="logbuttCell" style={{height:60}}>
                 	<div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
                 	<button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
@@ -2473,40 +2495,44 @@ class LandingPage extends React.Component{
             </tbody>
           </table>
           <table><tbody><tr style={{verticalAlign:'top'}}><td>
-         	<StatSummary language={language} branding={this.state.branding} ref='ss'/>
-          </td><td><div><SparcElem ref='se' branding={this.state.branding} value={lw.toFixed(1) + 'g'} name={'Gross Weight'} width={616} font={40}/></div>
+         	<StatSummary language={language} branding={this.state.branding} ref={this.ss}/>
+          </td><td><div><SparcElem ref={this.se} branding={this.state.branding} value={lw.toFixed(1) + ' g'} name={'Gross Weight'} width={616} font={40}/></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph connected={this.state.connected} cwShow={() => this.refs.cwModal.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref='lg' prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
-          <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref='tb'/></LineGraph></div>
+          <LineGraph connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={this.state.prec['WindowStart']} winEnd={this.state.prec['WindowEnd']} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']}>
+          <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb}/></LineGraph></div>
           </td><td>
-          	<HorizontalHisto language={language} branding={this.state.branding} ref='hh'/>
+          	<HorizontalHisto language={language} branding={this.state.branding} ref={this.hh}/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',padding:5, marginRight:10, marginLeft:10}} >{play}{stop}</div>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Batch'} onClick={this.openBatch}/>
-          <CircularButton override={true} ref='tBut' branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Tare'} onClick={this.tareWeight}/>
+          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Tare'} onClick={this.tareWeight}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Product'} onClick={this.pModalToggle}/>
-          <CircularButton override={true} ref='chBut' branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Check Weight'} onClick={this.checkweight}/>
-      	<Modal ref='pmodal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}} onClose={this.onPmdClose}>
+          <CircularButton override={true} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Check Weight'} onClick={this.checkweight}/>
+      	<Modal ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose}>
       		<ProductSettings  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
       	</Modal>
-      	 <Modal ref='settingModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
+      	 <Modal ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
       		{cont}
+          {this.state.connectedClients}
       	</Modal>
-      	<Modal ref='locateModal' Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
+      	<Modal ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
       		{this.renderModal()}
       	</Modal> 
-        <Modal ref='cwModal' Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
-         <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref='cwc' cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
+        <Modal ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
+         <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.cwc} cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
         </Modal>
-        <Modal ref='batModal' Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
-         <BatchControl selfProd={this.state.srec['EditProdNo']} prod={this.state.prec} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref='btc'/>
+        <Modal ref={this.batModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
+         <BatchControl selfProd={this.state.srec['EditProdNo']} prod={this.state.prec} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} 
+                    start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc}/>
         </Modal>
 
-      	<PromptModal language={language} branding={this.state.branding} ref='pmd' save={this.saveProductPassThrough} discard={this.passThrough}/>
+      	<PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
 		
       
-      	<LogInControl2 language={language} branding={this.state.branding} ref='lgctl' onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
+      	<LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
+                pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
+                accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
       	</div>
       </div>) 
 	}
@@ -2548,12 +2574,11 @@ class SparcElem extends React.Component{
 	}
 
 	render(){
-		var outerbg ='#e1e1e1'// '#818a90'
+		var outerbg ='#e1e1e1'
 		var innerbg = '#5d5480'
 		var fontColor = '#e1e1e1'
 
 		if(this.props.branding == 'SPARC'){
-		//	outerbg = '#e1e1e1'
 			innerbg = SPARCBLUE2
 			fontColor = 'black'
 		}
@@ -2694,6 +2719,7 @@ class LineGraph extends React.Component{
 		this.clearFaults = this.clearFaults.bind(this);
 		this.maskFault = this.maskFault.bind(this);
 		this.statusClick = this.statusClick.bind(this);
+    this.fModal = React.createRef();
     var dtst = []
     for(var i = 0; i < 300; i++){
       dtst.push(0)
@@ -2723,14 +2749,14 @@ class LineGraph extends React.Component{
 	}
 	clearFaults(){
 		this.props.clearFaults();
-        this.refs.fModal.toggle();
+        this.fModal.current.toggle();
 	}
 	maskFault(){
 		this.props.maskFault();
 	}
 	statusClick(){
 		if(this.props.faults.length != 0){
-			this.refs.fModal.toggle();
+			this.fModal.current.toggle();
 		}else if(this.state.weightPassed == 9){
       this.props.cwShow()
     }
@@ -2888,7 +2914,7 @@ class LineGraph extends React.Component{
 		</XYPlot>
 		</div>
 		</div>
-			<Modal ref='fModal' innerStyle={{background:modBg}}>
+			<Modal ref={this.fModal} innerStyle={{background:modBg}}>
 					<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults}/>
 				</Modal>
 		</div>
@@ -3018,6 +3044,13 @@ class ProductSettings extends React.Component{
 
 		this.state ={data:[],showAdvanceSettings:false,searchMode:false, filterString:'', filterList:[],selProd:this.props.editProd,prodList:prodList, showAllProd:false,
 		cob2:this.getPCob(this.props.srec, this.props.curProd, this.props.drec, this.props.fram)}
+    this.pmd = React.createRef();
+    this.cfTo = React.createRef();
+    this.cfModal = React.createRef();
+    this.dltModal = React.createRef();
+    this.arrowBot = React.createRef();
+    this.arrowTop = React.createRef();
+    this.sd = React.createRef();
 	}
 	sendPacket(n,v){
 		var self = this;
@@ -3118,7 +3151,7 @@ class ProductSettings extends React.Component{
 		var self = this;
 		//this.saveProduct();
 		if(this.props.needSave == 1){
-			this.refs.pmd.show(
+			this.pmd.current.show(
 		function () {
 			self.props.sendPacket('getProdSettings',p)
 			self.setState({selProd:p, searchMode:false, filterString:''})
@@ -3131,17 +3164,17 @@ class ProductSettings extends React.Component{
 		
 	}
 	onProdScroll(){
-	  var el = document.getElementById('prodListScrollBox')   
+	 var el = document.getElementById('prodListScrollBox')   
       if(el){
       		if(el.scrollTop > 5){
-        		this.refs.arrowTop.show();
+        		this.arrowTop.current.show();
       		}else{
-        		this.refs.arrowTop.hide();
+        		this.arrowTop.current.hide();
       		}
       		if(el.scrollTop + el.offsetHeight < el.scrollHeight ){
-        		this.refs.arrowBot.show();
+        		this.arrowBot.current.show();
       		}else{
-        		this.refs.arrowBot.hide();
+        		this.arrowBot.current.hide();
       		}
     	}
 	}
@@ -3383,7 +3416,7 @@ class ProductSettings extends React.Component{
 		this.setState({showAllProd:!this.state.showAllProd})
 	}
 	copyTo(){
-		this.refs.cfTo.toggle();
+		this.cfTo.current.toggle();
 	}
 	copyConfirm(target){
 		var prodNos = this.props.pList.slice(0)
@@ -3399,10 +3432,10 @@ class ProductSettings extends React.Component{
 	copyAlert(target){
 		var alertMessage = 'Product '+ target+' will be overwritten. Continue?'
 
-		this.refs.cfModal.show(this.copyConfirm, target, alertMessage)
+		this.cfModal.current.show(this.copyConfirm, target, alertMessage)
 	}
   deleteProd(p){
-    this.refs.dltModal.show(p)
+    this.dltModal.current.show(p)
   }
   deleteProdConfirm(p){
     var self = this;
@@ -3530,7 +3563,7 @@ class ProductSettings extends React.Component{
 			</div>)
 			if(this.state.showAdvanceSettings){
 				content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
-				<div style={{height:482}}>	<SettingsPage prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+				<div style={{height:482}}>	<SettingsPage prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
       		onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={4}/>
     		</div>
       		<div>
@@ -3573,7 +3606,7 @@ class ProductSettings extends React.Component{
 				<tr>
 					<td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:813, padding:5, paddingTop:0, textAlign:'right'}}>			<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'} onClick={this.selectRunningProd}/>
           </div></td><td style={{verticalAlign:'top',textAlign:'center'}}>
-          	<ScrollArrow ref='arrowTop' offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
+          	<ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
 		
           <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:489, background:'#e1e1e1',overflowY:'scroll'}}>{prods}
           </div>
@@ -3581,29 +3614,30 @@ class ProductSettings extends React.Component{
          	<div onClick={this.copyTo} style={{display:'table-cell',height:66, borderRight:'2px solid #ccc', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
          	<div onClick={this.showAllProd} style={{display:'table-cell',height:66, borderLeft:'2px solid #ccc',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>{showText}</div>
           </div>
-          <ScrollArrow ref='arrowBot' offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+          <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
 			
           </td>
 				</tr>
 			</tbody></table>
-			<PromptModal branding={this.props.branding} ref='pmd' save={this.saveProductPassThrough} discard={this.passThrough}/>
-			<CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'cfTo'} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
+			<PromptModal branding={this.props.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
+			<CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
 
-			<CopyModal ref='cfModal'  branding={this.props.branding}/>
-      <DeleteModal ref= 'dltModal' branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
+			<CopyModal ref={this.cfModal}  branding={this.props.branding}/>
+      <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
 		</div>
 	}
 }
 class LiveGraph extends React.Component{
   constructor(props){
     super(props)
+    this.cv = React.createRef();
   }
   update(lw){
-    this.refs.cv.stream({t:Date.now(),val:lw})
+    this.cv.current.stream({t:Date.now(),val:lw})
   }
   render(){
     return <div>
-      <CanvElem ref='cv' canvasId='liveGraph' h={400} w={600}/>
+      <CanvElem ref={this.cv} canvasId='liveGraph' h={400} w={600}/>
     </div>
   }
 }
@@ -3739,10 +3773,11 @@ class ProdSettingEdit extends React.Component{
 		super(props);
 		this.onClick = this.onClick.bind(this);
 		this.onInput = this.onInput.bind(this);
+    this.ed = React.createRef();
 	}
 	onClick(){
 		if(this.props.editable){
-			this.refs.ed.toggle()
+			this.ed.current.toggle()
 		}
 	}
 	onInput(v){
@@ -3777,10 +3812,10 @@ class ProdSettingEdit extends React.Component{
 
 				var lists = [list]
 
-				ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref='ed' val={[this.state.value]} options={lists} onChange={this.selectChanged}/>
+				ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref={this.ed} val={[this.state.value]} options={lists} onChange={this.selectChanged}/>
 
 			}else{
-				ckb = <CustomKeyboard preload={this.props.param['@name'] == 'ProdName'} branding={this.props.branding} ref='ed' language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value}/>
+				ckb = <CustomKeyboard preload={this.props.param['@name'] == 'ProdName'} branding={this.props.branding} ref={this.ed} language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value}/>
 
 			}
 		
@@ -4002,6 +4037,7 @@ class SettingsPageWSB extends React.Component{
     this.backCal = this.backCal.bind(this);
     this.onMot = this.onMot.bind(this);
     this.updateLiveWeight = this.updateLiveWeight.bind(this);
+    this.sd = React.createRef();
 	}
   componentWillReceiveProps(newProps){
     this.setState({update:true})
@@ -4017,10 +4053,10 @@ class SettingsPageWSB extends React.Component{
     }
   }
 	setPath(dat,i){
-		if(i == -1){
-			this.refs.sd.setPath([])
+		if(i < 0){
+			this.sd.current.setPath([])
 		}else{
-			this.refs.sd.setPath([i])
+			this.sd.current.setPath([i])
 
 		}
 		this.setState({sel:i, showAccounts:false, cal:false, update:true,mot:false})
@@ -4079,19 +4115,19 @@ class SettingsPageWSB extends React.Component{
 		if(this.state.sel == -1){
 			cob = this.props.cob2
 		}
-		var sd =<React.Fragment><div > <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+		var sd =<React.Fragment><div > <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
       		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
 			</div>
 			<div style={{display:'none'}}> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
 </div></React.Fragment>
 		if(this.state.showAccounts){
-			sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+			sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
       		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
 			</div>
 			<div> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
 </div></React.Fragment>
 		}else if(this.state.cal){
-     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref={this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
       <div>
@@ -4118,7 +4154,7 @@ class SettingsPageWSB extends React.Component{
        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Motor Control'}</div></h2></span>
           
         <div style={{marginTop:5}}>
-          <MotorControl motors={[{name:'Infeed Belt'},{name:'Load Belt'},{name:'Exit Belt'}]}/>
+          <MotorControl motors={[{name:'Infeed Belt'},{name:'Weigh Table Belt'},{name:'Reject Belt'},{name:'Exit Belt'}]}/>
         </div>
 
          </div>
@@ -4145,11 +4181,12 @@ class SettingsPage extends React.Component{
 		this.handleScroll = this.handleScroll.bind(this);
 		this.sendPacket = this.sendPacket.bind(this);
 		this.parseInfo = this.parseInfo.bind(this);
-		this.activate = this.activate.bind(this);
 		this.onFocus = this.onFocus.bind(this);
 		this.onRequestClose = this.onRequestClose.bind(this);
-	  	this.goBack = this.goBack.bind(this);
-	  	this.getBack = this.getBack.bind(this);
+	  this.goBack = this.goBack.bind(this);
+	  this.getBack = this.getBack.bind(this);
+    this.arrowTop = React.createRef();
+    this.arrowBot = React.createRef();
 	}
 	componentWillUnmount(){
 
@@ -4203,14 +4240,14 @@ class SettingsPage extends React.Component{
      var el = document.getElementById(this.props.Id)   
        if(el){
       if(el.scrollTop > 5){
-        this.refs.arrowTop.show();
+        this.arrowTop.current.show();
       }else{
-        this.refs.arrowTop.hide();
+        this.arrowTop.current.hide();
       }
       if(el.scrollTop + el.offsetHeight < el.scrollHeight ){
-        this.refs.arrowBot.show();
+        this.arrowBot.current.show();
       }else{
-        this.refs.arrowBot.hide();
+        this.arrowBot.current.hide();
       }
     }
 
@@ -4330,27 +4367,7 @@ class SettingsPage extends React.Component{
       this.props.setTheme(v)
     }
 	}
-	activate(n) {
-		// body...
-		var self = this;
-		////////console.log(['1466',n,this.props.cob2,this.props.data])
-		var list; 
-		if(this.props.data.length > 1){
-			list 	= this.props.data[this.props.data.length - 1][0].params
-		}else{
-			list = this.props.data[0][0].params
-		}
-	
-		list.forEach(function(p){
-			if(p['@name'] != n['@name']){
-				if(self.refs[p['@name']]){
-					self.refs[p['@name']].deactivate();
-				}
-			}
-		});
-	}
 	onFocus() {
-		// body...
 			this.props.setOverride(true)
 	}
 	onRequestClose() {
@@ -4432,7 +4449,10 @@ class SettingsPage extends React.Component{
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem3 branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} ref={ct} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+				nodes.push(<SettingItem3 branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
+          language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} 
+          font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} 
+          sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 				
 			}
 			len = catList.length;
@@ -4519,8 +4539,8 @@ class SettingsPage extends React.Component{
 					}
           //console.log(2158, isInt)
 					nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
-						ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={p['@name']} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
-							children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true}  acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
+						ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
+							children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
 					
 				}else if(par.type == 1){
 					var sc = par['@data']
@@ -4543,14 +4563,14 @@ class SettingsPage extends React.Component{
               					spname = spname.slice(0,-4)
             				}
           				}
-							nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+							nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 								data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			
 					}else{
 		      			if(self.props.wsb && lvl == 1){
 
 		      			}else{
-		      				nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+		      				nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 							data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 						
 		      			}
@@ -4569,11 +4589,13 @@ class SettingsPage extends React.Component{
             				ch.unshift(spar['@data'])
           				}
           				
-          				nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
-							data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+          				nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
+                    font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+							     data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 				
 					}else{
-			 			nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={sc.cat} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+			 			nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+              font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 							data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 					}
 				}else if(par.type == 3){
@@ -4583,7 +4605,8 @@ class SettingsPage extends React.Component{
 					}
 					var sc = par['@data']
 						
-					nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} ref={'Accounts'} activate={self.activate} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
+					nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+            font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
 						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 		
 				}
@@ -4614,12 +4637,12 @@ class SettingsPage extends React.Component{
 
 		return(
 			<div className='settingsDiv'>
-			<ScrollArrow ref='arrowTop' offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
+			<ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
 		
 			<div className={className}>
 				{titlediv}{nav}
 			</div>
-			<ScrollArrow ref='arrowBot' offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+			<ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
 			</div>
 		);
 	}
@@ -4630,70 +4653,68 @@ class SettingItem3 extends React.Component{
 
 		this.sendPacket = this.sendPacket.bind(this);
 		this.onItemClick = this.onItemClick.bind(this);
-		this.activate = this.activate.bind(this);
-		this.deactivate = this.deactivate.bind(this);
 		this.getValue = this.getValue.bind(this);
 		this.onFocus = this.onFocus.bind(this);
 		this.onRequestClose =this.onRequestClose.bind(this);
 		this.parseValues = this.parseValues.bind(this);
-    	this.touchStart = this.touchStart.bind(this);
-    	this.touchEnd = this.touchEnd.bind(this);
+    this.touchStart = this.touchStart.bind(this);
+    this.touchEnd = this.touchEnd.bind(this);
+    this.ed = React.createRef();
 		var values = this.parseValues(this.props);
 		this.state = ({mode:0,font:this.props.font, val:values[0], pram:values[1], labels:values[2], touchActive:false})
 		
 
 	}
-  	touchStart(){
-    	this.setState({touchActive:true})
-  	}
-  	touchEnd(){
-    	this.setState({touchActive:false})
-  	}
-  	parseValues(props){
+  touchStart(){
+    this.setState({touchActive:true})
+  }
+  touchEnd(){
+    this.setState({touchActive:false})
+  }
+  parseValues(props){
   		var res = vdefByMac[props.mac];
-		var pVdef = _pVdef;
-		if(res){
-			pVdef = res[1];
-		}
-		var val = [], pram = [], label = false;
-		if(!props.hasChild){
-			if(typeof props.data == 'object'){
-				if(typeof props.data['@data'] == 'undefined'){
-			
+		  var pVdef = _pVdef;
+		  if(res){
+			 pVdef = res[1];
+		  }
+		  var val = [], pram = [], label = false;
+		  if(!props.hasChild){
+        //console.log('parseValues', 1)
+        if(typeof props.data == 'object'){
+          //console.log('parseValues', 2)
+        
+				  if(typeof props.data['@data'] == 'undefined'){
+            //console.log('parseValues', 3)
+        
 	  				if(typeof props.data[0]['child'] != 'undefined'){
+             // console.log('parseValues', 4)
+        
   						var lkey = props.data[0].params[props.data[0].child]['@name']
-        		
-	        			if((props.data[0].params[props.data[0].child]['@children'])&&(props.children[0].length == 2)){
-			            
-			    	        for(var i=0;i<props.children[0].length; i++){
-	              				val.push(this.getValue(props.children[1][i], props.children[0][i]))
-	          
-	            
-	              				if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
-	                				pram.push(pVdef[0][props.children[0][i]])
-	              				}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
-	                				pram.push(pVdef[1][props.children[0][i]])
-	              				}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
-	                				pram.push(pVdef[2][props.children[0][i]])
-	              				}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
-			                		pram.push(pVdef[3][props.children[0][i]])
-			              		}else if(lkey == 'Nif_ip'){
-			                		pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-			              		}else if(lkey == 'Nif_nm'){
-				                	pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-				            	}else if(lkey == 'Nif_gw'){
-				                	pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-				            	}else if(lkey == 'DCRate_INT'){
-				                	pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
-				            	}else if(lkey == 'DCRate'){
-				              	 pram = [{'@name':'DCRate', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate",0],null]}}]
-				              //label = true;
-				            	}
-	            			}
-		          		}else{
-	            
-	            			val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
-	            			if(typeof pVdef[0][lkey] != 'undefined'){
+              if((props.data[0].params[props.data[0].child]['@children'])&&(props.children[0].length == 2)){
+                console.log('parseValues', 5)
+        
+                for(var i=0;i<props.children[0].length; i++){
+                  val.push(this.getValue(props.children[1][i], props.children[0][i]))
+                  if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+                    pram.push(pVdef[0][props.children[0][i]])
+	              	}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+	                	pram.push(pVdef[1][props.children[0][i]])
+	              	}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+	                	pram.push(pVdef[2][props.children[0][i]])
+	              	}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+                    pram.push(pVdef[3][props.children[0][i]])
+                  }else if(lkey == 'Nif_ip'){
+                    pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+                  }else if(lkey == 'Nif_nm'){
+				            pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+                  }else if(lkey == 'Nif_gw'){
+				            pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+                  }
+	            	}
+		          }else{
+            
+                val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
+	            	if(typeof pVdef[0][lkey] != 'undefined'){
 	    						pram = [pVdef[0][lkey]]
 	    					}else if(typeof pVdef[1][lkey] != 'undefined'){
 	    						pram = [pVdef[1][lkey]]
@@ -4709,48 +4730,54 @@ class SettingItem3 extends React.Component{
 	    						pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
 	    					}
 
-				           	if(props.data[0].params[props.data[0].child]['@children']){
-				           		for(var i=0;i<props.children[0].length; i++){
-				              		val.push(this.getValue(props.children[1][i], props.children[0][i]))
-				              		if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
-				                		pram.push(pVdef[0][props.children[0][i]])
-				              		}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
-				                		pram.push(pVdef[1][props.children[0][i]])
-				              		}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
-				                		pram.push(pVdef[2][props.children[0][i]])
-				              		}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
-				                		pram.push(pVdef[3][props.children[0][i]])
-				              		}
-				            	}
+				        if(props.data[0].params[props.data[0].child]['@children']){
+                 // console.log('parseValues', 7)
+        
+				          for(var i=0;i<props.children[0].length; i++){
+				            val.push(this.getValue(props.children[1][i], props.children[0][i]))
+				            if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+				              pram.push(pVdef[0][props.children[0][i]])
+				            }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+				              pram.push(pVdef[1][props.children[0][i]])
+				            }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+				              pram.push(pVdef[2][props.children[0][i]])
+				            }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+				              pram.push(pVdef[3][props.children[0][i]])
+				            }
+				          }
 				           
-				          	}
 				        }
+				      }
       
-        				if(pram[0]['@labels']){
-							label = true
-						}	
-				
-					}
-				}else{
-	          		var lkey = props.lkey;
-	          		if((props.data['@children'])&&(props.children[0].length == 2)){
-	         			for(var i=0;i<props.children[0].length;i++){
-	         		    	val.push(this.getValue(props.children[1][i], props.children[0][i]))
-		              		if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
-		                		pram.push(pVdef[0][props.children[0][i]])
-		              		}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
-		                		pram.push(pVdef[1][props.children[0][i]])
-		              		}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
-		                		pram.push(pVdef[2][props.children[0][i]])
-		              		}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
-		                		pram.push(pVdef[3][props.children[0][i]])
-		              		}
-	            		}
-	                }else{
-	         
-	    	 			val = [this.getValue(props.data['@data'], lkey)]
-	       
-	      				if(typeof pVdef[0][lkey] != 'undefined'){
+        			if(pram[0]['@labels']){
+                label = true
+						  }
+            }
+          }else{
+            //console.log('parseValues', 8)
+        
+            var lkey = props.lkey;
+	          if((props.data['@children'])&&(props.children[0].length == 2)){
+              console.log('parseValues', 9)
+        
+	         		for(var i=0;i<props.children[0].length;i++){
+	         		  val.push(this.getValue(props.children[1][i], props.children[0][i]))
+		            if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+		              pram.push(pVdef[0][props.children[0][i]])
+		            }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+		              pram.push(pVdef[1][props.children[0][i]])
+		            }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+		              pram.push(pVdef[2][props.children[0][i]])
+		            }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+		              pram.push(pVdef[3][props.children[0][i]])
+		            }
+	            }
+            }else{
+              //console.log('parseValues', 10)
+        
+
+              val = [this.getValue(props.data['@data'], lkey)]
+	      			if(typeof pVdef[0][lkey] != 'undefined'){
 		    				pram = [pVdef[0][lkey]]
 		    			}else if(typeof pVdef[1][lkey] != 'undefined'){
 		    				pram = [pVdef[1][lkey]]
@@ -4765,70 +4792,17 @@ class SettingItem3 extends React.Component{
 		    			}else if(lkey == 'Nif_gw'){
 		    				pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
 		    			}
-	          		}
-              	
-              		/*
-              		for(var i=0;i<props.children[0].length;i++){
-                		val.push(this.getValue(props.children[1][i], props.children[0][i]))
-                		if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
-                  			pram.push(pVdef[0][props.children[0][i]])
-                		}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
-                  			pram.push(pVdef[1][props.children[0][i]])
-                		}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
-                  			pram.push(pVdef[2][props.children[0][i]])
-                		}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
-                  			pram.push(pVdef[3][props.children[0][i]])
-               			}
-              		}
-              		*/
-          		
-          		}
+	          }    	
+         	}
   			}
-      		
-  		}else{
-      		val = [this.getValue(props.data['@data'], props.lkey)]
-			if(typeof pVdef[0][props.lkey] != 'undefined'){
-				pram = [pVdef[0][props.lkey]]
-			}else if(typeof pVdef[1][props.lkey] != 'undefined'){
-				pram = [pVdef[1][props.lkey]]
-			}else if(typeof pVdef[2][props.lkey] != 'undefined'){
-				pram = [pVdef[2][props.lkey]]
-			}else if(typeof pVdef[3][props.lkey] != 'undefined'){
-				pram = [pVdef[3][props.lkey]]
-			}else if(props.lkey == 'Nif_ip'){
-				pram = [{'@name':'Nif_ip', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
-			}else if(props.lkey == 'Nif_nm'){
-				pram = [{'@name':'Nif_nm', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
-			}else if(props.lkey == 'Nif_gw'){
-				pram = [{'@name':'Nif_gw', '@type':'ipv4_address', '@bit_len':32,'@rpcs':{'write':[0,[0,0,0],null]}}]
-			}else if(props.lkey == 'DCRate_INT'){
-				pram = [{'@name':'DCRate_A', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_A",0],[1]]}},{'@name':'DCRate_B', '@labels':'DCRate','@bit_len':32, '@rpcs':{'write':[19,[192,"DCRate_B",0],[0]]}}]
-			}
-			if(props.data['@children']){
-				////////////console.log(['1346', props.data.children])
-				for(var ch in props.data['@children']){
-					val.push(this.getValue(props.data['@children'][ch], ch))
-					if(typeof pVdef[0][ch] != 'undefined'){
-						pram.push(pVdef[0][ch])
-					}else if(typeof pVdef[1][ch] != 'undefined'){
-						pram.push(pVdef[1][ch])
-					}else if(typeof pVdef[2][ch] != 'undefined'){
-						pram.push(pVdef[2][ch])
-					}else if(typeof pVdef[3][ch] != 'undefined'){
-						pram.push(pVdef[3][ch])
-					}
-				}
-			}
-			
-		}	
-  		
-  		if(pram.length == 0){
-  			//console.log(props.lkey)
-  		}else if(pram[0]['@labels']){
-			label = true
-		}
-		return [val,pram,label]
-	}
+      }
+      if(pram.length == 0){
+
+      }else if(pram[0]['@labels']){
+        label = true
+      }
+      return [val,pram,label]
+  }
 	sendPacket(n,v) {
 		//
 		var val = v
@@ -4859,24 +4833,14 @@ class SettingItem3 extends React.Component{
 	onItemClick(){
 
 		if(this.props.hasChild || typeof this.props.data == 'object'){
-			////////console.log([this.props.data])
-			// accessControl
+		
 			if(this.props.acc){
 				this.props.onItemClick(this.props.data, this.props.name)	
 			}else{
 
 				toast('Access Denied')	
-				}		
-			}
-	}
-	activate () {
-		this.props.activate(this.props.data)
-	}
-	deactivate () {
-		// body...
-		if(this.refs.ed){
-			this.refs.ed.deactivate()
-		}		
+			}		
+		}
 	}
 	getValue(rval, pname){
 		var pram;
@@ -4961,18 +4925,6 @@ class SettingItem3 extends React.Component{
 					if(f == 'phase_offset'){
 						val = 	uintToInt(val,16)//?? phase is coming in with different format for dyn data
 					}
-					
-				}else if(pram["@name"].indexOf('DetThresh') != -1){
-					var dependancies = ['DetMode','PhaseMode','ThresR','ThresX']
-					var deps = dependancies.map(function(d) {
-						// body...
-						if(pram['@name'] == 'DetThresh_A'){
-							return self.props.prodSettings[d+'_A']
-						}else if(pram['@name'] == 'DetThresh_B'){
-							return self.props.prodSettings[d+'_B']
-						}
-					})
-					val = eval(funcJSON['@func']['det_thresh']).apply(this, [].concat.apply([],[val,deps]));
 					
 				}else if(typeof pram['@decimal'] != 'undefined'){
 					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
@@ -5102,12 +5054,12 @@ class SettingItem3 extends React.Component{
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
 		var sty = {height:60}//, backgroundColor:FORTRESSPURPLE2}
-    	var klass = 'sItem'
+    var klass = 'sItem'
     	 
-			if(this.props.mobile){
-				sty.height = 45;
-				sty.lineHeight = '45px';
-			}
+		if(this.props.mobile){
+			sty.height = 45;
+			sty.lineHeight = '45px';
+		}
 			var res = vdefByMac[this.props.mac];
 			var pVdef = _pVdef;
 			if(res){
@@ -5203,7 +5155,7 @@ class SettingItem3 extends React.Component{
 
 					var medctrl= (<MultiEditControl branding={this.props.branding} nameovr={namestring} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
 	    		            mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
-	         				onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} 
+	         				onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
 	          				lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
 	          				label={this.state.label} int={false} name={lkey}/>)
 
@@ -5238,7 +5190,7 @@ class SettingItem3 extends React.Component{
 			sty.height = 51;
 			sty.paddingRight = 5;
 		}
-		var medctrl= (<MultiEditControl branding={this.props.branding} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} activate={this.activate} ref='ed' vst={vst} 
+		var medctrl= (<MultiEditControl branding={this.props.branding} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
           lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
           label={this.state.label} int={false} name={this.props.lkey}/>)
 
@@ -5254,8 +5206,6 @@ class MultiEditControl extends React.Component{
 	constructor(props) {
 		super(props)
 		this.state = ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size,touchActive:false})
-		this.switchMode = this.switchMode.bind(this)
-		this.deactivate = this.deactivate.bind(this)
 		this.selectChanged = this.selectChanged.bind(this);
 		this.valChanged = this.valChanged.bind(this);
 		this.onFocus = this.onFocus.bind(this);
@@ -5265,25 +5215,14 @@ class MultiEditControl extends React.Component{
 		this.valClick = this.valClick.bind(this);
     	this.onPointerDown = this.onPointerDown.bind(this);
     	this.onPointerUp = this.onPointerUp.bind(this);
+    for(var i = 0; i<this.props.param.length; i++){
+      this['input'+i] = React.createRef();
     	//this.renderSpElem = this.renderSpElem.bind(this);
+    }
+    this.pw = React.createRef();
 	}
 	componentWillReceiveProps(newProps){
 		this.setState({val:newProps.data.slice(0)})
-	}
-	switchMode () {
-		// body...
-		if(this.props.acc){
-			if(this.props.param[0]['@rpcs']){
-				if((this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])){
-					var m = Math.abs(this.state.mode - 1)
-					this.props.activate()
-					this.setState({mode:m})
-				}
-			}
-		}	
-	}
-	deactivate () {
-		this.setState({mode:0})
 	}
 	selectChanged(v,i){
 		var val = v//e.target.value//e.target.value;
@@ -5348,9 +5287,9 @@ class MultiEditControl extends React.Component{
 		if(!this.props.ov){
 	
 			var self = this;
-			if(this.refs.pw){
+			if(this.pw.current){
 				setTimeout(function () {
-					self.refs.pw.toggleCont();
+					self.pw.current.toggleCont();
 				},100)
 				
 			}
@@ -5365,26 +5304,26 @@ class MultiEditControl extends React.Component{
 					this.onClear(ind)
 				}else if(this.props.param[ind]['@rpcs']['start']){
 					this.onClear(ind)
-				}else if(this.refs['input' + ind]){
+				}else if(this['input' + ind].current){
 					setTimeout(function (argument) {
 						// body...
-						self.refs['input' + ind].toggle();
+						self['input' + ind].current.toggle();
 					}, 100);
 					//this.refs['input' + ind].toggle();
-				}else if(this.refs.pw){
+				}else if(this.pw.current){
 					setTimeout(function(){
-						self.refs.pw.toggle();
+						self.pw.current.toggle();
 			
 					},100)
 				}
-			}else if(this.refs['input' + ind]){
+			}else if(this['input' + ind].current){
 					setTimeout(function (argument) {
 						// body...
-						self.refs['input' + ind].toggle();
+						self['input' + ind].current.toggle();
 					}, 100);
-			}else if(this.refs.pw){
+			}else if(this.pw.current){
 				setTimeout(function(){
-						self.refs.pw.toggle();
+						self.pw.current.toggle();
 			
 					},100)
 			}
@@ -5575,7 +5514,7 @@ class MultiEditControl extends React.Component{
 						return list
 					}
 				})
-				options = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref='pw' val={this.state.val} options={lists} onChange={this.selectChanged}/>
+				options = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref={this.pw} val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
 			        var bgClr = FORTRESSPURPLE2
         var txtClr = '#e1e1e1'
@@ -5604,14 +5543,14 @@ class MultiEditControl extends React.Component{
 				}
 						var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
 						
-						return <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={'input'+i} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
+						return <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={self['input'+i]} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
 					}else{
 						var num = true
 						if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){ num = false }
 						if(self.props.param[i]["@name"].indexOf('DateTime') != -1){dt = true;}
 						var lbl = namestring
 						if(self.props.combo){ lbl = lbl + [' Delay', ' Duration'][i]}
-							return <CustomKeyboard branding={self.props.branding} mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={'input'+i} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
+							return <CustomKeyboard branding={self.props.branding} mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={self['input'+i]} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
 						}
 				})
 	          	if(this.props.nameovr){
@@ -5660,6 +5599,8 @@ class LogInControl2 extends React.Component{
 		this.onRequestClose = this.onRequestClose.bind(this);
 		this.toggleAccountControl = this.toggleAccountControl.bind(this);
 		this.onCancel = this.onCancel.bind(this);
+    this.pw = React.createRef();
+    this.psw = React.createRef();
 	}
 	componentWillReceiveProps(props){
 		var list = []
@@ -5682,7 +5623,7 @@ class LogInControl2 extends React.Component{
 	login(){
 		var self = this;
 		setTimeout(function(){
-			self.refs.pw.toggleCont();
+			self.pw.current.toggleCont();
 			self.setState({open:true})
 		},100)
 		
@@ -5695,7 +5636,7 @@ class LogInControl2 extends React.Component{
 		var self = this;
 		setTimeout(function(){
 			if(v != 0){
-			self.refs.psw.toggle();			
+			self.psw.current.toggle();			
 		}
 
 		}, 100)
@@ -5705,7 +5646,7 @@ class LogInControl2 extends React.Component{
 		//this.props.login(v)
 	}
 	enterPIN(){
-		this.refs.psw.toggle();
+		this.psw.current.toggle();
 	}
 	onFocus(){
 		this.setState({open:true})
@@ -5758,10 +5699,10 @@ class LogInControl2 extends React.Component{
 	render(){
 		var list = this.state.list
 		var namestring = 'Select User'
-		var pw = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref='pw' val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
+		var pw = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
 
 		return <React.Fragment>{pw}
-			<CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={'psw'} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
+			<CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
 		
 		</React.Fragment> 
 	}
@@ -6102,6 +6043,9 @@ class AccountControl extends React.Component{
 		this.addAccount = this.addAccount.bind(this);
 		this.removeAccount = this.removeAccount.bind(this);
 		this.goBack = this.goBack.bind(this);
+    this.pw = React.createRef();
+    this.username = React.createRef();
+    this.pswd = React.createRef();
 	}
 	goBack(){
 		this.props.goBack();
@@ -6128,20 +6072,20 @@ class AccountControl extends React.Component{
 
 	}
 	setLevel(){
-		this.refs.pw.toggle();
+		this.pw.current.toggle();
 	}
 	setUserName(){
-		this.refs.username.toggle();
+		this.username.current.toggle();
 	}
 	setPassword(){
-		this.refs.pswd.toggle();
+		this.pswd.current.toggle();
 	}
 	render(){
 		var self = this;
 		var levels = ['none','operator','technician','engineer']
-		var pw 	   =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref='pw' val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
-		var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='user' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
+		var pw 	   =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref={this.pw} val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
+		var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
+		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
 		var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
@@ -6198,6 +6142,10 @@ class AccountRow extends React.Component{
 		this.addAccount = this.addAccount.bind(this);
 		this.valClick = this.valClick.bind(this);
 		this.selectChanged = this.selectChanged.bind(this);
+    this.ed = React.createRef();
+    this.pw = React.createRef();
+    this.pswd = React.createRef();
+    this.username = React.createRef();
 	}
 	componentWillReceiveProps(props){
 		this.setState({username:props.username, acc:props.acc, password:props.password})
@@ -6205,7 +6153,7 @@ class AccountRow extends React.Component{
 	valClick(){
 		//toast('Value Clicked')
 	   this.setState({changed:false})
-		this.refs.ed.toggle();
+		this.ed.current.toggle();
 	}
 	onUserChange(v){
 		this.setState({username:v})
@@ -6220,7 +6168,7 @@ class AccountRow extends React.Component{
 			var self = this;
 			setTimeout(function(){
 		
-			self.refs.pw.toggleCont();
+			self.pw.current.toggleCont();
 			},80);
 		}
 	}
@@ -6232,7 +6180,7 @@ class AccountRow extends React.Component{
 		
 		var self = this;
 		setTimeout(function(){
-			self.refs.username.toggle();
+			self.username.current.toggle();
 		},80)
 		}
 	}
@@ -6240,7 +6188,7 @@ class AccountRow extends React.Component{
 		if(this.props.change){
 			var self = this;
 			setTimeout(function(){
-				self.refs.pswd.toggle();
+				self.pswd.current.toggle();
 			},80)
 		}
 	}
@@ -6318,26 +6266,6 @@ class AccountRow extends React.Component{
 		})
 
 
-		/*
-				          					return <div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
-				{'Username: '}
-			</div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
-				{vLabels}
-			</div>
-			{options}
-
-			</div>
-
-			<div className={'sItem noChild'} onClick={() => this.refs.pswd.toggle()}><div><label style={lvst}>{'Password: '}</label>
-						<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div></div></div>
-				<div className={'sItem noChild'} onClick={() => this.refs.pw.toggle()}><div><label style={lvst}>{'Level: '}</label>
-						<div style={vlabelswrapperStyle}><div style={vlabelStyle}><label style={st}>{this.state.acc}</label></div></div></div></div>
-		
-
-		*/
-
      var bgClr = FORTRESSPURPLE2
      var modBG = FORTRESSPURPLE1
         var txtClr = '#e1e1e1'
@@ -6346,18 +6274,18 @@ class AccountRow extends React.Component{
           bgClr = SPARCBLUE2
           txtClr = '#000'
         }
-			var pw = 	<PopoutWheel branding={this.props.branding} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref='pw' val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
-		var userkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='username' onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-		var pswdkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref='pswd' onChange={this.onPswdChange} value={''} label={'Password'}/>
+			var pw = 	<PopoutWheel branding={this.props.branding} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+		var userkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
+		var pswdkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
 	
-			var edit = <Modal mobile={this.props.mobile} ref='ed' onClose={this.saveChanges} innerStyle={{background:modBG}}>
+			var edit = <Modal mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
 			<div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
 
-				<div style={{marginTop:5}} onClick={() => this.refs.username.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Username: '}
+				<div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Username: '}
 				</div>		<div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.username}</label></div></div>
-				<div style={{marginTop:5}} onClick={() => this.refs.pswd.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Password: '}
+				<div style={{marginTop:5}} onClick={() => this.pswd.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Password: '}
 				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div>
-				<div style={{marginTop:5}} onClick={() => this.refs.pw.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Level: '}
+				<div style={{marginTop:5}} onClick={() => this.pw.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Level: '}
 				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.acc}</label></div></div>
 						</div>
 				{pw}{userkb}{pswdkb}
@@ -6393,9 +6321,6 @@ class DisplaySettings extends React.Component{
   editGW(v){
     socket.emit('nifgw', v.toString())
   }
-  activate(){
-    console.log('activate clicked')
-  }
   sendPacket(n,v){
 
   }
@@ -6427,20 +6352,34 @@ class DisplaySettings extends React.Component{
 class MotorControl extends React.Component{
 	constructor(props){
 		super(props);
+    this.testMotor = this.testMotor.bind(this);
 	}
 	testMotor(i){
 		this.props.testMotor(i)
 	}
 	render(){
+    var self = this;
 		var motors = this.props.motors.map(function (m,i) {
 			// body...
-			return <div><div style={{display:'inline-block', width:200}}>{m.name}</div><div style={{display:'inline-block', width:200}}>Start/Stop</div> </div>
-
+			return <MotorItem testMotor={self.testMotor} name={m.name} index={i} />
 		})
 		return <div>
       {motors}  
     </div>
 	}
+}
+class MotorItem extends React.Component{
+  constructor(props){
+    super(props)
+  }
+  testMotor(){
+    this.props.testMotor(this.props.index)
+  }
+  render(){
+    var motorIcon = <img src='assets/motor.svg' width={40} style={{verticalAlign:'bottom'}}/>
+    return <div><div style={{display:'inline-block', width:50}}>{motorIcon}</div><div style={{display:'inline-block', width:200}}>{this.props.name}</div><div style={{display:'inline-block', width:200}}>Start/Stop</div> </div>
+
+  }
 }
 
 class FaultDiv extends React.Component{
@@ -6494,6 +6433,7 @@ class TimezoneControl extends React.Component{
   constructor(props){
     super(props);
     this.onTzChange = this.onTzChange.bind(this);
+    this.tz = React.createRef();
     this.state = {timeZone:props.timeZone, tzlist:props.timezones.map(function (tz) {
       // body...
       return tz.text;
@@ -6509,19 +6449,26 @@ class TimezoneControl extends React.Component{
     this.props.onTzChange(this.props.timezones[v].index)
   }
   render(){
+    var bgClr = FORTRESSPURPLE2
+    var txtClr = '#e1e1e1'
+    if(this.props.branding == 'SPARC'){
+      bgClr = SPARCBLUE2
+      txtClr = '#000'
+    }
+
     var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
     st.width = 546
     st.fontSize = 24
     st.display = 'table-cell';//self.props.vst.display;
 
-    var tz = <PopoutWheel ovWidth={600} branding={this.props.branding} vMap={vMapV2['Timezone']} language={this.props.language} interceptor={false} name={'Timezone'} ref='tz' val={[this.state.timeZone]} options={[this.state.tzlist]} onChange={this.onTzChange}/>
+    var tz = <PopoutWheel ovWidth={600} branding={this.props.branding} vMap={vMapV2['Timezone']} language={this.props.language} interceptor={false} name={'Timezone'} ref={this.tz} val={[this.state.timeZone]} options={[this.state.tzlist]} onChange={this.onTzChange}/>
   
     var tzTxt = ''
     if(this.props.timezones[this.state.timeZone]){
       tzTxt = this.props.timezones[this.state.timeZone-1].text;
     }
-    var tzItem = (<div style={{margin:2}} onClick={()=>this.refs.tz.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:SPARCBLUE2, width:250,textAlign:'center'}}>
+    var tzItem = (<div style={{margin:2}} onClick={()=>this.tz.current.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}}>
         {'Time Zone'}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>

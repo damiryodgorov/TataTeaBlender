@@ -180,6 +180,7 @@ class Modal extends React.Component{
 		this.clear = this.clear.bind(this);
 		this.show = this.show.bind(this);
 		this.close = this.close.bind(this);
+		this.mb = React.createRef();
 	}
 	componentWillReceiveProps (newProps){
 		if(typeof newProps.override != 'undefined'){
@@ -235,7 +236,7 @@ class Modal extends React.Component{
 	updateMeter (a,b) {
 		// body...
 		if(this.state.show){
-			this.refs.mb.update(a,b)
+			this.mb.current.update(a,b)
 		}
 		
 	}
@@ -253,12 +254,12 @@ class Modal extends React.Component{
 		// body...
 		if(this.state.show){
 			if((typeof b != 'undefined')){
-				if(this.refs.mb.state.sig != a || this.refs.mb.state.sigB != b){
-					this.refs.mb.setState({sig:a,sigB:b})
+				if(this.mb.current.state.sig != a || this.mb.current.state.sigB != b){
+					this.mb.current.setState({sig:a,sigB:b})
 				}
 			}else{
-				if(this.refs.mb.state.sig != a ){
-					this.refs.mb.setState({sig:a})
+				if(this.mb.current.state.sig != a ){
+					this.mb.current.setState({sig:a})
 				}
 			}
 		}
@@ -282,7 +283,7 @@ class Modal extends React.Component{
 				//im = <InterceptorMeterBar ref='mb' clear={this.clear} mobile={this.props.mobile}/>
 		//	}
 			if(this.props.dfMeter){
-				im = <StealthMeterBar ref='mb' clear={this.clear} mobile={this.props.mobile}/>
+				im = <StealthMeterBar ref={this.mb} clear={this.clear} mobile={this.props.mobile}/>
 			}
 				cont = (<ModalCont toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
 					{im}
@@ -346,9 +347,10 @@ class StealthMeterBar extends React.Component{
 		this.state =  ({sig:0, sigB:0})
 		this.update = this.update.bind(this);
 		this.onSig = this.onSig.bind(this);
+		this.tb = React.createRef();
 	}
 	update (a) {
-		this.refs.tb.update(a);
+		this.tb.current.update(a);
 	
 	}
 	onSig() {
@@ -370,7 +372,7 @@ class StealthMeterBar extends React.Component{
 		}
 		return(<div style={{background: 'rgb(129, 138, 144)', borderRadius:15,border:'5px solid #818a90', boxShadow:'0 0 14px black', marginBottom:3}}>
 			<div style={sigWrapperSytle}>
-			<div className='intmetSig' style={sigStyle} onClick={this.onSig}>{this.state.sig}</div></div><div style={tbstyle}><TickerBox ref='tb'/></div>
+			<div className='intmetSig' style={sigStyle} onClick={this.onSig}>{this.state.sig}</div></div><div style={tbstyle}><TickerBox ref={this.tb}/></div>
 				</div>)
 	}
 }
@@ -603,6 +605,7 @@ class DummyGraph extends React.Component{
 		for (var i=0; i<mqls.length; i++){
 			mqls[i].addListener(this.listenToMq)
 		}
+		this.cv = React.createRef();
 		this.state = ({width:480, height:230, mqls:mqls})
 	}
 	listenToMq () {
@@ -611,10 +614,10 @@ class DummyGraph extends React.Component{
 		this.listenToMq()
 	}
 	renderCanv () {
-		return(<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int} mpp={20}/>)
+		return(<CanvasElem df={this.props.df} canvasId={this.props.canvasId} ref={this.cv} w={this.state.width} h={this.state.height} int={this.props.int} mpp={20}/>)
 	}
 	stream (dat) {
-		this.refs.cv.stream(dat)
+		this.cv.current.stream(dat)
 	}
 	render () {
 		var cv = this.renderCanv()
@@ -633,13 +636,14 @@ class SlimGraph extends React.Component{
 		this.stream = this.stream.bind(this);
 		this.pauseGraph = this.pauseGraph.bind(this);
 		this.restart = this.restart.bind(this);
+		this.cv = React.createRef();
 	}
 	pauseGraph(){
 		//console.log('lower res')
-		this.refs.cv.pauseGraph();
+		this.cv.current.pauseGraph();
 	}
 	restart(){
-		this.refs.cv.restart();
+		this.cv.current.restart();
 	}
 	listenToMq () {
 		// body...
@@ -659,14 +663,14 @@ class SlimGraph extends React.Component{
 	renderCanv () {
 		if(this.state.popUp){
 			return <GraphModal Style={{maxWidth:950,width:950,marginTop:100, background:'#000'}} innerStyle={{backgroundColor:'black'}} show={true} onClose={this.toggle}>
-				<CanvasElem combineMode={this.props.combineMode} sens={this.props.sens} thresh={this.props.thresh} df={true} canvasId={this.props.canvasId} ref='cv' w={900} h={400} int={this.props.int} mpp={13}/>
+				<CanvasElem combineMode={this.props.combineMode} sens={this.props.sens} thresh={this.props.thresh} df={true} canvasId={this.props.canvasId} ref={this.cv} w={900} h={400} int={this.props.int} mpp={13}/>
 			</GraphModal>
 		}
-		return(<CanvasElem combineMode={this.props.combineMode} sens={this.props.sens} thresh={this.props.thresh} df={true} canvasId={this.props.canvasId} ref='cv' w={this.state.width} h={this.state.height} int={this.props.int} mpp={28}/>)
+		return(<CanvasElem combineMode={this.props.combineMode} sens={this.props.sens} thresh={this.props.thresh} df={true} canvasId={this.props.canvasId} ref={this.cv} w={this.state.width} h={this.state.height} int={this.props.int} mpp={28}/>)
 	}
 	stream (dat, ov) {
 		if(!ov){
-			this.refs.cv.stream(dat)
+			this.cv.current.stream(dat)
 		}
 		
 	}
@@ -989,6 +993,7 @@ class MessageConsole extends React.Component{
 		this.clearWarnings = this.clearWarnings.bind(this);
 		this.renderOverlay = this.renderOverlay.bind(this);
 		this.onClick = this.onClick.bind(this);
+		this.fModal = React.createRef();
 	}
 	clearWarnings(){
 		this.props.clearWarnings();
@@ -1001,11 +1006,11 @@ class MessageConsole extends React.Component{
 	}
 	onClick(){
 		if(this.props.faultArray.length>0){
-			this.refs.fModal.toggle();
+			this.fModal.current.toggle();
 		}else if(this.props.testReq != 0){
 			this.props.toggleTest();
 		}else if(this.props.rejLatch ==1){
-			this.refs.fModal.toggle();
+			this.fModal.current.toggle();
 		}
 	}
 	renderOverlay(){
@@ -1138,7 +1143,7 @@ class MessageConsole extends React.Component{
 			<div>
 			{this.props.children}
 			</div>
-			<Modal ref='fModal' mobile={this.props.mobile}>
+			<Modal ref={this.fModal} mobile={this.props.mobile}>
 				{fCont}
 			</Modal>
 				</div>)
