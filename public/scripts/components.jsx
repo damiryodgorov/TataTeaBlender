@@ -285,7 +285,7 @@ class Modal extends React.Component{
 			if(this.props.dfMeter){
 				im = <StealthMeterBar ref={this.mb} clear={this.clear} mobile={this.props.mobile}/>
 			}
-				cont = (<ModalCont toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
+				cont = (<ModalCont x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
 					{im}
 			
 			{this.props.children}
@@ -327,6 +327,8 @@ class ModalC extends React.Component{
 			cs.overflow = 'scroll'
 			style.maxHeight = '83%'
 			style.overflow = 'scroll'
+			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
+		}else if(this.props.x == true){
 			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
 		}
 

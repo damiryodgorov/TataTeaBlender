@@ -48,7 +48,7 @@ class CircularButton extends React.Component{
 		var self = this;
 		this.onTouchStart();
 		setTimeout(function () {
-			self.onTouchEnd();
+			self.tEnd();
 		},ms)
 	}
 	onTouchStart (){
@@ -62,11 +62,20 @@ class CircularButton extends React.Component{
 		this.setState({touchActive:false, lab:this.props.lab})
 	}
 	onTouchEnd (){
-		if(this.props.override){
+		var self = this;
+		
+		setTimeout(function (argument) {
 
-		}else{
-			this.setState({touchActive:false})
-		}
+		self.onClick();
+		},100)
+		
+				
+			if(this.props.override){
+
+			}else{
+				this.setState({touchActive:false})
+			
+			}
 	}
 	render () {
 		var bg = '#818a90'
@@ -132,12 +141,12 @@ class CircularButton extends React.Component{
 		}	
 
 		//if(this.props.inverted){
-			return(<div  className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onClick={this.onClick} style={bstyle}>
+			return(<div  className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} style={bstyle}>
 				<div style={innerStyle}>{this.state.lab}</div>
 			</div>)
 		//}else{
 		//	return(<div  className={klass} onMouseDown={this.onTouchStart} onMouseUp={this.onTouchEnd} onClick={this.onClick} style={bstyle}>
-		//		<div style={innerStyle}>{this.props.lab}</div>
+		//		<div style={innerStyle}>{this.props.lab}</div> onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} 
 		//	</div>)
 		//}
 	}

@@ -2483,12 +2483,12 @@ class LandingPage extends React.Component{
                 <td style={{width:600}}>{raptor}</td>
                 	<td style={{height:60, width:200, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
                 	<FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
-                	<td className="logbuttCell" style={{height:60}}>
+                	<td className="logbuttCell" style={{height:60}}  onClick={this.toggleLogin}>
                 	<div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
                 	<button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
                 	<div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Level '+this.state.level}</div>
                 	</div></td>
-		          <td className="confbuttCell" style={{paddingRight:5}}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
+		          <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
 		          <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Settings'}</div>
 		          </td>
               </tr>
@@ -2509,20 +2509,20 @@ class LandingPage extends React.Component{
           <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Tare'} onClick={this.tareWeight}/>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Product'} onClick={this.pModalToggle}/>
           <CircularButton override={true} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Check Weight'} onClick={this.checkweight}/>
-      	<Modal ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose}>
+      	<Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose}>
       		<ProductSettings  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
       	</Modal>
-      	 <Modal ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+      	 <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
       		{cont}
           {this.state.connectedClients}
       	</Modal>
-      	<Modal ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
+      	<Modal  x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
       		{this.renderModal()}
       	</Modal> 
-        <Modal ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
+        <Modal  x={true} ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
          <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.cwc} cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
         </Modal>
-        <Modal ref={this.batModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
+        <Modal  x={true} ref={this.batModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
          <BatchControl selfProd={this.state.srec['EditProdNo']} prod={this.state.prec} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} 
                     start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc}/>
         </Modal>
@@ -2891,6 +2891,7 @@ class LineGraph extends React.Component{
 				<LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
 	
 		}*/
+
   if(this.props.connected == false){
     str = 'Not Connected'
   }
@@ -2901,7 +2902,7 @@ class LineGraph extends React.Component{
 		</div>
 		<div style={{overflow:'hidden', marginTop:48}}>
 		<div style={{marginTop:-48}}>
-	<XYPlot height={358} width={610} yDomain={ydm} stackBy='y' margin={{left:0,right:0,bottom:0,top:50}}>
+	<XYPlot height={358} width={610} yDomain={ydm} xDomain={[0,winLength]} stackBy='y' margin={{left:0,right:0,bottom:0,top:50}}>
 		<YAxis/>
 		<XAxis hideTicks />
 		{graphs}
@@ -4108,8 +4109,7 @@ class SettingsPageWSB extends React.Component{
 			}
 		})
 		cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} /></div>)
-    cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Motor Control'}}} selected={this.state.mot} ind={-3} onClick={this.onMot} /></div>)
-
+   
 		// bkmkthis
 		var cob;
 		if(this.state.sel == -1){
@@ -4261,8 +4261,31 @@ class SettingsPage extends React.Component{
 	sendPacket(n,v) {
 		var self = this;
 		////console.log([n,v])
-
-		if(n['@rpcs']['toggle']){
+    if(n['@rpcs']['vfdwrite']){
+      var arg1 = n['@rpcs']['vfdwrite'][0];
+      var arg2 = [];
+      var ind = n['@rpcs']['vfdwrite'][2][0];
+      var strArg = null;
+      
+      for(var i = 0; i<n['@rpcs']['vfdwrite'][1].length;i++){
+        if(!isNaN(n['@rpcs']['vfdwrite'][1][i])){
+          arg2.push(n['@rpcs']['vfdwrite'][1][i])
+        }else if(n['@rpcs']['vfdwrite'][1][i] == n['@name']){
+          if(!isNaN(v)){
+            arg2.push(v)
+          }else{
+            strArg=v
+            
+          }
+        }
+       
+    }
+     var buf = Buffer.alloc(5)
+        buf.writeUInt8(ind,0)
+        buf.writeUInt32LE(parseInt(v),1);
+        var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
+        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+  }else if(n['@rpcs']['toggle']){
 
 			var arg1 = n['@rpcs']['toggle'][0];
 			var arg2 = [];
@@ -5457,7 +5480,7 @@ class MultiEditControl extends React.Component{
 		var acc = false
 		if(this.props.acc){
 			if(this.props.param[0]['@rpcs']){
-				if((this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])||(this.props.param[0]['@rpcs']['theme'])){
+				if((this.props.param[0]['@rpcs']['vfdwrite'])||(this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])||(this.props.param[0]['@rpcs']['theme'])){
 					acc = true
 				}
 			}
@@ -6334,7 +6357,7 @@ class DisplaySettings extends React.Component{
  var nav = (<div className='setNav'>
                 <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_ip']['@translations'][this.props.language]['name']} value={this.props.nifip} editable={true} onEdit={this.editIP} param={{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
                 <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_nm']['@translations'][this.props.language]['name']} value={this.props.nifnm} editable={true} onEdit={this.editNM} param={{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
-                <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_ip']['@translations'][this.props.language]['name']} value={this.props.nifgw} editable={true} onEdit={this.editGW} param={{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
+                <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_gw']['@translations'][this.props.language]['name']} value={this.props.nifgw} editable={true} onEdit={this.editGW} param={{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
        
           </div>)
 

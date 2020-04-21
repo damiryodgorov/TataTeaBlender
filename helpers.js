@@ -50,6 +50,12 @@ class Params{
   static int32(val){
     return val[1] << 16 | val[0]
   }
+  static int8(val){
+    return val;
+  }
+  static uint32(val){
+    return val[1] << 16 | val[0]
+  }
   static int16(val){
     return uintToInt(val,16)
   }
@@ -390,8 +396,13 @@ function wordValue(arr, p){
     }
     arr = null;
     if(p['@type']){
-
-      return Params[p['@type']](sa)
+      if(Params[p['@type']]){
+        return Params[p['@type']](sa)
+      }else{
+        console.log(p['@type'])
+        return null;
+      }
+      
     }else if('DateTime' == p['@name']){
      
      var sa0 = sa[0]
