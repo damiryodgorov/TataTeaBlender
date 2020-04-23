@@ -23,6 +23,19 @@ class Params{
    // }
     return buf//val[1] << 48 | val[0] << 32 | val[3] << 16 | val[2]
   }
+    static fdbk_rate(rate,rate1, mode){
+      console.log('fdbk mode', rate, rate1, mode)
+    var val = Params.float([rate,rate1])
+    if(mode == 0){
+      return val
+  
+    }else if(mode == 1){
+      return val + ' grams/sec'
+    }else if(mode == 2){
+      return val + ' grams/pls'
+    }
+    return val;
+  }
   static int32_array(val){
     var buf = Buffer.alloc(1200);
     console.log(val.length)
@@ -352,9 +365,9 @@ function getVal(arr, rec, key, pVdef){
     ////console.log([rec,key])
     var param = pVdef[rec][key]
     if(param['@bit_len']>16){
-      pVdef = null;
+      //pVdef = null;
 
-      return wordValue(arr, param)
+      return wordValue(arr, param, rec, pVdef)
     }else{
       var val;
       if((param['@bit_pos'] + param['@bit_len']) > 16){
@@ -384,7 +397,7 @@ function getVal(arr, rec, key, pVdef){
       return val;
     }
 }
-function wordValue(arr, p){
+function wordValue(arr, p, r, pVdef){
 
     var n = Math.floor(p["@bit_len"]/16);
 
@@ -394,10 +407,31 @@ function wordValue(arr, p){
              sa.push(arr.readUInt16LE((p["@i_var"]+i)*2));       
       //}
     }
-    arr = null;
+   // arr = null;
     if(p['@type']){
       if(Params[p['@type']]){
-        return Params[p['@type']](sa)
+        var deps = []
+        if(p['@dep']){
+          p['@dep'].forEach(function (d) {
+            // body...
+            var rec = 0
+            if(d.indexOf('ProdRec') != -1){
+              rec = 1;
+            }
+            console.log(421,p['@name'])
+            var dp = getVal(arr,rec,d,pVdef)
+            deps.push(dp)
+
+          })
+           arr = null;
+        pVdef = null;
+        console.log(428, deps)
+        return Params[p['@type']].apply(this, [].concat.apply([], [sa, deps]));
+        }else{
+          return Params[p['@type']](sa)
+        }
+
+       
       }else{
         console.log(p['@type'])
         return null;

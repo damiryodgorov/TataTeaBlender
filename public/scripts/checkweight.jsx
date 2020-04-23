@@ -2418,16 +2418,16 @@ class LandingPage extends React.Component{
     	}
     	var play, stop;
     	if(this.state.start){
-    		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
-    		stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+    		play = <div onClick={this.start} style={{width:120, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+    		stop = <div onClick={this.stop} style={{width:120, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
     	}else{
-    		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#00FF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
-			stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+    		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#00FF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+			stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
     	}   
 
-    	var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
+    	var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'57px'}
 
       var cont = ''
     	var sd = <div><DisplaySettings nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/></div>
@@ -2505,10 +2505,10 @@ class LandingPage extends React.Component{
           	<HorizontalHisto language={language} branding={this.state.branding} ref={this.hh}/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',padding:5, marginRight:10, marginLeft:10}} >{play}{stop}</div>
-          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Batch'} onClick={this.openBatch}/>
-          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Tare'} onClick={this.tareWeight}/>
-          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Product'} onClick={this.pModalToggle}/>
-          <CircularButton override={true} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Check Weight'} onClick={this.checkweight}/>
+          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Batch'} onClick={this.openBatch}/>
+          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Tare'} onClick={this.tareWeight}/>
+          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Product'} onClick={this.pModalToggle}/>
+          <CircularButton override={true} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
       	<Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose}>
       		<ProductSettings  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
       	</Modal>
@@ -4069,7 +4069,10 @@ class SettingsPageWSB extends React.Component{
 		if(dat[0] == 'get_accounts'){
 			this.setState({showAccounts:true, cal:false, update:true,mot:false})
 		}else{
-			this.props.onHandleClick(dat,n)
+      if(typeof this.props.onHandleClick != 'undefined'){
+          this.props.onHandleClick(dat,n)
+      }
+		
 		}
 	}
   onCal(){
@@ -4205,8 +4208,10 @@ class SettingsPage extends React.Component{
     setTimeout(function(){
       document.getElementById(self.props.Id).scrollTop = 0;
       self.setState({path:path})
-   
-      self.props.onHandleClick(dat, n);
+      if(typeof self.props.onHandleClick != 'undefined'){
+          self.props.onHandleClick(dat,n)
+      }
+      //self.props.onHandleClick(dat, n);
 
     },250)
   }
@@ -4261,7 +4266,20 @@ class SettingsPage extends React.Component{
 	sendPacket(n,v) {
 		var self = this;
 		////console.log([n,v])
-    if(n['@rpcs']['vfdwrite']){
+   if(n['@rpcs']['vfdstart']){
+    if(v == 1){
+     // n['@rpcs']['vfdstart'][0]
+     console.log('vfdstart')
+      var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstart'][0], n['@rpcs']['vfdstart'][1],n['@rpcs']['vfdstart'][2]);
+        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+    }else{
+      console.log('vfdstop')
+       var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstop'][0], n['@rpcs']['vfdstop'][1],n['@rpcs']['vfdstop'][2]);
+        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+
+    }
+
+   }else if(n['@rpcs']['vfdwrite']){
       var arg1 = n['@rpcs']['vfdwrite'][0];
       var arg2 = [];
       var ind = n['@rpcs']['vfdwrite'][2][0];
@@ -4829,7 +4847,7 @@ class SettingItem3 extends React.Component{
 	sendPacket(n,v) {
 		//
 		var val = v
-		if(n['@name'] == 'Nif_ip'){
+    if(n['@name'] == 'Nif_ip'){
 			socket.emit('nifip', v.toString())
 		}else if(n['@name'] == 'Nif_nm'){
 			socket.emit('nifnm', v.toString())
@@ -4844,6 +4862,7 @@ class SettingItem3 extends React.Component{
 					socket.emit('locateReq');
 				},200)
 			}
+    
 		this.props.sendPacket(n,val)	
 		}
 	}
@@ -5238,10 +5257,13 @@ class MultiEditControl extends React.Component{
 		this.valClick = this.valClick.bind(this);
     	this.onPointerDown = this.onPointerDown.bind(this);
     	this.onPointerUp = this.onPointerUp.bind(this);
+      this.vfdStart = this.vfdStart.bind(this);
+      this.vfdStop = this.vfdStop.bind(this);
     for(var i = 0; i<this.props.param.length; i++){
       this['input'+i] = React.createRef();
     	//this.renderSpElem = this.renderSpElem.bind(this);
     }
+    this.vfdModal = React.createRef();
     this.pw = React.createRef();
 	}
 	componentWillReceiveProps(newProps){
@@ -5320,10 +5342,13 @@ class MultiEditControl extends React.Component{
 		
 	}
 	valClick (ind) {
+    console.log('valclick. this should not get called twicedasfkjas;kfljs')
 		var self = this;
 		if(!this.props.ov){
 			if(this.props.param[ind]['@rpcs']){
-				if(this.props.param[ind]['@rpcs']['clear']){
+				if(this.props.param[ind]['@rpcs']['vfdstart']){
+          this.vfdModal.current.toggle();
+        }else if(this.props.param[ind]['@rpcs']['clear']){
 					this.onClear(ind)
 				}else if(this.props.param[ind]['@rpcs']['start']){
 					this.onClear(ind)
@@ -5352,6 +5377,14 @@ class MultiEditControl extends React.Component{
 			}
 		}
 	}
+  vfdStart(){
+    console.log('start clicked')
+    this.props.sendPacket(this.props.param[0],1)
+  }
+  vfdStop(){
+    console.log('stop clicked')
+     this.props.sendPacket(this.props.param[0],2)
+  }
   	onPointerDown(){
     	this.setState({touchActive:true})
   	}
@@ -5478,11 +5511,14 @@ class MultiEditControl extends React.Component{
     
 
 		var acc = false
+    var vfdcont = false
 		if(this.props.acc){
 			if(this.props.param[0]['@rpcs']){
 				if((this.props.param[0]['@rpcs']['vfdwrite'])||(this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])||(this.props.param[0]['@rpcs']['theme'])){
 					acc = true
-				}
+				}else if(this.props.param[0]['@rpcs']['vfdstart']){
+          vfdcont = true
+        }
 			}
 		}
 
@@ -5495,11 +5531,27 @@ class MultiEditControl extends React.Component{
       }
 		if(!acc){
         var bgClr = FORTRESSPURPLE2
+        var modBG = FORTRESSPURPLE1
         var txtClr = '#e1e1e1'
+        var plArr = 'assets/play-arrow-fti.svg'
+        var plStop = 'assets/stop-fti.svg'
+        var vfdbutts = ''
         if(this.props.branding == 'SPARC'){
+          modBG = SPARCBLUE1
           bgClr = SPARCBLUE2
           txtClr = '#000'
+          plArr = 'assets/play-arrow-sp.svg'
+          plStop = 'assets/stop-sp.svg'
         }
+       if(vfdcont){
+        vfdbutts = <Modal ref={this.vfdModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+
+        <div>
+          <div style={{color:txtClr}}>VFD Test</div>
+        <div onPointerUp={this.vfdStart} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plArr} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+        <div onPointerUp={this.vfdStop} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plStop} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+</div></Modal>
+       } 
 			return <div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
 				{namestring}
@@ -5507,6 +5559,7 @@ class MultiEditControl extends React.Component{
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
 				{vLabels}{ioindicator}
 			</div>
+      {vfdbutts}
 			</div>
 		}else{
 
@@ -5603,6 +5656,12 @@ class MultiEditControl extends React.Component{
   		
   	}
 	
+}
+class VfdCont extends React.Component{
+  constructor(props){
+    this.onStart = this.onStart.bind(this);
+    this.onStop = this.onStop.bind(this);
+  }
 }
 class LogInControl2 extends React.Component{
 	constructor(props){

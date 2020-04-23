@@ -23,6 +23,17 @@ class Params{
 		}
 
 	}
+	static fdbk_rate(rate, mode){
+		if(mode == 0){
+			return rate
+	
+		}else if(mode == 1){
+			return rate + ' grams/sec'
+		}else if(mode == 2){
+			return rate + ' grams/pls'
+		}
+		return rate;
+	}
 	static rec_date(val){
 		//needs to be swapped..
 		//0xac26 -> 0x26ac
