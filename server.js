@@ -75,6 +75,13 @@ let accountJSONs = {};
 let macs = {}
 let networking = new NetworkInfo();
 //const Params = require('./params.js')
+var PORT = 3300;
+var IFACE = 'eth0'
+
+if(process.argv.length == 2){
+ PORT =  parseInt(process.argv[0]);
+ IFACE = process.argv[1]
+}
 class FtiSockIOServer{
   constructor(sock){
     this.sock = sock
@@ -1098,7 +1105,7 @@ function update(det){
 function locateUnicast (addr,cb, cw) {
 
   var ifaces = os.networkInterfaces();  
-  var iface = 'eth0'
+  var iface = IFACE
   if(os.platform() == 'darwin'){
     iface = 'en4'
   }
@@ -1273,7 +1280,7 @@ function autoIP(cw){
 function setNifIp(addr, callback){
     //need to figure out how to determine interface gracefully. maybe specify from onset? 
     //console.log(addr)
-    var iface = 'eth0.1'
+    var iface = IFACE
     if(os.platform() == 'darwin'){
       iface = 'en4'
     }
@@ -1296,7 +1303,7 @@ function setNifIp(addr, callback){
             //console.log(err)
           }
           var arr = res.toString().split('\n')
-          var ind = arr.indexOf('iface eth0.1 inet static')
+          var ind = arr.indexOf('iface '+IFACE+' inet static')
           if(ind != -1){
             arr[ind+1] = '\taddress ' + addr
             fs.writeFile('/etc/network/interfaces', arr.join('\n'), function(err){
@@ -1332,7 +1339,7 @@ process.on('uncaughtException', (err) => {
   })
   
 });
-app.set('port', (process.env.PORT || 3300));
+app.set('port', (process.env.PORT || PORT));
 app.use('/', express.static(path.join(__dirname,'public')));
 //console.log('dirname:' + __dirname)
 app.use(bodyParser.json());
@@ -1943,7 +1950,7 @@ wss.on('connection', function(scket, req){
     }
     //console.log('locate req')
     var ifaces = os.networkInterfaces();  
-    var iface = 'eth0.1'
+    var iface = IFACE
     if(os.platform() == 'darwin'){
       iface = 'en4'
     }
@@ -2346,7 +2353,7 @@ wss.on('connection', function(scket, req){
   socket.on('nifip', function(addr){
     //need to figure out how to determine interface gracefully. maybe specify from onset? 
     //console.log(addr)
-    var iface = 'eth0.1'
+    var iface = IFACE
     if(os.platform() == 'darwin'){
       iface = 'en4'
     }
@@ -2368,7 +2375,7 @@ wss.on('connection', function(scket, req){
             //console.log(err)
           }
           var arr = res.toString().split('\n')
-          var ind = arr.indexOf('iface eth0.1 inet static')
+          var ind = arr.indexOf('iface '+IFACE+' inet static')
           if(ind != -1){
             arr[ind+1] = '\taddress ' + addr
             fs.writeFile('/etc/network/interfaces', arr.join('\n'), function(err){
@@ -2387,7 +2394,7 @@ wss.on('connection', function(scket, req){
   socket.on('nifnm', function(addr){
     //need to figure out how to determine interface gracefully. maybe specify from onset? 
     //console.log(addr)
-    var iface = 'eth0.1'
+    var iface = IFACE
     if(os.platform() == 'darwin'){
       iface = 'en4'
     }
@@ -2409,7 +2416,7 @@ wss.on('connection', function(scket, req){
             //console.log(err)
           }
           var arr = res.toString().split('\n')
-          var ind = arr.indexOf('iface eth0.1 inet static')
+          var ind = arr.indexOf('iface '+IFACE+' inet static')
           if(ind != -1){
             arr[ind+2] = '\tnetmask ' + addr
             fs.writeFile('/etc/network/interfaces', arr.join('\n'), function(err){
@@ -2432,7 +2439,7 @@ wss.on('connection', function(scket, req){
     })
   })
   socket.on('nifgw',function(gw){
-    exec('sudo ip route change default via '+gw+' dev eth0.1',function(_err, stdout, stderr){
+    exec('sudo ip route change default via '+gw+' dev '+IFACE,function(_err, stdout, stderr){
       if(!_err){
         exec('sudo ip route flush cache',function(er, stdout, stderr){
             fs.readFile('/etc/network/interfaces', (err,res)=>{
@@ -2440,7 +2447,7 @@ wss.on('connection', function(scket, req){
             //console.log(err)
           }
           var arr = res.toString().split('\n')
-          var ind = arr.indexOf('iface eth0.1 inet static')
+          var ind = arr.indexOf('iface ' + IFACE + ' inet static')
           if(ind != -1){
             arr[ind+3] = '\tgateway ' + gw
             fs.writeFile('/etc/network/interfaces', arr.join('\n'), function(err){
@@ -2462,7 +2469,7 @@ wss.on('connection', function(scket, req){
       ifaces[nif.name] = nif;
 
     })
-    var iface = 'eth0.1'
+    var iface = IFACE
     if(os.platform() == 'darwin'){
       iface = 'en4'
     }
