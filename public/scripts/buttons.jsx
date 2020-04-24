@@ -24,7 +24,7 @@ class CircularButton extends React.Component{
 	constructor(props) {
 
 		super(props)
-		this.state = {touchActive:false, lab:props.lab}
+		this.state = {touchActive:false, lab:props.lab, tov:false}
 		this.onClick = this.onClick.bind(this)
 		this.onTouchStart = this.onTouchStart.bind(this);
 		this.onTouchEnd = this.onTouchEnd.bind(this);
@@ -38,7 +38,13 @@ class CircularButton extends React.Component{
 		}
 	}
 	onClick () {
-		if(!this.props.disabled){
+		if(this.state.tov){
+			if(this.props.onAltClick){
+				this.props.onAltClick()
+			}else{
+				this.props.onClick()
+			}
+		}else if(!this.props.disabled){
 			this.props.onClick();
 		}else{
 			toast('Test is not configured')
@@ -55,11 +61,11 @@ class CircularButton extends React.Component{
 		this.setState({touchActive:true})
 	}
 	tStart(str){
-		this.setState({touchActive:true, lab:str})
+		this.setState({touchActive:true, lab:str, tov:true})
 	}
 	tEnd(){
 
-		this.setState({touchActive:false, lab:this.props.lab})
+		this.setState({touchActive:false, lab:this.props.lab, tov:false})
 	}
 	onTouchEnd (){
 		var self = this;
