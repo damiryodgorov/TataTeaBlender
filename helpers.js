@@ -32,7 +32,7 @@ class Params{
     }else if(mode == 1){
       return val + ' grams/sec'
     }else if(mode == 2){
-      return val + ' grams/pls'
+      return val + ' grams/pulse'
     }
     return val;
   }

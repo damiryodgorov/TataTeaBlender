@@ -1339,6 +1339,7 @@ process.on('uncaughtException', (err) => {
   })
   
 });
+console.log('starting ts on '+PORT)
 app.set('port', (process.env.PORT || PORT));
 app.use('/', express.static(path.join(__dirname,'public')));
 //console.log('dirname:' + __dirname)

@@ -549,6 +549,8 @@ function getParams3(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch){
         }
       }else if(par.type == 3){
         params.push({type:3, '@name':'Accounts', '@data':'get_accounts', acc:0})
+      }else if(par.type == 4){
+        params.push({type:4, '@name':'Reboot','@data':'reboot_display',acc:0})
       }
               
     })
@@ -846,7 +848,9 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     		}
     	}else if(par.type == 3){
     		params.push({type:3, '@name':'Accounts', '@data':'get_accounts', acc:0})
-    	}
+    	}else if(par.type == 4){
+        params.push({type:4, '@name':'Reboot','@data':'reboot_display',acc:0})
+      }
     					
     })
 	return params
@@ -1297,7 +1301,9 @@ class LandingPage extends React.Component{
 	settingClick (s,n) {
 		if((Array.isArray(s))&&(s[0] == 'get_accounts')){
 			console.log('get accounts')
-		}else{
+		}else if((Array.isArray(s))&&(s[0] == 'reboot_display')){
+
+    }else{
 			var set = this.state.data.slice(0)
 			if(Array.isArray(s)){
 				set.push(s)
@@ -2379,6 +2385,9 @@ class LandingPage extends React.Component{
       this.cwModal.current.close();
     }
   }
+  reboot(){
+    socket.emit('reboot')
+  }
 	render(){
 		//LandingPage.render
 
@@ -2430,7 +2439,8 @@ class LandingPage extends React.Component{
     	var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'57px'}
 
       var cont = ''
-    	var sd = <div><DisplaySettings nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/></div>
+    	var sd = <div><DisplaySettings nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
+      <button onClick={this.reboot}>Reboot</button></div>
     	var cald = ''
     	var dets = ''// <div style={{color:'#e1e1e1', fontSize:24}} onClick={() => this.refs.locateModal.toggle()}>Connected to {this.state.curDet.name}</div>
     	if(this.state.srec['SRecordDate']){
@@ -2514,7 +2524,7 @@ class LandingPage extends React.Component{
       	</Modal>
       	 <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
       		{cont}
-          {this.state.connectedClients}
+          <div>{this.state.connectedClients}</div>
       	</Modal>
       	<Modal  x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
       		{this.renderModal()}
@@ -3268,12 +3278,14 @@ class ProductSettings extends React.Component{
 							}
 							if(pVdef[6][d]["@rec"] == 0){
 								return self.props.srec[d];
-							}else{
+							}else if(pVdef[6][d]["@rec"] == 1){
 								return curProd[d];
-							}
+							}else if(pVdef[6][d]["@rec"] == 2){
+                return self.props.drec[d]
+              }
 						});
 						if(pram['@name'] == 'BeltSpeed'){
-							deps.push(self.props.drec['EncFreq'])
+							//deps.push(self.props.drec['EncFreq'])
 							//deps.push(1000)
 							console.log(3243,deps)
 						}else if(pram['@type'] == 'rej_del'){
@@ -4068,7 +4080,10 @@ class SettingsPageWSB extends React.Component{
 	onHandleClick(dat, n){
 		if(dat[0] == 'get_accounts'){
 			this.setState({showAccounts:true, cal:false, update:true,mot:false})
-		}else{
+		}else if(dat[0] == 'reboot_display'){
+      toast('Restarting Display')
+      socket.emit('reboot')
+    }else{
       if(typeof this.props.onHandleClick != 'undefined'){
           this.props.onHandleClick(dat,n)
       }
@@ -4266,7 +4281,11 @@ class SettingsPage extends React.Component{
 	sendPacket(n,v) {
 		var self = this;
 		////console.log([n,v])
-   if(n['@rpcs']['vfdstart']){
+    if(n == 'vfdChange'){
+      console.log('vfdChange')
+      var packet = dsp_rpc_paylod_for(v['@rpcs']['changevfdwrite'][0], v['@rpcs']['changevfdwrite'][1],v['@rpcs']['changevfdwrite'][2]);
+       socket.emit('rpc', {ip:this.props.dsp, data:packet})
+    }else if(n['@rpcs']['vfdstart']){
     if(v == 1){
      // n['@rpcs']['vfdstart'][0]
      console.log('vfdstart')
@@ -4300,7 +4319,12 @@ class SettingsPage extends React.Component{
     }
      var buf = Buffer.alloc(5)
         buf.writeUInt8(ind,0)
-        buf.writeUInt32LE(parseInt(v),1);
+        if(n['@type'] == 'float'){
+          buf.writeFloatLE(parseFloat(v),1)
+        }else{
+          buf.writeUInt32LE(parseInt(v),1);
+        }
+        
         var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
         socket.emit('rpc', {ip:this.props.dsp, data:packet})
   }else if(n['@rpcs']['toggle']){
@@ -4432,6 +4456,9 @@ class SettingsPage extends React.Component{
 	getBack(){
 		this.props.getBack();
 	}
+  reboot(){
+    socket.emit('reboot')
+  }
 	render(){
 		var self = this;
     	var isInt = this.props.int
@@ -4650,7 +4677,15 @@ class SettingsPage extends React.Component{
             font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
 						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 		
-				}
+				}else if(par.type == 4){
+          var acc = false;
+          if((self.props.level > 3)){
+            acc = true;
+          }
+          var sc = par['@data']
+            
+          nodes.push(<CircularButton branding={self.props.branding} onClick={self.reboot} lab={"Reboot"}/>)
+        }
 			})
 
 			len = data[lvl - 1 ][0].params.length;
@@ -4906,9 +4941,11 @@ class SettingItem3 extends React.Component{
 						deps = pram["@dep"].map(function(d){
 							if(pVdef[6][d]["@rec"] == 0){
 								return self.props.sysSettings[d];
-							}else{
+							}else if(pVdef[6][d]["@rec"] == 1){
 								return self.props.prodSettings[d];
-							}
+							}else if(pVdef[6][d]["@rec"] == 2){
+                return self.props.dynSettings[d]
+              }
 						});
 						if(f == 'mm'){
 							if(deps[0] == 0){
@@ -4917,6 +4954,9 @@ class SettingItem3 extends React.Component{
 						}
 					}	
 					if(pram['@bit_len']<=16){
+            if(f == 'belt_speed'){
+              console.log('belt_speed', deps, pVdef[6])
+            }
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
 				}else if(typeof pram['@decimal'] != 'undefined'){
@@ -4944,14 +4984,19 @@ class SettingItem3 extends React.Component{
 							}
 							if(pVdef[6][d]["@rec"] == 0){
 								return self.props.sysSettings[d];
-							}else{
+							}else if(pVdef[6][d]["@rec"] == 1){
 								return self.props.prodSettings[d];
-							}
+							}else if(pVdef[6][d]["@rec"] == 2){
+                return self.props.dynSettings[d]
+              }
 						});
+            if(f == 'belt_speed'){
+              console.log('belt_speed', deps, pVdef[6])
+            }
 						if(pram['@name'] == 'BeltSpeed'){
-							deps.push(self.props.dynSettings['EncFreq'])
+						//	deps.push(self.props.dynSettings['EncFreq'])
 							//deps.push(1000)
-							console.log(3243,deps)
+						//	console.log(3243,deps)
 						}else if(pram['@type'] == 'rej_del'){
 							deps.push(1000)
 						}
@@ -5259,16 +5304,26 @@ class MultiEditControl extends React.Component{
     	this.onPointerUp = this.onPointerUp.bind(this);
       this.vfdStart = this.vfdStart.bind(this);
       this.vfdStop = this.vfdStop.bind(this);
+      this.vfdSetup = this.vfdSetup.bind(this);
     for(var i = 0; i<this.props.param.length; i++){
       this['input'+i] = React.createRef();
     	//this.renderSpElem = this.renderSpElem.bind(this);
     }
     this.vfdModal = React.createRef();
+    this.vfdSModal = React.createRef();
     this.pw = React.createRef();
 	}
 	componentWillReceiveProps(newProps){
 		this.setState({val:newProps.data.slice(0)})
 	}
+  vfdSetup(){
+    var self = this;
+    setTimeout(function(argument) {
+      // body...
+      self.vfdSModal.current.toggle();
+    },100)
+     this.props.sendPacket('vfdChange',this.props.param[0])
+  }
 	selectChanged(v,i){
 		var val = v//e.target.value//e.target.value;
 		if(this.props.bitLen == 16){
@@ -5512,6 +5567,7 @@ class MultiEditControl extends React.Component{
 
 		var acc = false
     var vfdcont = false
+    var vfdsetup = false
 		if(this.props.acc){
 			if(this.props.param[0]['@rpcs']){
 				if((this.props.param[0]['@rpcs']['vfdwrite'])||(this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])||(this.props.param[0]['@rpcs']['theme'])){
@@ -5519,18 +5575,13 @@ class MultiEditControl extends React.Component{
 				}else if(this.props.param[0]['@rpcs']['vfdstart']){
           vfdcont = true
         }
+        if(this.props.param[0]['@rpcs']['changevfdwrite']){
+          vfdsetup = true
+        }
 			}
 		}
-
-  if(iod){
-      if(iogreen){
-        ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#5d5'}}></div>
-      }else{
-         ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#555'}}></div>
-      }
-      }
-		if(!acc){
-        var bgClr = FORTRESSPURPLE2
+    var vfdsetupbutt = ''
+      var bgClr = FORTRESSPURPLE2
         var modBG = FORTRESSPURPLE1
         var txtClr = '#e1e1e1'
         var plArr = 'assets/play-arrow-fti.svg'
@@ -5543,6 +5594,25 @@ class MultiEditControl extends React.Component{
           plArr = 'assets/play-arrow-sp.svg'
           plStop = 'assets/stop-sp.svg'
         }
+  if(iod){
+      if(iogreen){
+        ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#5d5'}}></div>
+      }else{
+         ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#555'}}></div>
+      }
+      }
+      if(vfdsetup){
+        ioindicator = <img onClick={()=>this.vfdSModal.current.toggle()} src='assets/config.svg' style={{position:'absolute', width:30, height:30, left:15, top:10}}/>
+        vfdsetupbutt =<Modal ref={this.vfdSModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+
+        <div>
+          <div style={{color:txtClr}}>To set up this VFD unit, make sure all other VFD units are disconnected first. Press confirm to carry on with the setup.</div>
+        <div onPointerUp={this.vfdSetup} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}> <div style={{display:'inline-block'}}>Confirm</div></div>
+        <div onPointerUp={()=>this.vfdSModal.current.toggle()} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}><div style={{display:'inline-block'}}>Cancel</div></div> 
+</div></Modal>
+      }
+		if(!acc){
+      
        if(vfdcont){
         vfdbutts = <Modal ref={this.vfdModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
 
@@ -5552,6 +5622,7 @@ class MultiEditControl extends React.Component{
         <div onPointerUp={this.vfdStop} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plStop} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 </div></Modal>
        } 
+
 			return <div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
 				{namestring}
@@ -5606,6 +5677,7 @@ class MultiEditControl extends React.Component{
 				{vLabels}{ioindicator}
 			</div>
 			{options}
+      {vfdsetupbutt}
 			</div>
 			}else{
 				options = this.state.val.map(function(v, i){
@@ -5642,6 +5714,7 @@ class MultiEditControl extends React.Component{
 				{vLabels}{ioindicator}
 			</div>
 			{options}
+      {vfdsetupbutt}
 			</div>
 			/*
 				return(<div><label style={lvst}>{namestring + ': '}</label>
