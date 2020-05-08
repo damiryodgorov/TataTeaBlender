@@ -78,9 +78,13 @@ let networking = new NetworkInfo();
 var PORT = 3300;
 var IFACE = 'eth0'
 
-if(process.argv.length == 2){
- PORT =  parseInt(process.argv[0]);
- IFACE = process.argv[1]
+if(process.argv.length >= 2){
+  console.log('args: ',process.argv)
+  var args = process.argv.slice(-2)
+ PORT =  parseInt(args[0]);
+ IFACE = args[1]
+}else{
+  console.log('process argv length ', process.argv.length)
 }
 class FtiSockIOServer{
   constructor(sock){
@@ -1391,6 +1395,31 @@ wss.on('connection', function(scket, req){
   socket.on('getConnectedClients',function(){
     socket.emit('connectedClients',Object.keys(passocs).length);
   });
+  socket.on('getCustomJSON', function (vmapstr) {
+    if(fs.existsSync(path.join(__dirname, 'json/custVmap.json'))){
+      fs.readFile(path.join(__dirname, 'json/custVmap.json'), (err,data) =>{
+        try{
+          socket.emit('custJSON',JSON.parse(data))
+        }catch(e){
+        
+        }
+    })
+    }else{
+     fs.writeFile(path.join(__dirname, 'json/custVmap.json') , vmapstr,function (argument) {
+       // body...
+       socket.emit('custJSON',JSON.parse(vmapstr))
+     });
+    }
+
+    // body...
+  })
+  socket.on('saveCustomJSON', function (str) {
+    // body...
+     fs.writeFile(path.join(__dirname, 'json/custVmap.json') , str,function (argument) {
+       // body...
+       socket.emit('custJSON',JSON.parse(str))
+     });
+  })
 
 
   function getProdList(ip) {

@@ -12,6 +12,7 @@ import Notifications, {notify} from 'react-notify-toast';
 import {ToastContainer, toast,Zoom, cssTransition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {css} from 'glamor'
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 import {XYPlot,MarkSeries, LabelSeries, XAxis, YAxis,VerticalGridLines, HorizontalGridLines, LineSeries, HorizontalRectSeries, VerticalRectSeries, HorizontalBarSeries, AreaSeries, VerticalBarSeries} from 'react-vis';
 import {Uint64LE, Int64LE, Uint64BE, Int64BE} from 'int64-buffer';
 var createReactClass = require('create-react-class');
@@ -593,7 +594,9 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
     		}else if(par.val == 'DCRate_A'){
     			_p = {'type':0, '@name':p,'@data':prodRec[p], '@children':[], acc:par.acc}
-    		}    	//////////console.log(_vmap[p])
+    		}else{
+          //console.log(p,597)
+        }    	//////////console.log(_vmap[p])
     //	//console.log(p)
     		if(_p != null){
     		if(typeof _vmap[p] == 'undefined'){
@@ -899,14 +902,21 @@ console.log('on vdef')
     );
 
      var bob = {}
+     var rob = {}
+     rob['@name'] = '@customstrn'
+    rob['@labels'] = 'usecustom'
+    rob['@rpcs'] = {'customstrn':[0]}
     bob['@name'] = '@branding'
     bob['@labels'] = 'theme'
     bob['@rpcs'] = {'theme':[0]}
     res[0]['@branding'] =  bob//{'@name':'@branding', '@labels':'theme','@rpcs':{'theme':[0]}}
     res[9]['@branding'] =  bob//{'@name':'@branding', '@labels':'theme','@rpcs':{'theme':[0]}}
+    res[0]['@customstrn'] =  rob//{'@name':'@branding', '@labels':'theme','@rpcs':{'theme':[0]}}
+    res[9]['@customstrn'] =  rob//{'@name':'@branding', '@labels':'theme','@rpcs':{'theme':[0]}}
     res[6] = json["@deps"];
     res[7] = json["@labels"]
     res[7]['theme'] = {'english':['SPARC','FORTRESS']}
+    res[7]['usecustom'] =  {'english':['disabled','enabled']}
     res[8] = [];
    for(var par in res[2]){  
       if(par.indexOf('Fault') != -1){
@@ -1191,7 +1201,7 @@ class LandingPage extends React.Component{
 	constructor(props){
 		super(props)
 		this.state = {connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,
-      branding:'FORTRESS', automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
+      branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
 		this.authenticate = this.authenticate.bind(this);
@@ -1228,6 +1238,7 @@ class LandingPage extends React.Component{
     this.setTheme = this.setTheme.bind(this);
     this.openBatch = this.openBatch.bind(this);
     this.closeCWModal = this.closeCWModal.bind(this);
+    this.setTrans = this.setTrans.bind(this);
     this.lgctl = React.createRef();
     this.tBut = React.createRef();
     this.cwModal = React.createRef();
@@ -1246,6 +1257,7 @@ class LandingPage extends React.Component{
     this.batModal = React.createRef();
     this.pmd = React.createRef();
     this.cwc = React.createRef();
+    this.transChange = this.transChange.bind(this);
 
 
 	}
@@ -1329,14 +1341,16 @@ class LandingPage extends React.Component{
 			socket.emit('getVersion',true);
 			socket.emit('getPrefsCW',true);
       		socket.emit('getDispSettings');
+          socket.emit('getCustomJSON',JSON.stringify(vdefMapV2))
 
 		}
 	}
 	getCob (sys,prod,dyn, fram) {
-  
+    
 		var vdef = vdefByMac[this.state.curDet.mac]
 		var _cvdf = JSON.parse(JSON.stringify(vdef[4][0]))
 		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
+    console.log(vdef[1])
 		vdef = null;
 		_cvdf = null;
 		return cob
@@ -1365,15 +1379,21 @@ class LandingPage extends React.Component{
 				var pVdef = vdefByMac[this.state.curDet.mac][1]
 				var vdf = vdefByMac[this.state.curDet.mac][0]
 				if(e.type == 0){
+          console.log(pVdef)
 					console.log('Sys Rec')
           var language = vdf['@labels']['Language']['english'][e.rec['Language']];
           if(language == 'russian' || language == 'polish' || language == 'chinese'){
             language = 'korean'
           }
           if(this.state.branding == 'SPARC'){
-            e.rec['@branding'] = 0
+            e.rec['@branding'] = 0;
           }else{
-            e.rec['@branding'] = 1
+            e.rec['@branding'] = 1;
+          }
+          if(this.state.customMap){
+            e.rec['@customstrn'] = 1;
+          }else{
+            e.rec['@customstrn'] = 0;
           }
           console.log(language)
           if(e.rec['TareWeight']!= this.state.srec['TareWeight']){
@@ -1872,6 +1892,7 @@ class LandingPage extends React.Component{
 
 		}, 1500)
 
+
 		setTimeout(function (argument) {
 			
 			self.loadPrefs();
@@ -1886,6 +1907,18 @@ class LandingPage extends React.Component{
       fram.ConnectedClients = c
       self.setState({connectedClients:c,fram:fram, noupdate:false})
       // body...
+    })
+    socket.on('custJSON',function (json) {
+      if(self.state.customMap){
+        vMapV2 = json['@vMap']
+
+      catMapV2 = json['@catmap']
+      self.setState({custMap:json,vMap:json, noupdate:false})
+      }else{
+          self.setState({custMap:json, noupdate:false})
+      }
+      // body...
+      
     })
 		socket.on('resetConfirm', function (r) {
 			//socket.emit('locateReq',true);
@@ -2370,6 +2403,22 @@ class LandingPage extends React.Component{
   checkweight(){
     this.sendPacket('checkWeight')
   }
+  setTrans(v){
+      var srec = this.state.srec
+
+      srec['@customstrn'] = v
+    if(v == 0){
+      vMapV2 = vdefMapV2['@vMap']
+      catMapV2 = vdefMapV2['@catmap']
+      this.setState({customMap:false, vmap:vdefMapV2,noupdate:false, srec:srec,cob:this.getCob(srec, this.state.prec, this.state.rec,this.state.fram)})
+    }else if(v == 1){
+
+      vMapV2 = this.state.custMap['@vMap']
+
+      catMapV2 = this.state.custMap['@catmap']
+      this.setState({customMap:true, vmap:this.state.custMap,noupdate:false, srec:srec,cob:this.getCob(srec, this.state.prec, this.state.rec,this.state.fram)})
+    }
+  }
   setTheme(v){
     var srec = this.state.srec
 
@@ -2387,6 +2436,11 @@ class LandingPage extends React.Component{
   }
   reboot(){
     socket.emit('reboot')
+  }
+  transChange(n,l,v){
+    var custMap = this.state.custMap
+    custMap['@vMap'][n]['@translations'][l]['name'] = v
+    socket.emit('saveCustomJSON',JSON.stringify(custMap));
   }
 	render(){
 		//LandingPage.render
@@ -2445,8 +2499,8 @@ class LandingPage extends React.Component{
     	var dets = ''// <div style={{color:'#e1e1e1', fontSize:24}} onClick={() => this.refs.locateModal.toggle()}>Connected to {this.state.curDet.name}</div>
     	if(this.state.srec['SRecordDate']){
     		//language = vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]
-    		sd =   	<div ><SettingsPageWSB calibState={this.state.calibState} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
-      		onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} />
+    		sd =   	<div ><SettingsPageWSB submitChange={this.transChange} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+      		onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
     		</div>
         cont = sd;
     		cald = (	<div style={{background:'#e1e1e1', padding:10}}>
@@ -2520,7 +2574,7 @@ class LandingPage extends React.Component{
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Product'} onClick={this.pModalToggle}/>
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
       	<Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose}>
-      		<ProductSettings  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
+      		<ProductSettings submitChange={this.transChange}  vdefMap={this.state.vmap}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
       	</Modal>
       	 <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
       		{cont}
@@ -3576,7 +3630,7 @@ class ProductSettings extends React.Component{
 			</div>)
 			if(this.state.showAdvanceSettings){
 				content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
-				<div style={{height:482}}>	<SettingsPage prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+				<div style={{height:482}}>	<SettingsPage submitChange={this.props.submitChange}  vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
       		onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={4}/>
     		</div>
       		<div>
@@ -4133,19 +4187,19 @@ class SettingsPageWSB extends React.Component{
 		if(this.state.sel == -1){
 			cob = this.props.cob2
 		}
-		var sd =<React.Fragment><div > <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
+		var sd =<React.Fragment><div > <SettingsPage submitChange={this.props.submitChange}   vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
       		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
 			</div>
 			<div style={{display:'none'}}> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
 </div></React.Fragment>
 		if(this.state.showAccounts){
-			sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
+			sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage submitChange={this.props.submitChange}   vdefMap={this.props.vdefMap}  setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
       		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
 			</div>
 			<div> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
 </div></React.Fragment>
 		}else if(this.state.cal){
-     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref={this.sd} data={this.state.data} 
+     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage submitChange={this.props.submitChange}   vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref={this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
       <div>
@@ -4163,7 +4217,7 @@ class SettingsPageWSB extends React.Component{
       </div></React.Fragment>
     }else if(this.state.mot){
       sd = <React.Fragment>
-        <div style={{display:'none'}}> <SettingsPage setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+        <div style={{display:'none'}}> <SettingsPage submitChange={this.props.submitChange}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
 
@@ -4205,7 +4259,12 @@ class SettingsPage extends React.Component{
 	  this.getBack = this.getBack.bind(this);
     this.arrowTop = React.createRef();
     this.arrowBot = React.createRef();
+    this.submitChange = this.submitChange.bind(this)
 	}
+  submitChange(n,l,v){
+    console.log(n,l,v)
+    this.props.submitChange(n,l,v)
+  }
 	componentWillUnmount(){
 
 	}
@@ -4319,7 +4378,7 @@ class SettingsPage extends React.Component{
     }
      var buf = Buffer.alloc(5)
         buf.writeUInt8(ind,0)
-        if(n['@type'] == 'float'){
+        if((n['@type'] == 'float')||(n['@type'] == 'fdbk_rate')){
           buf.writeFloatLE(parseFloat(v),1)
         }else{
           buf.writeUInt32LE(parseInt(v),1);
@@ -4430,6 +4489,8 @@ class SettingsPage extends React.Component{
 			socket.emit('rpc', {ip:this.props.dsp, data:packet})
 		}else if(n['@rpcs']['theme']){
       this.props.setTheme(v)
+    }else if(n['@rpcs']['customstrn']){
+      this.props.setTrans(v)
     }
 	}
 	onFocus() {
@@ -4509,7 +4570,7 @@ class SettingsPage extends React.Component{
 		var backBut = ''
 
 		var catList = [	]
-
+    var lenOffset = 0;
 		var accLevel = 0;
 		var len = 0;
 		var SA = false;
@@ -4517,7 +4578,7 @@ class SettingsPage extends React.Component{
 			nodes = [];
 			for(var i = 0; i < catList.length; i++){
 				var ct = catList[i]
-				nodes.push(<SettingItem3 branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
+				nodes.push(<SettingItem3 submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
           language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} 
           font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} 
           sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
@@ -4606,7 +4667,7 @@ class SettingsPage extends React.Component{
 						acc = true;
 					}
           //console.log(2158, isInt)
-					nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+					nodes.push(<SettingItem3 submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
 						ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
 							children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
 					
@@ -4631,14 +4692,14 @@ class SettingsPage extends React.Component{
               					spname = spname.slice(0,-4)
             				}
           				}
-							nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+							nodes.push(<SettingItem3 submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 								data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 			
 					}else{
 		      			if(self.props.wsb && lvl == 1){
-
+                  lenOffset++;
 		      			}else{
-		      				nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+		      				nodes.push(<SettingItem3 submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 							data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 						
 		      			}
@@ -4657,12 +4718,12 @@ class SettingsPage extends React.Component{
             				ch.unshift(spar['@data'])
           				}
           				
-          				nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
+          				nodes.push(<SettingItem3 submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
                     font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 							     data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 				
 					}else{
-			 			nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+			 			nodes.push(<SettingItem3 submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
               font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
 							data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 					}
@@ -4673,7 +4734,7 @@ class SettingsPage extends React.Component{
 					}
 					var sc = par['@data']
 						
-					nodes.push(<SettingItem3 branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+					nodes.push(<SettingItem3  submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
             font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
 						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
 		
@@ -4690,7 +4751,7 @@ class SettingsPage extends React.Component{
 
 			len = data[lvl - 1 ][0].params.length;
 			var ph = ""
-			if(len > 6){
+			if((len - lenOffset) > 6){
 					ph = <div style={{display:'block', width:'100%', height:20}}></div>
 					SA = true;
 			}
@@ -4710,6 +4771,7 @@ class SettingsPage extends React.Component{
 		   	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
 		}
 		catList = null;
+    console.log(4713,SA)
 
 		return(
 			<div className='settingsDiv'>
@@ -4738,6 +4800,7 @@ class SettingItem3 extends React.Component{
     this.ed = React.createRef();
 		var values = this.parseValues(this.props);
 		this.state = ({mode:0,font:this.props.font, val:values[0], pram:values[1], labels:values[2], touchActive:false})
+    this.submitChange = this.submitChange.bind(this);
 		
 
 	}
@@ -5130,6 +5193,9 @@ class SettingItem3 extends React.Component{
 		// body...
 		this.props.onRequestClose();
 	}
+  submitChange(n,l,v){
+    this.props.submitChange(n,l,v)
+  }
 	render(){
 		var ft = [16,20,24];
 		var wd = [150,260,297]
@@ -5240,7 +5306,7 @@ class SettingItem3 extends React.Component{
 					}
 		
 
-					var medctrl= (<MultiEditControl branding={this.props.branding} nameovr={namestring} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
+					var medctrl= (<MultiEditControl branding={this.props.branding} submitChange={this.submitChange} nameovr={namestring} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
 	    		            mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
 	         				onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
 	          				lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
@@ -5277,7 +5343,7 @@ class SettingItem3 extends React.Component{
 			sty.height = 51;
 			sty.paddingRight = 5;
 		}
-		var medctrl= (<MultiEditControl branding={this.props.branding} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
+		var medctrl= (<MultiEditControl branding={this.props.branding} submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
           lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
           label={this.state.label} int={false} name={this.props.lkey}/>)
 
@@ -5292,7 +5358,7 @@ class SettingItem3 extends React.Component{
 class MultiEditControl extends React.Component{
 	constructor(props) {
 		super(props)
-		this.state = ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size,touchActive:false})
+		this.state = ({val:this.props.data.slice(0), changed:false, mode:0, size:this.props.size,touchActive:false, curtrn:this.props.vMap['@translations'][this.props.language]['name']})
 		this.selectChanged = this.selectChanged.bind(this);
 		this.valChanged = this.valChanged.bind(this);
 		this.onFocus = this.onFocus.bind(this);
@@ -5305,17 +5371,24 @@ class MultiEditControl extends React.Component{
       this.vfdStart = this.vfdStart.bind(this);
       this.vfdStop = this.vfdStop.bind(this);
       this.vfdSetup = this.vfdSetup.bind(this);
+      this.curtrnChange = this.curtrnChange.bind(this);
+      this.submitChange = this.submitChange.bind(this);
     for(var i = 0; i<this.props.param.length; i++){
       this['input'+i] = React.createRef();
     	//this.renderSpElem = this.renderSpElem.bind(this);
     }
     this.vfdModal = React.createRef();
     this.vfdSModal = React.createRef();
+    this.trnsmdl = React.createRef();
+    this.translatePopup = this.translatePopup.bind(this);
     this.pw = React.createRef();
 	}
 	componentWillReceiveProps(newProps){
 		this.setState({val:newProps.data.slice(0)})
 	}
+  componentDidMount(){
+    this.setState({curtrn:this.props.vMap['@translations'][this.props.language]['name']})
+  }
   vfdSetup(){
     var self = this;
     setTimeout(function(argument) {
@@ -5449,6 +5522,17 @@ class MultiEditControl extends React.Component{
       
     	}
   	}
+    translatePopup(){
+      this.setState({curtrn:this.props.vMap['@translations'][this.props.language]['name']})
+      this.trnsmdl.current.toggle();
+      //toast('translate')
+    }
+    curtrnChange(v){
+      this.setState({curtrn:v.target.value})
+    }
+    submitChange(){
+      this.props.submitChange(this.props.name, this.props.language, this.state.curtrn)
+    }
   	render(){
   		var self = this;
 		
@@ -5459,7 +5543,8 @@ class MultiEditControl extends React.Component{
 				namestring =  vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name']
 			}
 		}
-
+    namestring = this.props.vMap['@translations'][this.props.language]['name']
+   
 		var dt = false;
 		var fSize = 20;
 		if(namestring.length > 24){
@@ -5570,7 +5655,7 @@ class MultiEditControl extends React.Component{
     var vfdsetup = false
 		if(this.props.acc){
 			if(this.props.param[0]['@rpcs']){
-				if((this.props.param[0]['@rpcs']['vfdwrite'])||(this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])||(this.props.param[0]['@rpcs']['theme'])){
+				if((this.props.param[0]['@rpcs']['vfdwrite'])||(this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])||(this.props.param[0]['@rpcs']['theme'])||(this.props.param[0]['@rpcs']['customstrn'])){
 					acc = true
 				}else if(this.props.param[0]['@rpcs']['vfdstart']){
           vfdcont = true
@@ -5594,6 +5679,13 @@ class MultiEditControl extends React.Component{
           plArr = 'assets/play-arrow-sp.svg'
           plStop = 'assets/stop-sp.svg'
         }
+
+       var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>Parameter Name: { this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+              <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
+              <button onClick={this.submitChange}>Submit Translation</button>
+        </Modal>
   if(iod){
       if(iogreen){
         ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#5d5'}}></div>
@@ -5624,13 +5716,26 @@ class MultiEditControl extends React.Component{
        } 
 
 			return <div>
+     
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
-				{namestring}
+			 <ContextMenuTrigger id={this.props.name + 'ctmid'}>
+      	{namestring}
+         </ContextMenuTrigger>
 			</div>
+     
+     
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
 				{vLabels}{ioindicator}
 			</div>
       {vfdbutts}
+      <div style={{zIndex:3}}>
+       <ContextMenu id={this.props.name + 'ctmid'}>
+        <MenuItem onClick={this.translatePopup}>
+          Translate Setting
+        </MenuItem>
+      </ContextMenu>
+      </div>
+      {trnsmdl}
 			</div>
 		}else{
 
@@ -5670,14 +5775,28 @@ class MultiEditControl extends React.Component{
           txtClr = '#000'
         }
 				return  <div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
-				{namestring}
-			</div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+		    
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
+         <ContextMenuTrigger id={this.props.name + 'ctmid'}>
+        {namestring}
+        </ContextMenuTrigger>
+      </div>
+      
+      
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
 				{vLabels}{ioindicator}
 			</div>
 			{options}
       {vfdsetupbutt}
+      <div style={{zIndex:3}}>
+       <ContextMenu id={this.props.name + 'ctmid'}>
+        <MenuItem onClick={this.translatePopup}>
+          Translate Setting
+        </MenuItem>
+      </ContextMenu>
+      </div>
+
+      {trnsmdl}
 			</div>
 			}else{
 				options = this.state.val.map(function(v, i){
@@ -5707,14 +5826,28 @@ class MultiEditControl extends React.Component{
           txtClr = '#000'
         }
 	          					return <div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
-				{namestring}
-			</div>
+   
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
+           <ContextMenuTrigger id={this.props.name + 'ctmid'}>
+        {namestring}
+
+      </ContextMenuTrigger>
+      </div>
+     
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
 				{vLabels}{ioindicator}
 			</div>
 			{options}
       {vfdsetupbutt}
+      <div style={{zIndex:3}}>
+       <ContextMenu id={this.props.name + 'ctmid'}>
+        <MenuItem onClick={this.translatePopup}>
+          Translate Setting
+        </MenuItem>
+      </ContextMenu>
+      </div>
+
+      {trnsmdl}
 			</div>
 			/*
 				return(<div><label style={lvst}>{namestring + ': '}</label>
