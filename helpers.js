@@ -78,6 +78,18 @@ class Params{
     buf.writeInt32LE(int)
     return buf.readFloatLE(0)
   }
+  static float_dist(val1,val2,metric){
+    var int = val2 << 16 | val1
+    var buf = Buffer.alloc(4);
+    buf.writeInt32LE(int)
+    return Params.mm(buf.readFloatLE(0),metric)
+  }
+  static dist_float(val1,val2,metric){
+    var int = val2 << 16 | val1
+    var buf = Buffer.alloc(4);
+    buf.writeInt32LE(int)
+    return Params.mm(buf.readFloatLE(0),metric)
+  }
   static frac_value(int){
     return (int/(1<<15))
   }
@@ -152,8 +164,20 @@ class Params{
       return ticks;
     }
   }
-  static belt_speed(tpm, metric, tack,tps=231.0){
+  static cwbeltspeed(speed,metric){
+    if(metric==0){
+      return (speed*3.281).toFixed(1) + ' ft/min'
+    }else{
+      return speed.toFixed(1) + ' M/min'
+    }
+  }
+  static belt_speed(tpm0, tpm1, metric, tack,tps=231.0){
     ////console.log(tpm);
+    //this is for cw... need to change name
+    //return Params.float(tpm)
+    var tpm = Params.float([tpm0,tpm1])
+    //if(metric == 0)
+    return Params.cwbeltspeed(tpm,metric)
     if(tack!=0){
 
      var speed = (tps/tpm) * 60;
@@ -360,14 +384,13 @@ function uintToInt(uint, nbit) {
     uint >>= 32 - nbit;
     return uint;
 }
-
-function getVal(arr, rec, key, pVdef){
-    ////console.log([rec,key])
+function getVal(arr, rec, key, pVdef,_deps){
+   // console.log([rec,key])
     var param = pVdef[rec][key]
     if(param['@bit_len']>16){
       //pVdef = null;
 
-      return wordValue(arr, param, rec, pVdef)
+      return wordValue(arr, param, rec, pVdef,_deps)
     }else{
       var val;
       if((param['@bit_pos'] + param['@bit_len']) > 16){
@@ -397,7 +420,7 @@ function getVal(arr, rec, key, pVdef){
       return val;
     }
 }
-function wordValue(arr, p, r, pVdef){
+function wordValue(arr, p, r, pVdef,_deps){
 
     var n = Math.floor(p["@bit_len"]/16);
 
@@ -418,14 +441,19 @@ function wordValue(arr, p, r, pVdef){
             if(d.indexOf('ProdRec') != -1){
               rec = 1;
             }
-            console.log(421,p['@name'])
-            var dp = getVal(arr,rec,d,pVdef)
+           // console.log(421,p['@name'],d, _deps)
+            var dp = 0//getVal(arr,rec,d,pVdef)
+            if(typeof _deps != 'undefined'){
+              if(typeof _deps[d] != 'undefined'){
+                dp = _deps[d]
+              }
+            }
             deps.push(dp)
 
           })
            arr = null;
         pVdef = null;
-        console.log(428, deps)
+        //console.log(428, deps)
         return Params[p['@type']].apply(this, [].concat.apply([], [sa, deps]));
         }else{
           return Params[p['@type']](sa)

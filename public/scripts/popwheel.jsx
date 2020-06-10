@@ -6,6 +6,7 @@ var createReactClass = require('create-react-class');
 const vdefMapV2 = require('./vdefmap.json')
 import {Modal, ScrollArrow} from './components.jsx'
 import {CircularButton} from './buttons.jsx'
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
 let inputSrcArr = ["NONE","TACH","EYE","RC1","RC2","ISO_1","IO_PL8_01","IO_PL8_02","IO_PL8_03","IO_PL8_04","IO_PL8_05","IO_PL8_06","IO_PL8_07","IO_PL8_08","IO_PL8_09","IO_PL6_01","IO_PL6_02","IO_PL6_03"];
 const outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
@@ -45,7 +46,7 @@ class PopoutWheel extends React.Component{
 	}
 	render () {
 		var value = "placeholder"
-		return	<PopoutWheelModal ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
+		return	<PopoutWheelModal submitTooltip={this.props.submitTooltip} ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
 	}
 }
 class PopoutWheelModal extends React.Component{
@@ -76,7 +77,7 @@ class PopoutWheelModal extends React.Component{
 	render () {
 		var	cont = ""
 		if(this.state.show){
-		cont =  <PopoutWheelModalCont ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
+		cont =  <PopoutWheelModalCont submitTooltip={this.props.submitTooltip} ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
 			{cont}
@@ -86,12 +87,22 @@ class PopoutWheelModal extends React.Component{
 class PopoutWheelModalC extends React.Component{
 	constructor(props){
 		super(props);
-		this.state = {value:this.props.value.slice(0)}
+		var tooltiptext = 'This is a tooltip'
+		////console.log(this.props.vMap)
+		if(typeof this.props.vMap != 'undefined'){
+			if(this.props.vMap['@translations'][this.props.language]['description'].length >0){
+				tooltiptext = this.props.vMap['@translations']['english']['description'];
+			}
+		}
+		this.state = {value:this.props.value.slice(0),curtrans:tooltiptext}
 		this.handleClickOutside = this.handleClickOutside.bind(this)
 		this.close = this.close.bind(this);
 		this.select = this.select.bind(this);
 		this.accept = this.accept.bind(this);
 		this.help = this.help.bind(this);
+		this.curtrnChange = this.curtrnChange.bind(this);
+		this.translateTooltip = this.translateTooltip.bind(this);
+		this.submitTooltip = this.submitTooltip.bind(this);
 	}
 	componentDidMount() {
 		// body...
@@ -187,6 +198,19 @@ class PopoutWheelModalC extends React.Component{
 		//console.log('help modal should open')
 		this.refs.helpModal.toggle();
 	}
+	translateTooltip(){
+		this.refs.transModal.toggle();
+
+	}
+	curtrnChange(e){
+		this.setState({curtrans:e.target.value})
+	}
+	submitTooltip(){
+		if(typeof this.props.submitTooltip != 'undefined'){
+			this.props.submitTooltip(this.state.curtrans)
+		}
+		
+	}
 	render () {
 		// body...
 		var self = this;
@@ -267,7 +291,18 @@ class PopoutWheelModalC extends React.Component{
 			klr = '#010101'
 		}
 		var st = {minWidth:minW, marginTop:60}
-
+		var tttxt = <div>{tooltiptext}</div>
+		if(self.props.params){
+			var cmenuid = self.props.params.map(function (p) {
+				return p['@name']				// body...
+			}).join('-') + 'tttxt'
+			tttxt = <React.Fragment>
+			<div><ContextMenuTrigger id={cmenuid}>{tooltiptext}</ContextMenuTrigger></div>
+			<ContextMenu id={cmenuid}>
+				<MenuItem onClick={this.translateTooltip}>Translate Tooltip</MenuItem>
+			</ContextMenu>
+			</React.Fragment>
+		}
 		////console.log(tooltiptext)
 	  return( <div className={klass} style={{minWidth:minW, marginTop:60}}>
 	  		<div style={{display:'inline-block', marginRight:'auto', marginLeft:'auto', textAlign:'center', color:klr, maxWidth:maxW, fontSize:fontSize}}>{this.props.name}</div>
@@ -279,7 +314,11 @@ class PopoutWheelModalC extends React.Component{
 	  		<CircularButton branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
 		<CircularButton branding={this.props.branding} style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={()=> this.close(0)} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/>
 	  	</div>	<Modal ref='helpModal' Style={{color:'#e1e1e1',width:400}}>
-	  		<div>{tooltiptext}</div>
+	  		{tttxt}
+	  		</Modal>
+	  		<Modal ref='transModal' Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+	  		 <input type='text' style={{fontSize:20}} value={this.state.curtrans} onChange={this.curtrnChange}/>
+	  		 <button onClick={this.submitTooltip}>Submit Change</button>
 	  		</Modal>
 	  </div>)
 

@@ -180,6 +180,7 @@ http.on('error', function(err){
 
 let _accounts = {};
 let _tempAccounts = {};
+let _deps = {}
 var prefs = [];
 var cwprefs = []
 var cur = Date.now()
@@ -681,26 +682,37 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
    var userrec = {};
   if(rec_type == 0){
     nVdf[0].forEach(function (p) {
-      rec[p] = getVal(buf, 0, p, pVdef)
+      rec[p] = getVal(buf, 0, p, pVdef,_deps[ip])
     })
-  
+    for(var p in _Vdef["@deps"]){
+      console.log('deps 0 ',p)
+      if(_Vdef["@deps"][p]["@rec"] == 0){
+        _deps[ip][p] = rec[p]
+       //rec[p] = getVal(buf,0, p, pVdef);
+      }
+    }
     pack = {type:0, rec:rec}
+
+
+
     //system
   }else if(rec_type == 1){
     console.log('PROD REC CW')
     nVdf[1].forEach(function (p) {
-      rec[p] = getVal(buf, 1, p, pVdef)
+      rec[p] = getVal(buf, 1, p, pVdef,_deps[ip])
       // body...
     })
-    /*for(var p in Vdef["@deps"]){
-      if(Vdef["@deps"][p]["@rec"] == 1){
-        rec[p] = getVal(array,5, p, pVdef);
+    for(var p in _Vdef["@deps"]){
+      if(_Vdef["@deps"][p]["@rec"] == 1){
+        _deps[ip][p] = rec[p]
+       //rec[p] = getVal(buf,0, p, pVdef);
       }
-    }*/
+    }
      pack = {type:1, rec:rec}
   }else if(rec_type == 2){
     nVdf[2].forEach(function (p) {
-      rec[p] = getVal(buf, 2, p, pVdef)
+     // console.log(p)
+      rec[p] = getVal(buf, 2, p, pVdef,_deps[ip])
       // body...
     })
     /*for(var p in Vdef["@deps"]){
@@ -715,7 +727,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
       //need to account for user objects here. 
      // if(p)
 
-      rec[p] = getVal(buf, 3, p, pVdef)
+      rec[p] = getVal(buf, 3, p, pVdef,_deps[ip])
     //  console.log(p, rec[p])
       // body...
     })
@@ -723,7 +735,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
     nVdf[7].forEach(function (p) {
       //need to account for user objects here. 
      // if(p)
-      userrec[p] = getVal(buf, 7, p, pVdef)
+      userrec[p] = getVal(buf, 7, p, pVdef,_deps[ip])
       // body...
     })
     console.log('user rec', userrec)
@@ -745,14 +757,14 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
     
   }else if(rec_type == 4){
     nVdf[4].forEach(function (p) {
-      rec[p] = getVal(buf, 4, p, pVdef)
+      rec[p] = getVal(buf, 4, p, pVdef,_deps[ip])
       // body...
     })
 
     pack = {type:4, rec:rec}
   }else if(rec_type == 5){
      nVdf[5].forEach(function (p) {
-      rec[p] = getVal(buf, 5, p, pVdef)
+      rec[p] = getVal(buf, 5, p, pVdef,_deps[ip])
       // body...
     })
 
@@ -763,7 +775,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
     var pbuf = buf.slice(2)
     nVdf[1].forEach(function(p) {
       // body...
-      rec[p] = getVal(pbuf, 1, p, pVdef)
+      rec[p] = getVal(pbuf, 1, p, pVdef,_deps[ip])
     })
     pack = {type:15,rec:rec,prodNo:prodNo, raw:pbuf}
   }
@@ -892,6 +904,7 @@ function udpConSing(ip,app){
    
     udpClients[ip] = null;
        udpClients[ip] = new UdpParamServer(ip ,udpCallback, vdefs[ip], app)
+       _deps[ip] = {}
 
           getVdef(ip, function(__ip,vdef){
       if(typeof nphandlers[__ip] == 'undefined'){
@@ -1411,6 +1424,9 @@ wss.on('connection', function(scket, req){
      });
     }
 
+    // body...
+  })
+  socket.on('downloadJSON',function () {
     // body...
   })
   socket.on('saveCustomJSON', function (str) {

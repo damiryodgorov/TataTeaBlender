@@ -2,6 +2,8 @@ const React = require('react');
 const ReactDOM = require('react-dom')
 var onClickOutside = require('react-onclickoutside');
 var createReactClass = require('create-react-class');
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import { v4 as uuidv4 } from 'uuid';
 
 const vdefMapV2 = require('./vdefmap.json')
 import {Modal} from './components.jsx'
@@ -76,7 +78,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		if(this.props.preload){
 			value = this.props.value
 		}
-		return{value:value, shift:false}
+		return{value:value, shift:false,curtrans:this.props.tooltip}
 	},
 
 	componentDidMount:function () {
@@ -145,7 +147,14 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 	help: function (argument) {
 		this.refs.helpModal.toggle();	
 	},
-
+	translateTooltip: function (argument) {
+		// body...
+		this.refs.transModal.toggle();
+	},
+	curtrnChange: function (e) {
+		this.setState({curtrans:e.target.value})
+		// body...
+	},
 	renderMobile:function(){
 				var self = this;
 		
@@ -215,6 +224,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		var hidden = false;
 		var caps = this.state.shift
 			var helpModal;
+			var transModal;
 		var helpButton;
 		var klass = 'selectmodal-outer'
 		var vclr = '#a0a0a0'
@@ -226,15 +236,26 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		}
 
 		if(typeof this.props.tooltip != 'undefined'){
+			var tooltip = this.props.tooltip
+			if(tooltip.length == 0){
+				tooltip = 'this is a tooltip'
+			}
 			var helpWidth = 400;
 			var helpMargin = 15;
 			if(this.props.mobile){
 				helpWidth = '90%'
 				helpModal = 0;
 			}
+			var uid = uuidv4();
 			helpButton = <div  style={{float:'right', display:'inline-block', marginLeft:-50, marginRight:helpMargin, marginTop:3}}><img src='assets/help.svg' onClick={this.help} width={30}/></div>
 	  		helpModal = <Modal mobile={self.props.mobile} ref='helpModal' Style={{color:'#e1e1e1',width:helpWidth, maxWidth:400}}>
-	  		<div>{this.props.tooltip}</div>
+	  		<div><ContextMenuTrigger id={uid}>{tooltip}</ContextMenuTrigger></div>
+	  		<ContextMenu id={uid}>
+	  			<MenuItem onClick={this.translateTooltip}>Translate Tooltip</MenuItem>
+	  		</ContextMenu>
+	  		</Modal>
+	  			transModal = <Modal mobile={self.props.mobile} ref='transModal' Style={{color:'#e1e1e1',width:helpWidth, maxWidth:400}}>
+	  		 <input type='text' style={{fontSize:20}} value={this.state.curtrans} onChange={this.curtrnChange}/>
 	  		</Modal>
 		}
 		var but1 = ''//helpButton;
@@ -314,6 +335,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 	  	
 		</div>
 		{helpModal}
+		{transModal}
 		<div hidden={hidden}><CircularButton branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
 		<CircularButton branding={this.props.branding} style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.close} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/></div>
 		</div>
@@ -389,7 +411,12 @@ class EmbeddedKeyboard extends React.Component{
 		this.liveUpdate = this.liveUpdate.bind(this);
 		this.onDelete = this.onDelete.bind(this);
 		this.clear = this.clear.bind(this);
+		this.close = this.close.bind(this);
+		this.onEnter = this.onEnter.bind(this);
 
+	}
+	close(){
+		this.props.onCancel()
 	}
 	componentDidMount(){
 		this.liveUpdate('');
@@ -419,6 +446,9 @@ class EmbeddedKeyboard extends React.Component{
 	}
 	onShift() {
 		this.setState({shift:!this.state.shift})
+	}
+	onEnter(){
+		this.props.onAccept();
 	}
 	onChange(e){
 		var self = this;
