@@ -7,7 +7,7 @@ const KAPI_RPC_UDPWEBPARMS = 520;
 const KAPI_RPC_REJ_DEL_CLOCK_READ = 70;
 const DRPC_NUMBER = 19;
 const WP_RPC = 13;
-const UDP_PORT = 10011
+const UDP_PORT = 17410
 
 class UdpParamServer{
   constructor(ip,callback, vdef, app){
@@ -68,7 +68,7 @@ class UdpParamServer{
     var self = this;
     var dsp = FtiRpc.udp(this.ip);
     this.dsp = dsp
-    //console.log(port)
+    console.log('udpport',port)
    //var arm = new Fti.ArmRpc.ArmRpc(this.ip);
     //arm.dsp_open_cb(function(){
       if(this.vdef){

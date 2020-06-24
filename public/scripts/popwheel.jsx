@@ -316,8 +316,8 @@ class PopoutWheelModalC extends React.Component{
 	  	</div>	<Modal ref='helpModal' Style={{color:'#e1e1e1',width:400}}>
 	  		{tttxt}
 	  		</Modal>
-	  		<Modal ref='transModal' Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
-	  		 <input type='text' style={{fontSize:20}} value={this.state.curtrans} onChange={this.curtrnChange}/>
+	  		<Modal ref='transModal' Style={{color:'#e1e1e1',width:600}}>
+	  		 <textarea type='text' style={{fontSize:20, width:400, height:100}} value={this.state.curtrans} onChange={this.curtrnChange}/>
 	  		 <button onClick={this.submitTooltip}>Submit Change</button>
 	  		</Modal>
 	  </div>)

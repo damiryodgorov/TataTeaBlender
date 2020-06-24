@@ -59,7 +59,7 @@ class CustomKeyboard extends React.Component{
 		var cont = "";
 
 		if(this.state.show){
-			cont = <CustomKeyboardCont preload={this.props.preload} branding={this.props.branding} ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label}/>
+			cont = <CustomKeyboardCont preload={this.props.preload} branding={this.props.branding} ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label} submitTooltip={this.props.submitTooltip}/>
 		}
 		return <div hidden={!this.state.show} className = 'pop-modal'>
 		{/*	<div className='modal-x' onClick={this.close}>
@@ -154,6 +154,11 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 	curtrnChange: function (e) {
 		this.setState({curtrans:e.target.value})
 		// body...
+	},
+	submitTooltip: function () {
+		if(typeof this.props.submitTooltip != 'undefined'){
+			this.props.submitTooltip(this.state.curtrans)
+		}
 	},
 	renderMobile:function(){
 				var self = this;
@@ -254,8 +259,9 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 	  			<MenuItem onClick={this.translateTooltip}>Translate Tooltip</MenuItem>
 	  		</ContextMenu>
 	  		</Modal>
-	  			transModal = <Modal mobile={self.props.mobile} ref='transModal' Style={{color:'#e1e1e1',width:helpWidth, maxWidth:400}}>
-	  		 <input type='text' style={{fontSize:20}} value={this.state.curtrans} onChange={this.curtrnChange}/>
+	  			transModal = <Modal mobile={self.props.mobile} ref='transModal' Style={{color:'#e1e1e1',width:600}}>
+	  		 <textarea type='text' style={{fontSize:20, width:400, height:100}} value={this.state.curtrans} onChange={this.curtrnChange}/>
+	  		 <button onClick={this.submitTooltip}>Submit Change</button>
 	  		</Modal>
 		}
 		var but1 = ''//helpButton;

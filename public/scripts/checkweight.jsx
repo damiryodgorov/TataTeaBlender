@@ -717,53 +717,6 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
           //    //console.log(335,_p)
             }
                  ///
-        }else if(_vmap[p]['@halo']){
-          var a = _vmap[p].children[0];
-                if(typeof pVdef[0][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[1][a] != 'undefined'){
-
-              var data = prodRec[a]
-              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
-                if(prodRec[a.slice(0,-4) + "Warn"]){
-                  data = data + prodRec[a.slice(0,-4) + "Warn"];
-                }
-                
-              }
-              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
-              if(p == 'BeltSpeed'){
-                //////console.log('653',par,_p)
-              }
-            }else if(typeof pVdef[2][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[3][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
-            }else if(par.val == 'DCRate_A'){
-              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
-            }
-            if(_p != null){
-              var ch = _vmap[p].children[1];
-
-              var _ch;
-              if(typeof pVdef[0][ch] != 'undefined'){
-              _ch = sysRec[ch]
-              }else if(typeof pVdef[1][ch] != 'undefined'){
-              _ch = prodRec[ch]
-              }else if(typeof pVdef[2][ch] != 'undefined'){
-              
-                _ch = dynRec[ch]
-              }else if(typeof pVdef[3][ch] != 'undefined'){
-              
-                _ch = fram[ch]
-              }else if(ch == 'DCRate_B'){
-                _ch = prodRec[ch]
-              }
-              _p['@children'].push(_ch)
-              _p['@halo'] = true; 
-              params.push(_p)
-              ////console.log(335,_p)
-            }
-                 ///
         }else if(_vmap[p]['@input']){
           var a = _vmap[p].children[0];
                 if(typeof pVdef[0][a] != 'undefined'){
@@ -865,9 +818,14 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc, child:par.child})
     		}else{
 
+          if(par.packGraph){
+            //console.log('packGraph')
+            params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc, packGraph:par.packGraph})
+          }else{
+                params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc})
 
-    			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc})
-    		}
+          }
+    	   }
     	}else if(par.type == 2){
     			if(typeof par.child != 'undefined'){
     			params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram), acc:par.acc, child:par.child})
@@ -914,13 +872,18 @@ console.log('on vdef')
     res[4] = {};
     res[5] = {}
     res[9] = {};
-   	var nVdf = [[],[],[],[],[],[]];
+    res[10] = {};
+    res[11] = {};
+   	var nVdf = [[],[],[],[],[],[],[],[]];
 
    
 
     json["@params"].forEach(function(p ){
-
-      res[p["@rec"]][p["@name"]] = p;
+      var rec = p['@rec']
+      if(p['@rec'] > 5){
+        rec = rec + 4
+      }
+      res[rec][p["@name"]] = p;
       res[9][p["@name"]] = p;
       nVdf[p["@rec"]].push(p['@name'])
 
@@ -1234,7 +1197,7 @@ class DateTimeSelect extends React.Component{
 class LandingPage extends React.Component{
 	constructor(props){
 		super(props)
-		this.state = {histo:false,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,
+		this.state = {histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
 			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
@@ -1285,6 +1248,7 @@ class LandingPage extends React.Component{
     this.lg = React.createRef();
     this.btc = React.createRef();
     this.se = React.createRef();
+    this.ste = React.createRef();
     this.hh = React.createRef();
     this.tb = React.createRef();
     this.pmodal = React.createRef();
@@ -1299,11 +1263,13 @@ class LandingPage extends React.Component{
     this.listChange = this.listChange.bind(this);
     this.submitTooltip = this.submitTooltip.bind(this);
     this.toggleGraph = this.toggleGraph.bind(this);
-
+    this.getBuffer = this.getBuffer.bind(this);
 
 
 	}
-
+  getBuffer(){
+    this.sendPacket('refresh_buffer',6)
+  }
 	toggleLogin(){
 		if(this.state.user == -1){
 			this.lgctl.current.login();
@@ -1587,7 +1553,9 @@ class LandingPage extends React.Component{
           e.rec.ConnectedClients = this.state.connectedClients
 					this.setState({noupdate:false,fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
 				}else if(e.type == 5){
-					console.log('checkweighing pack')
+          console.log('checkweighing pack')
+          if((e.rec['TotalCnt'] != this.state.crec['TotalCnt']) ||(e.rec['CheckWeightCnt'] != this.state.crec['CheckWeightCnt'])){
+					console.log('firstpack')
 					var del = 25
 					var dur = 50
 					if(typeof this.state.prec["SampDelEnd"] != 'undefined'){
@@ -1623,7 +1591,7 @@ class LandingPage extends React.Component{
           e.rec['SampleStartMS'] = parseInt(sms.toString())
           this.setState({crec:e.rec, noupdate:true})
 					this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
-							this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd']);
+							this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
 					this.hh.current.parseCrec(e.rec)
           if(this.btc.current){
             this.btc.current.parseCrec(e.rec)
@@ -1635,8 +1603,20 @@ class LandingPage extends React.Component{
           if(e.rec['WeightPassed'] == 9){
             this.setState({cwgt:e.rec['PackWeight'], noupdate:false})
           }
-		
-				}else if(e.type == 15){
+		      }else{
+            console.log('repeated pack')
+          }
+				}else if(e.type == 6){
+          var cnt = 0;
+          if(typeof this.state.crec['TotalCnt'] != 'undefined'){
+            cnt = this.state.crec['TotalCnt']
+          }
+          console.log('Histogram Buffer',e)
+          //if(cnt != 0){
+            this.lg.current.pushWeight(e.rec['HistogramPacks'].slice(0,cnt))
+          //}
+          
+        }else if(e.type == 15){
 					var prodList = this.state.prodList;
 					var prodListRaw = this.state.prodListRaw
 					prodList[e.prodNo] = Object.assign({},e.rec);
@@ -1772,6 +1752,11 @@ class LandingPage extends React.Component{
 			}else if( n == 'refresh'){
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      
+      }else if( n == 'refresh_buffer'){
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
+      var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],6,0])
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       
       }else if( n == 'BatchStart'){
@@ -2611,10 +2596,14 @@ class LandingPage extends React.Component{
     	var trendBar = [15,16.5,17.5,19,15.5,18.5]//upperbound={19} t1={15.5} t2={18.5} low={16.5} high={17.5} ]
     	var winStart = 0;
     	var winEnd = 300
-    	 var nomW = 500
+    	 //var nomW = 500
+       var bucketSize = 4
+       var buckets = 100
     	if(typeof this.state.prec['ProdName'] != 'undefined'){
     		trendBar = [this.state.prec['NominalWgt']-(2*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (2*this.state.prec['OverWeightLim']), 165, 200]
-        nomW = this.state.prec['NominalWgt'] 			
+        bucketSize = this.state.prec['HistogramBucketSize'];
+        buckets = this.state.prec['HistogramBuckets']
+        //nomW = this.state.prec['NominalWgt'] 			
       //winStart = this.state.prec['WindowStart'];
  			//winEnd = this.state.prec['WindowEnd'];   	
     	}
@@ -2648,6 +2637,7 @@ class LandingPage extends React.Component{
                   <MenuItem onClick={this.importVmap}>Import Translations</MenuItem>
                   <MenuItem onClick={this.resetVmap}>Reset Translations</MenuItem>
                   <MenuItem onClick={this.toggleGraph}>Toggle Graph</MenuItem>
+                   <MenuItem onClick={this.getBuffer}>Get Buffer</MenuItem>
                 </ContextMenu>
                  <Modal x={true} ref={this.inputMod} innerStyle={{background:backgroundColor, maxHeight:650}}>
                   <input type='file' onChange={this.fileupload}/>
@@ -2669,9 +2659,12 @@ class LandingPage extends React.Component{
           <table><tbody><tr style={{verticalAlign:'top'}}><td>
          	<StatSummary language={language} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange}/>
           </td><td><div><SparcElem ref={this.se} branding={this.state.branding} value={lw.toFixed(1) + ' g'} name={'Gross Weight'} width={596} font={72}/></div>
+          <div><StatusElem prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph histo={this.state.histo} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={nomW}>
+          <LineGraph histo={this.state.histo} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
+                    winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
+                    branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets}>
           <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb}/></LineGraph></div>
           </td><td>
           	<HorizontalHisto language={language} branding={this.state.branding} ref={this.hh}/>
@@ -2682,7 +2675,7 @@ class LandingPage extends React.Component{
           <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
       	<Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose}>
-      		<ProductSettings submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
+      		<ProductSettings submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
       	</Modal>
       	 <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
       		{cont}
@@ -2763,6 +2756,103 @@ class SparcElem extends React.Component{
 			<div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div></div><div style={{textAlign:'center', marginTop:-10,lineHeight:this.props.font*1.3+'px',height:this.props.font*1.3, fontSize:this.props.font}}>{this.state.value}</div>
 		</div>)
 	}
+}
+class StatusElem extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {value:this.props.value}
+    this.fModal = React.createRef();
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({value:newProps.value})
+  }
+  maskFault(){
+
+  }
+  clearFaults(){
+
+  }
+  toggleFault(f){
+    if(f){
+      this.fModal.current.toggle();
+    }
+  }
+  render(){
+    var outerbg ='#e1e1e1'
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
+    var bg2 = 'rgba(150,150,150,0.5)'
+   var modBg = FORTRESSPURPLE1
+    if(this.props.branding == 'SPARC'){
+      outerbg = '#e1e1e1'
+      innerbg = SPARCBLUE2
+      modBg = SPARCBLUE2
+      fontColor = 'black'
+    //  graphColor = SPARCBLUE2;
+      bg2 = 'rgba(150,150,150,0.5)'
+    }
+    if(this.props.branding == 'SPARC'){
+      innerbg = SPARCBLUE2
+      fontColor = 'black'
+    }
+    var innerWidth = Math.min((this.props.width*0.55),160);
+    var innerFont = Math.min(Math.floor(this.props.font/2), 16);
+      var bg = 'transparent';
+  var str = 'Good Weight'
+  var fault = false
+  if(this.state.reject){
+    //bg = 'rgba(255,255,0,0.2)'
+    //bg2 = 'rgba(255,255,0,0.3)'
+    outerbg = 'yellow'
+  }
+
+
+  //if(this.)
+  if(vMapLists){
+    str = vMapLists['WeightPassed']['english'][this.props.weightPassed]
+  }
+  if(this.props.faults.length != 0){
+    //bg = 'rgba(255,0,0,0.2)'
+    //bg2 = 'rgba(255,0,0,0.3)'
+    if(this.props.faults.length == 1){
+      if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+      }else{
+        str = this.props.faults[0] + ' active'  
+      }
+      
+    }else{
+      str = this.props.faults.length + ' faults active'
+    }
+    fault = true
+    outerbg = 'red'
+  }
+  if(this.props.warnings.length != 0){
+    //bg = 'rgba(255,0,0,0.2)'
+    //bg2 = 'rgba(255,0,0,0.3)'
+    if(this.props.warnings.length == 1){
+      if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+      }else{
+        str = this.props.warnings[0] + ' active'  
+      }
+      
+    }else{
+      str = this.props.warnings.length + ' warnings active'
+    }
+    fault = true
+    outerbg = 'orange'
+  }
+    return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:5, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
+
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div></div>
+       <div style={{textAlign:'center', marginTop:-3,lineHeight:40+'px',height:40, fontSize:25}}><div style={{display:'inline-block', width:298}}>{this.props.prodName}</div><div style={{display:'inline-block', width:298}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
+          <Modal ref={this.fModal} innerStyle={{background:modBg}}>
+          <FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults}/>
+        </Modal>
+
+    </div>)
+  }
 }
 
 class RotatedArea extends React.Component{
@@ -3009,15 +3099,16 @@ class LineGraph extends React.Component{
 		this.clearFaults = this.clearFaults.bind(this);
 		this.maskFault = this.maskFault.bind(this);
 		this.statusClick = this.statusClick.bind(this);
+    this.pushWeight = this.pushWeight.bind(this);
     this.fModal = React.createRef();
     this.histo = React.createRef();
     var dtst = []
     for(var i = 0; i < 300; i++){
       dtst.push(0)
     }
-		this.state = {weightPassed:0,pmax:2000, pstrt:0,pend:299, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[dtst,dtst.slice(0), dtst.slice(0)],reject:false,over:false,under:false}
+		this.state = {pTime:0,weightPassed:0,pmax:2000, pstrt:0,pend:299, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[dtst,dtst.slice(0), dtst.slice(0)],reject:false,over:false,under:false}
 	}
-	parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend){
+	parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend,pTime){
 		var dataSets = this.state.dataSets;
 		if(dataSets.length > 5){
 			dataSets = dataSets.slice(-5)
@@ -3036,12 +3127,15 @@ class LineGraph extends React.Component{
 			reject = true;
 	
 		}
-    if(this.props.histo){
+    if(this.props.histo && this.state.pTime != pTime){
       this.histo.current.pushWeight(pweight)
     }
     //this.histo.current
-		this.setState({dataSets:dataSets,pmax:(pmax/calFactor)+tareWeight, pmin:(pmin/calFactor)+tareWeight, pstrt:pstrt, pend:pend, decisionRange:[strt, stend], reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(pweight>this.props.max), under:(pweight<this.props.min), calFactor:calFactor, tareWeight:tareWeight, weightPassed:weightPassed})
+		this.setState({dataSets:dataSets,pmax:(pmax/calFactor)+tareWeight, pmin:(pmin/calFactor)+tareWeight, pstrt:pstrt, pend:pend, decisionRange:[strt, stend], reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(pweight>this.props.max), under:(pweight<this.props.min), calFactor:calFactor, tareWeight:tareWeight, weightPassed:weightPassed,pTime:pTime})
 	}
+  pushWeight(e){
+    this.histo.current.pushWeight(e)
+  }
 	clearFaults(){
 		this.props.clearFaults();
         this.fModal.current.toggle();
@@ -3125,7 +3219,7 @@ class LineGraph extends React.Component{
 		//bg2 = 'rgba(255,0,0,0.3)'
 		if(this.props.faults.length == 1){
 			if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
-        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' active'
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
       }else{
         str = this.props.faults[0] + ' active'  
       }
@@ -3214,14 +3308,14 @@ class LineGraph extends React.Component{
     <LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/></XYPlot>)
 
   if(this.props.histo){
-    xyplot = <WeightHistogram ref={this.histo} nom={this.props.nominalWeight} stdev={this.props.stdev}/>
+    xyplot = <WeightHistogram buckets={this.props.buckets} bucketSize={this.props.bucketSize} ref={this.histo} nom={(this.props.max + this.props.min)/2} stdev={this.props.stdev}/>
   }
 	return	<div style={{background:bg, textAlign:'center'}}>
 		<div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
-		<div style={{background:'black',width:560,marginLeft:'auto',marginRight:'auto'}}><div style={{background:bg2,color:'#e1e1e1',marginBottom:-47,marginLeft:'auto',marginRight:'auto',padding:4,width:552, height:75,lineHeight:'35px'}}><div style={{display:'inline-block', width:270}}><div style={{fontSize:16}}>Running Product</div><div style={{fontSize:24}}>{this.props.prodName}</div></div>
+		<div hidden style={{background:'black',width:560,marginLeft:'auto',marginRight:'auto'}}><div style={{background:bg2,color:'#e1e1e1',marginBottom:-47,marginLeft:'auto',marginRight:'auto',padding:4,width:552, height:75,lineHeight:'35px'}}><div style={{display:'inline-block', width:270}}><div style={{fontSize:16}}>Running Product</div><div style={{fontSize:24}}>{this.props.prodName}</div></div>
 		<div style={{display:'inline-block', width:270}} onClick={this.statusClick} ><div style={{fontSize:16}}>Status</div><div style={{fontSize:20}}>{str}</div></div></div>
 		</div>
-		<div style={{overflow:'hidden', marginTop:48}}>
+		<div style={{overflow:'hidden', marginTop:14}}>
 		<div style={{marginTop:-48}}>
  {xyplot}
 		</div>
@@ -3409,9 +3503,19 @@ class ProductSettings extends React.Component{
     this.arrowBot = React.createRef();
     this.arrowTop = React.createRef();
     this.sd = React.createRef();
+    this.pg = React.createRef();
+    this.pgm = React.createRef();
     this.submitChange = this.submitChange.bind(this);
     this.closeKeyboard = this.closeKeyboard.bind(this);
-	}
+    this.toggleGraph = this.toggleGraph.bind(this);
+	  this.getBuffer = this.getBuffer.bind(this);
+  }
+  toggleGraph(){
+    this.pgm.current.toggle();
+  }
+  getBuffer(){
+
+  }
   submitTooltip(n,l,v){
     this.props.submitTooltip(n,l,v)
   }
@@ -3941,7 +4045,7 @@ class ProductSettings extends React.Component{
 			</div>)
 			if(this.state.showAdvanceSettings){
 				content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
-				<div style={{height:482}}>	<SettingsPage  submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+				<div style={{height:482}}>	<SettingsPage toggleGraph={this.toggleGraph} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
       		onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={4}/>
     		</div>
       		<div>
@@ -4002,6 +4106,12 @@ class ProductSettings extends React.Component{
 
 			<CopyModal ref={this.cfModal}  branding={this.props.branding}/>
       <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
+      <Modal ref={this.pgm} branding={this.props.branding}>
+        <div style={{background:'#e1e1e1'}}>
+        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{textAlign:'center'}}>Pack Graph</div></h2></span>
+       <PackGraph crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
+        </div>
+      </Modal>
 		</div>
 	}
 }
@@ -4019,7 +4129,80 @@ class LiveGraph extends React.Component{
     </div>
   }
 }
+class PackGraph extends React.Component{
+  constructor(props){
+    super(props)
+  }
+  render(){
+    /*
+      e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+              this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd']
+    */
 
+    var winL = this.props.crec['WindowEnd'] - this.props.crec['WindowStart']
+    var data = this.props.crec['PackSamples'].slice(0)
+    var settleWin = [this.props.crec['SettleWinStart'],this.props.crec['SettleWinEnd']]
+    var packRange = [this.props.crec['PackMin'],this.props.crec['PackMax']]
+    var calFactor = this.props.srec['CalFactor']
+    var tare = this.props.srec['TareWeight']
+    var weighWin = [this.props.crec['WeighWinStart'],this.props.crec['WeighWinEnd']]
+
+      var decMax = 0;
+    var decMin = 0;
+    var self = this;
+    //(dsl != 0){
+      //var decSet =  this.state.dataSets[dsl-1].slice(this.state.pstrt, this.state.pend)
+      decMin = Math.min(...data.slice(this.props.crec['WeighWinStart'], this.props.crec['WeighWinEnd']));
+      decMax = Math.max(...data.slice(this.props.crec['WeighWinStart'], this.props.crec['WeighWinEnd']));
+      var ydm = [decMin - (decMax - decMin)*0.2,decMax  + (decMax - decMin)*0.2]
+      //console.log('min, max',decMin,decMax)
+
+      if(((this.props.prec['WindowMax'] - this.props.prec['WindowMin']) > 0) && (this.props.prec['WindowMode'] == 1)){
+         ydm = [tare + (this.props.prec['WindowMin'])/calFactor, this.props.prec['WindowMax']/calFactor + tare]
+
+    }
+
+       var grng = ydm.map(function (y) {
+    return (y - tare)*calFactor;
+    // body...
+  })
+  var range = grng[1] - grng[0]
+  var divs = 0.1
+  while(range/divs > 5){
+
+    if((((divs < 1) && ((divs*10)%2 == 0))||(divs%2 == 0)) &&(range/divs > 20)){
+      divs *= 5
+    }else{
+      divs *= 2
+    }
+  }
+  var tcks = []
+  if(grng[0]%divs == 0){
+    grng[0] += 1
+  }
+  var strttick = Math.ceil(grng[0]/divs)*divs;
+  while(strttick < grng[1]){
+    tcks.push(strttick);
+    strttick += divs;
+  }
+
+  var tickData = tcks.map(function(t) {
+    // body...
+    return {x:0, y:t/calFactor + tare, label:t.toFixed(1) + 'g', xOffset:10}
+  })
+    //}
+    return  (<div style={{background:'#e1e1e1'}}><XYPlot height={400} width={800} yDomain={ydm} xDomain={[0,winL]} stackBy='y' margin={{left:0,right:0,bottom:0,top:10}}>
+    <YAxis/>
+    <XAxis hideTicks />
+    <AreaSeries data={data.slice(this.props.crec['WindowStart'], this.props.crec['WindowEnd']).map(function (y,x) {
+      // body...
+      return {y:y, x:x}
+    })}/>
+    <VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:(packRange[0]/calFactor) + tare,y:(packRange[1]/calFactor) + tare,x0:settleWin[0] - this.props.crec['WindowStart'],x:settleWin[1] - this.props.crec['WindowStart']}]}/>
+    <VerticalRectSeries curve='curveMonotoneX' strokeStyle='dashed' stack={true} opacity={0.8} stroke="#ffa500" fill='transparent' strokeWidth={3} data={[{y0:decMin,y:decMax,x0:weighWin[0] - this.props.crec['WindowStart'],x:weighWin[1] - this.props.crec['WindowStart']}]}/>
+    <LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/></XYPlot></div>)
+  }
+}
 class CanvElem extends React.Component{
   constructor(props){ 
     super(props)
@@ -4151,21 +4334,45 @@ class WeightHistogram extends React.Component{
     super(props)
     var divs = []
     var bins = []
-    var range0 = this.props.nom - (4*this.props.stdev)
-    var range1 = this.props.nom + (4*this.props.stdev)
-    var div = (range1-range0)/15
-    for(var i = 0; i<15; i++){
+    var range0 = this.props.nom - (this.props.bucketSize*this.props.buckets/2)
+    var range1 = this.props.nom + (this.props.bucketSize*this.props.buckets/2)
+    var div = (range1-range0)/this.props.buckets
+    for(var i = 0; i<this.props.buckets; i++){
       divs.push([range0+(div*i), range0+ (div* (i+1))])
       bins.push(0)
-    //  bins.push(64-Math.pow((8-i),2))
+      //bins.push(64-Math.pow((8-i),2))
     }
     this.pushWeight = this.pushWeight.bind(this);
     this.state ={bins:bins,divs:divs,range:[range0,range1]}
   }
+  componentWillReceiveProps(props){
+    if(props.nom != this.props.nom){
+          var divs = []
+    var bins = []
+    var range0 = props.nom - (props.bucketSize*props.buckets/2)
+    var range1 = props.nom + (props.bucketSize*props.buckets/2)
+    var div = (range1-range0)/props.buckets
+    for(var i = 0; i<props.buckets; i++){
+      divs.push([range0+(div*i), range0+ (div* (i+1))])
+      bins.push(0)
+      //bins.push(64-Math.pow((8-i),2))
+    }
+  
+    this.setState({bins:bins,divs:divs,range:[range0,range1]})
+    }
+  }
   pushWeight(w){
+     console.log('array', w)
     var bins = this.state.bins.slice(0)
     var divs = this.state.divs.slice(0)
     if(Array.isArray(w)){
+
+      bins = [];
+    for(var j= 0; j<this.props.buckets; j++){
+     // divs.push([range0+(div*i), range0+ (div* (i+1))])
+      bins.push(0)
+      //bins.push(64-Math.pow((8-i),2))
+    }
       w.forEach(function (wgt) {
       var i = 0;
       while(wgt > divs[i][1]){
@@ -4186,12 +4393,34 @@ class WeightHistogram extends React.Component{
   render(){
     var self = this;
     var divs = this.state.divs
+    var max = 0
     var data = this.state.bins.map(function(d,i){
+      max = Math.max(d,max);
       return {y0:0, y:d, x0:divs[i][0], x:divs[i][1]}
     })
-    return <XYPlot xDomain={this.state.range} height={317} width={590} margin={{left:0,right:0,bottom:0,top:50}}>
-    <YAxis/><XAxis/>
-        <VerticalRectSeries data={data}/>
+    var ticks = 1
+    while((max/ticks)>10){
+      ticks*=2
+    }
+    var labDat = [];
+    var tick = 0;
+    while(tick < max){
+      labDat.push({x:0,y:tick})
+      tick += ticks
+    }
+    var labelData = labDat.map(function(d){
+      var lax = 'start'
+      if(d.x > (labDat[0].x*0.75)){
+        lax = 'end'
+        return {x:d.x,y:d.y,label:d.x, xOffset:-10, yOffset:0, size:0, style:{fill:'#e1e1e1',textAnchor:lax}}
+      }
+      return  {x:d.x,y:d.y,label:d.x, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
+    })
+    return <XYPlot xDomain={this.state.range} height={317} width={540} margin={{left:50,right:0,bottom:50,top:50}}>
+    <YAxis hideTicks/>
+    <XAxis/>
+    <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
+        <VerticalRectSeries data={data} color={'darkturquoise'}/>
       </XYPlot>
   }
 }
@@ -4222,11 +4451,7 @@ class ProdSettingEdit extends React.Component{
 	}
 	onInput(v){
 		var val = v;
-		/*if(this.props.param['@type'] == 'int32'){
-			var buf = Buffer.alloc(4)
-			buf.writeUInt32LE(parseInt(v),0)
-			val = buf;
-		}*/
+		
     if(typeof this.props.param['@decimal'] != 'undefined'){
       if(this.props.param['@decimal'] > 0){
           val = val * Math.pow(10,this.props.param['@decimal'])
@@ -4616,9 +4841,9 @@ class SettingsPageWSB extends React.Component{
        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
           
          
-          <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.liveWeight.toFixed(1)+'g'} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
-          <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}/></div>
-          <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.liveWeight.toFixed(1)+'g'} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true}/></div>
           <div style={{marginTop:100, fontSize:24, textAlign:'center'}}>{calStr}</div>
           <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCal} lab={'Calibrate'}/>
           </div>
@@ -5181,7 +5406,8 @@ class SettingsPage extends React.Component{
 		}
 		var nav =''
 		var backBut = ''
-
+    var packGraph = false;
+    var grphBut = ''
 		var catList = [	]
     var lenOffset = 0;
 		var accLevel = 0;
@@ -5202,6 +5428,10 @@ class SettingsPage extends React.Component{
 		}else{
 
 			var cat = data[lvl - 1 ][0].cat;
+      if(data[lvl-1][0].packGraph){
+      console.log(5143,data[lvl-1])
+      grphBut = <img src='assets/graph.svg' style={{position:'absolute', width:30, left:800}} onClick={this.props.toggleGraph}/>
+    }
 			var pathString = ''
 			lab = cat//catMap[cat]['@translations']['english']
 			if(lvl == 1){
@@ -5401,14 +5631,14 @@ class SettingsPage extends React.Component{
 
 		var className = "menuCategory expanded";
 		var tstl = {display:'inline-block', textAlign:'center'}
-		var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
+		var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
 		if (this.state.font == 1){
-		    titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
+		    titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
 		}else if (this.state.font == 0){
-		   	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}</div></h2></span>)
+		   	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
 		}
 		catList = null;
-    console.log(4713,SA)
+    //console.log(4713,SA)
 
 		return(
 			<div className='settingsDiv'>
@@ -5423,7 +5653,9 @@ class SettingsPage extends React.Component{
           Translate Setting
         </MenuItem>
       </ContextMenu>
+
       {trnsmdl}{nav}
+
 			</div>
 			<ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
 			</div>
@@ -5960,7 +6192,7 @@ class SettingItem3 extends React.Component{
 					}
 		
 
-					var medctrl= (<MultiEditControl branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} nameovr={namestring} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
+					var medctrl= (<MultiEditControl branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
 	    		            mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
 	         				onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
 	          				lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 

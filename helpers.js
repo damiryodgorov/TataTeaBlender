@@ -48,6 +48,30 @@ class Params{
     }
     return arr;
   }
+  static uint32_array(val){
+    var buf = Buffer.alloc(1000);
+    console.log(val.length)
+    for(var j = 0; j<val.length; j++){
+      buf.writeUInt16LE(val[j],j*2)
+    }
+    var arr = []
+    for(var i = 0; i<250;i++){
+      arr.push(buf.readUInt32LE(i*4));
+    }
+    return arr;
+  }
+  static uint16_array(val){
+    var buf = Buffer.alloc(1000);
+    console.log(val.length)
+    for(var j = 0; j<val.length; j++){
+      buf.writeUInt16LE(val[j],j*2)
+    }
+    var arr = []
+    for(var i = 0; i<250;i++){
+      arr.push(buf.readUInt16LE(i*4));
+    }
+    return arr
+  }
   static float_array(val){
     var buf = Buffer.alloc(1200);
     console.log(val.length)

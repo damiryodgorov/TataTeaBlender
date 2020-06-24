@@ -90,7 +90,6 @@ class FtiSockIOServer{
   constructor(sock){
     this.sock = sock
     this.open = false;
-    ////console.log(sock)
     this.handlers = {}
     var self = this;
     sock.on('message',function (message) {
@@ -287,14 +286,17 @@ function getVdef(ip, callback,failed){
        // console.log(vdef)
         
                   vdefs[ip] = vdef; 
-          var nvdf = [[],[],[],[],[],[],[],[]];
-          var pVdef = [{},{},{},{},{},{},{},{}];
+          var nvdf = [[],[],[],[],[],[],[],[],[],[]];
+          var pVdef = [{},{},{},{},{},{},{},{},{},{}];
           vdef['@params'].forEach(function (p) {
             // body...
             if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
               //console.log(7, p['@name'])
               nvdf[7].push(p['@name'])
               pVdef[7][p['@name']] = p
+            }else if(p["@rec"] > 5){
+                nvdf[p["@rec"]+2].push(p['@name'])
+              pVdef[p['@rec']+2][p['@name']] = p
             }else{
 
 
@@ -306,6 +308,7 @@ function getVdef(ip, callback,failed){
           for(var p in vdef['@deps']){
           ////console.log(p)
          // //console.log(vdef['@deps'][p]['@rec'])
+
             nvdf[vdef['@deps'][p]['@rec']].push(p)
             pVdef[vdef['@deps'][p]['@rec']][p] = vdef['@deps'][p]
 
@@ -390,14 +393,17 @@ function getVdefCW(ip, callback,failed){
       zlib.unzip(buffer, function(er,b){
         var vdef = JSON.parse(b.toString())
         vdefs[ip] = vdef; 
-        var nvdf = [[],[],[],[],[],[],[]];
-        var pVdef = [{},{},{},{},{},{},{},{}];
+        var nvdf = [[],[],[],[],[],[],[],[],[]];
+        var pVdef = [{},{},{},{},{},{},{},{},{},{}];
         vdef['@params'].forEach(function (p) {
           // body...
           if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
             nvdf[7].push(p['@name'])
             pVdef[7][p['@name']] = p
-          }else{
+          }else if(p["@rec"] > 5){
+                nvdf[p["@rec"]+2].push(p['@name'])
+              pVdef[p['@rec']+2][p['@name']] = p
+            }else{
 
 
             nvdf[p["@rec"]].push(p['@name'])
@@ -769,6 +775,20 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
     })
 
     pack = {type:5, rec:rec}
+  }else if(rec_type == 6){
+     nVdf[8].forEach(function (p) {
+      rec[p] = getVal(buf, 8, p, pVdef,_deps[ip])
+      // body...
+    })
+
+    pack = {type:6, rec:rec}
+  }else if(rec_type == 7){
+     nVdf[9].forEach(function (p) {
+      rec[p] = getVal(buf, 9, p, pVdef,_deps[ip])
+      // body...
+    })
+
+    pack = {type:7, rec:rec}
   }else if(rec_type == 15){
     console.log(rec_type,'Prod Rec')
     var prodNo = buf.readUInt16LE(0);
