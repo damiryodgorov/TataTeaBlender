@@ -1616,6 +1616,8 @@ class LandingPage extends React.Component{
             this.lg.current.pushWeight(e.rec['HistogramPacks'].slice(0,cnt))
           //}
           
+        }else if(e.type == 7){
+          console.log('Histogram Batch?', e)
         }else if(e.type == 15){
 					var prodList = this.state.prodList;
 					var prodListRaw = this.state.prodListRaw
@@ -2520,7 +2522,7 @@ class LandingPage extends React.Component{
   }
 	render(){
 		//LandingPage.render
-
+    var lovemiso_true = true
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
 			var st = {textAlign:'center',lineHeight:'60px', height:60, width:536}
@@ -2636,7 +2638,6 @@ class LandingPage extends React.Component{
                   <MenuItem onClick={this.exportVmap}>Export Translations</MenuItem>
                   <MenuItem onClick={this.importVmap}>Import Translations</MenuItem>
                   <MenuItem onClick={this.resetVmap}>Reset Translations</MenuItem>
-                  <MenuItem onClick={this.toggleGraph}>Toggle Graph</MenuItem>
                    <MenuItem onClick={this.getBuffer}>Get Buffer</MenuItem>
                 </ContextMenu>
                  <Modal x={true} ref={this.inputMod} innerStyle={{background:backgroundColor, maxHeight:650}}>
@@ -2659,10 +2660,10 @@ class LandingPage extends React.Component{
           <table><tbody><tr style={{verticalAlign:'top'}}><td>
          	<StatSummary language={language} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange}/>
           </td><td><div><SparcElem ref={this.se} branding={this.state.branding} value={lw.toFixed(1) + ' g'} name={'Gross Weight'} width={596} font={72}/></div>
-          <div><StatusElem prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
+          <div><StatusElem clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph histo={this.state.histo} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
+          <LineGraph histo={lovemiso_true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
                     winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets}>
           <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb}/></LineGraph></div>
@@ -2800,16 +2801,22 @@ class StatusElem extends React.Component{
       var bg = 'transparent';
   var str = 'Good Weight'
   var fault = false
-  if(this.state.reject){
-    //bg = 'rgba(255,255,0,0.2)'
-    //bg2 = 'rgba(255,255,0,0.3)'
-    outerbg = 'yellow'
-  }
+
 
 
   //if(this.)
   if(vMapLists){
     str = vMapLists['WeightPassed']['english'][this.props.weightPassed]
+    if(this.props.weightPassed == 0){
+      outerbg = '#39ff14' //neon green
+    }else if(this.props.weightPassed == 9){
+      outerbg = 'royalblue'
+    }
+  }
+  if(this.state.reject){
+    //bg = 'rgba(255,255,0,0.2)'
+    //bg2 = 'rgba(255,255,0,0.3)'
+    outerbg = 'yellow'
   }
   if(this.props.faults.length != 0){
     //bg = 'rgba(255,0,0,0.2)'
@@ -2979,7 +2986,14 @@ class HorizontalHisto extends React.Component{
 		</div>
 	}
 }
-
+class WalkThroughBatch extends React.Component{
+  constructor(props){
+    super(props)
+  }
+  render(){
+    return <div></div>
+  }
+}
 class BatchBarGraph extends React.Component{
   constructor(props){
     super(props)
@@ -4321,9 +4335,13 @@ class BatchControl extends React.Component{
        </div>
     </div>
       }   
+      var batchList = <div style={{width:250}}>
+        <div>Current Batch</div>
+        <div>Planned Batches</div>
+      </div>
 
     return <div style={{background:'#e1e1e1', minHeight:400, padding:5}}>
-          <div>{this.props.children}</div>
+          <div><div style={{display:'inline-block'}}>{batchList}</div><div style={{display:'inline-block'}}>{this.props.children}</div></div>
          <div>{play}{stop}</div>
       
     </div>
@@ -6535,7 +6553,10 @@ class MultiEditControl extends React.Component{
 	    var vLabels = this.state.val.map(function(d,i){  
 			var val = d;
       if(self.props.param[i]['@type'] == 'float'){
-        val = val.toFixed(5)
+        if(val.toString().length > val.toFixed(5).length){
+          val = val.toFixed(5)
+        }
+        
       }
 			var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
 			st.width = labWidth
