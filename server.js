@@ -1239,7 +1239,7 @@ function autoIP(cw){
       var ips = []
       //console.log(dets)
       dets.forEach(function(d, i){
-        if(d.ip == d.nif_ip){
+        //if(d.ip == d.nif_ip){
           if(cw){
             if(d.app_name == 'FTI_CW'){
               ips.push(d.ip)
@@ -1252,7 +1252,7 @@ function autoIP(cw){
         if((d.dir_conn != 0) &&(d.board_type ==1)){
           x = i
         }
-        }
+       // }
        
       })
       if(x != -1){
@@ -1336,9 +1336,9 @@ function setNifIp(addr, callback){
     setTimeout(function(){
         networking.applySettings(iface, {active:true, ipv4:{address:addr, netmask:nf.netmask}})
         fs.readFile('/etc/network/interfaces', (err,res)=>{
-          if(err){
+          if(!err){
             //console.log(err)
-          }
+          
           var arr = res.toString().split('\n')
           var ind = arr.indexOf('iface '+IFACE+' inet static')
           if(ind != -1){
@@ -1347,7 +1347,10 @@ function setNifIp(addr, callback){
               //console.log(err)
             })
           }
+        }else{
+          console.log(err)
           //console.log(res.toString().split('\n'));
+        }
         })
          callback();
         setTimeout(function(){

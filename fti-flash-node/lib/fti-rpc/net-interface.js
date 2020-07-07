@@ -35,18 +35,27 @@ class NetInterface{
 
 		for (var i = names.length - 1; i >= 0; i--) {
 			//console.log(list[names[i]])
+			var skip = false
 			var j;
+
 			if(list[names[i]][0]['family']=='IPv4'){
 				j = 0;
-			}else{
+			}else if((list[names[i]].length >1)&&(list[names[i]][1]['family'] == 'IPv4')){
 				j = 1;
+			}else{
+				console.log(list[names[i]], 'skip')
+				skip = true
 			}
 			console.log(j)
+			if(!skip){
+
+
 			var block = new Netmask(list[names[i]][j]['address'],list[names[i]][j]['netmask']);
 
 			ifList.push( new NetInterface(names[i], list[names[i]][j]['address'], block.broadcast, list[names[i]][j]['mac'].split(':').map(function(e){
 				return parseInt(e,16);
 			}), block.mask));
+		}
 		};
 		return ifList;
 

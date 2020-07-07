@@ -169,7 +169,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			var helpModal;
 		var helpButton;
 		if(typeof this.props.tooltip != 'undefined'){
-			var helpWidth = 400;
+			var helpWidth = 600;
 			var helpMargin = 15;
 			if(this.props.mobile){
 				helpWidth = '90%'
@@ -239,13 +239,17 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			vclr = '#1e1e1e'
 			dvclr = '#111'
 		}
+		var label = 'Enter'
+		if(this.props.label && this.props.label.length > 0){
+			label = this.props.label;
+		}
 
 		if(typeof this.props.tooltip != 'undefined'){
 			var tooltip = this.props.tooltip
 			if(tooltip.length == 0){
 				tooltip = 'this is a tooltip'
 			}
-			var helpWidth = 400;
+			var helpWidth = 600;
 			var helpMargin = 15;
 			if(this.props.mobile){
 				helpWidth = '90%'
@@ -254,6 +258,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			var uid = uuidv4();
 			helpButton = <div  style={{float:'right', display:'inline-block', marginLeft:-50, marginRight:helpMargin, marginTop:3}}><img src='assets/help.svg' onClick={this.help} width={30}/></div>
 	  		helpModal = <Modal mobile={self.props.mobile} ref='helpModal' Style={{color:'#e1e1e1',width:helpWidth, maxWidth:400}}>
+	  		<div style={{textAlign:'center', borderBottom:'1px solid #e1e1e1'}}>{label.split('-')[0]}</div>
 	  		<div><ContextMenuTrigger id={uid}>{tooltip}</ContextMenuTrigger></div>
 	  		<ContextMenu id={uid}>
 	  			<MenuItem onClick={this.translateTooltip}>Translate Tooltip</MenuItem>
@@ -317,10 +322,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		}
 		//var tooltiptext = 'This is a tooltip'
 		////console.log(this.props.vMap)
-		var label = 'Enter'
-		if(this.props.label && this.props.label.length > 0){
-			label = this.props.label;
-		}
+	
 		var minW = 400;
 		if(this.props.mobile){
 			minW = 300

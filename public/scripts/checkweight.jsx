@@ -2763,6 +2763,8 @@ class StatusElem extends React.Component{
     super(props)
     this.state = {value:this.props.value}
     this.fModal = React.createRef();
+    this.toggleFault = this.toggleFault.bind(this);
+    this.clearFaults = this.clearFaults.bind(this);
   }
   componentWillReceiveProps(newProps){
     this.setState({value:newProps.value})
@@ -2771,7 +2773,8 @@ class StatusElem extends React.Component{
 
   }
   clearFaults(){
-
+    this.props.clearFaults();
+    this.fModal.current.toggle();
   }
   toggleFault(f){
     if(f){
@@ -3179,42 +3182,9 @@ class LineGraph extends React.Component{
 			graphColor = SPARCBLUE2;
 			bg2 = 'rgba(150,150,150,0.5)'
 		}
-		var opc = [0.8,0.6,0.4,0.3,0.2,0.1]
-		var dsl = this.state.dataSets.length;
-		var max = 0;
-		var min = 0;
 
-		var winLength = this.props.winEnd - this.props.winStart + 1
-		if(winLength == 0){
-			winLength = 300
-		}
-		var decMax = 0;
-		var decMin = 0;
-		var self = this;
-		if(dsl != 0){
-			var decSet =  this.state.dataSets[dsl-1].slice(this.state.pstrt, this.state.pend)
-			decMin = Math.min(...decSet);
-			decMax = Math.max(...decSet)
-		  max = decMax  + (decMax - decMin)*0.2//Math.max(...decSet);
-      min = decMin - (decMax - decMin)*0.2//Math.min(...decSet)
-    	
-			//console.log('min, max',decMin,decMax)
-		}
 
-		var graphs = this.state.dataSets.map(function(set,i){
-			var st = set.slice(self.props.winStart,300)
-			
-			var data = st.map(function(d,j){
-				return {y:d, x:j}
-			})
-			if(i+1 == dsl){
-				
-				return <AreaSeries curve='curveBasis' opacity={opc[dsl-1-i]} color={graphColor} data={data}/>
-			}else{
-				
-				return <AreaSeries curve='curveBasis' opacity={opc[dsl-1-i]} color="#818a90" data={data}/>
-			}
-		})
+
 	var bg = 'transparent';
 	var str = 'Good Weight'
 	var fault = false
@@ -3259,71 +3229,12 @@ class LineGraph extends React.Component{
     fault == true
   }
 
-	//str = vdefByMac[]
-
-	var nominalLine = <LineSeries color="red" strokeStyle='dashed' data={[{y:this.props.nominalWeight/this.state.calFactor + this.state.tareWeight,x:0},{y:this.props.nominalWeight/this.state.calFactor + this.state.tareWeight,x:winLength}]}/>
-
-	var ydm = [min, max]
-	if(((this.props.winMax - this.props.winMin) > 0) && (this.props.winMode == 1)){
-			ydm = [this.state.tareWeight + (this.props.winMin)/this.state.calFactor, this.props.winMax/this.state.calFactor + this.state.tareWeight]
-
-	}
-  var grng = ydm.map(function (y) {
-    return (y - self.state.tareWeight)*self.state.calFactor;
-    // body...
-  })
-  var range = grng[1] - grng[0]
-  var divs = 0.1
-  while(range/divs > 5){
-
-    if((((divs < 1) && ((divs*10)%2 == 0))||(divs%2 == 0)) &&(range/divs > 20)){
-      divs *= 5
-    }else{
-      divs *= 2
-    }
-  }
-  var tcks = []
-  if(grng[0]%divs == 0){
-    grng[0] += 1
-  }
-  var strttick = Math.ceil(grng[0]/divs)*divs;
-  while(strttick < grng[1]){
-    tcks.push(strttick);
-    strttick += divs;
-  }
-
-  var tickData = tcks.map(function(t) {
-    // body...
-    return {x:0, y:t/self.state.calFactor + self.state.tareWeight, label:t.toFixed(1) + 'g', xOffset:10}
-  })
-	//var ydm = [(Math.max(this.props.min - 3*(this.props.nominalWeight - this.props.min),0)/this.state.calFactor) + this.state.tareWeight, 
-		//		((4*this.props.max - 3*this.props.nominalWeight)/this.state.calFactor) - this.state.tareWeight]
-		//		<YAxis tickFormat={v => (v-this.state.tareWeight)*this.state.calFactor} tickValues={[min, max]}/>
-		/*data.map(function(d){   
-			var lax = 'start'
-			if(d.x > (data[0].x*0.75)){
-				lax = 'end'
-				return {x:d.x,y:d.y,label:d.x, xOffset:-10, yOffset:0, size:0, style:{fill:'#e1e1e1',textAnchor:lax}}
-			}
-			return	{x:d.x,y:d.y,label:d.x, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
-				<LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
-	
-		}*/
 
   if(this.props.connected == false){
     str = 'Not Connected'
   }
-  var xyplot =   (<XYPlot height={317} width={590} yDomain={ydm} xDomain={[0,winLength]} stackBy='y' margin={{left:0,right:0,bottom:0,top:50}}>
-    <YAxis/>
-    <XAxis hideTicks />
-    {graphs}
-    <VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:this.state.pmin,y:this.state.pmax,x0:this.state.decisionRange[0] - this.props.winStart,x:this.state.decisionRange[1] - this.props.winStart}]}/>
-    <VerticalRectSeries curve='curveMonotoneX' strokeStyle='dashed' stack={true} opacity={0.8} stroke="#ffa500" fill='transparent' strokeWidth={3} data={[{y0:decMin,y:decMax,x0:this.state.pstrt - this.props.winStart,x:this.state.pend - this.props.winStart}]}/>
-    <LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/></XYPlot>)
-
-  if(this.props.histo){
-    xyplot = <WeightHistogram buckets={this.props.buckets} bucketSize={this.props.bucketSize} ref={this.histo} nom={(this.props.max + this.props.min)/2} stdev={this.props.stdev}/>
-  }
+  var  xyplot = <WeightHistogram buckets={this.props.buckets} bucketSize={this.props.bucketSize} ref={this.histo} nom={(this.props.max + this.props.min)/2} stdev={this.props.stdev}/>
+  
 	return	<div style={{background:bg, textAlign:'center'}}>
 		<div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 		<div hidden style={{background:'black',width:560,marginLeft:'auto',marginRight:'auto'}}><div style={{background:bg2,color:'#e1e1e1',marginBottom:-47,marginLeft:'auto',marginRight:'auto',padding:4,width:552, height:75,lineHeight:'35px'}}><div style={{display:'inline-block', width:270}}><div style={{fontSize:16}}>Running Product</div><div style={{fontSize:24}}>{this.props.prodName}</div></div>
@@ -3358,7 +3269,8 @@ class StatSummary extends React.Component{
 		//if(this.props.branding == 'SPARC'){
 			outerbg = '#e1e1e1'
 		
-		if(this.props.branding == 'SPARC'){ innerbg = SPARCBLUE2
+		if(this.props.branding == 'SPARC'){ 
+      innerbg = SPARCBLUE2
 			fontColor = 'black'
 		}
 		//}
@@ -4322,8 +4234,8 @@ class BatchControl extends React.Component{
       }else{
         play = <div onClick={this.props.startB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#00FF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
       stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#F04040', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
-      batchInfo =  <div style={{height:315}}>
-         <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
+      batchInfo = <div style={{height:315}}>
+         <span><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
    
       <div style={{padding:5}}>
       <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'BatchNumber'} vMap={vMapV2['BatchNumber']} language={this.props.language} branding={this.props.branding} h1={40} w1={250} h2={51} w2={400} label={vMapV2['BatchNumber']['@translations'][this.props.language]['name']} value={this.props.prod['BatchNumber']} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.props.mac][1][1]['BatchNumber']} num={true}/></div>
@@ -4335,14 +4247,18 @@ class BatchControl extends React.Component{
        </div>
     </div>
       }   
-      var batchList = <div style={{width:250}}>
-        <div>Current Batch</div>
-        <div>Planned Batches</div>
+      var batchList = <div style={{width:250, background:'#e1e1e1', border:'2px solid #e1e1e1', height:515, margin:5, marginBottom:0}}>
+       <div> <div style={{borderBottom:'2px solid #ccc', lineHeight:'60px', height:60, textAlign:'center'}}>Current Batch</div>
+        <div style={{fontSize:18, borderBottom:'2px solid #ccc'}}>
+        <div>Batch Id: {this.props.prod['BatchNumber']}</div>
+        <div>Product: {this.props.prod['ProdName']}</div></div>
+       </div>
+        <div><div style={{borderBottom:'2px solid #ccc', lineHeight:'60px', height:60, textAlign:'center'}}>Planned Batches</div></div>
       </div>
 
-    return <div style={{background:'#e1e1e1', minHeight:400, padding:5}}>
-          <div><div style={{display:'inline-block'}}>{batchList}</div><div style={{display:'inline-block'}}>{this.props.children}</div></div>
-         <div>{play}{stop}</div>
+    return <div style={{minHeight:400, padding:5}}>
+          <div><div style={{display:'inline-block',verticalAlign:'top'}}>{batchList}</div><div style={{display:'inline-block',verticalAlign:'top-center'}}>{this.props.children}</div></div>
+         <div>{play}{stop}<div style={{display:'inline-block', float:'right'}}><CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={'Past Batches'}/></div></div>
       
     </div>
   }
@@ -4466,7 +4382,7 @@ class ProdSettingEdit extends React.Component{
 		if(this.props.editable){
 			this.ed.current.toggle()
 		}
-	}
+	}    
 	onInput(v){
 		var val = v;
 		
@@ -6228,6 +6144,20 @@ class SettingItem3 extends React.Component{
 						
 						</div>)
 				}
+      }else{
+        /* klass = 'sItem hasChild'
+          sty.backgroundColor = FORTRESSPURPLE2
+          if(this.props.branding == 'SPARC'){
+                klass = 'sItem hasChildSparc'
+                sty.color = 'black'
+                sty.background = SPARCBLUE2
+                sty.height = 50;
+              }
+          if(this.state.touchActive){
+                klass += ' touchDown'
+            }*/
+        return ("")//<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
+
       }
 
 			    klass = 'sItem hasChild'
@@ -6414,8 +6344,7 @@ class MultiEditControl extends React.Component{
 		
 	}
 	valClick (ind) {
-    console.log('valclick. this should not get called twicedasfkjas;kfljs')
-		var self = this;
+    var self = this;
 		if(!this.props.ov){
 			if(this.props.param[ind]['@rpcs']){
 				if(this.props.param[ind]['@rpcs']['vfdstart']){
@@ -6455,14 +6384,14 @@ class MultiEditControl extends React.Component{
   }
   vfdStop(){
     console.log('stop clicked')
-     this.props.sendPacket(this.props.param[0],2)
+    this.props.sendPacket(this.props.param[0],2)
   }
   	onPointerDown(){
     	this.setState({touchActive:true})
   	}
   	onPointerUp(){
     	if(this.state.touchActive){
-        	this.setState({touchActive:false})
+        this.setState({touchActive:false})
       
     	}
   	}

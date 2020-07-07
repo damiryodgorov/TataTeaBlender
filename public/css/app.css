@@ -11,12 +11,16 @@ body{
     margin-right: auto;
     background: #e1e1e1;
     overflow: hidden;
+     -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 li.placeholder { background: rgb(255,240,120);}
 li.placeholder:before {
   content: "Drop here"; color: rgb(225,210,90);
 }
-
+::-webkit-scrollbar{
+    display: none;
+}
 button{
     height: 32px;
     font-size: inherit;
@@ -305,9 +309,7 @@ li {
     animation-duration: 1s;
     animation-iteration-count: infinite;
 }
-::-webkit-scrollbar{
-    display: none;
-}
+
 .faultSnackbar button{
     float: right;
 }
