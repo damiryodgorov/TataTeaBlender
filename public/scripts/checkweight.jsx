@@ -1210,7 +1210,6 @@ class LandingPage extends React.Component{
 		this.stop = this.stop.bind(this);
 		this.changeBranding = this.changeBranding.bind(this);
 		this.loadPrefs = this.loadPrefs.bind(this)
-		this.renderMBGroup = this.renderMBGroup.bind(this);
 		this.renderModal = this.renderModal.bind(this);
 		this.showDisplaySettings = this.showDisplaySettings.bind(this);
 		this.addToTmp = this.addToTmp.bind(this);
@@ -2250,12 +2249,6 @@ class LandingPage extends React.Component{
 
 	}
 	changeBranding(){
-		/*
-		if(this.state.branding == 'FORTRESS'){
-			this.setState({branding:'SPARC'})
-		}else{
-			this.setState({branding:'FORTRESS'})
-		}*/
 
 	}
 	start(){
@@ -2370,49 +2363,11 @@ class LandingPage extends React.Component{
 			return   <div> <CircularButton branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
        
 		})
-			//var MB = this.renderMBGroup(2)
 			return (<div>
 				{detectors}
 			</div>)
 
-      /*<button onClick={this.addNewSingleUnit}>Add new Single Unit</button>
-                <button onClick={this.save}>Save Settings</button>
-                <button onClick={this.loadPrefs}>Load Saved Settings </button>
-                <button onClick={this.reset}>Reset Connections</button>*/
-	}
-	renderMBGroup(mode) {
-		var self = this;
-		var submit = (<button onClick={this.submitMB}>Submit</button>)
-	
-			var detectors = this.state.dets.map(function(det, i){
-				if(self.state.detL[det.mac]){
-						return (<DetItemView det={det} i={i} type={0} addClick={self.addToTmp}/>)
-				}
-			})
-
-			var MB = this.state.tmpMB; 
-			var type = MB.type;
-			var banks = MB.banks.map(function (b,i) {
-					return(<DetItemView det={b} i={i} type={1} addClick={self.removeFromTmpGroup}/>)	
-			})
-			var nameEdit = <CustomKeyboard language={'english'}  onFocus={this.addFocus} onRequestClose={this.addClose} onChange={this.changetMBName} ref='an' value={MB.name} 
-									onChange={this.onChange} num={false} label={'AlphaNumeric Keyboard - Hello'}/>
-			return (<div><label>Name:</label><CustomLabel onClick={this.editName}>{MB.name}</CustomLabel>
-					<table style={{background:'#818a90'}}><tbody><tr>
-					<th>Available Detectors</th><th>Banks</th>
-					</tr><tr>
-					<td style={{width:300, border:'1px solid black', minHeight:50}}>
-					<div style={{maxHeight:350, overflowY:'scroll'}}>
-						{detectors}
-					</div>
-					</td><td style={{width:300,  border:'1px solid black', minHeight:50, maxHeight:350, overflowY:'scroll'}}>
-					<div style={{maxHeight:350, overflowY:'scroll'}}>
-						{banks}
-					</div>
-					</td><td><div style={{height:30}}/></td></tr></tbody></table>
-					{submit}<button onClick={this.cancel}>Cancel</button>
-					{nameEdit}
-					</div>)
+     
 	}
 	pModalToggle(){
 		if(typeof this.state.curDet.ip != 'undefined'){
@@ -2522,8 +2477,7 @@ class LandingPage extends React.Component{
   }
 	render(){
 		//LandingPage.render
-    var lovemiso_true = true
-		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+    var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
 			var st = {textAlign:'center',lineHeight:'60px', height:60, width:536}
 
@@ -2663,7 +2617,7 @@ class LandingPage extends React.Component{
           <div><StatusElem clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph histo={lovemiso_true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
+          <LineGraph histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
                     winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets}>
           <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb}/></LineGraph></div>
@@ -6002,11 +5956,9 @@ class SettingItem3 extends React.Component{
 			return val;
 	}
 	onFocus () {
-		// body...
 		this.props.onFocus();
 	}
 	onRequestClose () {
-		// body...
 		this.props.onRequestClose();
 	}
   submitChange(n,l,v){
@@ -6025,7 +5977,7 @@ class SettingItem3 extends React.Component{
 		var fSize = 24;
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
 		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-		var sty = {height:60}//, backgroundColor:FORTRESSPURPLE2}
+		var sty = {height:60};
     var klass = 'sItem'
     	 
 		if(this.props.mobile){
@@ -6037,8 +5989,7 @@ class SettingItem3 extends React.Component{
 			if(res){
 				pVdef = res[1];
 			}
-			//////console.log('2885',pVdef,_pVdef)
-			var label = false;
+				var label = false;
 		if(this.props.hasChild){
 			var namestring = this.props.name;
 			var path = ""
@@ -6049,10 +6000,8 @@ class SettingItem3 extends React.Component{
 			}
 			
 			if(typeof catMapV2[path] != 'undefined'){
-				////////////console.log('1270')
-				namestring = catMapV2[path]['@translations'][this.props.language]
-				////////////console.log('1272')
-
+					namestring = catMapV2[path]['@translations'][this.props.language]
+			
 			}
 			if(namestring.length > 28){
 				fSize = 18
@@ -6145,19 +6094,8 @@ class SettingItem3 extends React.Component{
 						</div>)
 				}
       }else{
-        /* klass = 'sItem hasChild'
-          sty.backgroundColor = FORTRESSPURPLE2
-          if(this.props.branding == 'SPARC'){
-                klass = 'sItem hasChildSparc'
-                sty.color = 'black'
-                sty.background = SPARCBLUE2
-                sty.height = 50;
-              }
-          if(this.state.touchActive){
-                klass += ' touchDown'
-            }*/
-        return ("")//<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
-
+     
+        return ""
       }
 
 			    klass = 'sItem hasChild'
@@ -6183,9 +6121,7 @@ class SettingItem3 extends React.Component{
           lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
           label={this.state.label} int={false} name={this.props.lkey}/>)
 
-		//sty.paddingBottom = 5
-     
-      	return (<div className='sprc-prod' style={sty}> {medctrl}
+		     	return (<div className='sprc-prod' style={sty}> {medctrl}
 					</div>)
 			
 		}
@@ -6212,8 +6148,7 @@ class MultiEditControl extends React.Component{
           if(typeof vMapLists[labname][l] == 'undefined'){
              vMapLists[labname][l] = vMapLists[labname]['english'].slice(0)
           }
-          // body...
-       })
+        })
       }
       
     }
@@ -6238,7 +6173,6 @@ class MultiEditControl extends React.Component{
       this.submitList = this.submitList.bind(this);
     for(var i = 0; i<this.props.param.length; i++){
       this['input'+i] = React.createRef();
-    	//this.renderSpElem = this.renderSpElem.bind(this);
     }
     this.vfdModal = React.createRef();
     this.vfdSModal = React.createRef();
@@ -6327,7 +6261,6 @@ class MultiEditControl extends React.Component{
 		this.props.onRequestClose();
 	}
 	onClear (id) {
-		////console.log(3040,id)
 		this.props.sendPacket(this.props.param[id])
 	}
 	openSelector () {
@@ -6625,17 +6558,19 @@ class MultiEditControl extends React.Component{
        } 
 
 			return <div>
-     
+     <div style={{display:'grid', gridTemplateColumns:"250px auto"}}>
+     <div>
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
 			 <ContextMenuTrigger id={this.props.name + 'ctmid'}>
       	{namestring}
          </ContextMenuTrigger>
 			</div>
-     
+     </div>
      
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
 				{vLabels}{ioindicator}
 			</div>
+      </div>
       {vfdbutts}
       <div style={{zIndex:3}}>
        <ContextMenu id={this.props.name + 'ctmid'}>
@@ -6717,17 +6652,19 @@ class MultiEditControl extends React.Component{
           txtClr = '#000'
         }
 				return  <div>
-		    
+		     <div style={{display:'grid', gridTemplateColumns:"250px auto"}}>
+         <div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
          <ContextMenuTrigger id={this.props.name + 'ctmid'}>
         {namestring}
         </ContextMenuTrigger>
-      </div>
+      </div></div>
       
       
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
 				{vLabels}{ioindicator}
 			</div>
+      </div>
 			{options}
       {vfdsetupbutt}
       <div style={{zIndex:3}}>
@@ -6770,18 +6707,21 @@ class MultiEditControl extends React.Component{
           bgClr = SPARCBLUE2
           txtClr = '#000'
         }
-	          					return <div>
-   
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
+	   
+     return <div>
+     <div style={{display:'grid', gridTemplateColumns:"250px auto"}}>
+      <div><div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
            <ContextMenuTrigger id={this.props.name + 'ctmid'}>
         {namestring}
 
       </ContextMenuTrigger>
       </div>
+      </div>
      
 			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
 				{vLabels}{ioindicator}
 			</div>
+      </div>
 			{options}
       {vfdsetupbutt}
       <div style={{zIndex:3}}>
@@ -6796,10 +6736,7 @@ class MultiEditControl extends React.Component{
       {trnsmdl}
       {listmdl}
 			</div>
-			/*
-				return(<div><label style={lvst}>{namestring + ': '}</label>
-							<div style={vlabelswrapperStyle} onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp}  onPointerLeave={this.onPointerUp}><div style={vlabelStyle}>{vLabels}</div></div>{options}</div>)
-			*/
+		
 			}
 		}
   		
