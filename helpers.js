@@ -67,8 +67,8 @@ class Params{
       buf.writeUInt16LE(val[j],j*2)
     }
     var arr = []
-    for(var i = 0; i<250;i++){
-      arr.push(buf.readUInt16LE(i*4));
+    for(var i = 0; i<val.length;i++){
+      arr.push(buf.readUInt16LE(i*2));
     }
     return arr
   }
@@ -106,7 +106,8 @@ class Params{
     var int = val2 << 16 | val1
     var buf = Buffer.alloc(4);
     buf.writeInt32LE(int)
-    return Params.mm(buf.readFloatLE(0),metric)
+    return buf.readFloatLE(0)
+    //return Params.mm(buf.readFloatLE(0),metric)
   }
   static dist_float(val1,val2,metric){
     var int = val2 << 16 | val1

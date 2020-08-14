@@ -289,14 +289,14 @@ class PopoutWheelModalC extends React.Component{
 			klr = '#010101'
 		}
 		var st = {minWidth:minW, marginTop:60}
-		var tttxt = <div>{tooltiptext}</div>
+		var tttxt = <div  style={{whiteSpace:'pre-wrap', textAlign:'left'}}>{tooltiptext}</div>
 		if(self.props.params){
 			var cmenuid = self.props.params.map(function (p) {
 				return p['@name']				// body...
 			}).join('-') + 'tttxt'
 			tttxt = <React.Fragment>
 			<div style={{textAlign:'center', borderBottom:'1px solid #e1e1e1'}}><label>{this.props.name}</label></div>
-			<div><ContextMenuTrigger id={cmenuid}>{tooltiptext}</ContextMenuTrigger></div>
+			<div  style={{whiteSpace:'pre-wrap', textAlign:'left'}}><ContextMenuTrigger id={cmenuid}>{tooltiptext}</ContextMenuTrigger></div>
 			<ContextMenu id={cmenuid}>
 				<MenuItem onClick={this.translateTooltip}>Translate Tooltip</MenuItem>
 			</ContextMenu>

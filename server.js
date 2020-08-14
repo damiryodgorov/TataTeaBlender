@@ -286,8 +286,8 @@ function getVdef(ip, callback,failed){
        // console.log(vdef)
         
                   vdefs[ip] = vdef; 
-          var nvdf = [[],[],[],[],[],[],[],[],[],[]];
-          var pVdef = [{},{},{},{},{},{},{},{},{},{}];
+          var nvdf = [[],[],[],[],[],[],[],[],[],[],[]];
+          var pVdef = [{},{},{},{},{},{},{},{},{},{},{}];
           vdef['@params'].forEach(function (p) {
             // body...
             if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
@@ -393,8 +393,8 @@ function getVdefCW(ip, callback,failed){
       zlib.unzip(buffer, function(er,b){
         var vdef = JSON.parse(b.toString())
         vdefs[ip] = vdef; 
-        var nvdf = [[],[],[],[],[],[],[],[],[]];
-        var pVdef = [{},{},{},{},{},{},{},{},{},{}];
+        var nvdf = [[],[],[],[],[],[],[],[],[],[]];
+        var pVdef = [{},{},{},{},{},{},{},{},{},{},{}];
         vdef['@params'].forEach(function (p) {
           // body...
           if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){

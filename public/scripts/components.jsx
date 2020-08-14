@@ -506,8 +506,8 @@ class TrendBar extends React.Component{
 		return (
 			<div className='tickerBox' style={{position:'relative', height:40, color:'#e1e1e1'}}>
 			<div style={{height:20,display:'block',fontSize:16}}>{labels}</div>
-			<div style={{background:'#000'}}><div className={path} style={{background:bgstr}}>
-				<div className={block} style = {{left:((tickerVal-this.props.lowerbound)*100)/range+'%',backgroundColor:color}}/>
+			<div style={{background:'#000', borderRadius:5}}><div className={path} style={{background:bgstr, height:25,borderRadius:5}}>
+				<div className={block} style = {{left:((tickerVal-this.props.lowerbound)*100)/range+'%',backgroundColor:color, height:25}}/>
 			</div></div>
 			
 			</div>

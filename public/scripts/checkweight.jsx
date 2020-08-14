@@ -4,7 +4,7 @@ const ifvisible = require('ifvisible');
 var SmoothieChart = require('./smoothie.js').SmoothieChart;
 var TimeSeries = require('./smoothie.js').TimeSeries;
 import {TrendBar,TickerBox, CanvasElem, SlimGraph, DummyGraph, Modal,GraphModal, AuthfailModal, MessageModal, AlertModal, MessageConsole, ScrollArrow} from './components.jsx'
-import {CircularButton, ButtonWrapper, CustomAlertButton, CustomAlertClassedButton} from './buttons.jsx'
+import {CircularButton, CircularButton2, ButtonWrapper, CustomAlertButton, CustomAlertClassedButton} from './buttons.jsx'
 import {PopoutWheel} from './popwheel.jsx'
 import {CustomKeyboard, KeyboardInputTextButton, EmbeddedKeyboard} from './keyboard.jsx'
 var onClickOutside = require('react-onclickoutside');
@@ -874,7 +874,8 @@ console.log('on vdef')
     res[9] = {};
     res[10] = {};
     res[11] = {};
-   	var nVdf = [[],[],[],[],[],[],[],[]];
+    res[12] = {};
+   	var nVdf = [[],[],[],[],[],[],[],[],[]];
 
    
 
@@ -1144,7 +1145,7 @@ class DateTimeSelect extends React.Component{
       var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 
       var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
-      st.width = 546
+      st.width = 496
       st.fontSize = 24
       st.display = 'table-cell';//self.props.vst.display;
       
@@ -1156,27 +1157,27 @@ class DateTimeSelect extends React.Component{
     var clr = "#e1e1e1"
  
  var dateItem = (<div style={{margin:2}} onClick={()=>this.dpw.current.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:250,textAlign:'center'}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
         {'Date'}
       </div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{this.state.year +'/'+this.state.month+'/'+this.state.day}</div>
       </div>
       </div>)
 
     var timeItem = (<div style={{margin:2}} onClick={()=>this.tpw.current.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:250,textAlign:'center'}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
         {'Time'}
       </div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{this.state.hour +':'+this.state.minute+':'+this.state.sec}</div>
       </div>
       </div>)
     var dstItem =  (<div style={{margin:2}} onClick={()=>this.dstpw.current.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:250,textAlign:'center'}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
         {'Daylight Savings'}
       </div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{tg[this.props.dst]}</div>
       </div>
       </div>)
@@ -1197,9 +1198,9 @@ class DateTimeSelect extends React.Component{
 class LandingPage extends React.Component{
 	constructor(props){
 		super(props)
-		this.state = {histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,x:null,
+		this.state = {histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
-			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0,
+			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
 			detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
 		this.authenticate = this.authenticate.bind(this);
     this.importVmap = this.importVmap.bind(this);
@@ -1250,6 +1251,7 @@ class LandingPage extends React.Component{
     this.ste = React.createRef();
     this.hh = React.createRef();
     this.tb = React.createRef();
+    this.bhg = React.createRef();
     this.pmodal = React.createRef();
     this.settingModal = React.createRef();
     this.locateModal = React.createRef();
@@ -1263,9 +1265,16 @@ class LandingPage extends React.Component{
     this.submitTooltip = this.submitTooltip.bind(this);
     this.toggleGraph = this.toggleGraph.bind(this);
     this.getBuffer = this.getBuffer.bind(this);
+    this.testWebView = this.testWebView.bind(this);
+    this.pause = this.pause.bind(this);
+    this.webviewModal = React.createRef();
 
 
 	}
+  pause(){
+    this.sendPacket('BatchPause')
+    this.setState({start:true, pause:false, stop:true})
+  }
   getBuffer(){
     this.sendPacket('refresh_buffer',6)
   }
@@ -1344,9 +1353,10 @@ class LandingPage extends React.Component{
 		console.log('is this ready')
 		if(socket.sock.readyState  ==1){
 			console.log('load Prefs')
-			//socket.emit('locateReq');
+		  //socket.emit('locateReq');
 			socket.emit('getVersion',true);
-			socket.emit('getPrefsCW',true);
+		  //socket.emit('connectLocal',true)
+      socket.emit('getPrefsCW',true);
       		socket.emit('getDispSettings');
           socket.emit('getCustomJSON',JSON.stringify(vdefMapV2))
 
@@ -1405,6 +1415,9 @@ class LandingPage extends React.Component{
           console.log(language)
           if(e.rec['TareWeight']!= this.state.srec['TareWeight']){
            // toast('Taring...')
+          }
+          if(!this.state.init){
+     
           }
 					this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
 				}else if(e.type == 1){
@@ -1522,7 +1535,7 @@ class LandingPage extends React.Component{
     				}
 				      this.ss.current.setState({rec:e.rec, crec:this.state.crec, lw:(lw).toFixed(1) + 'g'})
               if(this.sd.current){
-                console.log('update Live Weight')
+                //console.log('update Live Weight')
                 this.sd.current.updateLiveWeight(lw)
               }
               cob = this.getCob(this.state.srec, this.state.prec, e.rec,this.state.fram);
@@ -1536,13 +1549,16 @@ class LandingPage extends React.Component{
             if(typeof this.state.rec['BatchRunning'] != 'undefined'){
               if(e.rec['BatchRunning'] == 1){
                 toast('Batch Started');
+                this.lg.current.clearHisto();
+              }else if(e.rec['BatchRunning'] == 2){
+                toast('Batch Paused')
               }else{
                  toast('Batch Stopped')
               }
               noupdate = false
             }
           }
-          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] == 0),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
+          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
           
 					
 				}else if(e.type == 3){
@@ -1588,6 +1604,8 @@ class LandingPage extends React.Component{
           e.rec['SampleStartDate'] = new Date(parseInt(sms.toString()) + hours + mins)
           e.rec['BatchStartMS'] = parseInt(ms.toString())
           e.rec['SampleStartMS'] = parseInt(sms.toString())
+          e.rec['packTare'] = this.state.srec['TareWeight'];
+          e.rec['packCal'] = this.state.srec['CalFactor']
           this.setState({crec:e.rec, noupdate:true})
 					this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
 							this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
@@ -1605,6 +1623,8 @@ class LandingPage extends React.Component{
 		      }else{
             console.log('repeated pack')
           }
+
+
 				}else if(e.type == 6){
           var cnt = 0;
           if(typeof this.state.crec['TotalCnt'] != 'undefined'){
@@ -1612,11 +1632,21 @@ class LandingPage extends React.Component{
           }
           console.log('Histogram Buffer',e)
           //if(cnt != 0){
-            this.lg.current.pushWeight(e.rec['HistogramPacks'].slice(0,cnt))
+            this.lg.current.pushWeight(e.rec['HistogramPacks'].slice(0-cnt))
           //}
-          
+            this.setState({init:true})
         }else if(e.type == 7){
           console.log('Histogram Batch?', e)
+          if(this.btc.current){
+              var buckets = 100;
+              var bucketSize = 1;
+              if(typeof this.state.prec['ProdName'] != 'undefined'){
+                  bucketSize = this.state.prec['HistogramBucketSize'];
+                  buckets = this.state.prec['HistogramBuckets']
+            
+              }    
+              this.btc.current.parseHisto(e.rec['HistogramBatch'], bucketSize, buckets)
+          }
         }else if(e.type == 15){
 					var prodList = this.state.prodList;
 					var prodListRaw = this.state.prodListRaw
@@ -1751,18 +1781,40 @@ class LandingPage extends React.Component{
 				},150)
 			//}
 			}else if( n == 'refresh'){
+      var rec = 0;
+      if(v){
+        rec = v
+      }
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
-      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+      var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],rec,0])
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       
       }else if( n == 'refresh_buffer'){
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
-      var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],6,0])
+      var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],v,0])
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       
       }else if( n == 'BatchStart'){
      
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if( n == 'BatchStartSel'){
+     
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
+      var buf = Buffer.alloc(4)
+      buf.writeUInt32LE(v,0)
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], buf)
+      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if( n == 'BatchStartNew'){
+     
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
+    
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], v)
+      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if( n == 'BatchPause'){
+     
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PAUSEBATCH']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchEnd'){
@@ -1872,7 +1924,11 @@ class LandingPage extends React.Component{
 				var buf = Buffer.alloc(4)
 				buf.writeFloatLE(parseFloat(v),0)
 				strArg = buf;
-			}else if(n['@type'] == 'belt_speed'){
+			}else if(n['@type'] == 'float_dist'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'belt_speed'){
         var buf = Buffer.alloc(4)
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
@@ -1908,7 +1964,11 @@ class LandingPage extends React.Component{
 				var buf = Buffer.alloc(4)
 				buf.writeFloatLE(parseFloat(v),0)
 				strArg = buf;
-			}
+			}else if(n['@type'] == 'float_dist'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }
 			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
 				
 			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
@@ -2014,7 +2074,9 @@ class LandingPage extends React.Component{
 			setTimeout(function (argument) {
 			// body...
 			if(f.length == 1){
+        console.log(2048)
 				if(!self.state.connected){
+          console.log(2050)
 					if(f[0].banks.length == 1){
 						if(vdefByMac[f[0].banks[0].mac]){
 							////console.log('try first here?')
@@ -2055,6 +2117,7 @@ class LandingPage extends React.Component{
 			////console.log(['testusb',dev])
 		})
 		socket.on('noVdef', function(det){
+      console.log('no Vdef')
 			setTimeout(function(){
 				socket.emit('vdefReq', det);
 			}, 1000)
@@ -2077,7 +2140,7 @@ class LandingPage extends React.Component{
 			var macs = self.state.macList.slice(0);
 			var nps = self.state.netpolls;
 			if(e.length == 1){
-
+       // self.connectToUnit(e[0])
 			}
 			
 			var detectors = [];
@@ -2089,7 +2152,7 @@ class LandingPage extends React.Component{
 						macs.push(d.mac)
 						dets[d.mac] = d
 					}
-					////////////console.log(d)
+
 					socket.emit('vdefReq', d);
 
 			})
@@ -2132,7 +2195,7 @@ class LandingPage extends React.Component{
 					}
 					////////console.log('connectToUnit')
 					if(cnt == 1){
-					//	socket.emit('connectToUnit', {ip:b.ip, app_name:b.app, app:b.app})
+					//socket.emit('connectToUnit', {ip:b.ip, app_name:b.app, app:b.app})
 					//	self.setState({curDet:det, connected:true})
 
 					}
@@ -2252,21 +2315,22 @@ class LandingPage extends React.Component{
 
 	}
 	start(){
-		//if(this.state.start){
-		//	this.simStart()
-		//}
+
     this.sendPacket('BatchStart')
 	 
-    this.setState({start:false})
+    this.setState({start:false, pause:true})
 
   }
+  startSel(n){
+    this.sendPacket('BatchStartSel',n)
+  }
+  startBuf(b){
+    this.sendPacket('BatchStartNew',b)
+  }
 	stop(){
-		//if(!this.state.start){
-		//	this.simStart()
-		//}
     this.sendPacket('BatchEnd')
 	   
-    this.setState({start:true})
+    this.setState({start:true, pause:false})
   }
 	simStart(){
 		var self = this;
@@ -2284,10 +2348,13 @@ class LandingPage extends React.Component{
 		console.log('netpoll')
 	}
 	showDisplaySettings(){
+    console.log('why is this looping')
 		var self = this;
 		if(this.state.connected){
 			this.sendPacket('refresh')
-		}
+		}else{
+      socket.emit('locateReq',true)
+    }
 		setTimeout(function () {
 			self.settingModal.current.toggle()
 		},100)
@@ -2295,7 +2362,7 @@ class LandingPage extends React.Component{
         // body...
         socket.emit('getConnectedClients')
       },200)
-		socket.emit('locateReq',true)
+		
 		
 	}
 	addToTmpGroup(){
@@ -2336,6 +2403,7 @@ class LandingPage extends React.Component{
 		this.setState({tmpMB:mbUnits, detL:detL})
 	}
 	connectToUnit(det){
+    console.log('connect To Unit')
 		var self = this;
 		socket.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
 
@@ -2385,8 +2453,14 @@ class LandingPage extends React.Component{
 
 	}
 	openBatch(){
-    if(typeof this.state.curDet.ip != 'undefined'){
+    if((typeof this.state.curDet.ip != 'undefined')&&(typeof this.state.crec['TotalWeight'] != 'undefined')){
+      this.sendPacket('refresh', 7)
+
       this.batModal.current.toggle();
+      setTimeout(function (argument) {
+        // body...
+        socket.emit('getPlannedBatches')
+      },100)
     }
 	}
 	onPmdClose(){
@@ -2451,6 +2525,7 @@ class LandingPage extends React.Component{
     socket.emit('saveCustomJSON',JSON.stringify(custMap));
   }
   submitTooltip(n,l,v){
+    console.log('tooltip', n, l, v)
     var custMap = this.state.custMap
     custMap['@vMap'][n]['@translations'][l]['description'] = v
     socket.emit('saveCustomJSON',JSON.stringify(custMap));
@@ -2474,6 +2549,9 @@ class LandingPage extends React.Component{
   }
   toggleGraph(){
     this.setState({histo:!this.state.histo})
+  }
+  testWebView(){
+    this.webviewModal.current.toggle();
   }
 	render(){
 		//LandingPage.render
@@ -2593,6 +2671,7 @@ class LandingPage extends React.Component{
                   <MenuItem onClick={this.importVmap}>Import Translations</MenuItem>
                   <MenuItem onClick={this.resetVmap}>Reset Translations</MenuItem>
                    <MenuItem onClick={this.getBuffer}>Get Buffer</MenuItem>
+                   <MenuItem onClick={this.testWebView}>Test Webview</MenuItem>
                 </ContextMenu>
                  <Modal x={true} ref={this.inputMod} innerStyle={{background:backgroundColor, maxHeight:650}}>
                   <input type='file' onChange={this.fileupload}/>
@@ -2612,12 +2691,12 @@ class LandingPage extends React.Component{
             </tbody>
           </table>
           <table><tbody><tr style={{verticalAlign:'top'}}><td>
-         	<StatSummary language={language} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange}/>
+         	<StatSummary language={language} unit={this.state.srec['WeightUnits']} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange}/>
           </td><td><div><SparcElem ref={this.se} branding={this.state.branding} value={lw.toFixed(1) + ' g'} name={'Gross Weight'} width={596} font={72}/></div>
           <div><StatusElem clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
+          <LineGraph getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
                     winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets}>
           <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb}/></LineGraph></div>
@@ -2642,16 +2721,19 @@ class LandingPage extends React.Component{
         <Modal  x={true} ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
          <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.cwc} cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
         </Modal>
-        <Modal  x={true} ref={this.batModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
-         <BatchControl selfProd={this.state.srec['EditProdNo']} prod={this.state.prec} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} 
-                    start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc}>
-                    <BatchBarGraph crec={this.state.crec} language={language}/>
-                    </BatchControl>
+        <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+         <BatchControl batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} prod={this.state.prec} crec={this.state.crec} startNew={this.startBuf} startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause}
+                    start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}/>
         </Modal>
 
       	<PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
 		
-      
+        <Modal ref={this.webviewModal}>
+        <div style={{height:600}}>
+          <iframe name="foo" src="http://www.google.com/" style={{width:640, height:480}}></iframe>
+              <p><a href="http://192.168.47.212:3300/cw.html" target="foo">Open google.com</a></p>
+          </div>
+          </Modal>
       	<LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
                 accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
@@ -2810,7 +2892,7 @@ class StatusElem extends React.Component{
     return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:5, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
       <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div></div>
-       <div style={{textAlign:'center', marginTop:-3,lineHeight:40+'px',height:40, fontSize:25}}><div style={{display:'inline-block', width:298}}>{this.props.prodName}</div><div style={{display:'inline-block', width:298}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
+       <div style={{textAlign:'center', marginTop:-3,lineHeight:40+'px',height:40, fontSize:25}}><div style={{display:'inline-block', width:298, verticalAlign:'top'}}>{this.props.prodName}</div><div style={{display:'inline-block', width:298, textAlign:'top'}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
           <Modal ref={this.fModal} innerStyle={{background:modBg}}>
           <FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults}/>
         </Modal>
@@ -2864,6 +2946,7 @@ class HorizontalHisto extends React.Component{
     sampleData[5] = crec['SampleUnsettledCnt']
     sampleData[6] = crec['SampleImprobableCnt']
     sampleData[7] = crec['SampleCheckWeightCnt']
+
     this.setState({batchData:data, sampleData:sampleData, batchStartTime:crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' '),sampleStartTime:crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' ')})
 	}
 	parsePack(pack){
@@ -3071,6 +3154,7 @@ class LineGraph extends React.Component{
 		this.maskFault = this.maskFault.bind(this);
 		this.statusClick = this.statusClick.bind(this);
     this.pushWeight = this.pushWeight.bind(this);
+    this.clearHisto = this.clearHisto.bind(this);
     this.fModal = React.createRef();
     this.histo = React.createRef();
     var dtst = []
@@ -3079,6 +3163,9 @@ class LineGraph extends React.Component{
     }
 		this.state = {pTime:0,weightPassed:0,pmax:2000, pstrt:0,pend:299, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[dtst,dtst.slice(0), dtst.slice(0)],reject:false,over:false,under:false}
 	}
+  clearHisto(){
+    this.histo.current.clearHisto();
+  }
 	parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend,pTime){
 		var dataSets = this.state.dataSets;
 		if(dataSets.length > 5){
@@ -3189,11 +3276,10 @@ class LineGraph extends React.Component{
   }
   var  xyplot = <WeightHistogram buckets={this.props.buckets} bucketSize={this.props.bucketSize} ref={this.histo} nom={(this.props.max + this.props.min)/2} stdev={this.props.stdev}/>
   
-	return	<div style={{background:bg, textAlign:'center'}}>
+	return	<div style={{background:bg, textAlign:'center', position:'relative'}}>
+    <img src='assets/refresh.svg' style={{position:'absolute', left:550, top:50, width:30}} onClick={this.props.getBuffer}/>
 		<div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
-		<div hidden style={{background:'black',width:560,marginLeft:'auto',marginRight:'auto'}}><div style={{background:bg2,color:'#e1e1e1',marginBottom:-47,marginLeft:'auto',marginRight:'auto',padding:4,width:552, height:75,lineHeight:'35px'}}><div style={{display:'inline-block', width:270}}><div style={{fontSize:16}}>Running Product</div><div style={{fontSize:24}}>{this.props.prodName}</div></div>
-		<div style={{display:'inline-block', width:270}} onClick={this.statusClick} ><div style={{fontSize:16}}>Status</div><div style={{fontSize:20}}>{str}</div></div></div>
-		</div>
+
 		<div style={{overflow:'hidden', marginTop:14}}>
 		<div style={{marginTop:-48}}>
  {xyplot}
@@ -3204,6 +3290,21 @@ class LineGraph extends React.Component{
 				</Modal>
 		</div>
 	}
+}
+function FormatWeight(wgt, unit){
+  if(unit < 2){
+    if(wgt < 1000){
+      return wgt.toFixed(1) + ' g'
+    }else{
+      return wgt.toFixed(3) + ' kg'
+    }
+  }else{
+    if(wgt < 454){
+      return (wgt/28.3495).toFixed(1) + 'oz'
+    }else{
+      return (wgt/453.59237).toFixed(2) + ' lbs'
+    }
+  }
 }
 class StatSummary extends React.Component{
 	constructor(props){
@@ -3252,18 +3353,25 @@ class StatSummary extends React.Component{
     var stot = 0;
     var ppm = 0;
     var sppm = 0;
+    var unit = 0;
+    if(typeof this.props.unit != 'undefined'){
+      unit = this.props.unit
+    }
 		if(!isNaN(this.state.crec['PackWeight'])){
-			grswt = this.state.crec['PackWeight'].toFixed(1) + 'g'
-			avg = this.state.crec['AvgWeight'].toFixed(1) +'g'
-      savg = this.state.crec['SampleAvgWeight'].toFixed(1) + 'g'
+			grswt = FormatWeight(this.state.crec['PackWeight'], unit)//this.state.crec['PackWeight'].toFixed(1) + 'g'
+			avg = FormatWeight(this.state.crec['AvgWeight'], unit)//this.state.crec['AvgWeight'].toFixed(1) +'g'
+      savg = FormatWeight(this.state.crec['SampleAvgWeight'], unit)//this.state.crec['SampleAvgWeight'].toFixed(1) + 'g'
 			stdev = this.state.crec['StdDev'].toFixed(2)+'g'
       sstdev = this.state.crec['SampleStdDev'].toFixed(2)+'g'
-			tot = this.state.crec['TotalWeight'].toFixed(1)+'g'
-      stot = this.state.crec['SampleTotalWeight'].toFixed(1)+'g'
-			gvb = this.state.crec['GiveawayBatch'].toFixed(1)+'g'
-			gvs = this.state.crec['SampleGiveawayBatch'].toFixed(1)+'g'
-      ppm = this.state.crec['Batch_PPM'].toFixed(0) + 'ppm'
+			tot = FormatWeight(this.state.crec['TotalWeight'], unit)//this.state.crec['TotalWeight'].toFixed(1)+'g'
+      stot = FormatWeight(this.state.crec['SampleTotalWeight'], unit)//this.state.crec['SampleTotalWeight'].toFixed(1)+'g'
+			gvb = FormatWeight(this.state.crec['GiveawayBatch'], unit)//this.state.crec['GiveawayBatch'].toFixed(1)+'g'
+			gvs = FormatWeight(this.state.crec['SampleGiveawayBatch'], unit)//this.state.crec['SampleGiveawayBatch'].toFixed(1)+'g'
+      if(this.state.crec['Batch_PPM']){
+        ppm = this.state.crec['Batch_PPM'].toFixed(0) + 'ppm'
+      }
       sppm = this.state.crec['Sample_PPM'].toFixed(0) + 'ppm'
+      
 		}
 	return	<div style={{width:260,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
 			<div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
@@ -3861,6 +3969,15 @@ class ProductSettings extends React.Component{
 			if(sp == null){
 				sp = {name:'NULL PROD', no:1, null:true}
 			}
+      var nwgt = ''
+      var fdtwgt = ''
+      var pkgwgt = ''
+      if(typeof curProd['NominalWgt'] != 'undefined'){
+        nwgt = curProd['NominalWgt'].toFixed(1)
+        fdtwgt = curProd['FeedbackTarWgt'].toFixed(1)
+        pkgwgt = curProd['PkgWeight'].toFixed(1)
+      }
+
 			content =( 
 			<div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
 				<div>
@@ -3875,33 +3992,33 @@ class ProductSettings extends React.Component{
 				</div>
 				<div>
 					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={curProd['NominalWgt']+'g'} param={vdefByMac[this.props.mac][1][1]['NominalWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={'0g'}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Package Weight'} value={curProd['PkgWeight']+'g'} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={nwgt+'g'} param={vdefByMac[this.props.mac][1][1]['NominalWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'FeedbackTarWgt'} vMap={vMapV2['FeedbackTarWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={fdtwgt+'g'} param={vdefByMac[this.props.mac][1][1]['FeedbackTarWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Package Weight'} value={pkgwgt+'g'} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
 						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
 					 <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true}/></div>
           </div>
 
 					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
 						<div style={{width:'90%',padding:'2.5%',margin:'2.5%',background:'linear-gradient(90deg,#919aa0, #e1e1e1)'}}>
-							<div><div style={{width:'60%',display:'inline-block'}}>Overweight Accept</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{curProd['OverWeightAllowed']}</div></div>
+							<div><div style={{width:'60%',display:'inline-block'}}>Overweight Accept</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['OverWeightAllowed'][this.props.language][curProd['OverWeightAllowed']]}</div></div>
 							<div><div style={{width:'60%',display:'inline-block'}}>Product Speed</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}</div></div>
-							<div><div style={{width:'60%',display:'inline-block'}}>Feedback Control</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>Pulse</div></div>
+							<div><div style={{width:'60%',display:'inline-block'}}>Feedback Control</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['FeedbackMode'][this.props.language][curProd['FeedbackMode']]}</div></div>
 							<div><div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
 								
-								<div style={{width:'70%',display:'inline-block'}}>Correction Rate</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>5 g/s</div>
-								<div style={{width:'70%',display:'inline-block'}}>Dead Zone</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>±10g</div>
-								<div style={{width:'70%',display:'inline-block'}}>Sample Count</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>6pcs</div>
+								<div style={{width:'70%',display:'inline-block'}}>Correction Rate</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>{curProd['FeedbackCorRate'] + ' g/s'}</div>
+								<div style={{width:'70%',display:'inline-block'}}>Dead Zone</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>±{curProd['FeedbackDeadZone']}g</div>
+								<div style={{width:'70%',display:'inline-block'}}>Sample Count</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>{curProd['FeedbackSampCnt']}pcs</div>
 						
 							</div>
 							<div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
 								
-								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Wait Count</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>4pcs</div>
-								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Hi Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>140g</div>
-								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Lo Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>90g</div>
+								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Wait Count</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}pcs</div>
+								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Hi Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackHiLim']}g</div>
+								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Lo Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackLoLim']}g</div>
 						
 							</div></div>
-							<div><div style={{width:'60%',display:'inline-block'}}>Measurement Standard</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>L-Qt</div></div>
+							<div><div style={{width:'60%',display:'inline-block'}}>Measurement Standard</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
 							<div><div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
 								
 								<div style={{width:'70%',display:'inline-block'}}>Number of Packs</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>10</div>
@@ -4012,6 +4129,7 @@ class LiveGraph extends React.Component{
 class PackGraph extends React.Component{
   constructor(props){
     super(props)
+    //this.state = {tare:this.props.srec['TareWeight']}
   }
   render(){
     /*
@@ -4023,8 +4141,8 @@ class PackGraph extends React.Component{
     var data = this.props.crec['PackSamples'].slice(0)
     var settleWin = [this.props.crec['SettleWinStart'],this.props.crec['SettleWinEnd']]
     var packRange = [this.props.crec['PackMin'],this.props.crec['PackMax']]
-    var calFactor = this.props.srec['CalFactor']
-    var tare = this.props.srec['TareWeight']
+    var calFactor = this.props.crec['packCal']
+    var tare = this.props.crec['packTare']
     var weighWin = [this.props.crec['WeighWinStart'],this.props.crec['WeighWinEnd']]
 
       var decMax = 0;
@@ -4137,10 +4255,75 @@ class CanvElem extends React.Component{
   }
 }
 class BatchControl extends React.Component{
+
+  /*********************            TODOS
+
+      start, pause, resume, stop
+      prompt for batchID, auto
+      need to delete batch?
+      add prodlist to this -> should create new batch on prodchange?
+      
+
+  *******************************************************************/
   constructor(props){
     super(props)
-    this.state = {start:this.props.start,stop:this.props.stop,batchData:[0, 0, 0, 0, 0, 0, 0, 0,0], sampleData:[0, 0, 0, 0, 0, 0, 0, 0,0],batch:true, batchStartTime:'', sampleStartTime:'',batchMin:0,sampleMin:0}
+    this.bhg = React.createRef();
+    this.addModal = React.createRef();
+    this.startModal = React.createRef();
+    this.manModal = React.createRef();
+    this.ed = React.createRef();
+    this.state = {selBatch:0,startBatch:0, startMode:this.props.batchMode,start:this.props.start,stop:this.props.stop,batchData:[0, 0, 0, 0, 0, 0, 0, 0,0], sampleData:[0, 0, 0, 0, 0, 0, 0, 0,0],batch:true, batchStartTime:'', sampleStartTime:'',batchMin:0,sampleMin:0,plannedBatches:[]}
     this.sendPacket = this.sendPacket.bind(this);
+    this.parseHisto = this.parseHisto.bind(this);
+    this.addBatch = this.addBatch.bind(this);
+    this.addnewBatch = this.addnewBatch.bind(this);
+    this.onBatchClick = this.onBatchClick.bind(this);
+    this.changeMode = this.changeMode.bind(this);
+    this.selectChanged = this.selectChanged.bind(this);
+    this.onStartBatchClick = this.onStartBatchClick.bind(this);
+    this.onStartClick = this.onStartClick.bind(this);
+    this.startPlannedBatch = this.startPlannedBatch.bind(this);
+    this.runnewBatch = this.runnewBatch.bind(this);
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({startMode:newProps.batchMode})
+  }
+  startPlannedBatch(){
+    this.props.startP(this.state.startBatch)
+  }
+  onBatchClick(i){
+    this.setState({selBatch:i})
+  }
+  onStartBatchClick(i){
+    this.setState({startBatch:i})
+    //this.props.sendPacket(vdefByMac[this.props.mac][1][0]['BatchMode'],i)
+  }
+  onStartClick(){
+    if(this.state.startMode == 0){
+      this.props.startB()
+    }else if(this.state.startMode == 1){
+      this.startModal.current.toggle();
+    }else{
+      this.manModal.current.toggle();
+    }
+  }
+  componentDidMount(){
+    var self = this;
+    socket.on('batchJson',function (json) {
+      // body...
+      console.log('batchJson',json.replace(/\s/g, ''))
+      self.setState({plannedBatches:JSON.parse(json.replace(/\s/g, ''))})
+    })
+  }
+  startBatchToggle(){
+    this.startModal.current.toggle();
+
+  }
+  changeMode(){
+    this.ed.current.toggle();
+  }
+  parseHisto(h,b,n){
+    this.bhg.current.parseHisto(h,b,n)
   }
   parseCrec(crec){
     var data = this.state.batchData.slice(0);
@@ -4152,8 +4335,8 @@ class BatchControl extends React.Component{
     data[4] = crec['HighCnt'];
     data[5] = crec['UnsettledCnt']
     data[6] = crec['ImprobableCnt']
-
     data[7] = crec['CheckWeightCnt']
+
     sampleData[0] = crec['SampleTotalCnt']
     sampleData[1] = crec['SamplePassWeightCnt']
     sampleData[2] = crec['SampleLowPassCnt']
@@ -4172,21 +4355,74 @@ class BatchControl extends React.Component{
       self.props.sendPacket('saveProduct',self.props.selProd)
     }, 1000)
   }
+  addBatch(){
+    this.addModal.current.toggle();
+  }
+  addnewBatch(bat){
+    socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
+    this.addModal.current.close();
+  }
+  runnewBatch(batchJson){
+    console.log('run')
+    //socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
+    var buf = Buffer.alloc(26)
+    buf.writeUInt32LE(batchJson.PlanBatchId,0)
+    buf.write((batchJson.PlanBatchRef + '                ').slice(0,16), 4, 16,'ascii')
+    buf.writeUInt32LE(batchJson.PlanNumPacks,20)
+    buf.writeUInt16LE(batchJson.PlanProdNum,24)
+
+    this.props.startNew(buf)
+    this.manModal.current.close();
+  }
+  selectChanged(v){
+    this.props.sendPacket(vdefByMac[this.props.mac][1][0]['BatchMode'],v)
+ 
+    //this.setState({startMode:v})
+  }
+  pastBatches(){
+    
+  }
   render(){
+    var self = this;
+    var backgroundColor = FORTRESSPURPLE1;
+    if(this.props.branding == 'SPARC'){
+      backgroundColor = SPARCBLUE1
+    }
     // <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}/></div>
           
+    var plannedBatches = this.state.plannedBatches.map(function (bat, i) {
+      var bgc = '#e1e1e1'
+      if(self.state.selBatch == i+1){
+        bgc = '#7ccc7c'
+      } 
+      return  <div onClick={() => self.onBatchClick(i+1)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
+        <div>Batch Id: {bat['PlanBatchId']}</div>
+        <div>Batch Ref: {bat['PlanBatchRef']}</div></div>
+      // body...
+    })
+    var plannedBatchesStart = this.state.plannedBatches.map(function (bat, i) {
+      var bgc = '#e1e1e1'
+      if(self.state.startBatch == i){
+        bgc = '#7ccc7c'
+      } 
+      return  <div onClick={() => self.onStartBatchClick(i)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
+        <div>Batch Id: {bat['PlanBatchId']}</div>
+        <div>Batch Ref: {bat['PlanBatchRef']}</div></div>
+      // body...
+    })
     var pl = 'assets/play-arrow-fti.svg'
       var stp = 'assets/stop-fti.svg'
       var batchInfo = <div style={{height:315}}>
       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
       <div style={{padding:5}}>Batch stopped</div></div>
       var play, stop;
+
       if(this.props.start){
-        play = <div onClick={this.props.startB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+        play = <div onClick={this.onStartClick} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
         stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FA2222', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
       }else{
-        play = <div onClick={this.props.startB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#00FF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+        play = <div onClick={this.props.pause} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#00FF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={'assets/pause.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause</div></div>
       stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#F04040', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
       batchInfo = <div style={{height:315}}>
          <span><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
@@ -4200,19 +4436,147 @@ class BatchControl extends React.Component{
        <div></div>
        </div>
     </div>
-      }   
-      var batchList = <div style={{width:250, background:'#e1e1e1', border:'2px solid #e1e1e1', height:515, margin:5, marginBottom:0}}>
+      }
+      var batback = '#e1e1e1' 
+      var batNum = this.props.prod['BatchNumber']
+      var batRef = this.props.prod['BatchRef']
+      var prodName = this.props.prod['ProdName']  
+      if(this.state.selBatch == 0){
+        batback = '#7ccc7c'
+      }else{
+        var batch = this.state.plannedBatches[this.state.selBatch - 1]
+        batNum = batch['PlanBatchId']
+        batRef = batch['PlanBatchRef']
+        prodName = batch['PlanProdNum']
+      } 
+      var batchList = <div style={{width:300, background:'#e1e1e1', border:'2px solid #e1e1e1', height:515, marginLeft:5, marginRight:5, marginBottom:0}}>
        <div> <div style={{borderBottom:'2px solid #ccc', lineHeight:'60px', height:60, textAlign:'center'}}>Current Batch</div>
-        <div style={{fontSize:18, borderBottom:'2px solid #ccc'}}>
+        <div onClick={()=> this.onBatchClick(0)} style={{fontSize:18, borderBottom:'2px solid #ccc',background:batback}}>
         <div>Batch Id: {this.props.prod['BatchNumber']}</div>
-        <div>Product: {this.props.prod['ProdName']}</div></div>
+        <div>Batch Ref: {this.props.prod['BatchRef']}</div></div>
        </div>
-        <div><div style={{borderBottom:'2px solid #ccc', lineHeight:'60px', height:60, textAlign:'center'}}>Planned Batches</div></div>
+        <div style={{height:326}}><div style={{borderBottom:'2px solid #ccc', lineHeight:'60px', height:60, textAlign:'center'}}>Planned Batches</div><div style={{height:265, overflowY:'scroll'}}>{plannedBatches}</div></div>
+                <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #ccc'}}>
+          <div onClick={this.addBatch} style={{display:'table-cell',height:66, borderRight:'2px solid #ccc', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>+ Add New Batch</div>
+          <div onClick={this.showAllProd} style={{display:'table-cell',height:66, borderLeft:'2px solid #ccc',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>Show All Batches</div>
+          </div>
       </div>
 
-    return <div style={{minHeight:400, padding:5}}>
-          <div><div style={{display:'inline-block',verticalAlign:'top'}}>{batchList}</div><div style={{display:'inline-block',verticalAlign:'top-center'}}>{this.props.children}</div></div>
+    /*return <div style={{minHeight:400, padding:5}}>
+          <div><div style={{display:'inline-block',verticalAlign:'top'}}>{batchList}</div><div style={{display:'inline-block',verticalAlign:'top'}}>{this.props.children}</div></div>
          <div>{play}{stop}<div style={{display:'inline-block', float:'right'}}><CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={'Past Batches'}/></div></div>
+      
+    </div>*/
+    
+    var bmodes = ['Auto','Planned Batch', 'Manual Entry']
+    var bmodeSelect =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[vdefByMac[this.props.mac][1][0]['BatchMode']]} ioBits={this.props.ioBits} vMap={vMapV2['BatchMode']} language={this.props.language}  interceptor={false} name={'Batch Mode'} ref={this.ed} val={[this.state.startMode]} options={[bmodes]} onChange={this.selectChanged}/>
+     return <div style={{minHeight:400, padding:5}}>
+          <div style={{display:'grid', gridTemplateColumns:'315px auto'}}><div style={{display:'inline-block',verticalAlign:'top'}}>{batchList}</div>
+          <div style={{display:'grid',verticalAlign:'top', gridTemplateRows:'200px auto', backgroundColor:'#e1e1e1'}}>
+          <div style={{display:'grid', gridTemplateColumns:'400px auto'}}><div>
+          <table><tbody><tr><td style={{width:250}}>Batch</td><td>{batNum}</td></tr>
+                        <tr><td>Batch Ref</td><td>{batRef}</td></tr>
+                        <tr><td>Product</td><td>{prodName}</td></tr>
+                        <tr><td>Time</td><td>{this.state.batchStartTime}</td></tr></tbody></table></div><div><BatchHistogram ref={this.bhg}/></div></div>
+          <div style={{display:'grid', gridTemplateColumns:'400px auto'}}><div style={{display:'inline-block',verticalAlign:'top'}}><div>Batch Information</div>
+            <table  style={{fontSize:17}}><tbody><tr><td>Total Weight</td><td>{this.props.crec['TotalWeight'].toFixed(1) + ' g'}</td></tr>
+            <tr><td>Good Weight</td><td>{this.props.crec['PassedWeight'].toFixed(1) + ' g'}</td></tr>
+            <tr><td>Low Weight</td><td>{this.props.crec['LowWeight']}</td></tr>
+            <tr><td>High Weight</td><td>{this.props.crec['HighWeight']}</td></tr>
+            <tr><td>Target Weight</td><td>{this.props.prod['TargetWeight']}</td></tr>
+             </tbody></table>
+
+          </div>
+          <div style={{display:'inline-block',verticalAlign:'top'}}><div>Batch Weights</div>
+          <div>
+            <table  style={{fontSize:17}}><tbody><tr><td>Total</td><td>{this.props.crec['TotalCnt']}</td></tr>
+            <tr><td>Good</td><td>{this.props.crec['PassWeightCnt']}</td></tr>
+            <tr><td>Low Reject</td><td>{this.props.crec['LowRejCnt']}</td></tr>
+            <tr><td>Low Pass</td><td>{this.props.crec['LowPassCnt']}</td></tr>
+            <tr><td>High</td><td>{this.props.crec['HighCnt']}</td></tr>
+            <tr><td>Unsettled</td><td>{this.props.crec['UnsettledCnt']}</td></tr>
+            <tr><td>Improbable</td><td>{this.props.crec['ImprobableCnt']}</td></tr>
+            <tr><td>Check Weight</td><td>{this.props.crec['CheckWeightCnt']}</td></tr>
+            </tbody></table>
+
+          </div>
+          </div></div>
+          </div></div>
+         <div>{play}{stop}<div style={{display:'inline-block', float:'right'}}>
+         <CircularButton2  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.changeMode}><div style={{fontSize:20, lineHeight:'25px'}}><div>Batch Mode</div><div>{bmodes[this.state.startMode]}</div></div></CircularButton2>
+         <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.pastBatches} lab={'Past Batches'}/></div></div>
+         
+         <Modal x={true} ref={this.addModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+          <AddBatch branding={this.props.branding} language={this.props.language} mac={this.props.mac} addBatch={this.addnewBatch}/>
+        </Modal>
+        <Modal x={true} ref={this.startModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+        <div style={{height:400, overflowY:'scroll'}}>{plannedBatchesStart}</div>
+        <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.startPlannedBatch} lab={'Confirm'}/>
+        </Modal>
+        <Modal x={true} ref={this.manModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+        <ManBatch branding={this.props.branding} language={this.props.language} mac={this.props.mac} addBatch={this.runnewBatch}/>
+        </Modal>
+        {bmodeSelect}
+    </div>
+  }
+}
+class PastBatches extends React.Component{
+  constructor(props){
+    super(props);
+  }
+  render(){
+    return <div></div>
+  }
+}
+class BatchStart extends React.Component{
+  constructor(props){
+    super(props)
+  }
+  render(){
+  }
+}
+class AddBatch extends React.Component{
+  constructor(props){
+    super(props);
+    this.addBatch = this.addBatch.bind(this);
+    this.state = {PlanBatchId:0,PlanBatchRef:'',PlanBatchProdNum:1,PlanBatchNumPacks:100}
+  }
+  addBatch(){
+    this.props.addBatch({PlanBatchId:this.state.PlanBatchId,PlanBatchRef:this.state.PlanBatchRef,PlanProdNum:this.state.PlanBatchProdNum,PlanNumPacks:this.state.PlanBatchNumPacks})
+  }
+  render(){
+    console.log('param',vdefByMac[this.props.mac][1][12]['PlanBatchId'], vdefByMac[this.props.mac][1][12]['PlanBatchRef'],vdefByMac[this.props.mac][1][12]['PlanNumPacks'], vdefByMac[this.props.mac][1][12]['PlanProdNum'])
+    return <div style={{background:'#e1e1e1',padding:10}}>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Add New Batch'}</div></h2></span>
+     
+      <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchId'} vMap={vMapV2['PlanBatchId']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchId']['@translations'][this.props.language]['name']} value={this.state.PlanBatchId} param={vdefByMac[this.props.mac][1][12]['PlanBatchId']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchId:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchId']['@translations'][this.props.language]['description']}/></div>
+      <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
+      <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
+      <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['name']} value={this.state.PlanBatchProdNum} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']}/></div>   
+        <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={'Confirm'}/></div>
+      
+    </div>
+  }
+}
+class ManBatch extends React.Component{
+  constructor(props){
+    super(props);
+    this.addBatch = this.addBatch.bind(this);
+    this.state = {PlanBatchId:0,PlanBatchRef:'',PlanBatchProdNum:1,PlanBatchNumPacks:100}
+  }
+  addBatch(){
+    this.props.addBatch({PlanBatchId:this.state.PlanBatchId,PlanBatchRef:this.state.PlanBatchRef,PlanProdNum:this.state.PlanBatchProdNum,PlanNumPacks:this.state.PlanBatchNumPacks})
+  }
+  render(){
+    console.log('param',vdefByMac[this.props.mac][1][12]['PlanBatchId'], vdefByMac[this.props.mac][1][12]['PlanBatchRef'],vdefByMac[this.props.mac][1][12]['PlanNumPacks'], vdefByMac[this.props.mac][1][12]['PlanProdNum'])
+    return <div style={{background:'#e1e1e1',padding:10}}>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Start New Batch'}</div></h2></span>
+     
+      <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchId'} vMap={vMapV2['PlanBatchId']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchId']['@translations'][this.props.language]['name']} value={this.state.PlanBatchId} param={vdefByMac[this.props.mac][1][12]['PlanBatchId']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchId:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchId']['@translations'][this.props.language]['description']}/></div>
+      <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
+      <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
+      <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['name']} value={this.state.PlanBatchProdNum} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']}/></div>   
+        <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={'Confirm'}/></div>
       
     </div>
   }
@@ -4231,6 +4595,7 @@ class WeightHistogram extends React.Component{
       //bins.push(64-Math.pow((8-i),2))
     }
     this.pushWeight = this.pushWeight.bind(this);
+    this.clearHisto = this.clearHisto.bind(this);
     this.state ={bins:bins,divs:divs,range:[range0,range1]}
   }
   componentWillReceiveProps(props){
@@ -4249,29 +4614,40 @@ class WeightHistogram extends React.Component{
     this.setState({bins:bins,divs:divs,range:[range0,range1]})
     }
   }
+  clearHisto(){
+    var divs = []
+    var bins = []
+    var range0 = this.props.nom - (this.props.bucketSize*this.props.buckets/2)
+    var range1 = this.props.nom + (this.props.bucketSize*this.props.buckets/2)
+    var div = (range1-range0)/this.props.buckets
+    for(var i = 0; i<this.props.buckets; i++){
+      divs.push([range0+(div*i), range0+ (div* (i+1))])
+      bins.push(0)
+    }
+    this.state ={bins:bins,divs:divs,range:[range0,range1]}
+  }
   pushWeight(w){
-     console.log('array', w)
+    console.log('array', w)
     var bins = this.state.bins.slice(0)
     var divs = this.state.divs.slice(0)
     if(Array.isArray(w)){
 
       bins = [];
-    for(var j= 0; j<this.props.buckets; j++){
-     // divs.push([range0+(div*i), range0+ (div* (i+1))])
-      bins.push(0)
-      //bins.push(64-Math.pow((8-i),2))
-    }
-      w.forEach(function (wgt) {
-      var i = 0;
-      while(wgt > divs[i][1]){
-        i++;
+      for(var j= 0; j<this.props.buckets; j++){
+        // divs.push([range0+(div*i), range0+ (div* (i+1))])
+        bins.push(0)
+        //bins.push(64-Math.pow((8-i),2))
       }
-      bins[i]++;
-        // body...
+      w.forEach(function (wgt) {
+        var i = 0;
+        while((i < divs.length - 1)&&(wgt > divs[i][1])){
+          i++;
+        }
+        bins[i]++;
       })
     }else{
       var i = 0;
-      while(w > divs[i][1]){
+      while((i < divs.length - 1)&&(w > divs[i][1])){
         i++;
       }
       bins[i]++;
@@ -4284,6 +4660,7 @@ class WeightHistogram extends React.Component{
     var max = 0
     var data = this.state.bins.map(function(d,i){
       max = Math.max(d,max);
+     // console.log(divs.length, i)
       return {y0:0, y:d, x0:divs[i][0], x:divs[i][1]}
     })
     var ticks = 1
@@ -4312,6 +4689,35 @@ class WeightHistogram extends React.Component{
       </XYPlot>
   }
 }
+class BatchHistogram extends React.Component{
+  constructor(props){
+    super(props)
+    var histo = []
+    for(var i = 0; i<250;i++){
+      histo.push(0)
+    }
+    this.state = {histo:histo, bucketSize:1, bucketNum:100}
+  }
+  parseHisto(histo, bucketSize, bucketNum){
+    console.log('parseHisto', histo, bucketSize, bucketNum)
+    this.setState({histo:histo, bucketSize:bucketSize, bucketNum:bucketNum})
+  }
+  render(){
+    var data = this.state.histo.slice(0,this.state.bucketNum).map(function (d,i) {
+      // body...
+      return {y0:0, y:d, x0:i, x:i+1}
+    })
+    return <div>
+    <div style={{marginBottom:10, textAlign:'center'}}>{'Batch Histogram'}
+    </div>
+    <XYPlot xDomain={[0,this.state.bucketNum]} height={180} width={435} margin={{left:20,right:20,bottom:50,top:50}}>
+        <YAxis hideTicks/>
+        <XAxis/>
+        <VerticalRectSeries data={data} color={'darkturquoise'}/>
+      </XYPlot>
+      </div>
+  }
+}
 class ProdSettingEdit extends React.Component{
 	constructor(props){
 		super(props);
@@ -4322,12 +4728,17 @@ class ProdSettingEdit extends React.Component{
     this.trnsmdl = React.createRef();
     this.state = {curtrn:this.props.label}
     this.submitChange = this.submitChange.bind(this);
+    this.submitTooltip = this.submitTooltip.bind(this);
     this.translatePopup = this.translatePopup.bind(this);
 	}
   submitChange(){
     if(this.props.submitChange){
       this.props.submitChange(this.props.name, this.props.language, this.state.curtrn)
     }
+  }
+  submitTooltip(txt){
+    console.log(4467, this.props.name, this.props.language)
+    this.props.submitTooltip(this.props.name, this.props.language,txt)
   }
   componentDidMount(){
     this.setState({curtrn:this.props.label})
@@ -4370,16 +4781,17 @@ class ProdSettingEdit extends React.Component{
 
 		var self = this;
 		var ckb;
+    //console.log(this.props,4384)
 		if(this.props.editable){
 			if(this.props.param['@labels']){
 				var list = _pVdef[7][this.props.param["@labels"]]['english'].slice(0);
 
 				var lists = [list]
 
-				ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref={this.ed} val={[this.state.value]} options={lists} onChange={this.selectChanged}/>
+				ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref={this.ed} val={[this.state.value]} options={lists} onChange={this.selectChanged}/>
 
 			}else{
-				ckb = <CustomKeyboard preload={this.props.param['@name'] == 'ProdName'} branding={this.props.branding} ref={this.ed} language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value}/>
+				ckb = <CustomKeyboard preload={this.props.param['@name'] == 'ProdName'} branding={this.props.branding} ref={this.ed} language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value} submitTooltip={this.submitTooltip}/>
 
 			}
 		
@@ -4730,8 +5142,8 @@ class SettingsPageWSB extends React.Component{
           
          
           <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.liveWeight.toFixed(1)+'g'} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
-          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}/></div>
-          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
           <div style={{marginTop:100, fontSize:24, textAlign:'center'}}>{calStr}</div>
           <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCal} lab={'Calibrate'}/>
           </div>
@@ -5092,7 +5504,7 @@ class SettingsPage extends React.Component{
     }
      var buf = Buffer.alloc(5)
         buf.writeUInt8(ind,0)
-        if((n['@type'] == 'float')||(n['@type'] == 'belt_speed')||(n['@type'] == 'fdbk_rate')){
+        if((n['@type'] == 'float')||(n['@type'] == 'float_dist')||(n['@type'] == 'belt_speed')||(n['@type'] == 'fdbk_rate')){
           buf.writeFloatLE(parseFloat(v),1)
         }else{
           buf.writeUInt32LE(parseInt(v),1);
@@ -5136,6 +5548,10 @@ class SettingsPage extends React.Component{
 				buf.writeUInt32LE(parseInt(v),0)
 				strArg = buf;
 			}else if(n['@type'] == 'float'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float_dist'){
         var buf = Buffer.alloc(4)
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
@@ -5194,6 +5610,10 @@ class SettingsPage extends React.Component{
 				buf.writeUInt32LE(parseInt(v),0)
 				strArg = buf;
 			}else if(n['@type'] == 'float'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float_dist'){
         var buf = Buffer.alloc(4)
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
@@ -5317,7 +5737,7 @@ class SettingsPage extends React.Component{
 
 			var cat = data[lvl - 1 ][0].cat;
       if(data[lvl-1][0].packGraph){
-      console.log(5143,data[lvl-1])
+     //console.log(5143,data[lvl-1])
       grphBut = <img src='assets/graph.svg' style={{position:'absolute', width:30, left:800}} onClick={this.props.toggleGraph}/>
     }
 			var pathString = ''
@@ -5340,7 +5760,7 @@ class SettingsPage extends React.Component{
 		    }else if(lvl == 2){
 		    	if(this.props.mode == 'config'){
 		    		pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-		    		console.log(pathString)
+		    		//console.log(pathString)
 		    		label = catMapV2[pathString]['@translations'][this.props.language];
 		    	}else{
 		    		pathString = data.map(function (d) {return d[0].cat}).join('/')
@@ -5590,7 +6010,7 @@ class SettingItem3 extends React.Component{
         
 				  if(typeof props.data['@data'] == 'undefined'){
             //console.log('parseValues', 3)
-            console.log(props.lkey)
+            //console.log(props.lkey)
             if(typeof props.data[0] != 'undefined'){
 	  				if(typeof props.data[0]['child'] != 'undefined'){
              // console.log('parseValues', 4)
@@ -5780,7 +6200,7 @@ class SettingItem3 extends React.Component{
                 return self.props.dynSettings[d]
               }
 						});
-						if(f == 'mm'){
+						if((f == 'mm')||(f == 'float_dist')){
 							if(deps[0] == 0){
 								dec = 1
 							}
@@ -5791,7 +6211,10 @@ class SettingItem3 extends React.Component{
               console.log('belt_speed', deps, pVdef[6])
             }
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-					}
+					}else if(f == 'float_dist'){
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+    
+          }
 				}else if(typeof pram['@decimal'] != 'undefined'){
 					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
 				}
@@ -5834,7 +6257,7 @@ class SettingItem3 extends React.Component{
 							deps.push(1000)
 						}
 					}
-					if(f == 'mm'){
+					if((f == 'mm') || (f == 'float_dist')){
 							if(deps[0] == 0){
 								dec = 1
 							}
@@ -5842,6 +6265,10 @@ class SettingItem3 extends React.Component{
 					if(pram['@bit_len']<=16){
 						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
 					}
+          if(f == 'float_dist'){
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+    
+          }
 					if(f == 'phase_offset'){
 						val = 	uintToInt(val,16)//?? phase is coming in with different format for dyn data
 					}
@@ -6075,7 +6502,7 @@ class SettingItem3 extends React.Component{
 					}
 		
 
-					var medctrl= (<MultiEditControl branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
+					var medctrl= (<MultiEditControl weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
 	    		            mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
 	         				onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
 	          				lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
@@ -6117,7 +6544,7 @@ class SettingItem3 extends React.Component{
 			sty.height = 51;
 			sty.paddingRight = 5;
 		}
-		var medctrl= (<MultiEditControl branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
+		var medctrl= (<MultiEditControl weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
           lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
           label={this.state.label} int={false} name={this.props.lkey}/>)
 
@@ -6370,12 +6797,12 @@ class MultiEditControl extends React.Component{
    
 		var dt = false;
 		var fSize = 20;
-		if(namestring.length > 24){
+		if(namestring.length > 30){
 			fSize = 14
 		}
-		else if(namestring.length > 20){
+		else if(namestring.length > 24){
 			fSize= 16
-		}else if(namestring.length > 12){
+		}else if(namestring.length > 18){
 			fSize = 18
 		}
 		if(this.props.mobile){
@@ -6387,13 +6814,13 @@ class MultiEditControl extends React.Component{
 			lvst.background = SPARCBLUE2
 		}
 
-		var labWidth = (546/this.state.val.length)
+		var labWidth = (496/this.state.val.length)
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480',overflow:'hidden'}
 		if(this.props.branding == 'SPARC'){
 			lvst.background = SPARCBLUE2
 			vlabelStyle.boxShadow = ' -50px 0px 0 0 '+ SPARCBLUE2
 		}
-		var vlabelswrapperStyle = {width:546, overflow:'hidden', display:'table-cell'}
+		var vlabelswrapperStyle = {width:496, overflow:'hidden', display:'table-cell'}
 		if(this.props.mobile){
 			labWidth = parseInt(100/this.state.val.length) + '%'
 			vlabelswrapperStyle.width = '60%'
@@ -6414,6 +6841,19 @@ class MultiEditControl extends React.Component{
       var ioindicator = '';
 	    var vLabels = this.state.val.map(function(d,i){  
 			var val = d;
+      var units = self.props.param[i]['@units']
+      if(units == 'grams'){
+        if(self.props.weightUnits == 1){
+          val = val/1000 
+          units = 'kg'
+        }else if(self.props.weightPassed == 2){
+          val = val/453.592
+          units = 'lb'
+        }else if(self.props.weightPassed == 3){
+          val = val/28.3495
+          units = 'oz'
+        }
+      }
       if(self.props.param[i]['@type'] == 'float'){
         if(val.toString().length > val.toFixed(5).length){
           val = val.toFixed(5)
@@ -6466,7 +6906,7 @@ class MultiEditControl extends React.Component{
 				}
 			}
 	      	if(self.props.param[i]['@units']){
-	        	val = val + ' ' + self.props.param[i]['@units']
+	        	val = val + ' ' + units
 	      	}
 	      	if(self.props.combo){
 	        	val = <React.Fragment><div style={{color:'#aaa', fontSize:self.props.vst.fontSize - 4}}>{self.props.vMap['@labels'][i]}</div><div>{val}</div></React.Fragment>
@@ -6558,16 +6998,16 @@ class MultiEditControl extends React.Component{
        } 
 
 			return <div>
-     <div style={{display:'grid', gridTemplateColumns:"250px auto"}}>
+     <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
      <div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
 			 <ContextMenuTrigger id={this.props.name + 'ctmid'}>
       	{namestring}
          </ContextMenuTrigger>
 			</div>
      </div>
      
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
 				{vLabels}{ioindicator}
 			</div>
       </div>
@@ -6643,25 +7083,25 @@ class MultiEditControl extends React.Component{
         <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
               <button onClick={this.submitList}>Submit Translation</button>
         </Modal>)
-				options = <PopoutWheel submitTooltip={this.submitTooltip} inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref={this.pw} val={this.state.val} options={lists} onChange={this.selectChanged}/>
+				options = <PopoutWheel submitTooltip={this.submitTooltip} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref={this.pw} val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
-			        var bgClr = FORTRESSPURPLE2
+			  var bgClr = FORTRESSPURPLE2
         var txtClr = '#e1e1e1'
         if(this.props.branding == 'SPARC'){
           bgClr = SPARCBLUE2
           txtClr = '#000'
         }
 				return  <div>
-		     <div style={{display:'grid', gridTemplateColumns:"250px auto"}}>
+		     <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
          <div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
          <ContextMenuTrigger id={this.props.name + 'ctmid'}>
         {namestring}
         </ContextMenuTrigger>
       </div></div>
       
       
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
 				{vLabels}{ioindicator}
 			</div>
       </div>
@@ -6688,7 +7128,7 @@ class MultiEditControl extends React.Component{
 				}
 						var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
 						
-						return <PopoutWheel submitTooltip={self.submitTooltip} inputs={inputSrcArr} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={self['input'+i]} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
+						return <PopoutWheel submitTooltip={self.submitTooltip} inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={self['input'+i]} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
 					}else{
 						var num = true
 						if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){ num = false }
@@ -6709,8 +7149,8 @@ class MultiEditControl extends React.Component{
         }
 	   
      return <div>
-     <div style={{display:'grid', gridTemplateColumns:"250px auto"}}>
-      <div><div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:250,textAlign:'center'}}>
+     <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
+      <div><div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
            <ContextMenuTrigger id={this.props.name + 'ctmid'}>
         {namestring}
 
@@ -6718,7 +7158,7 @@ class MultiEditControl extends React.Component{
       </div>
       </div>
      
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
 				{vLabels}{ioindicator}
 			</div>
       </div>
@@ -6867,7 +7307,7 @@ class LogInControl2 extends React.Component{
 	render(){
 		var list = this.state.list
 		var namestring = 'Select User'
-		var pw = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
+		var pw = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} ovWidth={290} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
 
 		return <React.Fragment>{pw}
 			<CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
@@ -7251,7 +7691,7 @@ class AccountControl extends React.Component{
 	render(){
 		var self = this;
 		var levels = ['none','operator','technician','engineer']
-		var pw 	   =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref={this.pw} val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
+		var pw 	   =  <PopoutWheel inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref={this.pw} val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
 		var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
 		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
 		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
@@ -7316,7 +7756,10 @@ class AccountRow extends React.Component{
     this.username = React.createRef();
 	}
 	componentWillReceiveProps(props){
-		this.setState({username:props.username, acc:props.acc, password:props.password})
+    if(!this.ed.current.state.show){
+      this.setState({username:props.username, acc:props.acc, password:props.password})
+    }
+		
 	}
 	valClick(){
 		//toast('Value Clicked')
@@ -7442,19 +7885,19 @@ class AccountRow extends React.Component{
           bgClr = SPARCBLUE2
           txtClr = '#000'
         }
-			var pw = 	<PopoutWheel branding={this.props.branding} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+			var pw = 	<PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
 		var userkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
 		var pswdkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
 	
 			var edit = <Modal mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
 			<div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
 
-				<div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Username: '}
-				</div>		<div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.username}</label></div></div>
-				<div style={{marginTop:5}} onClick={() => this.pswd.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Password: '}
-				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div>
-				<div style={{marginTop:5}} onClick={() => this.pw.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}} >{'Level: '}
-				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}><label style={st}>{this.state.acc}</label></div></div>
+				<div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Username: '}
+				</div>		<div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.username}</label></div></div>
+				<div style={{marginTop:5}} onClick={() => this.pswd.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Password: '}
+				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div>
+				<div style={{marginTop:5}} onClick={() => this.pw.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Level: '}
+				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.acc}</label></div></div>
 						</div>
 				{pw}{userkb}{pswdkb}
 			</Modal>
@@ -7464,10 +7907,10 @@ class AccountRow extends React.Component{
 
 //ssl no verify test
 			return(<div style={{marginTop:5}}>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}}>
 				{namestring}
 			</div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
 				{vLabels}
 			</div>
 			{edit}
@@ -7628,7 +8071,7 @@ class TimezoneControl extends React.Component{
     }
 
     var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
-    st.width = 546
+    st.width = 496
     st.fontSize = 24
     st.display = 'table-cell';//self.props.vst.display;
 
@@ -7639,10 +8082,10 @@ class TimezoneControl extends React.Component{
       tzTxt = this.props.timezones[this.state.timeZone-1].text;
     }
     var tzItem = (<div style={{margin:2}} onClick={()=>this.tz.current.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:250,textAlign:'center'}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}}>
         {'Time Zone'}
       </div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:546}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{tzTxt}</div>
       </div>
       </div>)
