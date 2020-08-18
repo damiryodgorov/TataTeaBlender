@@ -24,11 +24,8 @@ let outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE',
 
 const _ioBits = ['TACH','EYE','RC_1','RC_2','REJ_EYE','AIR_PRES','REJ_LATCH','BIN_FULL','REJ_PRESENT','DOOR1_OPEN','DOOR2_OPEN','CLEAR_FAULTS','CLEAR_WARNINGS','PHASE_HOLD','CIP','CIP_TEST','CIP_PLC','PROD_SEL1','PROD_SEL2','PROD_SEL3','PROD_SEL4',
                   'TEST','NONE','REJ_MAIN','REJ_ALT','FAULT','TEST_REQ','HALO_FE', 'HALO_SS', 'LS_RED','LS_YEL','LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
-
-
 var liveTimer = {}
 var myTimers = {}
-//radial-gradient(circle, #30A8E233 34%, #30A8E2);
 
 const SPARCBLUE2 = '#30A8E2'
 const SPARCBLUE1 = '#1C3746'
@@ -44,8 +41,7 @@ const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
 var _Vdef;
 var _pVdef;
-let isVdefSet = false;
-var ftiTouch = true //this.
+//let isVdefSet = false;
 var _nVdf;
 
 var categories;
@@ -58,6 +54,7 @@ var catMapV2 = vdefMapV2["@catmap"]
 var labTransV2 = vdefMapV2['@labels']
 
 const FtiSockIo = require('./ftisockio.js')
+const Params = require('./params.js')
 const FastZoom = cssTransition({ 
 	enter: 'zoomIn',
   exit: 'zoomOut',
@@ -72,8 +69,7 @@ Object.defineProperty(Array.prototype, 'chunk', {
         return temporal;
     }
 });
-
-const Params = require('./params.js')
+/*************Helper functions start**************/
 function setBufferBits(buf,v,byte_pos,bit_pos,bit_len){
 	if(bit_len == 8){
 		buf.writeUInt8(v,byte_pos + bit_pos/8)
@@ -86,6 +82,21 @@ function setBufferBits(buf,v,byte_pos,bit_pos,bit_len){
 	}else{
 
 	}
+}
+function FormatWeight(wgt, unit){
+  if(unit < 2){
+    if(wgt < 1000){
+      return wgt.toFixed(1) + ' g'
+    }else{
+      return wgt.toFixed(3) + ' kg'
+    }
+  }else{
+    if(wgt < 454){
+      return (wgt/28.3495).toFixed(1) + 'oz'
+    }else{
+      return (wgt/453.59237).toFixed(2) + ' lbs'
+    }
+  }
 }
 function toArrayBuffer(buffer) {
     var ab = new ArrayBuffer(buffer.length);
@@ -352,53 +363,6 @@ function getParams3(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch){
           //    //console.log(335,_p)
             }
                  ///
-        }else if(_vmap[p]['@halo']){
-          var a = _vmap[p].children[0];
-                if(typeof pVdef[0][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[1][a] != 'undefined'){
-
-              var data = prodRec[a]
-              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
-                if(prodRec[a.slice(0,-4) + "Warn"]){
-                  data = data + prodRec[a.slice(0,-4) + "Warn"];
-                }
-                
-              }
-              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
-              if(p == 'BeltSpeed'){
-                //////console.log('653',par,_p)
-              }
-            }else if(typeof pVdef[2][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[3][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
-            }else if(par.val == 'DCRate_A'){
-              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
-            }
-            if(_p != null){
-              var ch = _vmap[p].children[1];
-
-              var _ch;
-              if(typeof pVdef[0][ch] != 'undefined'){
-              _ch = sysRec[ch]
-              }else if(typeof pVdef[1][ch] != 'undefined'){
-              _ch = prodRec[ch]
-              }else if(typeof pVdef[2][ch] != 'undefined'){
-              
-                _ch = dynRec[ch]
-              }else if(typeof pVdef[3][ch] != 'undefined'){
-              
-                _ch = fram[ch]
-              }else if(ch == 'DCRate_B'){
-                _ch = prodRec[ch]
-              }
-              _p['@children'].push(_ch)
-              _p['@halo'] = true; 
-              params.push(_p)
-              ////console.log(335,_p)
-            }
-                 ///
         }else if(_vmap[p]['@input']){
           var a = _vmap[p].children[0];
                 if(typeof pVdef[0][a] != 'undefined'){
@@ -574,8 +538,6 @@ function getParams3(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch){
 }
 function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
 	var params = []
-	//////////console.log(cat)
-	//////////console.log(pVdef)
 	cat.params.forEach(function(par) {
 		if(par.type == 0){
 
@@ -621,10 +583,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram){
     			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
     		}else if(par.val == 'DCRate_A'){
     			_p = {'type':0, '@name':p,'@data':prodRec[p], '@children':[], acc:par.acc}
-    		}else{
-          //console.log(p,597)
-        }    	//////////console.log(_vmap[p])
-    //	//console.log(p)
+    		}
     		if(_p != null){
     		if(typeof _vmap[p] == 'undefined'){
     	     console.log(p)
@@ -857,11 +816,21 @@ function iterateCats3(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram,batch){
   
   return cat
 }
+function tickFormatter(t,i) {
+  var text = t.split(' ').map(function(v,j){
+    return <tspan x="0" dy={j+'em'}>{v}</tspan>
+  })
+  return (<text x="0"  transform='translate(-5,-5)' style={{textAnchor:"end", fontSize:14}}>
+    {text}
+  </text>);
+}
+/*************Helper functions end**************/
+
+/*******************Initialize Page end********************/
 var _wsurl = 'ws://' +location.host 
 var socket = new FtiSockIo(_wsurl,true);
-
 socket.on('vdef', function(vdf){
-console.log('on vdef')
+  console.log('on vdef')
 	var json = vdf[0];
 	_Vdef = json
 	var res = [];
@@ -928,29 +897,12 @@ console.log('on vdef')
     	outputSrcArr = json['@defines']['LOGICAL_OUTPUT_NAMES'].slice(0)
       inputSrcArr = json['@defines']['PHYSICAL_INPUT_NAMES'].slice(0)
     }
-    //if(json['@defines']['INTERCEPTOR']){
-        vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@cwsys"]], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
-
-    //}else{
-      //   vdefList[json['@version']] = [json, res, nVdf, categories, [vdefMapST['@categories']], vdefMapST['@vMap'], vdefMapST['@pages']]
-       // vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapST["@categories"]], vdefMapST['@vMap'], vdefMapST['@pages']]
-
-    //}
-
-  	console.log('552',vdefByMac)
-    isVdefSet = true;
+    vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@cwsys"]], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
+   // isVdefSet = true;
 })
+/*******************Initialize Page end********************/
 
-
-function tickFormatter(t,i) {
-	var text = t.split(' ').map(function(v,j){
-		return <tspan x="0" dy={j+'em'}>{v}</tspan>
-	})
-  return (<text x="0"  transform='translate(-5,-5)' style={{textAnchor:"end", fontSize:14}}>
-    {text}
-  </text>);
-}
-
+/******************Main Components start********************/
 class Container extends React.Component {
 	constructor(props){
 		super(props)
@@ -963,281 +915,55 @@ class Container extends React.Component {
 		</div>
 	}
 }
-class Clock extends React.Component{
-	constructor(props){
-		super(props)
-		var dateStr = new Date().toISOString();
-		this.state = {date:dateStr.slice(0,10) + ' '+ dateStr.slice(11,19)}
-	}
-	componentDidMount(){
-		var self = this;
-		setInterval(function () {
-			// body...
-			var dateStr = new Date().toISOString();
-			self.setState({date:dateStr.slice(0,10) + ' '+ dateStr.slice(11,19)})
-		},1000)
-	}
-	render(){
-		var style = Object.assign({}, this.props.style);
-
-		return <div style={style}>{this.state.date}</div>
-	}
-}
-class FatClock extends React.Component{
-  constructor(props){
-    super(props)
-    var dateStr = new Date().toISOString();
-    this.setDate = this.setDate.bind(this);
-    this.state = {date:dateStr.slice(0,10) + ' '+ dateStr.slice(11,19)}
-    this.changeDT = this.changeDT.bind(this);
-    this.toggleCK = this.toggleCK.bind(this);
-    this.setDT = this.setDT.bind(this);
-    this.setDST = this.setDST.bind(this);
-    this.setTz = this.setTz.bind(this);
-    this.dtsModal = React.createRef();
-    this.dts = React.createRef();
-  }
-  componentDidMount(){
-    //socket.emit('getTimezones')
-  }
-  setTz(tz){
-    this.props.sendPacket('Timezone',tz)
-  }
-  setDST(dst){
-    this.props.sendPacket('DaylightSavings',dst)
-    this.dtsModal.current.close();
-  }
-  setDT(dt){
-    var self = this;
-    this.setState({dt:dt, tick:0})
-    setTimeout(function(){
-      self.setState({tick:1})
-    },1000)
-  }
-  changeDT(dt){
-    this.props.sendPacket('DateTime', dt)
-    this.dtsModal.current.close();
-  }
-  toggleCK(){
-    var self = this;
-    this.dtsModal.current.toggle();
-    setTimeout(function(){
-      self.dts.current.getDT(self.state.date)
-      socket.emit('getTimezones')
-    },200)
-  }
-  setDate(date){
-    var self = this;
-    this.setState({date:date})
-
-    setTimeout(function () {
-      // body...
-      var sec = parseInt(date.slice(-1)) + 1;
-      self.setState({date:date.slice(0,-1)+sec.toString()})
-    },1000)
-  }
-  //componentDidMount(){
-    //var self = this;
-    //setInterval(function () {
-      // body...
-     // var dateStr = new Date().toISOString();
-      //self.setState({date:dateStr.slice(0,10) + ' '+ dateStr.slice(11,19)})
-    //},1000)
-  //}
-  render(){
-    var style = Object.assign({}, this.props.style);
-
-    return <React.Fragment>
-    <div style={style} onClick={this.toggleCK}>{this.state.date}</div>
-      <Modal ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
-        <DateTimeSelect setTz={this.setTz} timezones={this.props.timezones} timeZone={this.props.timeZone} branding={this.props.branding} setDST={this.setDST} dst={this.props.dst} language={this.props.language} setDT={this.changeDT} ref={this.dts}/>
-      </Modal>
-      </React.Fragment>
-  }
-}
-class DateTimeSelect extends React.Component{
-  constructor(props){
-    super(props)
-    this.state = {year:'1996',month:'01',day:'01', hour:'00',minute:'00',sec:'00'}
-    this.getDT = this.getDT.bind(this);
-    this.setDT = this.setDT.bind(this);
-    this.onDateChange = this.onDateChange.bind(this);
-    this.onTimeChange = this.onTimeChange.bind(this);
-    this.onDSTChange = this.onDSTChange.bind(this);
-    this.onTzChange = this.onTzChange.bind(this);
-    this.dstpw = React.createRef();
-    this.dpw = React.createRef();
-    this.tpw = React.createRef();
-  }
-  getDT(dtstring='1996/01/01 00:00:00'){
-    var dtarray = dtstring.split(' ');
-    var date = dtarray[0].split('/');
-    var time = dtarray[1].split(':')
-    this.setState({year:date[0],month:date[1],day:date[2],hour:time[0],minute:time[1],sec:time[2]})
-  }
-  setDT(){
-    var dt = this.state.year +'/'+this.state.month+'/'+this.state.day + ' ' + this.state.hour +':'+this.state.minute+':'+this.state.sec
-    this.props.setDT(dt)
-  }
-  onDateChange(_date,i){
-    var date = [parseInt(this.state.year)-1996,parseInt(this.state.month),parseInt(this.state.day)]
-    if(i != 0){
-      _date ++
-    }
-    date[i] = _date;
-    console.log(_date, date, i)
-    this.setState({year:(date[0] + 1996).toString(), month:('00'+ date[1]).slice(-2).toString(), day:('00'+ date[2]).slice(-2).toString()})
-  }
-  onTimeChange(_time,i){
-    var time = [parseInt(this.state.hour),parseInt(this.state.minute),parseInt(this.state.sec)]
-    time[i] = _time;
-    ////console.log(1532131312, [_time,i])
-    this.setState({hour:('00'+ time[0]).slice(-2).toString(), minute:('00'+ time[1]).slice(-2).toString(), sec:('00'+ time[2]).slice(-2).toString()})
-  }
-  onDSTChange(dst,i){
-    ////console.log(dst)
-    this.props.setDST(dst)
-  }
-  onTzChange(tz){
-    this.props.setTz(tz)
-  }
-  render(){
-    var bgClr = FORTRESSPURPLE2
-    var txtClr = '#e1e1e1'
-    if(this.props.branding == 'SPARC'){
-      bgClr = SPARCBLUE2
-      txtClr = '#000'
-    }
-    var years = [];
-    var months = [];
-    var days = [];
-    var hours = [];
-    var minutes = [];
-    var secs = [];
-
-    for(var i = 0; i < 40; i++){
-      years.push( (1996+i).toString());
-    }
-    for(var i=0; i<12;i++){
-      months.push(('00'+(i+1)).slice(-2));
-    }
-    for(var i=0; i<31;i++){
-      days.push(('00'+(i+1)).slice(-2));
-    }
-    for(var i=0; i<24;i++){
-      hours.push(('00'+i).slice(-2));
-    }
-    for(var i=0; i<60;i++){
-      minutes.push(('00'+i).slice(-2));
-    }
-    for(var i=0; i<60;i++){
-      secs.push(('00'+i).slice(-2));
-    }
-    var date = [years.indexOf(this.state.year), months.indexOf(this.state.month), days.indexOf(this.state.day)];
-    var time = [hours.indexOf(this.state.hour), minutes.indexOf(this.state.minute), secs.indexOf(this.state.sec)]
-    var tg = ['off','on']
-    var namestring = 'Select User'
-    var dpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['Date']} language={this.props.language} interceptor={false} name={'Date'} ref={this.dpw} val={date} options={[years,months,days]} onChange={this.onDateChange}/>
-    var tpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['Time']} language={this.props.language} interceptor={false} name={'Time'} ref={this.tpw} val={time} options={[hours,minutes,secs]} onChange={this.onTimeChange}/>
-    var dstpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['DST']} language={this.props.language} interceptor={false} name={'Daylight Savings'} ref={this.dstpw} val={[this.props.dst]} options={[['off','on']]} onChange={this.onDSTChange}/>
-    var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 '+ SPARCBLUE1}
-    var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-      var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
-
-      var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
-      st.width = 496
-      st.fontSize = 24
-      st.display = 'table-cell';//self.props.vst.display;
-      
-
-
-        
-    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#000"}} >
-      <div style={{display:'inline-block', textAlign:'center'}}>DateTime</div></h2></span>)
-    var clr = "#e1e1e1"
- 
- var dateItem = (<div style={{margin:2}} onClick={()=>this.dpw.current.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Date'}
-      </div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
-        <div style={st}>{this.state.year +'/'+this.state.month+'/'+this.state.day}</div>
-      </div>
-      </div>)
-
-    var timeItem = (<div style={{margin:2}} onClick={()=>this.tpw.current.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Time'}
-      </div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
-        <div style={st}>{this.state.hour +':'+this.state.minute+':'+this.state.sec}</div>
-      </div>
-      </div>)
-    var dstItem =  (<div style={{margin:2}} onClick={()=>this.dstpw.current.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Daylight Savings'}
-      </div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
-        <div style={st}>{tg[this.props.dst]}</div>
-      </div>
-      </div>)
-
-    return <div style={{position:'relative', color:'black'}}>{tpw}{dpw}{dstpw}
-    <div>
-    {titlediv}
-    
-    </div>
-      {dateItem}
-      {timeItem}
-      {dstItem}
-      <TimezoneControl timezones={this.props.timezones} timeZone={this.props.timeZone} onTzChange={this.onTzChange} language={this.props.language} branding={this.props.branding}/>
-      <button className='customAlertButton' onClick={this.setDT}>Set DateTime</button>
-    </div> 
-  }
-}
 class LandingPage extends React.Component{
-	constructor(props){
-		super(props)
-		this.state = {histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
+  constructor(props){
+    super(props)
+    this.state = {histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
-			curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
-			detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
-		this.authenticate = this.authenticate.bind(this);
+      curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
+      detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
+    this.authenticate = this.authenticate.bind(this);
     this.importVmap = this.importVmap.bind(this);
     this.exportVmap = this.exportVmap.bind(this);
-		this.simulateData = this.simulateData.bind(this);
-		this.simStart = this.simStart.bind(this);
-		this.start = this.start.bind(this);
-		this.stop = this.stop.bind(this);
-		this.changeBranding = this.changeBranding.bind(this);
-		this.loadPrefs = this.loadPrefs.bind(this)
-		this.renderModal = this.renderModal.bind(this);
-		this.showDisplaySettings = this.showDisplaySettings.bind(this);
-		this.addToTmp = this.addToTmp.bind(this);
-		this.connectToUnit = this.connectToUnit.bind(this);
-		this.tareWeight = this.tareWeight.bind(this);
-		this.calWeight = this.calWeight.bind(this);
-		this.onRMsg = this.onRMsg.bind(this);
-		this.pModalToggle = this.pModalToggle.bind(this);
-		this.sendPacket = this.sendPacket.bind(this);
-		this.calWeightSend = this.calWeightSend.bind(this);
-		this.getCob = this.getCob.bind(this);
-		this.settingClick = this.settingClick.bind(this);
-		this.changeView = this.changeView.bind(this);
-		this.toggleLogin = this.toggleLogin.bind(this);
-		this.login = this.login.bind(this);
-		this.loginClosed = this.loginClosed.bind(this);
-		this.authenticate = this.authenticate.bind(this);
-		this.setAuthAccount = this.setAuthAccount.bind(this);
-		this.logout = this.logout.bind(this);
-		this.clearFaults = this.clearFaults.bind(this);
-		this.saveProductPassThrough = this.saveProductPassThrough.bind(this);
-		this.onPmdClose = this.onPmdClose.bind(this);
+    this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
+    this.changeBranding = this.changeBranding.bind(this);
+    this.loadPrefs = this.loadPrefs.bind(this)
+    this.renderModal = this.renderModal.bind(this);
+    this.showDisplaySettings = this.showDisplaySettings.bind(this);
+    this.connectToUnit = this.connectToUnit.bind(this);
+    this.tareWeight = this.tareWeight.bind(this);
+    this.calWeight = this.calWeight.bind(this);
+    this.onRMsg = this.onRMsg.bind(this);
+    this.pModalToggle = this.pModalToggle.bind(this);
+    this.sendPacket = this.sendPacket.bind(this);
+    this.calWeightSend = this.calWeightSend.bind(this);
+    this.getCob = this.getCob.bind(this);
+    this.settingClick = this.settingClick.bind(this);
+    this.changeView = this.changeView.bind(this);
+    this.toggleLogin = this.toggleLogin.bind(this);
+    this.login = this.login.bind(this);
+    this.loginClosed = this.loginClosed.bind(this);
+    this.authenticate = this.authenticate.bind(this);
+    this.setAuthAccount = this.setAuthAccount.bind(this);
+    this.logout = this.logout.bind(this);
+    this.clearFaults = this.clearFaults.bind(this);
+    this.saveProductPassThrough = this.saveProductPassThrough.bind(this);
+    this.onPmdClose = this.onPmdClose.bind(this);
     this.checkweight = this.checkweight.bind(this);
     this.setTheme = this.setTheme.bind(this);
     this.openBatch = this.openBatch.bind(this);
     this.closeCWModal = this.closeCWModal.bind(this);
     this.setTrans = this.setTrans.bind(this);
+    this.transChange = this.transChange.bind(this);
+    this.labChange = this.labChange.bind(this);
+    this.listChange = this.listChange.bind(this);
+    this.submitTooltip = this.submitTooltip.bind(this);
+    this.toggleGraph = this.toggleGraph.bind(this);
+    this.getBuffer = this.getBuffer.bind(this);
+    this.testWebView = this.testWebView.bind(this);
+    this.pause = this.pause.bind(this);
+
     this.lgctl = React.createRef();
     this.tBut = React.createRef();
     this.cwModal = React.createRef();
@@ -1259,145 +985,378 @@ class LandingPage extends React.Component{
     this.pmd = React.createRef();
     this.cwc = React.createRef();
     this.inputMod = React.createRef();
-    this.transChange = this.transChange.bind(this);
-    this.labChange = this.labChange.bind(this);
-    this.listChange = this.listChange.bind(this);
-    this.submitTooltip = this.submitTooltip.bind(this);
-    this.toggleGraph = this.toggleGraph.bind(this);
-    this.getBuffer = this.getBuffer.bind(this);
-    this.testWebView = this.testWebView.bind(this);
-    this.pause = this.pause.bind(this);
     this.webviewModal = React.createRef();
-
-
-	}
-  pause(){
-    this.sendPacket('BatchPause')
-    this.setState({start:true, pause:false, stop:true})
   }
-  getBuffer(){
-    this.sendPacket('refresh_buffer',6)
+  /*************Lifecycle functions start***************/
+  componentDidMount(){
+    var self = this;
+    this.state.timer = setInterval(function(){
+      if(self.state.connected){
+        if((Date.now() - liveTimer[self.state.curDet.mac]) > 1500){
+          self.setState({live:false, noupdate:false})
+        }
+      }
+    }, 1500)
+    setTimeout(function (argument) {
+      self.loadPrefs();
+    }, 500)   
+    socket.on('userNames', function(p){
+      console.log(['808', p])
+      self.setState({usernames:p.det.data.array})//, update:true})
+      
+    })
+    socket.on('connectedClients',function (c) {
+      var fram = self.state.fram
+      fram.ConnectedClients = c
+      self.setState({connectedClients:c,fram:fram, noupdate:false})
+      // body...
+    })
+    socket.on('custJSON',function (json) {
+      if(self.state.customMap){
+        vMapV2 = json['@vMap']
+        vMapLists = json['@lists']
+        catMapV2 = json['@catmap']
+        labTransV2 = json['@labels']
+        self.setState({custMap:json,vMap:json, noupdate:false})
+      }else{
+          self.setState({custMap:json, noupdate:false})
+      }
+      
+    })
+    socket.on('resetConfirm', function (r) {
+      //socket.emit('locateReq',true);
+    })
+    socket.on('nif', function(iface){
+      self.setState({nifip:iface.address, nifnm:iface.netmask})
+    })
+    socket.on('version',function (version) {
+      self.setState({version:version})
+    })
+    socket.on('gw', function(gw){
+      self.setState({nifgw:gw})
+    })
+    socket.on('displayUpdate', function(){
+    //  self.refs.updateModal.toggle();
+    })
+    socket.on('updateProgress',function(r){
+      self.setState({progress:r})
+    })
+    socket.on('onReset', function(r){
+      self.setState({currentPage:'landing', curDet:''});
+    })
+  
+    socket.on('netpoll', function(m){
+      self.onNetpoll(m.data, m.det)
+      m = null;
+    })
+    socket.on('prefs', function(f) {
+      var detL = self.state.detL
+      var cnt = 0;
+      var _ip = ''
+      f.forEach(function (u) {
+        u.banks.forEach(function(b){
+          detL[b.mac] = null
+          cnt++;
+          _ip = b.ip
+        })
+      })
+      if(cnt == 1){
+        socket.emit('locateUnicast', _ip, true)
+      }else{
+        socket.emit('locateReq',true)
+      }
+      setTimeout(function (argument) {
+      // body...
+      if(f.length == 1){
+        console.log(2048)
+        if(!self.state.connected){
+          console.log(2050)
+          if(f[0].banks.length == 1){
+            if(vdefByMac[f[0].banks[0].mac]){
+              ////console.log('try first here?')
+              self.connectToUnit(f[0].banks[0])
+            }else{
+              console.log('no vdef', vdefByMac)
+              setTimeout(function () {
+                // body...
+                if(!self.state.connected){
+                  ////console.log('switch?')
+                  if(vdefByMac[f[0].banks[0].mac]){
+                    self.connectToUnit(f[0].banks[0])
+                  }else{
+                    console.log('no vdef', vdefByMac)
+                  }
+                }
+              },4000)
+            }
+          }
+          
+        } 
+      }
+    },800)
+
+      self.setState({mbunits:f, detL:detL})
+    })
+    socket.on('notify',function(msg){
+      console.log(msg)
+      toast(msg)
+    })
+    socket.on('progressNotify',function(pk){
+      var on = pk.on;
+      var msg = pk.msg;
+      var percentage = pk.percentage
+    })
+    socket.on('testusb',function(dev){
+
+      ////console.log(['testusb',dev])
+    })
+    socket.on('noVdef', function(det){
+      console.log('no Vdef')
+      setTimeout(function(){
+        socket.emit('vdefReq', det);
+      }, 1000)
+    })
+    socket.on('notvisible', function(e){
+      toast('Detectors located, but network does not match')
+    })
+    socket.on('prodNames',function (pack) {
+      // body...
+      console.log('prodNames')
+      if(self.state.curDet.ip == pack.ip){
+        self.setState({pList:pack.list, prodNames:pack.names, noupdate:false})
+      }
+    })
+    socket.on('locatedResp', function (e) {
+      console.log(e,924)
+    try{
+    if(typeof e[0] != 'undefined'){
+      var dets = self.state.detL;
+      var macs = self.state.macList.slice(0);
+      var nps = self.state.netpolls;
+      
+      
+      var detectors = [];
+      e.forEach(function(d){
+          
+          macs.push(d.mac)
+          dets[d.mac] = d;
+          if(macs.indexOf(d.mac) == -1){
+            macs.push(d.mac)
+            dets[d.mac] = d
+          }
+
+          socket.emit('vdefReq', d);
+
+      })
+      var mbunits = self.state.mbunits;
+      var cnt = 0;
+      var curbnk 
+      mbunits.forEach(function(u){
+        var banks = u.banks.map(function(b){
+          cnt++;
+          if(dets[b.mac]){
+            var _bank = dets[b.mac]
+                  _bank.interceptor = false;
+                  curbnk = _bank
+                  return _bank
+
+          }else{
+            return b
+          }
+        })
+        u.banks = banks;
+      })
+      var curDet = self.state.curDet;
+
+      if(self.state.currentPage != 'landing'){
+        if(dets[curDet.mac]){
+          curDet = dets[curDet.mac];
+        }
+        else{
+        }
+      }
+      mbunits.forEach(function(u){
+        u.banks.forEach(function(b) {
+
+          dets[b.mac] = null;
+          if(!nps[b.ip]){
+            nps[b.ip] = []
+          }
+                         
+        })
+      })
+      var nfip = self.state.nifip;
+      if(e.length > 1){
+        nfip = e[0].nif_ip
+      }
+      self.setState({dets:e, detL:dets, mbunits:mbunits,curDet:curDet, macList:macs, netpolls:nps, nifip:nfip})
+    }
+      }catch(er){
+      }
+      socket.emit('getTimezones')
+    });
+      socket.on('dispSettings', function(disp){
+        self.setState({automode:disp.mode})
+      })  
+    
+    socket.on('paramMsgCW', function(data) {
+      self.onParamMsg(data.data, data.det)
+      data = null;
+    })
+    socket.on('rpcMsg', function (data) {
+      //////console.log(data)
+      self.onRMsg(data.data, data.det)
+      data = null;
+    })
+    socket.on('loggedIn', function(data){
+      //self.refs.logIn.toggle();
+      self.setState({curUser:data.id, level:data.level})
+    })
+
+    socket.on('logOut', function(){
+      self.setState({curUser:'', level:0})
+    })
+    socket.on('accounts', function(data){
+      ////console.log(data)
+      self.setState({accounts:data.data})
+    })
+
+    socket.on('authResp', function(pack){
+      if(pack.reset){
+        self.setAuthAccount(pack)
+      }else{
+        self.setAuthAccount(pack)
+  
+      }
+    })
+    socket.on('authFail', function(pack){
+      toast('Authentication failed')
+      self.setAuthAccount({user:'Not Logged In', level:0, user:-1})
+    })
+    socket.on('passwordNotify',function(e){
+      console.log(1117,e)
+      var message = 'Call Fortress with ' + e.join(', ');
+      //self.refs.msgm.show(message)
+    })
+    socket.on('timezones',function (e) {
+      // body...
+      self.setState({timezones:e})
+    })
   }
-	toggleLogin(){
-		if(this.state.user == -1){
-			this.lgctl.current.login();
-			this.setState({loginOpen:true})
-		}else{
-			this.logout()
-		}
-	}
-	logout(){
-		if(this.state.level != 0){
+  shouldComponentUpdate(nextProps, nextState){
+    if(true ==  nextState.noupdate){
+      return false;
+    }
+    return true;
+  }
+  /*************Lifecycle functions end  ***************/
 
-			toast("Logged out")
-			var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGOUT']
-			var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-			this.setState({level:0, userid:0,user:-1, username:'Not Logged In',noupdate:false})
+  /****** Login Functions start******/
+  toggleLogin(){
+    if(this.state.user == -1){
+      this.lgctl.current.login();
+      this.setState({loginOpen:true})
+    }else{
+      this.logout()
+    }
+  }
+  logout(){
+    if(this.state.level != 0){
 
-		}
-	}
-	login(v){
-		this.setState({level:v,noupdate:false})
-	}
-	setAuthAccount(pack){
-		var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGIN']
-		var pkt = rpc[1].map(function (r) {
-			if(!isNaN(r)){
-				return r
-			}else{
-				return pack.user
-			}
-		});
-		var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-		socket.emit('rpc', {ip:this.props.ip, data:packet})
+      toast("Logged out")
+      var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGOUT']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
+      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.setState({level:0, userid:0,user:-1, username:'Not Logged In',noupdate:false})
+
+    }
+  }
+  login(v){
+    this.setState({level:v,noupdate:false})
+  }
+  setAuthAccount(pack){
+    var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGIN']
+    var pkt = rpc[1].map(function (r) {
+      if(!isNaN(r)){
+        return r
+      }else{
+        return pack.user
+      }
+    });
+    var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+    socket.emit('rpc', {ip:this.props.ip, data:packet})
     console.log(pack,668)
-		this.setState({level:pack.level, username:pack.username,noupdate:false, update:true, userid:pack.user+1, user:pack.user})	
-	}
-	authenticate(user,pswd){
-		console.log('authenticate here')
-		socket.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.state.curDet.ip})
-	}
-	loginClosed(){
-		this.setState({loginOpen:false})//, update:true})
-	}
-	changeView (d) {
-		var st = this.state.stack;
-		st.push([this.state.currentView, this.state.data]);
-		this.setState({currentView:d[0], data:d[1]})
-	}
-	settingClick (s,n) {
-		if((Array.isArray(s))&&(s[0] == 'get_accounts')){
-			console.log('get accounts')
-		}else if((Array.isArray(s))&&(s[0] == 'reboot_display')){
+    this.setState({level:pack.level, username:pack.username,noupdate:false, update:true, userid:pack.user+1, user:pack.user}) 
+  }
+  authenticate(user,pswd){
+    console.log('authenticate here')
+    socket.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.state.curDet.ip})
+  }
+  loginClosed(){
+    this.setState({loginOpen:false});
+  }
+  /****** Login Functions end******/
+  changeView (d) {
+    var st = this.state.stack;
+    st.push([this.state.currentView, this.state.data]);
+    this.setState({currentView:d[0], data:d[1]})
+  }
+  settingClick (s,n) {
+    if((Array.isArray(s))&&(s[0] == 'get_accounts')){
+      console.log('get accounts')
+    }else if((Array.isArray(s))&&(s[0] == 'reboot_display')){
 
     }else{
-			var set = this.state.data.slice(0)
-			if(Array.isArray(s)){
-				set.push(s)
-			}else{
-				set.push(s)
-				set.push(n)
-			}
-			var self = this;
-			setTimeout(function () {
-				self.changeView(['SettingsDisplay',set]);
-			},100)
-		}
-		
-	}
-	onRMsg(e,det){
-		console.log('onRMsg',e)
-	}
-	loadPrefs() {
-		console.log('is this ready')
-		if(socket.sock.readyState  ==1){
-			console.log('load Prefs')
-		  //socket.emit('locateReq');
-			socket.emit('getVersion',true);
-		  //socket.emit('connectLocal',true)
-      socket.emit('getPrefsCW',true);
-      		socket.emit('getDispSettings');
-          socket.emit('getCustomJSON',JSON.stringify(vdefMapV2))
+      var set = this.state.data.slice(0)
+      if(Array.isArray(s)){
+        set.push(s)
+      }else{
+        set.push(s)
+        set.push(n)
+      }
+      var self = this;
+      setTimeout(function () {
+        self.changeView(['SettingsDisplay',set]);
+      },100)
+    }
+  }
 
-		}
-	}
-	getCob (sys,prod,dyn, fram) {
-    
-		var vdef = vdefByMac[this.state.curDet.mac]
-		var _cvdf = JSON.parse(JSON.stringify(vdef[4][0]))
-		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
-    //console.log(vdef[1])
-		vdef = null;
-		_cvdf = null;
-		return cob
-	}
-	getPCob (sys,prod,dyn, fram) {
-  
-		var vdef = vdefByMac[this.state.curDet.mac]
-		var _cvdf = JSON.parse(JSON.stringify(vdef[6]['CWProd']))
-		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
-		vdef = null;
-		_cvdf = null;
-		return cob
-	}
-	shouldComponentUpdate(nextProps, nextState){
-		if(true ==  nextState.noupdate){
-			return false;
-		}
-		return true;
-	}
-	onParamMsg(e,u){
-		//console.log('onParamMsg', e.type)
-		if(this.state.curDet.ip == u.ip){
-			var self = this;
-			liveTimer[this.state.curDet.mac] = Date.now()
-			if(typeof e != 'undefined'){
-				var pVdef = vdefByMac[this.state.curDet.mac][1]
-				var vdf = vdefByMac[this.state.curDet.mac][0]
-				if(e.type == 0){
+  loadPrefs() {
+    if(socket.sock.readyState  ==1){
+      socket.emit('getVersion',true);
+      socket.emit('getPrefsCW',true);
+      socket.emit('getDispSettings');
+      socket.emit('getCustomJSON',JSON.stringify(vdefMapV2))
+    }
+  }
+  getCob (sys,prod,dyn, fram) {
+    var vdef = vdefByMac[this.state.curDet.mac]
+    var _cvdf = JSON.parse(JSON.stringify(vdef[4][0]))
+    var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
+    vdef = null;
+    _cvdf = null;
+    return cob
+  }
+  getPCob (sys,prod,dyn, fram) {
+    var vdef = vdefByMac[this.state.curDet.mac]
+    var _cvdf = JSON.parse(JSON.stringify(vdef[6]['CWProd']))
+    var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
+    vdef = null;
+    _cvdf = null;
+    return cob
+  }
+  /******************Parse Packets start*******************/
+  onParamMsg(e,u){
+    //console.log('onParamMsg', e.type)
+    if(this.state.curDet.ip == u.ip){
+      var self = this;
+      liveTimer[this.state.curDet.mac] = Date.now()
+      if(typeof e != 'undefined'){
+        var pVdef = vdefByMac[this.state.curDet.mac][1]
+        var vdf = vdefByMac[this.state.curDet.mac][0]
+        if(e.type == 0){
           console.log(pVdef)
-					console.log('Sys Rec')
+          console.log('Sys Rec')
           var language = vdf['@labels']['Language']['english'][e.rec['Language']];
           if(language == 'russian' || language == 'polish' || language == 'chinese'){
             language = 'korean'
@@ -1419,76 +1378,76 @@ class LandingPage extends React.Component{
           if(!this.state.init){
      
           }
-					this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
-				}else if(e.type == 1){
-					console.log('Prod Rec')
-					this.setState({noupdate:false,prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
-				}else if(e.type == 2){
-					var iobits = {}
-					var noupdate = true
-					if (vdf['@defines']['PHYSICAL_INPUT_NAMES']){
-						vdf['@defines']['PHYSICAL_INPUT_NAMES'].forEach(function (b) {
-							// body...
-						if(typeof e.rec[b] != 'undefined'){
-    							iobits[b] = e.rec[b]
-    						}
-						})
-						vdf['@defines']['LOGICAL_OUTPUT_NAMES'].forEach(function (b) {
-							// body...
-						if(typeof e.rec[b] != 'undefined'){
-    							iobits[b] = e.rec[b]
-    						}
-						})
-						if(isDiff(iobits,this.state.ioBITs)){
-    						noupdate = false;
+          this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
+        }else if(e.type == 1){
+          console.log('Prod Rec')
+          this.setState({noupdate:false,prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
+        }else if(e.type == 2){
+          var iobits = {}
+          var noupdate = true
+          if (vdf['@defines']['PHYSICAL_INPUT_NAMES']){
+            vdf['@defines']['PHYSICAL_INPUT_NAMES'].forEach(function (b) {
+              // body...
+            if(typeof e.rec[b] != 'undefined'){
+                  iobits[b] = e.rec[b]
+                }
+            })
+            vdf['@defines']['LOGICAL_OUTPUT_NAMES'].forEach(function (b) {
+              // body...
+            if(typeof e.rec[b] != 'undefined'){
+                  iobits[b] = e.rec[b]
+                }
+            })
+            if(isDiff(iobits,this.state.ioBITs)){
+                noupdate = false;
                 console.log(1347, iobits)
-    					}
-    			
-					}
+              }
+          
+          }
           if(e.rec['EditProdNeedToSave'] != self.state.rec['EditProdNeedToSave']){
             noupdate=false;
           }
-					/*if(_ioBits){
-	   					_ioBits.forEach(function(b){
-    						if(typeof e.rec[b] != 'undefined'){
-    							iobits[b] = e.rec[b]
-    						}
-    					})
-    				}*/
-    				var faultArray = [];
-				  	var warningArray = [];
+          /*if(_ioBits){
+              _ioBits.forEach(function(b){
+                if(typeof e.rec[b] != 'undefined'){
+                  iobits[b] = e.rec[b]
+                }
+              })
+            }*/
+            var faultArray = [];
+            var warningArray = [];
 
-					pVdef[8].forEach(function(f){
-					if(e.rec[f] != 0){
-						faultArray.push(f)
-							if(self.state.prec[f+'Warn'] == 1){
-								//warningArray.push(f)
-							}
-						}
-					});
+          pVdef[8].forEach(function(f){
+          if(e.rec[f] != 0){
+            faultArray.push(f)
+              if(self.state.prec[f+'Warn'] == 1){
+                //warningArray.push(f)
+              }
+            }
+          });
           pVdef[9].forEach(function(f){
           if(e.rec[f] != 0){
             warningArray.push(f)
             }
           });
-					
-  					if(this.state.faultArray.length != faultArray.length){
-  						noupdate = false;
-  					}else if(this.state.warningArray.length != warningArray.length){
-  						noupdate = false;
-  					}else{
-  						faultArray.forEach(function (f) {
-  							if(self.state.faultArray.indexOf(f) == -1){
-  								noupdate = false;	
-  							}
-  						})
-  						warningArray.forEach(function (w) {
-  							// body...
-  							if(self.state.warningArray.indexOf(w) == -1){
-  								noupdate = false;
-  							}
-  						})
-  					}
+          
+            if(this.state.faultArray.length != faultArray.length){
+              noupdate = false;
+            }else if(this.state.warningArray.length != warningArray.length){
+              noupdate = false;
+            }else{
+              faultArray.forEach(function (f) {
+                if(self.state.faultArray.indexOf(f) == -1){
+                  noupdate = false; 
+                }
+              })
+              warningArray.forEach(function (w) {
+                // body...
+                if(self.state.warningArray.indexOf(w) == -1){
+                  noupdate = false;
+                }
+              })
+            }
           if(e.rec['Taring'] != this.state.rec['Taring']){
             if(e.rec['Taring'] == 1){
               //toast('Taring..')
@@ -1528,12 +1487,12 @@ class LandingPage extends React.Component{
           }
           var cob = this.state.cob
           var pcob = this.state.pcob
-					if(this.state.updateCount == 0){
-						var lw = 0;
-    				if(typeof e.rec['LiveWeight'] != 'undefined'){
-    					lw = e.rec['LiveWeight']
-    				}
-				      this.ss.current.setState({rec:e.rec, crec:this.state.crec, lw:(lw).toFixed(1) + 'g'})
+          if(this.state.updateCount == 0){
+            var lw = 0;
+            if(typeof e.rec['LiveWeight'] != 'undefined'){
+              lw = e.rec['LiveWeight']
+            }
+              this.ss.current.setState({rec:e.rec, crec:this.state.crec, lw:(lw).toFixed(1) + 'g'})
               if(this.sd.current){
                 //console.log('update Live Weight')
                 this.sd.current.updateLiveWeight(lw)
@@ -1541,7 +1500,7 @@ class LandingPage extends React.Component{
               cob = this.getCob(this.state.srec, this.state.prec, e.rec,this.state.fram);
               pcob = this.getPCob(this.state.srec, this.state.prec, e.rec,this.state.fram)
             noupdate = false
-					}
+          }
           if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
             noupdate = false;
           }
@@ -1560,29 +1519,29 @@ class LandingPage extends React.Component{
           }
           this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
           
-					
-				}else if(e.type == 3){
-					e.rec.Nif_ip = this.state.nifip
-					e.rec.Nif_gw = this.state.nifgw
-					e.rec.Nif_nm = this.state.nifnm
+          
+        }else if(e.type == 3){
+          e.rec.Nif_ip = this.state.nifip
+          e.rec.Nif_gw = this.state.nifgw
+          e.rec.Nif_nm = this.state.nifnm
           e.rec.ConnectedClients = this.state.connectedClients
-					this.setState({noupdate:false,fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
-				}else if(e.type == 5){
+          this.setState({noupdate:false,fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
+        }else if(e.type == 5){
           console.log('checkweighing pack')
           if((e.rec['TotalCnt'] != this.state.crec['TotalCnt']) ||(e.rec['CheckWeightCnt'] != this.state.crec['CheckWeightCnt'])){
-					console.log('firstpack')
-					var del = 25
-					var dur = 50
-					if(typeof this.state.prec["SampDelEnd"] != 'undefined'){
-						console.log('This should hit')
-						del = this.state.prec['SampDelEnd'];
-						dur = this.state.prec['SampDur'];
-					}
+          console.log('firstpack')
+          var del = 25
+          var dur = 50
+          if(typeof this.state.prec["SampDelEnd"] != 'undefined'){
+            console.log('This should hit')
+            del = this.state.prec['SampDelEnd'];
+            dur = this.state.prec['SampDur'];
+          }
           var ms = new Uint64LE(e.rec['BatchStartMS'].data)
           var sms = new Uint64LE(e.rec['SampleStartMS'].data)
           console.log(inputSrcArr, outputSrcArr)
           console.log(1217, ms.toString(), Date.now())
-					console.log('passed')
+          console.log('passed')
           var tz = -500
           var tzms = (tz/100)*60*60*1000
           var neg = true
@@ -1607,25 +1566,25 @@ class LandingPage extends React.Component{
           e.rec['packTare'] = this.state.srec['TareWeight'];
           e.rec['packCal'] = this.state.srec['CalFactor']
           this.setState({crec:e.rec, noupdate:true})
-					this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
-							this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
-					this.hh.current.parseCrec(e.rec)
+          this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+              this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
+          this.hh.current.parseCrec(e.rec)
           if(this.btc.current){
             this.btc.current.parseCrec(e.rec)
           }
-					this.ss.current.setState({crec:e.rec})
+          this.ss.current.setState({crec:e.rec})
           this.se.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
-					this.tb.current.update(e.rec['PackWeight']);
+          this.tb.current.update(e.rec['PackWeight']);
           //cwc check
           if(e.rec['WeightPassed'] == 9){
             this.setState({cwgt:e.rec['PackWeight'], noupdate:false})
           }
-		      }else{
+          }else{
             console.log('repeated pack')
           }
 
 
-				}else if(e.type == 6){
+        }else if(e.type == 6){
           var cnt = 0;
           if(typeof this.state.crec['TotalCnt'] != 'undefined'){
             cnt = this.state.crec['TotalCnt']
@@ -1648,37 +1607,41 @@ class LandingPage extends React.Component{
               this.btc.current.parseHisto(e.rec['HistogramBatch'], bucketSize, buckets)
           }
         }else if(e.type == 15){
-					var prodList = this.state.prodList;
-					var prodListRaw = this.state.prodListRaw
-					prodList[e.prodNo] = Object.assign({},e.rec);
-					prodListRaw[e.prodNo] = e.raw
-					this.setState({prodList:prodList, prodListRaw:prodListRaw, noupdate:false})
-				}
-			}
-		}
-	}
-	sendPacket(n,v){
-		//LandingPage.sendPacket
-		var self = this;
-		console.log(n,v)
-		var vdef = vdefByMac[this.state.curDet.mac]
-		if(typeof n == 'string'){
-			if(n == 'switchProd'){
-				var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NO_APIWRITE']
-				var pkt = rpc[1].map(function (r) {
-					if(!isNaN(r)){
-						return r
-					}else{
-						if(isNaN(v)){
-							return 0
-						}else{
-							return parseInt(v)
-						}
-					}
-				})
-				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-			}else if(n== 'getProdList'){
+          var prodList = this.state.prodList;
+          var prodListRaw = this.state.prodListRaw
+          prodList[e.prodNo] = Object.assign({},e.rec);
+          prodListRaw[e.prodNo] = e.raw
+          this.setState({prodList:prodList, prodListRaw:prodListRaw, noupdate:false})
+        }
+      }
+    }
+  }
+  onRMsg(e,det){
+    console.log('onRMsg',e)
+  }
+  /******************Parse Packets end*******************/
+  sendPacket(n,v){
+    //LandingPage.sendPacket
+    var self = this;
+    console.log(n,v)
+    var vdef = vdefByMac[this.state.curDet.mac]
+    if(typeof n == 'string'){
+      if(n == 'switchProd'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NO_APIWRITE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      }else if(n== 'getProdList'){
         socket.emit('getProdList', this.state.curDet.ip)
       }else if(n=='deleteProd'){
       var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEL_NO_WRITE']
@@ -1696,22 +1659,22 @@ class LandingPage extends React.Component{
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
       socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n == 'copyCurrentProd'){
-				var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
-				var pkt = rpc[1].map(function (r) {
-					if(!isNaN(r)){
-						return r
-					}else{
-						if(isNaN(v)){
-							return 0
-						}else{
-							return parseInt(v)
-						}
-					}
-				})
-				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-			
-			}else if(n == 'clearFaults'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'clearFaults'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARFAULTS']
         var pkt = rpc[1].map(function (r) {
           if(!isNaN(r)){
@@ -1744,43 +1707,43 @@ class LandingPage extends React.Component{
         socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'getProdSettings'){
-				var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
-				var pkt = rpc[1].map(function (r) {
-					if(!isNaN(r)){
-						return r
-					}else{
-						if(isNaN(v)){
-							return 0
-						}else{
-							return parseInt(v)
-						}
-					}
-				})
-				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-			
-			}else if(n == 'saveProduct'){
-				var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDWRITE']
-				var pkt = rpc[1].map(function (r) {
-					if(!isNaN(r)){
-						return r
-					}else{
-						if(isNaN(v)){
-							return 0
-						}else{
-							return parseInt(v)
-						}
-					}
-				})
-				var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-				socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'saveProduct'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDWRITE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
 
-			//	if(n['@name'] == 'ProdName'){
-				setTimeout(function (argument) {
-					socket.emit('getProdList', self.state.curDet.ip)
-				},150)
-			//}
-			}else if( n == 'refresh'){
+      //  if(n['@name'] == 'ProdName'){
+        setTimeout(function (argument) {
+          socket.emit('getProdList', self.state.curDet.ip)
+        },150)
+      //}
+      }else if( n == 'refresh'){
       var rec = 0;
       if(v){
         rec = v
@@ -1860,71 +1823,71 @@ class LandingPage extends React.Component{
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }
-		}else{
-			console.log('here')
-			if(n['@rpcs']['toggle']){
+    }else{
+      console.log('here')
+      if(n['@rpcs']['toggle']){
 
-				var arg1 = n['@rpcs']['toggle'][0];
-				var arg2 = [];
-				for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
-					if(!isNaN(n['@rpcs']['toggle'][1][i])){
-						arg2.push(n['@rpcs']['toggle'][1][i])
-					}else{
-						arg2.push(v)
-					}
-				}
-				var packet = dsp_rpc_paylod_for(arg1, arg2);
-			
-			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-		}else if(n['@rpcs']['write']){
-			console.log('should be here')
-			var arg1 = n['@rpcs']['write'][0];
-			var arg2 = [];
-			var strArg = null;
-			var flag = false
-			for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
-				if(!isNaN(n['@rpcs']['write'][1][i])){
-					////console.log('where')
-					arg2.push(n['@rpcs']['write'][1][i])
-				}else if(n['@rpcs']['write'][1][i] == n['@name']){
-					////console.log('the')
-					if(!isNaN(v) && (n['@type'] != 'int32')){
-						arg2.push(v)
-					}
-					else{
-						arg2.push(0)
-						strArg=v
-					}
-					flag = true;
-				}else{
-					////console.log('fuck')
-					var dep = n['@rpcs']['write'][1][i]
-					if(dep.charAt(0) == '%'){
+        var arg1 = n['@rpcs']['toggle'][0];
+        var arg2 = [];
+        for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
+          if(!isNaN(n['@rpcs']['toggle'][1][i])){
+            arg2.push(n['@rpcs']['toggle'][1][i])
+          }else{
+            arg2.push(v)
+          }
+        }
+        var packet = dsp_rpc_paylod_for(arg1, arg2);
+      
+      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }else if(n['@rpcs']['write']){
+      console.log('should be here')
+      var arg1 = n['@rpcs']['write'][0];
+      var arg2 = [];
+      var strArg = null;
+      var flag = false
+      for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
+        if(!isNaN(n['@rpcs']['write'][1][i])){
+          ////console.log('where')
+          arg2.push(n['@rpcs']['write'][1][i])
+        }else if(n['@rpcs']['write'][1][i] == n['@name']){
+          ////console.log('the')
+          if(!isNaN(v) && (n['@type'] != 'int32')){
+            arg2.push(v)
+          }
+          else{
+            arg2.push(0)
+            strArg=v
+          }
+          flag = true;
+        }else{
+          ////console.log('fuck')
+          var dep = n['@rpcs']['write'][1][i]
+          if(dep.charAt(0) == '%'){
 
-					}
-				}
-			}
-			if(n['@rpcs']['write'][2]){
-				if(Array.isArray(n['@rpcs']['write'][2])){
-					strArg = n['@rpcs']['write'][2]
-				}
-				else if(typeof n['@rpcs']['write'][2] == 'string'){
-					strArg = v
-				}
-				flag = true;
-			}
-			if(!flag){
-				strArg = v;
-			}
-			if(n['@type'] == 'int32'){
-				var buf = Buffer.alloc(4)
-				buf.writeUInt32LE(parseInt(v),0)
-				strArg = buf;
-			}else if(n['@type'] == 'float'){
-				var buf = Buffer.alloc(4)
-				buf.writeFloatLE(parseFloat(v),0)
-				strArg = buf;
-			}else if(n['@type'] == 'float_dist'){
+          }
+        }
+      }
+      if(n['@rpcs']['write'][2]){
+        if(Array.isArray(n['@rpcs']['write'][2])){
+          strArg = n['@rpcs']['write'][2]
+        }
+        else if(typeof n['@rpcs']['write'][2] == 'string'){
+          strArg = v
+        }
+        flag = true;
+      }
+      if(!flag){
+        strArg = v;
+      }
+      if(n['@type'] == 'int32'){
+        var buf = Buffer.alloc(4)
+        buf.writeUInt32LE(parseInt(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float_dist'){
         var buf = Buffer.alloc(4)
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
@@ -1933,526 +1896,158 @@ class LandingPage extends React.Component{
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
       }
-			console.log(819, strArg, typeof strArg, v)
-		
-			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-			console.log(packet)
-				
-			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-			
-		}else if(n['@rpcs']['apiwrite']){
-			var arg1 = n['@rpcs']['apiwrite'][0];
-			var arg2 = [];
-			var strArg = null;
-			for(var i = 0; i<n['@rpcs']['apiwrite'][1].length;i++){
-				if(!isNaN(n['@rpcs']['apiwrite'][1][i])){
-					arg2.push(n['@rpcs']['apiwrite'][1][i])
-				}else if(n['@rpcs']['apiwrite'][1][i] == n['@name']){
-					if(!isNaN(v)){
-						arg2.push(v)
-					}else{
-						strArg=v
-						
-					}
-				}
-			}
-			if(n['@type'] == 'int32'){
-				var buf = Buffer.alloc(4)
-				buf.writeUInt32LE(parseInt(v),0)
-				strArg = buf;
-			}else if(n['@type'] == 'float'){
-				var buf = Buffer.alloc(4)
-				buf.writeFloatLE(parseFloat(v),0)
-				strArg = buf;
-			}else if(n['@type'] == 'float_dist'){
+      console.log(819, strArg, typeof strArg, v)
+    
+      var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+      console.log(packet)
+        
+      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+    }else if(n['@rpcs']['apiwrite']){
+      var arg1 = n['@rpcs']['apiwrite'][0];
+      var arg2 = [];
+      var strArg = null;
+      for(var i = 0; i<n['@rpcs']['apiwrite'][1].length;i++){
+        if(!isNaN(n['@rpcs']['apiwrite'][1][i])){
+          arg2.push(n['@rpcs']['apiwrite'][1][i])
+        }else if(n['@rpcs']['apiwrite'][1][i] == n['@name']){
+          if(!isNaN(v)){
+            arg2.push(v)
+          }else{
+            strArg=v
+            
+          }
+        }
+      }
+      if(n['@type'] == 'int32'){
+        var buf = Buffer.alloc(4)
+        buf.writeUInt32LE(parseInt(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float_dist'){
         var buf = Buffer.alloc(4)
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
       }
-			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-				
-			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-		}else if(n['@rpcs']['clear']){
-			var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
-				
-			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-		}
-		}
-	}
-	componentDidMount(){
-		var self = this;
+      var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+        
+      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }else if(n['@rpcs']['clear']){
+      var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
+        
+      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }
+    }
+  }
+  tareWeight(){
+    if(this.state.connected){
+      var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_TARE_WEIGHT_TARE']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
+      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }
+  }
+  calWeight(){
+    this.cwModal.current.toggle()
+  } 
+  calWeightSend(){
+    if(this.state.connected){
+      var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_USE']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
+      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }
+  }
+  changeBranding(){}
 
-		this.state.timer = setInterval(function(){
-			//////console.log('4596', self.state.rpcResp)
-			if(self.state.connected){
-				if((Date.now() - liveTimer[self.state.curDet.mac]) > 1500){
-					self.setState({live:false, noupdate:false})
-				}
-			
-			}
-
-		}, 1500)
-
-
-		setTimeout(function (argument) {
-			
-			self.loadPrefs();
-		}, 500)		
-		socket.on('userNames', function(p){
-			console.log(['808', p])
-			self.setState({usernames:p.det.data.array})//, update:true})
-			
-		})
-    socket.on('connectedClients',function (c) {
-      var fram = self.state.fram
-      fram.ConnectedClients = c
-      self.setState({connectedClients:c,fram:fram, noupdate:false})
-      // body...
-    })
-    socket.on('custJSON',function (json) {
-      if(self.state.customMap){
-        vMapV2 = json['@vMap']
-        vMapLists = json['@lists']
-      catMapV2 = json['@catmap']
-      labTransV2 = json['@labels']
-      self.setState({custMap:json,vMap:json, noupdate:false})
-      }else{
-          self.setState({custMap:json, noupdate:false})
-      }
-      // body...
-      
-    })
-		socket.on('resetConfirm', function (r) {
-			//socket.emit('locateReq',true);
-		})
-		socket.on('nif', function(iface){
-			////console.log('811', iface)
-			self.setState({nifip:iface.address, nifnm:iface.netmask})
-		})
-		socket.on('version',function (version) {
-			// body...
-			self.setState({version:version})
-		})
-		socket.on('gw', function(gw){
-			////console.log('823', gw)
-			self.setState({nifgw:gw})
-		})
-		socket.on('displayUpdate', function(){
-		//	self.refs.updateModal.toggle();
-		})
-		socket.on('updateProgress',function(r){
-			self.setState({progress:r})
-		})
-		socket.on('onReset', function(r){
-			self.setState({currentPage:'landing', curDet:''});
-	  })
-	
-		socket.on('netpoll', function(m){
-			//////////////console.log(['73',m])
-			self.onNetpoll(m.data, m.det)
-			m = null;
-		})
-		socket.on('prefs', function(f) {
-			////////////console.log(f)
-
-			console.log('prefs',f)
-			var detL = self.state.detL
-			var cnt = 0;
-			var _ip = ''
-			f.forEach(function (u) {
-				u.banks.forEach(function(b){
-					detL[b.mac] = null
-					cnt++;
-					_ip = b.ip
-				})
-			})
-			if(cnt == 1){
-				socket.emit('locateUnicast', _ip, true)
-			}else{
-				socket.emit('locateReq',true)
-			}
-			setTimeout(function (argument) {
-			// body...
-			if(f.length == 1){
-        console.log(2048)
-				if(!self.state.connected){
-          console.log(2050)
-					if(f[0].banks.length == 1){
-						if(vdefByMac[f[0].banks[0].mac]){
-							////console.log('try first here?')
-							self.connectToUnit(f[0].banks[0])
-						}else{
-							console.log('no vdef', vdefByMac)
-							setTimeout(function () {
-								// body...
-								if(!self.state.connected){
-									////console.log('switch?')
-									if(vdefByMac[f[0].banks[0].mac]){
-										self.connectToUnit(f[0].banks[0])
-									}else{
-										console.log('no vdef', vdefByMac)
-									}
-								}
-							},4000)
-						}
-					}
-					
-				}	
-			}
-		},800)
-
-			self.setState({mbunits:f, detL:detL})
-		})
-		socket.on('notify',function(msg){
-			console.log(msg)
-			toast(msg)
-		})
-		socket.on('progressNotify',function(pk){
-			var on = pk.on;
-			var msg = pk.msg;
-			var percentage = pk.percentage
-		})
-		socket.on('testusb',function(dev){
-
-			////console.log(['testusb',dev])
-		})
-		socket.on('noVdef', function(det){
-      console.log('no Vdef')
-			setTimeout(function(){
-				socket.emit('vdefReq', det);
-			}, 1000)
-		})
-		socket.on('notvisible', function(e){
-			toast('Detectors located, but network does not match')
-		})
-		socket.on('prodNames',function (pack) {
-			// body...
-			console.log('prodNames')
-			if(self.state.curDet.ip == pack.ip){
-				self.setState({pList:pack.list, prodNames:pack.names, noupdate:false})
-			}
-		})
-		socket.on('locatedResp', function (e) {
-			console.log(e,924)
-		try{
-		if(typeof e[0] != 'undefined'){
-			var dets = self.state.detL;
-			var macs = self.state.macList.slice(0);
-			var nps = self.state.netpolls;
-			if(e.length == 1){
-       // self.connectToUnit(e[0])
-			}
-			
-			var detectors = [];
-			e.forEach(function(d){
-					
-					macs.push(d.mac)
-					dets[d.mac] = d;
-					if(macs.indexOf(d.mac) == -1){
-						macs.push(d.mac)
-						dets[d.mac] = d
-					}
-
-					socket.emit('vdefReq', d);
-
-			})
-			var mbunits = self.state.mbunits;
-			var cnt = 0;
-			var curbnk 
-			mbunits.forEach(function(u){
-				var banks = u.banks.map(function(b){
-					cnt++;
-					if(dets[b.mac]){
-						var _bank = dets[b.mac]
-           				_bank.interceptor = false;
-            			curbnk = _bank
-            			return _bank
-
-					}else{
-						return b
-					}
-				})
-				////console.log(['852',u.banks.slice(0), banks])
-				u.banks = banks;
-			})
-			var curDet = self.state.curDet;
-
-			if(self.state.currentPage != 'landing'){
-				if(dets[curDet.mac]){
-					curDet = dets[curDet.mac];
-				}
-				else{
-					////console.log(895, 'this is the problem')
-				}
-			}
-			////////////console.log(dets)
-			mbunits.forEach(function(u){
-				u.banks.forEach(function(b) {
-
-					dets[b.mac] = null;
-					if(!nps[b.ip]){
-						nps[b.ip] = []
-					}
-					////////console.log('connectToUnit')
-					if(cnt == 1){
-					//socket.emit('connectToUnit', {ip:b.ip, app_name:b.app, app:b.app})
-					//	self.setState({curDet:det, connected:true})
-
-					}
-								
-				})
-			})
-		
-			//socket.emit('savePrefsCW', mbunits)
-			var nfip = self.state.nifip;
-			if(e.length > 1){
-				nfip = e[0].nif_ip
-			}
-			self.setState({dets:e, detL:dets, mbunits:mbunits,curDet:curDet, macList:macs, netpolls:nps, nifip:nfip})
-		}
-			}catch(er){
-			////console.log(914,er)
-			//	toast(er.message)
-			}
-      socket.emit('getTimezones')
-		});
-   		socket.on('dispSettings', function(disp){
-      	self.setState({automode:disp.mode})
-    	})  
-		
-		socket.on('paramMsgCW', function(data) {
-			//console.log(data.data)
-			self.onParamMsg(data.data, data.det)
-			//self.onParamMsg2(data.data,data.det) 
-			data = null;
-		})
-		socket.on('rpcMsg', function (data) {
-			//////console.log(data)
-			self.onRMsg(data.data, data.det)
-			data = null;
-		})
-		socket.on('loggedIn', function(data){
-			//self.refs.logIn.toggle();
-			self.setState({curUser:data.id, level:data.level})
-		})
-
-		socket.on('logOut', function(){
-			self.setState({curUser:'', level:0})
-		})
-		socket.on('accounts', function(data){
-			////console.log(data)
-			self.setState({accounts:data.data})
-		})
-
-		socket.on('authResp', function(pack){
-			if(pack.reset){
-				self.setAuthAccount(pack)
-			}else{
-				self.setAuthAccount(pack)
-	
-			}
-		})
-		socket.on('authFail', function(pack){
-			toast('Authentication failed')
-			self.setAuthAccount({user:'Not Logged In', level:0, user:-1})
-		})
-		socket.on('passwordNotify',function(e){
-			console.log(1117,e)
-			var message = 'Call Fortress with ' + e.join(', ');
-			//self.refs.msgm.show(message)
-		})
-    socket.on('timezones',function (e) {
-      // body...
-      self.setState({timezones:e})
-    })
-
-	}
-	tareWeight(){
-		if(this.state.connected){
-			console.log(this.state.curDet, vdefByMac)
-			var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_TARE_WEIGHT_TARE']
-				var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-
-		}
-	}
-	calWeight(){
-		this.cwModal.current.toggle()
-	}	
-	calWeightSend(){
-		if(this.state.connected){
-			console.log(this.state.curDet, vdefByMac)
-			var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_USE']
-				var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-			socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-
-		}
-	}
-	simulateData(){
-		var data = []
-
-		var skew = (Math.random()-0.5)*0.8
-		for(var i=0;i<30;i++){
-			var j = (i-15)*0.8 + 15
-			var pos = 15 + 0.5*(Math.random() - 0.5);
-			var x = (17 - 0.5*(j-pos)*(j-pos))
-			if(x<=1){
-				x = Math.pow(2,x-1)
-			}
-
-			data.push(x + Math.random()*3*(17-x)/15 + skew);
-		}
-		var pack = Math.random()*100
-		this.hh.current.parsePack(pack)
-		var max = Math.max(...data)
-		this.ss.current.parsePack(max);
-		this.tb.current.update(max);
-		this.se.current.setState({value:max.toFixed(1)+' g'})
-		this.lg.current.parseDataset(data, pack)
-
-	}
-	changeBranding(){
-
-	}
-	start(){
-
+  /**************Batch control******************/
+  start(){
     this.sendPacket('BatchStart')
-	 
     this.setState({start:false, pause:true})
-
   }
-  startSel(n){
-    this.sendPacket('BatchStartSel',n)
+  startSel(n){ this.sendPacket('BatchStartSel',n); }
+  startBuf(b){ this.sendPacket('BatchStartNew',b); }
+  pause(){
+    this.sendPacket('BatchPause')
+    this.setState({start:true, pause:false, stop:true})
   }
-  startBuf(b){
-    this.sendPacket('BatchStartNew',b)
-  }
-	stop(){
+  stop(){
     this.sendPacket('BatchEnd')
-	   
     this.setState({start:true, pause:false})
   }
-	simStart(){
-		var self = this;
-		var x = this.state.x
-		if(this.state.start){
-			x = setInterval(function(){
-				self.simulateData()
-			},400)
-		}else{
-			clearInterval(x)
-		}
-		this.setState({x:x,start:!this.state.start})
-	}
-	onNetpoll(){
-		console.log('netpoll')
-	}
-	showDisplaySettings(){
+  /****************Batch control end**************/
+  onNetpoll(){
+    console.log('netpoll')
+  }
+  showDisplaySettings(){
     console.log('why is this looping')
-		var self = this;
-		if(this.state.connected){
-			this.sendPacket('refresh')
-		}else{
+    var self = this;
+    if(this.state.connected){
+      this.sendPacket('refresh')
+    }else{
       socket.emit('locateReq',true)
     }
-		setTimeout(function () {
-			self.settingModal.current.toggle()
-		},100)
     setTimeout(function () {
-        // body...
+      self.settingModal.current.toggle()
+    },100)
+    setTimeout(function () {
         socket.emit('getConnectedClients')
-      },200)
-		
-		
-	}
-	addToTmpGroup(){
-
-	}
-	addToTmp(e, type){
-		var cont;
-		var dsps = this.state.dets
-		var detL = this.state.detL
-		var mbUnits;
-			cont = this.state.tmpMB.banks;
-			mbUnits = this.state.tmpMB
-			if(mbUnits.type == 'single'){
-			if(cont.length != 0){
-				return;
-			}
-				mbUnits.name = dsps[e].name
-			}
-			var tmpdsp = dsps[e]
-		
-		/*if(vdefByMac[dsps[e].mac][0]['@defines']['FINAL_FRAM_STRUCT_SIZE']){
-            tmpdsp.ts_login = true;   
-        }*/
-		socket.emit('connect',tmpdsp.ip)
-		cont.push(tmpdsp)
-		detL[dsps[e].mac] = null;
-		mbUnits.banks = cont;
-		this.setState({tmpMB:mbUnits, detL:detL})	
-	}
-	removeFromTmpGroup(e) {
-		var cont = this.state.tmpMB.banks;
-		var dsps = this.state.dets;
-		var detL = this.state.detL
-		detL[cont[e].mac] = cont[e]
-		cont.splice(e,1)
-		var mbUnits = this.state.tmpMB;
-		mbUnits.banks = cont;
-		this.setState({tmpMB:mbUnits, detL:detL})
-	}
-	connectToUnit(det){
+    },200)
+    
+    
+  }
+  connectToUnit(det){
     console.log('connect To Unit')
-		var self = this;
-		socket.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
+    var self = this;
+    socket.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
 
-		var unit = {name:det.name, type:'single', banks:[det]}
-		//socket.emit('vdefReq', det);
-		setTimeout(function (argument) {
-			// body...
-			console.log(1308, unit)
-			socket.emit('savePrefsCW', [unit])
-		},150)
-		setTimeout(function (argument) {
-			// body...
-			self.sendPacket('refresh')
-		},300)
-	//	setTimeout(function(){socket.emit('getProdList',det.ip)},150)
-		this.setState({curDet:det, connected:true})
-	}
-	renderModal() {
-		var self = this;
-		
-		    	var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
+    var unit = {name:det.name, type:'single', banks:[det]}
+    //socket.emit('vdefReq', det);
+    setTimeout(function (argument) {
+      // body...
+      console.log(1308, unit)
+      socket.emit('savePrefsCW', [unit])
+    },150)
+    setTimeout(function (argument) {
+      // body...
+      self.sendPacket('refresh')
+    },300)
+  //  setTimeout(function(){socket.emit('getProdList',det.ip)},150)
+    this.setState({curDet:det, connected:true})
+  }
+  renderModal() {
+    var self = this;
+    var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
 
-		var detectors = this.state.dets.map(function (det, i) {
-			// body...
-			return   <div> <CircularButton branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
+    var detectors = this.state.dets.map(function (det, i) {
+      // body...
+      return   <div> <CircularButton branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
        
-		})
-			return (<div>
-				{detectors}
-			</div>)
+    })
+      return (<div>
+        {detectors}
+      </div>)
+  }
+  pModalToggle(){
+    if(typeof this.state.curDet.ip != 'undefined'){
+        this.pmodal.current.toggle();
+    socket.emit('getProdList', this.state.curDet.ip)
+    }
+  
+  }
+  imgClick(){
+    console.log('clicked')
+    location.reload();
+  }
+  getBuffer(){
+    this.sendPacket('refresh_buffer',6)
+  }
+  clearFaults(){
+    this.sendPacket('clearFaults');
 
-     
-	}
-	pModalToggle(){
-		if(typeof this.state.curDet.ip != 'undefined'){
-				this.pmodal.current.toggle();
-		socket.emit('getProdList', this.state.curDet.ip)
-		}
-	
-	}
-	imgClick(){
-		console.log('clicked')
-		location.reload();
-	}
-	clearFaults(){
-		this.sendPacket('clearFaults');
-
-	}
-	openBatch(){
+  }
+  openBatch(){
     if((typeof this.state.curDet.ip != 'undefined')&&(typeof this.state.crec['TotalWeight'] != 'undefined')){
       this.sendPacket('refresh', 7)
 
@@ -2462,16 +2057,16 @@ class LandingPage extends React.Component{
         socket.emit('getPlannedBatches')
       },100)
     }
-	}
-	onPmdClose(){
-		if(this.state.rec['EditProdNeedToSave'] == 1){
-	
-		this.pmd.current.show(function () {
-			// body...
+  }
+  onPmdClose(){
+    if(this.state.rec['EditProdNeedToSave'] == 1){
+  
+    this.pmd.current.show(function () {
+      // body...
 
-		});
-		}	
-	}
+    });
+    } 
+  }
   checkweight(){
     this.sendPacket('checkWeight')
   }
@@ -2553,102 +2148,102 @@ class LandingPage extends React.Component{
   testWebView(){
     this.webviewModal.current.toggle();
   }
-	render(){
-		//LandingPage.render
+  render(){
+    //LandingPage.render
     var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
-		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-			var st = {textAlign:'center',lineHeight:'60px', height:60, width:536}
+    var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+      var st = {textAlign:'center',lineHeight:'60px', height:60, width:536}
 
-		var config = 'config_w'
-    	var find = 'find_w'
-    	var klass = 'interceptorDynamicView'
-    	var pl = 'assets/play-arrow-fti.svg'
-    	var stp = 'assets/stop-fti.svg'
-    	var backgroundColor;
-    	var grbg = '#e1e1e1'
-    	var img = 'assets/NewFortressTechnologyLogo-WHT-trans.png'
-    	var psbtklass = 'circularButton'
-    	var psbtcolor = 'black'
-    	var grbrdcolor = '#e1e1e1'
+    var config = 'config_w'
+      var find = 'find_w'
+      var klass = 'interceptorDynamicView'
+      var pl = 'assets/play-arrow-fti.svg'
+      var stp = 'assets/stop-fti.svg'
+      var backgroundColor;
+      var grbg = '#e1e1e1'
+      var img = 'assets/NewFortressTechnologyLogo-WHT-trans.png'
+      var psbtklass = 'circularButton'
+      var psbtcolor = 'black'
+      var grbrdcolor = '#e1e1e1'
       var raptor = '';
 
-    	var language = this.state.language
-    	if(this.state.branding == 'FORTRESS'){
-    		backgroundColor = FORTRESSPURPLE1
-    		grbrdcolor = '#e1e1e1'
-    		psbtcolor = '#1C3746'
-    		psbtklass = 'circularButton_sp'
+      var language = this.state.language
+      if(this.state.branding == 'FORTRESS'){
+        backgroundColor = FORTRESSPURPLE1
+        grbrdcolor = '#e1e1e1'
+        psbtcolor = '#1C3746'
+        psbtklass = 'circularButton_sp'
         raptor = <div style={{fontSize:45, color:'#e1e1e1', textAlign:'center'}}><span style={{fontSize:66, verticalAlign:'bottom', lineHeight:'76px'}}>R</span><span>APTOR</span></div>
-    	}else{
-    		grbrdcolor = '#e1e1e1'
-    		psbtcolor = '#1C3746'
-    		psbtklass = 'circularButton_sp'
-    		backgroundColor = SPARCBLUE1
-    		grbg = '#e1e1e1'
-    		img = 'assets/sparc-logo-rgb-reversed.svg'
-    		pl = 'assets/play-arrow-sp.svg'
-    		stp = 'assets/stop-sp.svg'
-    	}
-    	var play, stop;
-    	if(this.state.start){
-    		play = <div onClick={this.start} style={{width:120, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
-    		stop = <div onClick={this.stop} style={{width:120, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+      }else{
+        grbrdcolor = '#e1e1e1'
+        psbtcolor = '#1C3746'
+        psbtklass = 'circularButton_sp'
+        backgroundColor = SPARCBLUE1
+        grbg = '#e1e1e1'
+        img = 'assets/sparc-logo-rgb-reversed.svg'
+        pl = 'assets/play-arrow-sp.svg'
+        stp = 'assets/stop-sp.svg'
+      }
+      var play, stop;
+      if(this.state.start){
+        play = <div onClick={this.start} style={{width:120, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+        stop = <div onClick={this.stop} style={{width:120, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
-    	}else{
-    		play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#00FF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
-			stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+      }else{
+        play = <div onClick={this.start} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#00FF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+      stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
-    	}   
+      }   
 
-    	var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'57px'}
+      var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'57px'}
 
       var cont = ''
-    	var sd = <div><DisplaySettings nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
+      var sd = <div><DisplaySettings nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
       <button onClick={this.reboot}>Reboot</button></div>
-    	var cald = ''
-    	var dets = ''// <div style={{color:'#e1e1e1', fontSize:24}} onClick={() => this.refs.locateModal.toggle()}>Connected to {this.state.curDet.name}</div>
-    	if(this.state.srec['SRecordDate']){
-    		//language = vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]
-    		sd =   	<div ><SettingsPageWSB submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
-      		onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
-    		</div>
+      var cald = ''
+      var dets = ''// <div style={{color:'#e1e1e1', fontSize:24}} onClick={() => this.refs.locateModal.toggle()}>Connected to {this.state.curDet.name}</div>
+      if(this.state.srec['SRecordDate']){
+        //language = vdefByMac[this.state.curDet.mac][0]['@labels']['Language']['english'][this.state.srec['Language']]
+        sd =    <div ><SettingsPageWSB submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+          onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
+        </div>
         cont = sd;
-    		cald = (	<div style={{background:'#e1e1e1', padding:10}}>
-      		<div style={{marginTop:5}}><ProdSettingEdit  trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['CalWeight']['@translations'][this.state.language]['name']} value={this.state.srec['CalWeight']+'g'} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['OverWeightLim']['@translations'][this.state.language]['name']} value={this.state.prec['OverWeightLim']+'g'} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['UnderWeightLim']['@translations'][this.state.language]['name']} value={this.state.prec['UnderWeightLim']+'g'} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
-						
-					<CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={'Calibrate'}/>
-      		</div>
-      	)
-    	}else{
-    		dets = this.renderModal()
+        cald = (  <div style={{background:'#e1e1e1', padding:10}}>
+          <div style={{marginTop:5}}><ProdSettingEdit  trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['CalWeight']['@translations'][this.state.language]['name']} value={this.state.srec['CalWeight']+'g'} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['OverWeightLim']['@translations'][this.state.language]['name']} value={this.state.prec['OverWeightLim']+'g'} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['UnderWeightLim']['@translations'][this.state.language]['name']} value={this.state.prec['UnderWeightLim']+'g'} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
+            
+          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={'Calibrate'}/>
+          </div>
+        )
+      }else{
+        dets = this.renderModal()
         cont = <div><div style={{display:'table-cell', width:330,backgroundColor:'#e1e1e1',textAlign:'center'}} >
         <div style={{textAlign:'center', fontSize:25, marginTop:5, marginBottom:5}}>Located Units</div>{dets}</div><div style={{display:'table-cell', width:840, paddingLeft:5, paddingRight:5}}>{sd}</div></div>
-    	}	
+      } 
 
-    	var trendBar = [15,16.5,17.5,19,15.5,18.5]//upperbound={19} t1={15.5} t2={18.5} low={16.5} high={17.5} ]
-    	var winStart = 0;
-    	var winEnd = 300
-    	 //var nomW = 500
+      var trendBar = [15,16.5,17.5,19,15.5,18.5]//upperbound={19} t1={15.5} t2={18.5} low={16.5} high={17.5} ]
+      var winStart = 0;
+      var winEnd = 300
+       //var nomW = 500
        var bucketSize = 4
        var buckets = 100
-    	if(typeof this.state.prec['ProdName'] != 'undefined'){
-    		trendBar = [this.state.prec['NominalWgt']-(2*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (2*this.state.prec['OverWeightLim']), 165, 200]
+      if(typeof this.state.prec['ProdName'] != 'undefined'){
+        trendBar = [this.state.prec['NominalWgt']-(2*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (2*this.state.prec['OverWeightLim']), 165, 200]
         bucketSize = this.state.prec['HistogramBucketSize'];
         buckets = this.state.prec['HistogramBuckets']
-        //nomW = this.state.prec['NominalWgt'] 			
+        //nomW = this.state.prec['NominalWgt']      
       //winStart = this.state.prec['WindowStart'];
- 			//winEnd = this.state.prec['WindowEnd'];   	
-    	}
-    	var logklass = 'logout'
-    	if(this.state.user == -1){
-    		logklass = 'login'
-    	}
+      //winEnd = this.state.prec['WindowEnd'];    
+      }
+      var logklass = 'logout'
+      if(this.state.user == -1){
+        logklass = 'login'
+      }
 
-    	var lw = 0;
-    	if(typeof this.state.crec['PackWeight'] != 'undefined'){    		
-    		if(this.state.crec['PackWeight']){
+      var lw = 0;
+      if(typeof this.state.crec['PackWeight'] != 'undefined'){        
+        if(this.state.crec['PackWeight']){
           lw = this.state.crec['PackWeight']
         }
         if(typeof this.state.crec['WindowStart'] != 'undefined'){
@@ -2659,7 +2254,7 @@ class LandingPage extends React.Component{
      
 
 
-		return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
+    return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
          <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
             <tbody>
@@ -2677,21 +2272,21 @@ class LandingPage extends React.Component{
                   <input type='file' onChange={this.fileupload}/>
                 </Modal>
                 </td>
-                	<td style={{height:60, width:200, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
-                	<FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
-                	<td className="logbuttCell" style={{height:60}}  onClick={this.toggleLogin}>
-                	<div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
-                	<button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
-                	<div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Level '+this.state.level}</div>
-                	</div></td>
-		          <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
-		          <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Settings'}</div>
-		          </td>
+                  <td style={{height:60, width:200, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
+                  <FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
+                  <td className="logbuttCell" style={{height:60}}  onClick={this.toggleLogin}>
+                  <div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
+                  <button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
+                  <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Level '+this.state.level}</div>
+                  </div></td>
+              <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
+              <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Settings'}</div>
+              </td>
               </tr>
             </tbody>
           </table>
           <table><tbody><tr style={{verticalAlign:'top'}}><td>
-         	<StatSummary language={language} unit={this.state.srec['WeightUnits']} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange}/>
+          <StatSummary language={language} unit={this.state.srec['WeightUnits']} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange}/>
           </td><td><div><SparcElem ref={this.se} branding={this.state.branding} value={lw.toFixed(1) + ' g'} name={'Gross Weight'} width={596} font={72}/></div>
           <div><StatusElem clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
           <div>
@@ -2701,23 +2296,23 @@ class LandingPage extends React.Component{
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets}>
           <TrendBar live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb}/></LineGraph></div>
           </td><td>
-          	<HorizontalHisto language={language} branding={this.state.branding} ref={this.hh}/>
+            <HorizontalHisto language={language} branding={this.state.branding} ref={this.hh}/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',padding:5, marginRight:10, marginLeft:10}} >{play}{stop}</div>
           <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
           <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Tare'} onClick={this.tareWeight}/>
           <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
-      	<Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose}>
-      		<ProductSettings submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
-      	</Modal>
-      	 <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
-      		{cont}
+        <Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose}>
+          <ProductSettings submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
+        </Modal>
+         <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+          {cont}
           <div>{this.state.connectedClients}</div>
-      	</Modal>
-      	<Modal  x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
-      		{this.renderModal()}
-      	</Modal> 
+        </Modal>
+        <Modal  x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
+          {this.renderModal()}
+        </Modal> 
         <Modal  x={true} ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
          <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.cwc} cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
         </Modal>
@@ -2726,73 +2321,3683 @@ class LandingPage extends React.Component{
                     start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}/>
         </Modal>
 
-      	<PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
-		
+        <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
+    
         <Modal ref={this.webviewModal}>
         <div style={{height:600}}>
           <iframe name="foo" src="http://www.google.com/" style={{width:640, height:480}}></iframe>
               <p><a href="http://192.168.47.212:3300/cw.html" target="foo">Open google.com</a></p>
           </div>
           </Modal>
-      	<LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
+        <LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
                 accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
-      	</div>
+        </div>
       </div>) 
-	}
-	saveProductPassThrough(){
-		if(this.state.rec['EditProdNeedToSave'] == 1){
-			this.sendPacket('saveProduct', this.state.srec['EditProdNo'])	
-		}
-	}
-	passThrough(){
+  }
+  saveProductPassThrough(){
+    if(this.state.rec['EditProdNeedToSave'] == 1){
+      this.sendPacket('saveProduct', this.state.srec['EditProdNo']) 
+    }
+  }
+  passThrough(){
 
-	}
+  }
 }
-class DetItemView extends React.Component{
-	constructor(props) {
-		super(props)
-		this.addClick = this.addClick.bind(this)
-	}
-	addClick () {
-		// body...
-		this.props.addClick(this.props.i)
-	}
-	render () {
-		var addText = 'Add'
-		if(this.props.type == 1){
-			addText = 'Remove'
-		}
-		return (<div style={{padding:5, lineHeight:1.8, fontSize:25}}>
-				<label onClick={this.addClick}>{this.props.det.name}</label>
-			</div>)
-	}
+/******************Main Components end********************/
+
+/******************Settings Components start********************/
+class ProductSettings extends React.Component{
+  constructor(props){
+    super(props)
+    this.updateFilterString = this.updateFilterString.bind(this);
+    this.toggleSearch = this.toggleSearch.bind(this);
+    this.selectProd = this.selectProd.bind(this);
+    this.copyCurrentProd = this.copyCurrentProd.bind(this);
+    this.onProdScroll = this.onProdScroll.bind(this);
+    this.selectRunningProd = this.selectRunningProd.bind(this);
+    this.getPCob = this.getPCob.bind(this);
+    this.onAdvanced = this.onAdvanced.bind(this);
+    this.sendPacket = this.sendPacket.bind(this);
+    this.saveProduct = this.saveProduct.bind(this);
+    this.saveProductPassThrough = this.saveProductPassThrough.bind(this);
+    this.getValue = this.getValue.bind(this);
+    this.showAllProd = this.showAllProd.bind(this);
+    this.copyTo = this.copyTo.bind(this);
+    this.copyAlert = this.copyAlert.bind(this);
+    this.copyConfirm = this.copyConfirm.bind(this);
+    this.deleteProd = this.deleteProd.bind(this);
+    this.deleteProdConfirm = this.deleteProdConfirm.bind(this);
+    this.submitTooltip = this.submitTooltip.bind(this);
+    var prodList = [];
+    var prodNames = this.props.pNames
+    this.props.pList.forEach(function (pn,i) {
+      prodList.push({name:prodNames[i], no:pn})
+    })
+
+    this.state ={data:[],showAdvanceSettings:false,searchMode:false, filterString:'', filterList:[],selProd:this.props.editProd,prodList:prodList, showAllProd:false,
+    cob2:this.getPCob(this.props.srec, this.props.curProd, this.props.drec, this.props.fram)}
+    this.pmd = React.createRef();
+    this.cfTo = React.createRef();
+    this.cfModal = React.createRef();
+    this.dltModal = React.createRef();
+    this.arrowBot = React.createRef();
+    this.arrowTop = React.createRef();
+    this.sd = React.createRef();
+    this.pg = React.createRef();
+    this.pgm = React.createRef();
+    this.submitChange = this.submitChange.bind(this);
+    this.closeKeyboard = this.closeKeyboard.bind(this);
+    this.toggleGraph = this.toggleGraph.bind(this);
+    this.getBuffer = this.getBuffer.bind(this);
+  }
+  toggleGraph(){
+    this.pgm.current.toggle();
+  }
+  getBuffer(){
+
+  }
+  submitTooltip(n,l,v){
+    this.props.submitTooltip(n,l,v)
+  }
+  sendPacket(n,v){
+    var self = this;
+    console.log(n,v)
+    this.props.sendPacket(n,v)
+  
+  }
+  onAdvanced(){
+    if(this.state.prodList.length > 0){
+          this.setState({showAdvanceSettings:!this.state.showAdvanceSettings})
+
+    }else{
+      toast('Products need to be fetched')
+    }
+  }
+  componentDidMount(){
+    var self = this;
+    var scrollInd = 0;
+    this.state.prodList.forEach(function(prd,i){
+      if(prd.no == self.state.selProd){
+        scrollInd = i;
+      }
+    });
+    setTimeout(function(argument) {
+      self.props.sendPacket('getProdSettings', self.props.editProd)
+    },300)
+  
+    var el = document.getElementById('prodListScrollBox')
+    el.scrollTop = scrollInd*66
+  }
+  getPCob (sys,prod,dyn, fram) {
+  
+    var vdef = vdefByMac[this.props.mac]
+    var _cvdf = JSON.parse(JSON.stringify(vdef[6]['CWProd']))
+    var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
+    vdef = null;
+    _cvdf = null;
+    return cob
+  }
+  getBatch(sys,prod,dyn,batch,fram){
+    var vdef = vdefByMac[this.props.mac]
+    var _cvdf = JSON.parse(JSON.stringify(vdef[6]['Batch']))
+    var cob = iterateCats3(_cvdf, vdef[1], sys, prod, vdef[5], dyn, fram, batch)
+    vdef = null;
+    _cvdf = null;
+    return cob
+  }
+  componentWillReceiveProps(newProps){
+    var prodList = [];
+    var prodNames = newProps.pNames
+    newProps.pList.forEach(function (pn,i) {
+      // body...
+      prodList.push({name:prodNames[i], no:pn})
+    })
+    var curProd = newProps.curProd
+    if(newProps.prods[this.state.selProd]){
+      curProd = newProps.prods[this.state.selProd]
+      
+    }
+    //console.log(curProd)
+    this.setState({prodList:prodList, cob2:this.getPCob(newProps.srec, curProd, newProps.drec, newProps.fram),selProd:newProps.editProd});
+
+  }
+  updateFilterString(str){
+    var list = []
+    var self = this;
+    this.state.prodList.forEach(function(prod) {
+    
+        if(str.trim() == ''){
+          list.push(prod)
+        }else if(prod.name.toUpperCase().indexOf(str.toUpperCase()) != -1){
+          list.push(prod)
+        }
+      })
+    var scrollInd = 0;
+    list.forEach(function(prd,i){
+      if(prd.no == self.state.selProd){
+        scrollInd = i;
+      }
+    });
+
+    var el = document.getElementById('prodListScrollBox')
+    el.scrollTop = scrollInd*66
+    
+    this.setState({filterString:str, filterList:list})
+  }
+  toggleSearch(){
+    this.setState({searchMode:!this.state.searchMode})
+  }
+  closeKeyboard(){
+    this.updateFilterString('');
+    this.toggleSearch();
+  }
+  copyCurrentProd(target=-1){
+    var self = this;
+    var nextNum = this.props.pList[this.props.pList.length - 1] + 1;
+    if(target != -1){
+      nextNum = target;
+    }
+    this.props.sendPacket('copyCurrentProd',nextNum)
+    setTimeout(function (argument) {
+      // body...
+      self.props.sendPacket('getProdList')
+    },300)
+  }
+  selectProd(p){
+    var self = this;
+    //this.saveProduct();
+    if(this.props.needSave == 1){
+      this.pmd.current.show(
+    function () {
+      self.props.sendPacket('getProdSettings',p)
+      self.setState({selProd:p, searchMode:false, filterString:''})
+    });
+    }else{
+      self.props.sendPacket('getProdSettings',p)
+      self.setState({selProd:p, searchMode:false, filterString:''})
+  
+    }
+    
+  }
+  onProdScroll(){
+   var el = document.getElementById('prodListScrollBox')   
+      if(el){
+          if(el.scrollTop > 5){
+            this.arrowTop.current.show();
+          }else{
+            this.arrowTop.current.hide();
+          }
+          if(el.scrollTop + el.offsetHeight < el.scrollHeight ){
+            this.arrowBot.current.show();
+          }else{
+            this.arrowBot.current.hide();
+          }
+      }
+  }
+  onValChange(p,v){
+    //var curProd =Object.assign({},this.props.prods[this.state.selProd]) //this.props.prods[this.state.selProd];
+    //curProd[p] = v
+
+  }
+  selectRunningProd(){
+    this.props.sendPacket('switchProd',this.state.selProd)
+  }
+  saveProduct(){
+    console.log('saving ', this.state.selProd)
+    this.props.sendPacket('saveProduct',this.state.selProd)
+  }
+  saveProductPassThrough(f){
+    var self = this;
+    this.saveProduct();
+    setTimeout(function (argument) {
+      // body...
+      console.log(f)
+      f();
+    },100);
+  }
+  passThrough(f){
+    f();
+  }
+  getValue(rval, pname){
+    var curProd = {}
+    if(this.props.prods[this.state.selProd]){
+      curProd = this.props.prods[this.state.selProd]
+    }
+
+    var pram;
+      var val;
+      var label = false
+      var res = vdefByMac[this.props.mac];
+      var pVdef = _pVdef;
+      var dec = 0;
+      var self = this;
+      if(res){
+        pVdef = res[1];
+      }
+
+      if(typeof pVdef[0][pname] != 'undefined'){
+        pram = pVdef[0][pname]
+        var deps = []
+        val = rval
+        if(pram["@type"]){
+          var f = pram["@type"]
+          if(pram["@dep"]){
+            deps = pram["@dep"].map(function(d){
+              if(pVdef[6][d]["@rec"] == 0){
+                return self.props.srec[d];
+              }else{
+                return curProd[d];
+              }
+            });
+            if(f == 'mm'){
+              if(deps[0] == 0){
+                dec = 1
+              }
+            }
+          } 
+          if(pram['@bit_len']<=16){
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+          }
+        }else if(typeof pram['@decimal'] != 'undefined'){
+          val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+        }
+        
+        if(pram["@labels"]){
+          label = true
+        }
+      }else if(typeof pVdef[1][pname] != 'undefined'){
+        
+        pram = pVdef[1][pname]
+        
+        var deps = []
+        val = rval
+        if(pram["@type"]){
+          var f = pram["@type"]
+          if(pram["@dep"]){
+            deps = pram["@dep"].map(function(dp){
+              var d = dp;
+             
+              if(pVdef[6][d]["@rec"] == 0){
+                return self.props.srec[d];
+              }else if(pVdef[6][d]["@rec"] == 1){
+                return curProd[d];
+              }else if(pVdef[6][d]["@rec"] == 2){
+                return self.props.drec[d]
+              }
+            });
+            if(pram['@name'] == 'BeltSpeed'){
+              //deps.push(self.props.drec['EncFreq'])
+              //deps.push(1000)
+              console.log(3243,deps)
+            }else if(pram['@type'] == 'rej_del'){
+              deps.push(1000)
+            }
+          }
+          if(f == 'mm'){
+              if(deps[0] == 0){
+                dec = 1
+              }
+            }
+          if(pram['@bit_len']<=16){
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+          }
+          if(f == 'phase_offset'){
+            val =   uintToInt(val,16)//?? phase is coming in with different format for dyn data
+          }
+          
+        }else if(pram["@name"].indexOf('DetThresh') != -1){
+          var dependancies = ['DetMode','PhaseMode','ThresR','ThresX']
+          var deps = dependancies.map(function(d) {
+            // body...
+            if(pram['@name'] == 'DetThresh_A'){
+              return curProd[d+'_A']
+            }else if(pram['@name'] == 'DetThresh_B'){
+              return curProd[d+'_B']
+            }
+          })
+          val = eval(funcJSON['@func']['det_thresh']).apply(this, [].concat.apply([],[val,deps]));
+          
+        }else if(typeof pram['@decimal'] != 'undefined'){
+          val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+        }
+        if(pram["@labels"]){
+          label = true
+        }
+      }else if(typeof pVdef[2][pname] != 'undefined'){
+        
+        pram = pVdef[2][pname]
+        
+        var deps = []
+        val = rval
+        if(pram["@type"]){
+          var f = pram["@type"]
+          if(f == 'phase'){
+            val =   (uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+          }else{
+          if(pram["@dep"]){
+            deps = pram["@dep"].map(function(dp){
+              var d = dp;
+              if(dp.indexOf('[0]') != -1){
+                if(pram['@name'].slice(-2) == '_A'){
+                  d = dp.replace('[0]','[1]')
+                }
+              } 
+              if(pVdef[6][d]["@rec"] == 0){
+                return self.props.srec[d];
+              }else if(pVdef[6][d]["@rec"] == 1){
+                return curProd[d];
+              }else if(pVdef[6][d]["@rec"] == 2){
+                return self.props.drec[d];
+              }
+            });
+          }
+          if(f == 'mm'){
+              if(deps[0] == 0){
+                dec = 1
+            }
+          }
+          if(pram['@bit_len']<=16){
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+          }
+        }
+          
+        }else if(pram['@name'] == 'RejExitDistEst'){
+          var dependancies = ['SysRec.MetricUnits']
+          deps = dependancies.map(function(d){
+            if(pVdef[6][d]["@rec"] == 0){
+                return self.props.srec[d];
+              }else if(pVdef[6][d]["@rec"] == 1){
+                return curProd[d];
+              }else if(pVdef[6][d]["@rec"] == 2){
+              //    ////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+                return self.props.drec[d];
+              }
+          })
+          dec = 1
+          val = eval(funcJSON['@func']['mm']).apply(this, [].concat.apply([], [val, deps]));
+
+        }else if(typeof pram['@decimal'] != 'undefined'){
+          val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+        }
+        if(pram["@labels"]){
+          label = true
+        }
+      }else if(typeof pVdef[3][pname] != 'undefined'){
+        
+        pram = pVdef[3][pname]
+        
+        var deps = []
+        val = rval
+        if(pram["@type"]){
+          var f = pram["@type"]
+          if(f == 'phase'){
+            val =   (uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+          }else{
+          if(pram["@dep"]){
+            deps = pram["@dep"].map(function(d){
+              if(pVdef[6][d]["@rec"] == 0){
+                return self.props.srec[d];
+              }else if(pVdef[6][d]["@rec"] == 1){
+                return curProd[d];
+              }else if(pVdef[6][d]["@rec"] == 2){
+              //    ////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+                return self.props.drec[d];
+              }else if(pVdef[6][d]["@rec"] == 3){
+              //    ////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+                return self.props.fram[d];
+              }
+            });
+          }
+          if(pram['@bit_len']<=16){
+          //  ////////console.log(f)
+            
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+          }
+        }
+          
+        }else if(typeof pram['@decimal'] != 'undefined'){
+          val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+        }
+        if(pram["@labels"]){
+          label = true
+        }
+      }else{
+        val = rval
+      }
+      return val;
+  }
+  showAllProd(){
+    this.setState({showAllProd:!this.state.showAllProd})
+  }
+  copyTo(){
+    this.cfTo.current.toggle();
+  }
+  copyConfirm(target){
+    var prodNos = this.props.pList.slice(0)
+    
+    console.log(2322, prodNos, prodNos.indexOf(target), target)
+
+    if(prodNos.indexOf(target) != -1){
+      this.copyAlert(target)
+    }else{
+      this.copyCurrentProd(target)
+    }
+  }
+  copyAlert(target){
+    var alertMessage = 'Product '+ target+' will be overwritten. Continue?'
+
+    this.cfModal.current.show(this.copyConfirm, target, alertMessage)
+  }
+  deleteProd(p){
+    this.dltModal.current.show(p)
+  }
+  deleteProdConfirm(p){
+    var self = this;
+    this.sendPacket('deleteProd',p)
+    setTimeout(function(argument) {
+      // body...
+      self.sendPacket('getProdList')
+    },300)
+  }
+  submitChange(n,l,v){
+    this.props.submitChange(n,l,v);
+  }
+  render(){
+    var self = this;
+    var list = [];
+    var sp = null;
+    var content = ''
+      var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
+
+    var searchColor = SPARCBLUE1;
+    if(this.props.branding == 'FORTRESS'){
+      searchColor = FORTRESSPURPLE2
+    }
+    if(this.state.searchMode){
+      var filterString = this.state.filterString
+      this.state.prodList.forEach(function(prod) {
+    
+        if(self.state.selProd == prod.no){
+          sp = prod 
+        }
+
+      })
+      list = this.state.filterList.slice(0)
+      content = <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6, height:480}}>
+      <EmbeddedKeyboard label={'Search Products'} liveUpdate={this.updateFilterString} language={this.props.language} onAccept={this.toggleSearch} onCancel={this.closeKeyboard}/></div>
+    }else{
+      var curProd = {}
+      if(this.props.prods[this.state.selProd]){
+        curProd = this.props.prods[this.state.selProd]
+      }
+      var pList = [];
+      for(var i=1;i<101;i++){
+        pList.push({name:'NULL PROD',no:i, null:true})
+      }
+      this.state.prodList.forEach(function (p) {
+        pList[p.no - 1] = p;
+        // body...
+      })
+      var showText = 'Show All Products'
+      if(this.state.showAllProd){
+        list = pList.slice(0)
+        showText = 'Hide Inactive Products'
+      }else{
+        list = this.state.prodList.slice(0)
+      }
+      //this.state.prodList.slice(0);
+      
+      list.forEach(function (pr) {
+        // body... this.getValue(curProd['BeltSpeed'],'BeltSpeed')       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'BeltSpeed'} vMap={vMapV2['BeltSpeed']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['BeltSpeed'],'BeltSpeed')} param={vdefByMac[this.props.mac][1][1]['BeltSpeed']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+    
+        if(self.state.selProd == pr.no){
+          sp = pr 
+        }
+      })
+      if(sp == null){
+        sp = {name:'NULL PROD', no:1, null:true}
+      }
+      var nwgt = ''
+      var fdtwgt = ''
+      var pkgwgt = ''
+      if(typeof curProd['NominalWgt'] != 'undefined'){
+        nwgt = curProd['NominalWgt'].toFixed(1)
+        fdtwgt = curProd['FeedbackTarWgt'].toFixed(1)
+        pkgwgt = curProd['PkgWeight'].toFixed(1)
+      }
+
+      content =( 
+      <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
+        <div>
+        <div style={{display:'inline-block', verticalAlign:'top'}}><ProdSettingEdit trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={400} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
+        <div style={{display:'inline-block', marginLeft:87, marginBottom:-10}}>
+          <div style={{position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
+            <div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
+            <div style={{height:35, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
+            <div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
+          </div>
+        </div>
+        </div>
+        <div>
+          <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
+            <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={nwgt+'g'} param={vdefByMac[this.props.mac][1][1]['NominalWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'FeedbackTarWgt'} vMap={vMapV2['FeedbackTarWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={fdtwgt+'g'} param={vdefByMac[this.props.mac][1][1]['FeedbackTarWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Package Weight'} value={pkgwgt+'g'} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+           <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+          </div>
+
+          <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
+            <div style={{width:'90%',padding:'2.5%',margin:'2.5%',background:'linear-gradient(90deg,#919aa0, #e1e1e1)'}}>
+              <div><div style={{width:'60%',display:'inline-block'}}>Overweight Accept</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['OverWeightAllowed'][this.props.language][curProd['OverWeightAllowed']]}</div></div>
+              <div><div style={{width:'60%',display:'inline-block'}}>Product Speed</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}</div></div>
+              <div><div style={{width:'60%',display:'inline-block'}}>Feedback Control</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['FeedbackMode'][this.props.language][curProd['FeedbackMode']]}</div></div>
+              <div><div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
+                
+                <div style={{width:'70%',display:'inline-block'}}>Correction Rate</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>{curProd['FeedbackCorRate'] + ' g/s'}</div>
+                <div style={{width:'70%',display:'inline-block'}}>Dead Zone</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>±{curProd['FeedbackDeadZone']}g</div>
+                <div style={{width:'70%',display:'inline-block'}}>Sample Count</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>{curProd['FeedbackSampCnt']}pcs</div>
+            
+              </div>
+              <div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
+                
+                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Wait Count</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}pcs</div>
+                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Hi Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackHiLim']}g</div>
+                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Lo Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackLoLim']}g</div>
+            
+              </div></div>
+              <div><div style={{width:'60%',display:'inline-block'}}>Measurement Standard</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
+              <div><div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
+                
+                <div style={{width:'70%',display:'inline-block'}}>Number of Packs</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>10</div>
+              
+              </div>
+              <div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
+                
+                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Hi Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>140g</div>
+                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Lo Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>90g</div>
+            
+              </div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Advanced'}/>
+                <CircularButton onClick={this.saveProduct} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Product'}/>
+          
+        </div>
+        
+      </div>)
+      if(this.state.showAdvanceSettings){
+        content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
+        <div style={{height:482}}>  <SettingsPage toggleGraph={this.toggleGraph} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+          onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={4}/>
+        </div>
+          <div>
+        
+        </div>
+        </div>
+      }
+    }
+    
+    var scrollInd = 0
+    var prods = list.map(function (prd,i) {
+
+      // body...
+      if(prd.no == self.state.selProd){
+        scrollInd = i;
+      }
+      return <div> <ProductSelectItem name={prd.name} p={prd.no} isNull={prd.null} deleteProd={self.deleteProd} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
+         </div>
+    })
+
+    if(list.length == 0){
+      prods = <div style={{textAlign:'center', width:297,padding:5}}>No Matching Products</div>
+    }
+    var spstr = ''
+    if(this.props.runningProd){
+      var rp = {}
+      this.state.prodList.forEach(function(prod) {
+    
+        if(self.props.runningProd == prod.no){
+          rp = prod 
+        }
+
+      })
+      spstr = this.props.runningProd + '. '+rp.name;
+    }
+    var SA = (list.length > 8)
+    return <div style={{width:1155}}>
+      <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Products</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:600}}>{'Current Product: '+spstr }</div></div>
+      <table style={{borderCollapse:'collapse'}}><tbody>
+        <tr>
+          <td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:813, padding:5, paddingTop:0, textAlign:'right'}}>     <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'} onClick={this.selectRunningProd}/>
+          </div></td><td style={{verticalAlign:'top',textAlign:'center'}}>
+            <ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
+    
+          <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:489, background:'#e1e1e1',overflowY:'scroll'}}>{prods}
+          </div>
+          <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #ccc'}}>
+          <div onClick={this.copyTo} style={{display:'table-cell',height:66, borderRight:'2px solid #ccc', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
+          <div onClick={this.showAllProd} style={{display:'table-cell',height:66, borderLeft:'2px solid #ccc',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>{showText}</div>
+          </div>
+          <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+      
+          </td>
+        </tr>
+      </tbody></table>
+      <PromptModal branding={this.props.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
+      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
+
+      <CopyModal ref={this.cfModal}  branding={this.props.branding}/>
+      <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
+      <Modal ref={this.pgm} branding={this.props.branding}>
+        <div style={{background:'#e1e1e1'}}>
+        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{textAlign:'center'}}>Pack Graph</div></h2></span>
+       <PackGraph crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
+        </div>
+      </Modal>
+    </div>
+  }
+}
+class ProductSelectItem extends React.Component{
+  constructor(props){
+    super(props)
+    this.switchProd = this.switchProd.bind(this);
+    this.deleteProd = this.deleteProd.bind(this); 
+  }
+  switchProd(){
+    var self = this;
+    setTimeout(function(){
+      if(!self.props.isNull){
+      self.props.selectProd(self.props.p)
+        
+      }
+    },150)
+  }
+  deleteProd(){
+    var self = this;
+    setTimeout(function(){
+      if(!self.props.isNull){
+      self.props.deleteProd(self.props.p)
+        
+      }
+    },150)
+  }
+  render () {
+    // body..
+    
+    var check= ""
+     var  del = <img onClick={this.deleteProd} src="assets/trash.svg"/>
+  var dsW = 300;
+    var stW = 227;
+    var ds = {paddingLeft:7, display:'inline-block', width:dsW, background:"transparent"}
+    var st = {padding:7,display:'inline-block', width:stW, height:50, lineHeight:'50px',fontSize:22,borderBottom:'2px solid #bbbbbbaa'}
+    var mgl = -90
+    var buttons// = <button className='deleteButton' onClick={this.deleteProd}/>
+    if(this.props.selected){
+    //  check = <img src="assets/Check_mark.svg"/>
+      ds = {paddingLeft:7,display:'inline-block', width:dsW,   background:"#7ccc7c"}
+      //st = {color:'green', padding:7, display:'inline-block', width:200}
+      mgl = -160
+      del = ""
+    }
+    if(this.props.running){
+      check =  <img src="assets/Check_mark.svg"/>
+      del = ""
+    }
+    var name = 'Product '+this.props.p
+    if(this.props.name.length > 0){
+      name = this.props.name
+    }
+    var color = '#000'
+    if (this.props.isNull){
+      color = '#aaa'
+    }
+    return (<div style={{background:"transparent", color:color, position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-block', width:22}}>{check}</div><label onClick={this.switchProd} style={st}>{this.props.p + '.  ' +name}</label> <div style={{display:'inline-block', width:22}}>{del}</div></div>
+      </div>)
+  }
+}
+class ProdSettingEdit extends React.Component{
+  constructor(props){
+    super(props);
+    this.onClick = this.onClick.bind(this);
+    this.onInput = this.onInput.bind(this);
+    this.curtrnChange = this.curtrnChange.bind(this);
+    this.ed = React.createRef();
+    this.trnsmdl = React.createRef();
+    this.state = {curtrn:this.props.label}
+    this.submitChange = this.submitChange.bind(this);
+    this.submitTooltip = this.submitTooltip.bind(this);
+    this.translatePopup = this.translatePopup.bind(this);
+  }
+  submitChange(){
+    if(this.props.submitChange){
+      this.props.submitChange(this.props.name, this.props.language, this.state.curtrn)
+    }
+  }
+  submitTooltip(txt){
+    console.log(4467, this.props.name, this.props.language)
+    this.props.submitTooltip(this.props.name, this.props.language,txt)
+  }
+  componentDidMount(){
+    this.setState({curtrn:this.props.label})
+  }
+  onClick(){
+    if(this.props.editable){
+      this.ed.current.toggle()
+    }
+  }    
+  onInput(v){
+    var val = v;
+    
+    if(typeof this.props.param['@decimal'] != 'undefined'){
+      if(this.props.param['@decimal'] > 0){
+          val = val * Math.pow(10,this.props.param['@decimal'])
+        
+      }
+    }
+    console.log(val,v)
+    this.props.onEdit(this.props.param,val);
+  }
+  onRequestClose(){
+
+  }
+  onFocus(){
+
+  }
+  curtrnChange(e){
+    this.setState({curtrn:e.target.value})
+  }
+  translatePopup(){
+    console.log('translatePopup', this.props.trans)
+    if(this.props.trans){
+      this.trnsmdl.current.toggle();
+    }
+  }
+  render(){
+
+
+
+    var self = this;
+    var ckb;
+    //console.log(this.props,4384)
+    if(this.props.editable){
+      if(this.props.param['@labels']){
+        var list = _pVdef[7][this.props.param["@labels"]]['english'].slice(0);
+
+        var lists = [list]
+
+        ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref={this.ed} val={[this.state.value]} options={lists} onChange={this.selectChanged}/>
+
+      }else{
+        ckb = <CustomKeyboard preload={this.props.param['@name'] == 'ProdName'} branding={this.props.branding} ref={this.ed} language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value} submitTooltip={this.submitTooltip}/>
+
+      }
+    
+    }
+    var bgClr = SPARCBLUE2
+    var modBG = SPARCBLUE1
+    var txtClr = '#000'
+    if(this.props.branding == 'FORTRESS'){
+      modBG = FORTRESSPURPLE1
+      bgClr = FORTRESSPURPLE2
+      txtClr = '#e1e1e1'
+    }
+
+      var trnsmdl =   ''
+      if(this.props.trans){
+        trnsmdl = <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>Parameter Name: { this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+              <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
+              <button onClick={this.submitChange}>Submit Translation</button>
+        </Modal>
+      }
+       
+    return <div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:20,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:this.props.w1,textAlign:'center'}}>
+         <ContextMenuTrigger id={this.props.name + '_ctmid'}>
+        {this.props.label}   </ContextMenuTrigger>
+      
+      </div>
+      <div onClick={this.onClick} style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:this.props.w2}}>
+        {this.props.value}
+      </div>
+      {ckb}
+       <ContextMenu id={this.props.name + '_ctmid'}>
+        <MenuItem onClick={this.translatePopup}>
+          Translate Setting
+        </MenuItem>
+      </ContextMenu>
+       {trnsmdl}
+    </div>
+  }
+}
+class SettingsPageWSB extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {sel:0, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0,mot:false}
+    this.setPath = this.setPath.bind(this);
+    this.onHandleClick = this.onHandleClick.bind(this);
+    this.backAccount = this.backAccount.bind(this);
+    this.onCal = this.onCal.bind(this);
+    this.backCal = this.backCal.bind(this);
+    this.onMot = this.onMot.bind(this);
+    this.updateLiveWeight = this.updateLiveWeight.bind(this);
+    this.sd = React.createRef();
+    //  this.submitList = this.submitList.bind(this);
+  }
+  componentDidMount(){
+    this.sd.current.setPath([0]);
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({update:true})
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    return  (nextState.update == true)
+  }
+  updateLiveWeight(lv){
+    if(this.state.cal){
+      this.setState({liveWeight:lv, update:true})
+    }else{
+      this.setState({liveWeight:lv, update:false})
+    }
+  }
+  setPath(dat,i){
+    if(i < 0){
+      this.sd.current.setPath([])
+    }else{
+      this.sd.current.setPath([i])
+
+    }
+    this.setState({sel:i, showAccounts:false, cal:false, update:true,mot:false})
+  }
+  backAccount(){
+    this.setState({showAccounts:false, update:true})
+  }
+  onHandleClick(dat, n){
+    if(dat[0] == 'get_accounts'){
+      this.setState({showAccounts:true, cal:false, update:true,mot:false})
+    }else if(dat[0] == 'reboot_display'){
+      toast('Restarting Display')
+      socket.emit('reboot')
+    }else{
+      if(typeof this.props.onHandleClick != 'undefined'){
+          this.props.onHandleClick(dat,n)
+      }
+    
+    }
+  }
+  onCal(){
+    this.setState({mot:false,cal:true,sel:-2, showAccounts:false, update:true})
+  }  
+  onMot(){
+    this.setState({cal:false,mot:true,sel:-3, showAccounts:false, update:true})
+  }
+  backCal(){
+    this.setState({cal:false, update:true})
+  }
+  render(){
+    var self = this;
+    var calStr = 'Press calibrate to start calibration. \n Ensure loadcell is empty before starting.';
+    if(this.props.calibState == 1){
+      calStr = 'Taring..'
+    }else if(this.props.calibState == 2){
+      calStr = 'Place calibration weight on loadcell and press Calibrate'
+    }else if(this.props.calibState == 3){
+      calStr = 'Calibrating..'
+    }else if(this.props.calibState == 4){
+      calStr = 'Remove weight and hit Calibrate to tare'
+    }else if(this.props.calibState == 5){
+      calStr = 'Taring..'
+    }else if(this.props.calibState == 6){
+      calStr = 'Calibration Successful'
+    }else if(this.props.calibState == 7){
+      calStr = 'Calibration Failed'
+    }
+
+    var cats = []//[<div><CatSelectItem language={this.props.language} branding={self.props.branding} data={{val:{cat:'Home'}}} selected={this.state.sel == -1} ind={-1} onClick={self.setPath}/></div>]
+    this.props.cvdf[0].params.forEach(function (c,i) {
+      // body...
+      //console.log(c)
+      if(c.type == 1){
+        cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={c} selected={self.state.sel == i} ind={i} onClick={self.setPath}/></div>)
+      }
+    })
+    cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} /></div>)
+   
+    // bkmkthis
+    var cob;
+    if(this.state.sel == -1){
+      cob = this.props.cob2
+    }
+    var sd =<React.Fragment><div > <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
+          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+      </div>
+      <div style={{display:'none'}}> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
+      </div></React.Fragment>
+    if(this.state.showAccounts){
+      sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap}  setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
+          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+      </div>
+      <div> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
+      </div></React.Fragment>
+    }else if(this.state.cal){
+     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref={this.sd} data={this.state.data} 
+          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+      </div>
+      <div>
+        <div style={{background:'#e1e1e1', padding:10}}>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
+          
+         
+          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.liveWeight.toFixed(1)+'g'} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
+          <div style={{marginTop:100, fontSize:24, textAlign:'center'}}>{calStr}</div>
+          <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCal} lab={'Calibrate'}/>
+          </div>
+          </div>
+      </div></React.Fragment>
+    }else if(this.state.mot){
+      sd = <React.Fragment>
+        <div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+      </div>
+
+      <div>
+        <div style={{background:'#e1e1e1', padding:10}}>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Motor Control'}</div></h2></span>
+          
+        <div style={{marginTop:5}}>
+          <MotorControl motors={[{name:'Infeed Belt'},{name:'Weigh Table Belt'},{name:'Reject Belt'},{name:'Exit Belt'}]}/>
+        </div>
+
+         </div>
+
+         </div>
+      </React.Fragment>
+    }
+
+    return <div>
+      <table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{marginTop:54, height:480, background:'#e1e1e1'}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
+    </div>
+  }
+}
+class CatSelectItem extends React.Component{
+  constructor(props){
+    super(props)
+    this.onClick = this.onClick.bind(this);
+  }
+  onClick(){
+    this.props.onClick(this.props.data, this.props.ind)
+  }
+  render () {
+    // body..
+    
+    var check= ""
+    var dsW = 300;
+    var stW = 227;
+    var ds = {paddingLeft:7,paddingRight:7, display:'inline-block', width:dsW, background:"transparent"}
+    var st = {padding:7,display:'inline-block', width:stW, height:50, lineHeight:'50px',fontSize:22,borderBottom:'2px solid #bbbbbbaa'}
+    var mgl = -90
+    var buttons// = <button className='deleteButton' onClick={this.deleteProd}/>
+    var selBG = SPARCBLUE2
+
+    if(this.props.branding == 'FORTRESS'){
+      selBG = FORTRESSPURPLE2
+      //st.color = '#e1e1e1'
+    }
+    if(this.props.selected){
+      check = <img src="assets/Check_mark.svg"/>
+      ds = {paddingLeft:7,paddingRight:7,display:'inline-block', width:dsW,  background:selBG}
+      //st = {color:'green', padding:7, display:'inline-block', width:200}
+      mgl = -160
+      if(this.props.branding == 'FORTRESS'){
+     // selBG = FORTRESSPURPLE2
+      st.color = '#e1e1e1'
+    }
+    }
+    var catSt = this.props.data.val.cat
+    if(vdefMapV2['@catmap'][catSt]){
+     catSt =  vdefMapV2['@catmap'][catSt]['@translations'][this.props.language]
+    }
+
+    return (<div style={{background:"transparent", color:"#000", position:'relative', textAlign:'center'}}><div style={ds} ><label onClick={this.onClick} style={st}>{catSt}</label></div>
+      </div>)
+  }
+}
+class SettingsPage extends React.Component{
+  constructor(props) {
+    super(props)
+
+    this.state = ({
+     sysRec:this.props.sysSettings,curtrn:'Settings', prodRec:this.props.prodSettings, dynRec:this.props.dynSettings,font:2, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec,path:[]
+    });
+    this.handleItemclick = this.handleItemclick.bind(this);
+    this.scrollUp = this.scrollUp.bind(this);
+    this.scrollDown = this.scrollDown.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
+    this.sendPacket = this.sendPacket.bind(this);
+    this.parseInfo = this.parseInfo.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onRequestClose = this.onRequestClose.bind(this);
+    this.goBack = this.goBack.bind(this);
+    this.getBack = this.getBack.bind(this);
+    this.arrowTop = React.createRef();
+    this.arrowBot = React.createRef();
+    this.submitChange = this.submitChange.bind(this)
+    this.submitList = this.submitList.bind(this);
+    this.trnsmdl = React.createRef();
+    this.translatePopup = this.translatePopup.bind(this);
+    this.curtrnChange = this.curtrnChange.bind(this);
+    this.submitTooltip = this.submitTooltip.bind(this);
+  }
+  submitChange(n,l,v){
+    console.log(n,l,v)
+    this.props.submitChange(n,l,v)
+  }
+  submitTooltip(n,l,v){
+    this.props.submitTooltip(n,l,v)
+  }
+  submitList(n,l,v){
+    console.log(n,l,v)
+    this.props.submitList(n,l,v)
+  }
+  componentWillUnmount(){
+
+  }
+  componentWillReceiveProps(newProps){
+
+        var data = [];
+      //  var path = [];
+      var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
+      if(this.props.data[0] == 'get_accounts'){
+        data = this.props.data
+      }else{
+        data.push([this.props.cob2[0],0])
+        if(typeof this.props.cob2[0].params != 'undefined'){
+          var _par = this.state.cob2[0].params.slice(0);
+            this.state.path.forEach(function (x,i) {
+           // console.log(x)
+            data.push([_par[x]['@data'],x])
+            _par = _par[x]['@data'].params.slice(0);
+            // body...
+          })  
+        }
+   
+      }
+      var label =vdefMapV2['@labels']['Settings'][newProps.language]['name']
+      var lvl = data.length;
+
+      if(lvl > 0){
+
+      var cat = data[lvl - 1 ][0].cat;
+      var pathString = ''
+      lab = cat//catMap[cat]['@translations']['english']
+      if(lvl == 1){
+          
+          if(this.props.mode == 'config'){
+            label = vdefMapV2['@labels']['Settings'][newProps.language]['name']
+            pathString = ''
+          }else{
+            label = catMapV2[data[0][0].cat]['@translations'][newProps.language]
+            pathString = data[0][0].cat
+          }
+        }else if(lvl == 2){
+          if(this.props.mode == 'config'){
+            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+            label = catMapV2[pathString]['@translations'][newProps.language];
+          }else{
+            pathString = data.map(function (d) {return d[0].cat}).join('/')
+
+            label = catMapV2[pathString]['@translations'][newProps.language];
+          }
+          
+      
+        }else{
+          var bblab = ''
+          if(this.props.mode == 'config'){
+            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+            //////console.log(pathString)
+            label = catMapV2[pathString]['@translations'][newProps.language];
+          }else{
+            pathString = data.map(function (d) {return d[0].cat}).join('/')
+            label = catMapV2[pathString]['@translations'][newProps.language];
+          }
+        }
+      }
+    this.setState({data:newProps.data, cob2:newProps.cob2, sysRec:newProps.sysSettings, prodRec:newProps.prodSettings, dynRec:newProps.dynSettings, framRec:newProps.framRec})
+  }
+  handleItemclick(dat, n){    
+    //console.log(dat,n,1763)
+         var data = [];
+     var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
+      //  var path = [];
+      if(this.props.data[0] == 'get_accounts'){
+        data = this.props.data
+      }else{
+        data.push([this.props.cob2[0],0])
+        if(typeof this.props.cob2[0].params != 'undefined'){
+          var _par = this.state.cob2[0].params.slice(0);
+            this.state.path.forEach(function (x,i) {
+           // console.log(x)
+            data.push([_par[x]['@data'],x])
+            _par = _par[x]['@data'].params.slice(0);
+            // body...
+          })  
+        }
+   
+      }
+      var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
+      var lvl = data.length;
+
+      if(lvl > 0){
+
+      var cat = data[lvl - 1 ][0].cat;
+      var pathString = ''
+      lab = cat//catMap[cat]['@translations']['english']
+      if(lvl == 1){
+          
+          if(this.props.mode == 'config'){
+            label = vdefMapV2['@labels']['Settings'][this.props.language]['name']
+            pathString = ''
+          }else{
+            label = catMapV2[data[0][0].cat]['@translations'][this.props.language]
+            pathString = data[0][0].cat
+          }
+        }else if(lvl == 2){
+          if(this.props.mode == 'config'){
+            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+            label = catMapV2[pathString]['@translations'][this.props.language];
+          }else{
+            pathString = data.map(function (d) {return d[0].cat}).join('/')
+
+            label = catMapV2[pathString]['@translations'][this.props.language];
+          }
+          
+      
+        }else{
+          var bblab = ''
+          if(this.props.mode == 'config'){
+            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+            //////console.log(pathString)
+            label = catMapV2[pathString]['@translations'][this.props.language];
+          }else{
+            pathString = data.map(function (d) {return d[0].cat}).join('/')
+            label = catMapV2[pathString]['@translations'][this.props.language];
+          }
+        }
+      }
+    if(dat[0] == 'get_accounts'){
+      this.props.onHandleClick(dat,n)
+    }else{
+    var self = this;
+    var path = this.state.path;
+    path.push(dat[1])
+    setTimeout(function(){
+      document.getElementById(self.props.Id).scrollTop = 0;
+      self.setState({path:path, curtrn:label})
+      if(typeof self.props.onHandleClick != 'undefined'){
+          self.props.onHandleClick(dat,n)
+      }
+      //self.props.onHandleClick(dat, n);
+
+    },250)
+  }
+
+  }
+  setPath(path){
+     var data = [];
+     var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
+      //  var path = [];
+      if(this.props.data[0] == 'get_accounts'){
+        data = this.props.data
+      }else{
+        data.push([this.props.cob2[0],0])
+        if(typeof this.props.cob2[0].params != 'undefined'){
+          var _par = this.state.cob2[0].params.slice(0);
+            this.state.path.forEach(function (x,i) {
+           // console.log(x)
+            data.push([_par[x]['@data'],x])
+            _par = _par[x]['@data'].params.slice(0);
+            // body...
+          })  
+        }
+   
+      }
+      var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
+      var lvl = data.length;
+
+      if(lvl > 0){
+
+      var cat = data[lvl - 1 ][0].cat;
+      var pathString = ''
+      lab = cat//catMap[cat]['@translations']['english']
+      if(lvl == 1){
+          
+          if(this.props.mode == 'config'){
+            label = vdefMapV2['@labels']['Settings'][this.props.language]['name']
+            pathString = ''
+          }else{
+            label = catMapV2[data[0][0].cat]['@translations'][this.props.language]
+            pathString = data[0][0].cat
+          }
+        }else if(lvl == 2){
+          if(this.props.mode == 'config'){
+            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+            label = catMapV2[pathString]['@translations'][this.props.language];
+          }else{
+            pathString = data.map(function (d) {return d[0].cat}).join('/')
+
+            label = catMapV2[pathString]['@translations'][this.props.language];
+          }
+          
+      
+        }else{
+          var bblab = ''
+          if(this.props.mode == 'config'){
+            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+            //////console.log(pathString)
+            label = catMapV2[pathString]['@translations'][this.props.language];
+          }else{
+            pathString = data.map(function (d) {return d[0].cat}).join('/')
+            label = catMapV2[pathString]['@translations'][this.props.language];
+          }
+        }
+      }
+    document.getElementById(this.props.Id).scrollTop = 0;
+    this.setState({path:path,curtrn:label})
+  }
+  parseInfo(sys, prd){
+    if((typeof sys != 'undefined') && (typeof prd != 'undefined')){
+      if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
+        this.setState({sysRec:sys, prodRec:prd})
+      }
+    }
+  }
+  componentDidMount() {
+    this.props.sendPacket('refresh',0);
+    //window.addEventListener('scroll', this.handleScroll)
+  }
+  curtrnChange(e){
+    this.setState({curtrn:e.target.value})
+  }
+  submitCatChange(){
+    //this.props.submitCatChange()
+  }
+  handleScroll(ev) {
+    // body...
+    //////////console.log(ev.srcElement.body)
+    var lvl = this.props.data.length
+    var len = 0;
+    if(lvl > 0){
+      len = this.props.data[lvl - 1 ][0].params.length
+    }
+    //  ////////console.log(document.getElementById(this.props.Id).scrollTop)
+     var el = document.getElementById(this.props.Id)   
+       if(el){
+      if(el.scrollTop > 5){
+        this.arrowTop.current.show();
+      }else{
+        this.arrowTop.current.hide();
+      }
+      if(el.scrollTop + el.offsetHeight < el.scrollHeight ){
+        this.arrowBot.current.show();
+      }else{
+        this.arrowBot.current.hide();
+      }
+    }
+
+  }
+  scrollUp() {
+    _scrollById(this.props.Id,-260,300);
+  }
+  scrollDown() {
+    _scrollById(this.props.Id,260,300);
+  }
+  sendPacket(n,v) {
+    var self = this;
+    ////console.log([n,v])
+    if(n == 'vfdChange'){
+      console.log('vfdChange')
+      var packet = dsp_rpc_paylod_for(v['@rpcs']['changevfdwrite'][0], v['@rpcs']['changevfdwrite'][1],v['@rpcs']['changevfdwrite'][2]);
+       socket.emit('rpc', {ip:this.props.dsp, data:packet})
+    }else if(n['@rpcs']['vfdstart']){
+    if(v == 1){
+     // n['@rpcs']['vfdstart'][0]
+     console.log('vfdstart')
+      var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstart'][0], n['@rpcs']['vfdstart'][1],n['@rpcs']['vfdstart'][2]);
+        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+    }else{
+      console.log('vfdstop')
+       var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstop'][0], n['@rpcs']['vfdstop'][1],n['@rpcs']['vfdstop'][2]);
+        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+
+    }
+
+   }else if(n['@rpcs']['vfdwrite']){
+      var arg1 = n['@rpcs']['vfdwrite'][0];
+      var arg2 = [];
+      var ind = n['@rpcs']['vfdwrite'][2][0];
+      var strArg = null;
+      
+      for(var i = 0; i<n['@rpcs']['vfdwrite'][1].length;i++){
+        if(!isNaN(n['@rpcs']['vfdwrite'][1][i])){
+          arg2.push(n['@rpcs']['vfdwrite'][1][i])
+        }else if(n['@rpcs']['vfdwrite'][1][i] == n['@name']){
+          if(!isNaN(v)){
+            arg2.push(v)
+          }else{
+            strArg=v
+            
+          }
+        }
+       
+    }
+     var buf = Buffer.alloc(5)
+        buf.writeUInt8(ind,0)
+        if((n['@type'] == 'float')||(n['@type'] == 'float_dist')||(n['@type'] == 'belt_speed')||(n['@type'] == 'fdbk_rate')){
+          buf.writeFloatLE(parseFloat(v),1)
+        }else{
+          buf.writeUInt32LE(parseInt(v),1);
+        }
+        
+        var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
+        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+  }else if(n['@rpcs']['toggle']){
+
+      var arg1 = n['@rpcs']['toggle'][0];
+      var arg2 = [];
+      for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
+        if(!isNaN(n['@rpcs']['toggle'][1][i])){
+          arg2.push(n['@rpcs']['toggle'][1][i])
+        }else{
+          arg2.push(v)
+        }
+      }
+      var packet = dsp_rpc_paylod_for(arg1, arg2);
+      
+      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+    }else if(n['@rpcs']['apiwrite']){
+      var arg1 = n['@rpcs']['apiwrite'][0];
+      var arg2 = [];
+      var strArg = null;
+      
+      for(var i = 0; i<n['@rpcs']['apiwrite'][1].length;i++){
+        if(!isNaN(n['@rpcs']['apiwrite'][1][i])){
+          arg2.push(n['@rpcs']['apiwrite'][1][i])
+        }else if(n['@rpcs']['apiwrite'][1][i] == n['@name']){
+          if(!isNaN(v)){
+            arg2.push(v)
+          }else{
+            strArg=v
+            
+          }
+        }
+      }
+      if(n['@type'] == 'int32'){
+        var buf = Buffer.alloc(4)
+        buf.writeUInt32LE(parseInt(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float_dist'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'belt_speed'){
+        console.log('change belt speed')
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }
+        console.log(strArg, n, 2154)
+      var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+        
+      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+    }else if(n['@rpcs']['write']){
+      var arg1 = n['@rpcs']['write'][0];
+      var arg2 = [];
+      var strArg = null;
+      var flag = false
+        ////console.log('2281',v, n['@rpcs']['write'][1], n["@name"])
+      for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
+        if(!isNaN(n['@rpcs']['write'][1][i])){
+          ////console.log('where')
+          arg2.push(n['@rpcs']['write'][1][i])
+        }else if(n['@rpcs']['write'][1][i] == n['@name']){
+          ////console.log('the')
+          if(!isNaN(v)){
+            arg2.push(v)
+          }
+          else{
+            arg2.push(0)
+            strArg=v
+          }
+          flag = true;
+        }else{
+          ////console.log('fuck')
+          var dep = n['@rpcs']['write'][1][i]
+          if(dep.charAt(0) == '%'){
+
+          }
+        }
+      }
+      if(n['@rpcs']['write'][2]){
+        if(Array.isArray(n['@rpcs']['write'][2])){
+          strArg = n['@rpcs']['write'][2]
+        }
+        else if(typeof n['@rpcs']['write'][2] == 'string'){
+          strArg = v
+        }
+        flag = true;
+      }
+      if(!flag){
+        strArg = v;
+      }
+      if(n['@type'] == 'int32'){
+        var buf = Buffer.alloc(4)
+        buf.writeUInt32LE(parseInt(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float_dist'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'belt_speed'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }
+      var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+        console.log(strArg, packet, n, 2154)
+    
+      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+    }else if(n['@rpcs']['clear']){
+      var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
+        
+      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+    }else if(n['@rpcs']['theme']){
+      this.props.setTheme(v)
+    }else if(n['@rpcs']['customstrn']){
+      this.props.setTrans(v)
+    }
+  }
+  onFocus() {
+      this.props.setOverride(true)
+  }
+  onRequestClose() {
+    // body...
+    var self = this;
+      setTimeout(function () {
+        // body...
+        self.props.setOverride(false)
+      },100)
+      
+  }
+  goBack(){
+     var path = this.state.path.slice(0);
+      if(path.length > 0){
+          path.pop();
+          this.setState({path:path})
+          this.props.goBack();
+      }
+      ////console.log(this.props.data)
+  }
+  getBack(){
+    this.props.getBack();
+  }
+  reboot(){
+    socket.emit('reboot')
+  }
+  translatePopup(){
+    this.trnsmdl.current.toggle();
+  }
+  render(){
+    var self = this;
+      var isInt = this.props.int
+    var data = [];
+
+      if(this.props.data[0] == 'get_accounts'){
+        data = this.props.data
+      }else{
+        data.push([this.state.cob2[0],0])
+        if(typeof this.state.cob2[0].params != 'undefined'){
+          var _par = this.state.cob2[0].params.slice(0);
+            this.state.path.forEach(function (x,i) {
+           // console.log(x)
+            data.push([_par[x]['@data'],x])
+            _par = _par[x]['@data'].params.slice(0);
+            // body...
+          })  
+        }
+   
+      }
+      var titleColor = '#eee'
+      if(this.props.black){
+        titleColor = '#000'
+      }
+      var maxHeight = 419;
+      if(this.props.wsb){
+        maxHeight = 462;
+      }
+    var lvl = data.length 
+    var handler = this.handleItemclick;
+    var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
+    var cvdf = this.props.cvdf
+    ////////////console.log(lvl)
+    var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
+
+    var nodes;
+    var ft = 25;
+    if(this.state.font == 1){
+      ft = 20
+    }else if(this.state.font == 0){
+      ft = 18
+    }
+    var backText = vdefMapV2['@labels']['Back'][this.props.language].name
+    if(this.props.mobile){
+      backText = ''
+    }
+    var nav =''
+    var backBut = ''
+    var packGraph = false;
+    var grphBut = ''
+    var catList = [ ]
+    var lenOffset = 0;
+    var accLevel = 0;
+    var len = 0;
+    var SA = false;
+    if(lvl == 0){
+      nodes = [];
+      for(var i = 0; i < catList.length; i++){
+        var ct = catList[i]
+        nodes.push(<SettingItem3 submitList={this.submitList} submitTooltip={this.submitTooltip} submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
+          language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} 
+          font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} 
+          sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+        
+      }
+      len = catList.length;
+      nav = nodes;
+    }else{
+
+      var cat = data[lvl - 1 ][0].cat;
+      if(data[lvl-1][0].packGraph){
+     //console.log(5143,data[lvl-1])
+      grphBut = <img src='assets/graph.svg' style={{position:'absolute', width:30, left:800}} onClick={this.props.toggleGraph}/>
+    }
+      var pathString = ''
+      lab = cat//catMap[cat]['@translations']['english']
+      if(lvl == 1){
+          
+          if(this.props.mode == 'config'){
+            label = vdefMapV2['@labels']['Settings'][this.props.language]['name']
+            pathString = ''
+          }else{
+            label = catMapV2[data[0][0].cat]['@translations'][this.props.language]
+            pathString = data[0][0].cat
+          }
+          if(this.props.prodPage == true){
+            backBut = (<div className='bbut' onClick={this.getBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
+            <label style={{color:titleColor, fontSize:ft}}>{backText}</label></div>)
+  
+          }
+          //catMap[data[0]]['@translations']['english']
+        }else if(lvl == 2){
+          if(this.props.mode == 'config'){
+            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+            //console.log(pathString)
+            label = catMapV2[pathString]['@translations'][this.props.language];
+          }else{
+            pathString = data.map(function (d) {return d[0].cat}).join('/')
+
+            label = catMapV2[pathString]['@translations'][this.props.language];
+          }
+          if(this.props.wsb != true){
+          backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
+            <label style={{color:titleColor, fontSize:ft}}>{backText}</label></div>)
+          }
+      
+        }else{
+          var bblab = ''
+          if(this.props.mode == 'config'){
+            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
+            //////console.log(pathString)
+            label = catMapV2[pathString]['@translations'][this.props.language];
+            bblab = catMapV2[data.slice(1,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
+          }else{
+            pathString = data.map(function (d) {return d[0].cat}).join('/')
+            label = catMapV2[pathString]['@translations'][this.props.language];
+            bblab = catMapV2[data.slice(0,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
+          }
+          backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
+            <label style={{color:'titleColor', fontSize:ft}}>{backText}</label></div>)
+      }
+      
+      nodes = []
+      data[lvl - 1 ][0].params.forEach(function (par,i) {
+        if(par.type == 0){
+                var p = par
+                var pname = par['@name']
+
+              if(!self.props.int){
+                 if(pname.slice(-4) == '_INT'){
+                  pname = pname.slice(0,-4)
+                 }
+              }
+
+          var ind = 0;
+          var prms = self.props.cob2[ind].params;
+          
+          while(ind < lvl - 1){
+            ind = ind + 1
+            prms = prms[data[ind][1]]['@data'].params
+          }
+          var d = prms[i]
+            var ch = d['@children'].slice(0)
+
+                if(d['@interceptor'] || d['@test'] || d['@halo'] || d['@input'] || d['@combo']){
+                  ch.unshift(d['@data'])
+                }
+              var acc = false;
+          if((self.props.level > 3) || (p.acc <= self.props.level)){
+            acc = true;
+          }
+          //console.log(2158, isInt)
+          nodes.push(<SettingItem3 submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+            ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
+              children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
+          
+        }else if(par.type == 1){
+          var sc = par['@data']
+          ////console.log('check this too',sc)
+          
+                var acc = false;
+          if((self.props.level > 3) || (par.acc <= self.props.level)){
+            acc = true;
+          }
+          if(typeof sc['child'] != 'undefined'){
+            var spar = sc.params[sc.child]
+                  var ch = spar['@children'].slice(0)
+                  if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input'] || spar['@combo']){
+                    ch.unshift(spar['@data'])
+                  } 
+                    var spname = spar['@name']
+
+                if(!isInt){
+                    if(spname.slice(-4) == '_INT'){
+                        spname = spname.slice(0,-4)
+                    }
+                  }
+              nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+                data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+      
+          }else{
+                if(self.props.wsb && lvl == 1){
+                  lenOffset++;
+                }else{
+                  nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+              data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+            
+                }
+          }
+        }else if(par.type == 2){
+          var sc = par['@data']
+          var acc = false;
+          
+          if((self.props.level > 3)){
+            acc = true;
+          }
+          if(typeof sc['child'] != 'undefined'){
+            var spar = sc.params[sc.child]
+            var ch = spar['@children'].slice(0)
+                  if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input']||  spar['@combo']){
+                    ch.unshift(spar['@data'])
+                  }
+                  
+                  nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
+                    font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+                   data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+        
+          }else{
+            nodes.push(<SettingItem3  submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+              font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+              data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+          }
+        }else if(par.type == 3){
+          var acc = false;
+          if((self.props.level > 3)){
+            acc = true;
+          }
+          var sc = par['@data']
+            
+          nodes.push(<SettingItem3  submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+            font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
+            data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+    
+        }else if(par.type == 4){
+          var acc = false;
+          if((self.props.level > 3)){
+            acc = true;
+          }
+          var sc = par['@data']
+            
+          nodes.push(<CircularButton branding={self.props.branding} onClick={self.reboot} lab={"Reboot"}/>)
+        }
+      })
+
+      len = data[lvl - 1 ][0].params.length;
+      var ph = ""
+      if((len - lenOffset) > 6){
+          ph = <div style={{display:'block', width:'100%', height:20}}></div>
+          SA = true;
+      }
+      nav = (
+          <div className='setNav' style={{maxHeight:maxHeight}} onScroll={this.handleScroll} id={this.props.Id}>
+            {nodes}
+            {ph}
+          </div>)
+    }
+
+    var bgClr = FORTRESSPURPLE2
+        var modBG = FORTRESSPURPLE1
+        var txtClr = '#e1e1e1'
+        var plArr = 'assets/play-arrow-fti.svg'
+        var plStop = 'assets/stop-fti.svg'
+        var vfdbutts = ''
+        if(this.props.branding == 'SPARC'){
+          modBG = SPARCBLUE1
+          bgClr = SPARCBLUE2
+          txtClr = '#000'
+          plArr = 'assets/play-arrow-sp.svg'
+          plStop = 'assets/stop-sp.svg'
+        }
+      var catname  = 'Settings'
+    if(pathString != ''){
+      catname = catMapV2[pathString]['@translations'][this.props.language]
+    }
+    var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>Parameter Name: { catname}</div> 
+              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+              <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
+              <button onClick={this.submitCatChange}>Submit Translation</button>
+        </Modal>
+
+    var className = "menuCategory expanded";
+    var tstl = {display:'inline-block', textAlign:'center'}
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
+    if (this.state.font == 1){
+        titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
+    }else if (this.state.font == 0){
+        titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
+    }
+    catList = null;
+    //console.log(4713,SA)
+
+    return(
+      <div className='settingsDiv'>
+      <ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
+    
+      <div className={className}>
+        <ContextMenuTrigger id={pathString+'_titleCTMID'}>
+        {titlediv}
+        </ContextMenuTrigger>
+        <ContextMenu id={pathString+'_titleCTMID'}>
+        <MenuItem onClick={this.translatePopup}>
+          Translate Setting
+        </MenuItem>
+      </ContextMenu>
+
+      {trnsmdl}{nav}
+
+      </div>
+      <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+      </div>
+    );
+  }
+}
+class SettingItem3 extends React.Component{
+  constructor(props) {
+    super(props)
+
+    this.sendPacket = this.sendPacket.bind(this);
+    this.onItemClick = this.onItemClick.bind(this);
+    this.getValue = this.getValue.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onRequestClose =this.onRequestClose.bind(this);
+    this.parseValues = this.parseValues.bind(this);
+    this.touchStart = this.touchStart.bind(this);
+    this.touchEnd = this.touchEnd.bind(this);
+    this.ed = React.createRef();
+    var values = this.parseValues(this.props);
+    this.state = ({mode:0,font:this.props.font, val:values[0], pram:values[1], labels:values[2], touchActive:false})
+    this.submitChange = this.submitChange.bind(this);
+    this.submitList = this.submitList.bind(this);
+    
+
+  }
+  touchStart(){
+    this.setState({touchActive:true})
+  }
+  touchEnd(){
+    this.setState({touchActive:false})
+  }
+  parseValues(props){
+      var res = vdefByMac[props.mac];
+      var pVdef = _pVdef;
+      if(res){
+       pVdef = res[1];
+      }
+      var val = [], pram = [], label = false;
+      if(!props.hasChild){
+        //console.log('parseValues', 1)
+        if(typeof props.data == 'object'){
+          //console.log('parseValues', 2)
+        
+          if(typeof props.data['@data'] == 'undefined'){
+            //console.log('parseValues', 3)
+            //console.log(props.lkey)
+            if(typeof props.data[0] != 'undefined'){
+            if(typeof props.data[0]['child'] != 'undefined'){
+             // console.log('parseValues', 4)
+        
+              var lkey = props.data[0].params[props.data[0].child]['@name']
+              if((props.data[0].params[props.data[0].child]['@children'])&&(props.children[0].length == 2)){
+                console.log('parseValues', 5)
+        
+                for(var i=0;i<props.children[0].length; i++){
+                  val.push(this.getValue(props.children[1][i], props.children[0][i]))
+                  if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+                    pram.push(pVdef[0][props.children[0][i]])
+                  }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+                    pram.push(pVdef[1][props.children[0][i]])
+                  }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+                    pram.push(pVdef[2][props.children[0][i]])
+                  }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+                    pram.push(pVdef[3][props.children[0][i]])
+                  }else if(lkey == 'Nif_ip'){
+                    pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+                  }else if(lkey == 'Nif_nm'){
+                    pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+                  }else if(lkey == 'Nif_gw'){
+                    pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+                  }
+                }
+              }else{
+            
+                val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
+                if(typeof pVdef[0][lkey] != 'undefined'){
+                  pram = [pVdef[0][lkey]]
+                }else if(typeof pVdef[1][lkey] != 'undefined'){
+                  pram = [pVdef[1][lkey]]
+                }else if(typeof pVdef[2][lkey] != 'undefined'){
+                  pram = [pVdef[2][lkey]]
+                }else if(typeof pVdef[3][lkey] != 'undefined'){
+                  pram = [pVdef[3][lkey]]
+                }else if(lkey == 'Nif_ip'){
+                  pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+                }else if(lkey == 'Nif_nm'){
+                  pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+                }else if(lkey == 'Nif_gw'){
+                  pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+                }
+
+                if(props.data[0].params[props.data[0].child]['@children']){
+                 // console.log('parseValues', 7)
+        
+                  for(var i=0;i<props.children[0].length; i++){
+                    val.push(this.getValue(props.children[1][i], props.children[0][i]))
+                    if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+                      pram.push(pVdef[0][props.children[0][i]])
+                    }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+                      pram.push(pVdef[1][props.children[0][i]])
+                    }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+                      pram.push(pVdef[2][props.children[0][i]])
+                    }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+                      pram.push(pVdef[3][props.children[0][i]])
+                    }
+                  }
+                   
+                }
+              }
+      
+              if(pram[0]['@labels']){
+                label = true
+              }
+            }
+          }else{
+
+          }
+          }else{
+            //console.log('parseValues', 8)
+        
+            var lkey = props.lkey;
+            if((props.data['@children'])&&(props.children[0].length == 2)){
+              console.log('parseValues', 9)
+        
+              for(var i=0;i<props.children[0].length;i++){
+                val.push(this.getValue(props.children[1][i], props.children[0][i]))
+                if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
+                  pram.push(pVdef[0][props.children[0][i]])
+                }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
+                  pram.push(pVdef[1][props.children[0][i]])
+                }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
+                  pram.push(pVdef[2][props.children[0][i]])
+                }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
+                  pram.push(pVdef[3][props.children[0][i]])
+                }
+              }
+            }else{
+              //console.log('parseValues', 10)
+        
+
+              val = [this.getValue(props.data['@data'], lkey)]
+              if(typeof pVdef[0][lkey] != 'undefined'){
+                pram = [pVdef[0][lkey]]
+              }else if(typeof pVdef[1][lkey] != 'undefined'){
+                pram = [pVdef[1][lkey]]
+              }else if(typeof pVdef[2][lkey] != 'undefined'){
+                pram = [pVdef[2][lkey]]
+              }else if(typeof pVdef[3][lkey] != 'undefined'){
+                pram = [pVdef[3][lkey]]
+              }else if(lkey == 'Nif_ip'){
+                pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+              }else if(lkey == 'Nif_nm'){
+                pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+              }else if(lkey == 'Nif_gw'){
+                pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
+              }
+            }     
+          }
+        }
+      }
+      if(pram.length == 0){
+
+      }else if(pram[0]['@labels']){
+        label = true
+      }
+      return [val,pram,label]
+  }
+  sendPacket(n,v) {
+    //
+    var val = v
+    if(n['@name'] == 'Nif_ip'){
+      socket.emit('nifip', v.toString())
+    }else if(n['@name'] == 'Nif_nm'){
+      socket.emit('nifnm', v.toString())
+    }else if(n['@name'] == 'Nif_gw'){
+      socket.emit('nifgw', v.toString())
+    }else{
+      if(n['@type'] == 'ipv4_address'){
+        val = v.split('.').map(function(ip){
+          return ("000"+ip).slice(-3);
+        }).join('.')
+        setTimeout(function(){
+          socket.emit('locateReq');
+        },200)
+      }
+    
+    this.props.sendPacket(n,val)  
+    }
+  }
+  componentWillReceiveProps (newProps) {
+    // body...
+    var values = this.parseValues(newProps);
+    
+    this.setState({font:newProps.font, val:values[0], pram:values[1], labels:values[2]})
+  }
+  onItemClick(){
+
+    if(this.props.hasChild || typeof this.props.data == 'object'){
+    
+      if(this.props.acc){
+        this.props.onItemClick(this.props.data, this.props.name)  
+      }else{
+
+        toast('Access Denied')  
+      }   
+    }
+  }
+  getValue(rval, pname){
+    var pram;
+      var val;
+      var label = false
+      var res = vdefByMac[this.props.mac];
+      var pVdef = _pVdef;
+      var dec = 0;
+      var self = this;
+      if(res){
+        pVdef = res[1];
+      }
+
+      if(typeof pVdef[0][pname] != 'undefined'){
+        pram = pVdef[0][pname]
+        var deps = []
+        val = rval
+        if(pram["@type"]){
+          var f = pram["@type"]
+          if(pram["@dep"]){
+            deps = pram["@dep"].map(function(d){
+              if(pVdef[6][d]["@rec"] == 0){
+                return self.props.sysSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 1){
+                return self.props.prodSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 2){
+                return self.props.dynSettings[d]
+              }
+            });
+            if((f == 'mm')||(f == 'float_dist')){
+              if(deps[0] == 0){
+                dec = 1
+              }
+            }
+          } 
+          if(pram['@bit_len']<=16){
+            if(f == 'belt_speed'){
+              console.log('belt_speed', deps, pVdef[6])
+            }
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+          }else if(f == 'float_dist'){
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+    
+          }
+        }else if(typeof pram['@decimal'] != 'undefined'){
+          val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+        }
+        
+        if(pram["@labels"]){
+          label = true
+        }
+      }else if(typeof pVdef[1][pname] != 'undefined'){
+        
+        pram = pVdef[1][pname]
+        
+        var deps = []
+        val = rval
+        if(pram["@type"]){
+          var f = pram["@type"]
+          if(pram["@dep"]){
+            deps = pram["@dep"].map(function(dp){
+              var d = dp;
+              if(dp.indexOf('[0]') != -1){
+                if(pram['@name'].slice(-2) == '_A'){
+                  d = dp.replace('[0]','[1]')
+                }
+              }
+              if(pVdef[6][d]["@rec"] == 0){
+                return self.props.sysSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 1){
+                return self.props.prodSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 2){
+                return self.props.dynSettings[d]
+              }
+            });
+            if(f == 'belt_speed'){
+              console.log('belt_speed', deps, pVdef[6])
+            }
+            if(pram['@name'] == 'BeltSpeed'){
+            //  deps.push(self.props.dynSettings['EncFreq'])
+              //deps.push(1000)
+            //  console.log(3243,deps)
+            }else if(pram['@type'] == 'rej_del'){
+              deps.push(1000)
+            }
+          }
+          if((f == 'mm') || (f == 'float_dist')){
+              if(deps[0] == 0){
+                dec = 1
+              }
+            }
+          if(pram['@bit_len']<=16){
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+          }
+          if(f == 'float_dist'){
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+    
+          }
+          if(f == 'phase_offset'){
+            val =   uintToInt(val,16)//?? phase is coming in with different format for dyn data
+          }
+          
+        }else if(typeof pram['@decimal'] != 'undefined'){
+          val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+        }
+        if(pram["@labels"]){
+          label = true
+        }
+      }else if(typeof pVdef[2][pname] != 'undefined'){
+        
+        pram = pVdef[2][pname]
+        
+        var deps = []
+        val = rval
+        if(pram["@type"]){
+          var f = pram["@type"]
+          if(f == 'phase'){
+            val =   (uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+          }else{
+          if(pram["@dep"]){
+            deps = pram["@dep"].map(function(dp){
+              var d = dp;
+              if(dp.indexOf('[0]') != -1){
+                if(pram['@name'].slice(-2) == '_A'){
+                  d = dp.replace('[0]','[1]')
+                }
+              } 
+              if(pVdef[6][d]["@rec"] == 0){
+                return self.props.sysSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 1){
+                return self.props.prodSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 2){
+                return self.props.dynSettings[d];
+              }
+            });
+          }
+          if(f == 'mm'){
+              if(deps[0] == 0){
+                dec = 1
+            }
+          }
+          if(pram['@bit_len']<=16){
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+          }
+        }
+          
+        }else if(pram['@name'] == 'RejExitDistEst'){
+          var dependancies = ['SysRec.MetricUnits']
+          deps = dependancies.map(function(d){
+            if(pVdef[6][d]["@rec"] == 0){
+                return self.props.sysSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 1){
+                return self.props.prodSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 2){
+              //    ////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+                return self.props.dynSettings[d];
+              }
+          })
+          dec = 1
+          val = eval(funcJSON['@func']['mm']).apply(this, [].concat.apply([], [val, deps]));
+
+        }else if(typeof pram['@decimal'] != 'undefined'){
+          val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+        }
+        if(pram["@labels"]){
+          label = true
+        }
+      }else if(typeof pVdef[3][pname] != 'undefined'){
+        
+        pram = pVdef[3][pname]
+        
+        var deps = []
+        val = rval
+        if(pram["@type"]){
+          var f = pram["@type"]
+          if(f == 'phase'){
+            val =   (uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
+          }else{
+          if(pram["@dep"]){
+            deps = pram["@dep"].map(function(d){
+              if(pVdef[6][d]["@rec"] == 0){
+                return self.props.sysSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 1){
+                return self.props.prodSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 2){
+              //    ////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+                return self.props.dynSettings[d];
+              }else if(pVdef[6][d]["@rec"] == 3){
+              //    ////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
+                return self.props.framSettings[d];
+              }
+            });
+          }
+          if(pram['@bit_len']<=16){
+          //  ////////console.log(f)
+            
+            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
+          }
+        }
+          
+        }else if(typeof pram['@decimal'] != 'undefined'){
+          val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
+        }
+        if(pram["@labels"]){
+          label = true
+        }
+      }else{
+        val = rval
+      }
+      return val;
+  }
+  onFocus () {
+    this.props.onFocus();
+  }
+  onRequestClose () {
+    this.props.onRequestClose();
+  }
+  submitChange(n,l,v){
+    this.props.submitChange(n,l,v)
+  }
+  submitList(n,l,v){
+    this.props.submitList(n,l,v)
+  }
+  render(){
+    var ft = [16,20,24];
+    var wd = [150,260,297]
+    var vwd = [75,125,169]
+    var st = {display:'inline-block', fontSize:ft[this.state.font], width:wd[this.state.font]}
+    var vst = {display:'inline-block', fontSize:ft[this.state.font], width:vwd[this.state.font]}
+    var self = this;
+    var fSize = 24;
+    var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+    var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+    var sty = {height:60};
+    var klass = 'sItem'
+       
+    if(this.props.mobile){
+      sty.height = 45;
+      sty.lineHeight = '45px';
+    }
+      var res = vdefByMac[this.props.mac];
+      var pVdef = _pVdef;
+      if(res){
+        pVdef = res[1];
+      }
+        var label = false;
+    if(this.props.hasChild){
+      var namestring = this.props.name;
+      var path = ""
+      if(this.props.path.length == 0){
+        path = namestring
+      }else{
+        path = this.props.path + '/'+ namestring
+      }
+      
+      if(typeof catMapV2[path] != 'undefined'){
+          namestring = catMapV2[path]['@translations'][this.props.language]
+      
+      }
+      if(namestring.length > 28){
+        fSize = 18
+      }
+      else if(namestring.length > 24){
+        fSize= 20
+      }else if(namestring.length > 18){
+        fSize = 22
+      }
+      
+        var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+        if(this.props.mobile){
+          _st.lineHeight = '51px'
+          _st.height = 45
+        }
+        klass += ' hasChild'
+        if(this.state.touchActive){
+          klass += ' touchDown'
+        }
+        sty.backgroundColor = FORTRESSPURPLE2;
+          if(this.props.branding == 'SPARC'){
+            sty.backgroundColor = SPARCBLUE2
+            sty.color = 'black'
+            sty.height = 50
+          }
+      return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
+    }else{
+      var val, pram;
+      var namestring = this.props.name;
+
+    if(typeof this.props.data == 'object'){
+
+      if(typeof this.props.data['@data'] == 'undefined'){
+        var path = ""
+        if(this.props.path.length == 0){
+          path = namestring
+        }else{
+          path = this.props.path + '/'+ namestring
+        }
+        
+        if(typeof catMapV2[path] != 'undefined'){
+          namestring = catMapV2[path]['@translations'][this.props.language]
+        }
+        if(namestring.length > 28){
+          fSize = 18
+        }
+        else if(namestring.length > 24){
+          fSize= 20
+        }else if(namestring.length > 18){
+          fSize = 22
+        }
+        var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+        if(this.props.mobile){
+          _st.lineHeight = '51px'
+          _st.height = 45
+        }
+        
+        if(typeof this.props.data[0] != 'undefined'){
+        if(typeof this.props.data[0]['child'] != 'undefined'){
+              klass  = 'sprc-prod'//+= ' noChild'
+
+          var lkey = this.props.data[0].params[this.props.data[0].child]['@name']
+          var im = <img  style={{position:'absolute', width:36,top:15, left:762, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
+          
+          if(this.props.mobile){
+            im = <img  style={{position:'absolute', width:'7%',height:'40%',top:'30%', left:'92%', strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
+          }
+      
+          if(this.props.backdoor){
+            im = ''
+          }
+    
+
+          var medctrl= (<MultiEditControl weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
+                      mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
+                  onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
+                    lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
+                    label={this.state.label} int={false} name={lkey}/>)
+
+
+          if(this.props.mobile){
+            sty.height = 51
+            sty.paddingRight = 5
+          }
+          
+              //sty.paddingBottom = 5
+          return (<div className='sprc-prod' style={sty} onClick={this.onItemClick}> {medctrl}
+              {im}
+            
+            </div>)
+        }
+      }else{
+     
+        return ""
+      }
+
+          klass = 'sItem hasChild'
+          sty.backgroundColor = FORTRESSPURPLE2
+          if(this.props.branding == 'SPARC'){
+                klass = 'sItem hasChildSparc'
+                sty.color = 'black'
+                sty.background = SPARCBLUE2
+                sty.height = 50;
+              }
+          if(this.state.touchActive){
+                klass += ' touchDown'
+            }
+        return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
+      }
+
+    }
+    if(this.props.mobile){
+      sty.height = 51;
+      sty.paddingRight = 5;
+    }
+    var medctrl= (<MultiEditControl weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
+          lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
+          label={this.state.label} int={false} name={this.props.lkey}/>)
+
+          return (<div className='sprc-prod' style={sty}> {medctrl}
+          </div>)
+      
+    }
+  }
+}
+class MultiEditControl extends React.Component{
+  constructor(props) {
+    super(props)
+    var tlist = []
+    var elist = []
+    var liststring = ''
+
+    if(typeof this.props.param[0]['@labels'] != 'undefined'){
+      var labname = this.props.param[0]['@labels'] 
+      if(typeof vMapLists[this.props.param[0]['@labels']] != 'undefined'){
+        liststring = vMapLists[this.props.param[0]['@labels']][this.props.language].join(',')
+        tlist = vMapLists[this.props.param[0]['@labels']][this.props.language].slice(0);
+        elist = vMapLists[this.props.param[0]['@labels']]['english'].slice(0);
+      }else{
+       console.log(this.props.param[0]['@labels'], 5664)
+        liststring = vdefByMac[this.props.mac][0]['@labels'][this.props.param[0]['@labels']][this.props.language].join(',');
+        vMapLists[this.props.param[0]['@labels']] = JSON.parse(JSON.stringify(vdefByMac[this.props.mac][0]['@labels'][this.props.param[0]['@labels']]))
+        vdefMapV2['@languages'].forEach(function (l) {
+          if(typeof vMapLists[labname][l] == 'undefined'){
+             vMapLists[labname][l] = vMapLists[labname]['english'].slice(0)
+          }
+        })
+      }
+      
+    }
+    if(typeof this.props.vMap == 'undefined'){
+      console.log(this.props.param, 5679)
+    }
+    this.state = ({val:this.props.data.slice(0), changed:false,tlist:tlist,elist:elist,liststring:liststring, mode:0, size:this.props.size,touchActive:false, curtrn:this.props.vMap['@translations'][this.props.language]['name']})
+    this.selectChanged = this.selectChanged.bind(this);
+    this.valChanged = this.valChanged.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onRequestClose = this.onRequestClose.bind(this);
+    this.onClick = this.onClear.bind(this);
+    this.openSelector = this.openSelector.bind(this);
+    this.valClick = this.valClick.bind(this);
+      this.onPointerDown = this.onPointerDown.bind(this);
+      this.onPointerUp = this.onPointerUp.bind(this);
+      this.vfdStart = this.vfdStart.bind(this);
+      this.vfdStop = this.vfdStop.bind(this);
+      this.vfdSetup = this.vfdSetup.bind(this);
+      this.curtrnChange = this.curtrnChange.bind(this);
+      this.submitChange = this.submitChange.bind(this);
+      this.submitList = this.submitList.bind(this);
+    for(var i = 0; i<this.props.param.length; i++){
+      this['input'+i] = React.createRef();
+    }
+    this.vfdModal = React.createRef();
+    this.vfdSModal = React.createRef();
+    this.trnsmdl = React.createRef();
+    this.listmdl = React.createRef();
+    this.translatePopup = this.translatePopup.bind(this);
+    this.translateLists = this.translateLists.bind(this);
+    this.pw = React.createRef();
+    this.listChange = this.listChange.bind(this);
+    this.submitTooltip = this.submitTooltip.bind(this);
+    this.lChange = this.lChange.bind(this);
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({val:newProps.data.slice(0)})
+  }
+  componentDidMount(){
+    this.setState({curtrn:this.props.vMap['@translations'][this.props.language]['name']})
+  }
+  submitList(){
+    this.props.submitList(this.props.param[0]['@labels'], this.props.language, this.state.tlist.slice(0))
+  }
+  submitTooltip(txt){
+    this.props.submitTooltip(this.props.name, this.props.language,txt)
+  }
+  vfdSetup(){
+    var self = this;
+    setTimeout(function(argument) {
+      // body...
+      self.vfdSModal.current.toggle();
+    },100)
+     this.props.sendPacket('vfdChange',this.props.param[0])
+  }
+  selectChanged(v,i){
+    var val = v//e.target.value//e.target.value;
+    if(this.props.bitLen == 16){
+      val = Params.swap16(parseInt(val))
+    }
+    this.props.sendPacket(this.props.param[i], parseInt(val));
+    var value = this.state.val;
+    value[i] = v// e.target.value
+  }
+  valChanged(v,i){
+    //console.log(['2734',v,i,this.props.param[i]])
+    var val;
+    if(!isNaN(v)){
+      val = parseFloat(v)
+    }else{ 
+      val = v;
+
+    }
+    if(this.props.param[i]['@type'] == 'mm'){
+      if(this.state.val[i].indexOf('in') != -1){
+        val = val*10;
+      }
+    }else if(this.props.param[i]['@name'].indexOf('PhaseAngleAuto') != -1){
+      val = val*Math.pow(10,this.props.param[i]['@decimal'])
+    }else if(this.props.param[i]['@decimal']){
+      val = val*Math.pow(10,this.props.param[i]['@decimal'])
+      ////console.log('3149',v,val)
+    }else if(this.props.param[i]['@type'] == 'belt_speed'){
+      if(v.indexOf('.') != -1){
+        val = val*10
+      }
+    }
+    
+    if(this.props.bitLen == 16){
+      val = Params.swap16(parseFloat(val))
+    }
+    var value = this.state.val; 
+    value[i] = val;
+    this.setState({val:value})
+    if(this.props.param[i]['@bit_len'] > 16){
+      val = v//              "
+          if(this.props.param[i]['@type'] == 'dsp_name_u16_le' || this.props.param[i]['@type'] == 'prod_name_u16_le'){
+            val  = (v + "                    ").slice(0,20)
+          }
+      this.props.sendPacket(this.props.param[i], val)
+    }else if(!Number.isNaN(val)){
+      this.props.sendPacket(this.props.param[i], parseFloat(val));
+    }
+  }
+  onFocus () {
+    this.props.onFocus();
+  }
+  onRequestClose () {
+    this.props.onRequestClose();
+  }
+  onClear (id) {
+    this.props.sendPacket(this.props.param[id])
+  }
+  openSelector () {
+    if(!this.props.ov){
+  
+      var self = this;
+      if(this.pw.current){
+        setTimeout(function () {
+          self.pw.current.toggleCont();
+        },100)
+        
+      }
+    }
+    
+  }
+  valClick (ind) {
+    var self = this;
+    if(!this.props.ov){
+      if(this.props.param[ind]['@rpcs']){
+        if(this.props.param[ind]['@rpcs']['vfdstart']){
+          this.vfdModal.current.toggle();
+        }else if(this.props.param[ind]['@rpcs']['clear']){
+          this.onClear(ind)
+        }else if(this.props.param[ind]['@rpcs']['start']){
+          this.onClear(ind)
+        }else if(this['input' + ind].current){
+          setTimeout(function (argument) {
+            // body...
+            self['input' + ind].current.toggle();
+          }, 100);
+          //this.refs['input' + ind].toggle();
+        }else if(this.pw.current){
+          setTimeout(function(){
+            self.pw.current.toggle();
+      
+          },100)
+        }
+      }else if(this['input' + ind].current){
+          setTimeout(function (argument) {
+            // body...
+            self['input' + ind].current.toggle();
+          }, 100);
+      }else if(this.pw.current){
+        setTimeout(function(){
+            self.pw.current.toggle();
+      
+          },100)
+      }
+    }
+  }
+  vfdStart(){
+    console.log('start clicked')
+    this.props.sendPacket(this.props.param[0],1)
+  }
+  vfdStop(){
+    console.log('stop clicked')
+    this.props.sendPacket(this.props.param[0],2)
+  }
+    onPointerDown(){
+      this.setState({touchActive:true})
+    }
+    onPointerUp(){
+      if(this.state.touchActive){
+        this.setState({touchActive:false})
+      
+      }
+    }
+    listChange(e){
+      this.setState({liststring:e.target.value})
+    }
+    translatePopup(){
+      this.setState({curtrn:this.props.vMap['@translations'][this.props.language]['name']})
+      this.trnsmdl.current.toggle();
+      //toast('translate')
+    }
+    translateLists(){
+      var liststring = ''
+    if(typeof this.props.param[0]['@labels'] != 'undefined'){
+      liststring = vMapLists[this.props.param[0]['@labels']][this.props.language].join(',')
+    }
+      this.setState({liststring:liststring})
+      this.listmdl.current.toggle();
+      //toast('translate')
+    }
+    curtrnChange(v){
+      this.setState({curtrn:v.target.value})
+    }
+    submitChange(){
+      this.props.submitChange(this.props.name, this.props.language, this.state.curtrn)
+    }
+    lChange(e,i){
+      var list = this.state.tlist.slice(0);
+      list[i] = e.target.value;
+      this.setState({tlist:list})
+    }
+    render(){
+      var self = this;
+    var popupmenu = ''
+    var namestring = this.props.name
+    
+    if(typeof vdefByMac[this.props.mac][5][this.props.name] != 'undefined'){
+      if(vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name'] != ''){
+        namestring =  vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name']
+      }
+    }
+    namestring = this.props.vMap['@translations'][this.props.language]['name']
+   
+    var dt = false;
+    var fSize = 20;
+    if(namestring.length > 30){
+      fSize = 14
+    }
+    else if(namestring.length > 24){
+      fSize= 16
+    }else if(namestring.length > 18){
+      fSize = 18
+    }
+    if(this.props.mobile){
+      fSize -= 7;
+      fSize = Math.max(13, fSize)
+    }
+    let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee', verticalAlign:'middle', lineHeight:'25px'}
+    if(this.props.branding == 'SPARC'){
+      lvst.background = SPARCBLUE2
+    }
+
+    var labWidth = (496/this.state.val.length)
+    var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480',overflow:'hidden'}
+    if(this.props.branding == 'SPARC'){
+      lvst.background = SPARCBLUE2
+      vlabelStyle.boxShadow = ' -50px 0px 0 0 '+ SPARCBLUE2
+    }
+    var vlabelswrapperStyle = {width:496, overflow:'hidden', display:'table-cell'}
+    if(this.props.mobile){
+      labWidth = parseInt(100/this.state.val.length) + '%'
+      vlabelswrapperStyle.width = '60%'
+      lvst.verticalAlign = 'middle'
+      lvst.lineHeight = '25px'
+    }
+      if(this.state.touchActive){
+          lvst.background = '#56526c'
+          vlabelStyle.boxShadow = ' -50px 0px 0 0 #56526c'
+
+          if(this.props.branding == 'SPARC'){
+            lvst.background = '#2098d2'
+            vlabelStyle.boxShadow = ' -50px 0px 0 0 #2098d2'
+          }
+      }
+      var iod = false;
+      var iogreen = true;
+      var ioindicator = '';
+      var vLabels = this.state.val.map(function(d,i){  
+      var val = d;
+      var units = self.props.param[i]['@units']
+      if(units == 'grams'){
+        if(self.props.weightUnits == 1){
+          val = val/1000 
+          units = 'kg'
+        }else if(self.props.weightPassed == 2){
+          val = val/453.592
+          units = 'lb'
+        }else if(self.props.weightPassed == 3){
+          val = val/28.3495
+          units = 'oz'
+        }
+      }
+      if(self.props.param[i]['@type'] == 'float'){
+        if(val.toString().length > val.toFixed(5).length){
+          val = val.toFixed(5)
+        }
+        
+      }
+      var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
+      st.width = labWidth
+      st.fontSize = self.props.vst.fontSize;
+      st.display = 'table-cell';//self.props.vst.display;
+      
+      if(self.props.mobile){
+        st.height = 51
+        st.lineHeight = '51px'
+        st.display = 'inline-block'
+      }
+          if(typeof self.props.param[i]['@labels'] != 'undefined'){
+        var list =  _pVdef[7][self.props.param[i]["@labels"]];
+        if(typeof vMapLists[self.props.param[i]['@labels']]!= 'undefined'){
+          list = vMapLists[self.props.param[i]['@labels']]
+        }
+        if(typeof list['english'] == 'undefined'){
+          console.log(self.props.param[i])
+        }
+        val = list['english'][d];
+        
+        if((self.props.language != 'english')&&(typeof list[self.props.language] != 'undefined')&&(typeof list[self.props.language][d] == 'string') &&(list[self.props.language][d].trim().length != 0)){
+          val = list[self.props.language][d];
+        }
+        if((self.props.param[i]['@labels'] == 'InputSrc')){
+          iod = true
+          
+          if(d == 0){
+            st.color = '#666'
+            iogreen = false;
+            
+          }else if((self.props.ioBits[inputSrcArr[d]] == 0) && (self.state.val[1] == 0)){
+            st.color = '#666'
+            iogreen = false;
+          }else if((self.props.ioBits[inputSrcArr[d]] != 0) && (self.state.val[1] != 0)){
+            st.color = '#666'
+            iogreen = false;
+          }
+        }else if((self.props.param[i]['@labels'] == 'OutputSrc')){
+           iod = true
+          if(self.props.ioBits[outputSrcArr[d]] == 0){
+            st.color = '#666'
+            iogreen = false;
+          }
+        }
+      }
+          if(self.props.param[i]['@units']){
+            val = val + ' ' + units
+          }
+          if(self.props.combo){
+            val = <React.Fragment><div style={{color:'#aaa', fontSize:self.props.vst.fontSize - 4}}>{self.props.vMap['@labels'][i]}</div><div>{val}</div></React.Fragment>
+            st.lineHeight = '22px'
+          }
+
+          var _st = Object.assign({},st)
+          if(self.state.touchActive){
+            _st.background = 'rgba(100,100,100,0.5)'
+          }
+      
+      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val}</CustomLabel>)
+    })
+    
+
+    var acc = false
+    var vfdcont = false
+    var vfdsetup = false
+    if(this.props.acc){
+      if(this.props.param[0]['@rpcs']){
+        if((this.props.param[0]['@rpcs']['vfdwrite'])||(this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])||(this.props.param[0]['@rpcs']['theme'])||(this.props.param[0]['@rpcs']['customstrn'])){
+          acc = true
+        }else if(this.props.param[0]['@rpcs']['vfdstart']){
+          vfdcont = true
+        }
+        if(this.props.param[0]['@rpcs']['changevfdwrite']){
+          vfdsetup = true
+        }
+      }
+    }
+    var vfdsetupbutt = ''
+      var bgClr = FORTRESSPURPLE2
+        var modBG = FORTRESSPURPLE1
+        var txtClr = '#e1e1e1'
+        var plArr = 'assets/play-arrow-fti.svg'
+        var plStop = 'assets/stop-fti.svg'
+        var vfdbutts = ''
+        if(this.props.branding == 'SPARC'){
+          modBG = SPARCBLUE1
+          bgClr = SPARCBLUE2
+          txtClr = '#000'
+          plArr = 'assets/play-arrow-sp.svg'
+          plStop = 'assets/stop-sp.svg'
+        }
+
+       var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>Parameter Name: { this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+              <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
+              <button onClick={this.submitChange}>Submit Translation</button>
+        </Modal>
+        var lsedit = this.state.tlist.map(function (l,i) {
+          return <tr><td style={{color:"#e1e1e1"}}>{self.state.elist[i]}</td><td><input type='text' value={l} onChange={(e) => self.lChange(e,i)}/></td></tr>
+          // body...
+        })
+        var listmdl = <Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>List Name: { this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+        <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
+              <button onClick={this.submitList}>Submit Translation</button>
+        </Modal>
+  if(iod){
+      if(iogreen){
+        ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#5d5'}}></div>
+      }else{
+         ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#555'}}></div>
+      }
+      }
+      if(vfdsetup){
+        ioindicator = <img onClick={()=>this.vfdSModal.current.toggle()} src='assets/config.svg' style={{position:'absolute', width:30, height:30, left:15, top:10}}/>
+        vfdsetupbutt =<Modal ref={this.vfdSModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+
+        <div>
+          <div style={{color:txtClr}}>To set up this VFD unit, make sure all other VFD units are disconnected first. Press confirm to carry on with the setup.</div>
+        <div onPointerUp={this.vfdSetup} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}> <div style={{display:'inline-block'}}>Confirm</div></div>
+        <div onPointerUp={()=>this.vfdSModal.current.toggle()} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}><div style={{display:'inline-block'}}>Cancel</div></div> 
+    </div></Modal>
+      }
+    if(!acc){
+      
+       if(vfdcont){
+        vfdbutts = <Modal ref={this.vfdModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+
+        <div>
+          <div style={{color:txtClr}}>VFD Test</div>
+        <div onPointerUp={this.vfdStart} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plArr} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
+        <div onPointerUp={this.vfdStop} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plStop} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+      </div></Modal>
+       } 
+
+      return <div>
+     <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
+     <div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
+       <ContextMenuTrigger id={this.props.name + 'ctmid'}>
+        {namestring}
+         </ContextMenuTrigger>
+      </div>
+     </div>
+     
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
+        {vLabels}{ioindicator}
+      </div>
+      </div>
+      {vfdbutts}
+      <div style={{zIndex:3}}>
+       <ContextMenu id={this.props.name + 'ctmid'}>
+        <MenuItem onClick={this.translatePopup}>
+          Translate Setting
+        </MenuItem>
+       </ContextMenu>
+      </div>
+      {trnsmdl}
+      {listmdl}
+      </div>
+    }else{
+
+      var multiDropdown = true;
+      this.props.param.forEach(function (p) {
+        if((typeof p['@labels'] == 'undefined') &&(p['@name'].indexOf('TestConfigCount') == -1)){
+          multiDropdown = false;
+        }
+      })
+        
+      var options;
+      //TODO - TRANSLATE LISTS
+      if(multiDropdown){
+         popupmenu = <MenuItem onClick={this.translateLists}>Translate List</MenuItem>
+        var lists = this.props.param.map(function (p) {
+          if(p['@name'].indexOf('TestConfigCount') != -1){
+            return [0,1,2,3,4,5,6,7,8,9]
+          }else{
+            var list = []//
+            if(typeof _pVdef[7][p["@labels"]] == 'undefined'){
+              console.log(p, 6235)
+            }
+            if(typeof _pVdef[7][p["@labels"]]['english'] != 'undefined'){
+              list =  _pVdef[7][p["@labels"]]['english'].slice(0)
+            }
+
+            if(typeof vMapLists[p['@labels']] != 'undefined'){
+              list = vMapLists[p['@labels']]['english'].slice(0);
+              if(self.props.language != 'english'){
+              if(typeof vMapLists[p["@labels"]][self.props.language] != 'undefined'){
+                list.forEach(function(lb,i){
+                  if((typeof vMapLists[p["@labels"]][self.props.language][i] == 'string') &&(vMapLists[p["@labels"]][self.props.language][i].trim().length != 0)){
+                    list[i] = vMapLists[p["@labels"]][self.props.language][i]
+                  }
+                })
+              }
+            }
+            return list
+            }else{
+            if(self.props.language != 'english'){
+              if(typeof _pVdef[7][p["@labels"]][self.props.language] != 'undefined'){
+                list.forEach(function(lb,i){
+                  if((typeof _pVdef[7][p["@labels"]][self.props.language][i] == 'string') &&(_pVdef[7][p["@labels"]][self.props.language][i].trim().length != 0)){
+                    list[i] = _pVdef[7][p["@labels"]][self.props.language][i]
+                  }
+                })
+              }
+            }
+            return list
+          }
+          }
+        })
+        lsedit = this.state.tlist.map(function (l,i) {
+          return <tr><td  style={{color:"#e1e1e1"}}>{self.state.elist[i]}</td><td><input type='text' value={l} onChange={(e) => self.lChange(e,i)}/></td></tr>
+          // body...
+        })
+      listmdl =  (<Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>List Name: { this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+        <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
+              <button onClick={this.submitList}>Submit Translation</button>
+        </Modal>)
+        options = <PopoutWheel submitTooltip={this.submitTooltip} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref={this.pw} val={this.state.val} options={lists} onChange={this.selectChanged}/>
+
+        var bgClr = FORTRESSPURPLE2
+        var txtClr = '#e1e1e1'
+        if(this.props.branding == 'SPARC'){
+          bgClr = SPARCBLUE2
+          txtClr = '#000'
+        }
+        return  <div>
+         <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
+         <div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
+         <ContextMenuTrigger id={this.props.name + 'ctmid'}>
+        {namestring}
+        </ContextMenuTrigger>
+      </div></div>
+      
+      
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
+        {vLabels}{ioindicator}
+      </div>
+      </div>
+      {options}
+      {vfdsetupbutt}
+      <div style={{zIndex:3}}>
+       <ContextMenu id={this.props.name + 'ctmid'}>
+        <MenuItem onClick={this.translatePopup}>
+          Translate Setting
+        </MenuItem>
+        {popupmenu}
+      </ContextMenu>
+      </div>
+
+      {trnsmdl}
+      {listmdl}
+      </div>
+      }else{
+        options = this.state.val.map(function(v, i){
+          if(typeof self.props.param[i]['@labels'] != 'undefined'){
+            popupmenu = <MenuItem onClick={this.translateLists}>Translate List</MenuItem>
+            if(typeof _pVdef[7][self.props.param[i]["@labels"]]['english'] == 'undefined'){
+          console.log(self.props.param[i])
+        }
+            var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
+            
+            return <PopoutWheel submitTooltip={self.submitTooltip} inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={self['input'+i]} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
+          }else{
+            var num = true
+            if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){ num = false }
+            if(self.props.param[i]["@name"].indexOf('DateTime') != -1){dt = true;}
+            var lbl = namestring
+            if(self.props.combo){ lbl = lbl + [' Delay', ' Duration'][i]}
+              return <CustomKeyboard submitTooltip={self.submitTooltip} branding={self.props.branding} mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={self['input'+i]} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
+            }
+        })
+              if(this.props.nameovr){
+                namestring = this.props.nameovr
+              }
+               var bgClr = FORTRESSPURPLE2
+        var txtClr = '#e1e1e1'
+        if(this.props.branding == 'SPARC'){
+          bgClr = SPARCBLUE2
+          txtClr = '#000'
+        }
+     
+     return <div>
+     <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
+      <div><div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
+           <ContextMenuTrigger id={this.props.name + 'ctmid'}>
+        {namestring}
+
+      </ContextMenuTrigger>
+      </div>
+      </div>
+     
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
+        {vLabels}{ioindicator}
+      </div>
+      </div>
+      {options}
+      {vfdsetupbutt}
+      <div style={{zIndex:3}}>
+       <ContextMenu id={this.props.name + 'ctmid'}>
+        <MenuItem onClick={this.translatePopup}>
+          Translate Setting
+        </MenuItem>
+        {popupmenu}
+      </ContextMenu>
+      </div>
+
+      {trnsmdl}
+      {listmdl}
+      </div>
+    
+      }
+    }
+      
+    } 
+}
+class DisplaySettings extends React.Component{
+  constructor(props){
+    super(props)
+
+  }
+  editIP(v){
+    socket.emit('nifip', v.toString())
+  }
+  editNM(v){
+    socket.emit('nifnm', v.toString())
+  }
+  editGW(v){
+    socket.emit('nifgw', v.toString())
+  }
+  sendPacket(n,v){
+
+  }
+  onSubmit(n,l,v){
+
+  }
+  render(){
+    var titleColor = '#000'
+      var className = "menuCategory expanded";
+    var tstl = {display:'inline-block', textAlign:'center'}
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}}>
+      <div style={tstl}>{'Display Settings'}</div></h2></span>)
+
+ var nav = (<div className='setNav'>
+                <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_ip'} vMap={vMapV2['Nif_ip']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_ip']['@translations'][this.props.language]['name']} value={this.props.nifip} editable={true} onEdit={this.editIP} param={{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
+                <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_nm'} vMap={vMapV2['Nif_nm']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_nm']['@translations'][this.props.language]['name']} value={this.props.nifnm} editable={true} onEdit={this.editNM} param={{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
+                <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_gw'} vMap={vMapV2['Nif_gw']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_gw']['@translations'][this.props.language]['name']} value={this.props.nifgw} editable={true} onEdit={this.editGW} param={{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
+       
+          </div>)
+
+    return(
+      <div className='settingsDiv' style={{backgroundColor:"#e1e1e1"}}>
+     
+      <div className={className}>
+        {titlediv}{nav}
+      </div>
+      </div>
+    );
+
+  }
+}
+/******************Settings Components end********************/
+
+/******************Accounts start***********************/
+class AccountControl extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = ({accounts:this.props.accounts, curlevel:0, username:'', pswd:'', newUser:false})
+    this.selectChanged = this.selectChanged.bind(this);
+    this.addAccount = this.addAccount.bind(this);
+    this.removeAccount = this.removeAccount.bind(this);
+    this.goBack = this.goBack.bind(this);
+    this.pw = React.createRef();
+    this.username = React.createRef();
+    this.pswd = React.createRef();
+  }
+  goBack(){
+    this.props.goBack();
+  }
+  selectChanged(v){
+    this.setState({curlevel:v})
+  }
+  addAccount(){
+    socket.emit('addAccount', {user:{user:this.state.username, acc:this.state.curlevel, password:this.state.pswd}, ip:this.props.ip})
+  }
+  removeAccount(account){
+    socket.emit('removeAccount', {ip:this.props.ip, user:account})
+  }
+  onFocus(){
+
+  }
+  onUserChange(v){
+    this.setState({username:v})
+  }
+  onPswdChange(v){
+    this.setState({pswd:v})
+  }
+  onRequestClose(){
+
+  }
+  setLevel(){
+    this.pw.current.toggle();
+  }
+  setUserName(){
+    this.username.current.toggle();
+  }
+  setPassword(){
+    this.pswd.current.toggle();
+  }
+  render(){
+    var self = this;
+    var levels = ['none','operator','technician','engineer']
+    var pw     =  <PopoutWheel inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref={this.pw} val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
+    var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
+    var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
+    var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+    var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+    var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
+    var st = {padding:7,display:'inline-block', width:180}
+    
+    var accTableRows = [];
+    
+    this.props.accounts.forEach(function(ac,i){
+      accTableRows.push(<AccountRow branding={self.props.branding} mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > ac.acc} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
+    })
+    
+    var backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
+            <label style={{color:'#000', fontSize:24}}>{'Back'}</label></div>)
+    var tstl = {display:'inline-block', textAlign:'center'}
+      var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+      
+      if (this.state.font == 1){
+        titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+      }else if (this.state.font == 0){
+        titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+      }
+
+    return <div>
+      {userkb}
+      {pswdkb}
+      {pw}
+    
+    <div style={{height:525,background:'#e1e1e1'}}> 
+    {titlediv}
+    <div style={{ overflowY:'scroll',maxHeight:475}}>
+    {accTableRows}
+      </div>
+      </div>  
+    </div>
+  }
+}
+class AccountRow extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {username:this.props.username, acc:this.props.acc, password:this.props.password, changed:false}
+    this.onUserChange = this.onUserChange.bind(this);
+    this.onPswdChange = this.onPswdChange.bind(this);
+    this.setLevel = this.setLevel.bind(this);
+    this.setUserName = this.setUserName.bind(this);
+    this.setPassword = this.setPassword.bind(this);
+    this.remove = this.remove.bind(this);
+    this.saveChanges = this.saveChanges.bind(this);
+    this.addAccount = this.addAccount.bind(this);
+    this.valClick = this.valClick.bind(this);
+    this.selectChanged = this.selectChanged.bind(this);
+    this.ed = React.createRef();
+    this.pw = React.createRef();
+    this.pswd = React.createRef();
+    this.username = React.createRef();
+  }
+  componentWillReceiveProps(props){
+    if(!this.ed.current.state.show){
+      this.setState({username:props.username, acc:props.acc, password:props.password})
+    }
+    
+  }
+  valClick(){
+    //toast('Value Clicked')
+     this.setState({changed:false})
+    this.ed.current.toggle();
+  }
+  onUserChange(v){
+    this.setState({username:v})
+  }
+  onPswdChange(v){
+    var pswd = (v+'000000').slice(0,6)
+    this.setState({password:pswd})//, changed:true})
+  }
+  setLevel(){
+    if(this.props.change){
+    
+      var self = this;
+      setTimeout(function(){
+    
+      self.pw.current.toggleCont();
+      },80);
+    }
+  }
+  selectChanged(v){
+    this.setState({acc:v})//, changed:true})
+  }
+  setUserName(){
+    if(this.props.change){
+    
+    var self = this;
+    setTimeout(function(){
+      self.username.current.toggle();
+    },80)
+    }
+  }
+  setPassword(){
+    if(this.props.change){
+      var self = this;
+      setTimeout(function(){
+        self.pswd.current.toggle();
+      },80)
+    }
+  }
+  remove(){
+    if(this.props.saved){
+      socket.emit('removeAccount', {ip:this.props.ip, user:this.state.username})
+    }else{
+      this.setState({username:this.props.username, acc:this.props.acc, password:this.props.password})
+    }
+  }
+  saveChanges(){
+    this.addAccount();
+  
+  }
+  addAccount(){
+    console.log(8200, 'writeUserData', this.props.uid)
+    socket.emit('writeUserData', {data:{username:this.state.username, acc:this.state.acc, password:this.state.password, user:this.props.uid}, ip:this.props.ip})
+    
+    //this.setState({changed:false})
+  }
+  render() {
+    //////console.log(3243, this.props.mobile)
+    var levels = ['0','1','2','3','4']
+    
+    var namestring = 'User'+ this.props.uid
+    //////////console.log(['2692',namestring])
+      
+    var dt = false;
+    var self = this;
+    var fSize = 20;
+    if(namestring.length > 24){
+      fSize = 14
+    }
+    else if(namestring.length > 20){
+      fSize= 16
+    }else if(namestring.length > 12){
+      fSize = 18
+    }
+    if(this.props.mobile){
+      fSize -= 7;
+      fSize = Math.max(13, fSize)
+    }
+    let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}
+
+    var labWidth = (536/2)
+
+    var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+    var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+      var st = {textAlign:'center',lineHeight:'51px', height:60, width:536}
+
+      
+      st.fontSize = fSize//self.props.vst.fontSize;
+      st.display = 'table-cell';//self.props.vst.display;
+      
+    if(this.props.mobile){
+      labWidth = parseInt(100/2) + '%'
+      vlabelswrapperStyle.width = '60%'
+      lvst.verticalAlign = 'middle'
+      lvst.lineHeight = '25px'
+      st.height = 51
+      st.lineHeight = '51px'
+      st.display = 'inline-block'
+      st.width = '100%'
+      
+    }
+    //st.width = '100%'
+    
+    var valArray = [this.state.username, this.state.acc]
+    
+      var vLabels = valArray.map(function(d,i){
+      var val = d;
+      var cst = Object.assign({},st)
+      cst.width = labWidth
+      return (<CustomLabel index={i} onClick={self.valClick} style={cst}>{val}</CustomLabel>)
+    })
+
+
+     var bgClr = FORTRESSPURPLE2
+     var modBG = FORTRESSPURPLE1
+        var txtClr = '#e1e1e1'
+        if(this.props.branding == 'SPARC'){
+          modBG = SPARCBLUE1
+          bgClr = SPARCBLUE2
+          txtClr = '#000'
+        }
+      var pw =  <PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+    var userkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
+    var pswdkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
+  
+      var edit = <Modal mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
+      <div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
+
+        <div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Username: '}
+        </div>    <div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.username}</label></div></div>
+        <div style={{marginTop:5}} onClick={() => this.pswd.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Password: '}
+        </div>    <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div>
+        <div style={{marginTop:5}} onClick={() => this.pw.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Level: '}
+        </div>    <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.acc}</label></div></div>
+            </div>
+        {pw}{userkb}{pswdkb}
+      </Modal>
+        
+      var num = true
+      var lbl = namestring
+
+
+      return(<div style={{marginTop:5}}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}}>
+        {namestring}
+      </div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
+        {vLabels}
+      </div>
+      {edit}
+      </div>)
+      //return(<div className={'sItem noChild'}><div><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>{edit}</div>)
+  }
+}
+class LogInControl2 extends React.Component{
+  constructor(props){
+    super(props)
+    this.login = this.login.bind(this)
+    this.logout = this.logout.bind(this);
+    this.selectChanged = this.selectChanged.bind(this);
+    var list = []
+    this.props.accounts.forEach(function(ac){
+      list.push(ac.username + ' - lv' + ac.acc)
+    })
+    list.unshift('Not Logged In')
+    this.state = {val:0, list:list, showAcccountControl:false, open:false}
+    this.enterPIN = this.enterPIN.bind(this);
+    this.valChanged = this.valChanged.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onRequestClose = this.onRequestClose.bind(this);
+    this.toggleAccountControl = this.toggleAccountControl.bind(this);
+    this.onCancel = this.onCancel.bind(this);
+    this.pw = React.createRef();
+    this.psw = React.createRef();
+  }
+  componentWillReceiveProps(props){
+    var list = []
+    props.accounts.forEach(function(ac){
+      list.push(ac.username + ' - lv' + ac.acc)
+    })
+    list.unshift('Not Logged In')
+    if(!this.props.isOpen){
+
+      this.setState({val:props.val, list:list})
+    }else{
+      ////console.log('this was the issue... why Though?')
+      this.setState({list:list})
+    }
+    
+  }
+  componentDidMount(){
+    this.setState({showAcccountControl:false})
+  }
+  login(){
+    var self = this;
+    setTimeout(function(){
+      self.pw.current.toggleCont();
+      self.setState({open:true})
+    },100)
+    
+  }
+  logout(){
+    this.props.logout();
+  }
+  selectChanged(v,i){
+    ////console.log(['1531',v])
+    var self = this;
+    setTimeout(function(){
+      if(v != 0){
+      self.psw.current.toggle();      
+    }
+
+    }, 100)
+    self.setState({val:v})
+    
+
+    //this.props.login(v)
+  }
+  enterPIN(){
+    this.psw.current.toggle();
+  }
+  onFocus(){
+    this.setState({open:true})
+  }
+  onRequestClose(){
+    var self = this;
+    this.setState({open:false})
+    setTimeout(function(){
+      self.props.onRequestClose();
+    },100)
+      
+  }
+  valChanged(v){
+    //////console.log(v)
+    //this.props.authenticate(this.state.list[this.state.val], v)
+    ////console.log(this.state.val)
+    if(this.props.pass6 == 0){
+      if(v.length == 6){
+        this.props.authenticate(this.state.val,v)
+      }else{
+        toast('Password should be 6 characters')
+      }
+    }else{
+      if(v.length == 4){
+        this.props.authenticate(this.state.val,v)
+      }else{
+        toast('Password should be 4 characters')
+      }
+    }
+    
+  }
+  toggleAccountControl(){
+    if(this.props.level > 2){
+      this.setState({showAcccountControl:!this.state.showAcccountControl})
+    }else{
+      toast('Access Denied')
+    }
+    
+  }
+  onCancel(){
+    ////console.log('on cancel')
+    var self = this;
+    this.setState({open:false})
+    setTimeout(function(){
+      self.props.onRequestClose();
+    },100)
+      
+  }
+
+  render(){
+    var list = this.state.list
+    var namestring = 'Select User'
+    var pw = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} ovWidth={290} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
+
+    return <React.Fragment>{pw}
+      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
+    
+    </React.Fragment> 
+  }
+}
+/******************Accounts end***********************/
+
+/******************Stats Components start*******************/
+class StatSummary extends React.Component{
+  constructor(props){
+    super(props)
+    this.parsePack = this.parsePack.bind(this);
+    this.state = {count:0, grossWeight:0,currentWeight:0, rec:{},crec:{},lw:'0.0g'}
+  }
+  parsePack(max){
+    this.setState({count:this.state.count+1,grossWeight:this.state.grossWeight + max,currentWeight:max})
+
+  }
+  render(){
+    var outerbg = '#818a90'
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
+
+    //if(this.props.branding == 'SPARC'){
+      outerbg = '#e1e1e1'
+    
+    if(this.props.branding == 'SPARC'){ 
+      innerbg = SPARCBLUE2
+      fontColor = 'black'
+    }
+    //}
+
+    var av = 0;
+    if(this.state.count != 0){
+      av = (this.state.grossWeight/this.state.count)
+    }
+    var grstr;
+    if(this.state.grossWeight < 10000){
+      grstr = this.state.grossWeight.toFixed(1)+'g'
+    }else if(this.state.grossWeight < 10000000){
+      grstr = (this.state.grossWeight/1000).toFixed(3)+'kg'
+    }else{
+      grstr = (this.state.grossWeight/1000000).toFixed(3)+'t'
+    }
+    var grswt = 0;
+    var avg = 0;
+    var stdev = 0;
+    var tot = 0;
+    var gvb = 0;
+    var gvs = 0;
+    var savg = 0;
+    var sstdev = 0;
+    var stot = 0;
+    var ppm = 0;
+    var sppm = 0;
+    var unit = 0;
+    if(typeof this.props.unit != 'undefined'){
+      unit = this.props.unit
+    }
+    if(!isNaN(this.state.crec['PackWeight'])){
+      grswt = FormatWeight(this.state.crec['PackWeight'], unit)//this.state.crec['PackWeight'].toFixed(1) + 'g'
+      avg = FormatWeight(this.state.crec['AvgWeight'], unit)//this.state.crec['AvgWeight'].toFixed(1) +'g'
+      savg = FormatWeight(this.state.crec['SampleAvgWeight'], unit)//this.state.crec['SampleAvgWeight'].toFixed(1) + 'g'
+      stdev = this.state.crec['StdDev'].toFixed(2)+'g'
+      sstdev = this.state.crec['SampleStdDev'].toFixed(2)+'g'
+      tot = FormatWeight(this.state.crec['TotalWeight'], unit)//this.state.crec['TotalWeight'].toFixed(1)+'g'
+      stot = FormatWeight(this.state.crec['SampleTotalWeight'], unit)//this.state.crec['SampleTotalWeight'].toFixed(1)+'g'
+      gvb = FormatWeight(this.state.crec['GiveawayBatch'], unit)//this.state.crec['GiveawayBatch'].toFixed(1)+'g'
+      gvs = FormatWeight(this.state.crec['SampleGiveawayBatch'], unit)//this.state.crec['SampleGiveawayBatch'].toFixed(1)+'g'
+      if(this.state.crec['Batch_PPM']){
+        ppm = this.state.crec['Batch_PPM'].toFixed(0) + 'ppm'
+      }
+      sppm = this.state.crec['Sample_PPM'].toFixed(0) + 'ppm'
+      
+    }
+  return  <div style={{width:260,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
+      <StatControl language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange}/>
+      <StatControl language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={vMapV2['NetWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value='0g'/>
+      <StatControl language={this.props.language} vMap={vMapV2['PkgWeight']['@translations']} pram={'PkgWeight'} name={vMapV2['PkgWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value='0g'/>
+      <BatchStatControl name={labTransV2['@TotalWeightBS'][this.props.language]['name']} pram={'@TotalWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={tot} sample={stot}/>
+      <BatchStatControl name={labTransV2['@AvgWeightBS'][this.props.language]['name']} pram={'@AvgWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={avg} sample={savg}/>
+      <BatchStatControl name={labTransV2['@StdDevBS'][this.props.language]['name']} pram={'@StdDevBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={stdev} sample={sstdev}/>
+      <BatchStatControl name={labTransV2['@GiveAwayBS'][this.props.language]['name']} pram={'@GiveAwayBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={gvb} sample={gvs}/>
+      <BatchStatControl name={labTransV2['@ProductionRateBS'][this.props.language]['name']} pram={'@ProductionRateBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={ppm} sample={sppm}/>
+
+    </div>
+  }
+}
+class StatControl extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {curtrns:this.props.name}
+    this.translateModal = React.createRef();
+    this.translate = this.translate.bind(this)
+    this.onChange = this.onChange.bind(this);
+    this.submit = this.submit.bind(this);
+  }
+  onChange(e){
+    this.setState({curtrns:e.target.value})
+  }
+  translate(){
+    this.translateModal.current.toggle();
+  }
+  submit(){
+    this.props.submitChange(this.props.pram, this.props.language, this.state.curtrns)
+  }
+  render(){
+    var uid = uuidv4()
+    return <div style={{height:61}}>
+    <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
+    </div>
+    <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:25}}>{this.props.value}</div>
+    <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+        <div>{this.props.vMap['english']['name']}</div>
+        <div>
+          Current Language: {this.props.language}
+        </div>
+         <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
+         <button onClick={this.submit}>Submit Change</button>
+        </Modal>
+    </div>
+  }
+}
+class BatchStatControl extends React.Component{
+  constructor(props){
+    super(props)
+      this.state = {curtrns:this.props.name}
+    this.translateModal = React.createRef();
+    this.translate = this.translate.bind(this)
+    this.onChange = this.onChange.bind(this);  
+    this.submit = this.submit.bind(this);
+  }
+  onChange(e){
+    this.setState({curtrns:e.target.value})
+  }
+  translate(){
+    this.translateModal.current.toggle();
+  }
+  submit(){
+    this.props.submitChange(this.props.pram, this.props.language, this.state.curtrns)
+  }
+  render(){
+    var uid = uuidv4()
+    return <div style={{height:61}}>
+    <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu></div>
+    <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:25}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
+     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+         <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
+         <button onClick={this.submit}>Submit Change</button>
+        </Modal>
+    </div>
+  }
 }
 class SparcElem extends React.Component{
-	constructor(props){
-		super(props)
-		this.state = {value:this.props.value}
-	}
-	componentWillReceiveProps(newProps){
-		this.setState({value:newProps.value})
-	}
+  constructor(props){
+    super(props)
+    this.state = {value:this.props.value}
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({value:newProps.value})
+  }
 
-	render(){
-		var outerbg ='#e1e1e1'
-		var innerbg = '#5d5480'
-		var fontColor = '#e1e1e1'
+  render(){
+    var outerbg ='#e1e1e1'
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
 
-		if(this.props.branding == 'SPARC'){
-			innerbg = SPARCBLUE2
-			fontColor = 'black'
-		}
-		var innerWidth = Math.min((this.props.width*0.55),160);
-		var innerFont = Math.min(Math.floor(this.props.font/2), 16);
-		return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:5, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
+    if(this.props.branding == 'SPARC'){
+      innerbg = SPARCBLUE2
+      fontColor = 'black'
+    }
+    var innerWidth = Math.min((this.props.width*0.55),160);
+    var innerFont = Math.min(Math.floor(this.props.font/2), 16);
+    return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:5, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
-			<div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div></div><div style={{textAlign:'center', marginTop:-10,lineHeight:this.props.font*1.3+'px',height:this.props.font*1.3, fontSize:this.props.font}}>{this.state.value}</div>
-		</div>)
-	}
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div></div><div style={{textAlign:'center', marginTop:-10,lineHeight:this.props.font*1.3+'px',height:this.props.font*1.3, fontSize:this.props.font}}>{this.state.value}</div>
+    </div>)
+  }
 }
 class StatusElem extends React.Component{
   constructor(props){
@@ -2853,14 +6058,11 @@ class StatusElem extends React.Component{
     }
   }
   if(this.state.reject){
-    //bg = 'rgba(255,255,0,0.2)'
-    //bg2 = 'rgba(255,255,0,0.3)'
+
     outerbg = 'yellow'
   }
   if(this.props.faults.length != 0){
-    //bg = 'rgba(255,0,0,0.2)'
-    //bg2 = 'rgba(255,0,0,0.3)'
-    if(this.props.faults.length == 1){
+     if(this.props.faults.length == 1){
       if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
         str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
       }else{
@@ -2874,8 +6076,6 @@ class StatusElem extends React.Component{
     outerbg = 'red'
   }
   if(this.props.warnings.length != 0){
-    //bg = 'rgba(255,0,0,0.2)'
-    //bg2 = 'rgba(255,0,0,0.3)'
     if(this.props.warnings.length == 1){
       if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
         str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
@@ -2900,26 +6100,9 @@ class StatusElem extends React.Component{
     </div>)
   }
 }
+/******************Stats Components end*********************/
 
-class RotatedArea extends React.Component{
-	constructor(props){
-		super(props)
-	}	
-	render(){
-		var xDomain = [15,-15]
-		var yDomin = [this.props.max, 0]
-		var data = [{y: 2, x: 1}, {y: 4, x: 2}, {y: 5, x: 3}, {y: 1, x: 4}, {y: 3, x: 5}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
-
-		return <div style={{transform:'rotate(270deg) translateX(-120px) translateY(-95px)'}}> <XYPlot style={{fill:'#818a90'}}	height={300} width= {515}>		
-  
-  <VerticalBarSeries data={data} />
-  <XAxis orientation="bottom" tickSizeOuter={0}/>
-  <YAxis orientation="right" tickSizeOuter={0}/>
-		</XYPlot></div>
-	}
-}
-
-
+/********************Graphs Start********************/
 class HorizontalHisto extends React.Component{
 	constructor(props){
 		super(props)
@@ -3025,14 +6208,6 @@ class HorizontalHisto extends React.Component{
 		</XYPlot>
 		</div>
 	}
-}
-class WalkThroughBatch extends React.Component{
-  constructor(props){
-    super(props)
-  }
-  render(){
-    return <div></div>
-  }
 }
 class BatchBarGraph extends React.Component{
   constructor(props){
@@ -3229,19 +6404,12 @@ class LineGraph extends React.Component{
 	var bg = 'transparent';
 	var str = 'Good Weight'
 	var fault = false
-	if(this.state.reject){
-		//bg = 'rgba(255,255,0,0.2)'
-		//bg2 = 'rgba(255,255,0,0.3)'
-	}
 
-
-	//if(this.)
 	if(vdefByMac[this.props.det.mac]){
 		str = vdefByMac[this.props.det.mac][0]['@labels']['WeightPassed']['english'][this.state.weightPassed]
 	}
 	if(this.props.faults.length != 0){
-		//bg = 'rgba(255,0,0,0.2)'
-		//bg2 = 'rgba(255,0,0,0.3)'
+
 		if(this.props.faults.length == 1){
 			if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
         str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
@@ -3255,8 +6423,7 @@ class LineGraph extends React.Component{
 		fault == true
 	}
   if(this.props.warnings.length != 0){
-    //bg = 'rgba(255,0,0,0.2)'
-    //bg2 = 'rgba(255,0,0,0.3)'
+
     if(this.props.warnings.length == 1){
       if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
         str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
@@ -3290,841 +6457,6 @@ class LineGraph extends React.Component{
 				</Modal>
 		</div>
 	}
-}
-function FormatWeight(wgt, unit){
-  if(unit < 2){
-    if(wgt < 1000){
-      return wgt.toFixed(1) + ' g'
-    }else{
-      return wgt.toFixed(3) + ' kg'
-    }
-  }else{
-    if(wgt < 454){
-      return (wgt/28.3495).toFixed(1) + 'oz'
-    }else{
-      return (wgt/453.59237).toFixed(2) + ' lbs'
-    }
-  }
-}
-class StatSummary extends React.Component{
-	constructor(props){
-		super(props)
-		this.parsePack = this.parsePack.bind(this);
-		this.state = {count:0, grossWeight:0,currentWeight:0, rec:{},crec:{},lw:'0.0g'}
-	}
-	parsePack(max){
-		this.setState({count:this.state.count+1,grossWeight:this.state.grossWeight + max,currentWeight:max})
-
-	}
-	render(){
-		var outerbg = '#818a90'
-		var innerbg = '#5d5480'
-		var fontColor = '#e1e1e1'
-
-		//if(this.props.branding == 'SPARC'){
-			outerbg = '#e1e1e1'
-		
-		if(this.props.branding == 'SPARC'){ 
-      innerbg = SPARCBLUE2
-			fontColor = 'black'
-		}
-		//}
-
-		var av = 0;
-		if(this.state.count != 0){
-			av = (this.state.grossWeight/this.state.count)
-		}
-		var grstr;
-		if(this.state.grossWeight < 10000){
-			grstr = this.state.grossWeight.toFixed(1)+'g'
-		}else if(this.state.grossWeight < 10000000){
-			grstr = (this.state.grossWeight/1000).toFixed(3)+'kg'
-		}else{
-			grstr = (this.state.grossWeight/1000000).toFixed(3)+'t'
-		}
-		var grswt = 0;
-		var avg = 0;
-		var stdev = 0;
-		var tot = 0;
-		var gvb = 0;
-		var gvs = 0;
-    var savg = 0;
-    var sstdev = 0;
-    var stot = 0;
-    var ppm = 0;
-    var sppm = 0;
-    var unit = 0;
-    if(typeof this.props.unit != 'undefined'){
-      unit = this.props.unit
-    }
-		if(!isNaN(this.state.crec['PackWeight'])){
-			grswt = FormatWeight(this.state.crec['PackWeight'], unit)//this.state.crec['PackWeight'].toFixed(1) + 'g'
-			avg = FormatWeight(this.state.crec['AvgWeight'], unit)//this.state.crec['AvgWeight'].toFixed(1) +'g'
-      savg = FormatWeight(this.state.crec['SampleAvgWeight'], unit)//this.state.crec['SampleAvgWeight'].toFixed(1) + 'g'
-			stdev = this.state.crec['StdDev'].toFixed(2)+'g'
-      sstdev = this.state.crec['SampleStdDev'].toFixed(2)+'g'
-			tot = FormatWeight(this.state.crec['TotalWeight'], unit)//this.state.crec['TotalWeight'].toFixed(1)+'g'
-      stot = FormatWeight(this.state.crec['SampleTotalWeight'], unit)//this.state.crec['SampleTotalWeight'].toFixed(1)+'g'
-			gvb = FormatWeight(this.state.crec['GiveawayBatch'], unit)//this.state.crec['GiveawayBatch'].toFixed(1)+'g'
-			gvs = FormatWeight(this.state.crec['SampleGiveawayBatch'], unit)//this.state.crec['SampleGiveawayBatch'].toFixed(1)+'g'
-      if(this.state.crec['Batch_PPM']){
-        ppm = this.state.crec['Batch_PPM'].toFixed(0) + 'ppm'
-      }
-      sppm = this.state.crec['Sample_PPM'].toFixed(0) + 'ppm'
-      
-		}
-	return	<div style={{width:260,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
-			<div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
-			<StatControl language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange}/>
-			<StatControl language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={vMapV2['NetWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value='0g'/>
-			<StatControl language={this.props.language} vMap={vMapV2['PkgWeight']['@translations']} pram={'PkgWeight'} name={vMapV2['PkgWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value='0g'/>
-      <BatchStatControl name={labTransV2['@TotalWeightBS'][this.props.language]['name']} pram={'@TotalWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={tot} sample={stot}/>
-      <BatchStatControl name={labTransV2['@AvgWeightBS'][this.props.language]['name']} pram={'@AvgWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={avg} sample={savg}/>
-			<BatchStatControl name={labTransV2['@StdDevBS'][this.props.language]['name']} pram={'@StdDevBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={stdev} sample={sstdev}/>
-			<BatchStatControl name={labTransV2['@GiveAwayBS'][this.props.language]['name']} pram={'@GiveAwayBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={gvb} sample={gvs}/>
-			<BatchStatControl name={labTransV2['@ProductionRateBS'][this.props.language]['name']} pram={'@ProductionRateBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={ppm} sample={sppm}/>
-
-		</div>
-	}
-}
-class StatControl extends React.Component{
-	constructor(props){
-		super(props)
-	  this.state = {curtrns:this.props.name}
-    this.translateModal = React.createRef();
-    this.translate = this.translate.bind(this)
-    this.onChange = this.onChange.bind(this);
-    this.submit = this.submit.bind(this);
-  }
-  onChange(e){
-    this.setState({curtrns:e.target.value})
-  }
-  translate(){
-    this.translateModal.current.toggle();
-  }
-  submit(){
-    this.props.submitChange(this.props.pram, this.props.language, this.state.curtrns)
-  }
-	render(){
-    var uid = uuidv4()
-		return <div style={{height:61}}>
-		<div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
-    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
-    </div>
-		<div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:25}}>{this.props.value}</div>
-    <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
-        <div>{this.props.vMap['english']['name']}</div>
-        <div>
-          Current Language: {this.props.language}
-        </div>
-         <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
-         <button onClick={this.submit}>Submit Change</button>
-        </Modal>
-    </div>
-	}
-}
-class BatchStatControl extends React.Component{
-  constructor(props){
-    super(props)
-      this.state = {curtrns:this.props.name}
-    this.translateModal = React.createRef();
-    this.translate = this.translate.bind(this)
-    this.onChange = this.onChange.bind(this);  
-    this.submit = this.submit.bind(this);
-  }
-  onChange(e){
-    this.setState({curtrns:e.target.value})
-  }
-  translate(){
-    this.translateModal.current.toggle();
-  }
-  submit(){
-    this.props.submitChange(this.props.pram, this.props.language, this.state.curtrns)
-  }
-  render(){
-    var uid = uuidv4()
-    return <div style={{height:61}}>
-    <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
-    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu></div>
-    <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:25}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
-     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
-         <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
-         <button onClick={this.submit}>Submit Change</button>
-        </Modal>
-    </div>
-  }
-}
-class ProductSettings extends React.Component{
-	constructor(props){
-		super(props)
-		this.updateFilterString = this.updateFilterString.bind(this);
-		this.toggleSearch = this.toggleSearch.bind(this);
-		this.selectProd = this.selectProd.bind(this);
-		this.copyCurrentProd = this.copyCurrentProd.bind(this);
-		this.onProdScroll = this.onProdScroll.bind(this);
-		this.selectRunningProd = this.selectRunningProd.bind(this);
-		this.getPCob = this.getPCob.bind(this);
-		this.onAdvanced = this.onAdvanced.bind(this);
-		this.sendPacket = this.sendPacket.bind(this);
-		this.saveProduct = this.saveProduct.bind(this);
-		this.saveProductPassThrough = this.saveProductPassThrough.bind(this);
-		this.getValue = this.getValue.bind(this);
-		this.showAllProd = this.showAllProd.bind(this);
-		this.copyTo = this.copyTo.bind(this);
-		this.copyAlert = this.copyAlert.bind(this);
-		this.copyConfirm = this.copyConfirm.bind(this);
-    this.deleteProd = this.deleteProd.bind(this);
-    this.deleteProdConfirm = this.deleteProdConfirm.bind(this);
-    this.submitTooltip = this.submitTooltip.bind(this);
-		var prodList = [];
-		var prodNames = this.props.pNames
-		this.props.pList.forEach(function (pn,i) {
-			prodList.push({name:prodNames[i], no:pn})
-		})
-
-		this.state ={data:[],showAdvanceSettings:false,searchMode:false, filterString:'', filterList:[],selProd:this.props.editProd,prodList:prodList, showAllProd:false,
-		cob2:this.getPCob(this.props.srec, this.props.curProd, this.props.drec, this.props.fram)}
-    this.pmd = React.createRef();
-    this.cfTo = React.createRef();
-    this.cfModal = React.createRef();
-    this.dltModal = React.createRef();
-    this.arrowBot = React.createRef();
-    this.arrowTop = React.createRef();
-    this.sd = React.createRef();
-    this.pg = React.createRef();
-    this.pgm = React.createRef();
-    this.submitChange = this.submitChange.bind(this);
-    this.closeKeyboard = this.closeKeyboard.bind(this);
-    this.toggleGraph = this.toggleGraph.bind(this);
-	  this.getBuffer = this.getBuffer.bind(this);
-  }
-  toggleGraph(){
-    this.pgm.current.toggle();
-  }
-  getBuffer(){
-
-  }
-  submitTooltip(n,l,v){
-    this.props.submitTooltip(n,l,v)
-  }
-	sendPacket(n,v){
-		var self = this;
-    console.log(n,v)
-		this.props.sendPacket(n,v)
-	
-	}
-	onAdvanced(){
-    if(this.state.prodList.length > 0){
-          this.setState({showAdvanceSettings:!this.state.showAdvanceSettings})
-
-    }else{
-      toast('Products need to be fetched')
-    }
-	}
-	componentDidMount(){
-		var self = this;
-		var scrollInd = 0;
-		this.state.prodList.forEach(function(prd,i){
-			if(prd.no == self.state.selProd){
-				scrollInd = i;
-			}
-		});
-		setTimeout(function(argument) {
-			self.props.sendPacket('getProdSettings', self.props.editProd)
-		},300)
-	
-		var el = document.getElementById('prodListScrollBox')
-		el.scrollTop = scrollInd*66
-	}
-	getPCob (sys,prod,dyn, fram) {
-  
-		var vdef = vdefByMac[this.props.mac]
-		var _cvdf = JSON.parse(JSON.stringify(vdef[6]['CWProd']))
-		var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
-		vdef = null;
-		_cvdf = null;
-		return cob
-	}
-  getBatch(sys,prod,dyn,batch,fram){
-    var vdef = vdefByMac[this.props.mac]
-    var _cvdf = JSON.parse(JSON.stringify(vdef[6]['Batch']))
-    var cob = iterateCats3(_cvdf, vdef[1], sys, prod, vdef[5], dyn, fram, batch)
-    vdef = null;
-    _cvdf = null;
-    return cob
-  }
-	componentWillReceiveProps(newProps){
-		var prodList = [];
-		var prodNames = newProps.pNames
-		newProps.pList.forEach(function (pn,i) {
-			// body...
-			prodList.push({name:prodNames[i], no:pn})
-		})
-		var curProd = newProps.curProd
-		if(newProps.prods[this.state.selProd]){
-			curProd = newProps.prods[this.state.selProd]
-			
-		}
-		//console.log(curProd)
-		this.setState({prodList:prodList, cob2:this.getPCob(newProps.srec, curProd, newProps.drec, newProps.fram),selProd:newProps.editProd});
-
-	}
-	updateFilterString(str){
-		var list = []
-		var self = this;
-		this.state.prodList.forEach(function(prod) {
-		
-				if(str.trim() == ''){
-					list.push(prod)
-				}else if(prod.name.toUpperCase().indexOf(str.toUpperCase()) != -1){
-					list.push(prod)
-				}
-			})
-		var scrollInd = 0;
-		list.forEach(function(prd,i){
-			if(prd.no == self.state.selProd){
-				scrollInd = i;
-			}
-		});
-
-		var el = document.getElementById('prodListScrollBox')
-		el.scrollTop = scrollInd*66
-		
-		this.setState({filterString:str, filterList:list})
-	}
-	toggleSearch(){
-		this.setState({searchMode:!this.state.searchMode})
-	}
-  closeKeyboard(){
-    this.updateFilterString('');
-    this.toggleSearch();
-  }
-	copyCurrentProd(target=-1){
-		var self = this;
-    var nextNum = this.props.pList[this.props.pList.length - 1] + 1;
-		if(target != -1){
-			nextNum = target;
-		}
-		this.props.sendPacket('copyCurrentProd',nextNum)
-    setTimeout(function (argument) {
-      // body...
-      self.props.sendPacket('getProdList')
-    },300)
-	}
-	selectProd(p){
-		var self = this;
-		//this.saveProduct();
-		if(this.props.needSave == 1){
-			this.pmd.current.show(
-		function () {
-			self.props.sendPacket('getProdSettings',p)
-			self.setState({selProd:p, searchMode:false, filterString:''})
-		});
-		}else{
-			self.props.sendPacket('getProdSettings',p)
-			self.setState({selProd:p, searchMode:false, filterString:''})
-	
-		}
-		
-	}
-	onProdScroll(){
-	 var el = document.getElementById('prodListScrollBox')   
-      if(el){
-      		if(el.scrollTop > 5){
-        		this.arrowTop.current.show();
-      		}else{
-        		this.arrowTop.current.hide();
-      		}
-      		if(el.scrollTop + el.offsetHeight < el.scrollHeight ){
-        		this.arrowBot.current.show();
-      		}else{
-        		this.arrowBot.current.hide();
-      		}
-    	}
-	}
-	onValChange(p,v){
-		//var curProd =Object.assign({},this.props.prods[this.state.selProd]) //this.props.prods[this.state.selProd];
-		//curProd[p] = v
-
-	}
-	selectRunningProd(){
-		this.props.sendPacket('switchProd',this.state.selProd)
-	}
-	saveProduct(){
-		console.log('saving ', this.state.selProd)
-		this.props.sendPacket('saveProduct',this.state.selProd)
-	}
-	saveProductPassThrough(f){
-		var self = this;
-		this.saveProduct();
-		setTimeout(function (argument) {
-			// body...
-			console.log(f)
-			f();
-		},100);
-	}
-	passThrough(f){
-		f();
-	}
-	getValue(rval, pname){
-		var curProd = {}
-		if(this.props.prods[this.state.selProd]){
-			curProd = this.props.prods[this.state.selProd]
-		}
-
-		var pram;
-			var val;
-			var label = false
-			var res = vdefByMac[this.props.mac];
-			var pVdef = _pVdef;
-			var dec = 0;
-			var self = this;
-			if(res){
-				pVdef = res[1];
-			}
-
-			if(typeof pVdef[0][pname] != 'undefined'){
-				pram = pVdef[0][pname]
-				var deps = []
-				val = rval
-				if(pram["@type"]){
-					var f =	pram["@type"]
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(d){
-							if(pVdef[6][d]["@rec"] == 0){
-								return self.props.srec[d];
-							}else{
-								return curProd[d];
-							}
-						});
-						if(f == 'mm'){
-							if(deps[0] == 0){
-								dec = 1
-							}
-						}
-					}	
-					if(pram['@bit_len']<=16){
-						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-					}
-				}else if(typeof pram['@decimal'] != 'undefined'){
-					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
-				}
-				
-				if(pram["@labels"]){
-					label = true
-				}
-			}else if(typeof pVdef[1][pname] != 'undefined'){
-				
-				pram = pVdef[1][pname]
-				
-				var deps = []
-				val = rval
-				if(pram["@type"]){
-					var f =	pram["@type"]
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(dp){
-							var d = dp;
-							if(dp.indexOf('[0]') != -1){
-								if(pram['@name'].slice(-2) == '_A'){
-									d = dp.replace('[0]','[1]')
-								}
-							}
-							if(pVdef[6][d]["@rec"] == 0){
-								return self.props.srec[d];
-							}else if(pVdef[6][d]["@rec"] == 1){
-								return curProd[d];
-							}else if(pVdef[6][d]["@rec"] == 2){
-                return self.props.drec[d]
-              }
-						});
-						if(pram['@name'] == 'BeltSpeed'){
-							//deps.push(self.props.drec['EncFreq'])
-							//deps.push(1000)
-							console.log(3243,deps)
-						}else if(pram['@type'] == 'rej_del'){
-							deps.push(1000)
-						}
-					}
-					if(f == 'mm'){
-							if(deps[0] == 0){
-								dec = 1
-							}
-						}
-					if(pram['@bit_len']<=16){
-						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-					}
-					if(f == 'phase_offset'){
-						val = 	uintToInt(val,16)//?? phase is coming in with different format for dyn data
-					}
-					
-				}else if(pram["@name"].indexOf('DetThresh') != -1){
-					var dependancies = ['DetMode','PhaseMode','ThresR','ThresX']
-					var deps = dependancies.map(function(d) {
-						// body...
-						if(pram['@name'] == 'DetThresh_A'){
-							return curProd[d+'_A']
-						}else if(pram['@name'] == 'DetThresh_B'){
-							return curProd[d+'_B']
-						}
-					})
-					val = eval(funcJSON['@func']['det_thresh']).apply(this, [].concat.apply([],[val,deps]));
-					
-				}else if(typeof pram['@decimal'] != 'undefined'){
-					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
-				}
-				if(pram["@labels"]){
-					label = true
-				}
-			}else if(typeof pVdef[2][pname] != 'undefined'){
-				
-				pram = pVdef[2][pname]
-				
-				var deps = []
-				val = rval
-				if(pram["@type"]){
-					var f =	pram["@type"]
-					if(f == 'phase'){
-						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
-					}else{
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(dp){
-							var d = dp;
-							if(dp.indexOf('[0]') != -1){
-								if(pram['@name'].slice(-2) == '_A'){
-									d = dp.replace('[0]','[1]')
-								}
-							}	
-							if(pVdef[6][d]["@rec"] == 0){
-								return self.props.srec[d];
-							}else if(pVdef[6][d]["@rec"] == 1){
-								return curProd[d];
-							}else if(pVdef[6][d]["@rec"] == 2){
-								return self.props.drec[d];
-							}
-						});
-					}
-					if(f == 'mm'){
-							if(deps[0] == 0){
-								dec = 1
-						}
-					}
-					if(pram['@bit_len']<=16){
-						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-					}
-				}
-					
-				}else if(pram['@name'] == 'RejExitDistEst'){
-					var dependancies = ['SysRec.MetricUnits']
-					deps = dependancies.map(function(d){
-						if(pVdef[6][d]["@rec"] == 0){
-								return self.props.srec[d];
-							}else if(pVdef[6][d]["@rec"] == 1){
-								return curProd[d];
-							}else if(pVdef[6][d]["@rec"] == 2){
-							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
-								return self.props.drec[d];
-							}
-					})
-					dec = 1
-					val = eval(funcJSON['@func']['mm']).apply(this, [].concat.apply([], [val, deps]));
-
-				}else if(typeof pram['@decimal'] != 'undefined'){
-					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
-				}
-				if(pram["@labels"]){
-					label = true
-				}
-			}else if(typeof pVdef[3][pname] != 'undefined'){
-				
-				pram = pVdef[3][pname]
-				
-				var deps = []
-				val = rval
-				if(pram["@type"]){
-					var f =	pram["@type"]
-					if(f == 'phase'){
-						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
-					}else{
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(d){
-							if(pVdef[6][d]["@rec"] == 0){
-								return self.props.srec[d];
-							}else if(pVdef[6][d]["@rec"] == 1){
-								return curProd[d];
-							}else if(pVdef[6][d]["@rec"] == 2){
-							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
-								return self.props.drec[d];
-							}else if(pVdef[6][d]["@rec"] == 3){
-							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
-								return self.props.fram[d];
-							}
-						});
-					}
-					if(pram['@bit_len']<=16){
-					//	////////console.log(f)
-						
-						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-					}
-				}
-					
-				}else if(typeof pram['@decimal'] != 'undefined'){
-					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
-				}
-				if(pram["@labels"]){
-					label = true
-				}
-			}else{
-				val = rval
-			}
-			return val;
-	}
-	showAllProd(){
-		this.setState({showAllProd:!this.state.showAllProd})
-	}
-	copyTo(){
-		this.cfTo.current.toggle();
-	}
-	copyConfirm(target){
-		var prodNos = this.props.pList.slice(0)
-		
-		console.log(2322, prodNos, prodNos.indexOf(target), target)
-
-		if(prodNos.indexOf(target) != -1){
-			this.copyAlert(target)
-		}else{
-			this.copyCurrentProd(target)
-		}
-	}
-	copyAlert(target){
-		var alertMessage = 'Product '+ target+' will be overwritten. Continue?'
-
-		this.cfModal.current.show(this.copyConfirm, target, alertMessage)
-	}
-  deleteProd(p){
-    this.dltModal.current.show(p)
-  }
-  deleteProdConfirm(p){
-    var self = this;
-    this.sendPacket('deleteProd',p)
-    setTimeout(function(argument) {
-      // body...
-      self.sendPacket('getProdList')
-    },300)
-  }
-  submitChange(n,l,v){
-    this.props.submitChange(n,l,v);
-  }
-	render(){
-		var self = this;
-		var list = [];
-		var sp = null;
-		var content = ''
-			var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
-
-    var searchColor = SPARCBLUE1;
-    if(this.props.branding == 'FORTRESS'){
-      searchColor = FORTRESSPURPLE2
-    }
-		if(this.state.searchMode){
-			var filterString = this.state.filterString
-			this.state.prodList.forEach(function(prod) {
-		
-				if(self.state.selProd == prod.no){
-					sp = prod 
-				}
-
-			})
-			list = this.state.filterList.slice(0)
-			content = <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6, height:480}}>
-			<EmbeddedKeyboard label={'Search Products'} liveUpdate={this.updateFilterString} language={this.props.language} onAccept={this.toggleSearch} onCancel={this.closeKeyboard}/></div>
-		}else{
-			var curProd = {}
-			if(this.props.prods[this.state.selProd]){
-				curProd = this.props.prods[this.state.selProd]
-			}
-			var pList = [];
-			for(var i=1;i<101;i++){
-				pList.push({name:'NULL PROD',no:i, null:true})
-			}
-			this.state.prodList.forEach(function (p) {
-				pList[p.no - 1] = p;
-				// body...
-			})
-			var showText = 'Show All Products'
-			if(this.state.showAllProd){
-				list = pList.slice(0)
-				showText = 'Hide Inactive Products'
-			}else{
-				list = this.state.prodList.slice(0)
-			}
-			//this.state.prodList.slice(0);
-			
-			list.forEach(function (pr) {
-				// body... this.getValue(curProd['BeltSpeed'],'BeltSpeed')       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'BeltSpeed'} vMap={vMapV2['BeltSpeed']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['BeltSpeed'],'BeltSpeed')} param={vdefByMac[this.props.mac][1][1]['BeltSpeed']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-    
-				if(self.state.selProd == pr.no){
-					sp = pr 
-				}
-			})
-			if(sp == null){
-				sp = {name:'NULL PROD', no:1, null:true}
-			}
-      var nwgt = ''
-      var fdtwgt = ''
-      var pkgwgt = ''
-      if(typeof curProd['NominalWgt'] != 'undefined'){
-        nwgt = curProd['NominalWgt'].toFixed(1)
-        fdtwgt = curProd['FeedbackTarWgt'].toFixed(1)
-        pkgwgt = curProd['PkgWeight'].toFixed(1)
-      }
-
-			content =( 
-			<div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
-				<div>
-				<div style={{display:'inline-block', verticalAlign:'top'}}><ProdSettingEdit trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={400} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
-				<div style={{display:'inline-block', marginLeft:87, marginBottom:-10}}>
-					<div style={{position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
-						<div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-						<div style={{height:35, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-						<div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
-					</div>
-				</div>
-				</div>
-				<div>
-					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={nwgt+'g'} param={vdefByMac[this.props.mac][1][1]['NominalWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'FeedbackTarWgt'} vMap={vMapV2['FeedbackTarWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={fdtwgt+'g'} param={vdefByMac[this.props.mac][1][1]['FeedbackTarWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Package Weight'} value={pkgwgt+'g'} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-						<div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-					 <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-          </div>
-
-					<div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-						<div style={{width:'90%',padding:'2.5%',margin:'2.5%',background:'linear-gradient(90deg,#919aa0, #e1e1e1)'}}>
-							<div><div style={{width:'60%',display:'inline-block'}}>Overweight Accept</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['OverWeightAllowed'][this.props.language][curProd['OverWeightAllowed']]}</div></div>
-							<div><div style={{width:'60%',display:'inline-block'}}>Product Speed</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}</div></div>
-							<div><div style={{width:'60%',display:'inline-block'}}>Feedback Control</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['FeedbackMode'][this.props.language][curProd['FeedbackMode']]}</div></div>
-							<div><div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
-								
-								<div style={{width:'70%',display:'inline-block'}}>Correction Rate</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>{curProd['FeedbackCorRate'] + ' g/s'}</div>
-								<div style={{width:'70%',display:'inline-block'}}>Dead Zone</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>±{curProd['FeedbackDeadZone']}g</div>
-								<div style={{width:'70%',display:'inline-block'}}>Sample Count</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>{curProd['FeedbackSampCnt']}pcs</div>
-						
-							</div>
-							<div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
-								
-								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Wait Count</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}pcs</div>
-								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Hi Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackHiLim']}g</div>
-								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Lo Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackLoLim']}g</div>
-						
-							</div></div>
-							<div><div style={{width:'60%',display:'inline-block'}}>Measurement Standard</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
-							<div><div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
-								
-								<div style={{width:'70%',display:'inline-block'}}>Number of Packs</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>10</div>
-							
-							</div>
-							<div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
-								
-								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Hi Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>140g</div>
-								<div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Lo Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>90g</div>
-						
-							</div></div>
-						</div>
-					</div>
-				</div>
-				<div>
-					<CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Advanced'}/>
-          			<CircularButton onClick={this.saveProduct} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Product'}/>
-          
-				</div>
-				
-			</div>)
-			if(this.state.showAdvanceSettings){
-				content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
-				<div style={{height:482}}>	<SettingsPage toggleGraph={this.toggleGraph} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
-      		onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={4}/>
-    		</div>
-      		<div>
-				
-				</div>
-    		</div>
-			}
-		}
-		
-		var scrollInd = 0
-		var prods = list.map(function (prd,i) {
-
-			// body...
-			if(prd.no == self.state.selProd){
-				scrollInd = i;
-			}
-			return <div> <ProductSelectItem name={prd.name} p={prd.no} isNull={prd.null} deleteProd={self.deleteProd} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
-         </div>
-		})
-
-		if(list.length == 0){
-			prods = <div style={{textAlign:'center', width:297,padding:5}}>No Matching Products</div>
-		}
-		var spstr = ''
-		if(this.props.runningProd){
-			var rp = {}
-			this.state.prodList.forEach(function(prod) {
-		
-				if(self.props.runningProd == prod.no){
-					rp = prod 
-				}
-
-			})
-			spstr = this.props.runningProd + '. '+rp.name;
-		}
-		var SA = (list.length > 8)
-		return <div style={{width:1155}}>
-			<div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Products</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:600}}>{'Current Product: '+spstr }</div></div>
-			<table style={{borderCollapse:'collapse'}}><tbody>
-				<tr>
-					<td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:813, padding:5, paddingTop:0, textAlign:'right'}}>			<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'} onClick={this.selectRunningProd}/>
-          </div></td><td style={{verticalAlign:'top',textAlign:'center'}}>
-          	<ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
-		
-          <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:489, background:'#e1e1e1',overflowY:'scroll'}}>{prods}
-          </div>
-          <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #ccc'}}>
-         	<div onClick={this.copyTo} style={{display:'table-cell',height:66, borderRight:'2px solid #ccc', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
-         	<div onClick={this.showAllProd} style={{display:'table-cell',height:66, borderLeft:'2px solid #ccc',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>{showText}</div>
-          </div>
-          <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
-			
-          </td>
-				</tr>
-			</tbody></table>
-			<PromptModal branding={this.props.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
-			<CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
-
-			<CopyModal ref={this.cfModal}  branding={this.props.branding}/>
-      <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
-      <Modal ref={this.pgm} branding={this.props.branding}>
-        <div style={{background:'#e1e1e1'}}>
-        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{textAlign:'center'}}>Pack Graph</div></h2></span>
-       <PackGraph crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
-        </div>
-      </Modal>
-		</div>
-	}
-}
-class LiveGraph extends React.Component{
-  constructor(props){
-    super(props)
-    this.cv = React.createRef();
-  }
-  update(lw){
-    this.cv.current.stream({t:Date.now(),val:lw})
-  }
-  render(){
-    return <div>
-      <CanvElem ref={this.cv} canvasId='liveGraph' h={400} w={600}/>
-    </div>
-  }
 }
 class PackGraph extends React.Component{
   constructor(props){
@@ -4201,59 +6533,146 @@ class PackGraph extends React.Component{
     <LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/></XYPlot></div>)
   }
 }
-class CanvElem extends React.Component{
-  constructor(props){ 
+class WeightHistogram extends React.Component{
+  constructor(props){
     super(props)
-    this.line = new TimeSeries();
-    this.smoothie = new SmoothieChart({millisPerPixel:this.props.mpp,interpolation:'linear',maxValueScale:1.1,minValueScale:1.2,
-      horizontalLines:[{color:'#000000',lineWidth:1,value:0}],
-      labels:{fillStyle:'#808a90'}, grid:{millisPerLine:2000,fillStyle:'rgba(256,256,256,0)'}, yRangeFunction:yRangeFunc, maxDataSetLength:700, minDataSetLength:300, limitFPS:15});
-    
-    this.state =  ({update:true})
-    this.stream = this.stream.bind(this);
-    this.pauseGraph = this.pauseGraph.bind(this);
-    this.restart = this.restart.bind(this);
-  }
-  componentWillUnmount(){
-    this.smoothie.stop();
-    this.smoothie = null;
-    this.line = null;
-  }
-  shouldComponentUpdate(){
-    return false;
-  }
-  pauseGraph(){
-    this.setState({update:false})
-    this.smoothie.stop()
-    //this.state.smoothie.setTargetFPS(8)
-  }
-  restart(){
-    this.setState({update:true})
-    this.smoothie.start()
-    //this.state.smoothie.setTargetFPS(15)
-  }
-  componentDidMount(){
-    //comebackhere
-    this.smoothie.streamTo(document.getElementById(this.props.canvasId));
-      this.smoothie.addTimeSeries(this.line, {lineWidth:2,strokeStyle:'#darkturquoise', fillStyle:'darkturquoise'});
-  
-  }
-  stream(dat) {
-    if(this.state.update){
-      this.line.append(dat.t, dat.val);
+    var divs = []
+    var bins = []
+    var range0 = this.props.nom - (this.props.bucketSize*this.props.buckets/2)
+    var range1 = this.props.nom + (this.props.bucketSize*this.props.buckets/2)
+    var div = (range1-range0)/this.props.buckets
+    for(var i = 0; i<this.props.buckets; i++){
+      divs.push([range0+(div*i), range0+ (div* (i+1))])
+      bins.push(0)
+      //bins.push(64-Math.pow((8-i),2))
     }
-
+    this.pushWeight = this.pushWeight.bind(this);
+    this.clearHisto = this.clearHisto.bind(this);
+    this.state ={bins:bins,divs:divs,range:[range0,range1]}
   }
+  componentWillReceiveProps(props){
+    if(props.nom != this.props.nom){
+          var divs = []
+    var bins = []
+    var range0 = props.nom - (props.bucketSize*props.buckets/2)
+    var range1 = props.nom + (props.bucketSize*props.buckets/2)
+    var div = (range1-range0)/props.buckets
+    for(var i = 0; i<props.buckets; i++){
+      divs.push([range0+(div*i), range0+ (div* (i+1))])
+      bins.push(0)
+      //bins.push(64-Math.pow((8-i),2))
+    }
+  
+    this.setState({bins:bins,divs:divs,range:[range0,range1]})
+    }
+  }
+  clearHisto(){
+    var divs = []
+    var bins = []
+    var range0 = this.props.nom - (this.props.bucketSize*this.props.buckets/2)
+    var range1 = this.props.nom + (this.props.bucketSize*this.props.buckets/2)
+    var div = (range1-range0)/this.props.buckets
+    for(var i = 0; i<this.props.buckets; i++){
+      divs.push([range0+(div*i), range0+ (div* (i+1))])
+      bins.push(0)
+    }
+    this.state ={bins:bins,divs:divs,range:[range0,range1]}
+  }
+  pushWeight(w){
+    console.log('array', w)
+    var bins = this.state.bins.slice(0)
+    var divs = this.state.divs.slice(0)
+    if(Array.isArray(w)){
 
-    render(){
-      console.log('rendering canvas')
-    return(
-      <div className="canvElem">
-        <canvas id={this.props.canvasId} height={this.props.h} width={this.props.w}></canvas>
-      </div>
-    );
+      bins = [];
+      for(var j= 0; j<this.props.buckets; j++){
+        // divs.push([range0+(div*i), range0+ (div* (i+1))])
+        bins.push(0)
+        //bins.push(64-Math.pow((8-i),2))
+      }
+      w.forEach(function (wgt) {
+        var i = 0;
+        while((i < divs.length - 1)&&(wgt > divs[i][1])){
+          i++;
+        }
+        bins[i]++;
+      })
+    }else{
+      var i = 0;
+      while((i < divs.length - 1)&&(w > divs[i][1])){
+        i++;
+      }
+      bins[i]++;
+    }
+    this.setState({bins:bins})
+  }
+  render(){
+    var self = this;
+    var divs = this.state.divs
+    var max = 0
+    var data = this.state.bins.map(function(d,i){
+      max = Math.max(d,max);
+     // console.log(divs.length, i)
+      return {y0:0, y:d, x0:divs[i][0], x:divs[i][1]}
+    })
+    var ticks = 1
+    while((max/ticks)>10){
+      ticks*=2
+    }
+    var labDat = [];
+    var tick = 0;
+    while(tick < max){
+      labDat.push({x:0,y:tick})
+      tick += ticks
+    }
+    var labelData = labDat.map(function(d){
+      var lax = 'start'
+      if(d.x > (labDat[0].x*0.75)){
+        lax = 'end'
+        return {x:d.x,y:d.y,label:d.x, xOffset:-10, yOffset:0, size:0, style:{fill:'#e1e1e1',textAnchor:lax}}
+      }
+      return  {x:d.x,y:d.y,label:d.x, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
+    })
+    return <XYPlot xDomain={this.state.range} height={317} width={540} margin={{left:50,right:0,bottom:50,top:50}}>
+    <YAxis hideTicks/>
+    <XAxis/>
+    <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
+        <VerticalRectSeries data={data} color={'darkturquoise'}/>
+      </XYPlot>
   }
 }
+class BatchHistogram extends React.Component{
+  constructor(props){
+    super(props)
+    var histo = []
+    for(var i = 0; i<250;i++){
+      histo.push(0)
+    }
+    this.state = {histo:histo, bucketSize:1, bucketNum:100}
+  }
+  parseHisto(histo, bucketSize, bucketNum){
+    console.log('parseHisto', histo, bucketSize, bucketNum)
+    this.setState({histo:histo, bucketSize:bucketSize, bucketNum:bucketNum})
+  }
+  render(){
+    var data = this.state.histo.slice(0,this.state.bucketNum).map(function (d,i) {
+      // body...
+      return {y0:0, y:d, x0:i, x:i+1}
+    })
+    return <div>
+    <div style={{marginBottom:10, textAlign:'center'}}>{'Batch Histogram'}
+    </div>
+    <XYPlot xDomain={[0,this.state.bucketNum]} height={180} width={435} margin={{left:20,right:20,bottom:50,top:50}}>
+        <YAxis hideTicks/>
+        <XAxis/>
+        <VerticalRectSeries data={data} color={'darkturquoise'}/>
+      </XYPlot>
+      </div>
+  }
+}
+/**********************Graphs End***********************/
+
+/*****Batch stuff starts *****/
 class BatchControl extends React.Component{
 
   /*********************            TODOS
@@ -4380,7 +6799,7 @@ class BatchControl extends React.Component{
     //this.setState({startMode:v})
   }
   pastBatches(){
-    
+
   }
   render(){
     var self = this;
@@ -4581,2841 +7000,411 @@ class ManBatch extends React.Component{
     </div>
   }
 }
-class WeightHistogram extends React.Component{
-  constructor(props){
-    super(props)
-    var divs = []
-    var bins = []
-    var range0 = this.props.nom - (this.props.bucketSize*this.props.buckets/2)
-    var range1 = this.props.nom + (this.props.bucketSize*this.props.buckets/2)
-    var div = (range1-range0)/this.props.buckets
-    for(var i = 0; i<this.props.buckets; i++){
-      divs.push([range0+(div*i), range0+ (div* (i+1))])
-      bins.push(0)
-      //bins.push(64-Math.pow((8-i),2))
-    }
-    this.pushWeight = this.pushWeight.bind(this);
-    this.clearHisto = this.clearHisto.bind(this);
-    this.state ={bins:bins,divs:divs,range:[range0,range1]}
-  }
-  componentWillReceiveProps(props){
-    if(props.nom != this.props.nom){
-          var divs = []
-    var bins = []
-    var range0 = props.nom - (props.bucketSize*props.buckets/2)
-    var range1 = props.nom + (props.bucketSize*props.buckets/2)
-    var div = (range1-range0)/props.buckets
-    for(var i = 0; i<props.buckets; i++){
-      divs.push([range0+(div*i), range0+ (div* (i+1))])
-      bins.push(0)
-      //bins.push(64-Math.pow((8-i),2))
-    }
-  
-    this.setState({bins:bins,divs:divs,range:[range0,range1]})
-    }
-  }
-  clearHisto(){
-    var divs = []
-    var bins = []
-    var range0 = this.props.nom - (this.props.bucketSize*this.props.buckets/2)
-    var range1 = this.props.nom + (this.props.bucketSize*this.props.buckets/2)
-    var div = (range1-range0)/this.props.buckets
-    for(var i = 0; i<this.props.buckets; i++){
-      divs.push([range0+(div*i), range0+ (div* (i+1))])
-      bins.push(0)
-    }
-    this.state ={bins:bins,divs:divs,range:[range0,range1]}
-  }
-  pushWeight(w){
-    console.log('array', w)
-    var bins = this.state.bins.slice(0)
-    var divs = this.state.divs.slice(0)
-    if(Array.isArray(w)){
+/*******Batch stuff ends*******/
 
-      bins = [];
-      for(var j= 0; j<this.props.buckets; j++){
-        // divs.push([range0+(div*i), range0+ (div* (i+1))])
-        bins.push(0)
-        //bins.push(64-Math.pow((8-i),2))
-      }
-      w.forEach(function (wgt) {
-        var i = 0;
-        while((i < divs.length - 1)&&(wgt > divs[i][1])){
-          i++;
-        }
-        bins[i]++;
-      })
-    }else{
-      var i = 0;
-      while((i < divs.length - 1)&&(w > divs[i][1])){
-        i++;
-      }
-      bins[i]++;
-    }
-    this.setState({bins:bins})
+/******************Motor Controls start***************/
+class MotorControl extends React.Component{
+  constructor(props){
+    super(props);
+    this.testMotor = this.testMotor.bind(this);
+  }
+  testMotor(i){
+    this.props.testMotor(i)
   }
   render(){
     var self = this;
-    var divs = this.state.divs
-    var max = 0
-    var data = this.state.bins.map(function(d,i){
-      max = Math.max(d,max);
-     // console.log(divs.length, i)
-      return {y0:0, y:d, x0:divs[i][0], x:divs[i][1]}
-    })
-    var ticks = 1
-    while((max/ticks)>10){
-      ticks*=2
-    }
-    var labDat = [];
-    var tick = 0;
-    while(tick < max){
-      labDat.push({x:0,y:tick})
-      tick += ticks
-    }
-    var labelData = labDat.map(function(d){
-      var lax = 'start'
-      if(d.x > (labDat[0].x*0.75)){
-        lax = 'end'
-        return {x:d.x,y:d.y,label:d.x, xOffset:-10, yOffset:0, size:0, style:{fill:'#e1e1e1',textAnchor:lax}}
-      }
-      return  {x:d.x,y:d.y,label:d.x, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
-    })
-    return <XYPlot xDomain={this.state.range} height={317} width={540} margin={{left:50,right:0,bottom:50,top:50}}>
-    <YAxis hideTicks/>
-    <XAxis/>
-    <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
-        <VerticalRectSeries data={data} color={'darkturquoise'}/>
-      </XYPlot>
-  }
-}
-class BatchHistogram extends React.Component{
-  constructor(props){
-    super(props)
-    var histo = []
-    for(var i = 0; i<250;i++){
-      histo.push(0)
-    }
-    this.state = {histo:histo, bucketSize:1, bucketNum:100}
-  }
-  parseHisto(histo, bucketSize, bucketNum){
-    console.log('parseHisto', histo, bucketSize, bucketNum)
-    this.setState({histo:histo, bucketSize:bucketSize, bucketNum:bucketNum})
-  }
-  render(){
-    var data = this.state.histo.slice(0,this.state.bucketNum).map(function (d,i) {
+    var motors = this.props.motors.map(function (m,i) {
       // body...
-      return {y0:0, y:d, x0:i, x:i+1}
+      return <MotorItem testMotor={self.testMotor} name={m.name} index={i} />
     })
     return <div>
-    <div style={{marginBottom:10, textAlign:'center'}}>{'Batch Histogram'}
+      {motors}  
     </div>
-    <XYPlot xDomain={[0,this.state.bucketNum]} height={180} width={435} margin={{left:20,right:20,bottom:50,top:50}}>
-        <YAxis hideTicks/>
-        <XAxis/>
-        <VerticalRectSeries data={data} color={'darkturquoise'}/>
-      </XYPlot>
-      </div>
   }
 }
-class ProdSettingEdit extends React.Component{
-	constructor(props){
-		super(props);
-		this.onClick = this.onClick.bind(this);
-		this.onInput = this.onInput.bind(this);
-    this.curtrnChange = this.curtrnChange.bind(this);
-    this.ed = React.createRef();
-    this.trnsmdl = React.createRef();
-    this.state = {curtrn:this.props.label}
-    this.submitChange = this.submitChange.bind(this);
-    this.submitTooltip = this.submitTooltip.bind(this);
-    this.translatePopup = this.translatePopup.bind(this);
-	}
-  submitChange(){
-    if(this.props.submitChange){
-      this.props.submitChange(this.props.name, this.props.language, this.state.curtrn)
-    }
-  }
-  submitTooltip(txt){
-    console.log(4467, this.props.name, this.props.language)
-    this.props.submitTooltip(this.props.name, this.props.language,txt)
-  }
-  componentDidMount(){
-    this.setState({curtrn:this.props.label})
-  }
-	onClick(){
-		if(this.props.editable){
-			this.ed.current.toggle()
-		}
-	}    
-	onInput(v){
-		var val = v;
-		
-    if(typeof this.props.param['@decimal'] != 'undefined'){
-      if(this.props.param['@decimal'] > 0){
-          val = val * Math.pow(10,this.props.param['@decimal'])
-        
-      }
-    }
-    console.log(val,v)
-		this.props.onEdit(this.props.param,val);
-	}
-	onRequestClose(){
-
-	}
-	onFocus(){
-
-	}
-  curtrnChange(e){
-    this.setState({curtrn:e.target.value})
-  }
-  translatePopup(){
-    console.log('translatePopup', this.props.trans)
-    if(this.props.trans){
-      this.trnsmdl.current.toggle();
-    }
-  }
-	render(){
-
-
-
-		var self = this;
-		var ckb;
-    //console.log(this.props,4384)
-		if(this.props.editable){
-			if(this.props.param['@labels']){
-				var list = _pVdef[7][this.props.param["@labels"]]['english'].slice(0);
-
-				var lists = [list]
-
-				ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref={this.ed} val={[this.state.value]} options={lists} onChange={this.selectChanged}/>
-
-			}else{
-				ckb = <CustomKeyboard preload={this.props.param['@name'] == 'ProdName'} branding={this.props.branding} ref={this.ed} language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value} submitTooltip={this.submitTooltip}/>
-
-			}
-		
-		}
-    var bgClr = SPARCBLUE2
-    var modBG = SPARCBLUE1
-    var txtClr = '#000'
-    if(this.props.branding == 'FORTRESS'){
-      modBG = FORTRESSPURPLE1
-      bgClr = FORTRESSPURPLE2
-      txtClr = '#e1e1e1'
-    }
-
-      var trnsmdl =   ''
-      if(this.props.trans){
-        trnsmdl = <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>Parameter Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
-              <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
-              <button onClick={this.submitChange}>Submit Translation</button>
-        </Modal>
-      }
-       
-		return <div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:20,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:this.props.w1,textAlign:'center'}}>
-				 <ContextMenuTrigger id={this.props.name + '_ctmid'}>
-        {this.props.label}   </ContextMenuTrigger>
-      
-			</div>
-			<div onClick={this.onClick} style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:this.props.w2}}>
-				{this.props.value}
-			</div>
-			{ckb}
-       <ContextMenu id={this.props.name + '_ctmid'}>
-        <MenuItem onClick={this.translatePopup}>
-          Translate Setting
-        </MenuItem>
-      </ContextMenu>
-       {trnsmdl}
-		</div>
-	}
-}
-class CheckWeightControl extends React.Component{
+class MotorItem extends React.Component{
   constructor(props){
     super(props)
-    this.state = {cw:0,cwset:0, waiting:false}
-    this.setCW = this.setCW.bind(this);
-    this.sendPacket = this.sendPacket.bind(this);
-    this.sendCW = this.sendCW.bind(this);
   }
-  setCW(n,v){
-    var self = this;
-    if(typeof v != 'undefined'){
-
-
-      if(v != null){
-        console.log(v)
-        this.setState({cwset:parseFloat(v)})
-        setTimeout(function (argument) {
-          // body...
-          self.props.close()
-        },150)
-      }
-    }
-  }
-  sendCW(){
-    this.props.close();
-  }
-  sendPacket(n,v){
-    this.props.sendPacket(n,v)
+  testMotor(){
+    this.props.testMotor(this.props.index)
   }
   render(){
-    var cw = this.props.cw.toFixed(1)+'g'
-    if(this.props.waiting){
-      cw = 'Waiting for Weight'
-    }
-    return <div>
-        <div style={{background:'#e1e1e1', padding:5, height:400}}>
-       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Check Weight'}</div></h2></span>
-       <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Check Weight'} value={cw} editable={false} onEdit={this.sendPacket} num={true}/></div>
-         <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Measured Value'} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={'checkweightmeasure'} num={true}/></div>
-        <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={'Confirm'}/>
-        </div>
-        </div>
-    </div>
+    var motorIcon = <img src='assets/motor.svg' width={40} style={{verticalAlign:'bottom'}}/>
+    return <div><div style={{display:'inline-block', width:50}}>{motorIcon}</div><div style={{display:'inline-block', width:200}}>{this.props.name}</div><div style={{display:'inline-block', width:200}}>Start/Stop</div> </div>
+
   }
 }
-class ProductSelectItem extends React.Component{
-	constructor(props){
-		super(props)
-		this.switchProd = this.switchProd.bind(this);
-	  this.deleteProd = this.deleteProd.bind(this); 
+/******************Motor Controls end*****************/
+
+/******************Datetime start*********************/
+class FatClock extends React.Component{
+  constructor(props){
+    super(props)
+    var dateStr = new Date().toISOString();
+    this.setDate = this.setDate.bind(this);
+    this.state = {date:dateStr.slice(0,10) + ' '+ dateStr.slice(11,19)}
+    this.changeDT = this.changeDT.bind(this);
+    this.toggleCK = this.toggleCK.bind(this);
+    this.setDT = this.setDT.bind(this);
+    this.setDST = this.setDST.bind(this);
+    this.setTz = this.setTz.bind(this);
+    this.dtsModal = React.createRef();
+    this.dts = React.createRef();
   }
-	switchProd(){
-		var self = this;
-		setTimeout(function(){
-			if(!self.props.isNull){
-			self.props.selectProd(self.props.p)
-				
-			}
-		},150)
-	}
-  deleteProd(){
-    var self = this;
-    setTimeout(function(){
-      if(!self.props.isNull){
-      self.props.deleteProd(self.props.p)
-        
-      }
-    },150)
-  }
-	render () {
-		// body..
-		
-		var check= ""
-     var  del = <img onClick={this.deleteProd} src="assets/trash.svg"/>
-	var dsW = 300;
-		var stW = 227;
-		var ds = {paddingLeft:7, display:'inline-block', width:dsW, background:"transparent"}
-		var st = {padding:7,display:'inline-block', width:stW, height:50, lineHeight:'50px',fontSize:22,borderBottom:'2px solid #bbbbbbaa'}
-		var mgl = -90
-		var buttons// = <button className='deleteButton' onClick={this.deleteProd}/>
-		if(this.props.selected){
-		//	check = <img src="assets/Check_mark.svg"/>
-			ds = {paddingLeft:7,display:'inline-block', width:dsW,	 background:"#7ccc7c"}
-			//st = {color:'green', padding:7, display:'inline-block', width:200}
-			mgl = -160
-      del = ""
-		}
-		if(this.props.running){
-			check =  <img src="assets/Check_mark.svg"/>
-		  del = ""
-    }
-		var name = 'Product '+this.props.p
-		if(this.props.name.length > 0){
-			name = this.props.name
-		}
-		var color = '#000'
-		if (this.props.isNull){
-			color = '#aaa'
-		}
-		return (<div style={{background:"transparent", color:color, position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-block', width:22}}>{check}</div><label onClick={this.switchProd} style={st}>{this.props.p + '.  ' +name}</label> <div style={{display:'inline-block', width:22}}>{del}</div></div>
-			</div>)
-	}
-}
-class ProdCopy extends React.Component{
-	constructor(props){
-		super(props);
-		this.prodCopy = this.prodCopy.bind(this);
-	}
-	prodCopy(target){
-		this.props.sendPacket('copyCurrentProd',target)
-	}
-	render(){
-		return <div></div>
-	}
-}
-class CustomLabel extends React.Component{
-	constructor(props) {
-		super(props)
-		this.onClick = this.onClick.bind(this);
-	}
-	onClick () {
-		// body...
-		if(this.props.onClick){
-			this.props.onClick(this.props.index)
-		}
-		
-	}
-	render () {
-		var style = this.props.style || {}
-		return <div onClick={this.onClick} style={style}>{this.props.children}</div>
-	}
-}
-class CatButton extends React.Component{
-	constructor(props){
-		super(props);
-		this.onClick = this.onClick.bind(this);
-	}
-	onClick(){
-		this.props.onClick(this.props.data, this.props.ind)
-	}
-	render(){
-			var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
-
-		return <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:300, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onClick} lab={this.props.data.val.cat}/>
-	}
-}
-class CatSelectItem extends React.Component{
-	constructor(props){
-		super(props)
-		this.onClick = this.onClick.bind(this);
-	}
-	onClick(){
-		this.props.onClick(this.props.data, this.props.ind)
-	}
-	render () {
-		// body..
-		
-		var check= ""
-		var dsW = 300;
-		var stW = 227;
-		var ds = {paddingLeft:7,paddingRight:7, display:'inline-block', width:dsW, background:"transparent"}
-		var st = {padding:7,display:'inline-block', width:stW, height:50, lineHeight:'50px',fontSize:22,borderBottom:'2px solid #bbbbbbaa'}
-		var mgl = -90
-		var buttons// = <button className='deleteButton' onClick={this.deleteProd}/>
-    var selBG = SPARCBLUE2
-
-    if(this.props.branding == 'FORTRESS'){
-      selBG = FORTRESSPURPLE2
-      //st.color = '#e1e1e1'
-    }
-		if(this.props.selected){
-			check = <img src="assets/Check_mark.svg"/>
-			ds = {paddingLeft:7,paddingRight:7,display:'inline-block', width:dsW,	 background:selBG}
-			//st = {color:'green', padding:7, display:'inline-block', width:200}
-			mgl = -160
-      if(this.props.branding == 'FORTRESS'){
-     // selBG = FORTRESSPURPLE2
-      st.color = '#e1e1e1'
-    }
-		}
-    var catSt = this.props.data.val.cat
-    if(vdefMapV2['@catmap'][catSt]){
-     catSt =  vdefMapV2['@catmap'][catSt]['@translations'][this.props.language]
-    }
-
-		return (<div style={{background:"transparent", color:"#000", position:'relative', textAlign:'center'}}><div style={ds} ><label onClick={this.onClick} style={st}>{catSt}</label></div>
-			</div>)
-	}
-}
-class SettingsPageWSB extends React.Component{
-	constructor(props){
-		super(props);
-		this.state = {sel:0, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0,mot:false}
-		this.setPath = this.setPath.bind(this);
-		this.onHandleClick = this.onHandleClick.bind(this);
-		this.backAccount = this.backAccount.bind(this);
-    this.onCal = this.onCal.bind(this);
-    this.backCal = this.backCal.bind(this);
-    this.onMot = this.onMot.bind(this);
-    this.updateLiveWeight = this.updateLiveWeight.bind(this);
-    this.sd = React.createRef();
-    //  this.submitList = this.submitList.bind(this);
-	}
   componentDidMount(){
-    this.sd.current.setPath([0]);
+    //socket.emit('getTimezones')
+  }
+  setTz(tz){
+    this.props.sendPacket('Timezone',tz)
+  }
+  setDST(dst){
+    this.props.sendPacket('DaylightSavings',dst)
+    this.dtsModal.current.close();
+  }
+  setDT(dt){
+    var self = this;
+    this.setState({dt:dt, tick:0})
+    setTimeout(function(){
+      self.setState({tick:1})
+    },1000)
+  }
+  changeDT(dt){
+    this.props.sendPacket('DateTime', dt)
+    this.dtsModal.current.close();
+  }
+  toggleCK(){
+    var self = this;
+    this.dtsModal.current.toggle();
+    setTimeout(function(){
+      self.dts.current.getDT(self.state.date)
+      socket.emit('getTimezones')
+    },200)
+  }
+  setDate(date){
+    var self = this;
+    this.setState({date:date})
+
+    setTimeout(function () {
+      // body...
+      var sec = parseInt(date.slice(-1)) + 1;
+      self.setState({date:date.slice(0,-1)+sec.toString()})
+    },1000)
+  }
+  //componentDidMount(){
+    //var self = this;
+    //setInterval(function () {
+      // body...
+     // var dateStr = new Date().toISOString();
+      //self.setState({date:dateStr.slice(0,10) + ' '+ dateStr.slice(11,19)})
+    //},1000)
+  //}
+  render(){
+    var style = Object.assign({}, this.props.style);
+
+    return <React.Fragment>
+    <div style={style} onClick={this.toggleCK}>{this.state.date}</div>
+      <Modal ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
+        <DateTimeSelect setTz={this.setTz} timezones={this.props.timezones} timeZone={this.props.timeZone} branding={this.props.branding} setDST={this.setDST} dst={this.props.dst} language={this.props.language} setDT={this.changeDT} ref={this.dts}/>
+      </Modal>
+      </React.Fragment>
+  }
+}
+class DateTimeSelect extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {year:'1996',month:'01',day:'01', hour:'00',minute:'00',sec:'00'}
+    this.getDT = this.getDT.bind(this);
+    this.setDT = this.setDT.bind(this);
+    this.onDateChange = this.onDateChange.bind(this);
+    this.onTimeChange = this.onTimeChange.bind(this);
+    this.onDSTChange = this.onDSTChange.bind(this);
+    this.onTzChange = this.onTzChange.bind(this);
+    this.dstpw = React.createRef();
+    this.dpw = React.createRef();
+    this.tpw = React.createRef();
+  }
+  getDT(dtstring='1996/01/01 00:00:00'){
+    var dtarray = dtstring.split(' ');
+    var date = dtarray[0].split('/');
+    var time = dtarray[1].split(':')
+    this.setState({year:date[0],month:date[1],day:date[2],hour:time[0],minute:time[1],sec:time[2]})
+  }
+  setDT(){
+    var dt = this.state.year +'/'+this.state.month+'/'+this.state.day + ' ' + this.state.hour +':'+this.state.minute+':'+this.state.sec
+    this.props.setDT(dt)
+  }
+  onDateChange(_date,i){
+    var date = [parseInt(this.state.year)-1996,parseInt(this.state.month),parseInt(this.state.day)]
+    if(i != 0){
+      _date ++
+    }
+    date[i] = _date;
+    console.log(_date, date, i)
+    this.setState({year:(date[0] + 1996).toString(), month:('00'+ date[1]).slice(-2).toString(), day:('00'+ date[2]).slice(-2).toString()})
+  }
+  onTimeChange(_time,i){
+    var time = [parseInt(this.state.hour),parseInt(this.state.minute),parseInt(this.state.sec)]
+    time[i] = _time;
+    ////console.log(1532131312, [_time,i])
+    this.setState({hour:('00'+ time[0]).slice(-2).toString(), minute:('00'+ time[1]).slice(-2).toString(), sec:('00'+ time[2]).slice(-2).toString()})
+  }
+  onDSTChange(dst,i){
+    ////console.log(dst)
+    this.props.setDST(dst)
+  }
+  onTzChange(tz){
+    this.props.setTz(tz)
+  }
+  render(){
+    var bgClr = FORTRESSPURPLE2
+    var txtClr = '#e1e1e1'
+    if(this.props.branding == 'SPARC'){
+      bgClr = SPARCBLUE2
+      txtClr = '#000'
+    }
+    var years = [];
+    var months = [];
+    var days = [];
+    var hours = [];
+    var minutes = [];
+    var secs = [];
+
+    for(var i = 0; i < 40; i++){
+      years.push( (1996+i).toString());
+    }
+    for(var i=0; i<12;i++){
+      months.push(('00'+(i+1)).slice(-2));
+    }
+    for(var i=0; i<31;i++){
+      days.push(('00'+(i+1)).slice(-2));
+    }
+    for(var i=0; i<24;i++){
+      hours.push(('00'+i).slice(-2));
+    }
+    for(var i=0; i<60;i++){
+      minutes.push(('00'+i).slice(-2));
+    }
+    for(var i=0; i<60;i++){
+      secs.push(('00'+i).slice(-2));
+    }
+    var date = [years.indexOf(this.state.year), months.indexOf(this.state.month), days.indexOf(this.state.day)];
+    var time = [hours.indexOf(this.state.hour), minutes.indexOf(this.state.minute), secs.indexOf(this.state.sec)]
+    var tg = ['off','on']
+    var namestring = 'Select User'
+    var dpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['Date']} language={this.props.language} interceptor={false} name={'Date'} ref={this.dpw} val={date} options={[years,months,days]} onChange={this.onDateChange}/>
+    var tpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['Time']} language={this.props.language} interceptor={false} name={'Time'} ref={this.tpw} val={time} options={[hours,minutes,secs]} onChange={this.onTimeChange}/>
+    var dstpw = <PopoutWheel branding={this.props.branding} vMap={vMapV2['DST']} language={this.props.language} interceptor={false} name={'Daylight Savings'} ref={this.dstpw} val={[this.props.dst]} options={[['off','on']]} onChange={this.onDSTChange}/>
+    var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 '+ SPARCBLUE1}
+    var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+      var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
+
+      var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
+      st.width = 496
+      st.fontSize = 24
+      st.display = 'table-cell';//self.props.vst.display;
+      
+
+
+        
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#000"}} >
+      <div style={{display:'inline-block', textAlign:'center'}}>DateTime</div></h2></span>)
+    var clr = "#e1e1e1"
+ 
+    var dateItem = (<div style={{margin:2}} onClick={()=>this.dpw.current.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
+        {'Date'}
+      </div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
+        <div style={st}>{this.state.year +'/'+this.state.month+'/'+this.state.day}</div>
+      </div>
+      </div>)
+
+    var timeItem = (<div style={{margin:2}} onClick={()=>this.tpw.current.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
+        {'Time'}
+      </div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
+        <div style={st}>{this.state.hour +':'+this.state.minute+':'+this.state.sec}</div>
+      </div>
+      </div>)
+    var dstItem =  (<div style={{margin:2}} onClick={()=>this.dstpw.current.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
+        {'Daylight Savings'}
+      </div>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
+        <div style={st}>{tg[this.props.dst]}</div>
+      </div>
+      </div>)
+
+    return <div style={{position:'relative', color:'black'}}>{tpw}{dpw}{dstpw}
+    <div>
+    {titlediv}
+    
+    </div>
+      {dateItem}
+      {timeItem}
+      {dstItem}
+      <TimezoneControl timezones={this.props.timezones} timeZone={this.props.timeZone} onTzChange={this.onTzChange} language={this.props.language} branding={this.props.branding}/>
+      <button className='customAlertButton' onClick={this.setDT}>Set DateTime</button>
+    </div> 
+  }
+}
+class TimezoneControl extends React.Component{
+  constructor(props){
+    super(props);
+    this.onTzChange = this.onTzChange.bind(this);
+    this.tz = React.createRef();
+    this.state = {timeZone:props.timeZone, tzlist:props.timezones.map(function (tz) {
+      // body...
+      return tz.text;
+    })}
   }
   componentWillReceiveProps(newProps){
-    this.setState({update:true})
-  }
-  shouldComponentUpdate(nextProps, nextState){
-    return  (nextState.update == true)
-  }
-  updateLiveWeight(lv){
-    if(this.state.cal){
-      this.setState({liveWeight:lv, update:true})
-    }else{
-      this.setState({liveWeight:lv, update:false})
-    }
-  }
-	setPath(dat,i){
-		if(i < 0){
-			this.sd.current.setPath([])
-		}else{
-			this.sd.current.setPath([i])
-
-		}
-		this.setState({sel:i, showAccounts:false, cal:false, update:true,mot:false})
-	}
-	backAccount(){
-		this.setState({showAccounts:false, update:true})
-	}
-	onHandleClick(dat, n){
-		if(dat[0] == 'get_accounts'){
-			this.setState({showAccounts:true, cal:false, update:true,mot:false})
-		}else if(dat[0] == 'reboot_display'){
-      toast('Restarting Display')
-      socket.emit('reboot')
-    }else{
-      if(typeof this.props.onHandleClick != 'undefined'){
-          this.props.onHandleClick(dat,n)
-      }
-		
-		}
-	}
-  onCal(){
-    this.setState({mot:false,cal:true,sel:-2, showAccounts:false, update:true})
-  }  
-  onMot(){
-    this.setState({cal:false,mot:true,sel:-3, showAccounts:false, update:true})
-  }
-  backCal(){
-    this.setState({cal:false, update:true})
-  }
-	render(){
-		var self = this;
-		var calStr = 'Press calibrate to start calibration. \n Ensure loadcell is empty before starting.';
-    if(this.props.calibState == 1){
-      calStr = 'Taring..'
-    }else if(this.props.calibState == 2){
-      calStr = 'Place calibration weight on loadcell and press Calibrate'
-    }else if(this.props.calibState == 3){
-      calStr = 'Calibrating..'
-    }else if(this.props.calibState == 4){
-      calStr = 'Remove weight and hit Calibrate to tare'
-    }else if(this.props.calibState == 5){
-      calStr = 'Taring..'
-    }else if(this.props.calibState == 6){
-      calStr = 'Calibration Successful'
-    }else if(this.props.calibState == 7){
-      calStr = 'Calibration Failed'
-    }
-
-		var cats = []//[<div><CatSelectItem language={this.props.language} branding={self.props.branding} data={{val:{cat:'Home'}}} selected={this.state.sel == -1} ind={-1} onClick={self.setPath}/></div>]
-		this.props.cvdf[0].params.forEach(function (c,i) {
-			// body...
-			//console.log(c)
-			if(c.type == 1){
-				cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={c} selected={self.state.sel == i} ind={i} onClick={self.setPath}/></div>)
-			}
-		})
-		cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} /></div>)
-   
-		// bkmkthis
-		var cob;
-		if(this.state.sel == -1){
-			cob = this.props.cob2
-		}
-		var sd =<React.Fragment><div > <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
-      		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
-			</div>
-			<div style={{display:'none'}}> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
-</div></React.Fragment>
-		if(this.state.showAccounts){
-			sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap}  setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
-      		onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
-			</div>
-			<div> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
-</div></React.Fragment>
-		}else if(this.state.cal){
-     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref={this.sd} data={this.state.data} 
-          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
-      </div>
-      <div>
-        <div style={{background:'#e1e1e1', padding:10}}>
-       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
-          
-         
-          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.liveWeight.toFixed(1)+'g'} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
-          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
-          <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
-          <div style={{marginTop:100, fontSize:24, textAlign:'center'}}>{calStr}</div>
-          <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCal} lab={'Calibrate'}/>
-          </div>
-          </div>
-      </div></React.Fragment>
-    }else if(this.state.mot){
-      sd = <React.Fragment>
-        <div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
-          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
-      </div>
-
-      <div>
-        <div style={{background:'#e1e1e1', padding:10}}>
-       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Motor Control'}</div></h2></span>
-          
-        <div style={{marginTop:5}}>
-          <MotorControl motors={[{name:'Infeed Belt'},{name:'Weigh Table Belt'},{name:'Reject Belt'},{name:'Exit Belt'}]}/>
-        </div>
-
-         </div>
-
-         </div>
-      </React.Fragment>
-    }
-
-		return <div>
-			<table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{marginTop:54, height:480, background:'#e1e1e1'}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
-		</div>
-	}
-}
-class SettingsPage extends React.Component{
-	constructor(props) {
-		super(props)
-
-		this.state = ({
-		 sysRec:this.props.sysSettings,curtrn:'Settings', prodRec:this.props.prodSettings, dynRec:this.props.dynSettings,font:2, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec,path:[]
-		});
-		this.handleItemclick = this.handleItemclick.bind(this);
-		this.scrollUp = this.scrollUp.bind(this);
-		this.scrollDown = this.scrollDown.bind(this);
-		this.handleScroll = this.handleScroll.bind(this);
-		this.sendPacket = this.sendPacket.bind(this);
-		this.parseInfo = this.parseInfo.bind(this);
-		this.onFocus = this.onFocus.bind(this);
-		this.onRequestClose = this.onRequestClose.bind(this);
-	  this.goBack = this.goBack.bind(this);
-	  this.getBack = this.getBack.bind(this);
-    this.arrowTop = React.createRef();
-    this.arrowBot = React.createRef();
-    this.submitChange = this.submitChange.bind(this)
-    this.submitList = this.submitList.bind(this);
-    this.trnsmdl = React.createRef();
-    this.translatePopup = this.translatePopup.bind(this);
-    this.curtrnChange = this.curtrnChange.bind(this);
-    this.submitTooltip = this.submitTooltip.bind(this);
-	}
-  submitChange(n,l,v){
-    console.log(n,l,v)
-    this.props.submitChange(n,l,v)
-  }
-  submitTooltip(n,l,v){
-    this.props.submitTooltip(n,l,v)
-  }
-  submitList(n,l,v){
-    console.log(n,l,v)
-    this.props.submitList(n,l,v)
-  }
-	componentWillUnmount(){
-
-	}
-	componentWillReceiveProps(newProps){
-
-        var data = [];
-      //  var path = [];
-      var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
-      if(this.props.data[0] == 'get_accounts'){
-        data = this.props.data
-      }else{
-        data.push([this.props.cob2[0],0])
-        if(typeof this.props.cob2[0].params != 'undefined'){
-          var _par = this.state.cob2[0].params.slice(0);
-            this.state.path.forEach(function (x,i) {
-           // console.log(x)
-            data.push([_par[x]['@data'],x])
-            _par = _par[x]['@data'].params.slice(0);
-            // body...
-          })  
-        }
-   
-      }
-      var label =vdefMapV2['@labels']['Settings'][newProps.language]['name']
-      var lvl = data.length;
-
-      if(lvl > 0){
-
-      var cat = data[lvl - 1 ][0].cat;
-      var pathString = ''
-      lab = cat//catMap[cat]['@translations']['english']
-      if(lvl == 1){
-          
-          if(this.props.mode == 'config'){
-            label = vdefMapV2['@labels']['Settings'][newProps.language]['name']
-            pathString = ''
-          }else{
-            label = catMapV2[data[0][0].cat]['@translations'][newProps.language]
-            pathString = data[0][0].cat
-          }
-        }else if(lvl == 2){
-          if(this.props.mode == 'config'){
-            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-            label = catMapV2[pathString]['@translations'][newProps.language];
-          }else{
-            pathString = data.map(function (d) {return d[0].cat}).join('/')
-
-            label = catMapV2[pathString]['@translations'][newProps.language];
-          }
-          
-      
-        }else{
-          var bblab = ''
-          if(this.props.mode == 'config'){
-            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-            //////console.log(pathString)
-            label = catMapV2[pathString]['@translations'][newProps.language];
-          }else{
-            pathString = data.map(function (d) {return d[0].cat}).join('/')
-            label = catMapV2[pathString]['@translations'][newProps.language];
-          }
-        }
-      }
-		this.setState({data:newProps.data, cob2:newProps.cob2, sysRec:newProps.sysSettings, prodRec:newProps.prodSettings, dynRec:newProps.dynSettings, framRec:newProps.framRec})
-	}
-	handleItemclick(dat, n){		
-		//console.log(dat,n,1763)
-         var data = [];
-     var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
-      //  var path = [];
-      if(this.props.data[0] == 'get_accounts'){
-        data = this.props.data
-      }else{
-        data.push([this.props.cob2[0],0])
-        if(typeof this.props.cob2[0].params != 'undefined'){
-          var _par = this.state.cob2[0].params.slice(0);
-            this.state.path.forEach(function (x,i) {
-           // console.log(x)
-            data.push([_par[x]['@data'],x])
-            _par = _par[x]['@data'].params.slice(0);
-            // body...
-          })  
-        }
-   
-      }
-      var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
-      var lvl = data.length;
-
-      if(lvl > 0){
-
-      var cat = data[lvl - 1 ][0].cat;
-      var pathString = ''
-      lab = cat//catMap[cat]['@translations']['english']
-      if(lvl == 1){
-          
-          if(this.props.mode == 'config'){
-            label = vdefMapV2['@labels']['Settings'][this.props.language]['name']
-            pathString = ''
-          }else{
-            label = catMapV2[data[0][0].cat]['@translations'][this.props.language]
-            pathString = data[0][0].cat
-          }
-        }else if(lvl == 2){
-          if(this.props.mode == 'config'){
-            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-            label = catMapV2[pathString]['@translations'][this.props.language];
-          }else{
-            pathString = data.map(function (d) {return d[0].cat}).join('/')
-
-            label = catMapV2[pathString]['@translations'][this.props.language];
-          }
-          
-      
-        }else{
-          var bblab = ''
-          if(this.props.mode == 'config'){
-            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-            //////console.log(pathString)
-            label = catMapV2[pathString]['@translations'][this.props.language];
-          }else{
-            pathString = data.map(function (d) {return d[0].cat}).join('/')
-            label = catMapV2[pathString]['@translations'][this.props.language];
-          }
-        }
-      }
-    if(dat[0] == 'get_accounts'){
-      this.props.onHandleClick(dat,n)
-    }else{
-    var self = this;
-    var path = this.state.path;
-    path.push(dat[1])
-    setTimeout(function(){
-      document.getElementById(self.props.Id).scrollTop = 0;
-      self.setState({path:path, curtrn:label})
-      if(typeof self.props.onHandleClick != 'undefined'){
-          self.props.onHandleClick(dat,n)
-      }
-      //self.props.onHandleClick(dat, n);
-
-    },250)
-  }
-
-	}
-	setPath(path){
-     var data = [];
-     var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
-      //  var path = [];
-      if(this.props.data[0] == 'get_accounts'){
-        data = this.props.data
-      }else{
-        data.push([this.props.cob2[0],0])
-        if(typeof this.props.cob2[0].params != 'undefined'){
-          var _par = this.state.cob2[0].params.slice(0);
-            this.state.path.forEach(function (x,i) {
-           // console.log(x)
-            data.push([_par[x]['@data'],x])
-            _par = _par[x]['@data'].params.slice(0);
-            // body...
-          })  
-        }
-   
-      }
-      var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
-      var lvl = data.length;
-
-      if(lvl > 0){
-
-      var cat = data[lvl - 1 ][0].cat;
-      var pathString = ''
-      lab = cat//catMap[cat]['@translations']['english']
-      if(lvl == 1){
-          
-          if(this.props.mode == 'config'){
-            label = vdefMapV2['@labels']['Settings'][this.props.language]['name']
-            pathString = ''
-          }else{
-            label = catMapV2[data[0][0].cat]['@translations'][this.props.language]
-            pathString = data[0][0].cat
-          }
-        }else if(lvl == 2){
-          if(this.props.mode == 'config'){
-            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-            label = catMapV2[pathString]['@translations'][this.props.language];
-          }else{
-            pathString = data.map(function (d) {return d[0].cat}).join('/')
-
-            label = catMapV2[pathString]['@translations'][this.props.language];
-          }
-          
-      
-        }else{
-          var bblab = ''
-          if(this.props.mode == 'config'){
-            pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-            //////console.log(pathString)
-            label = catMapV2[pathString]['@translations'][this.props.language];
-          }else{
-            pathString = data.map(function (d) {return d[0].cat}).join('/')
-            label = catMapV2[pathString]['@translations'][this.props.language];
-          }
-        }
-      }
-  	document.getElementById(this.props.Id).scrollTop = 0;
-  	this.setState({path:path,curtrn:label})
-  }
-	parseInfo(sys, prd){
-		if((typeof sys != 'undefined') && (typeof prd != 'undefined')){
-			if(isDiff(sys,this.state.sysRec)||isDiff(prd,this.state.prodRec)){
-				this.setState({sysRec:sys, prodRec:prd})
-			}
-		}
-	}
-	componentDidMount() {
-		this.props.sendPacket('refresh',0);
-		//window.addEventListener('scroll', this.handleScroll)
-	}
-	curtrnChange(e){
-    this.setState({curtrn:e.target.value})
-  }
-  submitCatChange(){
-    //this.props.submitCatChange()
-  }
-	handleScroll(ev) {
-		// body...
-		//////////console.log(ev.srcElement.body)
-		var lvl = this.props.data.length
-		var len = 0;
-		if(lvl > 0){
-			len = this.props.data[lvl - 1 ][0].params.length
-		}
-		//	////////console.log(document.getElementById(this.props.Id).scrollTop)
-     var el = document.getElementById(this.props.Id)   
-       if(el){
-      if(el.scrollTop > 5){
-        this.arrowTop.current.show();
-      }else{
-        this.arrowTop.current.hide();
-      }
-      if(el.scrollTop + el.offsetHeight < el.scrollHeight ){
-        this.arrowBot.current.show();
-      }else{
-        this.arrowBot.current.hide();
-      }
-    }
-
-	}
-	scrollUp() {
-		_scrollById(this.props.Id,-260,300);
-	}
-	scrollDown() {
-		_scrollById(this.props.Id,260,300);
-	}
-	sendPacket(n,v) {
-		var self = this;
-		////console.log([n,v])
-    if(n == 'vfdChange'){
-      console.log('vfdChange')
-      var packet = dsp_rpc_paylod_for(v['@rpcs']['changevfdwrite'][0], v['@rpcs']['changevfdwrite'][1],v['@rpcs']['changevfdwrite'][2]);
-       socket.emit('rpc', {ip:this.props.dsp, data:packet})
-    }else if(n['@rpcs']['vfdstart']){
-    if(v == 1){
-     // n['@rpcs']['vfdstart'][0]
-     console.log('vfdstart')
-      var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstart'][0], n['@rpcs']['vfdstart'][1],n['@rpcs']['vfdstart'][2]);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
-    }else{
-      console.log('vfdstop')
-       var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstop'][0], n['@rpcs']['vfdstop'][1],n['@rpcs']['vfdstop'][2]);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
-
-    }
-
-   }else if(n['@rpcs']['vfdwrite']){
-      var arg1 = n['@rpcs']['vfdwrite'][0];
-      var arg2 = [];
-      var ind = n['@rpcs']['vfdwrite'][2][0];
-      var strArg = null;
-      
-      for(var i = 0; i<n['@rpcs']['vfdwrite'][1].length;i++){
-        if(!isNaN(n['@rpcs']['vfdwrite'][1][i])){
-          arg2.push(n['@rpcs']['vfdwrite'][1][i])
-        }else if(n['@rpcs']['vfdwrite'][1][i] == n['@name']){
-          if(!isNaN(v)){
-            arg2.push(v)
-          }else{
-            strArg=v
-            
-          }
-        }
-       
-    }
-     var buf = Buffer.alloc(5)
-        buf.writeUInt8(ind,0)
-        if((n['@type'] == 'float')||(n['@type'] == 'float_dist')||(n['@type'] == 'belt_speed')||(n['@type'] == 'fdbk_rate')){
-          buf.writeFloatLE(parseFloat(v),1)
-        }else{
-          buf.writeUInt32LE(parseInt(v),1);
-        }
-        
-        var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
-  }else if(n['@rpcs']['toggle']){
-
-			var arg1 = n['@rpcs']['toggle'][0];
-			var arg2 = [];
-			for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
-				if(!isNaN(n['@rpcs']['toggle'][1][i])){
-					arg2.push(n['@rpcs']['toggle'][1][i])
-				}else{
-					arg2.push(v)
-				}
-			}
-			var packet = dsp_rpc_paylod_for(arg1, arg2);
-			
-			socket.emit('rpc', {ip:this.props.dsp, data:packet})
-		}else if(n['@rpcs']['apiwrite']){
-			var arg1 = n['@rpcs']['apiwrite'][0];
-			var arg2 = [];
-			var strArg = null;
-			
-			for(var i = 0; i<n['@rpcs']['apiwrite'][1].length;i++){
-				if(!isNaN(n['@rpcs']['apiwrite'][1][i])){
-					arg2.push(n['@rpcs']['apiwrite'][1][i])
-				}else if(n['@rpcs']['apiwrite'][1][i] == n['@name']){
-					if(!isNaN(v)){
-						arg2.push(v)
-					}else{
-						strArg=v
-						
-					}
-				}
-			}
-			if(n['@type'] == 'int32'){
-				var buf = Buffer.alloc(4)
-				buf.writeUInt32LE(parseInt(v),0)
-				strArg = buf;
-			}else if(n['@type'] == 'float'){
-        var buf = Buffer.alloc(4)
-        buf.writeFloatLE(parseFloat(v),0)
-        strArg = buf;
-      }else if(n['@type'] == 'float_dist'){
-        var buf = Buffer.alloc(4)
-        buf.writeFloatLE(parseFloat(v),0)
-        strArg = buf;
-      }else if(n['@type'] == 'belt_speed'){
-        console.log('change belt speed')
-        var buf = Buffer.alloc(4)
-        buf.writeFloatLE(parseFloat(v),0)
-        strArg = buf;
-      }
-				console.log(strArg, n, 2154)
-			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-				
-			socket.emit('rpc', {ip:this.props.dsp, data:packet})
-		}else if(n['@rpcs']['write']){
-			var arg1 = n['@rpcs']['write'][0];
-			var arg2 = [];
-			var strArg = null;
-			var flag = false
-				////console.log('2281',v, n['@rpcs']['write'][1], n["@name"])
-			for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
-				if(!isNaN(n['@rpcs']['write'][1][i])){
-					////console.log('where')
-					arg2.push(n['@rpcs']['write'][1][i])
-				}else if(n['@rpcs']['write'][1][i] == n['@name']){
-					////console.log('the')
-					if(!isNaN(v)){
-						arg2.push(v)
-					}
-					else{
-						arg2.push(0)
-						strArg=v
-					}
-					flag = true;
-				}else{
-					////console.log('fuck')
-					var dep = n['@rpcs']['write'][1][i]
-					if(dep.charAt(0) == '%'){
-
-					}
-				}
-			}
-			if(n['@rpcs']['write'][2]){
-				if(Array.isArray(n['@rpcs']['write'][2])){
-					strArg = n['@rpcs']['write'][2]
-				}
-				else if(typeof n['@rpcs']['write'][2] == 'string'){
-					strArg = v
-				}
-				flag = true;
-			}
-			if(!flag){
-				strArg = v;
-			}
-			if(n['@type'] == 'int32'){
-				var buf = Buffer.alloc(4)
-				buf.writeUInt32LE(parseInt(v),0)
-				strArg = buf;
-			}else if(n['@type'] == 'float'){
-        var buf = Buffer.alloc(4)
-        buf.writeFloatLE(parseFloat(v),0)
-        strArg = buf;
-      }else if(n['@type'] == 'float_dist'){
-        var buf = Buffer.alloc(4)
-        buf.writeFloatLE(parseFloat(v),0)
-        strArg = buf;
-      }else if(n['@type'] == 'belt_speed'){
-        var buf = Buffer.alloc(4)
-        buf.writeFloatLE(parseFloat(v),0)
-        strArg = buf;
-      }
-			var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-				console.log(strArg, packet, n, 2154)
-		
-			socket.emit('rpc', {ip:this.props.dsp, data:packet})
-		}else if(n['@rpcs']['clear']){
-			var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
-				
-			socket.emit('rpc', {ip:this.props.dsp, data:packet})
-		}else if(n['@rpcs']['theme']){
-      this.props.setTheme(v)
-    }else if(n['@rpcs']['customstrn']){
-      this.props.setTrans(v)
-    }
-	}
-	onFocus() {
-			this.props.setOverride(true)
-	}
-	onRequestClose() {
-		// body...
-		var self = this;
-			setTimeout(function () {
-				// body...
-				self.props.setOverride(false)
-			},100)
-			
-	}
- 	goBack(){
-   	 var path = this.state.path.slice(0);
-    	if(path.length > 0){
-    	  	path.pop();
-      		this.setState({path:path})
-      		this.props.goBack();
-    	}
-	    ////console.log(this.props.data)
-	}
-	getBack(){
-		this.props.getBack();
-	}
-  reboot(){
-    socket.emit('reboot')
-  }
-  translatePopup(){
-    this.trnsmdl.current.toggle();
-  }
-	render(){
-		var self = this;
-    	var isInt = this.props.int
- 		var data = [];
-
-	    if(this.props.data[0] == 'get_accounts'){
-	    	data = this.props.data
-	    }else{
-	   		data.push([this.state.cob2[0],0])
-		    if(typeof this.state.cob2[0].params != 'undefined'){
-		   		var _par = this.state.cob2[0].params.slice(0);
-		  	  	this.state.path.forEach(function (x,i) {
-			     // console.log(x)
-			      data.push([_par[x]['@data'],x])
-			      _par = _par[x]['@data'].params.slice(0);
-			      // body...
-			    }) 	
-		    }
-   
-  		}
-  		var titleColor = '#eee'
-  		if(this.props.black){
-  			titleColor = '#000'
-  		}
-  		var maxHeight = 419;
-  		if(this.props.wsb){
-  			maxHeight = 462;
-  		}
-		var lvl = data.length 
-		var handler = this.handleItemclick;
-		var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
-		var cvdf = this.props.cvdf
-		////////////console.log(lvl)
-		var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
-
-		var nodes;
-		var ft = 25;
-		if(this.state.font == 1){
-			ft = 20
-		}else if(this.state.font == 0){
-			ft = 18
-		}
-		var backText = vdefMapV2['@labels']['Back'][this.props.language].name
-		if(this.props.mobile){
-			backText = ''
-		}
-		var nav =''
-		var backBut = ''
-    var packGraph = false;
-    var grphBut = ''
-		var catList = [	]
-    var lenOffset = 0;
-		var accLevel = 0;
-		var len = 0;
-		var SA = false;
-		if(lvl == 0){
-			nodes = [];
-			for(var i = 0; i < catList.length; i++){
-				var ct = catList[i]
-				nodes.push(<SettingItem3 submitList={this.submitList} submitTooltip={this.submitTooltip} submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
-          language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} 
-          font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} 
-          sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
-				
-			}
-			len = catList.length;
-			nav = nodes;
-		}else{
-
-			var cat = data[lvl - 1 ][0].cat;
-      if(data[lvl-1][0].packGraph){
-     //console.log(5143,data[lvl-1])
-      grphBut = <img src='assets/graph.svg' style={{position:'absolute', width:30, left:800}} onClick={this.props.toggleGraph}/>
-    }
-			var pathString = ''
-			lab = cat//catMap[cat]['@translations']['english']
-			if(lvl == 1){
-		    	
-		    	if(this.props.mode == 'config'){
-		    		label = vdefMapV2['@labels']['Settings'][this.props.language]['name']
-		    		pathString = ''
-		    	}else{
-		    		label = catMapV2[data[0][0].cat]['@translations'][this.props.language]
-		    		pathString = data[0][0].cat
-		    	}
-		    	if(this.props.prodPage == true){
-		    		backBut = (<div className='bbut' onClick={this.getBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
-						<label style={{color:titleColor, fontSize:ft}}>{backText}</label></div>)
-	
-		    	}
-		    	//catMap[data[0]]['@translations']['english']
-		    }else if(lvl == 2){
-		    	if(this.props.mode == 'config'){
-		    		pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-		    		//console.log(pathString)
-		    		label = catMapV2[pathString]['@translations'][this.props.language];
-		    	}else{
-		    		pathString = data.map(function (d) {return d[0].cat}).join('/')
-
-		    		label = catMapV2[pathString]['@translations'][this.props.language];
-		    	}
-		    	if(this.props.wsb != true){
-					backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
-						<label style={{color:titleColor, fontSize:ft}}>{backText}</label></div>)
-		    	}
-			
-		    }else{
-		    	var bblab = ''
-		    	if(this.props.mode == 'config'){
-		    		pathString = data.slice(1).map(function (d) {return d[0].cat}).join('/')
-		    		//////console.log(pathString)
-		    		label = catMapV2[pathString]['@translations'][this.props.language];
-		    		bblab = catMapV2[data.slice(1,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
-		    	}else{
-		    		pathString = data.map(function (d) {return d[0].cat}).join('/')
-		    		label = catMapV2[pathString]['@translations'][this.props.language];
-		    		bblab = catMapV2[data.slice(0,data.length - 1).map(function (d) {return d[0].cat}).join('/')]['@translations'][this.props.language]; 
-		    	}
-		    	backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
-		    		<label style={{color:'titleColor', fontSize:ft}}>{backText}</label></div>)
-			}
-			
-			nodes = []
-			data[lvl - 1 ][0].params.forEach(function (par,i) {
-				if(par.type == 0){
-          			var p = par
-          			var pname = par['@name']
-
-			        if(!self.props.int){
-			           if(pname.slice(-4) == '_INT'){
-			           	pname = pname.slice(0,-4)
-			           }
-			        }
-
-					var ind = 0;
-					var prms = self.props.cob2[ind].params;
-					
-					while(ind < lvl - 1){
-						ind = ind + 1
-						prms = prms[data[ind][1]]['@data'].params
-					}
-					var d = prms[i]
-				  	var ch = d['@children'].slice(0)
-
-          			if(d['@interceptor'] || d['@test'] || d['@halo'] || d['@input'] || d['@combo']){
-            			ch.unshift(d['@data'])
-          			}
-         			var	acc = false;
-					if((self.props.level > 3) || (p.acc <= self.props.level)){
-						acc = true;
-					}
-          //console.log(2158, isInt)
-					nodes.push(<SettingItem3 submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
-						ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
-							children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
-					
-				}else if(par.type == 1){
-					var sc = par['@data']
-					////console.log('check this too',sc)
-          
-          			var	acc = false;
-					if((self.props.level > 3) || (par.acc <= self.props.level)){
-						acc = true;
-					}
-					if(typeof sc['child'] != 'undefined'){
-						var spar = sc.params[sc.child]
-            			var ch = spar['@children'].slice(0)
-          				if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input'] || spar['@combo']){
-            				ch.unshift(spar['@data'])
-          				} 
-                 		var spname = spar['@name']
-
-         				if(!isInt){
-            				if(spname.slice(-4) == '_INT'){
-              					spname = spname.slice(0,-4)
-            				}
-          				}
-							nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
-								data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
-			
-					}else{
-		      			if(self.props.wsb && lvl == 1){
-                  lenOffset++;
-		      			}else{
-		      				nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
-							data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
-						
-		      			}
-					}
-				}else if(par.type == 2){
-					var sc = par['@data']
-					var	acc = false;
-					
-					if((self.props.level > 3)){
-						acc = true;
-					}
-					if(typeof sc['child'] != 'undefined'){
-						var spar = sc.params[sc.child]
-						var ch = spar['@children'].slice(0)
-          				if(spar['@interceptor'] || spar['@test'] || spar['@halo'] || spar['@input']||  spar['@combo']){
-            				ch.unshift(spar['@data'])
-          				}
-          				
-          				nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
-                    font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
-							     data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
-				
-					}else{
-			 			nodes.push(<SettingItem3  submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
-              font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
-							data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
-					}
-				}else if(par.type == 3){
-					var	acc = false;
-					if((self.props.level > 3)){
-						acc = true;
-					}
-					var sc = par['@data']
-						
-					nodes.push(<SettingItem3  submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
-            font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
-						data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
-		
-				}else if(par.type == 4){
-          var acc = false;
-          if((self.props.level > 3)){
-            acc = true;
-          }
-          var sc = par['@data']
-            
-          nodes.push(<CircularButton branding={self.props.branding} onClick={self.reboot} lab={"Reboot"}/>)
-        }
-			})
-
-			len = data[lvl - 1 ][0].params.length;
-			var ph = ""
-			if((len - lenOffset) > 6){
-					ph = <div style={{display:'block', width:'100%', height:20}}></div>
-					SA = true;
-			}
-			nav = (
-					<div className='setNav' style={{maxHeight:maxHeight}} onScroll={this.handleScroll} id={this.props.Id}>
-						{nodes}
-						{ph}
-					</div>)
-		}
-
-    var bgClr = FORTRESSPURPLE2
-        var modBG = FORTRESSPURPLE1
-        var txtClr = '#e1e1e1'
-        var plArr = 'assets/play-arrow-fti.svg'
-        var plStop = 'assets/stop-fti.svg'
-        var vfdbutts = ''
-        if(this.props.branding == 'SPARC'){
-          modBG = SPARCBLUE1
-          bgClr = SPARCBLUE2
-          txtClr = '#000'
-          plArr = 'assets/play-arrow-sp.svg'
-          plStop = 'assets/stop-sp.svg'
-        }
-      var catname  = 'Settings'
-    if(pathString != ''){
-      catname = catMapV2[pathString]['@translations'][this.props.language]
-    }
-    var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>Parameter Name: { catname}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
-              <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
-              <button onClick={this.submitCatChange}>Submit Translation</button>
-        </Modal>
-
-		var className = "menuCategory expanded";
-		var tstl = {display:'inline-block', textAlign:'center'}
-		var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
-		if (this.state.font == 1){
-		    titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
-		}else if (this.state.font == 0){
-		   	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
-		}
-		catList = null;
-    //console.log(4713,SA)
-
-		return(
-			<div className='settingsDiv'>
-			<ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
-		
-			<div className={className}>
-				<ContextMenuTrigger id={pathString+'_titleCTMID'}>
-        {titlediv}
-        </ContextMenuTrigger>
-        <ContextMenu id={pathString+'_titleCTMID'}>
-        <MenuItem onClick={this.translatePopup}>
-          Translate Setting
-        </MenuItem>
-      </ContextMenu>
-
-      {trnsmdl}{nav}
-
-			</div>
-			<ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
-			</div>
-		);
-	}
-}
-class SettingItem3 extends React.Component{
-	constructor(props) {
-		super(props)
-
-		this.sendPacket = this.sendPacket.bind(this);
-		this.onItemClick = this.onItemClick.bind(this);
-		this.getValue = this.getValue.bind(this);
-		this.onFocus = this.onFocus.bind(this);
-		this.onRequestClose =this.onRequestClose.bind(this);
-		this.parseValues = this.parseValues.bind(this);
-    this.touchStart = this.touchStart.bind(this);
-    this.touchEnd = this.touchEnd.bind(this);
-    this.ed = React.createRef();
-		var values = this.parseValues(this.props);
-		this.state = ({mode:0,font:this.props.font, val:values[0], pram:values[1], labels:values[2], touchActive:false})
-    this.submitChange = this.submitChange.bind(this);
-    this.submitList = this.submitList.bind(this);
-		
-
-	}
-  touchStart(){
-    this.setState({touchActive:true})
-  }
-  touchEnd(){
-    this.setState({touchActive:false})
-  }
-  parseValues(props){
-  		var res = vdefByMac[props.mac];
-		  var pVdef = _pVdef;
-		  if(res){
-			 pVdef = res[1];
-		  }
-		  var val = [], pram = [], label = false;
-		  if(!props.hasChild){
-        //console.log('parseValues', 1)
-        if(typeof props.data == 'object'){
-          //console.log('parseValues', 2)
-        
-				  if(typeof props.data['@data'] == 'undefined'){
-            //console.log('parseValues', 3)
-            //console.log(props.lkey)
-            if(typeof props.data[0] != 'undefined'){
-	  				if(typeof props.data[0]['child'] != 'undefined'){
-             // console.log('parseValues', 4)
-        
-  						var lkey = props.data[0].params[props.data[0].child]['@name']
-              if((props.data[0].params[props.data[0].child]['@children'])&&(props.children[0].length == 2)){
-                console.log('parseValues', 5)
-        
-                for(var i=0;i<props.children[0].length; i++){
-                  val.push(this.getValue(props.children[1][i], props.children[0][i]))
-                  if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
-                    pram.push(pVdef[0][props.children[0][i]])
-	              	}else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
-	                	pram.push(pVdef[1][props.children[0][i]])
-	              	}else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
-	                	pram.push(pVdef[2][props.children[0][i]])
-	              	}else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
-                    pram.push(pVdef[3][props.children[0][i]])
-                  }else if(lkey == 'Nif_ip'){
-                    pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-                  }else if(lkey == 'Nif_nm'){
-				            pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-                  }else if(lkey == 'Nif_gw'){
-				            pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-                  }
-	            	}
-		          }else{
-            
-                val  = [this.getValue(props.data[0].params[props.data[0].child]['@data'], lkey)]
-	            	if(typeof pVdef[0][lkey] != 'undefined'){
-	    						pram = [pVdef[0][lkey]]
-	    					}else if(typeof pVdef[1][lkey] != 'undefined'){
-	    						pram = [pVdef[1][lkey]]
-	    					}else if(typeof pVdef[2][lkey] != 'undefined'){
-	    						pram = [pVdef[2][lkey]]
-	    					}else if(typeof pVdef[3][lkey] != 'undefined'){
-	    						pram = [pVdef[3][lkey]]
-	    					}else if(lkey == 'Nif_ip'){
-	    						pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-	    					}else if(lkey == 'Nif_nm'){
-	    						pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-	    					}else if(lkey == 'Nif_gw'){
-	    						pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-	    					}
-
-				        if(props.data[0].params[props.data[0].child]['@children']){
-                 // console.log('parseValues', 7)
-        
-				          for(var i=0;i<props.children[0].length; i++){
-				            val.push(this.getValue(props.children[1][i], props.children[0][i]))
-				            if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
-				              pram.push(pVdef[0][props.children[0][i]])
-				            }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
-				              pram.push(pVdef[1][props.children[0][i]])
-				            }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
-				              pram.push(pVdef[2][props.children[0][i]])
-				            }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
-				              pram.push(pVdef[3][props.children[0][i]])
-				            }
-				          }
-				           
-				        }
-				      }
-      
-        			if(pram[0]['@labels']){
-                label = true
-						  }
-            }
-          }else{
-
-          }
-          }else{
-            //console.log('parseValues', 8)
-        
-            var lkey = props.lkey;
-	          if((props.data['@children'])&&(props.children[0].length == 2)){
-              console.log('parseValues', 9)
-        
-	         		for(var i=0;i<props.children[0].length;i++){
-	         		  val.push(this.getValue(props.children[1][i], props.children[0][i]))
-		            if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
-		              pram.push(pVdef[0][props.children[0][i]])
-		            }else if(typeof pVdef[1][props.children[0][i]] != 'undefined'){
-		              pram.push(pVdef[1][props.children[0][i]])
-		            }else if(typeof pVdef[2][props.children[0][i]] != 'undefined'){
-		              pram.push(pVdef[2][props.children[0][i]])
-		            }else if(typeof pVdef[3][props.children[0][i]] != 'undefined'){
-		              pram.push(pVdef[3][props.children[0][i]])
-		            }
-	            }
-            }else{
-              //console.log('parseValues', 10)
-        
-
-              val = [this.getValue(props.data['@data'], lkey)]
-	      			if(typeof pVdef[0][lkey] != 'undefined'){
-		    				pram = [pVdef[0][lkey]]
-		    			}else if(typeof pVdef[1][lkey] != 'undefined'){
-		    				pram = [pVdef[1][lkey]]
-		    			}else if(typeof pVdef[2][lkey] != 'undefined'){
-		    				pram = [pVdef[2][lkey]]
-		    			}else if(typeof pVdef[3][lkey] != 'undefined'){
-		    				pram = [pVdef[3][lkey]]
-		    			}else if(lkey == 'Nif_ip'){
-		    				pram = [{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-		    			}else if(lkey == 'Nif_nm'){
-		    				pram = [{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-		    			}else if(lkey == 'Nif_gw'){
-		    				pram = [{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}]
-		    			}
-	          }    	
-         	}
-  			}
-      }
-      if(pram.length == 0){
-
-      }else if(pram[0]['@labels']){
-        label = true
-      }
-      return [val,pram,label]
-  }
-	sendPacket(n,v) {
-		//
-		var val = v
-    if(n['@name'] == 'Nif_ip'){
-			socket.emit('nifip', v.toString())
-		}else if(n['@name'] == 'Nif_nm'){
-			socket.emit('nifnm', v.toString())
-		}else if(n['@name'] == 'Nif_gw'){
-			socket.emit('nifgw', v.toString())
-		}else{
-			if(n['@type'] == 'ipv4_address'){
-				val = v.split('.').map(function(ip){
-					return ("000"+ip).slice(-3);
-				}).join('.')
-				setTimeout(function(){
-					socket.emit('locateReq');
-				},200)
-			}
-    
-		this.props.sendPacket(n,val)	
-		}
-	}
-	componentWillReceiveProps (newProps) {
-		// body...
-		var values = this.parseValues(newProps);
-		
-		this.setState({font:newProps.font, val:values[0], pram:values[1], labels:values[2]})
-	}
-	onItemClick(){
-
-		if(this.props.hasChild || typeof this.props.data == 'object'){
-		
-			if(this.props.acc){
-				this.props.onItemClick(this.props.data, this.props.name)	
-			}else{
-
-				toast('Access Denied')	
-			}		
-		}
-	}
-	getValue(rval, pname){
-		var pram;
-			var val;
-			var label = false
-			var res = vdefByMac[this.props.mac];
-			var pVdef = _pVdef;
-			var dec = 0;
-			var self = this;
-			if(res){
-				pVdef = res[1];
-			}
-
-			if(typeof pVdef[0][pname] != 'undefined'){
-				pram = pVdef[0][pname]
-				var deps = []
-				val = rval
-				if(pram["@type"]){
-					var f =	pram["@type"]
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(d){
-							if(pVdef[6][d]["@rec"] == 0){
-								return self.props.sysSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 1){
-								return self.props.prodSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 2){
-                return self.props.dynSettings[d]
-              }
-						});
-						if((f == 'mm')||(f == 'float_dist')){
-							if(deps[0] == 0){
-								dec = 1
-							}
-						}
-					}	
-					if(pram['@bit_len']<=16){
-            if(f == 'belt_speed'){
-              console.log('belt_speed', deps, pVdef[6])
-            }
-						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-					}else if(f == 'float_dist'){
-            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-    
-          }
-				}else if(typeof pram['@decimal'] != 'undefined'){
-					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
-				}
-				
-				if(pram["@labels"]){
-					label = true
-				}
-			}else if(typeof pVdef[1][pname] != 'undefined'){
-				
-				pram = pVdef[1][pname]
-				
-				var deps = []
-				val = rval
-				if(pram["@type"]){
-					var f =	pram["@type"]
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(dp){
-							var d = dp;
-							if(dp.indexOf('[0]') != -1){
-								if(pram['@name'].slice(-2) == '_A'){
-									d = dp.replace('[0]','[1]')
-								}
-							}
-							if(pVdef[6][d]["@rec"] == 0){
-								return self.props.sysSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 1){
-								return self.props.prodSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 2){
-                return self.props.dynSettings[d]
-              }
-						});
-            if(f == 'belt_speed'){
-              console.log('belt_speed', deps, pVdef[6])
-            }
-						if(pram['@name'] == 'BeltSpeed'){
-						//	deps.push(self.props.dynSettings['EncFreq'])
-							//deps.push(1000)
-						//	console.log(3243,deps)
-						}else if(pram['@type'] == 'rej_del'){
-							deps.push(1000)
-						}
-					}
-					if((f == 'mm') || (f == 'float_dist')){
-							if(deps[0] == 0){
-								dec = 1
-							}
-						}
-					if(pram['@bit_len']<=16){
-						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-					}
-          if(f == 'float_dist'){
-            val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-    
-          }
-					if(f == 'phase_offset'){
-						val = 	uintToInt(val,16)//?? phase is coming in with different format for dyn data
-					}
-					
-				}else if(typeof pram['@decimal'] != 'undefined'){
-					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
-				}
-				if(pram["@labels"]){
-					label = true
-				}
-			}else if(typeof pVdef[2][pname] != 'undefined'){
-				
-				pram = pVdef[2][pname]
-				
-				var deps = []
-				val = rval
-				if(pram["@type"]){
-					var f =	pram["@type"]
-					if(f == 'phase'){
-						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
-					}else{
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(dp){
-							var d = dp;
-							if(dp.indexOf('[0]') != -1){
-								if(pram['@name'].slice(-2) == '_A'){
-									d = dp.replace('[0]','[1]')
-								}
-							}	
-							if(pVdef[6][d]["@rec"] == 0){
-								return self.props.sysSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 1){
-								return self.props.prodSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 2){
-								return self.props.dynSettings[d];
-							}
-						});
-					}
-					if(f == 'mm'){
-							if(deps[0] == 0){
-								dec = 1
-						}
-					}
-					if(pram['@bit_len']<=16){
-						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-					}
-				}
-					
-				}else if(pram['@name'] == 'RejExitDistEst'){
-					var dependancies = ['SysRec.MetricUnits']
-					deps = dependancies.map(function(d){
-						if(pVdef[6][d]["@rec"] == 0){
-								return self.props.sysSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 1){
-								return self.props.prodSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 2){
-							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
-								return self.props.dynSettings[d];
-							}
-					})
-					dec = 1
-					val = eval(funcJSON['@func']['mm']).apply(this, [].concat.apply([], [val, deps]));
-
-				}else if(typeof pram['@decimal'] != 'undefined'){
-					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
-				}
-				if(pram["@labels"]){
-					label = true
-				}
-			}else if(typeof pVdef[3][pname] != 'undefined'){
-				
-				pram = pVdef[3][pname]
-				
-				var deps = []
-				val = rval
-				if(pram["@type"]){
-					var f =	pram["@type"]
-					if(f == 'phase'){
-						val = 	(uintToInt(val,16)/100).toFixed(2)//?? phase is coming in with different format for dyn data
-					}else{
-					if(pram["@dep"]){
-						deps = pram["@dep"].map(function(d){
-							if(pVdef[6][d]["@rec"] == 0){
-								return self.props.sysSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 1){
-								return self.props.prodSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 2){
-							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
-								return self.props.dynSettings[d];
-							}else if(pVdef[6][d]["@rec"] == 3){
-							//		////////console.log(['1521',pVdef[6][d], self.props.dynSettings[d]])
-								return self.props.framSettings[d];
-							}
-						});
-					}
-					if(pram['@bit_len']<=16){
-					//	////////console.log(f)
-						
-						val = eval(funcJSON['@func'][f]).apply(this, [].concat.apply([], [val, deps]));
-					}
-				}
-					
-				}else if(typeof pram['@decimal'] != 'undefined'){
-					val = (val/Math.pow(10,pram['@decimal'])).toFixed(pram['@decimal'])
-				}
-				if(pram["@labels"]){
-					label = true
-				}
-			}else{
-				val = rval
-			}
-			return val;
-	}
-	onFocus () {
-		this.props.onFocus();
-	}
-	onRequestClose () {
-		this.props.onRequestClose();
-	}
-  submitChange(n,l,v){
-    this.props.submitChange(n,l,v)
-  }
-  submitList(n,l,v){
-    this.props.submitList(n,l,v)
-  }
-	render(){
-		var ft = [16,20,24];
-		var wd = [150,260,297]
-		var vwd = [75,125,169]
-		var st = {display:'inline-block', fontSize:ft[this.state.font], width:wd[this.state.font]}
-		var vst = {display:'inline-block', fontSize:ft[this.state.font], width:vwd[this.state.font]}
-		var self = this;
-		var fSize = 24;
-		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
-		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-		var sty = {height:60};
-    var klass = 'sItem'
-    	 
-		if(this.props.mobile){
-			sty.height = 45;
-			sty.lineHeight = '45px';
-		}
-			var res = vdefByMac[this.props.mac];
-			var pVdef = _pVdef;
-			if(res){
-				pVdef = res[1];
-			}
-				var label = false;
-		if(this.props.hasChild){
-			var namestring = this.props.name;
-			var path = ""
-			if(this.props.path.length == 0){
-				path = namestring
-			}else{
-				path = this.props.path + '/'+ namestring
-			}
-			
-			if(typeof catMapV2[path] != 'undefined'){
-					namestring = catMapV2[path]['@translations'][this.props.language]
-			
-			}
-			if(namestring.length > 28){
-				fSize = 18
-			}
-			else if(namestring.length > 24){
-				fSize= 20
-			}else if(namestring.length > 18){
-				fSize = 22
-			}
-			
-				var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
-				if(this.props.mobile){
-					_st.lineHeight = '51px'
-					_st.height = 45
-				}
-			  klass += ' hasChild'
-        if(this.state.touchActive){
-          klass += ' touchDown'
-        }
-        sty.backgroundColor = FORTRESSPURPLE2;
-          if(this.props.branding == 'SPARC'){
-          	sty.backgroundColor = SPARCBLUE2
-          	sty.color = 'black'
-          	sty.height = 50
-          }
-			return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
-		}else{
-			var val, pram;
-			var namestring = this.props.name;
-
-		if(typeof this.props.data == 'object'){
-
-			if(typeof this.props.data['@data'] == 'undefined'){
-				var path = ""
-				if(this.props.path.length == 0){
-					path = namestring
-				}else{
-					path = this.props.path + '/'+ namestring
-				}
-				
-				if(typeof catMapV2[path] != 'undefined'){
-					namestring = catMapV2[path]['@translations'][this.props.language]
-				}
-				if(namestring.length > 28){
-					fSize = 18
-				}
-				else if(namestring.length > 24){
-					fSize= 20
-				}else if(namestring.length > 18){
-					fSize = 22
-				}
-				var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
-				if(this.props.mobile){
-					_st.lineHeight = '51px'
-					_st.height = 45
-				}
-				
-				if(typeof this.props.data[0] != 'undefined'){
-        if(typeof this.props.data[0]['child'] != 'undefined'){
-	        		klass  = 'sprc-prod'//+= ' noChild'
-
-					var lkey = this.props.data[0].params[this.props.data[0].child]['@name']
-					var im = <img  style={{position:'absolute', width:36,top:15, left:762, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
-					
-					if(this.props.mobile){
-						im = <img  style={{position:'absolute', width:'7%',height:'40%',top:'30%', left:'92%', strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
-					}
-			
-					if(this.props.backdoor){
-						im = ''
-					}
-		
-
-					var medctrl= (<MultiEditControl weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
-	    		            mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
-	         				onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
-	          				lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
-	          				label={this.state.label} int={false} name={lkey}/>)
-
-
-	        if(this.props.mobile){
-						sty.height = 51
-						sty.paddingRight = 5
-					}
-	        
-	        		//sty.paddingBottom = 5
-					return (<div className='sprc-prod' style={sty} onClick={this.onItemClick}> {medctrl}
-							{im}
-						
-						</div>)
-				}
-      }else{
-     
-        return ""
-      }
-
-			    klass = 'sItem hasChild'
-          sty.backgroundColor = FORTRESSPURPLE2
-			    if(this.props.branding == 'SPARC'){
-	          		klass = 'sItem hasChildSparc'
-	          		sty.color = 'black'
-	          		sty.background = SPARCBLUE2
-	          		sty.height = 50;
-	          	}
-	    		if(this.state.touchActive){
-	          		klass += ' touchDown'
-	        	}
-				return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
-			}
-
-		}
-		if(this.props.mobile){
-			sty.height = 51;
-			sty.paddingRight = 5;
-		}
-		var medctrl= (<MultiEditControl weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
-          lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
-          label={this.state.label} int={false} name={this.props.lkey}/>)
-
-		     	return (<div className='sprc-prod' style={sty}> {medctrl}
-					</div>)
-			
-		}
-	}
-}
-class MultiEditControl extends React.Component{
-	constructor(props) {
-		super(props)
-    var tlist = []
-    var elist = []
-    var liststring = ''
-
-    if(typeof this.props.param[0]['@labels'] != 'undefined'){
-      var labname = this.props.param[0]['@labels'] 
-      if(typeof vMapLists[this.props.param[0]['@labels']] != 'undefined'){
-        liststring = vMapLists[this.props.param[0]['@labels']][this.props.language].join(',')
-        tlist = vMapLists[this.props.param[0]['@labels']][this.props.language].slice(0);
-        elist = vMapLists[this.props.param[0]['@labels']]['english'].slice(0);
-      }else{
-       console.log(this.props.param[0]['@labels'], 5664)
-        liststring = vdefByMac[this.props.mac][0]['@labels'][this.props.param[0]['@labels']][this.props.language].join(',');
-        vMapLists[this.props.param[0]['@labels']] = JSON.parse(JSON.stringify(vdefByMac[this.props.mac][0]['@labels'][this.props.param[0]['@labels']]))
-        vdefMapV2['@languages'].forEach(function (l) {
-          if(typeof vMapLists[labname][l] == 'undefined'){
-             vMapLists[labname][l] = vMapLists[labname]['english'].slice(0)
-          }
-        })
-      }
-      
-    }
-    if(typeof this.props.vMap == 'undefined'){
-      console.log(this.props.param, 5679)
-    }
-		this.state = ({val:this.props.data.slice(0), changed:false,tlist:tlist,elist:elist,liststring:liststring, mode:0, size:this.props.size,touchActive:false, curtrn:this.props.vMap['@translations'][this.props.language]['name']})
-		this.selectChanged = this.selectChanged.bind(this);
-		this.valChanged = this.valChanged.bind(this);
-		this.onFocus = this.onFocus.bind(this);
-		this.onRequestClose = this.onRequestClose.bind(this);
-		this.onClick = this.onClear.bind(this);
-		this.openSelector = this.openSelector.bind(this);
-		this.valClick = this.valClick.bind(this);
-    	this.onPointerDown = this.onPointerDown.bind(this);
-    	this.onPointerUp = this.onPointerUp.bind(this);
-      this.vfdStart = this.vfdStart.bind(this);
-      this.vfdStop = this.vfdStop.bind(this);
-      this.vfdSetup = this.vfdSetup.bind(this);
-      this.curtrnChange = this.curtrnChange.bind(this);
-      this.submitChange = this.submitChange.bind(this);
-      this.submitList = this.submitList.bind(this);
-    for(var i = 0; i<this.props.param.length; i++){
-      this['input'+i] = React.createRef();
-    }
-    this.vfdModal = React.createRef();
-    this.vfdSModal = React.createRef();
-    this.trnsmdl = React.createRef();
-    this.listmdl = React.createRef();
-    this.translatePopup = this.translatePopup.bind(this);
-    this.translateLists = this.translateLists.bind(this);
-    this.pw = React.createRef();
-    this.listChange = this.listChange.bind(this);
-    this.submitTooltip = this.submitTooltip.bind(this);
-    this.lChange = this.lChange.bind(this);
-	}
-	componentWillReceiveProps(newProps){
-		this.setState({val:newProps.data.slice(0)})
-	}
-  componentDidMount(){
-    this.setState({curtrn:this.props.vMap['@translations'][this.props.language]['name']})
-  }
-  submitList(){
-    this.props.submitList(this.props.param[0]['@labels'], this.props.language, this.state.tlist.slice(0))
-  }
-  submitTooltip(txt){
-    this.props.submitTooltip(this.props.name, this.props.language,txt)
-  }
-  vfdSetup(){
-    var self = this;
-    setTimeout(function(argument) {
+    this.setState({timeZone:newProps.timeZone, tzlist:newProps.timezones.map(function(tz) {
       // body...
-      self.vfdSModal.current.toggle();
-    },100)
-     this.props.sendPacket('vfdChange',this.props.param[0])
+      return tz.text
+    })})
   }
-	selectChanged(v,i){
-		var val = v//e.target.value//e.target.value;
-		if(this.props.bitLen == 16){
-			val = Params.swap16(parseInt(val))
-		}
-		this.props.sendPacket(this.props.param[i], parseInt(val));
-		var value = this.state.val;
-		value[i] = v// e.target.value
-	}
-	valChanged(v,i){
-		//console.log(['2734',v,i,this.props.param[i]])
-		var val;
-		if(!isNaN(v)){
-			val = parseFloat(v)
-		}else{ 
-			val = v;
-
-		}
-		if(this.props.param[i]['@type'] == 'mm'){
-			if(this.state.val[i].indexOf('in') != -1){
-				val = val*10;
-			}
-		}else if(this.props.param[i]['@name'].indexOf('PhaseAngleAuto') != -1){
-			val = val*Math.pow(10,this.props.param[i]['@decimal'])
-		}else if(this.props.param[i]['@decimal']){
-			val = val*Math.pow(10,this.props.param[i]['@decimal'])
-			////console.log('3149',v,val)
-		}else if(this.props.param[i]['@type'] == 'belt_speed'){
-			if(v.indexOf('.') != -1){
-				val = val*10
-			}
-		}
-		
-		if(this.props.bitLen == 16){
-			val = Params.swap16(parseFloat(val))
-		}
-		var value = this.state.val;	
-		value[i] = val;
-		this.setState({val:value})
-		if(this.props.param[i]['@bit_len'] > 16){
-			val = v//              "
-	      	if(this.props.param[i]['@type'] == 'dsp_name_u16_le' || this.props.param[i]['@type'] == 'prod_name_u16_le'){
-	      		val  = (v + "                    ").slice(0,20)
-	       	}
-			this.props.sendPacket(this.props.param[i], val)
-		}else if(!Number.isNaN(val)){
-			this.props.sendPacket(this.props.param[i], parseFloat(val));
-		}
-	}
-	onFocus () {
-		this.props.onFocus();
-	}
-	onRequestClose () {
-		this.props.onRequestClose();
-	}
-	onClear (id) {
-		this.props.sendPacket(this.props.param[id])
-	}
-	openSelector () {
-		if(!this.props.ov){
-	
-			var self = this;
-			if(this.pw.current){
-				setTimeout(function () {
-					self.pw.current.toggleCont();
-				},100)
-				
-			}
-		}
-		
-	}
-	valClick (ind) {
-    var self = this;
-		if(!this.props.ov){
-			if(this.props.param[ind]['@rpcs']){
-				if(this.props.param[ind]['@rpcs']['vfdstart']){
-          this.vfdModal.current.toggle();
-        }else if(this.props.param[ind]['@rpcs']['clear']){
-					this.onClear(ind)
-				}else if(this.props.param[ind]['@rpcs']['start']){
-					this.onClear(ind)
-				}else if(this['input' + ind].current){
-					setTimeout(function (argument) {
-						// body...
-						self['input' + ind].current.toggle();
-					}, 100);
-					//this.refs['input' + ind].toggle();
-				}else if(this.pw.current){
-					setTimeout(function(){
-						self.pw.current.toggle();
-			
-					},100)
-				}
-			}else if(this['input' + ind].current){
-					setTimeout(function (argument) {
-						// body...
-						self['input' + ind].current.toggle();
-					}, 100);
-			}else if(this.pw.current){
-				setTimeout(function(){
-						self.pw.current.toggle();
-			
-					},100)
-			}
-		}
-	}
-  vfdStart(){
-    console.log('start clicked')
-    this.props.sendPacket(this.props.param[0],1)
+  onTzChange(v){
+    this.props.onTzChange(this.props.timezones[v].index)
   }
-  vfdStop(){
-    console.log('stop clicked')
-    this.props.sendPacket(this.props.param[0],2)
-  }
-  	onPointerDown(){
-    	this.setState({touchActive:true})
-  	}
-  	onPointerUp(){
-    	if(this.state.touchActive){
-        this.setState({touchActive:false})
-      
-    	}
-  	}
-    listChange(e){
-      this.setState({liststring:e.target.value})
+  render(){
+    var bgClr = FORTRESSPURPLE2
+    var txtClr = '#e1e1e1'
+    if(this.props.branding == 'SPARC'){
+      bgClr = SPARCBLUE2
+      txtClr = '#000'
     }
-    translatePopup(){
-      this.setState({curtrn:this.props.vMap['@translations'][this.props.language]['name']})
-      this.trnsmdl.current.toggle();
-      //toast('translate')
+
+    var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
+    st.width = 496
+    st.fontSize = 24
+    st.display = 'table-cell';//self.props.vst.display;
+
+    var tz = <PopoutWheel ovWidth={600} branding={this.props.branding} vMap={vMapV2['Timezone']} language={this.props.language} interceptor={false} name={'Timezone'} ref={this.tz} val={[this.state.timeZone]} options={[this.state.tzlist]} onChange={this.onTzChange}/>
+  
+    var tzTxt = ''
+    if(this.props.timezones[this.state.timeZone]){
+      tzTxt = this.props.timezones[this.state.timeZone-1].text;
     }
-    translateLists(){
-      var liststring = ''
-    if(typeof this.props.param[0]['@labels'] != 'undefined'){
-      liststring = vMapLists[this.props.param[0]['@labels']][this.props.language].join(',')
-    }
-      this.setState({liststring:liststring})
-      this.listmdl.current.toggle();
-      //toast('translate')
-    }
-    curtrnChange(v){
-      this.setState({curtrn:v.target.value})
-    }
-    submitChange(){
-      this.props.submitChange(this.props.name, this.props.language, this.state.curtrn)
-    }
-    lChange(e,i){
-      var list = this.state.tlist.slice(0);
-      list[i] = e.target.value;
-      this.setState({tlist:list})
-    }
-  	render(){
-  		var self = this;
-		var popupmenu = ''
-		var namestring = this.props.name
-		
-		if(typeof vdefByMac[this.props.mac][5][this.props.name] != 'undefined'){
-			if(vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name'] != ''){
-				namestring =  vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name']
-			}
-		}
-    namestring = this.props.vMap['@translations'][this.props.language]['name']
-   
-		var dt = false;
-		var fSize = 20;
-		if(namestring.length > 30){
-			fSize = 14
-		}
-		else if(namestring.length > 24){
-			fSize= 16
-		}else if(namestring.length > 18){
-			fSize = 18
-		}
-		if(this.props.mobile){
-			fSize -= 7;
-			fSize = Math.max(13, fSize)
-		}
-		let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee', verticalAlign:'middle', lineHeight:'25px'}
-		if(this.props.branding == 'SPARC'){
-			lvst.background = SPARCBLUE2
-		}
-
-		var labWidth = (496/this.state.val.length)
-		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480',overflow:'hidden'}
-		if(this.props.branding == 'SPARC'){
-			lvst.background = SPARCBLUE2
-			vlabelStyle.boxShadow = ' -50px 0px 0 0 '+ SPARCBLUE2
-		}
-		var vlabelswrapperStyle = {width:496, overflow:'hidden', display:'table-cell'}
-		if(this.props.mobile){
-			labWidth = parseInt(100/this.state.val.length) + '%'
-			vlabelswrapperStyle.width = '60%'
-			lvst.verticalAlign = 'middle'
-			lvst.lineHeight = '25px'
-		}
-    	if(this.state.touchActive){
-      		lvst.background = '#56526c'
-      		vlabelStyle.boxShadow = ' -50px 0px 0 0 #56526c'
-
-      		if(this.props.branding == 'SPARC'){
-      			lvst.background = '#2098d2'
-      			vlabelStyle.boxShadow = ' -50px 0px 0 0 #2098d2'
-      		}
-	    }
-      var iod = false;
-      var iogreen = true;
-      var ioindicator = '';
-	    var vLabels = this.state.val.map(function(d,i){  
-			var val = d;
-      var units = self.props.param[i]['@units']
-      if(units == 'grams'){
-        if(self.props.weightUnits == 1){
-          val = val/1000 
-          units = 'kg'
-        }else if(self.props.weightPassed == 2){
-          val = val/453.592
-          units = 'lb'
-        }else if(self.props.weightPassed == 3){
-          val = val/28.3495
-          units = 'oz'
-        }
-      }
-      if(self.props.param[i]['@type'] == 'float'){
-        if(val.toString().length > val.toFixed(5).length){
-          val = val.toFixed(5)
-        }
-        
-      }
-			var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
-			st.width = labWidth
-			st.fontSize = self.props.vst.fontSize;
-			st.display = 'table-cell';//self.props.vst.display;
-			
-			if(self.props.mobile){
-				st.height = 51
-				st.lineHeight = '51px'
-				st.display = 'inline-block'
-			}
-	      	if(typeof self.props.param[i]['@labels'] != 'undefined'){
-				var list =  _pVdef[7][self.props.param[i]["@labels"]];
-        if(typeof vMapLists[self.props.param[i]['@labels']]!= 'undefined'){
-          list = vMapLists[self.props.param[i]['@labels']]
-        }
-				if(typeof list['english'] == 'undefined'){
-					console.log(self.props.param[i])
-				}
-				val = list['english'][d];
-				
-				if((self.props.language != 'english')&&(typeof list[self.props.language] != 'undefined')&&(typeof list[self.props.language][d] == 'string') &&(list[self.props.language][d].trim().length != 0)){
-					val = list[self.props.language][d];
-				}
-				if((self.props.param[i]['@labels'] == 'InputSrc')){
-          iod = true
-					
-          if(d == 0){
-            st.color = '#666'
-            iogreen = false;
-            
-          }else if((self.props.ioBits[inputSrcArr[d]] == 0) && (self.state.val[1] == 0)){
-						st.color = '#666'
-            iogreen = false;
-					}else if((self.props.ioBits[inputSrcArr[d]] != 0) && (self.state.val[1] != 0)){
-            st.color = '#666'
-            iogreen = false;
-          }
-				}else if((self.props.param[i]['@labels'] == 'OutputSrc')){
-           iod = true
-					if(self.props.ioBits[outputSrcArr[d]] == 0){
-						st.color = '#666'
-            iogreen = false;
-					}
-				}
-			}
-	      	if(self.props.param[i]['@units']){
-	        	val = val + ' ' + units
-	      	}
-	      	if(self.props.combo){
-	        	val = <React.Fragment><div style={{color:'#aaa', fontSize:self.props.vst.fontSize - 4}}>{self.props.vMap['@labels'][i]}</div><div>{val}</div></React.Fragment>
-	        	st.lineHeight = '22px'
-	        }
-
-	        var _st = Object.assign({},st)
-	        if(self.state.touchActive){
-	        	_st.background = 'rgba(100,100,100,0.5)'
-	        }
-			
-			return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val}</CustomLabel>)
-		})
-    
-
-		var acc = false
-    var vfdcont = false
-    var vfdsetup = false
-		if(this.props.acc){
-			if(this.props.param[0]['@rpcs']){
-				if((this.props.param[0]['@rpcs']['vfdwrite'])||(this.props.param[0]['@rpcs']['write'])||(this.props.param[0]['@rpcs']['toggle'])||(this.props.param[0]['@rpcs']['clear'])||(this.props.param[0]['@rpcs']['theme'])||(this.props.param[0]['@rpcs']['customstrn'])){
-					acc = true
-				}else if(this.props.param[0]['@rpcs']['vfdstart']){
-          vfdcont = true
-        }
-        if(this.props.param[0]['@rpcs']['changevfdwrite']){
-          vfdsetup = true
-        }
-			}
-		}
-    var vfdsetupbutt = ''
-      var bgClr = FORTRESSPURPLE2
-        var modBG = FORTRESSPURPLE1
-        var txtClr = '#e1e1e1'
-        var plArr = 'assets/play-arrow-fti.svg'
-        var plStop = 'assets/stop-fti.svg'
-        var vfdbutts = ''
-        if(this.props.branding == 'SPARC'){
-          modBG = SPARCBLUE1
-          bgClr = SPARCBLUE2
-          txtClr = '#000'
-          plArr = 'assets/play-arrow-sp.svg'
-          plStop = 'assets/stop-sp.svg'
-        }
-
-       var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>Parameter Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
-              <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
-              <button onClick={this.submitChange}>Submit Translation</button>
-        </Modal>
-        var lsedit = this.state.tlist.map(function (l,i) {
-          return <tr><td style={{color:"#e1e1e1"}}>{self.state.elist[i]}</td><td><input type='text' value={l} onChange={(e) => self.lChange(e,i)}/></td></tr>
-          // body...
-        })
-        var listmdl = <Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>List Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
-        <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
-              <button onClick={this.submitList}>Submit Translation</button>
-        </Modal>
-  if(iod){
-      if(iogreen){
-        ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#5d5'}}></div>
-      }else{
-         ioindicator = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#555'}}></div>
-      }
-      }
-      if(vfdsetup){
-        ioindicator = <img onClick={()=>this.vfdSModal.current.toggle()} src='assets/config.svg' style={{position:'absolute', width:30, height:30, left:15, top:10}}/>
-        vfdsetupbutt =<Modal ref={this.vfdSModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-
-        <div>
-          <div style={{color:txtClr}}>To set up this VFD unit, make sure all other VFD units are disconnected first. Press confirm to carry on with the setup.</div>
-        <div onPointerUp={this.vfdSetup} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}> <div style={{display:'inline-block'}}>Confirm</div></div>
-        <div onPointerUp={()=>this.vfdSModal.current.toggle()} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}><div style={{display:'inline-block'}}>Cancel</div></div> 
-</div></Modal>
-      }
-		if(!acc){
-      
-       if(vfdcont){
-        vfdbutts = <Modal ref={this.vfdModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-
-        <div>
-          <div style={{color:txtClr}}>VFD Test</div>
-        <div onPointerUp={this.vfdStart} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plArr} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
-        <div onPointerUp={this.vfdStop} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plStop} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
-</div></Modal>
-       } 
-
-			return <div>
-     <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
-     <div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
-			 <ContextMenuTrigger id={this.props.name + 'ctmid'}>
-      	{namestring}
-         </ContextMenuTrigger>
-			</div>
-     </div>
-     
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
-				{vLabels}{ioindicator}
-			</div>
+    var tzItem = (<div style={{margin:2}} onClick={()=>this.tz.current.toggle()}>
+      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}}>
+        {'Time Zone'}
       </div>
-      {vfdbutts}
-      <div style={{zIndex:3}}>
-       <ContextMenu id={this.props.name + 'ctmid'}>
-        <MenuItem onClick={this.translatePopup}>
-          Translate Setting
-        </MenuItem>
-       </ContextMenu>
-      </div>
-      {trnsmdl}
-      {listmdl}
-			</div>
-		}else{
-
-			var multiDropdown = true;
-			this.props.param.forEach(function (p) {
-				if((typeof p['@labels'] == 'undefined') &&(p['@name'].indexOf('TestConfigCount') == -1)){
-					multiDropdown = false;
-				}
-			})
-				
-			var options;
-			//TODO - TRANSLATE LISTS
-			if(multiDropdown){
-         popupmenu = <MenuItem onClick={this.translateLists}>Translate List</MenuItem>
-				var lists = this.props.param.map(function (p) {
-					if(p['@name'].indexOf('TestConfigCount') != -1){
-						return [0,1,2,3,4,5,6,7,8,9]
-					}else{
-						var list = []//
-            if(typeof _pVdef[7][p["@labels"]] == 'undefined'){
-              console.log(p, 6235)
-            }
-            if(typeof _pVdef[7][p["@labels"]]['english'] != 'undefined'){
-              list =  _pVdef[7][p["@labels"]]['english'].slice(0)
-            }
-
-            if(typeof vMapLists[p['@labels']] != 'undefined'){
-              list = vMapLists[p['@labels']]['english'].slice(0);
-              if(self.props.language != 'english'){
-              if(typeof vMapLists[p["@labels"]][self.props.language] != 'undefined'){
-                list.forEach(function(lb,i){
-                  if((typeof vMapLists[p["@labels"]][self.props.language][i] == 'string') &&(vMapLists[p["@labels"]][self.props.language][i].trim().length != 0)){
-                    list[i] = vMapLists[p["@labels"]][self.props.language][i]
-                  }
-                })
-              }
-            }
-            return list
-            }else{
-						if(self.props.language != 'english'){
-							if(typeof _pVdef[7][p["@labels"]][self.props.language] != 'undefined'){
-								list.forEach(function(lb,i){
-									if((typeof _pVdef[7][p["@labels"]][self.props.language][i] == 'string') &&(_pVdef[7][p["@labels"]][self.props.language][i].trim().length != 0)){
-										list[i] = _pVdef[7][p["@labels"]][self.props.language][i]
-									}
-								})
-							}
-						}
-						return list
-          }
-					}
-				})
-        lsedit = this.state.tlist.map(function (l,i) {
-          return <tr><td  style={{color:"#e1e1e1"}}>{self.state.elist[i]}</td><td><input type='text' value={l} onChange={(e) => self.lChange(e,i)}/></td></tr>
-          // body...
-        })
-      listmdl =  (<Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>List Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
-        <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
-              <button onClick={this.submitList}>Submit Translation</button>
-        </Modal>)
-				options = <PopoutWheel submitTooltip={this.submitTooltip} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref={this.pw} val={this.state.val} options={lists} onChange={this.selectChanged}/>
-
-			  var bgClr = FORTRESSPURPLE2
-        var txtClr = '#e1e1e1'
-        if(this.props.branding == 'SPARC'){
-          bgClr = SPARCBLUE2
-          txtClr = '#000'
-        }
-				return  <div>
-		     <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
-         <div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
-         <ContextMenuTrigger id={this.props.name + 'ctmid'}>
-        {namestring}
-        </ContextMenuTrigger>
-      </div></div>
-      
-      
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
-				{vLabels}{ioindicator}
-			</div>
+        <div style={st}>{tzTxt}</div>
       </div>
-			{options}
-      {vfdsetupbutt}
-      <div style={{zIndex:3}}>
-       <ContextMenu id={this.props.name + 'ctmid'}>
-        <MenuItem onClick={this.translatePopup}>
-          Translate Setting
-        </MenuItem>
-        {popupmenu}
-      </ContextMenu>
-      </div>
+      </div>)
 
-      {trnsmdl}
-      {listmdl}
-			</div>
-			}else{
-				options = this.state.val.map(function(v, i){
-					if(typeof self.props.param[i]['@labels'] != 'undefined'){
-            popupmenu = <MenuItem onClick={this.translateLists}>Translate List</MenuItem>
-						if(typeof _pVdef[7][self.props.param[i]["@labels"]]['english'] == 'undefined'){
-					console.log(self.props.param[i])
-				}
-						var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
-						
-						return <PopoutWheel submitTooltip={self.submitTooltip} inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={self['input'+i]} val={[v]} options={[_pVdef[7][self.props.param[i]["@labels"]]['english']]} onChange={self.selectChanged} index={i}/>
-					}else{
-						var num = true
-						if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){ num = false }
-						if(self.props.param[i]["@name"].indexOf('DateTime') != -1){dt = true;}
-						var lbl = namestring
-						if(self.props.combo){ lbl = lbl + [' Delay', ' Duration'][i]}
-							return <CustomKeyboard submitTooltip={self.submitTooltip} branding={self.props.branding} mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={self['input'+i]} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
-						}
-				})
-	          	if(this.props.nameovr){
-	            	namestring = this.props.nameovr
-	          	}
-               var bgClr = FORTRESSPURPLE2
-        var txtClr = '#e1e1e1'
-        if(this.props.branding == 'SPARC'){
-          bgClr = SPARCBLUE2
-          txtClr = '#000'
-        }
-	   
-     return <div>
-     <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
-      <div><div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
-           <ContextMenuTrigger id={this.props.name + 'ctmid'}>
-        {namestring}
 
-      </ContextMenuTrigger>
-      </div>
-      </div>
-     
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
-				{vLabels}{ioindicator}
-			</div>
-      </div>
-			{options}
-      {vfdsetupbutt}
-      <div style={{zIndex:3}}>
-       <ContextMenu id={this.props.name + 'ctmid'}>
-        <MenuItem onClick={this.translatePopup}>
-          Translate Setting
-        </MenuItem>
-        {popupmenu}
-      </ContextMenu>
-      </div>
-
-      {trnsmdl}
-      {listmdl}
-			</div>
-		
-			}
-		}
-  		
-  	}
-	
-}
-class VfdCont extends React.Component{
-  constructor(props){
-    this.onStart = this.onStart.bind(this);
-    this.onStop = this.onStop.bind(this);
+    return <React.Fragment>{tzItem}{tz}</React.Fragment>
   }
 }
-class LogInControl2 extends React.Component{
-	constructor(props){
-		super(props)
-		this.login = this.login.bind(this)
-		this.logout = this.logout.bind(this);
-		this.selectChanged = this.selectChanged.bind(this);
-		var list = []
-		this.props.accounts.forEach(function(ac){
-			list.push(ac.username + ' - lv' + ac.acc)
-		})
-		list.unshift('Not Logged In')
-		this.state = {val:0, list:list, showAcccountControl:false, open:false}
-		this.enterPIN = this.enterPIN.bind(this);
-		this.valChanged = this.valChanged.bind(this);
-		this.onFocus = this.onFocus.bind(this);
-		this.onRequestClose = this.onRequestClose.bind(this);
-		this.toggleAccountControl = this.toggleAccountControl.bind(this);
-		this.onCancel = this.onCancel.bind(this);
-    this.pw = React.createRef();
-    this.psw = React.createRef();
-	}
-	componentWillReceiveProps(props){
-		var list = []
-		props.accounts.forEach(function(ac){
-			list.push(ac.username + ' - lv' + ac.acc)
-		})
-		list.unshift('Not Logged In')
-		if(!this.props.isOpen){
+/******************Datetime end***********************/
 
-			this.setState({val:props.val, list:list})
-		}else{
-			////console.log('this was the issue... why Though?')
-			this.setState({list:list})
-		}
-		
-	}
-	componentDidMount(){
-		this.setState({showAcccountControl:false})
-	}
-	login(){
-		var self = this;
-		setTimeout(function(){
-			self.pw.current.toggleCont();
-			self.setState({open:true})
-		},100)
-		
-	}
-	logout(){
-		this.props.logout();
-	}
-	selectChanged(v,i){
-		////console.log(['1531',v])
-		var self = this;
-		setTimeout(function(){
-			if(v != 0){
-			self.psw.current.toggle();			
-		}
-
-		}, 100)
-		self.setState({val:v})
-		
-
-		//this.props.login(v)
-	}
-	enterPIN(){
-		this.psw.current.toggle();
-	}
-	onFocus(){
-		this.setState({open:true})
-	}
-	onRequestClose(){
-		var self = this;
-		this.setState({open:false})
-		setTimeout(function(){
-			self.props.onRequestClose();
-		},100)
-			
-	}
-	valChanged(v){
-		//////console.log(v)
-		//this.props.authenticate(this.state.list[this.state.val], v)
-		////console.log(this.state.val)
-		if(this.props.pass6 == 0){
-			if(v.length == 6){
-				this.props.authenticate(this.state.val,v)
-			}else{
-				toast('Password should be 6 characters')
-			}
-		}else{
-			if(v.length == 4){
-				this.props.authenticate(this.state.val,v)
-			}else{
-				toast('Password should be 4 characters')
-			}
-		}
-		
-	}
-	toggleAccountControl(){
-		if(this.props.level > 2){
-			this.setState({showAcccountControl:!this.state.showAcccountControl})
-		}else{
-			toast('Access Denied')
-		}
-		
-	}
-	onCancel(){
-		////console.log('on cancel')
-		var self = this;
-		this.setState({open:false})
-		setTimeout(function(){
-			self.props.onRequestClose();
-		},100)
-			
-	}
-
-	render(){
-		var list = this.state.list
-		var namestring = 'Select User'
-		var pw = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} ovWidth={290} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
-
-		return <React.Fragment>{pw}
-			<CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
-		
-		</React.Fragment> 
-	}
-}
+/******************Modals start **********************/
 class CopyModal extends React.Component{
-	constructor(props){
-		super(props)
-		var klass = 'custom-modal'
-		if(this.props.className){
-			klass = this.props.className
-		}
-		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false, func: (function () {}),arg:-1, alertMessage:''});
-		this.show = this.show.bind(this);
-		this.close = this.close.bind(this);
-		this.do = this.do.bind(this);
-	}
-	show(func, arg, alertMessage){
-		this.setState({show:true,func:func, arg:arg, alertMessage:alertMessage})
-	}
-	close () {
-		var self = this;
-		setTimeout(function () {
-			self.setState({show:false})
-		},100)
-		
-	}
-	do(){
-		this.state.func(this.state.arg)
-	}
-	render () {
-		var	cont = ""
-		if(this.state.show){
-		cont =  <CopyModalCont branding={this.props.branding} vMap={this.props.vMap} do={this.do} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.state.alertMessage}</CopyModalCont>
-		}
-		return <div hidden={!this.state.show} className= 'pop-modal'>
-			{cont}
-		</div>
-	}
+  constructor(props){
+    super(props)
+    var klass = 'custom-modal'
+    if(this.props.className){
+      klass = this.props.className
+    }
+    this.state = ({className:klass, show:false, override:false ,keyboardVisible:false, func: (function () {}),arg:-1, alertMessage:''});
+    this.show = this.show.bind(this);
+    this.close = this.close.bind(this);
+    this.do = this.do.bind(this);
+  }
+  show(func, arg, alertMessage){
+    this.setState({show:true,func:func, arg:arg, alertMessage:alertMessage})
+  }
+  close () {
+    var self = this;
+    setTimeout(function () {
+      self.setState({show:false})
+    },100)
+    
+  }
+  do(){
+    this.state.func(this.state.arg)
+  }
+  render () {
+    var cont = ""
+    if(this.state.show){
+    cont =  <CopyModalCont branding={this.props.branding} vMap={this.props.vMap} do={this.do} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.state.alertMessage}</CopyModalCont>
+    }
+    return <div hidden={!this.state.show} className= 'pop-modal'>
+      {cont}
+    </div>
+  }
 }
 class CopyModalC extends React.Component{
-	constructor(props){
-		super(props);
-		this.handleClickOutside = this.handleClickOutside.bind(this)
-		this.close = this.close.bind(this);
-		this.do = this.do.bind(this);
-	//	this.discard = this.discard.bind(this);
-		this.cancel = this.cancel.bind(this);
-	}
-	componentDidMount() {
-		// body...
-	}
-	handleClickOutside(e) {
-		// body...
-		if(this.props.show){
-			this.props.close();
-		}
-		
-	}
-	close() {
-		// body...
-		if(this.props.show){
-			this.props.close();
-		}
-	}
-	do(){
-		var self = this;
-		this.props.do();
-		setTimeout(function(){
-			if(self.props.show){
-			self.props.close();
-			}
-		}, 100)
-		
-	}
-	cancel(){
-		var self = this;
-		setTimeout(function(){
-			self.close();
-			
-		}, 100)
-	}
-	render () {
-		// body...
-		var self = this;
-				var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
-		var klass = 'alertmodal-outer'
-		var clr = '#fefefe'
-		if(this.props.branding == 'SPARC'){
-			klass = 'alertmodal-outer-sp'
-			clr = '#a1a1a1'
-		}
-		
-	  return( <div className={klass}>
-	  			<div style={{padding:10}}>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
-	  			{this.props.children}
-				<div>
-					<CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
-          			<CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+  constructor(props){
+    super(props);
+    this.handleClickOutside = this.handleClickOutside.bind(this)
+    this.close = this.close.bind(this);
+    this.do = this.do.bind(this);
+  //  this.discard = this.discard.bind(this);
+    this.cancel = this.cancel.bind(this);
+  }
+  componentDidMount() {
+    // body...
+  }
+  handleClickOutside(e) {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+    
+  }
+  close() {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+  }
+  do(){
+    var self = this;
+    this.props.do();
+    setTimeout(function(){
+      if(self.props.show){
+      self.props.close();
+      }
+    }, 100)
+    
+  }
+  cancel(){
+    var self = this;
+    setTimeout(function(){
+      self.close();
+      
+    }, 100)
+  }
+  render () {
+    // body...
+    var self = this;
+        var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
+    var klass = 'alertmodal-outer'
+    var clr = '#fefefe'
+    if(this.props.branding == 'SPARC'){
+      klass = 'alertmodal-outer-sp'
+      clr = '#a1a1a1'
+    }
+    
+    return( <div className={klass}>
+          <div style={{padding:10}}>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
+          {this.props.children}
+        <div>
+          <CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
+                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
           
-	</div>
-	  		</div>
-		  </div>)
+  </div>
+        </div>
+      </div>)
 
-	}
+  }
 }
 class DeleteModal extends React.Component{
   constructor(props){
@@ -7522,579 +7511,240 @@ class DeleteModalC extends React.Component{
 
   }
 }
-
-
 class PromptModal extends React.Component{
-	constructor(props){
-		super(props)
-		var klass = 'custom-modal'
-		if(this.props.className){
-			klass = this.props.className
-		}
-		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false, func: (function () {})});
-		this.show = this.show.bind(this);
-		this.close = this.close.bind(this);
-		this.save = this.save.bind(this);
-		this.discard = this.discard.bind(this);
-	}
-	discard(){
-		this.props.discard(this.state.func);
+  constructor(props){
+    super(props)
+    var klass = 'custom-modal'
+    if(this.props.className){
+      klass = this.props.className
+    }
+    this.state = ({className:klass, show:false, override:false ,keyboardVisible:false, func: (function () {})});
+    this.show = this.show.bind(this);
+    this.close = this.close.bind(this);
+    this.save = this.save.bind(this);
+    this.discard = this.discard.bind(this);
+  }
+  discard(){
+    this.props.discard(this.state.func);
 
-	}
-	show (func) {
-		console.log(func)
-		this.setState({show:true, func:func})
-	}
-	close () {
-		var self = this;
-		setTimeout(function () {
-			self.setState({show:false})
-		},100)
-		
-	}
-	save(){
-		this.props.save(this.state.func);
-	}
-	render () {
-		var	cont = ""
-		if(this.state.show){
-		cont =  <PromptModalCont branding={this.props.branding} vMap={this.props.vMap} discard={this.discard} save={this.save} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</PromptModalCont>
-		}
-		return <div hidden={!this.state.show} className= 'pop-modal'>
-			{cont}
-		</div>
-	}
+  }
+  show (func) {
+    console.log(func)
+    this.setState({show:true, func:func})
+  }
+  close () {
+    var self = this;
+    setTimeout(function () {
+      self.setState({show:false})
+    },100)
+    
+  }
+  save(){
+    this.props.save(this.state.func);
+  }
+  render () {
+    var cont = ""
+    if(this.state.show){
+    cont =  <PromptModalCont branding={this.props.branding} vMap={this.props.vMap} discard={this.discard} save={this.save} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</PromptModalCont>
+    }
+    return <div hidden={!this.state.show} className= 'pop-modal'>
+      {cont}
+    </div>
+  }
 }
 class PromptModalC extends React.Component{
-	constructor(props){
-		super(props);
-		this.handleClickOutside = this.handleClickOutside.bind(this)
-		this.close = this.close.bind(this);
-		this.save = this.save.bind(this);
-		this.discard = this.discard.bind(this);
-		this.cancel = this.cancel.bind(this);
-	}
-	componentDidMount() {
-		// body...
-	}
-	handleClickOutside(e) {
-		// body...
-		if(this.props.show){
-			this.props.close();
-		}
-		
-	}
-	close() {
-		// body...
-		if(this.props.show){
-			this.props.close();
-		}
-	}
-	discard(){
-		var self = this;
-		this.props.discard();
-		setTimeout(function(){
-			if(self.props.show){
-			self.props.close();
-			}
-		}, 100)
-		
-	}
-	save(){
-		var self = this;
-		this.props.save();
-		setTimeout(function(){
-			if(self.props.show){
-			self.props.close();
-			}
-		}, 100)
-		
-	}
-	cancel(){
-		var self = this;
-		setTimeout(function(){
-			self.close();
-			
-		}, 100)
-	}
-	render () {
-		// body...
-		var self = this;
-				var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
-		var klass = 'alertmodal-outer'
-		var clr = '#fefefe'
-		if(this.props.branding == 'SPARC'){
-			klass = 'alertmodal-outer-sp'
-			clr = '#a1a1a1'
-		}
-		
-	  return( <div className={klass}>
-	  			<div style={{padding:10}}>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
-	  			{this.props.children}
-				<div>
-					<CircularButton onClick={this.discard} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Discard Changes'}/>
-          			<CircularButton onClick={this.save} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Changes'}/>
-          			<CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
-          
-	</div>
-	  		</div>
-		  </div>)
-
-	}
-}
-class AccountControl extends React.Component{
-	constructor(props){
-		super(props)
-		this.state = ({accounts:this.props.accounts, curlevel:0, username:'', pswd:'', newUser:false})
-		this.selectChanged = this.selectChanged.bind(this);
-		this.addAccount = this.addAccount.bind(this);
-		this.removeAccount = this.removeAccount.bind(this);
-		this.goBack = this.goBack.bind(this);
-    this.pw = React.createRef();
-    this.username = React.createRef();
-    this.pswd = React.createRef();
-	}
-	goBack(){
-		this.props.goBack();
-	}
-	selectChanged(v){
-		this.setState({curlevel:v})
-	}
-	addAccount(){
-		socket.emit('addAccount', {user:{user:this.state.username, acc:this.state.curlevel, password:this.state.pswd}, ip:this.props.ip})
-	}
-	removeAccount(account){
-		socket.emit('removeAccount', {ip:this.props.ip, user:account})
-	}
-	onFocus(){
-
-	}
-	onUserChange(v){
-		this.setState({username:v})
-	}
-	onPswdChange(v){
-		this.setState({pswd:v})
-	}
-	onRequestClose(){
-
-	}
-	setLevel(){
-		this.pw.current.toggle();
-	}
-	setUserName(){
-		this.username.current.toggle();
-	}
-	setPassword(){
-		this.pswd.current.toggle();
-	}
-	render(){
-		var self = this;
-		var levels = ['none','operator','technician','engineer']
-		var pw 	   =  <PopoutWheel inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref={this.pw} val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
-		var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-		var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
-		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
-		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-		var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
-
-		var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
-		var st = {padding:7,display:'inline-block', width:180}
-		
-		var accTableRows = [];
-		
-		this.props.accounts.forEach(function(ac,i){
-			accTableRows.push(<AccountRow branding={self.props.branding} mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > ac.acc} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
-		})
-		
-		var backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
-						<label style={{color:'#000', fontSize:24}}>{'Back'}</label></div>)
-		var tstl = {display:'inline-block', textAlign:'center'}
-	    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
-	    
-	    if (this.state.font == 1){
-	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
-	    }else if (this.state.font == 0){
-	    	titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
-	    }
-
-		return <div>
-			{userkb}
-			{pswdkb}
-			{pw}
-		
-		<div style={{height:525,background:'#e1e1e1'}}>	
-		{titlediv}
-		<div style={{ overflowY:'scroll',maxHeight:475}}>
-		{accTableRows}
-			</div>
-			</div>	
-		</div>
-	}
-}
-
-
-
-
-class AccountRow extends React.Component{
-	constructor(props){
-		super(props);
-		this.state = {username:this.props.username, acc:this.props.acc, password:this.props.password, changed:false}
-		this.onUserChange = this.onUserChange.bind(this);
-		this.onPswdChange = this.onPswdChange.bind(this);
-		this.setLevel = this.setLevel.bind(this);
-		this.setUserName = this.setUserName.bind(this);
-		this.setPassword = this.setPassword.bind(this);
-		this.remove = this.remove.bind(this);
-		this.saveChanges = this.saveChanges.bind(this);
-		this.addAccount = this.addAccount.bind(this);
-		this.valClick = this.valClick.bind(this);
-		this.selectChanged = this.selectChanged.bind(this);
-    this.ed = React.createRef();
-    this.pw = React.createRef();
-    this.pswd = React.createRef();
-    this.username = React.createRef();
-	}
-	componentWillReceiveProps(props){
-    if(!this.ed.current.state.show){
-      this.setState({username:props.username, acc:props.acc, password:props.password})
-    }
-		
-	}
-	valClick(){
-		//toast('Value Clicked')
-	   this.setState({changed:false})
-		this.ed.current.toggle();
-	}
-	onUserChange(v){
-		this.setState({username:v})
-	}
-	onPswdChange(v){
-		var pswd = (v+'000000').slice(0,6)
-		this.setState({password:pswd})//, changed:true})
-	}
-	setLevel(){
-		if(this.props.change){
-		
-			var self = this;
-			setTimeout(function(){
-		
-			self.pw.current.toggleCont();
-			},80);
-		}
-	}
-	selectChanged(v){
-		this.setState({acc:v})//, changed:true})
-	}
-	setUserName(){
-		if(this.props.change){
-		
-		var self = this;
-		setTimeout(function(){
-			self.username.current.toggle();
-		},80)
-		}
-	}
-	setPassword(){
-		if(this.props.change){
-			var self = this;
-			setTimeout(function(){
-				self.pswd.current.toggle();
-			},80)
-		}
-	}
-	remove(){
-		if(this.props.saved){
-			socket.emit('removeAccount', {ip:this.props.ip, user:this.state.username})
-		}else{
-			this.setState({username:this.props.username, acc:this.props.acc, password:this.props.password})
-		}
-	}
-	saveChanges(){
-		this.addAccount();
-	
-	}
-	addAccount(){
-    console.log(8200, 'writeUserData', this.props.uid)
-		socket.emit('writeUserData', {data:{username:this.state.username, acc:this.state.acc, password:this.state.password, user:this.props.uid}, ip:this.props.ip})
-		
-    //this.setState({changed:false})
-	}
-	render() {
-		//////console.log(3243, this.props.mobile)
-		var levels = ['0','1','2','3','4']
-		
-		var namestring = 'User'+ this.props.uid
-		//////////console.log(['2692',namestring])
-			
-		var dt = false;
-		var self = this;
-		var fSize = 20;
-    if(namestring.length > 24){
-      fSize = 14
-    }
-    else if(namestring.length > 20){
-      fSize= 16
-    }else if(namestring.length > 12){
-      fSize = 18
-    }
-		if(this.props.mobile){
-			fSize -= 7;
-			fSize = Math.max(13, fSize)
-		}
-		let lvst = {display: 'table-cell',fontSize: fSize,width: '310',background: '#5d5480',borderTopLeftRadius: 20,borderBottomLeftRadius: 20,textAlign: 'center', color: '#eee'}
-
-		var labWidth = (536/2)
-
-		var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
-		var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
-			var st = {textAlign:'center',lineHeight:'51px', height:60, width:536}
-
-			
-			st.fontSize = fSize//self.props.vst.fontSize;
-			st.display = 'table-cell';//self.props.vst.display;
-			
-		if(this.props.mobile){
-			labWidth = parseInt(100/2) + '%'
-			vlabelswrapperStyle.width = '60%'
-			lvst.verticalAlign = 'middle'
-			lvst.lineHeight = '25px'
-			st.height = 51
-			st.lineHeight = '51px'
-			st.display = 'inline-block'
-			st.width = '100%'
-			
-		}
-		//st.width = '100%'
-		
-		var valArray = [this.state.username, this.state.acc]
-		
-			var vLabels = valArray.map(function(d,i){
-			var val = d;
-			var cst = Object.assign({},st)
-			cst.width = labWidth
-			return (<CustomLabel index={i} onClick={self.valClick} style={cst}>{val}</CustomLabel>)
-		})
-
-
-     var bgClr = FORTRESSPURPLE2
-     var modBG = FORTRESSPURPLE1
-        var txtClr = '#e1e1e1'
-        if(this.props.branding == 'SPARC'){
-          modBG = SPARCBLUE1
-          bgClr = SPARCBLUE2
-          txtClr = '#000'
-        }
-			var pw = 	<PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
-		var userkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-		var pswdkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
-	
-			var edit = <Modal mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
-			<div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
-
-				<div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Username: '}
-				</div>		<div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.username}</label></div></div>
-				<div style={{marginTop:5}} onClick={() => this.pswd.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Password: '}
-				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div>
-				<div style={{marginTop:5}} onClick={() => this.pw.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Level: '}
-				</div>		<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.acc}</label></div></div>
-						</div>
-				{pw}{userkb}{pswdkb}
-			</Modal>
-				
-			var num = true
-			var lbl = namestring
-
-//ssl no verify test
-			return(<div style={{marginTop:5}}>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}}>
-				{namestring}
-			</div>
-			<div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
-				{vLabels}
-			</div>
-			{edit}
-			</div>)
-			//return(<div className={'sItem noChild'}><div><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>{edit}</div>)
-	}
-}
-class DisplaySettings extends React.Component{
-  constructor(props){
-    super(props)
-
-  }
-  editIP(v){
-    socket.emit('nifip', v.toString())
-  }
-  editNM(v){
-    socket.emit('nifnm', v.toString())
-  }
-  editGW(v){
-    socket.emit('nifgw', v.toString())
-  }
-  sendPacket(n,v){
-
-  }
-  onSubmit(n,l,v){
-
-  }
-  render(){
-    var titleColor = '#000'
-      var className = "menuCategory expanded";
-    var tstl = {display:'inline-block', textAlign:'center'}
-    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}}>
-      <div style={tstl}>{'Display Settings'}</div></h2></span>)
-
- var nav = (<div className='setNav'>
-                <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_ip'} vMap={vMapV2['Nif_ip']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_ip']['@translations'][this.props.language]['name']} value={this.props.nifip} editable={true} onEdit={this.editIP} param={{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
-                <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_nm'} vMap={vMapV2['Nif_nm']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_nm']['@translations'][this.props.language]['name']} value={this.props.nifnm} editable={true} onEdit={this.editNM} param={{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
-                <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_gw'} vMap={vMapV2['Nif_gw']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_gw']['@translations'][this.props.language]['name']} value={this.props.nifgw} editable={true} onEdit={this.editGW} param={{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
-       
-          </div>)
-
-    return(
-      <div className='settingsDiv' style={{backgroundColor:"#e1e1e1"}}>
-     
-      <div className={className}>
-        {titlediv}{nav}
-      </div>
-      </div>
-    );
-
-  }
-}
-class MotorControl extends React.Component{
-	constructor(props){
-		super(props);
-    this.testMotor = this.testMotor.bind(this);
-	}
-	testMotor(i){
-		this.props.testMotor(i)
-	}
-	render(){
-    var self = this;
-		var motors = this.props.motors.map(function (m,i) {
-			// body...
-			return <MotorItem testMotor={self.testMotor} name={m.name} index={i} />
-		})
-		return <div>
-      {motors}  
-    </div>
-	}
-}
-class MotorItem extends React.Component{
-  constructor(props){
-    super(props)
-  }
-  testMotor(){
-    this.props.testMotor(this.props.index)
-  }
-  render(){
-    var motorIcon = <img src='assets/motor.svg' width={40} style={{verticalAlign:'bottom'}}/>
-    return <div><div style={{display:'inline-block', width:50}}>{motorIcon}</div><div style={{display:'inline-block', width:200}}>{this.props.name}</div><div style={{display:'inline-block', width:200}}>Start/Stop</div> </div>
-
-  }
-}
-
-class FaultDiv extends React.Component{
-	constructor(props) {
-		super(props)
-		this.clearFaults = this.clearFaults.bind(this)
-		this.maskFault = this.maskFault.bind(this)
-	}
-	clearFaults () {
-		this.props.clearFaults()
-	}
-	maskFault (f) {
-		this.props.maskFault(f)
-	}
-	render () {
-		var self = this;
-		var cont;
-		var clButton;
-		if(this.props.faults.length == 0){
-			cont = (<div style={{color:'#e1e1e1'}}><label>No Faults</label></div>)
-		}else{
-			    	var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
-
-			clButton =<div> <CircularButton branding={'SPARC'} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Clear Faults'} onClick={this.clearFaults}/></div>
-       
-			cont = this.props.faults.map(function(f){
-				return <FaultItem maskFault={self.maskFault} fault={f}/>
-			})
-		}
-		return(<div>
-			{cont}
-			{clButton}
-		</div>)
-	}
-}
-class FaultItem extends React.Component{
-	constructor(props) {
-		super(props)
-	}
-	render(){
-		var type = this.props.fault
-    if(typeof vMapV2[this.props.fault+'Mask'] != 'undefined'){
-        type = vMapV2[this.props.fault+'Mask']['@translations']['english']['name'];
-      }
-
-		return <div><label style={{color:'#e1e1e1'}}>{"Fault type: " + type}</label>
-		</div>
-	}
-}
-class TimezoneControl extends React.Component{
   constructor(props){
     super(props);
-    this.onTzChange = this.onTzChange.bind(this);
-    this.tz = React.createRef();
-    this.state = {timeZone:props.timeZone, tzlist:props.timezones.map(function (tz) {
-      // body...
-      return tz.text;
-    })}
+    this.handleClickOutside = this.handleClickOutside.bind(this)
+    this.close = this.close.bind(this);
+    this.save = this.save.bind(this);
+    this.discard = this.discard.bind(this);
+    this.cancel = this.cancel.bind(this);
   }
-  componentWillReceiveProps(newProps){
-    this.setState({timeZone:newProps.timeZone, tzlist:newProps.timezones.map(function(tz) {
-      // body...
-      return tz.text
-    })})
+  componentDidMount() {
+    // body...
   }
-  onTzChange(v){
-    this.props.onTzChange(this.props.timezones[v].index)
+  handleClickOutside(e) {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+    
   }
-  render(){
-    var bgClr = FORTRESSPURPLE2
-    var txtClr = '#e1e1e1'
+  close() {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+  }
+  discard(){
+    var self = this;
+    this.props.discard();
+    setTimeout(function(){
+      if(self.props.show){
+      self.props.close();
+      }
+    }, 100)
+    
+  }
+  save(){
+    var self = this;
+    this.props.save();
+    setTimeout(function(){
+      if(self.props.show){
+      self.props.close();
+      }
+    }, 100)
+    
+  }
+  cancel(){
+    var self = this;
+    setTimeout(function(){
+      self.close();
+      
+    }, 100)
+  }
+  render () {
+    // body...
+    var self = this;
+        var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
+    var klass = 'alertmodal-outer'
+    var clr = '#fefefe'
     if(this.props.branding == 'SPARC'){
-      bgClr = SPARCBLUE2
-      txtClr = '#000'
+      klass = 'alertmodal-outer-sp'
+      clr = '#a1a1a1'
     }
-
-    var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
-    st.width = 496
-    st.fontSize = 24
-    st.display = 'table-cell';//self.props.vst.display;
-
-    var tz = <PopoutWheel ovWidth={600} branding={this.props.branding} vMap={vMapV2['Timezone']} language={this.props.language} interceptor={false} name={'Timezone'} ref={this.tz} val={[this.state.timeZone]} options={[this.state.tzlist]} onChange={this.onTzChange}/>
-  
-    var tzTxt = ''
-    if(this.props.timezones[this.state.timeZone]){
-      tzTxt = this.props.timezones[this.state.timeZone-1].text;
-    }
-    var tzItem = (<div style={{margin:2}} onClick={()=>this.tz.current.toggle()}>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}}>
-        {'Time Zone'}
-      </div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
-        <div style={st}>{tzTxt}</div>
-      </div>
+    
+    return( <div className={klass}>
+          <div style={{padding:10}}>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
+          {this.props.children}
+        <div>
+          <CircularButton onClick={this.discard} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Discard Changes'}/>
+                <CircularButton onClick={this.save} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Changes'}/>
+                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+          
+  </div>
+        </div>
       </div>)
 
-
-    return <React.Fragment>{tzItem}{tz}</React.Fragment>
   }
 }
 var PromptModalCont =  onClickOutside(PromptModalC);
 var DeleteModalCont =  onClickOutside(DeleteModalC);
 var CopyModalCont =  onClickOutside(CopyModalC);
+/******************Modals end   **********************/
+
+/*******************Faults start *********************/
+class FaultDiv extends React.Component{
+  constructor(props) {
+    super(props)
+    this.clearFaults = this.clearFaults.bind(this)
+    this.maskFault = this.maskFault.bind(this)
+  }
+  clearFaults () {
+    this.props.clearFaults()
+  }
+  maskFault (f) {
+    this.props.maskFault(f)
+  }
+  render () {
+    var self = this;
+    var cont;
+    var clButton;
+    if(this.props.faults.length == 0){
+      cont = (<div style={{color:'#e1e1e1'}}><label>No Faults</label></div>)
+    }else{
+            var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
+
+      clButton =<div> <CircularButton branding={'SPARC'} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Clear Faults'} onClick={this.clearFaults}/></div>
+       
+      cont = this.props.faults.map(function(f){
+        return <FaultItem maskFault={self.maskFault} fault={f}/>
+      })
+    }
+    return(<div>
+      {cont}
+      {clButton}
+    </div>)
+  }
+}
+class FaultItem extends React.Component{
+  constructor(props) {
+    super(props)
+  }
+  render(){
+    var type = this.props.fault
+    if(typeof vMapV2[this.props.fault+'Mask'] != 'undefined'){
+        type = vMapV2[this.props.fault+'Mask']['@translations']['english']['name'];
+      }
+
+    return <div><label style={{color:'#e1e1e1'}}>{"Fault type: " + type}</label>
+    </div>
+  }
+}
+/*******************Faults end   *********************/
+class CheckWeightControl extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {cw:0,cwset:0, waiting:false}
+    this.setCW = this.setCW.bind(this);
+    this.sendPacket = this.sendPacket.bind(this);
+    this.sendCW = this.sendCW.bind(this);
+  }
+  setCW(n,v){
+    var self = this;
+    if(typeof v != 'undefined'){
+
+
+      if(v != null){
+        console.log(v)
+        this.setState({cwset:parseFloat(v)})
+        setTimeout(function (argument) {
+          // body...
+          self.props.close()
+        },150)
+      }
+    }
+  }
+  sendCW(){
+    this.props.close();
+  }
+  sendPacket(n,v){
+    this.props.sendPacket(n,v)
+  }
+  render(){
+    var cw = this.props.cw.toFixed(1)+'g'
+    if(this.props.waiting){
+      cw = 'Waiting for Weight'
+    }
+    return <div>
+        <div style={{background:'#e1e1e1', padding:5, height:400}}>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Check Weight'}</div></h2></span>
+       <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Check Weight'} value={cw} editable={false} onEdit={this.sendPacket} num={true}/></div>
+         <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Measured Value'} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={'checkweightmeasure'} num={true}/></div>
+        <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={'Confirm'}/>
+        </div>
+        </div>
+    </div>
+  }
+}
+class CustomLabel extends React.Component{
+	constructor(props) {
+		super(props)
+		this.onClick = this.onClick.bind(this);
+	}
+	onClick () {
+		// body...
+		if(this.props.onClick){
+			this.props.onClick(this.props.index)
+		}
+		
+	}
+	render () {
+		var style = this.props.style || {}
+		return <div onClick={this.onClick} style={style}>{this.props.children}</div>
+	}
+}
+
 ReactDOM.render(<Container/>,document.getElementById('content'))
