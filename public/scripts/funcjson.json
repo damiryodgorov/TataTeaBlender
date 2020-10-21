@@ -29,6 +29,7 @@
       "phase_offset":"(function(val){return val;})",
       "phase_limit_dry":"(function(phase){return phase+90;})",
       "phase_limit_wet":"(function(phase){return phase;})",
+      "int16":"(function(val){return val;})",
       "fdbk_rate":"(function(rate,mode){if(mode == 0){return rate;}else if(mode == 1){ return rate + ' grams/sec';}else if(mode == 2){return rate + ' grams/pulse';} return rate;})"
       }
-	}
+}

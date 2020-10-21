@@ -227,23 +227,8 @@ class NetPollEvents{
 							if (last_packet_id[i] != packet_id.readUInt32LE(0))
 							{
 								last_packet_id[i] = packet_id.readUInt32LE(0)
-								/*if (i == 0)
-								{
-									if (updateDatetime && DATETIME_UPDATE_DETECTOR)
-									{
-										updateDatetime = false
-										var datetimeFromDetector = self.parse_date_time(e.slice(4,9));
-										log(datetimeFromDetector,LOG_DATETIME)
-										exec('sudo date --set="'+datetimeFromDetector+'"',function(err,stdout,errStd){
-											if (!err)
-												//log(stdout,LOG_DATETIME)
-										})
-									}
-								}*/
 								self.parse_net_poll_event(e,i);
 							}
-							//console.log("Packet Id: ");
-							//console.log(packet_id);
 						}
 						else{
 							//console.log("Wrong Length Netpoll event",LOG_NP)
@@ -421,9 +406,6 @@ class NetPollEvents{
 						if (buf.length > 34)
 						{
 							valuesBuffer = buf.slice(29,35)
-						//	log("Interceptor Reject",LOG_NP)
-
-							//log("Signal A: " + valuesBuffer.readUInt16LE(0) + ", Signal B: " + valuesBuffer.readUInt16LE(2) + ", Count: " + valuesBuffer.readUInt16LE(4),LOG_NP)
 							np_string = "Signal A: " + valuesBuffer.readUInt16LE(0) + ", Signal B: " + valuesBuffer.readUInt16LE(2) + ", Count: " + valuesBuffer.readUInt16LE(4) 
 							eventInfo.rejects = {signal_a:valuesBuffer.readUInt16LE(0),signal_b:valuesBuffer.readUInt16LE(2), number:valuesBuffer.readUInt16LE(4)}
 							this.queue_db_wr_netpoll_event(detector_index, key, valuesBuffer, null, eventInfo, e, username, group_id, np_string, date_time)
@@ -526,28 +508,17 @@ class NetPollEvents{
 					}
 					else if (e == 'NET_POLL_PROD_REC_VAR')
 					{
-						//log("Got Product Record",LOG_NP)
-					//	log("Product number " + buf.readUInt16LE(23),LOG_NP)
+
 						valuesBuffer = buf.slice(23,25)
 						var bitArray = buf.slice(25,49)
 						var prod_rec = buf.slice(49)
-						//this.relaySock([bitArray,prod_rec])
-//						log(bitArray)
 
 						this.queue_db_wr_netpoll_event(detector_index, key, valuesBuffer, bitArray, this.parse_rec(prod_rec,e, bitArray), e, username, 0,np_string,date_time)
 					}
 					else if (e == 'NET_POLL_PROD_SYS_VAR')
 					{
-						//log("Got System Record",LOG_NP)
 						var bitArray = buf.slice(25,49)
 						var sys_rec = buf.slice(49)
-//						log(bitArray)
-					//	var row = this.db.prepare("SELECT rowid, * FROM sysRec"+this.detectorsList[detector_index].name+" WHERE rowid = "+this.sys_rec_ref[detector_index]).get()
-					//	if (row && (row.SysRec.readUInt16LE(2) != sys_rec.readUInt16LE(2))) //There is a product change
-					//	{
-						//	log("Product Change",LOG_NP)
-						//	this.checkPrevProdChangeAutoGenRep(detector_index)
-					//	}
 
 						this.queue_db_wr_netpoll_event(detector_index, key, null, bitArray, this.parse_rec(sys_rec,e, bitArray), e, username, 0,np_string,date_time)
 					}

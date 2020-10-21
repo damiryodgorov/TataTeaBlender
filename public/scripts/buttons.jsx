@@ -122,6 +122,7 @@ class CircularButton extends React.Component{
 			fontColor = SPARCBLUE1
 			if(this.state.touchActive){
 				klass = 'circularButton_FT touchActive_FT'
+				fontColor = '#e1e1e1'
 			}	
 		}
 		if(this.props.branding == 'SPARC'){
@@ -130,6 +131,7 @@ class CircularButton extends React.Component{
 			var klass = 'circularButton_sp'
 			if(this.state.touchActive){
 				klass = 'circularButton_sp touchActive_sp'
+				fontColor = '#e1e1e1'
 			}
 		}
 
@@ -157,6 +159,7 @@ class CircularButton extends React.Component{
 		if(this.props.innerStyle){
 			innerStyle = Object.assign({} ,this.props.innerStyle);
 		}
+		innerStyle.color = fontColor
 		if(this.props.selected == true){
 			bstyle.background = 'rgb(128,122,150)'
 		}

@@ -181,6 +181,7 @@ class Modal extends React.Component{
 		this.show = this.show.bind(this);
 		this.close = this.close.bind(this);
 		this.mb = React.createRef();
+		this.forceclose = this.forceclose.bind(this);
 	}
 	componentWillReceiveProps (newProps){
 		if(typeof newProps.override != 'undefined'){
@@ -196,20 +197,29 @@ class Modal extends React.Component{
 		this.setState({show:true})
 	
 	}
+	forceclose(){
+		this.setState({show:false})
+	}
 	close(){
 		var self = this;
 		////console.log(4530, self.props.onClose)
-	
-		this.setState({show:false})
-		setTimeout(function(){
+		if(this.props.closeOv != true){
+			this.setState({show:false})
+			setTimeout(function(){
 				if(typeof self.props.onClose != 'undefined'){
+			
+					self.props.onClose();
+				}
+				//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
+				self.setState({override:false})
+				
+			},50)
+		}else{
+			if(typeof self.props.onClose != 'undefined'){
 			
 				self.props.onClose();
 			}
-			//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
-			self.setState({override:false})
-			
-		},50)
+		}
 	}
 	toggle () {
 		var self = this;
@@ -218,15 +228,13 @@ class Modal extends React.Component{
 		}
 		if(!this.state.override){
 			if(this.state.show){
-				this.close()
+				setTimeout(function(){
+					self.close()
+				},50)
 			}else{
 				this.setState({show:true, override:true})
-
-		
 				setTimeout(function(){
-				//hack - sometimes the open and close will fire simultaneously, disable closing in the 50 ms after opening
-				self.setState({override:false})
-
+					self.setState({override:false})
 				},50)
 			}
 		}
@@ -279,17 +287,11 @@ class Modal extends React.Component{
 
 		if(!h){
 			var im =''
-		//	if(this.props.intMeter){
-				//im = <InterceptorMeterBar ref='mb' clear={this.clear} mobile={this.props.mobile}/>
-		//	}
 			if(this.props.dfMeter){
 				im = <StealthMeterBar ref={this.mb} clear={this.clear} mobile={this.props.mobile}/>
 			}
 				cont = (<ModalCont x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
-					{im}
-			
-			{this.props.children}
-		</ModalCont>)
+					{im}{this.props.children}</ModalCont>)
 		
 
 		return(<div className={this.state.className} hidden={h}>
@@ -333,9 +335,12 @@ class ModalC extends React.Component{
 		}
 
 				return (<div className='modal-outer' style={style}>
-					{button}
+					
 				<div className='modal-content' style={cs}>
+				{button}
+				<div style={{overflowY:'hidden', position:'relative'}}>
 					{this.props.children}
+					</div>
 				</div>
 				</div>)
 	
@@ -440,6 +445,14 @@ class TrendBar extends React.Component{
 		}else if(tickerVal > this.props.upperbound){
 			tickerVal = this.props.upperbound
 		}
+		var factor = 1;
+		if(this.props.weightUnits == 1){
+			factor = 1/1000
+		}else if(this.props.weightUnits == 2){
+			factor = 1/453.59
+		}else if(this.props.weightUnits == 3){
+			factor = 1/28.3495
+		}
 		var ranges// = [];
 		var bgcolors// = [];
 		var colors//
@@ -494,7 +507,7 @@ class TrendBar extends React.Component{
 			}
 			labels = ranges.map(function(r,i) {
 				// body...
-				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{r.toFixed(1)}</div>
+				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
 			})
 
 

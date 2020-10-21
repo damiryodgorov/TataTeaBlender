@@ -102,6 +102,12 @@ class Params{
     buf.writeInt32LE(int)
     return buf.readFloatLE(0)
   }
+  static weight(val1, val2, u){
+    var int = val2 << 16 | val1
+    var buf = Buffer.alloc(4);
+    buf.writeInt32LE(int)
+    return buf.readFloatLE(0)
+  }
   static float_dist(val1,val2,metric){
     var int = val2 << 16 | val1
     var buf = Buffer.alloc(4);
@@ -149,6 +155,12 @@ class Params{
     }).join("");
     return str.replace("\u0000","").trim();
     //return val
+  }
+  static string(sa){
+    var str = sa.map(function(e){
+      return (String.fromCharCode((e%256),(e>>8)));
+    }).join("");
+    return str.replace("\u0000","").trim();
   }
   static rec_date(val){
     //needs to be swapped..
