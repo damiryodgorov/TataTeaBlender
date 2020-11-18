@@ -70,7 +70,7 @@ LocatorClient.prototype ={
 class ArmLocator{
 	static scan(secTimeout, callBack, addr){
 
-		var list = NetInterface.find(/^Ethernet|^en|^eth/);
+		var list = NetInterface.find(/^Ethernet|^en|^eth|^lo/);
 		console.log(list);
 		var devlist=[];
 		var listeners = [];

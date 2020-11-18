@@ -373,11 +373,14 @@ class PopoutWheelSelector extends React.Component{
 		// body...
 		var self = this;
 		var sa = this.props.options.length > 6
+		var ioled = ''
+		var iob = false
 		var options = this.props.options.map(function (o,i) {
 			var active = true;
 			if(self.props.ioBits){
 				if(self.props.params){
 					if(self.props.params['@labels'] == 'InputSrc'){
+						iob = true;
 						if(typeof self.props.inputs != 'undefined'){
 							if(self.props.ioBits[self.props.inputs[i]] == 0){
 								active = false;
@@ -386,6 +389,7 @@ class PopoutWheelSelector extends React.Component{
 							active = false;
 						}
 					}else if(self.props.params['@labels'] == 'OutputSrc'){
+						iob = true;
 						if(typeof self.props.outputs != 'undefined'){
 							if(self.props.ioBits[self.props.outputs[i]] == 0){
 								active = false;
@@ -398,10 +402,13 @@ class PopoutWheelSelector extends React.Component{
 			}
 			// body...
 			if(i == self.props.value){
+				if(active && iob){
+				//	ioled = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#5d5'}}></div>
+				}
 
-				return <SelectSCModalRow ovWidth={self.props.ovWidth} active={active} ref={o.toString()} onClick={self.select} value={o} index={i} selected={true}/>
+				return <SelectSCModalRow iob={iob} ovWidth={self.props.ovWidth} active={active} ref={o.toString()} onClick={self.select} value={o} index={i} selected={true}/>
 			}else{
-				return <SelectSCModalRow ovWidth={self.props.ovWidth} active={active} ref={o.toString()} onClick={self.select} value={o} index={i} selected={false}/>
+				return <SelectSCModalRow iob={iob} ovWidth={self.props.ovWidth} active={active} ref={o.toString()} onClick={self.select} value={o} index={i} selected={false}/>
 			}
 		})
 		var ul;
@@ -414,7 +421,7 @@ class PopoutWheelSelector extends React.Component{
 		}
 		return(
 			<div style={{display:'inline-block'}}>
-			{ul}
+			{ul}{ioled}
 			<ScrollArrow ref='arrowTop' active={sa} offset={48} width={48} marginTop={-25}  mode={'top'} onClick={this.scrollUp}/>
 			<div id={this.props.Id} onScroll={this.handleScroll} style={{width:width, height:this.props.height, overflowY:'scroll', padding:5, marginLeft:5, marginRight:5, background:'rgba(200,200,200,1)'}}>
 				{options}
@@ -441,20 +448,27 @@ class SelectSCModalRow extends React.Component{
 	render () {
 		// body...
 		var check= ""
-		var style = {textAlign:'center'}
+		var ioled = ''
+		var style = {textAlign:'center', position:'relative'}
 		if(this.props.selected){
 			check = <img src="assets/Check_mark.svg"/>
-			style ={textAlign:'center',background:'rgba(150,150,150,0.5)'}
+			style ={textAlign:'center',background:'rgba(150,150,150,0.5)', position:'relative'}
 			
 		}
-		if(!this.props.active){
-				style.color = "#666"
+		if(this.props.iob){
+			if(this.props.active){
+				ioled =  <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#5d5'}}></div>
+				//style.color = "#666"
 			}
+		}
+		
 		var width = 180
 		if(typeof this.props.ovWidth != 'undefined'){
 			width = this.props.ovWidth
 		}
-		return (<div onClick={this.onClick} style={style}><div style={{width:22, display:'table-cell'}}>{check}</div><div style={{width:width, display:'table-cell', lineHeight:'54px', height:54}}>{this.props.value}</div><div style={{width:22, display:'table-cell'}}></div></div>)
+		return (<div onClick={this.onClick} style={style}>{ioled}
+			<div style={{width:22, display:'table-cell'}}>{check}</div><div style={{width:width, display:'table-cell', lineHeight:'54px', height:54}}>{this.props.value}</div><div style={{width:22, display:'table-cell'}}></div></div>)
+		
 	}
 }
 

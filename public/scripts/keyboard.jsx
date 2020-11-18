@@ -59,7 +59,7 @@ class CustomKeyboard extends React.Component{
 		var cont = "";
 
 		if(this.state.show){
-			cont = <CustomKeyboardCont preload={this.props.preload} branding={this.props.branding} ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label} submitTooltip={this.props.submitTooltip}/>
+			cont = <CustomKeyboardCont sendAlert={this.props.sendAlert} min={this.props.min} max={this.props.max} preload={this.props.preload} branding={this.props.branding} ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label} submitTooltip={this.props.submitTooltip}/>
 		}
 		return <div hidden={!this.state.show} className = 'pop-modal'>
 		{/*	<div className='modal-x' onClick={this.close}>
@@ -129,6 +129,23 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 
 	onEnter:function () {
 		// body...
+		if(typeof this.props.min != 'undefined'){
+			if(this.props.min[0]){
+				if(this.props.min[1] > this.state.value){
+					this.props.sendAlert('Minimum Value is '+this.props.min[1])
+					return;
+				}
+			}
+		}
+
+		if(typeof this.props.max != 'undefined'){
+			if(this.props.max[0]){
+				if(this.props.max[1] < this.state.value){
+					this.props.sendAlert('Maximum Value is '+this.props.max[1])
+					return;
+				}
+			}
+		}
 		this.props.onChange(this.state.value)
 	},
 	onDelete:function () {
@@ -316,9 +333,25 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			})
 			width = 940
 		}
+		var minStr = ''
+		var maxStr = ''
+		var mmaxb = false
+		var mmaxdiv =''
 		var dispval = this.state.value;
 		if(this.props.pwd){
 			dispval = this.state.value.split('').map(function(c){return '*'}).join('');
+		}
+		if(typeof this.props.min != 'undefined'){
+			mmaxb = true
+			minStr = 'Min: ' + this.props.min[1]
+		}
+		if(typeof this.props.max != 'undefined'){
+			mmaxb = true;
+			maxStr = 'Max: ' + this.props.max[1]
+		}
+
+		if(mmaxb){
+			mmaxdiv = <div style={{fontSize:18,color:dvclr, textAlign:'center' }}><div>{minStr}</div><div>{maxStr}</div></div>
 		}
 		//var tooltiptext = 'This is a tooltip'
 		////console.log(this.props.vMap)

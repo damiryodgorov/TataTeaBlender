@@ -103,7 +103,11 @@ class Params{
     return buf.readFloatLE(0)
   }
   static weight(val1, val2, u){
+
     var int = val2 << 16 | val1
+    if(Array.isArray(val1)){
+      int = val1[1] << 16 | val1[0]
+    }
     var buf = Buffer.alloc(4);
     buf.writeInt32LE(int)
     return buf.readFloatLE(0)
@@ -135,8 +139,7 @@ class Params{
 
   }
   static prod_name_u16_le(sa){
-    ////console.log(sa)
-    var str = sa.map(function(e){
+     var str = sa.map(function(e){
       return (String.fromCharCode((e%256),(e>>8)));
     }).join("");
     return str.replace("\u0000","").trim();
@@ -186,6 +189,9 @@ class Params{
     }
 
   }
+ static phase_offset(val){return val;}
+  static phase_limit_dry(phase){return phase+90;}
+  static phase_limit_wet(phase){return phase;}
   static phase(val, wet){
     ////console.log(wet);
     if(wet==0){
@@ -214,6 +220,7 @@ class Params{
     //return Params.float(tpm)
     var tpm = Params.float([tpm0,tpm1])
     //if(metric == 0)
+     
     return Params.cwbeltspeed(tpm,metric)
     if(tack!=0){
 
@@ -466,7 +473,14 @@ function wordValue(arr, p, r, pVdef,_deps){
       //if(Buffer.byteLength(arr) >= (p["@_ivar"]+i+1)*2){
              sa.push(arr.readUInt16LE((p["@i_var"]+i)*2));       
       //}
+
     }
+     if(p['@name'] == 'WindowMax'){
+        console.log('WindowMax', sa, p['@type'])
+      }
+      if(p['@name'] == 'NominalWgt'){
+        console.log('NominalWgt', sa)
+      }
    // arr = null;
     if(p['@type']){
       if(Params[p['@type']]){
@@ -954,4 +968,5 @@ module.exports.load_vdef_parameters = load_vdef_parameters;
 module.exports.writeFtiFilesToUsb = writeFtiFilesToUsb;
 module.exports.toArrayBuffer = toArrayBuffer;
 module.exports.swap16 = swap16;
+module.exports.Params = Params;
 module.exports.dsp_rpc_paylod_for = dsp_rpc_paylod_for;
