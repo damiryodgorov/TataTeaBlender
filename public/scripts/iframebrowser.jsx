@@ -14,14 +14,20 @@ class NavWrapper extends React.Component{
 		this.md = React.createRef();
 		this.toggleMD = this.toggleMD.bind(this);
 		this.onLinkClick = this.onLinkClick.bind(this);
-		this.state = {src:'',links:[]}
+		this.loadInitPage = this.loadInitPage.bind(this);
+		this.state = {src:'',links:[],lastLink:''}
 	}
 	componentDidMount(){
 		var self = this;
 		//socket.emit('locateReq', true)
 		socket.on('lastLink', function (link) {
 			// body...  
-			self.setState({src:link})
+			//window.location.href = link;
+			setTimeout(function (argument) {
+				// body...
+				self.locate();
+			},500)
+			self.setState({src:link, lastLink:link})
 		})
 		socket.on('locateResp',function (dsps) {
 			// body...
@@ -29,6 +35,10 @@ class NavWrapper extends React.Component{
 			var links = []
 			dsps.forEach(function (d) {
 				// body...
+				if(self.state.lastLink == 'http://'+d.ip+'/cw.html'){
+					window.location.href = self.state.lastLink
+				}
+
 				links.push('http://'+d.ip+'/cw.html')
 			})
 			self.setState({links:links})
@@ -41,12 +51,16 @@ class NavWrapper extends React.Component{
 	loadInitPage(){
 		if(socket.sock.readyState  ==1){
 			socket.emit('getLink');
-
+			//this.locate();
 		}
 	}
 	onLinkClick(l){
 		socket.emit('saveLink',l)
-		window.location.href = l;
+		setTimeout(function (argument) {
+			// body...
+			window.location.href = l;
+		},500)
+		
 		this.setState({src:l})
 	}
 	toggleMD(){
@@ -72,6 +86,7 @@ class NavWrapper extends React.Component{
 		})
 		return <div style={{width:'100%',height:'100%'}}>
 			<img src='assets/burger.png' style={{position:'absolute', width:50, marginLeft:280}}  onClick={this.toggleMD}/>
+			<div style={{textAlign:'center'}}><img src='assets/NewFortressTechnologyLogo-BLK-trans.png' style={{width:800, marginTop:150}}/></div>
 			<Modal ref={this.md} branding='FORTRESS'>
 				{links}
 				<button onClick={this.refresh}>Refresh Page</button>

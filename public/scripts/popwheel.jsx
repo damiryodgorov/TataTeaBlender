@@ -24,6 +24,7 @@ class PopoutWheel extends React.Component{
 		this.toggle = this.toggle.bind(this);
 		this.toggleCont =this.toggleCont.bind(this);
 		this.onCancel = this.onCancel.bind(this);
+		this.getToolTip = this.getToolTip.bind(this);
 	}
 	onCancel(){
 		if(this.props.onCancel){
@@ -44,9 +45,16 @@ class PopoutWheel extends React.Component{
 	toggle () {
 		this.refs.md.toggle();
 	}
+	getToolTip(t){
+		if(this.props.getToolTip){
+			return this.props.getToolTip(t)
+		}else{
+			return 'N/A'
+		}
+	}
 	render () {
 		var value = "placeholder"
-		return	<PopoutWheelModal submitTooltip={this.props.submitTooltip} ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
+		return	<PopoutWheelModal tooltipOv={this.props.tooltipOv} tooltip={this.props.tooltip} getToolTip={this.getToolTip} submitTooltip={this.props.submitTooltip} ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
 	}
 }
 class PopoutWheelModal extends React.Component{
@@ -77,7 +85,7 @@ class PopoutWheelModal extends React.Component{
 	render () {
 		var	cont = ""
 		if(this.state.show){
-		cont =  <PopoutWheelModalCont submitTooltip={this.props.submitTooltip} ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
+		cont =  <PopoutWheelModalCont tooltipOv={this.props.tooltipOv} tooltip={this.props.tooltip}  getToolTip={this.props.getToolTip} submitTooltip={this.props.submitTooltip} ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} params={this.props.params}  vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options} />
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
 			{cont}
@@ -87,14 +95,20 @@ class PopoutWheelModal extends React.Component{
 class PopoutWheelModalC extends React.Component{
 	constructor(props){
 		super(props);
-		var tooltiptext = 'This is a tooltip'
+		var tooltiptext = 'N/A'
+		var tooltipSymlink = ''
 		////console.log(this.props.vMap)
 		if(typeof this.props.vMap != 'undefined'){
 			if(this.props.vMap['@translations'][this.props.language]['description'].length >0){
 				tooltiptext = this.props.vMap['@translations']['english']['description'];
 			}
 		}
-		this.state = {value:this.props.value.slice(0),curtrans:tooltiptext}
+		if(this.props.params){
+			if(this.props.params[0]['@labels'] == 'OutputSrc'){
+				tooltipSymlink = this.props.outputs[this.props.value[0]]
+			}
+		}
+		this.state = {value:this.props.value.slice(0),curtrans:tooltiptext, tooltipSymlink:tooltipSymlink}
 		this.handleClickOutside = this.handleClickOutside.bind(this)
 		this.close = this.close.bind(this);
 		this.select = this.select.bind(this);
@@ -103,10 +117,17 @@ class PopoutWheelModalC extends React.Component{
 		this.curtrnChange = this.curtrnChange.bind(this);
 		this.translateTooltip = this.translateTooltip.bind(this);
 		this.submitTooltip = this.submitTooltip.bind(this);
+		this.getToolTip = this.getToolTip.bind(this);
 	}
 	componentDidMount() {
 		// body...
-		this.setState({value:this.props.value.slice(0)})
+		var tooltipSymlink = ''
+		if(this.props.params){
+			if(this.props.params[0]['@labels'] == 'OutputSrc'){
+				tooltipSymlink = this.props.outputs[this.props.value[0]]
+			}
+		}
+		this.setState({value:this.props.value.slice(0), tooltipSymlink:tooltipSymlink})
 	}
 	handleClickOutside(e) {
 		// body...
@@ -124,10 +145,22 @@ class PopoutWheelModalC extends React.Component{
 	}
 	select(v, i) {
 		// body...
+		var tooltipSymlink = this.state.tooltipSymlink;
+		if(this.props.params){
+			if(i == 0 && this.props.params[0]['@labels'] == 'OutputSrc'){
+				tooltipSymlink = this.props.outputs[v]
+			}
+		}
 		var values = this.state.value
 		values[i] = v;
-		this.setState({value:values})
+		this.setState({value:values, tooltipSymlink:tooltipSymlink})
 		//////console.log([2913,v])
+	}
+	getToolTip(t){
+		if(this.props.getToolTip){
+			return this.props.getToolTip(t)
+		}
+		else return 'N/A'
 	}
 	accept() {
 		var self = this;
@@ -223,6 +256,50 @@ class PopoutWheelModalC extends React.Component{
 		if(this.props.mobile){
 			height = 200
 		}
+		var isIO = false;
+		var ioIND = false;
+		var ioLED = ''
+		var tooltipSymlink = ''
+
+		if(this.props.params){
+		if(this.props.params[0]['@labels'] == 'InputSrc' || this.props.params[0]['@labels'] == 'OutputSrc'){
+			isIO = true;
+		}
+
+		if(isIO){
+			if(this.props.params[0]['@labels'] == 'InputSrc'){
+				if(this.props.ioBits[this.props.inputs[this.state.value[0]]] == 0){
+					ioIND = !(parseInt(this.state.value[1]) == 0)
+				}else{
+					ioIND = (parseInt(this.state.value[1]) == 0)
+					
+				}
+				if(this.state.value[0] == 0){
+					ioIND = false
+				}
+			}else if(this.props.params[0]['@labels'] == 'OutputSrc'){
+				tooltipSymlink = this.props.outputs[this.state.value[0]]
+				if(this.props.ioBits[this.props.outputs[this.state.value[0]]] == 0){
+					ioIND = !(parseInt(this.state.value[1]) == 0)
+				}else{
+					ioIND = (parseInt(this.state.value[1]) == 0)
+
+				}
+				if(this.state.value[1] == 2){
+					ioIND = false;
+				}else if(this.state.value[1] == 3){
+					ioIND = true;
+				}
+				if(this.state.value[0] == 0){
+					ioIND = false;
+				}
+			}
+		}
+	}
+
+		if(ioIND){
+			ioLED = <div style={{position:'absolute', width:30, height:30, left:15, top:10, borderRadius:15, background:'#5d5'}}></div>
+		}
 		var wheels;
 		var helpStyle = {float:'right', display:'inline-block', marginLeft:-50, marginRight:15, marginTop:6};
 		if(this.state.value.length == 1){
@@ -255,12 +332,18 @@ class PopoutWheelModalC extends React.Component{
 			})
 		}
 		
-		var tooltiptext = 'This is a tooltip'
+		var tooltiptext = 'N/A'
 		////console.log(this.props.vMap)
 		if(typeof this.props.vMap != 'undefined'){
 			if(this.props.vMap['@translations'][self.props.language]['description'].length >0){
 				tooltiptext = this.props.vMap['@translations']['english']['description'];
 			}
+		}
+		if(tooltipSymlink.length > 0){
+			tooltiptext = this.getToolTip(tooltipSymlink);
+		}
+		if(this.props.tooltipOv){
+			tooltiptext = this.props.tooltip;
 		}
 		var minW = 400
 		var maxW = 346
@@ -304,7 +387,8 @@ class PopoutWheelModalC extends React.Component{
 		}
 		////console.log(tooltiptext)
 	  return( <div className={klass} style={{minWidth:minW, marginTop:60}}>
-	  		<div style={{display:'inline-block', marginRight:'auto', marginLeft:'auto', textAlign:'center', color:klr, maxWidth:maxW, fontSize:fontSize}}>{this.props.name}</div>
+
+	  		<div style={{display:'inline-block', marginRight:'auto', marginLeft:'auto', textAlign:'center', color:klr, maxWidth:maxW, fontSize:fontSize}}>{ioLED}{this.props.name}</div>
 	  		<div  style={helpStyle}><img src='assets/help.svg' onClick={this.help} width={30}/></div>
 	  		<div style={{textAlign:'center', padding:5}}>
 	  		{wheels}

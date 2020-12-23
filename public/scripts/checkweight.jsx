@@ -16,6 +16,8 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 import {XYPlot,MarkSeries,Borders, LabelSeries, XAxis, YAxis,VerticalGridLines, HorizontalGridLines,  HorizontalRectSeries, VerticalRectSeries, HorizontalBarSeries, AreaSeries, VerticalBarSeries, LineSeries} from 'react-vis';
 import {Uint64LE, Int64LE, Uint64BE, Int64BE} from 'int64-buffer';
 import {v4 as uuidv4} from 'uuid';
+//import {ZoomInIcon, ZoomOutIcon} from '@material-ui/icons';
+
 var createReactClass = require('create-react-class');
 var fileDownload = require('js-file-download');
 
@@ -78,16 +80,42 @@ function setBufferBits(buf,v,byte_pos,bit_pos,bit_len){
 
 	}
 }
-function FormatWeight(wgt, unit){
+function ToFixed(v,s){
+  if(typeof v == 'undefined'){
+    v = 0;
+  }else if(v == null){
+    v = 0;
+  }
+  return v.toFixed(s)
+}
+function FormatWeightD(wgt, unit, d){
   if(typeof wgt == 'undefined'){
+    wgt = 0;
+  }else if(wgt == null){
     wgt = 0;
   }
     if(unit == 1){
       return (wgt/1000).toFixed(3) + ' kg'
     }else if(unit == 2){
-      return (wgt/28.3495).toFixed(1) + ' lbs'
+      return (wgt/453.59237).toFixed(d+1) + ' lbs'
     }else if (unit == 3){
-      return (wgt/453.59237).toFixed(2) + ' oz'
+      return (wgt/28.3495).toFixed(d+1) + ' oz'
+    }
+    return wgt.toFixed(d) + ' g'
+}
+
+function FormatWeight(wgt, unit){
+  if(typeof wgt == 'undefined'){
+    wgt = 0;
+  }else if(wgt == null){
+    wgt = 0;
+  }
+    if(unit == 1){
+      return (wgt/1000).toFixed(3) + ' kg'
+    }else if(unit == 2){
+      return (wgt/453.59237).toFixed(1) + ' lbs'
+    }else if (unit == 3){
+      return (wgt/28.3495).toFixed(2) + ' oz'
     }
     return wgt.toFixed(1) + ' g'
 }
@@ -98,9 +126,9 @@ function formatWeight(wgt, unit){
     if(unit == 1){
       return (wgt/1000).toFixed(3) + ' kg'
     }else if(unit == 2){
-      return (wgt/28.3495).toFixed(1) + ' lbs'
+      return (wgt/453.59237).toFixed(1) + ' lbs'
     }else if (unit == 3){
-      return (wgt/453.59237).toFixed(2) + ' oz'
+      return (wgt/28.3495).toFixed(2) + ' oz'
     }
     return wgt.toFixed(1) + ' g'
     
@@ -934,6 +962,7 @@ class LandingPage extends React.Component{
     this.setAuthAccount = this.setAuthAccount.bind(this);
     this.logout = this.logout.bind(this);
     this.clearFaults = this.clearFaults.bind(this);
+    this.clearWarnings = this.clearWarnings.bind(this);
     this.saveProductPassThrough = this.saveProductPassThrough.bind(this);
     this.onPmdClose = this.onPmdClose.bind(this);
     this.checkweight = this.checkweight.bind(this);
@@ -1529,8 +1558,11 @@ class LandingPage extends React.Component{
           SingletonDataStore.framRec = e.rec;
           this.setState({noupdate:false,fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
         }else if(e.type == 5){
+          //toast('Weight Record - this message will be removed')
           console.log('checkweighing pack')
-          if((e.rec['TotalCnt'] != this.state.crec['TotalCnt']) ||(e.rec['CheckWeightCnt'] != this.state.crec['CheckWeightCnt'])){
+          var packms = new Uint64LE(e.rec['PackTime'].data)
+          e.rec['PackTime'] = packms
+          if((e.rec['PackTime'] != this.state.crec['PackTime']) ||(e.rec['TotalCnt'] != this.state.crec['TotalCnt']) ||(e.rec['CheckWeightCnt'] != this.state.crec['CheckWeightCnt'])){
           console.log('firstpack')
           var del = 25
           var dur = 50
@@ -1684,6 +1716,22 @@ class LandingPage extends React.Component{
       
       }else if(n == 'clearFaults'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARFAULTS']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'clearWarnings'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARWARNINGS']
         var pkt = rpc[1].map(function (r) {
           if(!isNaN(r)){
             return r
@@ -2056,6 +2104,9 @@ class LandingPage extends React.Component{
     this.sendPacket('clearFaults');
 
   }
+  clearWarnings(){
+    this.sendPacket('clearWarnings')
+  }
   openBatch(){
     var self = this;
     if((typeof this.state.curDet.ip != 'undefined')&&(typeof this.state.crec['TotalWeight'] != 'undefined')){
@@ -2182,6 +2233,10 @@ class LandingPage extends React.Component{
   }
   getMMdep(d){
     //var res = vdefByMac[this.props.mac];
+    if(d == 'MaxBeltSpeed'){
+      d = 'MaxBeltSpeed0'//+= this.props.params[0]['@name'].slice(-1)
+      console.log(d,this.props.params[0]['@name'])
+    }
       var pVdef = _pVdef;
       
       if(typeof pVdef[0][d] != 'undefined'){
@@ -2233,16 +2288,19 @@ class LandingPage extends React.Component{
     var play, stop;
     if(this.state.start){
       var sttxt = 'Start'
+        play = <div onClick={this.start} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
+        stop = ''
       if(this.state.rec['BatchRunning'] == 2){
           sttxt = 'Resume'
-        }
+        
 
-      play = <div onClick={this.start} style={{width:120, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
-      stop = <div onClick={this.stop} style={{width:120, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+      play = <div onClick={this.start} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
+      stop = <div onClick={this.stop} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
+      }
     }else{
-      play = <div onClick={this.pause} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause</div></div>
-      stop = <div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+      play = <div onClick={this.pause} style={{width:250, lineHeight:'53px',color:psbtcolor,font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause/Stop</div></div>
+      stop = ''//<div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
     }
     /**wip now**/   
@@ -2299,7 +2357,7 @@ var lw = 0;
          <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
         <SettingsPageWSB openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
-        <BatchWidget onStart={this.start} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.prec['WindowMode'])}/>  
+        <BatchWidget batchRunning={this.state.rec['BatchRunning']} onStart={this.start} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.prec['WindowMode'])}/>  
         </div>
         cont = sd;
         cald = (  <div style={{background:'#e1e1e1', padding:10}}>
@@ -2378,7 +2436,7 @@ var lw = 0;
           <table><tbody><tr style={{verticalAlign:'top'}}><td>
           <StatSummary language={language} unit={this.state.srec['WeightUnits']} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange} pkgWeight={pkgWeight}/>
           </td><td><div><SparcElem ref={this.se} branding={this.state.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={596} font={72}/></div>
-          <div><StatusElem clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
+          <div><StatusElem clearWarnings={this.clearWarnings} clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
           <LineGraph weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
@@ -2388,31 +2446,31 @@ var lw = 0;
           </td><td>
             <HorizontalHisto language={language} branding={this.state.branding} ref={this.hh}/>
           </td></tr></tbody></table>
-          <div style={{display:'inline-block',padding:5, marginRight:10, marginLeft:10}} >{play}{stop}</div>
-          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
-          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Tare'} onClick={this.tareWeight}/>
-          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
-          <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
+          <div style={{display:'inline-block',paddingTop:5, paddingBottom:5, width:275}} >{play}{stop}</div>
+          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
+          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Tare'} onClick={this.tareWeight}/>
+          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
+          <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
         <Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
           <ProductSettings startB={this.start}  statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={()=>this.setState({prclosereq:false})}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
-         <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+         <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
           {cont}
           <div>{this.state.connectedClients}</div>
         </Modal>
-        <Modal  x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:620}}>
+        <Modal  x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:620}}>
           {this.renderModal()}
         </Modal> 
-        <Modal  x={true} ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650, height:410}}>
+        <Modal  x={true} ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:410}}>
          <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.cwc} cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
         </Modal>
-        <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+        <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
          <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Batch</div></div>
          <BatchControl statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf} startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
-                   weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames}/>
+                   weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]}/>
         </Modal>
-        <Modal  x={true} ref={this.unusedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+        <Modal  x={true} ref={this.unusedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
         {unused}   
         </Modal>
         <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
@@ -2475,6 +2533,7 @@ class ProductSettings extends React.Component{
     this.deleteProdConfirm = this.deleteProdConfirm.bind(this);
     this.submitTooltip = this.submitTooltip.bind(this);
     this.onShortcut = this.onShortcut.bind(this);
+    this.passThrough = this.passThrough.bind(this);
     var prodList = [];
     var prodNames = this.props.pNames
     this.props.pList.forEach(function (pn,i) {
@@ -2674,7 +2733,8 @@ class ProductSettings extends React.Component{
     },100);
   }
   passThrough(f){
-    f();
+   this.props.sendPacket('getProdSettings', this.props.editProd);
+   this.pmd.current.close();
   }
 
   getValue(rval, pname){
@@ -2899,6 +2959,9 @@ class ProductSettings extends React.Component{
     },200)
   }
   getMMdep(d){
+    if(d == 'MaxBeltSpeed'){
+      d = 'MaxBeltSpeed0'
+    }
     var res = vdefByMac[this.props.mac];
       var pVdef = _pVdef;
       var dec = 0;
@@ -2977,15 +3040,15 @@ class ProductSettings extends React.Component{
 
 
       if(typeof curProd['NominalWgt'] != 'undefined'){
-        nwgt = formatWeight(curProd['NominalWgt'], weightUnits);
-        fdtwgt = formatWeight(curProd['FeedbackTarWgt'],weightUnits);
-        pkgwgt = formatWeight(curProd['PkgWeight'],weightUnits);
+        nwgt = FormatWeight(curProd['NominalWgt'], weightUnits);
+        fdtwgt = FormatWeight(curProd['FeedbackTarWgt'],weightUnits);
+        pkgwgt = FormatWeight(curProd['PkgWeight'],weightUnits);
       }
 
       content =( 
       <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
         <div>
-        <div style={{display:'inline-block', verticalAlign:'top'}}><ProdSettingEdit trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={400} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
+        <div style={{display:'inline-block', verticalAlign:'top'}}><ProdSettingEdit trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={400} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
         <div style={{display:'inline-block', marginLeft:87, marginBottom:-10}}>
         <img src='assets/graph.svg' style={{display:'none',position:'absolute', width:40, left:770, marginTop:-20}} onClick={this.toggleGraph}/>
           <div style={{display:'none', position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
@@ -2995,13 +3058,13 @@ class ProductSettings extends React.Component{
           </div>
         </div>
         </div>
-        <div>
+        <div style={{height:339}}>
           <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-            <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={nwgt} param={vdefByMac[this.props.mac][1][1]['NominalWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedbackTarWgt'} vMap={vMapV2['FeedbackTarWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={fdtwgt} param={vdefByMac[this.props.mac][1][1]['FeedbackTarWgt']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Package Weight'} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true} shortcut={[1,2]} onShortcut={this.onShortcut} /></div>
+            <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={nwgt} param={vdefByMac[this.props.mac][1][1]['NominalWgt']} tooltip={vMapV2['NominalWgt']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5, display:'none'}}><ProdSettingEdit getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedbackTarWgt'} vMap={vMapV2['FeedbackTarWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Target Weight'} value={fdtwgt} param={vdefByMac[this.props.mac][1][1]['FeedbackTarWgt']}  tooltip={vMapV2['FeedbackTarWgt']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Package Weight'} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} tooltip={vMapV2['EyePkgLength']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}  tooltip={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true} shortcut={[1,2]} onShortcut={this.onShortcut} /></div>
           </div>
 
           <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
@@ -3012,15 +3075,15 @@ class ProductSettings extends React.Component{
               <div><div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
                 
                 <div style={{width:'70%',display:'inline-block'}}>Correction Rate</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>{curProd['FeedbackCorRate'] + ' g/s'}</div>
-                <div style={{width:'70%',display:'inline-block'}}>Dead Zone</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>±{curProd['FeedbackDeadZone']}g</div>
+                <div style={{width:'70%',display:'inline-block'}}>Dead Zone</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>±{FormatWeight(curProd['FeedbackDeadZone'],weightUnits)}</div>
                 <div style={{width:'70%',display:'inline-block'}}>Sample Count</div><div style={{width:'25%',display:'inline-block', textAlign:'right', marginRight:'5%'}}>{curProd['FeedbackSampCnt']}pcs</div>
             
               </div>
               <div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
                 
                 <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Wait Count</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}pcs</div>
-                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Hi Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackHiLim']}g</div>
-                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Lo Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackLoLim']}g</div>
+                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Hi Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackHiLim'],weightUnits)}</div>
+                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Lo Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackLoLim'], weightUnits)}</div>
             
               </div></div>
               <div><div style={{width:'60%',display:'inline-block'}}>Measurement Standard</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
@@ -3031,8 +3094,8 @@ class ProductSettings extends React.Component{
               </div>
               <div style={{width:'50%',display:'inline-block', fontSize:15, verticalAlign:'top'}}>
                 
-                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Hi Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>140g</div>
-                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Lo Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>90g</div>
+                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Overweight Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['OverWeightLim'], weightUnits)}</div>
+                <div style={{width:'70%',display:'inline-block', marginLeft:'5%'}}>Underweight Limit</div><div style={{width:'25%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['UnderWeightLim'], weightUnits)}</div>
             
               </div></div>
             </div>
@@ -3086,8 +3149,8 @@ class ProductSettings extends React.Component{
       <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Products</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:600}}>{'Current Product: '+spstr }</div></div>
       <table style={{borderCollapse:'collapse'}}><tbody>
         <tr>
-          <td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:813, padding:5, paddingTop:0}}>  
-          <BatchWidget onStart={this.props.startB} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={formatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/>
+          <td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:813, paddingTop:0}}>  
+          <BatchWidget batchRunning={this.props.drec['BatchRunning']} onStart={this.props.startB} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={formatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/>
           </div></td><td style={{verticalAlign:'top',textAlign:'center'}}>
           <ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
           <div style={{display:'none', background:'#e1e1e1', padding:2}}>
@@ -3113,7 +3176,7 @@ class ProductSettings extends React.Component{
 
       <CopyModal ref={this.cfModal}  branding={this.props.branding}/>
       <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
-      <Modal ref={this.pgm} branding={this.props.branding}>
+      <Modal innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
         <div style={{background:'#e1e1e1'}}>
         <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{textAlign:'center'}}>Pack Graph</div></h2></span>
        <PackGraph crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
@@ -3318,7 +3381,9 @@ class ProdSettingEdit extends React.Component{
             }
 
 
-        ckb = <CustomKeyboard sendAlert={msg => this.msgm.current.show(msg)} min={[minBool,min]} max={[maxBool,max]} preload={this.props.param['@name'] == 'ProdName'} branding={this.props.branding} ref={this.ed} language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value} submitTooltip={this.submitTooltip}/>
+        ckb = <CustomKeyboard sendAlert={msg => this.msgm.current.show(msg)} min={[minBool,min]} max={[maxBool,max]} preload={this.props.param['@name'] == 'ProdName'} 
+                    branding={this.props.branding} ref={this.ed} language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} 
+                    num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value} submitTooltip={this.submitTooltip}/>
 
       }
     
@@ -3427,6 +3492,9 @@ class SettingsPageWSB extends React.Component{
     this.setState({cal:false, update:true})
   }
   getMMdep(d){
+    if(d == 'MaxBeltSpeed'){
+      d = 'MaxBeltSpeed0'
+    }
      var res = vdefByMac[this.props.mac];
       var pVdef = _pVdef;
       var dec = 0;
@@ -3445,6 +3513,7 @@ class SettingsPageWSB extends React.Component{
   }
   render(){
     var self = this;
+    var weightUnits = this.props.sysSettings['WeightUnits'];
     var calStr = 'Press calibrate to start calibration. \n Ensure loadcell is empty before starting.';
     if(this.props.calibState == 1){
       calStr = 'Taring..'
@@ -3494,8 +3563,8 @@ class SettingsPageWSB extends React.Component{
        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
           
          
-          <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.liveWeight.toFixed(1)+'g'} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
-          <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.state.liveWeight, weightUnits)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.props.sysSettings['CalWeight'], weightUnits)} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
           <div style={{marginTop:100, fontSize:24, textAlign:'center'}}>{calStr}</div>
           <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCal} lab={'Calibrate'}/>
@@ -4401,7 +4470,11 @@ class SettingItem3 extends React.Component{
     this.submitChange = this.submitChange.bind(this);
     this.submitList = this.submitList.bind(this);
     this.getMMdep = this.getMMdep.bind(this);
+    this.getToolTip = this.getToolTip.bind(this);
     
+
+  }
+  getToolTip(t){
 
   }
   touchStart(){
@@ -4574,16 +4647,22 @@ class SettingItem3 extends React.Component{
     
     this.setState({font:newProps.font, val:values[0], pram:values[1], labels:values[2]})
   }
-  onItemClick(){
+  onItemClick(v){
+    if(v == true){
+      toast('Not Configurable')
+    }else{
 
-    if(this.props.hasChild || typeof this.props.data == 'object'){
+
+
+      if(this.props.hasChild || typeof this.props.data == 'object'){
     
-      if(this.props.acc){
-        this.props.onItemClick(this.props.data, this.props.name)  
-      }else{
+        if(this.props.acc){
+          this.props.onItemClick(this.props.data, this.props.name)  
+        }else{
 
-        toast('Access Denied')  
-      }   
+          toast('Access Denied')  
+        }   
+      }
     }
   }
   getValue(rval, pname){
@@ -4813,6 +4892,10 @@ class SettingItem3 extends React.Component{
     this.props.submitList(n,l,v)
   }
   getMMdep(d){
+      if(d == 'MaxBeltSpeed'){
+        d += '0' //this.state.pram[0]['@name'].slice(-1)
+        //hack to make it not crash
+      }
      var res = vdefByMac[this.props.mac];
       var pVdef = _pVdef;
       var dec = 0;
@@ -4840,6 +4923,23 @@ class SettingItem3 extends React.Component{
     var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
     var sty = {height:60};
     var klass = 'sItem'
+    var display = true;
+    var disable = false;
+
+    if(vMapV2[this.props.lkey]){
+      if(vMapV2[this.props.lkey]['display']){
+        var dispRef = this.getMMdep(vMapV2[this.props.lkey]['display'][1]);
+        display = eval(vMapV2[this.props.lkey]['display'][0])(dispRef)
+      }
+      if(vMapV2[this.props.lkey]['disable']){
+        var disaRef = this.getMMdep(vMapV2[this.props.lkey]['disable'][1]);
+        disable = eval(vMapV2[this.props.lkey]['disable'][0])(disaRef)
+      }
+
+    }
+    if(this.props.lkey == 'MavTable'){
+      console.log('Mav', display)
+    }
        
     if(this.props.mobile){
       sty.height = 45;
@@ -4862,6 +4962,10 @@ class SettingItem3 extends React.Component{
       
       if(typeof catMapV2[path] != 'undefined'){
           namestring = catMapV2[path]['@translations'][this.props.language]
+          if(catMapV2[path]['display']){
+            var dispRef = this.getMMdep(catMapV2[path]['display'][1])
+            display = eval(catMapV2[path]['display'][0])(dispRef)
+          }
       
       }
       if(namestring.length > 28){
@@ -4886,7 +4990,11 @@ class SettingItem3 extends React.Component{
           if(this.props.branding == 'SPARC'){
             sty.backgroundColor = SPARCBLUE2
             sty.color = 'black'
-            sty.height = 50
+            sty.height = 50;
+
+          }
+          if(!display){
+            sty.display = 'none'
           }
       return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
     }else{
@@ -4906,6 +5014,10 @@ class SettingItem3 extends React.Component{
         if(typeof catMapV2[path] != 'undefined'){
           namestring = catMapV2[path]['@translations'][this.props.language]
         }
+         if(catMapV2[path]['display']){
+            var dispRef = this.getMMdep(catMapV2[path]['display'][1])
+            display = eval(catMapV2[path]['display'][0])(dispRef)
+          }
         if(namestring.length > 28){
           fSize = 18
         }
@@ -4922,9 +5034,17 @@ class SettingItem3 extends React.Component{
         
         if(typeof this.props.data[0] != 'undefined'){
         if(typeof this.props.data[0]['child'] != 'undefined'){
+
               klass  = 'sprc-prod'//+= ' noChild'
 
           var lkey = this.props.data[0].params[this.props.data[0].child]['@name']
+
+          if(vMapV2[lkey]){
+            if(vMapV2[lkey]['display']){
+              var dispRef = this.getMMdep(vMapV2[lkey]['display'][1]);
+              display = eval(vMapV2[lkey]['display'][0])(dispRef)
+            }
+          }
           var im = <img  style={{position:'absolute', width:36,top:15, left:762, strokeWidth:'2%', transform:'scaleX(-1)' }} src='assets/return_blk.svg'/>
           
           if(this.props.mobile){
@@ -4936,7 +5056,7 @@ class SettingItem3 extends React.Component{
           }
     
 
-          var medctrl= (<MultiEditControl getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
+          var medctrl= (<MultiEditControl disabled={disable} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
                       mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
                   onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
                     lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
@@ -4947,7 +5067,9 @@ class SettingItem3 extends React.Component{
             sty.height = 51
             sty.paddingRight = 5
           }
-          
+          if(!display){
+            sty.display = 'none'
+          }
               //sty.paddingBottom = 5
           return (<div className='sprc-prod' style={sty} onClick={this.onItemClick}> {medctrl}
               {im}
@@ -4970,7 +5092,10 @@ class SettingItem3 extends React.Component{
           if(this.state.touchActive){
                 klass += ' touchDown'
             }
-        return (<div className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={this.onItemClick}><label>{namestring}</label></div>)
+          if(!display){
+           // sty.display = 'none'
+          }
+        return (<div  className={klass} style={sty} onPointerDown={this.touchStart} onPointerUp={this.touchEnd} onClick={() => this.onItemClick(!display)}><label>{namestring}</label></div>)
       }
 
     }
@@ -4978,11 +5103,14 @@ class SettingItem3 extends React.Component{
       sty.height = 51;
       sty.paddingRight = 5;
     }
-    var medctrl= (<MultiEditControl getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
+              if(!display){
+            sty.display = 'none'
+          }
+    var medctrl= (<MultiEditControl disabled={disable}  getToolTip={this.getToolTip} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} ref='ed' vst={vst} 
           lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
           label={this.state.label} int={false} name={this.props.lkey}/>)
 
-          return (<div className='sprc-prod' style={sty}> {medctrl}
+          return (<div hidden={!display} className='sprc-prod' style={sty}> {medctrl}
           </div>)
       
     }
@@ -5050,6 +5178,7 @@ class MultiEditControl extends React.Component{
     this.lChange = this.lChange.bind(this);
     this.getMMdep = this.getMMdep.bind(this);
     this.msgm = React.createRef();
+    this.getToolTip = this.getToolTip.bind(this);
   }
   componentWillReceiveProps(newProps){
     if(this.props.param[0]['@name'] != newProps.param[0]['@name']){
@@ -5176,9 +5305,20 @@ class MultiEditControl extends React.Component{
     }
     
   }
+  getToolTip(t){
+    if(typeof vdefMapV2['@tooltips'] != 'undefined'){
+     return vdefMapV2['@tooltips'][t][this.props.language]
+    }else{
+      return 'N/A'
+    }
+    
+    //return this.props.getToolTip(t)
+  }
   valClick (ind) {
     var self = this;
-    if(!this.props.ov){
+    if(this.props.disabled){
+      toast('Disabled')
+    }else if(!this.props.ov){
       if(this.props.param[ind]['@rpcs']){
         if(this.props.param[ind]['@rpcs']['vfdstart']){
           this.vfdModal.current.toggle();
@@ -5337,7 +5477,9 @@ class MultiEditControl extends React.Component{
         if(val == null){
           val = 0;
         }
-        if(val.toString().length > val.toFixed(5).length){
+        if(typeof self.props.param[i]['@float_dec'] != 'undefined'){
+          val = val.toFixed(self.props.param[i]['@float_dec'])
+        }else if(val.toString().length > val.toFixed(5).length){
           val = val.toFixed(5)
         }
         
@@ -5567,7 +5709,7 @@ class MultiEditControl extends React.Component{
         <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
               <button onClick={this.submitList}>Submit Translation</button>
         </Modal>)
-        options = <PopoutWheel submitTooltip={this.submitTooltip} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref={this.pw} val={this.state.val} options={lists} onChange={this.selectChanged}/>
+        options = <PopoutWheel getToolTip={this.getToolTip} submitTooltip={this.submitTooltip} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref={this.pw} val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
         var bgClr = FORTRESSPURPLE2
         var txtClr = '#e1e1e1'
@@ -5620,6 +5762,11 @@ class MultiEditControl extends React.Component{
             var maxBool = false;
             var min = 0; 
             var max = 0;
+            var float_dec = null;
+            if(typeof self.props.param[i]['@float_dec'] != 'undefined'){
+              float_dec = self.props.param[i]['@float_dec']
+            }
+
             if(self.props.param[i]['@name'] == 'ProdName' || self.props.param[i]['@name'] == 'DspName'){ num = false }
             if(self.props.param[i]["@name"].indexOf('DateTime') != -1){dt = true;}
             if(typeof self.props.param[i]['@min'] != 'undefined'){
@@ -5674,9 +5821,10 @@ class MultiEditControl extends React.Component{
                 }
               }
             }
+
             var lbl = namestring
             if(self.props.combo){ lbl = lbl + [' Delay', ' Duration'][i]}
-              return <CustomKeyboard sendAlert={msg => self.msgm.current.show(msg)} min={[minBool, min]} max={[maxBool, max]} submitTooltip={self.submitTooltip} branding={self.props.branding} mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={self['input'+i]} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
+              return <CustomKeyboard floatDec={float_dec} sendAlert={msg => self.msgm.current.show(msg)} min={[minBool, min]} max={[maxBool, max]} submitTooltip={self.submitTooltip} branding={self.props.branding} mobile={self.props.mobile}  datetime={dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={self['input'+i]} onRequestClose={self.onRequestClose} onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
             }
         })
               if(this.props.nameovr){
@@ -6165,7 +6313,7 @@ class LogInControl2 extends React.Component{
   render(){
     var list = this.state.list
     var namestring = 'Select User'
-    var pw = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} ovWidth={290} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
+    var pw = <PopoutWheel inputs={inputSrcArr} tooltipOv={true} tooltip={vdefMapV2['@tooltips']['Select User'][this.props.language]} outputs={outputSrcArr} ovWidth={290} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
 
     return <React.Fragment>{pw}
       <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
@@ -6272,8 +6420,8 @@ class StatSummary extends React.Component{
       grswt = FormatWeight(this.state.crec['PackWeight']+pkgwgt, unit)//this.state.crec['PackWeight'].toFixed(1) + 'g'
       avg = FormatWeight(this.state.crec['AvgWeight'], unit)//this.state.crec['AvgWeight'].toFixed(1) +'g'
       savg = FormatWeight(this.state.crec['SampleAvgWeight'], unit)//this.state.crec['SampleAvgWeight'].toFixed(1) + 'g'
-      stdev = this.state.crec['StdDev'].toFixed(2)+'g'
-      sstdev = this.state.crec['SampleStdDev'].toFixed(2)+'g'
+      stdev = FormatWeightD(this.state.crec['StdDev'], unit, 2)
+      sstdev = FormatWeightD(this.state.crec['SampleStdDev'], unit, 2)
       tot = FormatWeight(this.state.crec['TotalWeight'], unit)//this.state.crec['TotalWeight'].toFixed(1)+'g'
       stot = FormatWeight(this.state.crec['SampleTotalWeight'], unit)//this.state.crec['SampleTotalWeight'].toFixed(1)+'g'
       gvb = FormatWeight(this.state.crec['GiveawayBatch'], unit)//this.state.crec['GiveawayBatch'].toFixed(1)+'g'
@@ -6399,6 +6547,7 @@ class StatusElem extends React.Component{
     this.fModal = React.createRef();
     this.toggleFault = this.toggleFault.bind(this);
     this.clearFaults = this.clearFaults.bind(this);
+    this.clearWarnings = this.clearWarnings.bind(this);
     this.showMsg = this.showMsg.bind(this);
   }
   componentWillReceiveProps(newProps){
@@ -6418,6 +6567,10 @@ class StatusElem extends React.Component{
   }
   clearFaults(){
     this.props.clearFaults();
+    this.fModal.current.toggle();
+  }
+  clearWarnings(){
+     this.props.clearWarnings();
     this.fModal.current.toggle();
   }
   toggleFault(f){
@@ -6504,7 +6657,7 @@ class StatusElem extends React.Component{
           <Modal ref={this.fModal} innerStyle={{background:modBg}}>
             <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>Faults</div></div>
      
-          <FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults}/>
+          <FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
 
     </div>)
@@ -6865,7 +7018,7 @@ class LineGraph extends React.Component{
 		</div>
 		</div>
 			<Modal ref={this.fModal} innerStyle={{background:modBg}}>
-					<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults}/>
+					<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
 				</Modal>
 		</div>
 	}
@@ -6879,8 +7032,12 @@ class PackGraph extends React.Component{
       timeFactor = this.props.prec['SettleDur']/settleWin
      }
     // var timeFactor = this.props.prec['SettleDur']/settleWin
-    this.state = {timeFactor:timeFactor}
+    this.state = {timeFactor:timeFactor, zoom:false}
+    this.toggleZoom = this.toggleZoom.bind(this);
     //this.state = {tare:this.props.srec['TareWeight']}
+  }
+  componentDidMount(){
+    this.setState({zoom:false})
   }
   componentWillReceiveProps(newProps){
      var settleWin = newProps.crec['SettleWinEnd'] - newProps.crec['SettleWinStart'];
@@ -6893,7 +7050,10 @@ class PackGraph extends React.Component{
 
     
   }
-
+  toggleZoom(){
+    //toast('zoom')
+    this.setState({zoom:!this.state.zoom})
+  }
   render(){
  
 
@@ -6901,6 +7061,8 @@ class PackGraph extends React.Component{
     var data = this.props.crec['PackSamples']
     if(typeof data != 'undefined'){
       data = data.slice(0);
+    }else{
+      data = Array(300).fill(0)
     }
     var settleWin = [this.props.crec['SettleWinStart'],this.props.crec['SettleWinEnd']]
     var packRange = [this.props.crec['PackMin']+this.props.prec['PkgWeight'],this.props.crec['PackMax']+this.props.prec['PkgWeight']]
@@ -6936,7 +7098,7 @@ class PackGraph extends React.Component{
     }
 
        var grng = ydm.map(function (y) {
-    return (y - tare)*calFactor;
+    return y;
     // body...
   })
   var range = grng[1] - grng[0]
@@ -6958,30 +7120,45 @@ class PackGraph extends React.Component{
     tcks.push(strttick);
     strttick += divs;
   }
-
-  var tickData = tcks.map(function(t) {
-    // body...
-    return {x:0, y:t/calFactor + tare, label:t.toFixed(1) + 'g', xOffset:10}
-  })
+  var zoombut = 'assets/zoom.svg'
     //}
      console.log(decMin,decMax) 
      var dM = decMax*1;
      var dm = decMin*1     
      const yellowBox = {y:dM,y0:dm,x0:weighWin[0] - this.props.crec['WindowStart'],x:weighWin[1] - this.props.crec['WindowStart']} 
+     var xdm = [0,winL]
+     if(this.state.zoom){
+      xdm = [settleWin[0] - this.props.crec['WindowStart'],settleWin[1] - this.props.crec['WindowStart']]
+      ydm = [packRange[0],packRange[1]]
+      zoombut ='assets/zoom-out-lens.svg'
+     }
+  var tickData = tcks.map(function(t) {
+    // body...<LabelSeries data={[{x:(xdm[0]+xdm[1])/2, y:ydm[0], label:'ms'}]} labelAnchorY='middle' labelAnchorX='start'/>
+    return {x:0, y:t, label:t.toFixed(1) + 'g', xOffset:10}
+  })
 
 
-    return  (<div style={{background:'#e1e1e1'}}><XYPlot height={400} width={800} yDomain={ydm} xDomain={[0,winL]} margin={{left:20,right:0,bottom:30,top:10}}>
+    return  (<div style={{background:'#e1e1e1'}}>
+      <img onClick={this.toggleZoom} src={zoombut} style={{width:32, marginLeft:800}}/>
+    <XYPlot height={400} width={800} yDomain={ydm} xDomain={xdm} margin={{left:20,right:0,bottom:30,top:10}}>
      <AreaSeries data={data.slice(this.props.crec['WindowStart'], this.props.crec['WindowEnd']).map(function (y,x) {
       // body...
       return {y:y, x:x}
     })}/>
      <Borders style={{all: {fill: '#e1e1e1'}}} />
       <YAxis hideTicks/>
-    <XAxis tickFormat={val => val%10 == 0 ? val*timeFactor.toFixed(0) + 'ms' : ""} hideTicks={winL == 0} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
+    <XAxis tickFormat={val => val%10 == 0 ? val*timeFactor.toFixed(0) : ""} hideTicks={winL == 0} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
   
-    <VerticalRectSeries curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:(packRange[0]/calFactor) + tare,y:(packRange[1]/calFactor) + tare,x0:settleWin[0] - this.props.crec['WindowStart'],x:settleWin[1] - this.props.crec['WindowStart']}]}/>
     <VerticalRectSeries curve='curveMonotoneX' strokeStyle='dashed' stack={true} opacity={0.8} stroke="#ffa500" fill='transparent' strokeWidth={3} data={[yellowBox]}/>
-    <LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/></XYPlot></div>)
+    <VerticalRectSeries onSeriesClick={this.toggleZoom} curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:packRange[0],y:packRange[1],x0:settleWin[0] - this.props.crec['WindowStart'],x:settleWin[1] - this.props.crec['WindowStart']}]}/>
+    
+    <LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/>
+    
+
+    </XYPlot>
+    <div style={{textAlign:'center'}}>ms</div>
+    </div>)
+    
   }
 }
 class WeightHistogram extends React.Component{
@@ -7093,20 +7270,19 @@ class WeightHistogram extends React.Component{
     u = this.props.unit
   }
   var factors = [1, 0.001, 0.002201, 0.035274]
+  var sigfigs = [2, 4, 4, 3]
     var labelData = labDat.map(function(d){
       var lax = 'end'
 
       return  {x:d.x,y:d.y,label:d.y, xOffset:-15, yOffset:0, size:0.5, labelAnchorX:lax, style:{fill:'#888', fontSize:14}}
     })
     return <XYPlot xDomain={this.state.range} yDomain={[0,max*1.1]} height={317} width={540} margin={{left:50,right:0,bottom:50,top:50}}>
-     <XAxis tickFormat={val => val*factors[u].toFixed(2)} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
+     <XAxis tickFormat={val => ToFixed(val*factors[u],sigfigs[u])} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
      <YAxis tickFormat={val => Math.round(val) === val ? val : ""} hideTicks={max<1} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
     
         <VerticalRectSeries data={data} color={'darkturquoise'}/>
     </XYPlot>
   }
-  //         <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
-  
 }
 class BatchHistogram extends React.Component{
   constructor(props){
@@ -7420,7 +7596,7 @@ class BatchControl extends React.Component{
           <div><div style={titleSt}>Average Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{formatWeight(this.props.crec['AvgWeight'], this.props.srec['WeightUnits'])}</div></div>
           <div><div style={titleSt}>Standard Deviation</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{formatWeight(this.props.crec['StdDev'], this.props.srec['WeightUnits'])}</div></div>
           <div><div style={titleSt}>Total Giveaway</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{formatWeight(this.props.crec['GiveawayBatch'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Packs Per Minute</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['Batch_PPM']}</div></div>
+          <div><div style={titleSt}>Packs Per Minute</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.props.crec['Batch_PPM'],1)}</div></div>
           
            </div> 
 
@@ -7443,7 +7619,7 @@ class BatchControl extends React.Component{
           </div>
           </div></div>
           </div></div>
-         <div><div style={{display:'inline-block'}}><BatchWidget onStart={this.onStartClick} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={formatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/></div><div style={{display:'inline-block', float:'right'}}>
+         <div><div style={{display:'inline-block'}}><BatchWidget batchRunning={this.props.batchRunning} onStart={this.onStartClick} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={formatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/></div><div style={{display:'inline-block', float:'right'}}>
          <CircularButton2  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.changeMode}><div style={{fontSize:20, lineHeight:'25px'}}><div>Batch Mode</div><div>{bmodes[this.state.startMode]}</div></div></CircularButton2>
          <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.pastBatches} lab={'Past Batches'}/></div></div>
          
@@ -7470,12 +7646,15 @@ class BatchWidget extends React.Component{
     this.props.onStart()
   }
   render(){
+    //comebackhere
     var play = '';
     var stop = ''; 
      var pl = 'assets/play-arrow-fti.svg'
       var stp = 'assets/stop-fti.svg'
-   
-     if(this.props.start){
+   var psbtcolor = 'black'
+   var psbtklass = 'circularButton_sp'
+       var pauseb = 'assets/pause.svg'
+    /* if(this.props.start){
         var sttxt = 'Start'
         
         play = <div onClick={this.onStartClick} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
@@ -7484,6 +7663,24 @@ class BatchWidget extends React.Component{
       }else{
         play = <div onClick={this.props.pause} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={'assets/pause.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause</div></div>
       stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#F04040', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+    }*/
+
+    if(this.props.start){
+      var sttxt = 'Start'
+        play = <div onClick={this.onStartClick} style={{width:250, borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>{sttxt}</div></div>
+        stop = ''
+      if(this.props.batchRunning == 2){
+          sttxt = 'Resume'
+        
+
+        play = <div onClick={this.onStartClick} style={{width:114,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#11DD11', display:'inline-block',marginLeft:5, borderWidth:5,height:45}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>{sttxt}</div></div>
+        stop = <div onClick={this.props.stopB} style={{width:114,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>Stop</div></div> 
+
+      }
+    }else{
+      play = <div onClick={this.props.pause} style={{width:250,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>Pause/Stop</div></div>
+      stop = ''//<div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+
     }
     var outerbg ='#e1e1e1'
     var innerbg = '#5d5480'
@@ -7495,15 +7692,14 @@ class BatchWidget extends React.Component{
     }
     var innerWidth = 100;
     var innerFont = 14;
-    var status = (<div style={{width:380,background:outerbg, borderRadius:10, marginTop:5,marginBottom:5, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, display:'grid', gridTemplateColumns:'120px auto'}}>
-
-      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{'Status'}</div></div><div style={{textAlign:'center', marginTop:0, fontSize:20}}><div>Net Weight: {this.props.netWeight}</div>
+    var status = (<div style={{width:300}}>
+    <div style={{textAlign:'center', marginTop:5, fontSize:20}}><div>Net Weight: {this.props.netWeight}</div>
     <div>{this.props.status}</div></div>
     </div>)
 
     //var status = <div style={{display:'inline-block', color:'#e1e1e1', textAlign:'center',}}></div>
 
-    return <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
+    return <div style={{display:'grid', gridTemplateColumns:"285px auto", background:'#e1e1e1', borderRadius:20,paddingLeft:5, marginTop:5, width:585}}>
       <div>{play}{stop} </div><div> {status}</div>
     </div>
   }
@@ -8231,10 +8427,14 @@ class FaultDiv extends React.Component{
   constructor(props) {
     super(props)
     this.clearFaults = this.clearFaults.bind(this)
+    this.clearWarnings = this.clearWarnings.bind(this)
     this.maskFault = this.maskFault.bind(this)
   }
   clearFaults () {
     this.props.clearFaults()
+  }
+  clearWarnings(){
+    this.props.clearWarnings()
   }
   maskFault (f) {
     this.props.maskFault(f)
@@ -8242,21 +8442,33 @@ class FaultDiv extends React.Component{
   render () {
     var self = this;
     var cont;
+    var wcont;
     var clButton;
-    if(this.props.faults.length == 0){
-      cont = (<div ><label>No Faults</label></div>)
+    var wclButton;
+    if((this.props.faults.length == 0) && (this.props.warnings.length == 0)){
+      cont = (<div ><label>No Faults or Warnings</label></div>)
     }else{
             var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
-
+    if(this.props.faults.length != 0){
       clButton =<div> <CircularButton branding={'SPARC'} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Clear Faults'} onClick={this.clearFaults}/></div>
-       
       cont = this.props.faults.map(function(f){
         return <FaultItem maskFault={self.maskFault} fault={f}/>
       })
     }
+    if(this.props.warnings.length != 0){
+      wclButton =<div> <CircularButton branding={'SPARC'} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Clear Warnings'} onClick={this.clearWarnings}/></div>
+      wcont = this.props.warnings.map(function(f){
+        return <FaultItem maskFault={self.maskFault} fault={f}/>
+      })
+    }
+       
+      
+    }
     return(<div style={{backgroundColor:'#e1e1e1', padding:5}}>
       {cont}
+      {wcont}
       {clButton}
+      {wclButton}
     </div>)
   }
 }

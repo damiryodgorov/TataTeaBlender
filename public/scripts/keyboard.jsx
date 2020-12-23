@@ -131,7 +131,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		// body...
 		if(typeof this.props.min != 'undefined'){
 			if(this.props.min[0]){
-				if(this.props.min[1] > this.state.value){
+				if(parseFloat(this.props.min[1]) > this.state.value){
 					this.props.sendAlert('Minimum Value is '+this.props.min[1])
 					return;
 				}
@@ -140,7 +140,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 
 		if(typeof this.props.max != 'undefined'){
 			if(this.props.max[0]){
-				if(this.props.max[1] < this.state.value){
+				if(parseFloat(this.props.max[1]) < this.state.value){
 					this.props.sendAlert('Maximum Value is '+this.props.max[1])
 					return;
 				}
@@ -264,7 +264,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		if(typeof this.props.tooltip != 'undefined'){
 			var tooltip = this.props.tooltip
 			if(tooltip.length == 0){
-				tooltip = 'this is a tooltip'
+				tooltip = 'N/A'
 			}
 			var helpWidth = 600;
 			var helpMargin = 15;
@@ -338,20 +338,50 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		var mmaxb = false
 		var mmaxdiv =''
 		var dispval = this.state.value;
+		var sigfigs = 0;
+		if(this.props.floatDec){
+			sigfigs = this.props.floatDec;
+			dispval = dispval.toFixed(sigfigs)
+		}
+
 		if(this.props.pwd){
 			dispval = this.state.value.split('').map(function(c){return '*'}).join('');
 		}
-		if(typeof this.props.min != 'undefined'){
-			mmaxb = true
-			minStr = 'Min: ' + this.props.min[1]
+
+		if(typeof this.props.min != 'undefined' ){
+			if(this.props.min[0]){
+				mmaxb = true
+				minStr = parseFloat(this.props.min[1])
+			
+				if(this.props.floatDec){
+					minStr = minStr.toFixed(this.props.floatDec)
+				}else{
+					if(minStr.toString().length > minStr.toFixed(2).length){
+						minStr = minStr.toFixed(2)
+					}
+				}
+			}
+			
 		}
 		if(typeof this.props.max != 'undefined'){
-			mmaxb = true;
-			maxStr = 'Max: ' + this.props.max[1]
+			if(this.props.max[0]){
+				mmaxb = true;
+				maxStr = parseFloat(this.props.max[1])
+				console.log(this.props.max)
+				if(this.props.floatDec){
+					maxStr = maxStr.toFixed(this.props.floatDec)
+				}else{
+					if(maxStr.toString().length > maxStr.toFixed(2).length){
+						maxStr = maxStr.toFixed(2)
+					}
+				}
+			}
 		}
 
+		
 		if(mmaxb){
-			mmaxdiv = <div style={{fontSize:18,color:dvclr, textAlign:'center' }}><div>{minStr}</div><div>{maxStr}</div></div>
+			
+			mmaxdiv = <div style={{fontSize:18,color:dvclr, textAlign:'center' }}>Range: [{minStr+'~'+maxStr}]</div>
 		}
 		//var tooltiptext = 'This is a tooltip'
 		////console.log(this.props.vMap)
@@ -364,6 +394,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		return <div style={{paddingLeft:7,paddingRight:7}} className = {klass}>
 		<div style={{minWidth:minW,fontSize:20}}><div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:vclr,marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' style={{whiteSpace: 'nowrap'}}>
 			{label}</span></div>{but2}</div>
+		{mmaxdiv}
 	<div style={{height:70, position:'relative'}}>		<svg style={{position:'absolute', top:14, marginLeft:3}} onClick={this.clear} xmlns="http://www.w3.org/2000/svg" height="40" version="1.1" viewBox="0 0 32 32" width="40"><g id="Layer_1"/><g id="x_x5F_alt"><path d="M16,0C7.164,0,0,7.164,0,16s7.164,16,16,16s16-7.164,16-16S24.836,0,16,0z M23.914,21.086   l-2.828,2.828L16,18.828l-5.086,5.086l-2.828-2.828L13.172,16l-5.086-5.086l2.828-2.828L16,13.172l5.086-5.086l2.828,2.828   L18.828,16L23.914,21.086z" fill="#E1E1E1"/></g></svg>
 	<div style={{background:'rgba(150,150,150,0.3)',display:'inline-block',fontSize:25,lineHeight:'65px',textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:65,color:dvclr, whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}}>{dispval}</div>{but1}
 		<svg style={{position:'absolute', top:10, marginLeft:-52, width:50}} onClick={this.onDelete} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#E1E1E1" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
