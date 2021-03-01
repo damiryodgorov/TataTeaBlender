@@ -34,6 +34,8 @@ var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 var Helpers = require('./helpers.js');
 
 var dispSettings = require('./displaySetting.json')
+const usbPath = '/run/media/sda1/'
+
 
 
 var uintToInt = Helpers.uintToInt;
@@ -1350,12 +1352,22 @@ process.on('uncaughtException', (err) => {
   if(err.stack){
     errstring = err.stack.toString();
   }
-  fs.writeFileSync(__dirname +'/error.txt', errstring);
+  var _dir = __dirname;
+  if(fs.existsSync(usbPath)){
+    _dir = usbPath
+  }
+  fs.writeFileSync(_dir +'/error.txt', errstring);
   exec('sudo sh reboot.sh',function(){
     process.abort();
   })
   
 });
+if(fs.existsSync(usbPath)){
+  if(!fs.existsSync(path.join(usbPath, 'json/'))){
+      fs.mkdir(path.join(usbPath,'json/'));
+
+  }
+}
 console.log('starting ts on '+PORT)
 app.set('port', (process.env.PORT || PORT));
 app.use('/', express.static(path.join(__dirname,'public')));
@@ -1409,8 +1421,13 @@ wss.on('connection', function(scket, req){
     socket.emit('connectedClients',Object.keys(passocs).length);
   });
   socket.on('getCustomJSON', function (vmapstr) {
-    if(fs.existsSync(path.join(__dirname, 'json/custVmap.json'))){
-      fs.readFile(path.join(__dirname, 'json/custVmap.json'), (err,data) =>{
+    var _dir = __dirname;
+  if(fs.existsSync(usbPath)){
+    _dir = usbPath
+  }
+
+    if(fs.existsSync(path.join(_dir, 'json/custVmap.json'))){
+      fs.readFile(path.join(_dir, 'json/custVmap.json'), (err,data) =>{
         try{
           socket.emit('custJSON',JSON.parse(data))
         }catch(e){
@@ -1418,7 +1435,7 @@ wss.on('connection', function(scket, req){
         }
     })
     }else{
-     fs.writeFile(path.join(__dirname, 'json/custVmap.json') , vmapstr,function (argument) {
+     fs.writeFile(path.join(_dir, 'json/custVmap.json') , vmapstr,function (argument) {
        // body...
        socket.emit('custJSON',JSON.parse(vmapstr))
      });
@@ -1431,8 +1448,14 @@ wss.on('connection', function(scket, req){
   })
   socket.on('saveCustomJSON', function (str) {
     // body...
-     fs.writeFile(path.join(__dirname, 'json/custVmap.json') , str,function (argument) {
+       var _dir = __dirname;
+  if(fs.existsSync(usbPath)){
+    _dir = usbPath
+  }
+     fs.writeFile(path.join(_dir, 'json/custVmap.json') , str,function (argument) {
        // body...
+       console.log(argument, 1457)
+
        socket.emit('custJSON',JSON.parse(str))
      });
   })
@@ -1452,10 +1475,10 @@ wss.on('connection', function(scket, req){
           var data = new Uint8Array(msg)
           var prodBits = data.slice(3)
           var dat = [];
-          for(var i = 0; i < 99; i++){
+          for(var i = 1; i < prodBits.length; i++){
         
-            if(prodBits[i] ==2){
-              dat.push(i+1)
+            if(prodBits[i] == 1){
+              dat.push(i)
             }
           }
           console.log(dat.length + ' products found')
@@ -2091,9 +2114,14 @@ wss.on('connection', function(scket, req){
   })
   socket.on('getPrefs', function (cw) {
     var fnm = 'json/prefData.json'
+       var _dir = __dirname;
+  if(fs.existsSync(usbPath)){
+    _dir = usbPath
+  }
+  console.log(_dir, 2119)
   
-    if(fs.existsSync(path.join(__dirname, fnm))){
-      fs.readFile(path.join(__dirname, fnm), (err,data) =>{
+    if(fs.existsSync(path.join(_dir, fnm))){
+      fs.readFile(path.join(_dir, fnm), (err,data) =>{
         try{
           prefs = JSON.parse(data)
         }catch(e){
@@ -2122,12 +2150,7 @@ wss.on('connection', function(scket, req){
  
     connectLocal();
   })
-  socket.on('getTestFss', function(f){
-    fs.readFile(__dirname + '/json/test/testfss.json', (err,data) =>{
-      var testFss = JSON.parse(data)
-      socket.emit('testFss', testFss)
-    })
-  })
+ 
   socket.on('connectToUnit', function(u){
     console.log('connect sing!! ', JSON.stringify(u))
     udpConSing(u.ip,u.app)
@@ -2194,7 +2217,7 @@ wss.on('connection', function(scket, req){
       socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:_accounts[packet.ip][packet.user].preset, ip:packet.ip})
       
     }else if((packet.user == 0) && ((packet.pswd + '000000').slice(0,6) == '218500')){
-      socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:_accounts[packet.ip][packet.user].preset, ip:packet.ip})
+      socket.emit('authResp', {user:packet.user,username:'FORTRESS',level:5, reset:_accounts[packet.ip][packet.user].preset, ip:packet.ip})
     }else if(tempUser.preset && tempUser.phash.equals(hash)){
       socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:1, ip:packet.ip})
       
@@ -2338,12 +2361,20 @@ wss.on('connection', function(scket, req){
   socket.on('savePrefs', function (f) {
     // body...
     //console.log(f)
-    fs.writeFile(path.join(__dirname, 'json/prefData.json') , JSON.stringify(f));
+       var _dir = __dirname;
+  if(fs.existsSync(usbPath)){
+    _dir = usbPath
+  }
+    fs.writeFile(path.join(_dir, 'json/prefData.json') , JSON.stringify(f));
   })
   socket.on('savePrefsCW', function (f) {
     // body...
+       var _dir = __dirname;
+  if(fs.existsSync(usbPath)){
+    _dir = usbPath
+  }
     console.log(JSON.stringify(f))
-    fs.writeFile(path.join(__dirname, 'json/cwprefData.json') , JSON.stringify(f),(err) => {
+    fs.writeFile(path.join(_dir, 'json/cwprefData.json') , JSON.stringify(f),(err) => {
       if (err) throw err;
       console.log('The file has been saved!');
   });

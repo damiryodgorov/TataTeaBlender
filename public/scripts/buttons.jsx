@@ -37,6 +37,7 @@ class CircularButton extends React.Component{
 		this.onChange = this.onChange.bind(this);
 		this.translateModal = React.createRef();
 		this.submit = this.submit.bind(this);
+		this.pOut = this.pOut.bind(this);
 	}
 	submit(){
 		this.props.submit(this.props.pram, this.props.language, this.state.curtrns)
@@ -82,10 +83,16 @@ class CircularButton extends React.Component{
 	tStart(str){
 		this.setState({touchActive:true, lab:str, tov:true})
 	}
+	pOut(){
+		if(!this.state.tov){
+			this.tEnd();
+		}
+	}
 	tEnd(){
 
 		this.setState({touchActive:false, lab:this.props.lab, tov:false})
 	}
+
 	onTouchEnd (e){
 		console.log(e.button,'touchend')
 		if(e.button != 2){
@@ -189,7 +196,7 @@ class CircularButton extends React.Component{
 
 		//if(this.props.inverted){
 			return(<React.Fragment>
-				<div  className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} style={bstyle}>
+				<div  className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} onPointerOut={this.pOut} style={bstyle}>
 				<div style={innerStyle}>{lab}</div>
 			</div>
 			<ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>

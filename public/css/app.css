@@ -1,6 +1,7 @@
 html, body {
   width : 100%;
   height: 100%;
+  overscroll-behavior: none;
 }
 body{
    /* min-width: 290px;*/
@@ -1264,12 +1265,12 @@ li {
     /* margin-bottom: -20px; */
     border-radius: 46px;
     /* border: 1px solid #eee; */
-    background-color: #bbb;
-    z-index: 8;
+    background: radial-gradient(#bbb,#bbb 68%, transparent 68%);
+    z-index: 4;
     float: right;
     /* margin-left: auto; */
     right: -20px;
-    top: -20px;
+    top: -18px;
     /* margin-right: 0px; */
 }
 .innerDiv{
@@ -1563,6 +1564,7 @@ li {
    padding-bottom: 0px;
    text-align: center;
    border: none;
+   position: relative;
 
 }
 .settingsDiv table{

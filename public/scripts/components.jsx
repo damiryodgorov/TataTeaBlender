@@ -155,7 +155,7 @@ class GModalC extends React.Component{
 	render() {
 		var style= this.props.Style || {}
 		var cs = this.props.innerStyle || {}
-		var button = 	<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
+		var button = 	<button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
 			
 				return (<div className='modal-outer' style={style}>
 				<div className='modal-content' style={cs}>
@@ -329,9 +329,9 @@ class ModalC extends React.Component{
 			cs.overflow = 'scroll'
 			style.maxHeight = '83%'
 			style.overflow = 'scroll'
-			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
+			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
 		}else if(this.props.x == true){
-			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.png'/></button>
+			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
 		}
 
 				return (<div className='modal-outer' style={style}>
@@ -828,7 +828,7 @@ class MessageModal extends React.Component{
 	render () {
 		var	cont = ""
 		if(this.state.show){
-		cont =  <MModalCont vMap={this.props.vMap} accept={this.close} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{color:'#e1e1e1'}}>{this.state.message}</div></MModalCont>
+		cont =  <MModalCont vMap={this.props.vMap} accept={this.props.accept} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{color:'#e1e1e1'}}>{this.state.message}</div></MModalCont>
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
 	{/*	<div className='modal-x' onClick={this.close}>
@@ -854,7 +854,7 @@ class MModalC extends React.Component{
 	handleClickOutside(e) {
 		// body...
 		if(this.props.show){
-			this.props.close();
+		//	this.props.close();
 		}
 		
 	}
@@ -885,16 +885,124 @@ class MModalC extends React.Component{
 		// body...
 		var self = this;
 		
-	  return( <div className='alertmodal-outer'>
+		if(typeof this.props.accept != 'undefined'){
+			 return( <div className='alertmodal-outer'>
 	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Attention</div>
 	  			{this.props.children}
 				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Cancel</button><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>Confirm</button></div>
 	  		
 		  </div>)
+			}else{
+				 return( <div className='alertmodal-outer'>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Alert</div>
+	  			{this.props.children}
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Confirm</button></div>
+	  		
+		  </div>)
+			}
+	 
 
 	}
 }
 var MModalCont =  onClickOutside(MModalC);
+
+class LockModal extends React.Component{
+	constructor(props){
+		super(props)
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false,message:''});
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+		
+	}
+	show (message) {
+		this.setState({show:true,message:message})
+	}
+	close () {
+		var self = this;
+		setTimeout(function () {
+			self.setState({show:false})
+		},100)
+		
+	}
+	
+	render () {
+		var	cont = ""
+		if(this.state.show){
+		cont =  <LockModalCont vMap={this.props.vMap} accept={this.props.accept} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{color:'#e1e1e1'}}>{this.state.message}</div></LockModalCont>
+		}
+		return <div hidden={!this.state.show} className= 'pop-modal'>
+	{/*	<div className='modal-x' onClick={this.close}>
+			 	 <svg viewbox="0 0 40 40">
+    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
+  				</svg>
+			</div>*/}
+			{cont}
+		</div>
+	}
+}
+class LockModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.handleClickOutside = this.handleClickOutside.bind(this)
+		this.close = this.close.bind(this);
+		this.accept = this.accept.bind(this);
+		this.cancel = this.cancel.bind(this);
+	}
+	componentDidMount() {
+		// body...
+	}
+	handleClickOutside(e) {
+		// body...
+		if(this.props.show){
+		//	this.props.close();
+		}
+		
+	}
+	close() {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+	}
+	accept(){
+		var self = this;
+		this.props.accept();
+		setTimeout(function(){
+			if(self.props.show){
+			self.props.close();
+			}
+		}, 100)
+		
+	}
+	cancel(){
+		var self = this;
+		setTimeout(function(){
+			self.close();
+			
+		}, 100)
+	}
+	render () {
+		// body...
+		var self = this;
+		
+
+				 return( <div className='alertmodal-outer'>
+	  			<div style={{display:'inline-block', width:1000, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Alert</div>
+	  			<div style={{height:500}}>
+	  			{this.props.children}
+	  			</div>
+	  			<div style={{display:'none'}}><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Confirm</button></div>
+	  		
+		  </div>)
+	 
+
+	}
+}
+var LockModalCont =  onClickOutside(LockModalC);
 
 class AlertModal extends React.Component{
 	constructor(props){
@@ -994,6 +1102,105 @@ class AlertModalC extends React.Component{
 	}
 }
 var AlertModalCont =  onClickOutside(AlertModalC);
+
+class AccModal extends React.Component{
+	constructor(props){
+		super(props)
+		var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false});
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+		this.accept = this.accept.bind(this);
+	}
+	show () {
+		this.setState({show:true})
+	}
+	close () {
+		var self = this;
+		setTimeout(function () {
+			self.setState({show:false})
+		},100)
+		
+	}
+	accept(){
+		this.props.accept();
+	}
+	render () {
+		var	cont = ""
+		if(this.state.show){
+		cont =  <AccModalCont vMap={this.props.vMap} accept={this.accept} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</AccModalCont>
+		}
+		return <div hidden={!this.state.show} className= 'pop-modal'>
+	{/*	<div className='modal-x' onClick={this.close}>
+			 	 <svg viewbox="0 0 40 40">
+    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
+  				</svg>
+			</div>*/}
+			{cont}
+		</div>
+	}
+}
+class AccModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.handleClickOutside = this.handleClickOutside.bind(this)
+		this.close = this.close.bind(this);
+		this.accept = this.accept.bind(this);
+		this.cancel = this.cancel.bind(this);
+	}
+	componentDidMount() {
+		// body...
+	}
+	handleClickOutside(e) {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+		
+	}
+	close() {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+	}
+	accept(){
+		var self = this;
+		this.props.accept();
+		setTimeout(function(){
+			if(self.props.show){
+			self.props.close();
+			}
+		}, 100)
+		
+	}
+	cancel(){
+		var self = this;
+		setTimeout(function(){
+			self.close();
+			
+		}, 100)
+	}
+	render () {
+		// body...
+		var self = this;
+		
+	  return( <div className='alertmodal-outer'>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Access Denied</div>
+	  			{this.props.children}
+				<div>
+	  		<CircButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept']['english'].name}/>
+		<CircButton style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={()=> this.close(0)} lab={vdefMapV2['@labels']['Cancel']['english'].name}/>
+</div>
+	  		
+		  </div>)
+
+	}
+}
+var AccModalCont =  onClickOutside(AccModalC);
 
 
 
@@ -1262,6 +1469,8 @@ module.exports.Modal = Modal
 module.exports.GraphModal = GraphModal
 module.exports.AuthfailModal = AuthfailModal;
 module.exports.MessageModal = MessageModal;
+module.exports.LockModal = LockModal;
 module.exports.AlertModal = AlertModal;
+module.exports.AccModal = AccModal;
 module.exports.MessageConsole = MessageConsole;
 module.exports.ScrollArrow = ScrollArrow;

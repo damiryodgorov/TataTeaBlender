@@ -74,6 +74,9 @@ class NavWrapper extends React.Component{
 	refresh(){
 		location.reload()
 	}
+	testNav(){
+		window.location.href = "http://localhost/cw.html"
+	}
 	render(){
 		//Need to figure out protocols to get url
 		//create api?
@@ -90,7 +93,8 @@ class NavWrapper extends React.Component{
 			<Modal ref={this.md} branding='FORTRESS'>
 				{links}
 				<button onClick={this.refresh}>Refresh Page</button>
-			</Modal>
+				<button onClick={this.testNav}>TestNav</button>
+				</Modal>
 		</div>
 	}
 }

@@ -59,7 +59,9 @@ class CustomKeyboard extends React.Component{
 		var cont = "";
 
 		if(this.state.show){
-			cont = <CustomKeyboardCont sendAlert={this.props.sendAlert} min={this.props.min} max={this.props.max} preload={this.props.preload} branding={this.props.branding} ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label} submitTooltip={this.props.submitTooltip}/>
+			cont = <CustomKeyboardCont sendAlert={this.props.sendAlert} min={this.props.min} max={this.props.max} preload={this.props.preload} branding={this.props.branding} 
+			ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} 
+			show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label} submitTooltip={this.props.submitTooltip}/>
 		}
 		return <div hidden={!this.state.show} className = 'pop-modal'>
 		{/*	<div className='modal-x' onClick={this.close}>
@@ -218,7 +220,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 
 		return <div style={{paddingLeft:7,paddingRight:7}} className = 'selectmodal-outer'>
 		<div style={{minWidth:minW,fontSize:20}}>
-		<div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:'#a0a0a0',marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' style={{whiteSpace: 'nowrap'}}>
+		<div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:'#a0a0a0',marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' >
 			{label}</span></div>{but2}</div>
 	<div style={{height:70, position:'relative'}}>		
 				<input id='inp' style={{background:'rgba(150,150,150,0.3)',display:'inline-block',fontSize:25,lineHeight:'65px',textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:65,color:'#eee', whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}} value={this.state.value} type={'text'} onChange={this.onChange}/>
@@ -392,7 +394,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		}
 
 		return <div style={{paddingLeft:7,paddingRight:7}} className = {klass}>
-		<div style={{minWidth:minW,fontSize:20}}><div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:vclr,marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' style={{whiteSpace: 'nowrap'}}>
+		<div style={{minWidth:minW,fontSize:20}}><div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:vclr,marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' >
 			{label}</span></div>{but2}</div>
 		{mmaxdiv}
 	<div style={{height:70, position:'relative'}}>		<svg style={{position:'absolute', top:14, marginLeft:3}} onClick={this.clear} xmlns="http://www.w3.org/2000/svg" height="40" version="1.1" viewBox="0 0 32 32" width="40"><g id="Layer_1"/><g id="x_x5F_alt"><path d="M16,0C7.164,0,0,7.164,0,16s7.164,16,16,16s16-7.164,16-16S24.836,0,16,0z M23.914,21.086   l-2.828,2.828L16,18.828l-5.086,5.086l-2.828-2.828L13.172,16l-5.086-5.086l2.828-2.828L16,13.172l5.086-5.086l2.828,2.828   L18.828,16L23.914,21.086z" fill="#E1E1E1"/></g></svg>
@@ -444,14 +446,14 @@ class CustomKey extends React.Component{
 			klass += ' keyDown'
 		}
 		if(this.props.Key == 'space'){
-			return	<td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={5}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
+			return	<td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={5}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
 		}else if(this.props.Key == 'shortspace'){
-			return	<td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={3}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
+			return	<td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={3}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M18 9v4H6V9H4v6h16V9z"/></svg></div></td>
 	
 		}else if(this.props.Key == 'del'){
-			return	<td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg></div></td>
+			return	<td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg></div></td>
 		}else if(this.props.Key == 'enter'){
-			return  <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Accept</div></td>
+			return  <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Accept</div></td>
 		
 		}else if(this.props.Key == 'shift'){
 			var fill = "#000000"
@@ -460,14 +462,14 @@ class CustomKey extends React.Component{
 				fill = "#eeeeee"
 				st={background:'#808a90'}
 			}
-			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} style={st} onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg fill={fill} xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M12 8.41L16.59 13 18 11.59l-6-6-6 6L7.41 13 12 8.41zM6 18h12v-2H6v2z"/></svg></div></td>
+			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} style={st} onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg fill={fill} xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M12 8.41L16.59 13 18 11.59l-6-6-6 6L7.41 13 12 8.41zM6 18h12v-2H6v2z"/></svg></div></td>
 		}else if(this.props.Key == 'cancel'){
-			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Cancel</div></td>
+			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Cancel</div></td>
 			
 	
 		}else{
 
-			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onClick={this.onPress} className={klass}>{this.props.Key.slice(0,1)}</td>
+			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass}>{this.props.Key.slice(0,1)}</td>
 		}
 		
 	}

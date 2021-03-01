@@ -55,7 +55,7 @@ class Params{
       buf.writeUInt16LE(val[j],j*2)
     }
     var arr = []
-    for(var i = 0; i<250;i++){
+    for(var i = 0; i<val.length/2;i++){
       arr.push(buf.readUInt32LE(i*4));
     }
     return arr;
