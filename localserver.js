@@ -1368,6 +1368,9 @@ if(fs.existsSync(usbPath)){
 
   }
 }
+if(!fs.existsSync('/tmp/upload')){
+  fs.mkdir('/tmp/upload')
+}
 console.log('starting ts on '+PORT)
 app.set('port', (process.env.PORT || PORT));
 app.use('/', express.static(path.join(__dirname,'public')));
@@ -1379,6 +1382,9 @@ app.get('/', function(req, res) {
 });
 app.get('/cw',function(req,res){
   res.render('cw.html')
+})
+app.post('/', function (req, res) {
+  // body...
 })
 app.use(helmet());
 app.on('error', function(err){
@@ -1416,6 +1422,15 @@ wss.on('connection', function(scket, req){
   })
   socket.on('getTimezones', function(){
     socket.emit('timezones',timezones)
+  })
+  socket.on('testupload',function (file) {
+    // body...
+    var fn = file.fn;
+    var buf = file.buf;
+    fs.writeFile(path.join('/tmp/upload',fn),Buffer.from(buf,'hex'),function (argument) {
+      // body...
+      socket.on('notify','yay')
+    })
   })
   socket.on('getConnectedClients',function(){
     socket.emit('connectedClients',Object.keys(passocs).length);
@@ -2000,6 +2015,34 @@ wss.on('connection', function(scket, req){
         })
       })
     })
+  })
+  socket.on('getBatches', function (argument) {
+    // body...
+    if(fs.statSync('/run/media/sda1/srv/tftp/batches/list.txt')){
+      fs.readFile('/run/media/sda1/srv/tftp/batches/list.txt', function(err, data){
+        var str = data.toString().trim()
+        var list = []
+        try{
+          list = str.split('\n').map(function(l){ return l.trim()}).map(function(b){
+            return {id:b,stats:fs.statSync('/run/media/sda1/srv/tftp/batches/'+b)}
+          })  
+        }catch(e){
+          console.log(e)
+        }
+        
+
+        socket.emit('batchList', list)
+      })
+    }else{
+      socket.emit('batchList', 'not found')
+    }
+  })
+  socket.on('downloadBatch', function (fn) {
+    fs.readFile('/run/media/sda1/srv/tftp/batches/'+ fn, function (err, data) {
+      // body...
+      socket.emit('batchDownload', {fn:fn, data:data.toString()})
+    })
+    // body...
   })
   socket.on('logOut', function(arg){
     loginLevel = 0;

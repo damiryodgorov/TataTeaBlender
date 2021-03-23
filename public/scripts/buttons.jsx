@@ -26,13 +26,14 @@ class CircularButton extends React.Component{
 	constructor(props) {
 
 		super(props)
-		this.state = {touchActive:false, curtrns:this.props.lab,lab:this.props.lab, tov:false}
+		this.state = {touchActive:false, curtrns:this.props.lab, green:false,lab:this.props.lab, tov:false}
 		this.onClick = this.onClick.bind(this)
 		this.onTouchStart = this.onTouchStart.bind(this);
 		this.onTouchEnd = this.onTouchEnd.bind(this);
 		this.simTouch = this.simTouch.bind(this);
 		this.tStart = this.tStart.bind(this);
 		this.tEnd = this.tEnd.bind(this);
+		this.tDone = this.tDone.bind(this);
 		this.translate = this.translate.bind(this);
 		this.onChange = this.onChange.bind(this);
 		this.translateModal = React.createRef();
@@ -81,7 +82,10 @@ class CircularButton extends React.Component{
 		
 	}
 	tStart(str){
-		this.setState({touchActive:true, lab:str, tov:true})
+		this.setState({touchActive:true, green:false, lab:str, tov:true})
+	}
+	tDone(str){
+		this.setState({lab:str, green:true})
 	}
 	pOut(){
 		if(!this.state.tov){
@@ -90,7 +94,7 @@ class CircularButton extends React.Component{
 	}
 	tEnd(){
 
-		this.setState({touchActive:false, lab:this.props.lab, tov:false})
+		this.setState({touchActive:false,green:false, lab:this.props.lab, tov:false})
 	}
 
 	onTouchEnd (e){
@@ -155,6 +159,10 @@ class CircularButton extends React.Component{
 		var style = {height:55,top:-6,left:-6}
 		var divstyle = {overflow:'hidden',background:bg,height:50,width:50,borderRadius:25}
 		var bstyle = Object.assign({} ,this.props.style)
+		if(this.state.green){
+			bstyle.backgroundColor = '#11DD11'
+			fontColor = '#000'
+		}
 		var fsize = 30;
 		if(this.props.lab.length > 12){
 			fsize = 24;

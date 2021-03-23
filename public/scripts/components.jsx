@@ -30,6 +30,20 @@ function yRangeFunc(range){
 	return({min:(0-max),max:max});
 }
 
+class CustomFileInput extends React.Component{
+	constructor(props){
+		super(props)
+		this.input = React.createRef();
+		this.onClick = this.onClick.bind(this);
+	}
+	onClick(){
+		this.input.current.click();
+	}
+	render(){
+		return <input type="file" id='file' ref={this.input} style={{display:'none'}} onChange={this.props.onChange}/>
+	}
+}
+
 class ScrollArrow extends React.Component{
 	constructor(props) {
 		super(props)
@@ -1474,3 +1488,4 @@ module.exports.AlertModal = AlertModal;
 module.exports.AccModal = AccModal;
 module.exports.MessageConsole = MessageConsole;
 module.exports.ScrollArrow = ScrollArrow;
+module.exports.CustomFileInput = CustomFileInput;

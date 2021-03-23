@@ -205,6 +205,7 @@ wss.on('error', function(error){
 //wss.on('')
 wss.on('connection', function(scket, req){ 
   //console.log(1360, scket)
+  exec('mount --options remount,rw /dev/root /')
   let loginLevel = 0;
   let curUser = '';
   var fileVer = 0;
@@ -252,11 +253,17 @@ wss.on('connection', function(scket, req){
         if(cw){
           console.log('should come here')
           socket.emit('locateResp',cwips)
-         
+          //start python process here
         }
  
       });
     });
+  socket.on('setIp',function(ip){
+    fs.writeFile('/tmp/host.txt',ip, function(){
+      console.log('set host.txt')
+      //exec('sh path_to_python_script.py '+ip+'&') 
+    })
+  })
   	socket.on('getLink', function () {
   		var link = ''
   		var linkJSON = {'link':link}
@@ -275,6 +282,7 @@ wss.on('connection', function(scket, req){
   	})
   	socket.on('saveLink', function (link) {
   		// body...
+      //exec()
   		console.log('saveLink', link)
   		var linkJSON = {'link':link}
   		var fnm = 'json/lastLink.json'

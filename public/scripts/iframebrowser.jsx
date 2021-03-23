@@ -32,17 +32,35 @@ class NavWrapper extends React.Component{
 		socket.on('locateResp',function (dsps) {
 			// body...
 			console.log(dsps)
+			if(dsps.length == 0){
+				setTimeout(function(){
+					self.locate()
+				},1000)
+			}
 			var links = []
-			dsps.forEach(function (d) {
+			if(dsps.length == 1){
+				socket.emit('setIp', dsps[0].ip)
+				setTimeout(function(){
+					window.location.href = 'http://'+dsps[0].ip+'/cw.html'
+
+				},100)
+			}else{
+				dsps.forEach(function (d) {
 				// body...
 				if(self.state.lastLink == 'http://'+d.ip+'/cw.html'){
-					window.location.href = self.state.lastLink
+				socket.emit('setIp', d.ip)
+				setTimeout(function(){
+					window.location.href = 'http://'+d.ip+'/cw.html'
+
+				},100)
 				}
 
 				links.push('http://'+d.ip+'/cw.html')
 			})
 			self.setState({links:links})
-		})
+			
+			}
+			})
 		setTimeout(function (argument) {
 			
 			self.loadInitPage();
@@ -56,6 +74,8 @@ class NavWrapper extends React.Component{
 	}
 	onLinkClick(l){
 		socket.emit('saveLink',l)
+		var ip = l.slice(7,-8)
+		socket.emit('setIp',ip)
 		setTimeout(function (argument) {
 			// body...
 			window.location.href = l;
