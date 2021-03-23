@@ -7970,7 +7970,7 @@ class PackGraph extends React.Component{
       //console.log('min, max',decMin,decMax)
 
       if(((this.props.srec['WindowMax'] - this.props.srec['WindowMin']) > 0) && (this.props.srec['WindowMode'] == 1)){
-         ydm = [tare + (this.props.srec['WindowMin'])/calFactor, this.props.srec['WindowMax']/calFactor + tare]
+         ydm = [this.props.srec['WindowMin'], this.props.srec['WindowMax']]
 
     }
 
