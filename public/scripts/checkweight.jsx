@@ -1095,6 +1095,7 @@ class LandingPage extends React.Component{
     this.handleFileRead = this.handleFileRead.bind(this);
     this.onFileUpload = this.onFileUpload.bind(this);
     this.formatUSB = this.formatUSB.bind(this);
+    //this.msgm = React.createRef();
   }
   /*************Lifecycle functions start***************/
   componentDidMount(){
@@ -1221,7 +1222,8 @@ class LandingPage extends React.Component{
     })
     socket.on('notify',function(msg){
       console.log(msg)
-      toast(msg)
+      //toast(msg)
+      self.msgm.current.show(msg)
     })
     socket.on('progressNotify',function(pk){
       var on = pk.on;
@@ -1531,6 +1533,9 @@ class LandingPage extends React.Component{
           var lcms = new Uint64LE(e.rec['LastCalTime'].data)
           e.rec['LastCalTime'] = lcms
            e.rec['LastCalTimeStr'] = new Date(parseInt(lcms.toString())).toISOString().split('T')[0]
+          if(e.rec['AutoLogoutMinutes'] != this.state.srec['AutoLogoutMinutes']){
+            ifvisible.setIdleDuration(e.rec['AutoLogoutMinutes']*60)
+          }
           this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), unusedList:this.getUCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
         }else if(e.type == 1){
           SingletonDataStore.prodRec = e.rec;
@@ -2743,7 +2748,7 @@ var lw = 0;
         </Modal>
         <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
          <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Batch</div></div>
-         <BatchControl pBatches={this.state.batchList} batchPerm={batchPerm} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf} startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
+         <BatchControl pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf} startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
                    weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]}/>
         </Modal>
         <Modal  x={true} ref={this.unusedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
@@ -3605,10 +3610,12 @@ class ProductSelectItem extends React.Component{
     }
     return (<div style={{background:"transparent", color:color, position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-flex', alignItems:'center', width:22}}>{check}</div><div style={{fontSize:22, verticalAlign:'top',display:'inline-block', width:40, paddingRight:3, height:65, lineHeight:'65px', textAlign:'right'}}>{this.props.p + '.  '}</div><div onClick={this.switchProd} style={st}><div style={{display:'block', width:'inherit'}}>{name}</div></div> <div style={{display:'inline-flex', width:22}}>{del}{config}</div></div>
          <Modal ref={this.confModal} Style={{color:'#e1e1e1',width:600, maxWidth:600}}>
-               <CircularButton onClick={this.restoreDefault} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Restore to Default'}/>
-              <CircularButton onClick={this.restoreBackup} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Restore to Factory'}/>
-       <CircularButton onClick={this.backupProduct} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save to Factory'}/>
-       
+               <div style={{textAlign:'center'}}>
+               <div style={{fontSize:25, padding:10}}>Backup and Restore</div>
+               <CircularButton onClick={this.restoreDefault} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore to Default'}/>
+              <CircularButton onClick={this.restoreBackup} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore to Factory'}/>
+       <CircularButton onClick={this.backupProduct} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Save to Factory'}/>
+        </div>
           </Modal>
       </div>)
   }
@@ -8435,15 +8442,23 @@ class BatchControl extends React.Component{
   }
   downloadBatch(){
     if(this.state.selID.split('%')[0] == this.state.bRec['Batch ID']){
-       var bjson = this.state.bRec//JSON.parse(batchFile.data);
+      
+        var bjson = this.state.bRec//JSON.parse(batchFile.data);
        var csvstr = ''
        for(var b in bjson){
         if(b.indexOf('Histogram') == -1){
           csvstr += b +','+bjson[b].toString().split(',').join(' ') + '\n'
         }
        }
+        if(this.props.usb){
+          socket.emit('putAndSendTftp', {data:csvstr, filename:this.state.selID.replace('.json','')+'.csv'})
+        }else{
+
+
+        fileDownload(csvstr, this.state.selID.replace('.json','')+'.csv') 
+        }
       
-       fileDownload(csvstr, this.state.selID.replace('.json','')+'.csv')
+       
     }
   }
   render(){

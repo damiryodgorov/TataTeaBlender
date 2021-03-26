@@ -20,6 +20,7 @@ const arloc = fti.ArmFind;
 
 var PORT = 3300;
 var IFACE = 'eth0'
+var _HOST = ''
 
 let passocs = {}
 let rassocs = {}
@@ -88,6 +89,29 @@ class FtiHelper{
     ArmConfig.parse(querystring);
 
   }
+}
+function sendPost(ip, _path, data){
+  //let data = JSON.stringify({"fpath":fpath})
+    let options = {hostname: ip,port: 80,path: _path,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': data.length
+        }
+    }
+    let rq = HTTP.request(options, rs => {
+        console.log(`statusCode: ${rs.statusCode}`)
+        rs.on('data', d => {
+        process.stdout.write(d)
+      })
+    })
+
+    rq.on('error', error => {
+      console.error(error)
+    })
+
+    rq.write(data)
+    rq.end()
 }
 class FtiSockIOServer{
   constructor(sock){
@@ -189,6 +213,29 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.get('/', function(req, res) {
   res.render('index.html');
 });
+app.get('/HI', function (req, res) {
+  console.log('req',req)
+  res.json({'HI':'public/iframe.html'})
+  // body...
+})
+app.post('/get_tftp', function(req,res){
+  if(_HOST.length > 0){
+    var fpath = req.body.fpath;
+    console.log(fpath)
+    exec('tftp -g -l /media/usb_stick/'+ path.basename(fpath) + ' -r '+fpath+' '+_HOST, function (err) {
+      // body...
+      if(err){
+        console.log('err - ', err)
+      }
+      if(fs.existsSync('/media/usb_stick/'+ path.basename(fpath))){
+        sendPost(_HOST,'/rcv_message', JSON.stringify({"message":"Download successful"}))
+      }else{
+        sendPost(_HOST,'/rcv_message', JSON.stringify({"message":"Download failed"}))
+        
+      }
+    })
+  }
+})
 app.use(helmet());
 app.on('error', function(err){
   //console.log(err)
@@ -259,10 +306,34 @@ wss.on('connection', function(scket, req){
       });
     });
   socket.on('setIp',function(ip){
+    _HOST = ip;
     fs.writeFile('/tmp/host.txt',ip, function(){
       console.log('set host.txt')
       //exec('sh path_to_python_script.py '+ip+'&') 
     })
+    let data = JSON.stringify({port:3300})
+
+    let options = {hostname: ip,port: 80,path: '/set_display',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': data.length
+        }
+    }
+    let req = HTTP.request(options, res => {
+        console.log(`statusCode: ${res.statusCode}`)
+        res.on('data', d => {
+        process.stdout.write(d)
+      })
+    })
+
+    req.on('error', error => {
+      console.error(error)
+    })
+
+    req.write(data)
+    req.end()
+
   })
   	socket.on('getLink', function () {
   		var link = ''

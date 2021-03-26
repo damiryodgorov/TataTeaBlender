@@ -79,6 +79,7 @@ let networking = new NetworkInfo();
 //const Params = require('./params.js')
 var PORT = 3300;
 var IFACE = 'eth0'
+let _TOUCHSCREEN_ADDR = '192.168.10.20'
 
 if(process.argv.length >= 2){
   console.log('args: ',process.argv)
@@ -1293,6 +1294,29 @@ function autoIP(cw){
 
     })
 }
+function sendTftp(fpath){
+  let data = JSON.stringify({"fpath":fpath})
+    let options = {hostname: _TOUCHSCREEN_ADDR,port: 3300,path: '/get_tftp',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': data.length
+        }
+    }
+    let rq = HTTP.request(options, rs => {
+        console.log(`statusCode: ${rs.statusCode}`)
+        rs.on('data', d => {
+        process.stdout.write(d)
+      })
+    })
+
+    rq.on('error', error => {
+      console.error(error)
+    })
+
+    rq.write(data)
+    rq.end()
+}
 function setNifIp(addr, callback){
     //need to figure out how to determine interface gracefully. maybe specify from onset? 
     //console.log(addr)
@@ -1383,7 +1407,26 @@ app.get('/', function(req, res) {
 app.get('/cw',function(req,res){
   res.render('cw.html')
 })
-app.post('/', function (req, res) {
+app.post('/set_display', function (req, res) {
+  // body...
+
+  console.log('POST', req)
+  var bod = JSON.parse(JSON.stringify(req.body))
+  var addrarr = req.socket.remoteAddress.split(':')
+  bod["remoteAddress"] = addrarr[addrarr.length-1]
+  _TOUCHSCREEN_ADDR = bod["remoteAddress"]
+  fs.writeFile('/tmp/display', JSON.stringify(bod), function () {
+    // body...
+  })
+  //console.log('POSTRES', res)
+})
+app.post('/rcv_message', function (req,res) {
+  var message =  "received message"
+  if(typeof req.body.message != 'undefined'){
+    message = req.body.message
+  }
+  //req.body.message
+  relaySockMsg('notify', message)
   // body...
 })
 app.use(helmet());
@@ -1435,6 +1478,38 @@ wss.on('connection', function(scket, req){
   socket.on('getConnectedClients',function(){
     socket.emit('connectedClients',Object.keys(passocs).length);
   });
+  socket.on('putAndSendTftp', function(file){
+    fs.writeFile(path.join('/run/media/sda1/srv/tftp/', file.filename), file.data, function(err){
+      if(!err){
+        sendTftp(file.filename)
+      }
+    })
+  })
+  socket.on('sendTftp',function(fpath){
+    let data = JSON.stringify({"fpath":fpath})
+    let options = {hostname: _TOUCHSCREEN_ADDR,port: 3300,path: '/get_tftp',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': data.length
+        }
+    }
+    let rq = HTTP.request(options, rs => {
+        console.log(`statusCode: ${rs.statusCode}`)
+        rs.on('data', d => {
+        process.stdout.write(d)
+      })
+    })
+
+    rq.on('error', error => {
+      console.error(error)
+    })
+
+    rq.write(data)
+    rq.end()
+  })
+
+
   socket.on('getCustomJSON', function (vmapstr) {
     var _dir = __dirname;
   if(fs.existsSync(usbPath)){
