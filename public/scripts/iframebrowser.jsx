@@ -69,7 +69,7 @@ class NavWrapper extends React.Component{
 	loadInitPage(){
 		if(socket.sock.readyState  ==1){
 			socket.emit('getLink');
-			//this.locate();
+			this.locate();
 		}
 	}
 	onLinkClick(l){

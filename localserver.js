@@ -1294,9 +1294,85 @@ function autoIP(cw){
 
     })
 }
-function sendTftp(fpath){
-  let data = JSON.stringify({"fpath":fpath})
+function sendPost(ip, _path, data){
+  //let data = JSON.stringify({"fpath":fpath})
+    let options = {hostname: ip,port: 3300,path: _path,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': data.length
+        }
+    }
+    let rq = HTTP.request(options, rs => {
+        console.log(`statusCode: ${rs.statusCode}`)
+        rs.on('data', d => {
+        process.stdout.write(d)
+      })
+    })
+
+    rq.on('error', error => {
+      console.error(error)
+    })
+
+    rq.write(data)
+    rq.end()
+}
+function sendReboot(){
+      let options = {hostname: _TOUCHSCREEN_ADDR,port: 3300,path:'/reboot',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': data.length
+        }
+    }
+    let rq = HTTP.request(options, rs => {
+        console.log(`statusCode: ${rs.statusCode}`)
+        rs.on('data', d => {
+        process.stdout.write(d)
+      })
+    })
+
+    rq.on('error', error => {
+      console.error(error)
+    })
+
+    rq.write(data)
+    rq.end()
+}
+function sendTftp(fpath, opts){
+
+  if(typeof opts == 'undefined'){
+    opts = {}
+  }
+
+  let data = JSON.stringify({"fpath":fpath, "opts":opts})
     let options = {hostname: _TOUCHSCREEN_ADDR,port: 3300,path: '/get_tftp',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': data.length
+        }
+    }
+    let rq = HTTP.request(options, rs => {
+        console.log(`statusCode: ${rs.statusCode}`)
+        rs.on('data', d => {
+        process.stdout.write(d)
+      })
+    })
+
+    rq.on('error', error => {
+      console.error(error)
+    })
+
+    rq.write(data)
+    rq.end()
+  
+}
+function pullTftp(fpath, opts){
+  //opts = {mac:00-00-00-00-00-00, type:prod, update}
+
+  let data = JSON.stringify({"fpath":fpath, "opts":opts})
+    let options = {hostname: _TOUCHSCREEN_ADDR,port: 3300,path: '/pull_tftp',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1429,6 +1505,14 @@ app.post('/rcv_message', function (req,res) {
   relaySockMsg('notify', message)
   // body...
 })
+app.post('/done_tftp', function (req, res) {
+  // body...
+  if(req.body.type == 'prod'){
+    relaySockMsg('confirmProdImport',null)
+  }else if(req.body.type == 'update'){
+    relaySockMsg('confirmUpdate', null)
+  }
+})
 app.use(helmet());
 app.on('error', function(err){
   //console.log(err)
@@ -1472,7 +1556,7 @@ wss.on('connection', function(scket, req){
     var buf = file.buf;
     fs.writeFile(path.join('/tmp/upload',fn),Buffer.from(buf,'hex'),function (argument) {
       // body...
-      socket.on('notify','yay')
+      socket.emit('notify','yay')
     })
   })
   socket.on('getConnectedClients',function(){
@@ -1481,12 +1565,13 @@ wss.on('connection', function(scket, req){
   socket.on('putAndSendTftp', function(file){
     fs.writeFile(path.join('/run/media/sda1/srv/tftp/', file.filename), file.data, function(err){
       if(!err){
-        sendTftp(file.filename)
+        sendTftp(file.filename, file.opts)
       }
     })
   })
   socket.on('sendTftp',function(fpath){
-    let data = JSON.stringify({"fpath":fpath})
+    let opts = {}
+    let data = JSON.stringify({"fpath":fpath, "opts":opts})
     let options = {hostname: _TOUCHSCREEN_ADDR,port: 3300,path: '/get_tftp',
         method: 'POST',
         headers: {
@@ -1507,6 +1592,49 @@ wss.on('connection', function(scket, req){
 
     rq.write(data)
     rq.end()
+  })
+
+  socket.on('importProds', function(mc){
+    if(fs.existsSync('/run/media/sda1/srv/tftp/prods.tar.gz')){
+      exec('rm /run/media/sda1/srv/tftp/prods.tar.gz', function (err, stdout, stderr) {
+        // body...
+         pullTftp('prods.tar.gz', {type:'prod'})
+  
+      })
+    }else{
+       pullTftp('prods.tar.gz', {type:'prod'})
+  
+    }
+   })
+  socket.on('exportProds', function(mc){
+     exec('tar -C /run/media/sda1/ -czf srv/tftp/prods.tar.gz ProdRec', function(err, stdout, stderr){
+      if(err){
+        socket.emit('notify', err.toString())
+      }else{
+        sendTftp('prods.tar.gz', {})
+      }
+    })
+  })
+  socket.on('restoreProds', function(mc){
+    if(fs.existsSync('/run/media/sda1/srv/tftp/prods.tar.gz')){
+      exec('rm /run/media/sda1/srv/tftp/prods.tar.gz', function (err, stdout, stderr) {
+        // body...
+         pullTftp('prods.tar.gz', {mac:mc.split('-').join('').toUpperCase(),type:'prod'})
+  
+      })
+    }else{
+       pullTftp('prods.tar.gz', {mac:mc.split('-').join('').toUpperCase(),type:'prod'})
+  
+    }
+  })
+  socket.on('backupProds', function(mc){
+    exec('tar -C /run/media/sda1/ -czf srv/tftp/prods.tar.gz ProdRec', function(err, stdout, stderr){
+      if(err){
+        socket.emit('notify', err.toString())
+      }else{
+        sendTftp('prods.tar.gz', {mac:mc.split('-').join('').toUpperCase()})
+      }
+    })
   })
 
 
@@ -1747,9 +1875,16 @@ wss.on('connection', function(scket, req){
     })
   })
   socket.on('reboot', function(){
-    exec('sudo reboot', function (argument) {
+    
+   // if(_TOUCHSCREEN_ADDR.length > 0){///length > 0){
+      sendPost(_TOUCHSCREEN_ADDR, '/reboot',JSON.stringify({}));
+   // }
+    setTimeout(function(){
+      exec('sudo reboot', function (argument) {
       // body...
-    })
+    })  
+    }, 1000)
+    
   })
   socket.on('updateDisplay_old',function(){
     exec('sudo fdisk -l', function(err,stdout,stderr){

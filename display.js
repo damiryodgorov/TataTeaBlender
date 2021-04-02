@@ -218,22 +218,74 @@ app.get('/HI', function (req, res) {
   res.json({'HI':'public/iframe.html'})
   // body...
 })
+app.post('/reboot',function(req,res){
+  exec('sync',function(err, stdout, stderr){
+    exec('reboot -f', function(err, stdout, stderr){
+      //
+    })
+  })
+})
 app.post('/get_tftp', function(req,res){
   if(_HOST.length > 0){
+    if(!fs.existsSync('/media/usb_stick/FortressTechnology')){
+      fs.mkdirSync('/media/usb_stick/FortressTechnology', {recursive:true})
+    }
     var fpath = req.body.fpath;
+    var opts = req.body.opts;
+    var dirPath = ''
+    if(typeof opts.mac != 'undefined'){
+      dirPath = opts.mac + '/';
+      if(!fs.existsSync('/media/usb_stick/FortressTechnology/'+dirPath)){
+      fs.mkdirSync('/media/usb_stick/FortressTechnology/'+dirPath, {recursive:true})
+    }
+    }
     console.log(fpath)
-    exec('tftp -g -l /media/usb_stick/'+ path.basename(fpath) + ' -r '+fpath+' '+_HOST, function (err) {
+    exec('tftp -g -l /media/usb_stick/FortressTechnology/'+dirPath+ path.basename(fpath) + ' -r '+fpath+' '+_HOST, function (err) {
       // body...
       if(err){
         console.log('err - ', err)
       }
-      if(fs.existsSync('/media/usb_stick/'+ path.basename(fpath))){
+      exec('sync', function(){
+        if(fs.existsSync('/media/usb_stick/FortressTechnology/'+dirPath+ path.basename(fpath))){
         sendPost(_HOST,'/rcv_message', JSON.stringify({"message":"Download successful"}))
       }else{
         sendPost(_HOST,'/rcv_message', JSON.stringify({"message":"Download failed"}))
         
       }
+      })
+      
     })
+  }
+})
+app.post('/pull_tftp', function(req,res){
+  if(_HOST.length > 0){
+    
+    var fpath = req.body.fpath;
+    var opts = req.body.opts;
+    var dirPath = ''
+    if(typeof opts.mac != 'undefined'){
+      dirPath = opts.mac + '/';
+    
+    }
+    console.log(fpath)
+    if(fs.existsSync('/media/usb_stick/FortressTechnology/'+dirPath+ path.basename(fpath))){
+      exec('tftp -p -l /media/usb_stick/FortressTechnology/'+dirPath+ path.basename(fpath) + ' -r '+fpath+' '+_HOST, function (err) {
+      // body...
+      if(err){
+        console.log('err - ', err)
+         sendPost(_HOST,'/rcv_message', JSON.stringify({"message":"Upload failed."}))
+      }else{
+         sendPost(_HOST,'/done_tftp', JSON.stringify({"type":opts.type}))
+        
+      }
+      
+      })
+      
+      
+    }else{
+      sendPost(_HOST, '/rcv_message', JSON.stringify({"message":"Upload failed"}))
+    }
+    
   }
 })
 app.use(helmet());

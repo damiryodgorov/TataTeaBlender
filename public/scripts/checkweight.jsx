@@ -1095,6 +1095,7 @@ class LandingPage extends React.Component{
     this.handleFileRead = this.handleFileRead.bind(this);
     this.onFileUpload = this.onFileUpload.bind(this);
     this.formatUSB = this.formatUSB.bind(this);
+    this.notify = this.notify.bind(this)
     //this.msgm = React.createRef();
   }
   /*************Lifecycle functions start***************/
@@ -1132,6 +1133,13 @@ class LandingPage extends React.Component{
        }
        fileDownload(csvstr, 'batch.csv')
     })*/
+    socket.on('confirmProdImport', function (c) {
+      // body...
+      self.notify('Product transfered to internal USB - now we should be ready for update rpc')
+    })
+    socket.on('confirmUpdate', function(c){
+      self.notify('update transfered ')
+    })
     socket.on('connectedClients',function (c) {
       var fram = self.state.fram
       fram.ConnectedClients = c
@@ -1223,7 +1231,14 @@ class LandingPage extends React.Component{
     socket.on('notify',function(msg){
       console.log(msg)
       //toast(msg)
-      self.msgm.current.show(msg)
+      /*if(self.batModal.current.state.show){
+        self.batModal.current.showMsg(msg)
+      }else{
+        self.msgm.current.show(msg)
+
+      }*/
+
+      self.notify(msg)
     })
     socket.on('progressNotify',function(pk){
       var on = pk.on;
@@ -1497,6 +1512,21 @@ class LandingPage extends React.Component{
     _cvdf = null;
     return cob
   }
+  notify(msg){
+      if(this.batModal.current.state.show){
+        this.batModal.current.showMsg(msg)
+      }else if(this.pmodal.current.state.show){
+        this.pmodal.current.showMsg(msg)
+      }else if(this.pmodal.current.state.show){
+        this.settingModal.current.showMsg(msg)
+      }else if(this.pmodal.current.state.show){
+        this.cwModal.current.showMsg(msg)
+      }else{
+        this.msgm.current.show(msg)
+      
+
+      }
+  }
   /******************Parse Packets start*******************/
   onParamMsg(e,u){
      if(this.state.curDet.ip == u.ip){
@@ -1636,6 +1666,13 @@ class LandingPage extends React.Component{
 
               this.setState({waitCwgt:false, noupdate:false})
           
+          
+            }
+          }
+           if((e.rec['RejSetupInvalid'] != this.state.rec['RejSetupInvalid']) && (typeof this.state.rec['RejSetupInvalid'] != 'undefined')){
+            if(e.rec['RejSetupInvalid'] == 1){
+              //toast('Taring..')
+              this.notify('Reject Setup is invalid!')
           
             }
           }
@@ -2732,7 +2769,7 @@ var lw = 0;
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
         <Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
-          <ProductSettings sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
+          <ProductSettings  usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
           submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={()=>this.setState({prclosereq:false})}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
           curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
@@ -2843,7 +2880,13 @@ class ProductSettings extends React.Component{
     //this.getRefBuffer= this.getRefBuffer.bind(this);
     this.onPromptCancel = this.onPromptCancel.bind(this);
     this.getMMdep = this.getMMdep.bind(this);
+    this.onProdImportExport = this.onProdImportExport.bind(this);
     this.msgm = React.createRef();
+    this.prImEx = React.createRef();
+    this.onImport = this.onImport.bind(this);
+    this.onExport = this.onExport.bind(this);
+    this.onRestore = this.onRestore.bind(this);
+    this.onBackup = this.onBackup.bind(this);
   }
   componentWillReceiveProps(newProps){
     if(this.state.selProd != newProps.editProd){
@@ -3300,6 +3343,41 @@ class ProductSettings extends React.Component{
         return this.props.drec[d]
       }
   }
+  onProdImportExport(){
+    this.prImEx.current.show();
+  }
+  onImport(){
+    if(this.props.usb){
+       socket.emit('importProds', this.props.mac)
+  
+    }else{
+      this.msgm.current.show('Plug in USB drive')
+    }
+  }
+  onExport(){
+    if(this.props.usb){
+    socket.emit('exportProds', this.props.mac)
+      
+    }else{
+      this.msgm.current.show('Plug in USB drive')
+    }
+  }
+  onBackup(){
+    if(this.props.usb){
+    socket.emit('backupProds', this.props.mac)
+      
+    }else{
+      this.msgm.current.show('Plug in USB drive')
+    }
+  }
+  onRestore(){
+    if(this.props.usb){
+          socket.emit('restoreProds', this.props.mac)
+
+    }else{
+      this.msgm.current.show('Plug in USB drive')
+    }
+  }
   render(){
     var self = this;
     var list = [];
@@ -3486,7 +3564,7 @@ class ProductSettings extends React.Component{
     }
     var SA = (list.length > 8)
     return <div style={{width:1155}}>
-      <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Products</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:600}}>{'Current Product: '+spstr }</div></div>
+      <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:780, paddingLeft:10}}>Products </div><div style={{display:'inline-block', width:32}} onClick={this.onProdImportExport}><img src="assets/config_w.svg"/></div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:308}}>{'Current Product: '+spstr }</div></div>
       <table style={{borderCollapse:'collapse'}}><tbody>
         <tr>
           <td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:819, paddingTop:0}}>  
@@ -3520,6 +3598,21 @@ class ProductSettings extends React.Component{
         <PackGraph onEdit={this.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={1} acc={advProdEditAcc} language={this.props.language} crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
         <PromptModal branding={this.props.branding} ref={this.pmd2} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
       
+      </Modal>
+      <Modal x={true} Style={{width:870, marginTop:50}} ref={this.prImEx} branding={this.props.branding}>
+        <div style={{color:'#e1e1e1', fontSize:25}}>Import/Export Settings</div>
+        <div>
+          <div>
+            <CircularButton onClick={this.onImport} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Import'}/>
+            <CircularButton onClick={this.onExport} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Export'}/>
+         
+          </div>
+          <div>
+            <CircularButton onClick={this.onRestore} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Restore'}/>
+            <CircularButton onClick={this.onBackup} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Backup'}/>
+         
+          </div>
+        </div>
       </Modal>
       <MessageModal ref={this.msgm}/>
     </div>
@@ -8451,11 +8544,11 @@ class BatchControl extends React.Component{
         }
        }
         if(this.props.usb){
-          socket.emit('putAndSendTftp', {data:csvstr, filename:this.state.selID.replace('.json','')+'.csv'})
+          socket.emit('putAndSendTftp', {data:csvstr, filename:this.state.selID.replace('.json','')+'.csv', opts:{mac:this.props.mac.split('-').join('').toUpperCase()}})
         }else{
 
 
-        fileDownload(csvstr, this.state.selID.replace('.json','')+'.csv') 
+        //fileDownload(csvstr, this.state.selID.replace('.json','')+'.csv') 
         }
       
        
@@ -8468,6 +8561,10 @@ class BatchControl extends React.Component{
       backgroundColor = SPARCBLUE1
     }
     var prMap = {}
+
+
+
+     
 
     var prodnames = this.state.prodList.map(function (p) {
       // body...
@@ -8489,23 +8586,13 @@ class BatchControl extends React.Component{
         </div>
       // body...
     })
-    var pastBatches = this.props.pBatches.map(function (bat) {
-      var bgc = '#e1e1e1'
-      var info = bat.id.split('%').map(function (c) {
-        return c.replaceAll('^', ' ')
-        // body...
-      })
-      if(self.state.selID == bat.id){
-        bgc = '#7ccc7c'
-      }
-      //bat.stats.birthtime.slice(0,-1).split('T').join(' ')
-      return <div onClick={() => self.onPastBatchClick(bat.id)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
-        <div>Batch Id: {info[0]}</div>
-        <div>Batch Ref: {info[1]}</div>
-        <div>Product: {info[2].replace('.json','')}</div>
-        </div>
-      // body...
-    })
+            //return <div></div>
+
+    
+    var pastBatches = []
+    
+
+
     var plannedBatchesStart = this.state.plannedBatches.map(function (bat, i) {
       var bgc = '#e1e1e1'
       if(self.state.startBatch == i){
@@ -8639,14 +8726,38 @@ class BatchControl extends React.Component{
     var bmodeSelect =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[vdefByMac[this.props.mac][1][0]['BatchMode']]} ioBits={this.props.ioBits} vMap={vMapV2['BatchMode']} language={this.props.language}  interceptor={false} name={'Batch Mode'} ref={this.ed} val={[this.state.startMode]} options={[bmodes]} onChange={this.selectChanged}/>
     var changeModeBut =  <div onClick={this.changeMode} style={{display:'table-cell',height:80, borderRight:'2px solid #ccc', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}><div>Batch Mode</div><div>{bmodes[this.state.startMode]}</div></div>
     var bHisto = <BatchHistogram unit={this.props.weightUnits} ref={this.bhg}/>
+
+
      if(this.state.showMode == 1){
+
+      if(typeof this.props.pBatches != 'undefined'){
+     pastBatches = this.props.pBatches.map(function (bat) {
+      var bgc = '#e1e1e1'
+      var info = bat.id.split('%').map(function (c) {
+        return c.replace(/\^/g," ")
+        // body...
+      })
+      if(self.state.selID == bat.id){
+        bgc = '#7ccc7c'
+      }
+      //bat.stats.birthtime.slice(0,-1).split('T').join(' ')
+      return <div onClick={() => self.onPastBatchClick(bat.id)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
+        <div>Batch Id: {info[0]}</div>
+        <div>Batch Ref: {info[1]}</div>
+        <div>Product: {info[2].replace('.json','')}</div>
+        </div>
+      // body...
+    }) 
+    }
+
+   
         batchList = <div style={{width:300, background:'#e1e1e1', border:'2px solid #e1e1e1', height:515, marginLeft:5, marginRight:5, marginBottom:0}}>
           <div style={{height:450}}><div style={{borderBottom:'2px solid #ccc', lineHeight:'60px', height:60, textAlign:'center'}}>Past Batches</div><div style={{height:388, overflowY:'scroll'}}>{pastBatches}</div></div>
           <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #ccc'}}>
           <div onClick={this.addBatch} style={{display:'table-cell',height:66, borderRight:'2px solid #ccc', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>+ Add New Batch</div>
           <div onClick={this.showAllProd} style={{display:'table-cell',height:66, borderLeft:'2px solid #ccc',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>Show All Batches</div>
           </div></div>
-          changeModeBut =  <div onClick={this.downloadBatch} style={{display:'table-cell',height:80, borderRight:'2px solid #ccc', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}>Download CSV</div>
+          changeModeBut =  <div onClick={this.downloadBatch} style={{display:'table-cell', color:(this.props.usb ? '#000': '#888'),height:80, borderRight:'2px solid #ccc', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}>Download CSV</div>
           if(this.state.selID.length > 0){
             if(this.state.bRec['Batch ID'] == this.state.selID.split('%')[0]){
               var fontSize = 20
@@ -8693,8 +8804,8 @@ class BatchControl extends React.Component{
 
 
       }
-
      return <div style={{minHeight:400, padding:5}}>
+          
           <div style={{display:'grid', gridTemplateColumns:'315px auto'}}><div style={{display:'inline-block',verticalAlign:'top'}}>{batchList}</div>
           <div style={{display:'grid',verticalAlign:'top', gridTemplateRows:'200px 2px auto', backgroundColor:'#e1e1e1'}}>
           <div style={{display:'grid', gridTemplateColumns:'400px 2px auto'}}>
@@ -8721,7 +8832,6 @@ class BatchControl extends React.Component{
             </div>
 
           </div>
-         
          <Modal x={true} ref={this.addModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
           <AddBatch branding={this.props.branding} language={this.props.language} mac={this.props.mac} addBatch={this.addnewBatch} prodList={this.state.prodList}/>
         </Modal>
@@ -8737,7 +8847,7 @@ class BatchControl extends React.Component{
         </Modal>
         {bmodeSelect}
         <MessageModal ref={this.msgm}/>
-    </div>
+      </div>
   }
 }
 class PastBatches extends React.Component{
@@ -8912,7 +9022,7 @@ class ManBatch extends React.Component{
   }
   render(){
     console.log('param',vdefByMac[this.props.mac][1][12]['PlanBatchId'], vdefByMac[this.props.mac][1][12]['PlanBatchRef'],vdefByMac[this.props.mac][1][12]['PlanNumPacks'], vdefByMac[this.props.mac][1][12]['PlanProdNum'])
-    
+    var self = this;
 
     var selProdName = '';
     var selVal = 0

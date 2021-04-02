@@ -196,6 +196,8 @@ class Modal extends React.Component{
 		this.close = this.close.bind(this);
 		this.mb = React.createRef();
 		this.forceclose = this.forceclose.bind(this);
+		this.msgm = React.createRef();
+		this.showMsg = this.showMsg.bind(this);
 	}
 	componentWillReceiveProps (newProps){
 		if(typeof newProps.override != 'undefined'){
@@ -210,6 +212,9 @@ class Modal extends React.Component{
 	show(){
 		this.setState({show:true})
 	
+	}
+	showMsg(msg){
+		this.msgm.current.show(msg)
 	}
 	forceclose(){
 		this.setState({show:false})
@@ -305,7 +310,9 @@ class Modal extends React.Component{
 				im = <StealthMeterBar ref={this.mb} clear={this.clear} mobile={this.props.mobile}/>
 			}
 				cont = (<ModalCont x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
-					{im}{this.props.children}</ModalCont>)
+					{im}{this.props.children}
+					<MessageModal ref={this.msgm}/>
+					</ModalCont>)
 		
 
 		return(<div className={this.state.className} hidden={h}>
