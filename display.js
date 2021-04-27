@@ -15,6 +15,7 @@ const helmet = require('helmet');
 const cp = require('child_process')
 const sys = require('sys');
 const exec = require('child_process').exec;
+const scp = require('node-scp')
 var  NetworkInfo  = require('simple-ifconfig').NetworkInfo;
 const arloc = fti.ArmFind;
 
@@ -112,6 +113,13 @@ function sendPost(ip, _path, data){
 
     rq.write(data)
     rq.end()
+}
+function updateMe(){
+  exec('rm -rf /home/myuser/node', function(){
+    exec('tar -xzf /media/usb_stick/FortressTechnology/SATUPDATE.tar.gz -C /home/myuser', function () {
+
+    })
+  })
 }
 class FtiSockIOServer{
   constructor(sock){
@@ -269,10 +277,10 @@ app.post('/pull_tftp', function(req,res){
     }
     console.log(fpath)
     if(fs.existsSync('/media/usb_stick/FortressTechnology/'+dirPath+ path.basename(fpath))){
-      exec('tftp -p -l /media/usb_stick/FortressTechnology/'+dirPath+ path.basename(fpath) + ' -r '+fpath+' '+_HOST, function (err) {
+      exec('tftp -p -l /media/usb_stick/FortressTechnology/'+dirPath+ path.basename(fpath) + ' -r '+fpath+' '+_HOST, function (err, stdout, stderr) {
       // body...
-      if(err){
-        console.log('err - ', err)
+      if(err || stderr){
+        console.log('err - ', err, stderr)
          sendPost(_HOST,'/rcv_message', JSON.stringify({"message":"Upload failed."}))
       }else{
          sendPost(_HOST,'/done_tftp', JSON.stringify({"type":opts.type}))
@@ -286,6 +294,38 @@ app.post('/pull_tftp', function(req,res){
       sendPost(_HOST, '/rcv_message', JSON.stringify({"message":"Upload failed"}))
     }
     
+  }
+})
+app.post('/updateDisplay', function(){
+  console.log('update Display Sent')
+  if(fs.existsSync('/media/usb_stick/FortressTechnology/DISPUPDATE.tar.gz')){
+    //exec('scp /media/usb_stick/FortressTechnology/DISPUPDATE.tar.gz myuser@'+_HOST+':/run/media/sda1/srv/tftp/. \n MarShall51')
+    scp({host:_HOST, port:22, username:'myuser', password:'MarShall51'}).then(client => {
+      client.uploadFile('/media/usb_stick/FortressTechnology/DISPUPDATE.tar.gz', '/run/media/sda1/srv/tftp/DISPUPDATE.tar.gz').then(response => {
+        sendPost(_HOST,'/done_tftp', JSON.stringify({"type":"displayUpdate"}))
+        client.close();
+      }).catch(error => {
+        sendPost(_HOST,'/rcv_message', JSON.stringify({"message":"Upload failed."}))
+      })
+    }).catch( e=> {
+      console.log('err - ', err, stderr)
+         sendPost(_HOST,'/rcv_message', JSON.stringify({"message":"Upload failed."}))
+    }).finally(function () {
+      // body...
+      if(fs.existsSync('/media/usb_stick/FortressTechnology/SATUPDATE.tar.gz')){
+         //update pi
+
+      }
+
+    })
+   
+      
+  }else{
+    if(fs.existsSync('/media/usb_stick/FortressTechnology/SATUPDATE.tar.gz')){
+    //update pi
+    }else{
+      sendPost(_HOST, '/continueUpdate', JSON.stringify({}))
+    }
   }
 })
 app.use(helmet());

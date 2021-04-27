@@ -29,7 +29,7 @@ usb.on('attach',function(dev){
 	console.log('attach')
 	setTimeout(function(){
 
-		run_command("blkid | grep /dev/sd | grep -v Boot | grep -v FATBOOT", function(cb){
+		run_command("blkid | grep /dev/sd", function(cb){
 			if(cb.length > 0){
 				var array = cb.split('\n');
 				var line = array[0];
@@ -44,7 +44,10 @@ usb.on('attach',function(dev){
 				exec("mount --uuid " + uuid_from_line(line) + " "+ MOUNT_DIR, function (err, stdout, stderr) {
 					console.log(err)
 					// body...
-					if(fs.existsSync('/tmp/host.txt')){
+					if(err || stderr){
+						console.log(err, stderr)
+					}else{
+						if(fs.existsSync('/tmp/host.txt')){
 						fs.readFile('/tmp/host.txt', function(err, data){
 							console.log("ip", data.toString())
 							var server_ip = data.toString().trim();
@@ -60,6 +63,8 @@ usb.on('attach',function(dev){
 
 						})
 					}
+					}
+					
 				})
 			}
 		}, function(e,f){

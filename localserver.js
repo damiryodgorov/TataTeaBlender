@@ -274,8 +274,82 @@ function getPlannedBatches(ip,callback,failed){
     get = null;
   })
 }
+
+function getVdefFromTmp(ip,callback,failed){
+      fs.readFile('/tmp/vdef.json', (err, buffer)=>{
+    //  var buffer = Buffer.concat(rawVdef)
+      zlib.unzip(buffer, function(er,b){
+        if(typeof b == 'undefined'){
+          return;
+        }
+        var vdef = JSON.parse(b.toString())
+        if(typeof vdef['@defines'] != 'undefined'){
+          if(vdef['@defines']['CHECK_WEIGHER']){
+            vdefs[ip] = vdef; 
+            var nvdf = [[],[],[],[],[],[],[],[],[],[],[],[]];
+            var pVdef = [{},{},{},{},{},{},{},{},{},{},{},{}];
+            vdef['@params'].forEach(function (p) {
+              if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
+                nvdf[7].push(p['@name'])
+                pVdef[7][p['@name']] = p
+              }else if(p["@rec"] > 5){
+                nvdf[p["@rec"]+2].push(p['@name'])
+                pVdef[p['@rec']+2][p['@name']] = p
+              }else{
+                nvdf[p["@rec"]].push(p['@name'])
+                pVdef[p['@rec']][p['@name']] = p
+              }
+            })
+            for(var p in vdef['@deps']){
+              nvdf[vdef['@deps'][p]['@rec']].push(p)
+              pVdef[vdef['@deps'][p]['@rec']][p] = vdef['@deps'][p]
+            }
+            pVdef[6] = vdef["@deps"]
+            nVdfs[ip] = nvdf
+            pVdefs[ip] = pVdef
+            vdef = null;
+            b = null;
+         //   get.abort()     
+           // tclient = null; 
+          }else{
+            vdefs[ip] = vdef; 
+            var nvdf = [[],[],[],[],[],[],[]];
+            var pVdef = [{},{},{},{},{},{},{}];
+            vdef['@params'].forEach(function (p) {
+              if(("username" == p["@type"])||("user_lev" == p["@type"])||("user_pass_reset" == p["@type"])||("user_opts" == p["@type"])||("password_hash" == p["@type"])){
+                nvdf[6].push(p['@name'])
+                pVdef[6][p['@name']] = p
+              }else{
+                nvdf[p["@rec"]].push(p['@name'])
+                pVdef[p['@rec']][p['@name']] = p
+              }
+            })
+            for(var p in vdef['@deps']){
+              nvdf[vdef['@deps'][p]['@rec']].push(p)
+              pVdef[vdef['@deps'][p]['@rec']][p] = vdef['@deps'][p]
+            }
+            pVdef[5] = vdef["@deps"]
+            nVdfs[ip] = nvdf
+            pVdefs[ip] = pVdef
+            callback(ip,vdef) 
+            vdef = null;
+            b = null;
+        //    get.abort()     
+         //   tclient = null;   
+          } 
+        }
+        failed(ip)     
+      })
+      //rawVdef = null;
+      buffer = null;
+    })
+}
+
 function getVdef(ip, callback,failed){
-  var tclient = tftp.createClient({host:ip ,retries:10, timeout:1000})
+  if(fs.existsSync('/tmp/vdef.json')){
+    getVdefFromTmp(ip, callback, failed)
+  }else{
+    var tclient = tftp.createClient({host:ip ,retries:10, timeout:1000})
   var get = tclient.createGetStream('/flash/vdef.json')
       var rawVdef = [];
       get.on('data', (chnk)=>{
@@ -357,6 +431,8 @@ function getVdef(ip, callback,failed){
         failed(ip);
       }
     })
+  }
+  
 }
 function getVdefCW(ip, callback,failed){
   var tclient = tftp.createClient({host:ip ,retries:10, timeout:1000})
@@ -1439,6 +1515,29 @@ function setNifIp(addr, callback){
     },300)
 }
 
+function updateDisplay(){
+  exec('mount --options remount,rw /dev/root /  ', function(err, stdout, stderr){
+    if(fs.existsSync('/run/media/sda1/srv/tftp/DISPUPDATE.tar.gz')){
+      // body...
+        exec('rm -rf /home/myuser/node', function(){
+          exec('tar -xzf /run/media/sda1/srv/tftp/DISPUPDATE.tar.gz -C /home/myuser', function () {
+           if(fs.existsSync('/run/media/sda1/json/custVmap.json')){
+              exec('rm -f /run/media/sda1/json/custVmap.json', function () {
+                // body...
+                  relaySockMsg('confirmDisplayUpdate')
+           
+              })
+            }else{
+                relaySockMsg('confirmDisplayUpdate')
+           
+            }
+            // body...
+          })
+        })
+    }
+    
+  })
+}
 
 var Helper = new FtiHelper();
 var dspip = "192.168.10.59";
@@ -1511,6 +1610,8 @@ app.post('/done_tftp', function (req, res) {
     relaySockMsg('confirmProdImport',null)
   }else if(req.body.type == 'update'){
     relaySockMsg('confirmUpdate', null)
+  }else if(req.body.type == 'displayUpdate'){
+    updateDisplay();
   }
 })
 app.use(helmet());
@@ -1592,6 +1693,18 @@ wss.on('connection', function(scket, req){
 
     rq.write(data)
     rq.end()
+  })
+  socket.on('updateCW', function(){
+     if(fs.existsSync('/run/media/sda1/srv/tftp/update.zip')){
+      exec('rm /run/media/sda1/srv/tftp/update.zip', function (err, stdout, stderr) {
+        // body...
+         pullTftp('update.zip', {type:'update'})
+  
+      })
+    }else{
+       pullTftp('update.zip', {type:'update'})
+  
+    }
   })
 
   socket.on('importProds', function(mc){
@@ -1813,6 +1926,7 @@ wss.on('connection', function(scket, req){
     sockrelays[socket.id].cw = checkw
   
   })
+  /*
   usb.on('attach', function(dev){
     socket.emit('usbdetect')
     setTimeout(function(){
@@ -1826,53 +1940,19 @@ wss.on('connection', function(scket, req){
   })
   socket.on('startUpdate', function(det){update(det);
   })
-  socket.on('updateDisplay',function(){
-    exec('sudo fdisk -l', function(err,stdout,stderr){
-      var usbdrive = '/dev/sda1'
-      var _dev = stdout.split('\n\n').map(function(disk){
-      var arr = disk.trim().split('\n')
-        return arr;
+  */
+
+  socket.on('updateDisplay', function () {
+    if(fs.existsSync('/run/media/sda1/srv/tftp/DISPUPDATE.tar.gz')){
+      exec('rm -f /run/media/sda1/srv/tftp/DISPUPDATE.tar.gz',function(err, stderr, stdout){
+        sendPost(_TOUCHSCREEN_ADDR,'/updateDisplay', JSON.stringify({}));
       })
-      var _devices = []
-      var devices = []
-      _dev.forEach(function(d){
-        if(d[0].slice(0,6) == 'Device'){
-          _devices.push(d.slice(1))
-        }
-      })
-      _devices.forEach(function(dv){
-        if(dv[0]){
-          if(dv[0].trim().indexOf('/dev/sd') == 0){
-            dv.forEach(function(_dv){
-              devices.push(_dv.split(/\s/)[0])
-            })
-          }
-        }
-      })
-      if(devices.length != 0){
-        usbdrive = devices[0];
-      }
-      socket.emit('testusb', stdout)
-      exec('sudo mount '+usbdrive+' /mnt', function(err, stdout, stderr){
-        if(err || stderr){
-          socket.emit('notify', 'Update Failed')
-        }else{
-          fs.readFile('/mnt/FortressDisplayUpdate.txt', (err, res)=>{
-            if(err){
-              socket.emit('notify', 'issue reading file')
-              exec('sudo umount '+ usbdrive, function(er, stdout, stderr){});
-            }else{
-              unzipTar('/mnt/'+res.toString(), function (argument) {
-                exec('sudo umount '+usbdrive, function(er, stdout, stderr){
-                  exec('sudo reboot', function (argument) {
-                  })
-                })
-              })
-            }
-          })
-        }
-      })
-    })
+    }else{
+      sendPost(_TOUCHSCREEN_ADDR,'/updateDisplay', JSON.stringify({}));
+    }
+    // body...
+    
+
   })
   socket.on('reboot', function(){
     
@@ -1886,6 +1966,20 @@ wss.on('connection', function(scket, req){
     }, 1000)
     
   })
+  socket.on('formatInternalUsb', function(){
+    exec('killall STM* && sudo umount /run/media/sda1 && mkfs.ext4 -F /dev/sda1 ', function(){
+      sendPost(_TOUCHSCREEN_ADDR, '/reboot',JSON.stringify({}));
+   // }
+    setTimeout(function(){
+      exec('sudo reboot', function (argument) {
+      // body...
+    })  
+    }, 1000)
+    })
+   // if(_TOUCHSCREEN_ADDR.length > 0){///length > 0){
+    
+  })
+  /*
   socket.on('updateDisplay_old',function(){
     exec('sudo fdisk -l', function(err,stdout,stderr){
       var usbdrive = '/dev/sda1'
@@ -2226,6 +2320,7 @@ wss.on('connection', function(scket, req){
       })
     })
   })
+  */
   socket.on('getBatches', function (argument) {
     // body...
     if(fs.statSync('/run/media/sda1/srv/tftp/batches/list.txt')){
