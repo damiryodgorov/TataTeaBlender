@@ -14,11 +14,15 @@ On Pi:
 in /etc/init.d/fti-touchscreen.sh, the following lines should be present:
 
 pushd /home/myuser
+
 sudo node /home/myuser/node/usb.js &
+
 sudo node /home/myuser/node/display.js 3300 eth0 &
+
 popd
 
 sleep 7
+
 sudo -u myuser chromium --gpu-no-context-lost --enable-gpu-rasterization --start-fullscreen --kiosk --no-first-run --incognito http://localhost:3300/iframe.html > /dev/null 2>&1 &
 
 
