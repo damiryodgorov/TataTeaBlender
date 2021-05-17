@@ -518,6 +518,10 @@ class TrendBar extends React.Component{
 			colors = ['#ff0000','#00ff00','#ff0000']
 			bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + pctgs[0].toFixed(0) +  '%, #00aa00a0 ' +pctgs[0].toFixed(0)
 				+ '%, #00aa00a0 '+pctgs[1].toFixed(0)+'%, #aa0000a0 ' +pctgs[1].toFixed(0) + '%, #aa0000a0)';
+			if(this.props.allowOverweight == 1){
+				bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + pctgs[0].toFixed(0) +  '%, #00aa00a0 ' +pctgs[0].toFixed(0)
+				+ '%, #00aa00a0 '+pctgs[1].toFixed(0)+'%, #dddd00a0 ' +pctgs[1].toFixed(0) + '%, #dddd00a0)';
+			}
 
 			if(tickerVal < ranges[0]){
 				color = colors[0]
@@ -525,6 +529,9 @@ class TrendBar extends React.Component{
 				color = colors[1]
 			}else{
 				color = colors[2]
+				if(this.props.allowOverweight == 1){
+					color = "#ffdf00"
+				}
 			}
 			labels = ranges.map(function(r,i) {
 				// body...
@@ -823,6 +830,96 @@ class AFModalC extends React.Component{
 	}
 }
 var AFModalCont =  onClickOutside(AFModalC);
+class ProgressModal extends React.Component{
+	constructor(props){
+		super(props)
+	var klass = 'custom-modal'
+		if(this.props.className){
+			klass = this.props.className
+		}
+		this.state = ({className:klass, show:false, override:false ,keyboardVisible:false,message:''});
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+		
+	}
+	show (message) {
+		this.setState({show:true,message:message})
+	}
+	close () {
+		var self = this;
+		setTimeout(function () {
+			self.setState({show:false})
+		},100)
+		
+	}
+	
+	render () {
+		var	cont = ""
+		if(this.state.show){
+		cont =  <ProgressModalCont vMap={this.props.vMap} accept={this.props.accept} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{color:'#e1e1e1'}}>{this.state.message}</div></ProgressModalCont>
+		}
+		return <div hidden={!this.state.show} className= 'pop-modal'>
+			{cont}
+		</div>
+	}
+}
+class PrModalC extends React.Component{
+	constructor(props){
+		super(props);
+		this.handleClickOutside = this.handleClickOutside.bind(this)
+		this.close = this.close.bind(this);
+		this.accept = this.accept.bind(this);
+		this.cancel = this.cancel.bind(this);
+	}
+	componentDidMount() {
+		// body...
+	}
+	handleClickOutside(e) {
+		// body...
+		if(this.props.show){
+		//	this.props.close();
+		}
+		
+	}
+	close() {
+		// body...
+		if(this.props.show){
+			this.props.close();
+		}
+	}
+	accept(){
+		var self = this;
+		this.props.accept();
+		setTimeout(function(){
+			if(self.props.show){
+			self.props.close();
+			}
+		}, 100)
+		
+	}
+	cancel(){
+		var self = this;
+		setTimeout(function(){
+			self.close();
+			
+		}, 100)
+	}
+	render () {
+		// body...
+		var self = this;
+		
+		
+				 return( <div className='alertmodal-outer'>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Progress</div>
+	  			{this.props.children}
+				
+		  </div>)
+		
+
+	}
+}
+var ProgressModalCont =  onClickOutside(PrModalC);
+
 class MessageModal extends React.Component{
 	constructor(props){
 		super(props)
@@ -1496,3 +1593,4 @@ module.exports.AccModal = AccModal;
 module.exports.MessageConsole = MessageConsole;
 module.exports.ScrollArrow = ScrollArrow;
 module.exports.CustomFileInput = CustomFileInput;
+module.exports.ProgressModal = ProgressModal;

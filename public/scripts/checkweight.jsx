@@ -4,7 +4,7 @@ const ifvisible = require('ifvisible');
 const timezoneJSON = require('./timezones.json')
 var SmoothieChart = require('./smoothie.js').SmoothieChart;
 var TimeSeries = require('./smoothie.js').TimeSeries;
-import {CustomFileInput,TrendBar,TickerBox, CanvasElem, SlimGraph, DummyGraph, Modal,GraphModal, AuthfailModal, MessageModal, AlertModal, AccModal, MessageConsole, LockModal, ScrollArrow} from './components.jsx'
+import {CustomFileInput,TrendBar,TickerBox, CanvasElem, SlimGraph, DummyGraph, Modal,GraphModal, AuthfailModal, ProgressModal, MessageModal, AlertModal, AccModal, MessageConsole, LockModal, ScrollArrow} from './components.jsx'
 import {CircularButton, CircularButton2, ButtonWrapper, CustomAlertButton, CustomAlertClassedButton} from './buttons.jsx'
 import {PopoutWheel} from './popwheel.jsx'
 import {CustomKeyboard, KeyboardInputTextButton, EmbeddedKeyboard} from './keyboard.jsx'
@@ -33,6 +33,7 @@ const _ioBits = ['TACH','EYE','RC_1','RC_2','REJ_EYE','AIR_PRES','REJ_LATCH','BI
 var liveTimer = {}
 var myTimers = {}
 
+
 const SPARCBLUE2 = '#30A8E2'
 const SPARCBLUE1 = '#1C3746'
 const SPARCBLUE3 = '#475C67'
@@ -40,7 +41,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DIPLAYVERSION = '2021/04/20'
+const DIPLAYVERSION = '2021/04/27'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -92,6 +93,9 @@ function ToFixed(v,s){
     v = 0;
   }
   return v.toFixed(s)
+}
+function roundTo(num, dec) {    
+    return +(Math.round(num + "e+" + dec)  + "e-" + dec);
 }
 function formatLength(l, u){
   if(typeof l == 'undefined'){
@@ -922,6 +926,15 @@ function getFixed(val, d){
     return val.toFixed(d)
   }
 }
+function getLabTrans(name, language){
+  var str = name;
+  if(labTransV2[name]){
+    str = labTransV2[name][language]['name']
+  }
+  return str
+
+}
+
 /*************Helper functions end**************/
 
 /*******************Initialize Page end********************/
@@ -1017,7 +1030,7 @@ class LandingPage extends React.Component{
     this.state = {plannedBatches:[],buckMin:0,batchList:[], buckMax:100, prclosereq:false,histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],unusedList:{},cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
-      detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:''}
+      detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false}
     this.importVmap = this.importVmap.bind(this);
     this.exportVmap = this.exportVmap.bind(this);
     this.start = this.start.bind(this);
@@ -1108,6 +1121,7 @@ class LandingPage extends React.Component{
     this.notify = this.notify.bind(this)
     this.planStart = React.createRef();
     this.manStart = React.createRef();
+    this.prgmd = React.createRef();
     //this.msgm = React.createRef();
   }
   /*************Lifecycle functions start***************/
@@ -1133,18 +1147,6 @@ class LandingPage extends React.Component{
        self.setState({usernames:p.det.data.array})
       
     })
-  /*socket.on('batchDownload', function (batchFile) {
-      // body...
-       //fileDownload(batchFile.data,batchFile.fn)//socket.emit('downloadJSON')
-       var bjson = JSON.parse(batchFile.data);
-       var csvstr = ''
-       for(var b in bjson){
-        if(b.indexOf('Histogram') == -1){
-          csvstr += b +','+bjson[b].toString().split(',').join(' ') + '\n'
-        }
-       }
-       fileDownload(csvstr, 'batch.csv')
-    })*/
     socket.on('batchJson',function (json) {
       // body...
       console.log('batchJson',json.replace(/\s/g, '').replace(/\0/g, ''))
@@ -1175,27 +1177,53 @@ class LandingPage extends React.Component{
           //  this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
           }else{
      
-      toast('Files copied.. Checking display update')
+          self.prgmd.current.show('Files copied.. Checking display update')
+      //toast()
       //check for display update
-        self.sendPacket('updateDisplay')
+        socket.emit('updateDisplay')
       //self.sendPacket('updateSystem')
        }
         }
     })
     socket.on('confirmDisplayUpdate', function (argument) {
       // body...
+      self.setState({scpStatus:false})
       if(typeof self.state.fram['InternalIP'] != 'undefined'){
           if(window.location.host != self.state.fram['InternalIP']){
             console.log('confirm update sent to remote')
           //  this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
           }else{
-     
-      toast('Updating Checkweigher')
-      //check for display update
-       // self.sendPacket('checkAndUpdateDisplay')
-      self.sendPacket('updateSystem')
-       }
+            self.prgmd.current.show('Updating Checkweigher')
+            self.sendPacket('updateSystem')
+          }
         }
+    })
+    socket.on('scpFileSize',function (argument) {
+      // body...
+      console.log('scpFileSize', argument)
+      self.setState({scpFileSize:argument.size, scpStatus:true})
+
+      setTimeout(function () {
+        // body...
+        socket.emit('pollFileSize', argument.filename)
+      },2000)
+
+    })
+    socket.on('fileSize', function (arg) {
+      // body...
+        console.log('fileSize', arg)
+        self.prgmd.current.show(arg.filename + ' '+(arg.size*100/self.state.scpFileSize).toFixed(0) + '% transferred')
+          
+      if(self.state.scpStatus){
+          setTimeout(function () {
+            // body...
+            socket.emit('pollFileSize', arg.filename)
+          }, 1000)
+      }
+    })
+    socket.on('prgNotify', function (str) {
+      // body...
+      self.prgmd.current.show(str)
     })
     socket.on('connectedClients',function (c) {
       var fram = self.state.fram
@@ -1286,29 +1314,12 @@ class LandingPage extends React.Component{
       self.setState({mbunits:f, detL:detL})
     })
     socket.on('notify',function(msg){
-      console.log(msg)
-      //toast(msg)
-      /*if(self.batModal.current.state.show){
-        self.batModal.current.showMsg(msg)
-      }else{
-        self.msgm.current.show(msg)
-
-      }*/
-
       self.notify(msg)
     })
     socket.on('progressNotify',function(pk){
       var on = pk.on;
       var msg = pk.msg;
       var percentage = pk.percentage
-    })
-    socket.on('testusb',function(dev){
-      var _dev = dev.split('\n\n').map(function(disk){
-      var arr = disk.trim().split('\n')
-        return arr;
-      })
-      console.log(['testusb',_dev])
-      toast('usb attached')
     })
     socket.on('noVdef', function(det){
       console.log('no Vdef')
@@ -1574,9 +1585,9 @@ class LandingPage extends React.Component{
         this.batModal.current.showMsg(msg)
       }else if(this.pmodal.current.state.show){
         this.pmodal.current.showMsg(msg)
-      }else if(this.pmodal.current.state.show){
+      }else if(this.settingModal.current.state.show){
         this.settingModal.current.showMsg(msg)
-      }else if(this.pmodal.current.state.show){
+      }else if(this.cwModal.current.state.show){
         this.cwModal.current.showMsg(msg)
       }else{
         this.msgm.current.show(msg)
@@ -1773,11 +1784,19 @@ class LandingPage extends React.Component{
                // toast('Batch Paused')
                this.ste.current.showMsg('Batch Paused')
               }else{
-                this.msgm.current.show('Batch Stopped')
+                //this.msgm.current.show('Batch Stopped')
                 this.ste.current.showMsg('Batch Stopped')
                //  toast('Batch Stopped')
               }
               noupdate = false
+            }
+            if(e.rec['BatchRunComplete'] != this.state.rec['BatchRunComplete']){
+              if(typeof this.state.rec['BatchRunComplete'] != 'undefined'){
+                if(e.rec['BatchRunComplete'] == 1){
+                  this.msgm.current.show('Batch Completed')
+                  this.ste.current.showMsg('Batch Completed')
+                }
+              }
             }
           }
           this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
@@ -2226,10 +2245,11 @@ class LandingPage extends React.Component{
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if(n=='DateTime'){
-        var rpc = vdef[0]['@rpc_map']['LOCF_DATE_TIME_WRITE']
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_DATETIMEWRITE']
   
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      console.log('DATE TIME SENT', this.state.curDet.ip)
       }else if(n=='DaylightSavings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
   
@@ -2644,7 +2664,7 @@ class LandingPage extends React.Component{
     socket.emit('reboot')
   }
   update(){
-    toast('Update in progress..')
+    //toast('Update in progress..')
     socket.emit('updateCW')
   }
   formatUSB(){
@@ -2937,7 +2957,7 @@ var lw = 0;
           <LineGraph weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
                     winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.state.buckMin} buckMax={this.state.buckMax}>
-          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb}/></LineGraph></div>
+          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></LineGraph></div>
           </td><td>
             <HorizontalHisto language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
           </td></tr></tbody></table>
@@ -2987,6 +3007,7 @@ var lw = 0;
                 accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
         <AuthfailModal ref={this.am} forgot={this.forgot}/>
       <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
+            <ProgressModal ref={this.prgmd}/>
             <MessageModal ref={this.msgm}/>
         <LogoutModal ref={this.lgoModal} branding={this.state.branding}/>
         <LockModal ref={this.lockModal} branding={this.state.branding}/>
@@ -3060,6 +3081,8 @@ class ProductSettings extends React.Component{
     this.pg = React.createRef();
     this.pgm = React.createRef();
     this.pmgmt = React.createRef();
+    this.apmgmt = React.createRef();
+    
     this.prodMgmt = this.prodMgmt.bind(this);
     this.submitChange = this.submitChange.bind(this);
     this.closeKeyboard = this.closeKeyboard.bind(this);
@@ -3076,6 +3099,7 @@ class ProductSettings extends React.Component{
     this.onRestore = this.onRestore.bind(this);
     this.onBackup = this.onBackup.bind(this);
     this.copyFromFt = this.copyFromFt.bind(this);
+    this.advProdMgmt = this.advProdMgmt.bind(this);
     this.copyFromDef = this.copyFromDef.bind(this);
   }
   componentWillReceiveProps(newProps){
@@ -3102,7 +3126,18 @@ class ProductSettings extends React.Component{
     return true;
   }
   prodMgmt(){
-    this.pmgmt.current.toggle();
+    //var prodEditAcc = this.props.level >= this.props.srec['PassAccProdEdit'];
+    var advProdEditAcc = this.props.level >= this.props.srec['PassAccAdvProdEdit'];
+      if(this.props.srec['PassOn'] == 0){
+      //  prodEditAcc = true;
+        advProdEditAcc = true;
+      }
+    if(advProdEditAcc){
+      this.pmgmt.current.toggle();  
+    }else{
+      this.msgm.current.show('Access Denied')
+    }
+    
   }
   toggleGraph(){
     this.pgm.current.toggle();
@@ -3597,7 +3632,7 @@ class ProductSettings extends React.Component{
        socket.emit('importProds', this.props.mac)
   
     }else{
-      this.msgm.current.show('Plug in USB drive and try again')
+      //this.msgm.current.show('Plug in USB drive and try again')
     }
   }
   onExport(){
@@ -3605,7 +3640,7 @@ class ProductSettings extends React.Component{
     socket.emit('exportProds', this.props.mac)
       
     }else{
-      this.msgm.current.show('Plug in USB drive and try again')
+   //   this.msgm.current.show('Plug in USB drive and try again')
     }
   }
   onBackup(){
@@ -3613,7 +3648,7 @@ class ProductSettings extends React.Component{
     socket.emit('backupProds', this.props.mac)
       
     }else{
-      this.msgm.current.show('Plug in USB drive and try again')
+   //   this.msgm.current.show('Plug in USB drive and try again')
     }
   }
   onRestore(){
@@ -3622,7 +3657,7 @@ class ProductSettings extends React.Component{
 
     }else{
      
-      this.msgm.current.show('Plug in USB drive and try again')
+   //   this.msgm.current.show('Plug in USB drive and try again')
     }
   }
   deleteAll(){
@@ -3632,6 +3667,10 @@ class ProductSettings extends React.Component{
       this.msgm.current.show('Access Denied')
     }
   }
+  advProdMgmt(){
+    this.apmgmt.current.show();
+  }
+
   render(){
     var self = this;
     var list = [];
@@ -3801,7 +3840,7 @@ class ProductSettings extends React.Component{
       if(prd.no == self.state.selProd){
         scrollInd = i;
       }
-      return <div> <ProductSelectItem sendPacket={self.props.sendPacket} branding={self.props.branding} name={prd.name} p={prd.no} isNull={prd.null} deleteProd={self.deleteProd} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
+      return <div> <ProductSelectItem advAcc={advProdEditAcc} sendPacket={self.props.sendPacket} branding={self.props.branding} name={prd.name} p={prd.no} isNull={prd.null} deleteProd={self.deleteProd} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
          </div>
     })
 
@@ -3821,6 +3860,44 @@ class ProductSettings extends React.Component{
       spstr = this.props.runningProd + '. '+rp.name;
     }
     var SA = (list.length > 8)
+
+    var createNew = <div>
+       <div style={{color:'#e1e1e1', fontSize:25}}>Create new product</div>
+       <div style={{textAlign:'center'}}>
+            <CircularButton onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From selected product'}/>
+            <CircularButton onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From base product'}/>
+         
+            <CircularButton onClick={this.copyFromFt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From factory product'}/>
+            <CircularButton onClick={this.advProdMgmt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Product Records Management'}/>
+         
+         
+          </div>
+    </div>
+
+    var usbMsg = ''
+    var usbButStyle = innerStyle;
+    if(!this.props.usb){
+      usbMsg = <div style={{color:'#ff0000', textAlign:'center'}}>** Plug in USB Key for import and export! **</div>
+      usbButStyle.color = '#aaa'
+    }
+
+    var advProdMgmt = <div>
+       <div style={{color:'#e1e1e1', fontSize:25}}>Advanced Options</div>
+       {usbMsg}
+       <div>
+            <CircularButton onClick={this.onImport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Import'}/>
+            <CircularButton onClick={this.onExport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Export'}/>
+         
+          </div>
+          <div>
+            <CircularButton onClick={this.onRestore} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Restore'}/>
+            <CircularButton onClick={this.onBackup} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Backup'}/>
+         
+          </div>
+          <div>
+          <CircularButton onClick={this.deleteAll} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Delete All'}/>
+          </div>
+    </div>
 
     //   <div onClick={this.copyTo} style={{display:'table-cell',height:85, borderRight:'2px solid #ccc', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
        
@@ -3862,29 +3939,8 @@ class ProductSettings extends React.Component{
       
       </Modal>
       <Modal x={true} Style={{width:870, marginTop:50}} ref={this.pmgmt} branding={this.props.branding}>
-        <div style={{color:'#e1e1e1', fontSize:25}}>Product Management</div>
-        <div>
-          <div>
-            <CircularButton onClick={this.onImport} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Import'}/>
-            <CircularButton onClick={this.onExport} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Export'}/>
-         
-          </div>
-          <div>
-            <CircularButton onClick={this.onRestore} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Restore'}/>
-            <CircularButton onClick={this.onBackup} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Backup'}/>
-         
-          </div>
-          <div>
-            <CircularButton onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Copy from current product'}/>
-            <CircularButton onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Copy from default product'}/>
-         
-          </div>
-           <div>
-            <CircularButton onClick={this.copyFromFt} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Copy from factory product'}/>
-            <CircularButton onClick={this.deleteAll} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Delete All'}/>
-         
-          </div>
-        </div>
+        {createNew}
+        <Modal x={true} Style={{width:870, marginTop:50}} ref={this.apmgmt} branding={this.props.branding}>{advProdMgmt}</Modal>
       </Modal>
       
       <MessageModal ref={this.msgm}/>
@@ -3897,6 +3953,7 @@ class ProductSelectItem extends React.Component{
   constructor(props){
     super(props)
     this.confModal = React.createRef();
+    this.msgm = React.createRef();
     this.switchProd = this.switchProd.bind(this);
     this.deleteProd = this.deleteProd.bind(this); 
     this.advChanges = this.advChanges.bind(this);
@@ -3926,7 +3983,12 @@ class ProductSelectItem extends React.Component{
     var self = this;
     setTimeout(function (argument) {
       // body...
-      self.confModal.current.toggle()
+      if(self.props.advAcc){
+             self.confModal.current.toggle()
+        
+      }else{
+        self.msgm.current.show('Access Denied')
+      }
     },100)
     
   }
@@ -3936,6 +3998,7 @@ class ProductSelectItem extends React.Component{
     setTimeout(function(){
       self.props.sendPacket('getProdList')
       self.switchProd();
+      self.confModal.current.close();
     },1000)
   }
   restoreBackup(){
@@ -3944,12 +4007,14 @@ class ProductSelectItem extends React.Component{
         setTimeout(function(){
       self.props.sendPacket('getProdList')
       self.switchProd();
+      self.confModal.current.close();
     },1000)
 
 
   }
   backupProduct(){
     this.props.sendPacket('backupProduct')
+    this.confModal.current.close();
   }
   render () {
     
@@ -3993,7 +4058,9 @@ class ProductSelectItem extends React.Component{
               <CircularButton onClick={this.restoreBackup} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to base product'}/>
        <CircularButton onClick={this.backupProduct} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Save selected product to base product'}/>
         </div>
+        <MessageModal ref={this.msgm}/>
           </Modal>
+        
       </div>)
   }
 }
@@ -4171,9 +4238,12 @@ class ProdSettingEdit extends React.Component{
                 }
               }
             }
-
-
-        ckb = <CustomKeyboard sendAlert={msg => this.msgm.current.show(msg)} min={[minBool,min]} max={[maxBool,max]} preload={this.props.param['@name'] == 'ProdName'} 
+            //var labVal = this.props.value
+            var fDec = 0;
+            if(self.props.param['@float_dec']){
+              fDec = self.props.param['@float_dec']
+            }
+        ckb = <CustomKeyboard floatDec={fDec} sendAlert={msg => this.msgm.current.show(msg)} min={[minBool,min]} max={[maxBool,max]} preload={this.props.param['@name'] == 'ProdName'} 
                     branding={this.props.branding} ref={this.ed} language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} 
                     num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value} submitTooltip={this.submitTooltip}/>
 
@@ -4284,7 +4354,7 @@ class SettingsPageWSB extends React.Component{
     }else if(dat[0] == 'format_usb'){
       //toast('Restarting Display')
       //socket.emit('reboot')
-      this.sendPacket('formatUSB',0)
+      this.sendPacket('format_usb',0)
     }else if(dat[0] == 'get_unused'){
       //toast('Restarting Display')
       //socket.emit('reboot')
@@ -4558,7 +4628,9 @@ class SettingsPage extends React.Component{
     this.update = this.update.bind(this);
   }
   update(){
-    toast('Update in progress..')
+    console.log('update CW Clicked')
+   // toast('Update in progress..')
+
     socket.emit('updateCW')
   }
   goToShortcut(path){
@@ -4830,35 +4902,24 @@ class SettingsPage extends React.Component{
   }
   sendPacket(n,v) {
     var self = this;
-    ////console.log([n,v])
+    var vdef = vdefByMac[this.props.mac]
+    console.log([n,v])
     if(n == 'format_usb'){
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_FORMATUSB']
             var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],rpc[2]);
       socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
  
-    }if(n == 'vfdChange'){
+    }else if(n == 'vfdChange'){
       console.log('vfdChange')
       var packet = dsp_rpc_paylod_for(v['@rpcs']['changevfdwrite'][0], v['@rpcs']['changevfdwrite'][1],v['@rpcs']['changevfdwrite'][2]);
        socket.emit('rpc', {ip:this.props.dsp, data:packet})
-    }else if(n['@rpcs']['vfdstart']){
-    if(v == 1){
-     // n['@rpcs']['vfdstart'][0]
-     console.log('vfdstart')
-      var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstart'][0], n['@rpcs']['vfdstart'][1],n['@rpcs']['vfdstart'][2]);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
-    }else{
-      console.log('vfdstop')
-       var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstop'][0], n['@rpcs']['vfdstop'][1],n['@rpcs']['vfdstop'][2]);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
-
-    }
-
-   }else if(n=='DateTime'){
-        var rpc = vdef[0]['@rpc_map']['LOCF_DATE_TIME_WRITE']
+    }else if(n=='DateTime'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_DATETIMEWRITE']
   
         var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
-      socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
-      }else if(n=='DaylightSavings'){
+      socket.emit('rpc',{ip:this.props.dsp, data:packet})
+       console.log('DATE TIME SENT', this.props.dsp) 
+    }else if(n=='DaylightSavings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
   
       var pkt = rpc[1].map(function (r) {
@@ -4890,7 +4951,20 @@ class SettingsPage extends React.Component{
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
       socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
-      }else if(n['@rpcs']['vfdwrite']){
+      }else if(n['@rpcs']['vfdstart']){
+    if(v == 1){
+     // n['@rpcs']['vfdstart'][0]
+     console.log('vfdstart')
+      var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstart'][0], n['@rpcs']['vfdstart'][1],n['@rpcs']['vfdstart'][2]);
+        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+    }else{
+      console.log('vfdstop')
+       var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstop'][0], n['@rpcs']['vfdstop'][1],n['@rpcs']['vfdstop'][2]);
+        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+
+    }
+
+   }else if(n['@rpcs']['vfdwrite']){
       var arg1 = n['@rpcs']['vfdwrite'][0];
       var arg2 = [];
       var ind = n['@rpcs']['vfdwrite'][2][0];
@@ -5084,7 +5158,7 @@ class SettingsPage extends React.Component{
     socket.emit('reboot')
   }
   formatUSB(){
-    this.sendPacket('formatUSB',0)
+    this.sendPacket('format_usb',0)
   }
   translatePopup(){
     this.trnsmdl.current.toggle();
@@ -5618,8 +5692,10 @@ class SettingItem3 extends React.Component{
         },200)
       }
     
+
     this.props.sendPacket(n,val)  
-     console.log('this should execute')
+
+     console.log('this should execute', n, v)
 
     }
   }
@@ -6440,6 +6516,7 @@ class MultiEditControl extends React.Component{
       this.props.sendPacket('DaylightSavings',dst)
     }
     changeDT(dt){
+      console.log('changeDT', dt)
       this.props.sendPacket('DateTime', dt)
     //  this.dtsModal.current.close();
     }
@@ -6574,6 +6651,7 @@ class MultiEditControl extends React.Component{
           }
         }
       }else if(self.props.param[i]['@name'] == 'Timezone'){
+        _st.lineHeight = '24px'
         if(val == 0){
           val = 1;
         }
@@ -6814,7 +6892,7 @@ class MultiEditControl extends React.Component{
               return tz.text;
             })
             labs.unshift('')
-                return <PopoutWheel submitTooltip={self.submitTooltip} inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={self['input'+i]} val={[v]} options={[labs]} onChange={self.selectChanged} index={i}/>
+                return <PopoutWheel submitTooltip={self.submitTooltip} inputs={inputSrcArr} ovWidth={500} outputs={outputSrcArr} branding={self.props.branding} mobile={self.props.mobile} params={self.props.param}  ioBits={self.props.ioBits} vMap={self.props.vMap} language={self.props.language} interceptor={false} name={namestring} ref={self['input'+i]} val={[v]} options={[labs]} onChange={self.selectChanged} index={i}/>
         
           }else{
             var num = true
@@ -6904,12 +6982,16 @@ class MultiEditControl extends React.Component{
             var lbl = namestring
             if(self.props.combo){ lbl = lbl + [' Delay', ' Duration'][i]}
               if(self.props.dt){
-                return <DateTimeModal language={self.props.language} branding={self.props.branding} value={v} ref={self['input'+i]} onEdit={self.valChanged}/>
+                return <DateTimeModal language={self.props.language} branding={self.props.branding} value={v} ref={self['input'+i]} onEdit={self.changeDT}/>
+              }
+              var dispV = v
+              if(float_dec){
+                dispV = dispV.toFixed(float_dec)
               }
 
               return <CustomKeyboard floatDec={float_dec} sendAlert={msg => self.msgm.current.show(msg)} min={[minBool, min]} max={[maxBool, max]} submitTooltip={self.submitTooltip} branding={self.props.branding} mobile={self.props.mobile} 
                datetime={self.props.dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={self['input'+i]} onRequestClose={self.onRequestClose}
-                onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + v}/>
+                onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + dispV}/>
             }
         })
               if(this.props.nameovr){
@@ -7240,6 +7322,9 @@ class AccountRow extends React.Component{
       var vLabels = valArray.map(function(d,i){
       var val = d;
       var cst = Object.assign({},st)
+      if(val.length > 40){
+        cst.fontSize = 20
+      }
       cst.width = labWidth
       return (<CustomLabel index={i} onClick={self.valClick} style={cst}>{val}</CustomLabel>)
     })
@@ -8629,13 +8714,16 @@ class WeightHistogram extends React.Component{
     u = this.props.unit
   }
   var factors = [1, 0.001, 0.002201, 0.035274]
-  var sigfigs = [2, 4, 4, 3]
+  var sigfigs = [1, 2, 2, 1]
     var labelData = labDat.map(function(d){
       var lax = 'end'
       return  {x:d.x,y:d.y,label:d.y, xOffset:-15, yOffset:0, size:0.5, labelAnchorX:lax, style:{fill:'#888', fontSize:14}}
     })
+
+
+
     return <XYPlot xDomain={this.state.range} yDomain={[0,max*1.1]} height={317} width={540} margin={{left:50,right:0,bottom:50,top:50}}>
-     <XAxis tickFormat={val => ToFixed(val*factors[u],sigfigs[u])} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
+     <XAxis tickFormat={val => roundTo(val*factors[u],sigfigs[u])} tickTotal={10} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
      <YAxis tickFormat={val => Math.round(val) === val ? val : ""} hideTicks={max<1} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
         <VerticalRectSeries data={data} color={'darkturquoise'}/>
     </XYPlot>
@@ -8824,7 +8912,8 @@ class ManBatchStart extends React.Component{
      
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
-    <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.state.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>      <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={'Confirm'}/></div>
+    <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.state.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>      
+    <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={'Start Batch'}/></div>
       
     </div>
     </Modal>
@@ -9072,28 +9161,6 @@ class BatchControl extends React.Component{
       return p.no + '. '+ p.name;
     })
 
-    // <div style={{marginTop:5}}><ProdSettingEdit language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalWeight']+'g'} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}/></div>
-          
-   /* var plannedBatches = this.state.plannedBatches.map(function (bat, i) {
-      var bgc = '#e1e1e1'
-      var del = ''
-      if(self.state.selBatch == i+1){
-        bgc = '#7ccc7c'
-      } else{
-        del =  <img src='assets/trash.svg' style={{width:30}} onClick={()=>self.deleteBatch(bat['PlanBatchId'])}/>
-      }
-      return  <div style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc, display:'grid', gridTemplateColumns:'260px 40px'}}>
-        <div  onClick={() => self.onBatchClick(i+1)}><div>Batch Id: {bat['PlanBatchId']}</div>
-        <div>Batch Ref: {bat['PlanBatchRef']}</div>
-        <div>Product: {prMap[bat['PlanProdNum']]}</div>
-        </div><div style={{display:'flex', textAlign:'center'}}>
-         {del}
-        </div>
-        </div>
-      // body...
-    })*/
-            //return <div></div>
-
     
     var pastBatches = []
     var plannedBatchesStart = this.state.plannedBatches.map(function (bat, i) {
@@ -9136,7 +9203,8 @@ class BatchControl extends React.Component{
       var batback = '#e1e1e1' 
       var batNum = this.props.prod['BatchNumber']
       var batRef = this.props.prod['BatchRef']
-      var packNum = this.props.drec['PackCount']
+      var packNum = this.props.crec['PassWeightCnt']
+      var batchCount = this.props.prod['BatchCount']
       var prodName = this.props.prod['ProdName']  
       if(this.state.selBatch == 0){
         batback = '#7ccc7c'
@@ -9167,13 +9235,17 @@ class BatchControl extends React.Component{
 
     var fSize = 20
     
+    if(batchCount != 0){
+      if(typeof this.props.crec['PassWeightCnt'] != 'undefined'){
+        packNum = this.props.crec['PassWeightCnt']+'/' +batchCount
+      }
+    }
 
     var batchSummary = <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
           <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batNum}</div></div>
           <div><div style={titleSt}>Batch Ref</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batRef}</div></div>
           <div><div style={titleSt}>Product</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fSize}}>{prodName}</div></div></div>
-          <div><div style={titleSt}>Time</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{bstartTime}</div></div>
-          <div><div style={titleSt}>Number of Packs</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
+          <div><div style={titleSt}>Start Time</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{bstartTime}</div></div>
           
          </div>
 
@@ -9195,7 +9267,7 @@ class BatchControl extends React.Component{
       var batchWeights = <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>Batch Weights</div>
           <div>
            <div style={{fontSize:17, whiteSpace:'nowrap'}}>
-          <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['PassWeightCnt']}</div></div>
+          <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
           <div><div style={titleSt}>Low Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowRejCnt']}</div></div>
           <div><div style={titleSt}>Low Pass</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowPassCnt']}</div></div>
           <div><div style={titleSt}>High</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['HighCnt']}</div></div>
@@ -9262,7 +9334,7 @@ class BatchControl extends React.Component{
               <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch ID']}</div></div>
               <div><div style={titleSt}>Batch Ref</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Ref']}</div></div>
               <div><div style={titleSt}>Product</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fontSize}}>{this.state.bRec['Product Name'].trim()}</div></div></div>
-              <div><div style={titleSt}>Time</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Start Time']}</div></div>
+              <div><div style={titleSt}>Start Time</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Start Time']}</div></div>
               </div>
 
                batchInfo =  <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5, whiteSpace:'nowrap'}}>
@@ -10007,11 +10079,12 @@ class DateTimeModal extends React.Component{
     this.dtsModal = React.createRef();
   }
   changeDT(v){
+    var self = this;
     this.props.onEdit(v)
     setTimeout(function () {
       // body...
-      this.dtsModal.current.close();
-    })
+      self.dtsModal.current.close();
+    },100)
   }
   toggle(){
     var self = this;
@@ -10466,7 +10539,7 @@ class DeleteModal extends React.Component{
   render () {
     var cont = ""
     if(this.state.show){
-    cont =  <DeleteModalCont branding={this.props.branding} vMap={this.props.vMap} delete={this.delete} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{'Delete Selected Product?'}</DeleteModalCont>
+    cont =  <DeleteModalCont branding={this.props.branding} vMap={this.props.vMap} delete={this.delete} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{width:400}}>Delete Selected Product? This will also delete all associated planned batches.</div></DeleteModalCont>
     }
     return <div hidden={!this.state.show} className= 'pop-modal'>
       {cont}
@@ -10528,7 +10601,7 @@ class DeleteModalC extends React.Component{
     return( <div className={klass}>
           <div style={{padding:10}}>
           <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
-          <div>
+          <div style={{color:clr}}>
           {this.props.children}
           </div>
         <div>

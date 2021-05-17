@@ -117,7 +117,10 @@ function sendPost(ip, _path, data){
 function updateMe(){
   exec('rm -rf /home/myuser/node', function(){
     exec('tar -xzf /media/usb_stick/FortressTechnology/SATUPDATE.tar.gz -C /home/myuser', function () {
-
+      exec('sync', function () {
+        exec('reboot -f')
+        // body...
+      })
     })
   })
 }
@@ -299,6 +302,9 @@ app.post('/pull_tftp', function(req,res){
 app.post('/updateDisplay', function(){
   console.log('update Display Sent')
   if(fs.existsSync('/media/usb_stick/FortressTechnology/DISPUPDATE.tar.gz')){
+    var size = fs.statSync('/media/usb_stick/FortressTechnology/DISPUPDATE.tar.gz').size
+
+    sendPost(_HOST, '/fileSize', JSON.stringify({"filename":"DISPUPDATE.tar.gz", "size":size}))
     //exec('scp /media/usb_stick/FortressTechnology/DISPUPDATE.tar.gz myuser@'+_HOST+':/run/media/sda1/srv/tftp/. \n MarShall51')
     scp({host:_HOST, port:22, username:'myuser', password:'MarShall51'}).then(client => {
       client.uploadFile('/media/usb_stick/FortressTechnology/DISPUPDATE.tar.gz', '/run/media/sda1/srv/tftp/DISPUPDATE.tar.gz').then(response => {
@@ -314,8 +320,8 @@ app.post('/updateDisplay', function(){
       // body...
       if(fs.existsSync('/media/usb_stick/FortressTechnology/SATUPDATE.tar.gz')){
          //update pi
-
-      }
+         updateMe();
+      } 
 
     })
    
@@ -323,6 +329,7 @@ app.post('/updateDisplay', function(){
   }else{
     if(fs.existsSync('/media/usb_stick/FortressTechnology/SATUPDATE.tar.gz')){
     //update pi
+    updateMe();
     }else{
       sendPost(_HOST, '/continueUpdate', JSON.stringify({}))
     }

@@ -1524,11 +1524,17 @@ function updateDisplay(){
            if(fs.existsSync('/run/media/sda1/json/custVmap.json')){
               exec('rm -f /run/media/sda1/json/custVmap.json', function () {
                 // body...
+                exec('sync',function (argument) {
                   relaySockMsg('confirmDisplayUpdate')
-           
+           // body...
+                })
+                  
               })
             }else{
-                relaySockMsg('confirmDisplayUpdate')
+                exec('sync',function (argument) {
+                  relaySockMsg('confirmDisplayUpdate')
+           // body...
+                })
            
             }
             // body...
@@ -1614,6 +1620,9 @@ app.post('/done_tftp', function (req, res) {
     updateDisplay();
   }
 })
+app.post('/fileSize', function(req,res){
+  relaySockMsg('scpFileSize',req.body)
+})
 app.use(helmet());
 app.on('error', function(err){
   //console.log(err)
@@ -1695,6 +1704,7 @@ wss.on('connection', function(scket, req){
     rq.end()
   })
   socket.on('updateCW', function(){
+    socket.emit('prgNotify', 'Starting update...')
      if(fs.existsSync('/run/media/sda1/srv/tftp/update.zip')){
       exec('rm /run/media/sda1/srv/tftp/update.zip', function (err, stdout, stderr) {
         // body...
@@ -1705,6 +1715,22 @@ wss.on('connection', function(scket, req){
        pullTftp('update.zip', {type:'update'})
   
     }
+  })
+  socket.on('pollFileSize', function (fn) {
+    // body...
+    console.log('poll File Size', fn)
+    fs.stat('/run/media/sda1/srv/tftp/'+fn, function (err, stats) {
+      // body...
+      var size = 0;
+      if(err){
+        console.log(err)
+      }else{
+        size = stats.size
+      }
+      console.log('scpFileSize', size)
+    socket.emit('fileSize', {filename:fn, size:size})
+    })
+    
   })
 
   socket.on('importProds', function(mc){
@@ -1926,23 +1952,10 @@ wss.on('connection', function(scket, req){
     sockrelays[socket.id].cw = checkw
   
   })
-  /*
-  usb.on('attach', function(dev){
-    socket.emit('usbdetect')
-    setTimeout(function(){
-      exec('sudo fdisk -l', function(err,stdout,stderr){
-        socket.emit('testusb', stdout)
-      })
-    }, 500)
-  })
-  usb.on('detach', function(dev){
-    socket.emit('usbdetach')
-  })
-  socket.on('startUpdate', function(det){update(det);
-  })
-  */
+
 
   socket.on('updateDisplay', function () {
+    //socket.emit('notify', 'UPDATE DISPLAY')
     if(fs.existsSync('/run/media/sda1/srv/tftp/DISPUPDATE.tar.gz')){
       exec('rm -f /run/media/sda1/srv/tftp/DISPUPDATE.tar.gz',function(err, stderr, stdout){
         sendPost(_TOUCHSCREEN_ADDR,'/updateDisplay', JSON.stringify({}));
@@ -2345,7 +2358,10 @@ wss.on('connection', function(scket, req){
   socket.on('downloadBatch', function (fn) {
     fs.readFile('/run/media/sda1/srv/tftp/batches/'+ fn, function (err, data) {
       // body...
-      socket.emit('batchDownload', {fn:fn, data:data.toString()})
+      if(!err){
+        socket.emit('batchDownload', {fn:fn, data:data.toString()})  
+      }
+      
     })
     // body...
   })
