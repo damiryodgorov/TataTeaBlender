@@ -484,67 +484,7 @@ function getVdefCW(ip, callback,failed){
       }
     })
 }
-function updateDisplayFiles(files,cnt,callBack){
-  if(cnt + 1 > files.length){
-    callBack(true)
-  }else{
-    exec('sudo rm -f '+ files[cnt].split(';')[0],function(){
-      exec('sudo cp /mnt/'+files[cnt].split(';')[1] + ' '+__dirname+'/'+ files[cnt].split(';')[0], function(){
-        updateDisplayFiles(files, cnt+1, callBack)
-      })
-    })
-  }
-}
-function unzipTar(path, callback) {
-  // body...
-  relaySockMsg('displayUpdate')
-  relaySockMsg('updateProgress','Copying Archive')
-  exec('sudo rsync '+ path + ' /home/myuser/temp', function () {
-    if(crc.crc32(fs.readFileSync(path)) == crc.crc32(fs.readFileSync('/home/myuser/temp'))){
-    // body...
-    relaySockMsg('updateProgress','Deleting App')
-    exec('sudo rm -rf /home/myuser/node',function (argument) {
-      // body...
-      relaySockMsg('updateProgress','Unpacking...')
-       exec('sudo tar -xzf /home/myuser/temp -C /home/myuser', function(err,stdout,stderr) {
-      // body...
-      //console.log(stdout)
-      
-      setTimeout(function(){
-        exec('sudo rm -f /home/myuser/temp',function(){
-            relaySockMsg('updateProgress','Rebooting - this may take a while')
-         callback()
-      })
-      },15000)
-     })
-    })
-   }else{
-    relaySockMsg('notify', 'Update Failed')
-   }
-  })
-}
-function updateBinaries(paths, ip, cnt, callBack){
 
-  if(cnt + 1 > paths.length){
-    callBack(true)
-  }else{
-    //console.log(501, paths[cnt])
-    relaySockMsg('notify','Updating file ' + (cnt+1) +' of ' + paths.length);
-    arm_burn(ip, paths[cnt], function(suc){
-      if(suc){
-        //var echoed = false;
-
-      setTimeout(function(){
-        updateBinaries(paths, ip, cnt+1, callBack)
-      },4000)
-      
-      }else{
-        //console.log('failed somewhere in arm_burn')
-        callBack(false)
-      }
-    })
-  }
-}
 const udpCallback = function(_ip,e,app){
       if(e){
  
@@ -560,149 +500,7 @@ const udpCallback = function(_ip,e,app){
       _ip = null;
       e = null;
 }
-function parse_update(str, callback){
-  var array = str.split('\n')
-  var arr = []
-  array.forEach(function(st){
-    if(st.trim().length > 0){
-      arr.push(st.trim())
-    }
-  })
-  var updateCount = parseInt(arr[0]);
-  var list = [];
-  //console.log(arr)
-  arr.slice(1, 1+updateCount).forEach(function(s){
 
-    var a = s.split(',')
-    //console.log(a)
-    if((parseInt(a[0]) == 12)||(parseInt(a[0])==14)||(parseInt(a[0]) == 16)||(parseInt(a[0]) == 18)){
-      list.push('/mnt'+a[a.length-1].split('\\').join('/'));
-    }else if(parseInt(a[0]) == 13){
-      list.push('/mnt'+a[a.length-1].split('\\').join('/'));
-    }
-    //console.log(list)
-  })
-
-  callback(list)
-}
-function parseDisplayUpdate(argument) {
-}
-function parse_display_update(str, callback){
-  var array = str.split('\n')
-  var list = []
-  array.forEach(function(st){
-    if(st.trim().length > 0){
-    list.push(st.trim())
-  }
-  })
-  //console.log(list)
-  callback(list)
-}
-function arm_burn(ip, fname, callback){
-  var arm = new fti.ArmRpc.ArmRpc(ip)
-  try{
-  arm.verify_binary_file(fname, function(size,addr,enc_flag){
-    if(addr == 0x08000000){
-      //console.log('bootloader')
-        arm.bootloader(function(){
-       //console.log('reset to bootloader')
-       
-      })
-      var echoed = false
-      var cnt = 0
-      var interval = setInterval(function(){
-        if(echoed == true){
-          clearInterval(interval)
-        }else if(cnt > 13){
-          //console.log('Too many tries')
-          clearInterval(interval)
-          callback(false);
-        }else{
-          //console.log('try ', cnt++)
-          arm.prog_start(true, function(){
-            clearInterval(interval)
-             //console.log('prog_start callback')
-            echoed = true;
-             arm.prog_erase_app(enc_flag,function(){
-            //console.log('program erased')
-               setTimeout(function(){
-                arm.prog_binary(fname,function(){
-                 setTimeout(function(){
-                  arm.reset(function(){
-                     callback(true)
-                      });
-                   },500)
-      
-                 })
-               },10000)
-
-           })
-         })
-        }
-        
-      }, 1000)
-    } else{
-      relaySockMsg('notify','Resetting to bootloader...')
-      arm.bootloader(function(){})
-      var echoed = false
-      var cnt = 0
-      var interval = setInterval(function(){
-       if(cnt > 13){
-          relaySockMsg('notify','timeout')
-          //console.log('Too many tries')
-          clearInterval(interval)
-          callback(false);
-        }else{
-          cnt++;
-          //console.log('try ', cnt)
-          arm.prog_start(false, function(){
-            clearInterval(interval)
-             //console.log('prog_start callback')
-            echoed = true;
-             arm.prog_erase_app(enc_flag,function(){
-              relaySockMsg('notify','Program Erased...')
-            //console.log('program erased')
-               setTimeout(function(){
-                relaySockMsg('notify','Start Programming...')
-                arm.prog_binary(fname,function(){
-                 setTimeout(function(){
-                  arm.reset(function(){
-                     callback(true)
-                      });
-                   },500)
-      
-                 })
-               },10000)
-           })
-         })
-        }
-        
-      }, 1000)
-
-    }
-  })
-  }catch(e){
-    relaySockMsg('notify','update failed')
-  } 
-}
-function arm_program_flash(bf,arm,bl, callback){
-  //console.log('programming '+ bf)
-  arm.prog_start(bl, function(){
-    //console.log('prog_start callback')
-    arm.prog_erase_app(function(){
-    //console.log('program erased')
-    setTimeout(function(){
-          arm.prog_binary(bf,function(){
-            setTimeout(function(){
-              arm.reset(function(){
-                callback(true)
-              });
-            },500)
-          })
-        },10000)
-
-  })});
-}
 
 function getAccountsJSON(ip, callback){
   getJSONStringTftp(ip, '/accounts.json', function(str){
@@ -760,11 +558,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
       rec[p] = getVal(buf, 2, p, pVdef,_deps[ip])
       // body...
     })
-    /*for(var p in Vdef["@deps"]){
-      if(Vdef["@deps"][p]["@rec"] == 2){
-        rec[p] = getVal(array,5, p, pVdef);
-      }
-    }*/
+   
     pack = {type:2, rec:rec}
     
   }else if(rec_type == 3){
@@ -1091,76 +885,6 @@ function sendRpcMsg(packet){
     rassocs[pid].send(packet)
   }
   packet = null;
-}
-
-
-function update(det){
-  relaySockMsg('startUpdate','');
-  try{
-     exec('sudo fdisk -l', function(err,stdout,stderr){
-      var usbdrive = '/dev/sda1'
-         var _dev = stdout.split('\n\n').map(function(disk){
-        var arr = disk.trim().split('\n')
-        return arr;
-      })
-      var _devices = []
-      var devices = []
-      _dev.forEach(function(d){
-        if(d[0].slice(0,6) == 'Device'){
-          _devices.push(d.slice(1))
-        }
-      })
-      _devices.forEach(function(dv){
-        if(dv[0]){
-          if(dv[0].trim().indexOf('/dev/sd') == 0){
-            dv.forEach(function(_dv){
-              devices.push(_dv.split(/\s/)[0])
-            })
-          }
-        }
-      })
-      if(devices.length != 0){
-        usbdrive = devices[0];
-      }
-    //socket.emit('testusb', stdout)
-      exec('sudo mount '+usbdrive +' /mnt', function(errr, stdout, stderr){
-        if(errr){
-          relaySockMsg('notify', 'Error mounting drive.')
-          //console.log(errr);
-          relaySockMsg('doneUpdate','')
-        }else{
-          fs.readFile('/mnt/FortressFirmwareUpdate.txt', (err, res)=>{
-          if(err){
-            
-            exec('sudo umount '+usbdrive, function(er, stdout, stderr){
-              relaySockMsg('notify', err.name)
-              relaySockMsg('doneUpdate','')
-            });
-          }else{
-            parse_update(res.toString(), function(arr){
-              //console.log(arr)
-              updateBinaries(arr, det.ip, 0, function(suc){
-                 exec('sudo umount '+usbdrive, function(er, stdout, stderr){
-                  if(suc){
-                    relaySockMsg('notify', 'update complete');
-                  }else{
-                     relaySockMsg('notify', 'update failed');
-                  }
-               
-                   relaySockMsg('doneUpdate','')
-                }) 
-              })
-            })
-          }
-        })
-        }
-
-      })
-    })
-    }catch(e){
-      relaySockMsg('notify', 'update failed');
-      relaySockMsg('doneUpdate','')
-    }
 }
 
 function locateUnicast (addr,cb, cw) {
@@ -1573,7 +1297,7 @@ app.use('/', express.static(path.join(__dirname,'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 app.get('/', function(req, res) {
-  res.render('rpi.html');
+  res.render('cw.html');
 });
 app.get('/cw',function(req,res){
   res.render('cw.html')

@@ -78,7 +78,8 @@ module.exports = {
   entry: {
     md:'./public/index.js',
     cw:'./public/cw.js',
-    if:'./public/iframe.js'
+    if:'./public/iframe.js',
+    xray:'./public/xray.js'
   },
   output: { path: __dirname+ '/public/', filename: '[name].bundle.js' },
   module: {
