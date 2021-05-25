@@ -193,7 +193,6 @@ class FtiSockIOServer{
       sockrelays[self.id] = null;
      //  self.destroy();
      delete passocs[self.id]
- //    delete clients[self.id]
      delete rassocs[self.id]
 
      delete nassocs[self.id]
@@ -363,9 +362,6 @@ wss.on('connection', function(scket, req){
   })
   var socket = new FtiSockIOServer(scket)
   socket.on('locateReq',function(cw) {
-  	// body...
-
-  	//    socket.emit('nif', nf);
     var dets;
     Helper.scan_for_dsp_board(function (e) {
       dets = e
@@ -380,11 +376,8 @@ wss.on('connection', function(scket, req){
           var nifip = e[i].nif_ip.split('.').map(function(e){return parseInt(e)});
           if(!((ip[0] == nifip[0]) && (ip[1] == nifip[1]) && (ip[2] == nifip[2]))){
            }else if(e[i].ver == '20.17.4.27'){
-
           }else{
             dspip = ip.join('.');
-           // macs[dspip] = e[i].mac
-            //dspips.push(e[i]);
             if(cw){
               console.log(e[i].app_name)
               if(e[i].app_name == 'FTI_CW'){

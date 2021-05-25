@@ -25,7 +25,7 @@ const WebSocket = require('ws')
 const wss = new WebSocket.Server({server:http})
 const stream = require('stream')
 const os = require('os');
-const usb = require('usb');
+//const usb = require('usb');
 const sys = require('sys');
 const exec = require('child_process').exec;
 const crc = require('crc');
@@ -89,6 +89,7 @@ if(process.argv.length >= 2){
 }else{
   console.log('process argv length ', process.argv.length)
 }
+
 class FtiSockIOServer{
   constructor(sock){
     this.sock = sock
@@ -147,21 +148,16 @@ class FtiSockIOServer{
   }
   destroy(){
     var self = this;
-         passocs[self.id] = null;
-     //   clients[self.id] = null;
-        rassocs[self.id] = null;
-      nassocs[self.id] = null;
-      sockrelays[self.id] = null;
-     //  self.destroy();
-     delete passocs[self.id]
- //    delete clients[self.id]
-     delete rassocs[self.id]
-
-     delete nassocs[self.id]
-
-     delete sockrelays[self.id]
-     delete this;
-   }
+    passocs[self.id] = null;
+    rassocs[self.id] = null;
+    nassocs[self.id] = null;
+    sockrelays[self.id] = null;
+    delete passocs[self.id]
+    delete rassocs[self.id]
+    delete nassocs[self.id]
+    delete sockrelays[self.id]
+    delete this;
+  }
 }
 
 /**IMPORTS END**/
@@ -718,7 +714,7 @@ function getAccountsJSON(ip, callback){
 }
 
 function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
-   var rec_type = e.readUInt8(0)
+  var rec_type = e.readUInt8(0)
   var buf = e.slice(1)
  // if(rec_type != 2){
     //console.log(rec_type, 'cw')
@@ -731,9 +727,6 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
    var userrec = {};
   if(rec_type == 0){
     nVdf[0].forEach(function (p) {
-      if(p == 'WindowMax'){
-        console.log('WindowMax')
-      }
       rec[p] = getVal(buf, 0, p, pVdef,_deps[ip])
     })
     for(var p in _Vdef["@deps"]){
@@ -1573,9 +1566,6 @@ if(fs.existsSync(usbPath)){
 
   }
 }
-if(!fs.existsSync('/tmp/upload')){
-  fs.mkdir('/tmp/upload')
-}
 console.log('starting ts on '+PORT)
 app.set('port', (process.env.PORT || PORT));
 app.use('/', express.static(path.join(__dirname,'public')));
@@ -1590,7 +1580,6 @@ app.get('/cw',function(req,res){
 })
 app.post('/set_display', function (req, res) {
   // body...
-
   console.log('POST', req)
   var bod = JSON.parse(JSON.stringify(req.body))
   var addrarr = req.socket.remoteAddress.split(':')
@@ -1967,6 +1956,10 @@ wss.on('connection', function(scket, req){
     
 
   })
+  socket.on('sendReboot',function () {
+    // body...
+     sendPost(_TOUCHSCREEN_ADDR, '/reboot',JSON.stringify({}));
+  })
   socket.on('reboot', function(){
     
    // if(_TOUCHSCREEN_ADDR.length > 0){///length > 0){
@@ -1980,7 +1973,7 @@ wss.on('connection', function(scket, req){
     
   })
   socket.on('formatInternalUsb', function(){
-    exec('killall STM* && sudo umount /run/media/sda1 && mkfs.ext4 -F /dev/sda1 ', function(){
+    exec('killall STM.out && sudo umount /run/media/sda1 && mkfs.ext4 -F /dev/sda1 ', function(){
       sendPost(_TOUCHSCREEN_ADDR, '/reboot',JSON.stringify({}));
    // }
     setTimeout(function(){
@@ -1992,348 +1985,7 @@ wss.on('connection', function(scket, req){
    // if(_TOUCHSCREEN_ADDR.length > 0){///length > 0){
     
   })
-  /*
-  socket.on('updateDisplay_old',function(){
-    exec('sudo fdisk -l', function(err,stdout,stderr){
-      var usbdrive = '/dev/sda1'
-      var _dev = stdout.split('\n\n').map(function(disk){
-        var arr = disk.trim().split('\n')
-        return arr;
-      })
-      var _devices = []
-      var devices = []
-      _dev.forEach(function(d){
-        if(d[0].slice(0,6) == 'Device'){
-          _devices.push(d.slice(1))
-        }
-      })
-      _devices.forEach(function(dv){
-        if(dv[0]){
-          if(dv[0].trim().indexOf('/dev/sd') == 0){
-            dv.forEach(function(_dv){
-              devices.push(_dv.split(/\s/)[0])
-            })
-          }
-        }
-      })
-      if(devices.length != 0){
-        usbdrive = devices[0];
-      }
-      socket.emit('testusb', stdout)
-      exec('sudo mount '+usbdrive+' /mnt', function(err, stdout, stderr){
-        if(err || stderr){
-          socket.emit('notify', 'Update Failed')
-        }else{
-          fs.readFile('/mnt/FortressDisplayUpdate.txt', (err, res)=>{
-            if(err){
-              socket.emit('notify', 'issue reading file')
-              exec('sudo umount '+ usbdrive, function(er, stdout, stderr){});
-            }else{
-              parse_display_update(res.toString(), function(arr){
-                updateDisplayFiles(arr, 0, function(suc){
-                  exec('sudo umount '+usbdrive, function(er, stdout, stderr){
-                    if(suc){
-                      socket.emit('notify', 'update complete - remove usb and power cycle');
-                    }else{
-                      socket.emit('notify', 'update failed');
-                    }
-                    socket.emit('doneUpdate','')
-                  }) 
-                })
-              })
-            }
-          })
-        }
-      })
-    })
-  })
-  socket.on('syncStart', function(det){
-    //check if dir exists
-    var arm = new fti.ArmRpc.ArmRpc(det.ip)
-    buildSyncList(arm,function(list){
-      var array = list.slice(0)
-      array.push('/DetectorInfo.did')
-      var mac = det.mac.split('-').join('').toUpperCase();
-      exec('sudo fdisk -l', function(err,stdout,stderr){
-        var usbdrive = '/dev/sda1'
-        var _dev = stdout.split('\n\n').map(function(disk){
-          var arr = disk.trim().split('\n')
-          return arr;
-        })
-        var _devices = []
-        var devices = []
-        _dev.forEach(function(d){
-          if(d[0].slice(0,6) == 'Device'){
-            _devices.push(d.slice(1))
-          }
-        })
-        _devices.forEach(function(dv){
-          if(dv[0]){
-            if(dv[0].trim().indexOf('/dev/sd') == 0){
-              dv.forEach(function(_dv){
-                devices.push(_dv.split(/\s/)[0])
-              })
-            }
-          }
-        })
-        if(devices.length != 0){
-          usbdrive = devices[0];
-        }
-        socket.emit('testusb', stdout)
-        exec('sudo mount '+usbdrive+' /mnt', function(err, stdout, stderr){
-          if(err || stderr){
-            socket.emit('notify', 'Sync Failed')
-            socket.emit('doneSync');
-          }else{
-            var ind = 0;
-            writeFtiFilesToUsb(det,array,0,function(){
-              tftpPollForFDDList(det,0,function(fdds){
-                tftpPollForSCDList(det,0,function(scds){
-                  exec('sudo umount '+usbdrive, function(er, stdout, stderr){
-                    socket.emit('notify', 'Sync complete');
-                    socket.emit('doneSync')
-                  })
-                })
-              });
-            })
-          }  
-        })
-      })
-    })
-  })
-  socket.on('export',function(det){
-    var arm = new fti.ArmRpc.ArmRpc(det.ip)
-    arm.rpc_cb([1,6],function(e){
-      if(e.readUInt8(4) == 0){
-        exec('sudo fdisk -l', function(err,stdout,stderr){
-          var usbdrive = '/dev/sda1'
-          var _dev = stdout.split('\n\n').map(function(disk){
-            var arr = disk.trim().split('\n')
-            return arr;
-          })
-
-          var _devices = []
-          var devices = []
-          _dev.forEach(function(d){
-            if(d[0].slice(0,6) == 'Device'){
-              _devices.push(d.slice(1))
-            }
-          })
-          _devices.forEach(function(dv){
-            if(dv[0]){
-              if(dv[0].trim().indexOf('/dev/sd') == 0){
-                dv.forEach(function(_dv){
-                  devices.push(_dv.split(/\s/)[0])
-                })
-              }
-            }
-          })
-          if(devices.length != 0){
-            usbdrive = devices[0];
-          }
-          socket.emit('testusb', stdout)
-          exec("sudo mount "+usbdrive+" /mnt", function(err,stdout,stderr){
-            if(err || stderr){
-              socket.emit('notify','Error mounting drive');
-              return;
-            }
-            getFileTftp(det.ip,'/FTIFiles/ProdRecBackup.fti', '/mnt/ProdRecBackup.fti',function(){
-              exec('sudo umount ' +usbdrive, function(er, stdout, stderr){
-                socket.emit('notify','Products Backed up')
-              })
-            },function(e){
-              exec('sudo umount ' +usbdrive, function(er, stdout, stderr){
-                socket.emit('notify', 'Error writing file')
-              })
-            })
-          })  
-        })
-      }else{
-        socket.emit('notify','Error - Check Internal USB');
-      }
-    })
-  })
-  socket.on('import',function(det){
-    exec('sudo fdisk -l', function(err,stdout,stderr){
-      var usbdrive = '/dev/sda1'
-      var _dev = stdout.split('\n\n').map(function(disk){
-        var arr = disk.trim().split('\n')
-        return arr;
-      })
-      var _devices = []
-      var devices = []
-      _dev.forEach(function(d){
-        if(d[0].slice(0,6) == 'Device'){
-          _devices.push(d.slice(1))
-        }
-      })
-      _devices.forEach(function(dv){
-        if(dv[0]){
-          if(dv[0].trim().indexOf('/dev/sd') == 0){
-            dv.forEach(function(_dv){
-              devices.push(_dv.split(/\s/)[0])
-            })
-          }
-        }
-      })
-      if(devices.length != 0){
-        usbdrive = devices[0];
-      }
-      socket.emit('testusb', stdout)
-    
-      exec("sudo mount "+usbdrive+" /mnt", function(err,stdout,stderr){
-        if(err || stderr){
-          socket.emit('notify','Error mounting drive');
-          return;
-        }
-        fs.access('/mnt/ProdRecBackup.fti',function(err,stats){
-          if(err){
-            exec('sudo umount '+usbdrive,function(err, stdout, stderr){
-             socket.emit('notify','Error reading file')
-            });
-          }else{
-            var tclient = tftp.createClient({host:det.ip ,retries:10, timeout:1000})
-            tclient.put('/mnt/ProdRecBackup.fti', '/FTIFiles/ProdRecBackup.fti', function(err){
-              if(err){ socket.emit('notify','Error importing file')}else{
-                var arm = new fti.ArmRpc.ArmRpc(det.ip)
-                arm.rpc_cb([1,7],function(e){
-                  if(e.readUInt8(4) == 0){
-                    socket.emit('testusb',e);
-                    exec('sudo umount '+usbdrive,function(err, stdout, stderr){
-                      socket.emit('notify','Products Imported')
-                      getProdList(det.ip)
-                    })
-                  }else{
-                    exec('sudo umount '+usbdrive,function(err, stdout, stderr){
-                      socket.emit('notify','Error Importing Products')
-                      getProdList(det.ip)
-                    })
-                  }
-                })
-              }
-            })
-          }
-        })
-      })
-    })
-  })
-  socket.on('backup',function(det){
-    var arm = new fti.ArmRpc.ArmRpc(det.ip)
-    arm.rpc_cb([1,6],function(e){
-      if(e.readUInt8(4) == 0){
-        exec('sudo fdisk -l', function(err,stdout,stderr){
-          var usbdrive = '/dev/sda1'
-          var _dev = stdout.split('\n\n').map(function(disk){
-          var arr = disk.trim().split('\n')
-          return arr;
-          })
-          var _devices = []
-          var devices = []
-          _dev.forEach(function(d){
-            if(d[0].slice(0,6) == 'Device'){
-              _devices.push(d.slice(1))
-            }
-          })
-          _devices.forEach(function(dv){
-            if(dv[0]){
-              if(dv[0].trim().indexOf('/dev/sd') == 0){
-                dv.forEach(function(_dv){
-                  devices.push(_dv.split(/\s/)[0])
-                })
-              }
-            }
-          })
-          if(devices.length != 0){
-            usbdrive = devices[0];
-          }
-          socket.emit('testusb', stdout)
-    
-          exec("sudo mount "+usbdrive+" /mnt", function(err,stdout,stderr){
-            if(err || stderr){
-              socket.emit('notify','Error mounting drive');
-              return;
-            }
-            var arr = ['/mnt','FortressTechnology','Detectors',det.mac.split('-').join('').toUpperCase(),'Sync','FTIFiles']
-            checkAndMkdir(arr,0,function(){
-              getFileTftp(det.ip,'/FTIFiles/ProdRecBackup.fti', '/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti',function(){
-                exec('sudo umount '+usbdrive, function(er, stdout, stderr){
-                  socket.emit('notify','Products Backed up')
-                })
-              },function(e){
-                exec('sudo umount '+usbdrive, function(er, stdout, stderr){
-                  socket.emit('notify', 'Error writing file')
-                })
-              })
-            })
-          })
-        })
-      }else{
-        socket.emit('notify','Error - Check Internal USB');
-      }
-    })
-  })
-  socket.on('restore',function(det){
-    exec('sudo fdisk -l', function(err,stdout,stderr){
-      var usbdrive = '/dev/sda1'
-      var _dev = stdout.split('\n\n').map(function(disk){
-        var arr = disk.trim().split('\n')
-        return arr;
-      })
-      var _devices = []
-      var devices = []
-      _dev.forEach(function(d){
-        if(d[0].slice(0,6) == 'Device'){
-          _devices.push(d.slice(1))
-        }
-      })
-      _devices.forEach(function(dv){
-        if(dv[0]){
-          if(dv[0].trim().indexOf('/dev/sd') == 0){
-            dv.forEach(function(_dv){
-              devices.push(_dv.split(/\s/)[0])
-            })
-          }
-        }
-      })
-      if(devices.length != 0){
-        usbdrive = devices[0];
-      }
-      socket.emit('testusb', stdout)
-      exec("sudo mount "+usbdrive+" /mnt", function(err,stdout,stderr){
-        if(err || stderr){
-          socket.emit('notify','Error mounting drive');
-          return;
-        }
-        fs.access('/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti',function(err,stats){
-          if(err){
-            exec('sudo umount '+ usbdrive,function(err, stdout, stderr){socket.emit('notify','Error reading file')});
-          }else{
-            var tclient = tftp.createClient({host:det.ip ,retries:10, timeout:1000})
-            tclient.put('/mnt/FortressTechnology/Detectors/'+det.mac.split('-').join('').toUpperCase()+'/Sync/FTIFiles/ProdRecBackup.fti', '/FTIFiles/ProdRecBackup.fti', function(err){
-              if(err){ socket.emit('notify','Error importing file')}else{
-                var arm = new fti.ArmRpc.ArmRpc(det.ip)
-                arm.rpc_cb([1,7],function(e){
-                  if(e.readUInt8(4) == 0){
-                    socket.emit('testusb',e);
-                    exec('sudo umount '+usbdrive,function(err, stdout, stderr){
-                      socket.emit('notify','Products Restored')
-                      getProdList(det.ip)
-                    })
-                  }else{
-                    exec('sudo umount '+usbdrive,function(err, stdout, stderr){
-                      socket.emit('notify','Error Restoring Products')
-                      getProdList(det.ip)
-                    })
-                  } 
-                })
-              }
-            })
-          }
-        })
-      })
-    })
-  })
-  */
+ 
   socket.on('getBatches', function (argument) {
     // body...
     if(fs.statSync('/run/media/sda1/srv/tftp/batches/list.txt')){

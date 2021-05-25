@@ -2,8 +2,8 @@ const React = require('react');
 const ReactDOM = require('react-dom')
 const ifvisible = require('ifvisible');
 const timezoneJSON = require('./timezones.json')
-var SmoothieChart = require('./smoothie.js').SmoothieChart;
-var TimeSeries = require('./smoothie.js').TimeSeries;
+//var SmoothieChart = require('./smoothie.js').SmoothieChart;
+//var TimeSeries = require('./smoothie.js').TimeSeries;
 import {CustomFileInput,TrendBar,TickerBox, CanvasElem, SlimGraph, DummyGraph, Modal,GraphModal, AuthfailModal, ProgressModal, MessageModal, AlertModal, AccModal, MessageConsole, LockModal, ScrollArrow} from './components.jsx'
 import {CircularButton, CircularButton2, ButtonWrapper, CustomAlertButton, CustomAlertClassedButton} from './buttons.jsx'
 import {PopoutWheel} from './popwheel.jsx'
@@ -110,8 +110,6 @@ function formatLength(l, u){
     else{
       return Math.round(l) + " mm";
   }
-
-  
 }
 function FormatWeightD(wgt, unit, d){
   if(typeof wgt == 'undefined'){
@@ -166,7 +164,7 @@ function FormatWeightS(wgt, unit){
 function formatWeight(wgt, unit){
    if(typeof wgt == 'undefined'){
     wgt = 0;
-  }
+   }
     if(unit == 1){
       return (wgt/1000).toFixed(3) + ' kg'
     }else if(unit == 2){
@@ -202,7 +200,6 @@ function getVal(arr, rec, key, pVdef){
       if((param['@bit_pos'] + param['@bit_len']) > 16){
         var wd = (Params.swap16(arr[param['@i_var']+1])<<16) | Params.swap16((arr[param['@i_var']]))
         val = (wd >> param["@bit_pos"]) & ((1<<param["@bit_len"])-1)
-        
       }else{
         val = Params.swap16(arr[param["@i_var"]]);
       } 
@@ -286,345 +283,6 @@ function fletcherCheckBytes (data) {
         c2 += c1;      if (c2 >=255) c2 -= 255;
     }
     return [c1,c2];
-}
-function getParams3(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch){
-  var params = []
-  cat.params.forEach(function(par) {
-    if(par.type == 0){
-
-      var p = par.val
-        var _p = null
-        if(typeof pVdef[0][p] != 'undefined'){
-          var data = sysRec[p]
-          if(pVdef[0][p]['@labels'] == "FaultMaskBit"){
-            console.log(p,p.slice(0,-4) + "Warn" )
-            if(sysRec[p.slice(0,-4) + "Warn"]){
-              data = data + sysRec[p.slice(0,-4) + "Warn"];
-            }
-            
-          }
-          _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
-         }else if(typeof pVdef[1][p] != 'undefined'){
-
-          var data = prodRec[p]
-          if(pVdef[1][p]['@labels'] == "FaultMaskOverride"){
-            console.log(p, p.slice(0,-12)+"override")
-            if(prodRec[p.slice(0,-12) + "Override"] == 0){
-              data = 0//data + prodRec[p.slice(0,-4) + "Warn"];
-            }else if(prodRec[p.slice(0,-12) + "WarnOverride"] == 1){
-              data = 3
-            }else{
-              data = data + 1;
-            }
-            
-          }
-          _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
-          if(p == 'BeltSpeed'){
-            //////console.log('653',par,_p)
-          }
-        }else if(typeof pVdef[2][p] != 'undefined'){
-          if(par.dt){
-            _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc, dt:true}
-          }else{
-            _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc}
-          }
-         // _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc}
-        }else if(typeof pVdef[3][p] != 'undefined'){
-          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
-        }else if(typeof pVdef[5][p] != 'undefined'){
-          _p = {'type':0, '@name':p, '@type':'batch','@data':batch[p], '@children':[], acc:par.acc}
-          
-        }else if(par.val == 'Nif_ip'){
-          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
-        }else if(par.val == 'Nif_nm'){
-          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
-        }else if(par.val == 'Nif_gw'){
-          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
-        }else if(par.val == 'Nif_mac'){
-          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc}
-        }   
-
-
-        if(_p != null){
-        if(typeof _vmap[p] == 'undefined'){
-      //  //console.log(p)
-        }
-        _vmap[p].children.forEach(function (ch) {
-          var _ch;
-          if(typeof pVdef[0][ch] != 'undefined'){
-          _ch = sysRec[ch]
-          }else if(typeof pVdef[1][ch] != 'undefined'){
-          _ch = prodRec[ch]
-          }else if(typeof pVdef[2][ch] != 'undefined'){
-          
-            _ch = dynRec[ch]
-          }else if(typeof pVdef[3][ch] != 'undefined'){
-          
-            _ch = fram[ch]
-          }else if(typeof pVdef[5][ch] != 'undefined'){
-          
-            _ch = batch[ch]
-          }else if(ch == 'DCRate_B'){
-            _ch = prodRec[ch]
-          }
-          _p['@children'].push(_ch) 
-        })
-          params.push(_p)
-        }else if(_vmap[p]['@interceptor']){
-        
-            var pname = p.slice(0,-4)
-        //    //console.log(pname, p, 342)
-              if(typeof pVdef[0][pname] != 'undefined'){
-                _p = {'type':0, '@name':p, '@data':sysRec[pname], '@children':[], acc:par.acc}
-              }else if(typeof pVdef[1][pname] != 'undefined'){
-
-                var data = prodRec[pname]
-                
-                _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
-              }else if(typeof pVdef[2][pname] != 'undefined'){
-                _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[pname], '@children':[], acc:par.acc}
-              }else if(typeof pVdef[3][pname] != 'undefined'){
-                _p = {'type':0, '@name':p, '@type':'fram','@data':fram[pname], '@children':[], acc:par.acc}
-              }else if(typeof pVdef[5][pname] != 'undefined'){
-                _p = {'type':0, '@name':p, '@type':'batch','@data':batch[pname], '@children':[], acc:par.acc}
-              }else if(par.val == 'DCRate'){
-                _p = {'type':0, '@name':p,'@data':prodRec[pname], '@children':[], acc:par.acc}
-              }
-              if(_p!= null){
-                params.push(_p);
-              }
-          
-                 ///
-        }else if(_vmap[p]['@test']){
-          var a = _vmap[p].children[0];
-                if(typeof pVdef[0][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[1][a] != 'undefined'){
-
-              var data = prodRec[a]
-              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
-                if(prodRec[a.slice(0,-4) + "Warn"]){
-                  data = data + prodRec[a.slice(0,-4) + "Warn"];
-                }
-                
-              }
-              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
-              if(p == 'BeltSpeed'){
-                //////console.log('653',par,_p)
-              }
-            }else if(typeof pVdef[2][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[3][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[5][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'batch','@data':batch[a], '@children':[], acc:par.acc}
-            }else if(par.val == 'DCRate_A'){
-              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
-            }
-            if(_p != null){
-              var ch = _vmap[p].children[1];
-
-              var _ch;
-              if(typeof pVdef[0][ch] != 'undefined'){
-              _ch = sysRec[ch]
-              }else if(typeof pVdef[1][ch] != 'undefined'){
-              _ch = prodRec[ch]
-              }else if(typeof pVdef[2][ch] != 'undefined'){
-              
-                _ch = dynRec[ch]
-              }else if(typeof pVdef[3][ch] != 'undefined'){
-              
-                _ch = fram[ch]
-              }else if(typeof pVdef[5][ch] != 'undefined'){
-              
-                _ch = batch[ch]
-              }else if(ch == 'DCRate_B'){
-                _ch = prodRec[ch]
-              }
-              _p['@children'].push(_ch)
-              _p['@test'] = true; 
-              params.push(_p)
-          //    //console.log(335,_p)
-            }
-                 ///
-        }else if(_vmap[p]['@input']){
-          var a = _vmap[p].children[0];
-                if(typeof pVdef[0][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[1][a] != 'undefined'){
-
-              var data = prodRec[a]
-              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
-                if(prodRec[a.slice(0,-4) + "Warn"]){
-                  data = data + prodRec[a.slice(0,-4) + "Warn"];
-                }
-                
-              }
-              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
-          
-            }else if(typeof pVdef[2][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[3][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
-            }else if(par.val == 'DCRate_A'){
-              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
-            }
-            if(_p != null){
-              var ch = _vmap[p].children[1];
-
-              var _ch;
-              if(typeof pVdef[0][ch] != 'undefined'){
-              _ch = sysRec[ch]
-              }else if(typeof pVdef[1][ch] != 'undefined'){
-              _ch = prodRec[ch]
-              }else if(typeof pVdef[2][ch] != 'undefined'){
-              
-                _ch = dynRec[ch]
-              }else if(typeof pVdef[3][ch] != 'undefined'){
-              
-                _ch = fram[ch]
-              }else if(ch == 'DCRate_B'){
-                _ch = prodRec[ch]
-              }
-              _p['@children'].push(_ch)
-              _p['@input'] = true; 
-              params.push(_p)
-             // //console.log(335,_p)
-            }
-                 ///
-        }else if(_vmap[p]['@combo']){
-          var a = _vmap[p].children[0];
-                if(typeof pVdef[0][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[1][a] != 'undefined'){
-
-              var data = prodRec[a]
-              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
-                if(prodRec[a.slice(0,-4) + "Warn"]){
-                  data = data + prodRec[a.slice(0,-4) + "Warn"];
-                }
-                
-              }
-              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
-              if(p == 'BeltSpeed'){
-                //////console.log('653',par,_p)
-              }
-            }else if(typeof pVdef[2][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[3][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
-            }else if(par.val == 'DCRate_A'){
-              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
-            }
-            if(_p != null){
-              var ch = _vmap[p].children[1];
-
-              var _ch;
-              if(typeof pVdef[0][ch] != 'undefined'){
-              _ch = sysRec[ch]
-              }else if(typeof pVdef[1][ch] != 'undefined'){
-              _ch = prodRec[ch]
-              }else if(typeof pVdef[2][ch] != 'undefined'){
-              
-                _ch = dynRec[ch]
-              }else if(typeof pVdef[3][ch] != 'undefined'){
-              
-                _ch = fram[ch]
-              }else if(ch == 'DCRate_B'){
-                _ch = prodRec[ch]
-              }
-              _p['@children'].push(_ch)
-              _p['@combo'] = true; 
-              params.push(_p)
-             // //console.log(335,_p)
-            }
-                 ///
-        }else if(_vmap[p]['@batch']){
-          var a = _vmap[p].children[0];
-                if(typeof pVdef[0][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[1][a] != 'undefined'){
-
-              var data = prodRec[a]
-              if(pVdef[1][a]['@labels'] == "FaultMaskBit"){
-                if(prodRec[a.slice(0,-4) + "Warn"]){
-                  data = data + prodRec[a.slice(0,-4) + "Warn"];
-                }
-                
-              }
-              _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc}
-             
-            }else if(typeof pVdef[2][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[3][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'fram','@data':fram[a], '@children':[], acc:par.acc}
-            }else if(typeof pVdef[5][a] != 'undefined'){
-              _p = {'type':0, '@name':p, '@type':'batch','@data':batch[a], '@children':[], acc:par.acc}
-            }else if(par.val == 'DCRate_A'){
-              _p = {'type':0, '@name':p,'@data':prodRec[a], '@children':[], acc:par.acc}
-            }
-            if(_p != null){
-              var ch = _vmap[p].children[1];
-
-              var _ch;
-              if(typeof pVdef[0][ch] != 'undefined'){
-              _ch = sysRec[ch]
-              }else if(typeof pVdef[1][ch] != 'undefined'){
-              _ch = prodRec[ch]
-              }else if(typeof pVdef[2][ch] != 'undefined'){
-              
-                _ch = dynRec[ch]
-              }else if(typeof pVdef[3][ch] != 'undefined'){
-              
-                _ch = fram[ch]
-              }else if(typeof pVdef[5][ch] != 'undefined'){
-              
-                _ch = batch[ch]
-              }else if(ch == 'DCRate_B'){
-                _ch = prodRec[ch]
-              }
-              _p['@children'].push(_ch)
-              _p['@combo'] = true; 
-              params.push(_p)
-             // //console.log(335,_p)
-            }
-                 ///
-        }
-        
-      }else if(par.type == 1){
-        if(typeof par.child != 'undefined'){
-          params.push({type:1, '@data':iterateCats3(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch), acc:par.acc, child:par.child})
-        }else{
-
-
-          params.push({type:1, '@data':iterateCats3(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch), acc:par.acc})
-        }
-      }else if(par.type == 2){
-          if(typeof par.child != 'undefined'){
-          params.push({type:2, '@data':iterateCats3(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch), acc:par.acc, child:par.child})
-        }else{
-
-
-          params.push({type:2, '@data':iterateCats3(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, batch), acc:par.acc})
-        }
-      }else if(par.type == 3){
-        params.push({type:3, '@name':'Accounts', '@data':'get_accounts', acc:0})
-      }else if(par.type == 4){
-        if(par.val == 'Reboot'){
-          params.push({type:4, '@name':'Reboot','@data':'reboot_display',acc:0})
-        }else if(par.val == 'FormatUSB'){
-             params.push({type:4, '@name':'FormatUSB','@data':'format_usb',acc:0})
-          
-        }else if(par.val == 'Update'){
-          params.push({type:4, '@name':'Update', '@data':'update',acc:0})
-        }
-        
-      }else if(par.type == 5){
-        params.push({type:5, '@name':'@unused','@data':'get_unused',acc:0})
-      }
-              
-    })
-  return params
 }
 function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
 	var params = []
@@ -907,10 +565,6 @@ function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc)
 	cat.params = getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc)	
 	return cat
 }
-function iterateCats3(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram,batch){
-  cat.params = getParams3(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram,batch)
-  return cat
-}
 function tickFormatter(t,i) {
   var text = t.split(' ').map(function(v,j){
     return <tspan x="0" dy={j+'em'}>{v}</tspan>
@@ -932,12 +586,11 @@ function getLabTrans(name, language){
     str = labTransV2[name][language]['name']
   }
   return str
-
 }
 
 /*************Helper functions end**************/
 
-/*******************Initialize Page end********************/
+/*******************Initialize Page start********************/
 var _wsurl = 'ws://' +location.host 
 var socket = new FtiSockIo(_wsurl,true);
 socket.on('vdef', function(vdf){
@@ -1018,20 +671,22 @@ class Container extends React.Component {
 		return <div>
     <ErrorBoundary autoReload={false}>
     <LandingPage/>
+
 				<ToastContainer position="top-center" autoClose={1500} hideProgressBar newestOnTop closeOnClick closeButton={false} rtl={false}
 			pauseOnVisibilityChange draggable pauseOnHover transition={FastZoom} toastClassName='notifications-class'/>
 			</ErrorBoundary>
 		</div>
 	}
 }
+
 class LandingPage extends React.Component{
   constructor(props){
     super(props)
-    this.state = {plannedBatches:[],buckMin:0,batchList:[], buckMax:100, prclosereq:false,histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,stack:[],currentView:'',data:[],unusedList:{},cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
+    this.state = {plannedBatches:[],buckMin:0,batchList:[], buckMax:100, prclosereq:false,histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},
+      live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,currentView:'',data:[],unusedList:{},cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
       detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false}
-    this.importVmap = this.importVmap.bind(this);
     this.exportVmap = this.exportVmap.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
@@ -1083,6 +738,9 @@ class LandingPage extends React.Component{
     this.resume = this.resume.bind(this);
     this.getProdList = this.getProdList.bind(this);
     this.startBuf = this.startBuf.bind(this);
+    this.getData = this.getData.bind(this);
+    this.formatUSB = this.formatUSB.bind(this);
+    this.notify = this.notify.bind(this)
     this.lgctl = React.createRef();
     this.tBut = React.createRef();
     this.cwModal = React.createRef();
@@ -1112,19 +770,12 @@ class LandingPage extends React.Component{
     this.msgm = React.createRef();
     this.lgoModal = React.createRef();
     this.lockModal = React.createRef();
-    this.getData = this.getData.bind(this);
-    this.testUpload = this.testUpload.bind(this);
-    this.fileInput = React.createRef();
-    this.handleFileRead = this.handleFileRead.bind(this);
-    this.onFileUpload = this.onFileUpload.bind(this);
-    this.formatUSB = this.formatUSB.bind(this);
-    this.notify = this.notify.bind(this)
     this.planStart = React.createRef();
     this.manStart = React.createRef();
     this.prgmd = React.createRef();
-    //this.msgm = React.createRef();
   }
   /*************Lifecycle functions start***************/
+  /* Most of the serverside communication will be handled here*/
   componentDidMount(){
     var self = this;
     this.state.timer = setInterval(function(){
@@ -1136,7 +787,6 @@ class LandingPage extends React.Component{
     }, 1500)
     ifvisible.setIdleDuration(300);
     ifvisible.on("idle", function(){
-      
       self.logout()
     });
     setTimeout(function (argument) {
@@ -1157,41 +807,32 @@ class LandingPage extends React.Component{
       if(typeof self.state.fram['InternalIP'] != 'undefined'){
           if(window.location.host != self.state.fram['InternalIP']){
             console.log('confrim import sent to remote')
-           // this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
           }else{
             self.sendPacket('importRestore')
-      setTimeout(function () {
-        // body...
-        self.sendPacket('getProdList')
-        self.notify('Successfully Imported Settings')
-      },2000)      
+            setTimeout(function () {
+              // body...
+              self.sendPacket('getProdList')
+              self.notify('Successfully Imported Settings')
+            },2000)      
           }
-        }
+      }
       
     })
+    /*****  Update Related Stuff ****/
     socket.on('confirmUpdate', function(c){
-      //self.notify('update transfered - now should be sending update rpc')
        if(typeof self.state.fram['InternalIP'] != 'undefined'){
           if(window.location.host != self.state.fram['InternalIP']){
             console.log('confirm update sent to remote')
-          //  this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
           }else{
-     
-          self.prgmd.current.show('Files copied.. Checking display update')
-      //toast()
-      //check for display update
-        socket.emit('updateDisplay')
-      //self.sendPacket('updateSystem')
-       }
+            self.prgmd.current.show('Files copied.. Checking display update')
+            socket.emit('updateDisplay')
+          }
         }
     })
     socket.on('confirmDisplayUpdate', function (argument) {
-      // body...
       self.setState({scpStatus:false})
       if(typeof self.state.fram['InternalIP'] != 'undefined'){
           if(window.location.host != self.state.fram['InternalIP']){
-            console.log('confirm update sent to remote')
-          //  this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
           }else{
             self.prgmd.current.show('Updating Checkweigher')
             self.sendPacket('updateSystem')
@@ -1225,6 +866,7 @@ class LandingPage extends React.Component{
       // body...
       self.prgmd.current.show(str)
     })
+
     socket.on('connectedClients',function (c) {
       var fram = self.state.fram
       fram.ConnectedClients = c
@@ -1294,7 +936,6 @@ class LandingPage extends React.Component{
             if(vdefByMac[f[0].banks[0].mac]){
                self.connectToUnit(f[0].banks[0])
             }else{
-              console.log('no vdef', vdefByMac)
               setTimeout(function () {
                 if(!self.state.connected){
                   if(vdefByMac[f[0].banks[0].mac]){
@@ -1322,7 +963,6 @@ class LandingPage extends React.Component{
       var percentage = pk.percentage
     })
     socket.on('noVdef', function(det){
-      console.log('no Vdef')
       setTimeout(function(){
         socket.emit('vdefReq', det);
       }, 1000)
@@ -1339,65 +979,55 @@ class LandingPage extends React.Component{
     })
     socket.on('locatedResp', function (e) {
       console.log(e,924)
-    try{
-    if(typeof e[0] != 'undefined'){
-      var dets = self.state.detL;
-      var macs = self.state.macList.slice(0);
-      var nps = self.state.netpolls;
-      
-      
-      var detectors = [];
-      e.forEach(function(d){
+      try{
+        if(typeof e[0] != 'undefined'){
+          var dets = self.state.detL;
+          var macs = self.state.macList.slice(0);
           
-          macs.push(d.mac)
-          dets[d.mac] = d;
-          if(macs.indexOf(d.mac) == -1){
+          
+          var detectors = [];
+          e.forEach(function(d){
+          
             macs.push(d.mac)
-            dets[d.mac] = d
-          }          
-          socket.emit('vdefReq', d);
-      })
-      var mbunits = self.state.mbunits;
-      var cnt = 0;
-      var curbnk 
-      mbunits.forEach(function(u){
-        var banks = u.banks.map(function(b){
-          cnt++;
-          if(dets[b.mac]){
-            var _bank = dets[b.mac]
-            _bank.interceptor = false;
-            curbnk = _bank
-            return _bank
-          }else{
-            return b
-          }
-        })
-        u.banks = banks;
-      })
-      var curDet = self.state.curDet;
+            dets[d.mac] = d;
+            if(macs.indexOf(d.mac) == -1){
+              macs.push(d.mac)
+              dets[d.mac] = d
+            }          
+            socket.emit('vdefReq', d);
+          })
+          var mbunits = self.state.mbunits;
+          var cnt = 0;
+          var curbnk 
+          mbunits.forEach(function(u){
+            var banks = u.banks.map(function(b){
+              cnt++;
+              if(dets[b.mac]){
+                var _bank = dets[b.mac]
+                _bank.interceptor = false;
+                curbnk = _bank
+                return _bank
+              }else{
+                return b
+              }
+            })
+            u.banks = banks;
+          })
+          var curDet = self.state.curDet;
 
-      if(self.state.currentPage != 'landing'){
-        if(dets[curDet.mac]){
-          curDet = dets[curDet.mac];
-        }
-        else{
-        }
+          if(self.state.currentPage != 'landing'){
+            if(dets[curDet.mac]){
+              curDet = dets[curDet.mac];
+            }
+            else{
+            }
       }
-      mbunits.forEach(function(u){
-        u.banks.forEach(function(b) {
-
-          dets[b.mac] = null;
-          if(!nps[b.ip]){
-            nps[b.ip] = []
-          }
-                         
-        })
-      })
+  
       var nfip = self.state.nifip;
       if(e.length > 1){
         nfip = e[0].nif_ip
       }
-      self.setState({dets:e, detL:dets, mbunits:mbunits,curDet:curDet, macList:macs, netpolls:nps, nifip:nfip})
+      self.setState({dets:e, detL:dets, mbunits:mbunits,curDet:curDet, macList:macs, nifip:nfip})
     }
       }catch(er){
       }
@@ -1437,8 +1067,7 @@ class LandingPage extends React.Component{
       }
     })
     socket.on('authFail', function(pack){
-      //toast('Authentication failed')
-         self.am.current.show(pack.user, pack.ip)
+      self.am.current.show(pack.user, pack.ip)
       self.setAuthAccount({user:'Not Logged In', level:0, user:-1})
     })
     socket.on('passwordNotify',function(e){
@@ -1451,12 +1080,11 @@ class LandingPage extends React.Component{
       self.setState({timezones:e})
     })
     socket.on('batchList', function (list) {
-      // body...
-      console.log('BATCH LIST', list)
       self.setState({batchList:list.reverse()})
     })
   }
   shouldComponentUpdate(nextProps, nextState){
+    //by specifying noupdate in setState, we can hold off on render
     if(true ==  nextState.noupdate){
       return false;
     }
@@ -1519,9 +1147,8 @@ class LandingPage extends React.Component{
     socket.emit('writePass', packet)
   }
   /****** Login Functions end******/
+
   changeView (d) {
-    var st = this.state.stack;
-    st.push([this.state.currentView, this.state.data]);
     this.setState({currentView:d[0], data:d[1]})
   }
   settingClick (s,n) {
@@ -1607,7 +1234,7 @@ class LandingPage extends React.Component{
           SingletonDataStore.sysRec = e.rec;
           var language = vdf['@labels']['Language']['english'][e.rec['Language']];
           if(language == 'russian' || language == 'polish' || language == 'chinese'){
-            language = 'korean'
+            //language = 'korean'
           }
           if(e.rec['RemoteDisplayLock'] == 1){
             if(typeof this.state.fram['InternalIP'] != 'undefined'){
@@ -1924,6 +1551,7 @@ class LandingPage extends React.Component{
     this.sendPacket('getProdList')
   }
   /******************Parse Packets end*******************/
+  
   sendPacket(n,v){
     //LandingPage.sendPacket
     var self = this;
@@ -1977,38 +1605,36 @@ class LandingPage extends React.Component{
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
         socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-      
-      }else if(n == 'copyDefProd'){
-        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_DEFAULT']
-        var pkt = rpc[1].map(function (r) {
-          if(!isNaN(r)){
-            return r
+    }else if(n == 'copyDefProd'){
+      var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_DEFAULT']
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          if(isNaN(v)){
+            return 0
           }else{
-            if(isNaN(v)){
-              return 0
-            }else{
-              return parseInt(v)
-            }
+            return parseInt(v)
           }
-        })
-        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-      
-      }else if(n == 'copyFacProd'){
-        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_FACTORY']
-        var pkt = rpc[1].map(function (r) {
-          if(!isNaN(r)){
-            return r
+        }
+      })
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }else if(n == 'copyFacProd'){
+      var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_FACTORY']
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          if(isNaN(v)){
+            return 0
           }else{
-            if(isNaN(v)){
-              return 0
-            }else{
-              return parseInt(v)
-            }
+            return parseInt(v)
           }
-        })
-        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }
+      })
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'deleteAll'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_DELETEALL']
@@ -2626,9 +2252,8 @@ class LandingPage extends React.Component{
     
   }
   setTrans(v){
-      var srec = this.state.srec
-
-      srec['@customstrn'] = v
+    var srec = this.state.srec
+    srec['@customstrn'] = v
     if(v == 0){
       vMapV2 = vdefMapV2['@vMap']
       vMapLists = vdefMapV2['@lists']
@@ -2672,6 +2297,7 @@ class LandingPage extends React.Component{
     //this.sendPacket('formatUSB',0)
   }
 
+  /**** Update Translations****/
   transChange(n,l,v){
     var custMap = this.state.custMap
     custMap['@vMap'][n]['@translations'][l]['name'] = v
@@ -2695,35 +2321,60 @@ class LandingPage extends React.Component{
   exportVmap(){
     fileDownload(JSON.stringify(this.state.custMap),'custMap.json')//socket.emit('downloadJSON')
   }
+  /**** Update Translations****/
+
   getData(){
     console.log('get Batches')
    socket.emit('getBatches') 
   }
-  importVmap(){
-    this.inputMod.current.toggle();
-  }
   resetVmap(){
     socket.emit('saveCustomJSON', JSON.stringify(vdefMapV2));
-  }
-  testUpload(e){
-    console.log('testing file upload')
-    this.fileInput.current.onClick();
-  }
-  handleFileRead(e){
-    console.log(fileReader.result)
-    socket.emit('testupload', {fn:'Test.fti', buf:Buffer.from(fileReader.result).toString('hex')})
-  }
-  onFileUpload(e){
-    fileReader = new FileReader();
-    fileReader.onloadend = this.handleFileRead;
-    fileReader.readAsArrayBuffer(e.target.files[0]);
-    console.log(e.target.files)
   }
   toggleGraph(){
     this.setState({histo:!this.state.histo})
   }
   testWebView(){
     this.webviewModal.current.toggle();
+  }
+  openUnused(){
+    this.unusedModal.current.toggle();
+  }
+  forgot(id,ip){
+    //console.log('passReset')
+    socket.emit('passReset',{ip:ip,data:{user:id}})
+  }
+  getMMdep(d){
+     if(d == 'MaxBeltSpeed'){
+      //this is a hack, due to error in vdef
+      d = 'MaxBeltSpeed0'//+= this.props.params[0]['@name'].slice(-1)
+      console.log(d,this.props.params[0]['@name'])
+    }
+      var pVdef = _pVdef;
+      
+      if(typeof pVdef[0][d] != 'undefined'){
+        return this.state.srec[d]
+      }else if(typeof pVdef[1][d] != 'undefined'){
+        return this.state.prec[d]
+      }else if(typeof pVdef[2][d] != 'undefined'){
+        return this.state.rec[d]
+      }
+  }
+  saveProductPassThrough(){
+    if(this.state.rec['EditProdNeedToSave'] == 1){
+      this.sendPacket('saveProduct', this.state.srec['EditProdNo']) 
+      if(this.state.prclosereq){
+
+      this.pmodal.current.forceclose();
+      this.setState({prclosereq:false})
+    }
+    }
+  }
+  passThrough(){
+    if(this.state.prclosereq){
+
+      this.pmodal.current.forceclose();
+      this.setState({prclosereq:false})
+    }
   }
   renderModal() {
     var self = this;
@@ -2738,35 +2389,11 @@ class LandingPage extends React.Component{
         {detectors}
       </div>)
   }
-  openUnused(){
-    this.unusedModal.current.toggle();
-  }
-  forgot(id,ip){
-    //console.log('passReset')
-    socket.emit('passReset',{ip:ip,data:{user:id}})
-  }
-  getMMdep(d){
-    //var res = vdefByMac[this.props.mac];
-    if(d == 'MaxBeltSpeed'){
-      d = 'MaxBeltSpeed0'//+= this.props.params[0]['@name'].slice(-1)
-      console.log(d,this.props.params[0]['@name'])
-    }
-      var pVdef = _pVdef;
-      
-      if(typeof pVdef[0][d] != 'undefined'){
-        return this.state.srec[d]
-      }else if(typeof pVdef[1][d] != 'undefined'){
-        return this.state.prec[d]
-      }else if(typeof pVdef[2][d] != 'undefined'){
-        return this.state.rec[d]
-      }
-  }
   render(){
     //LandingPage.render
     var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
     var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
     var st = {textAlign:'center',lineHeight:'60px', height:60, width:536}
-
     var config = 'config_w'
     var find = 'find_w'
     var klass = 'interceptorDynamicView'
@@ -2779,8 +2406,9 @@ class LandingPage extends React.Component{
     var psbtklass = 'circularButton'
     var psbtcolor = 'black'
     var grbrdcolor = '#e1e1e1'
+    var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'57px'}
+    
     var raptor = <div style={{textAlign:'center'}}><img style={{width:219, marginTop:5, marginBottom:-5}} src={'assets/RaptorLogo.svg'}/></div>;
-
     var language = this.state.language
     
     if(this.state.branding == 'FORTRESS'){
@@ -2788,7 +2416,6 @@ class LandingPage extends React.Component{
       grbrdcolor = '#e1e1e1'
       psbtcolor = '#1C3746'
       psbtklass = 'circularButton_sp'
-     // raptor = <div style={{fontSize:45, color:'#e1e1e1', textAlign:'center'}}><span style={{fontSize:66, verticalAlign:'bottom', lineHeight:'76px'}}>R</span><span>APTOR</span></div>
     }else{
       grbrdcolor = '#e1e1e1'
       psbtcolor = '#1C3746'
@@ -2800,25 +2427,17 @@ class LandingPage extends React.Component{
       stp = 'assets/stop-sp.svg'
     }
     var play, stop;
-    //if(this.state.start){
-      var sttxt = 'Start'
-        play = <div onClick={this.start} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
-        stop = ''
-      if(this.state.rec['BatchRunning'] == 2){
-          sttxt = 'Resume'
-        
-
+    var sttxt = 'Start'
+    play = <div onClick={this.start} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
+    stop = ''
+    if(this.state.rec['BatchRunning'] == 2){
+      sttxt = 'Resume'
       play = <div onClick={this.resume} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
       stop = <div onClick={this.stop} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block',width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>End Batch</div></div> 
-
     }else if(this.state.rec['BatchRunning'] == 1){
       play = <div onClick={this.pause} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause/Stop</div></div>
-      stop = ''//<div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
-
+      stop = ''
     }
-    /**wip now**/   
-
-    var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'57px'}
 
     var cont = ''
     var sd = <div><DisplaySettings nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
@@ -2828,7 +2447,7 @@ class LandingPage extends React.Component{
     var cald = ''
     var dets = ''
 
-var lw = 0;
+    var lw = 0;
     var statusStr = 'Good Weight'
     if(typeof this.state.crec['PackWeight'] != 'undefined'){        
       if(this.state.crec['PackWeight']){
@@ -2839,8 +2458,7 @@ var lw = 0;
         winEnd = this.state.crec['WindowEnd']
       }
       statusStr = vMapLists['WeightPassed']['english'][this.state.crec['WeightPassed']]
-     }
-//   <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
+    }
     
     var statusLed = '';
     if(this.state.faultArray.length + this.state.warningArray.length> 0){
@@ -2851,7 +2469,6 @@ var lw = 0;
       }else{
          statusStr = this.state.faultArray[0] + ' active'  
       }
-      
     }else{
       statusStr = this.state.faultArray.length + ' faults active'
     }
@@ -2861,21 +2478,20 @@ var lw = 0;
 
 
     if(this.state.srec['SRecordDate']){
-        sd =  <div >
-         <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
+        sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
         <SettingsPageWSB  timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
         <BatchWidget acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
         </div>
+
         cont = sd;
-        cald = (  <div style={{background:'#e1e1e1', padding:10}}>
+        cald = (<div style={{background:'#e1e1e1', padding:10}}>
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['CalWeight']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.srec['CalWeight'], this.state.srec['WeightUnits'])} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['OverWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['OverWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['UnderWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['UnderWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
-            
+          <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['OverWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['OverWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['UnderWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['UnderWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={'Calibrate'}/>
-          </div>
-        )
+          </div>)
+
         unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.unusedList]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} vdefMap={this.state.vmap}/></div>
     }else{
@@ -2887,10 +2503,10 @@ var lw = 0;
     var trendBar = [15,16.5,17.5,19,15.5,18.5]
     var winStart = 0;
     var winEnd = 300
-    
     var bucketSize = 4
     var buckets = 100
     var pkgWeight = 0
+
     if(typeof this.state.prec['ProdName'] != 'undefined'){
       trendBar = [this.state.prec['NominalWgt']-(1.1*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (1.1*this.state.prec['OverWeightLim']), 165, 200]
       bucketSize = this.state.prec['HistogramBucketSize'];
@@ -2925,14 +2541,9 @@ var lw = 0;
                 <td style={{width:600}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
                 <ContextMenu id='raptorlogo'>
                   <MenuItem onClick={this.exportVmap}>Export Translations</MenuItem>
-                  <MenuItem onClick={this.importVmap}>Import Translations</MenuItem>
                   <MenuItem onClick={this.resetVmap}>Reset Translations</MenuItem>
-                  <MenuItem onClick={this.getData}>Get Batch Data</MenuItem>
-                  <MenuItem onClick={this.testUpload}>Test Upload</MenuItem>
                 </ContextMenu>
-                 <Modal x={true} ref={this.inputMod} innerStyle={{background:backgroundColor, maxHeight:650}}>
-                  <input type='file' onChange={this.onFileUpload}/>
-                </Modal>
+                
                 </td>
                   <td style={{height:60, width:200, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
                   <FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
@@ -2954,12 +2565,12 @@ var lw = 0;
               ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <LineGraph weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
+          <MainHistogram weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
                     winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.state.buckMin} buckMax={this.state.buckMax}>
-          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></LineGraph></div>
+          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
           </td><td>
-            <HorizontalHisto language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
+            <BatchPackCountGraph language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',paddingTop:5, paddingBottom:5, width:275}} >{play}{stop}</div>
           <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
@@ -3007,31 +2618,13 @@ var lw = 0;
                 accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
         <AuthfailModal ref={this.am} forgot={this.forgot}/>
       <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
-            <ProgressModal ref={this.prgmd}/>
-            <MessageModal ref={this.msgm}/>
+            <ProgressModal ref={this.prgmd}/><MessageModal ref={this.msgm}/>
         <LogoutModal ref={this.lgoModal} branding={this.state.branding}/>
         <LockModal ref={this.lockModal} branding={this.state.branding}/>
         </div>
-        <CustomFileInput ref={this.fileInput} onChange={this.onFileUpload}/>
       </div>) 
   }
-  saveProductPassThrough(){
-    if(this.state.rec['EditProdNeedToSave'] == 1){
-      this.sendPacket('saveProduct', this.state.srec['EditProdNo']) 
-      if(this.state.prclosereq){
 
-      this.pmodal.current.forceclose();
-      this.setState({prclosereq:false})
-    }
-    }
-  }
-  passThrough(){
-    if(this.state.prclosereq){
-
-      this.pmodal.current.forceclose();
-      this.setState({prclosereq:false})
-    }
-  }
 }
 /******************Main Components end********************/
 
@@ -3039,6 +2632,14 @@ var lw = 0;
 class ProductSettings extends React.Component{
   constructor(props){
     super(props)
+    var prodList = [];
+    var prodNames = this.props.pNames
+    this.props.pList.forEach(function (pn,i) {
+      prodList.push({name:prodNames[i], no:pn})
+    })
+    this.state ={data:[],copyMode:0,showAdvanceSettings:false,searchMode:false, filterString:'', filterList:[],selProd:this.props.editProd,prodList:prodList, showAllProd:false,
+    cob2:this.getPCob(this.props.srec, this.props.curProd, this.props.drec, this.props.fram)}
+
     this.updateFilterString = this.updateFilterString.bind(this);
     this.toggleSearch = this.toggleSearch.bind(this);
     this.selectProd = this.selectProd.bind(this);
@@ -3061,15 +2662,24 @@ class ProductSettings extends React.Component{
     this.deleteProdConfirm = this.deleteProdConfirm.bind(this);
     this.submitTooltip = this.submitTooltip.bind(this);
     this.onShortcut = this.onShortcut.bind(this);
-    this.passThrough = this.passThrough.bind(this);
-    var prodList = [];
-    var prodNames = this.props.pNames
-    this.props.pList.forEach(function (pn,i) {
-      prodList.push({name:prodNames[i], no:pn})
-    })
-
-    this.state ={data:[],copyMode:0,showAdvanceSettings:false,searchMode:false, filterString:'', filterList:[],selProd:this.props.editProd,prodList:prodList, showAllProd:false,
-    cob2:this.getPCob(this.props.srec, this.props.curProd, this.props.drec, this.props.fram)}
+    this.passThrough = this.passThrough.bind(this);    
+    this.prodMgmt = this.prodMgmt.bind(this);
+    this.submitChange = this.submitChange.bind(this);
+    this.closeKeyboard = this.closeKeyboard.bind(this);
+    this.toggleGraph = this.toggleGraph.bind(this);
+    this.getBuffer = this.getBuffer.bind(this);
+    this.onPromptCancel = this.onPromptCancel.bind(this);
+    this.getMMdep = this.getMMdep.bind(this);
+    this.onProdImportExport = this.onProdImportExport.bind(this);
+    this.onImport = this.onImport.bind(this);
+    this.onExport = this.onExport.bind(this);
+    this.onRestore = this.onRestore.bind(this);
+    this.onBackup = this.onBackup.bind(this);
+    this.copyFromFt = this.copyFromFt.bind(this);
+    this.advProdMgmt = this.advProdMgmt.bind(this);
+    this.copyFromDef = this.copyFromDef.bind(this);
+    this.msgm = React.createRef();
+    this.prImEx = React.createRef();
     this.pmd = React.createRef();
     this.pmd2 = React.createRef();
     this.cfTo = React.createRef();
@@ -3082,91 +2692,12 @@ class ProductSettings extends React.Component{
     this.pgm = React.createRef();
     this.pmgmt = React.createRef();
     this.apmgmt = React.createRef();
-    
-    this.prodMgmt = this.prodMgmt.bind(this);
-    this.submitChange = this.submitChange.bind(this);
-    this.closeKeyboard = this.closeKeyboard.bind(this);
-    this.toggleGraph = this.toggleGraph.bind(this);
-    this.getBuffer = this.getBuffer.bind(this);
-    //this.getRefBuffer= this.getRefBuffer.bind(this);
-    this.onPromptCancel = this.onPromptCancel.bind(this);
-    this.getMMdep = this.getMMdep.bind(this);
-    this.onProdImportExport = this.onProdImportExport.bind(this);
-    this.msgm = React.createRef();
-    this.prImEx = React.createRef();
-    this.onImport = this.onImport.bind(this);
-    this.onExport = this.onExport.bind(this);
-    this.onRestore = this.onRestore.bind(this);
-    this.onBackup = this.onBackup.bind(this);
-    this.copyFromFt = this.copyFromFt.bind(this);
-    this.advProdMgmt = this.advProdMgmt.bind(this);
-    this.copyFromDef = this.copyFromDef.bind(this);
   }
   componentWillReceiveProps(newProps){
     if(this.state.selProd != newProps.editProd){
       this.setState({selProd:newProps.editProd})
     }
     
-  }
-  shouldComponentUpdate(newProps, newState){
-    //console.log('Component Will Receive')
-
-    if(newProps.needSave != this.props.needSave){
-      if(newProps.needSave == 1){
-       //toast('needsave')
-       console.log(window.location.host)
-       if(this.pgm.current.state.show){
-        this.pmd2.current.show();
-       }else{
-         this.pmd.current.show()
-       }
-       
-      }
-    }
-    return true;
-  }
-  prodMgmt(){
-    //var prodEditAcc = this.props.level >= this.props.srec['PassAccProdEdit'];
-    var advProdEditAcc = this.props.level >= this.props.srec['PassAccAdvProdEdit'];
-      if(this.props.srec['PassOn'] == 0){
-      //  prodEditAcc = true;
-        advProdEditAcc = true;
-      }
-    if(advProdEditAcc){
-      this.pmgmt.current.toggle();  
-    }else{
-      this.msgm.current.show('Access Denied')
-    }
-    
-  }
-  toggleGraph(){
-    this.pgm.current.toggle();
-  }
-  getBuffer(){
-
-  }
-  submitTooltip(n,l,v){
-    this.props.submitTooltip(n,l,v)
-  }
-  sendPacket(n,v){
-    if(this.props.drec['BatchRunning'] != 0){
-      if(n['@locked_by_batch']){
-        this.msgm.current.show('Changes not permitted until batch is stopped.')
-      }
-    }
-
-    var self = this;
-    console.log(n,v)
-    this.props.sendPacket(n,v)
-  
-  }
-  onAdvanced(){
-    if(this.state.prodList.length > 0){
-          this.setState({showAdvanceSettings:!this.state.showAdvanceSettings})
-
-    }else{
-      toast('Products need to be fetched')
-    }
   }
   componentDidMount(){
     var self = this;
@@ -3183,8 +2714,67 @@ class ProductSettings extends React.Component{
     var el = document.getElementById('prodListScrollBox')
     el.scrollTop = scrollInd*66
   }
-  getPCob (sys,prod,dyn, fram) {
+  shouldComponentUpdate(newProps, newState){
+    //console.log('Component Will Receive')
+
+    if(newProps.needSave != this.props.needSave){
+      if(newProps.needSave == 1){
+       if(this.pgm.current.state.show){
+        this.pmd2.current.show();
+       }else{
+         this.pmd.current.show()
+       }
+       
+      }
+    }
+    return true;
+  }
+  prodMgmt(){
+    //Open Product Management Modal
+    var advProdEditAcc = this.props.level >= this.props.srec['PassAccAdvProdEdit'];
+      if(this.props.srec['PassOn'] == 0){
+        advProdEditAcc = true;
+      }
+    if(advProdEditAcc){
+      this.pmgmt.current.toggle();  
+    }else{
+      this.msgm.current.show('Access Denied')
+    }
+    
+  }
+  toggleGraph(){
+    //Toggle Pack Graph
+    this.pgm.current.toggle();
+  }
+  getBuffer(){
+
+  }
+  submitTooltip(n,l,v){
+    //Add tool tips
+    this.props.submitTooltip(n,l,v)
+  }
+  sendPacket(n,v){
+    if(this.props.drec['BatchRunning'] != 0){
+      if(n['@locked_by_batch']){
+        this.msgm.current.show('Changes not permitted until batch is stopped.')
+      }
+    }
+
+    var self = this;
+    console.log(n,v)
+    this.props.sendPacket(n,v)
   
+  }
+  onAdvanced(){
+    //Show SettingsPage
+    if(this.state.prodList.length > 0){
+      this.setState({showAdvanceSettings:!this.state.showAdvanceSettings})
+    }else{
+      toast('Products need to be fetched')
+    }
+  }
+  getPCob (sys,prod,dyn, fram) {
+    //Get  
     var vdef = vdefByMac[this.props.mac]
     var _cvdf = JSON.parse(JSON.stringify(vdef[6]['CWProd']))
     var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram,sys['PassAccAdvProdEdit'])
@@ -4629,8 +4219,6 @@ class SettingsPage extends React.Component{
   }
   update(){
     console.log('update CW Clicked')
-   // toast('Update in progress..')
-
     socket.emit('updateCW')
   }
   goToShortcut(path){
@@ -4653,7 +4241,7 @@ class SettingsPage extends React.Component{
   }
   componentWillReceiveProps(newProps){
 
-        var data = [];
+      var data = [];
       //  var path = [];
       var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
       if(this.props.data[0] == 'get_accounts'){
@@ -4711,7 +4299,7 @@ class SettingsPage extends React.Component{
           }
         }
       }
-    this.setState({data:newProps.data, cob2:newProps.cob2, sysRec:newProps.sysSettings, prodRec:newProps.prodSettings, dynRec:newProps.dynSettings, framRec:newProps.framRec})
+      this.setState({data:newProps.data, cob2:newProps.cob2, sysRec:newProps.sysSettings, prodRec:newProps.prodSettings, dynRec:newProps.dynSettings, framRec:newProps.framRec})
   }
   handleItemclick(dat, n){    
     //console.log(dat,n,1763)
@@ -4905,6 +4493,8 @@ class SettingsPage extends React.Component{
     var vdef = vdefByMac[this.props.mac]
     console.log([n,v])
     if(n == 'format_usb'){
+
+      socket.emit('sendReboot')
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_FORMATUSB']
             var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],rpc[2]);
       socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
@@ -4993,7 +4583,7 @@ class SettingsPage extends React.Component{
         
         var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
         socket.emit('rpc', {ip:this.props.dsp, data:packet})
-  }else if(n['@rpcs']['toggle']){
+    }else if(n['@rpcs']['toggle']){
 
       var arg1 = n['@rpcs']['toggle'][0];
       var arg2 = [];
@@ -5544,8 +5134,6 @@ class SettingItem3 extends React.Component{
         
               var lkey = props.data[0].params[props.data[0].child]['@name']
               if((props.data[0].params[props.data[0].child]['@children'])&&(props.children[0].length == 2)){
-                console.log('parseValues', 5)
-        
                 for(var i=0;i<props.children[0].length; i++){
                   val.push(this.getValue(props.children[1][i], props.children[0][i]))
                   if(typeof pVdef[0][props.children[0][i]] != 'undefined'){
@@ -5618,7 +5206,6 @@ class SettingItem3 extends React.Component{
         
             var lkey = props.lkey;
             if((props.data['@children'])&&(props.children[0].length == 2)){
-              console.log('parseValues', 9)
         
               for(var i=0;i<props.children[0].length;i++){
                 val.push(this.getValue(props.children[1][i], props.children[0][i]))
@@ -6651,7 +6238,7 @@ class MultiEditControl extends React.Component{
           }
         }
       }else if(self.props.param[i]['@name'] == 'Timezone'){
-        _st.lineHeight = '24px'
+        st.lineHeight = '24px'
         if(val == 0){
           val = 1;
         }
@@ -6912,8 +6499,7 @@ class MultiEditControl extends React.Component{
                 minBool = true;
                 min = self.props.param[i]['@min'];
               }else if(Array.isArray(self.props.param[i]['@min'])){
-               //var dep = 
-                  var dep;
+                var dep;
                 if(self.props.param[i]['@min'].length == 2){
                   dep = self.getMMdep(self.props.param[i]['@min'][1])
                   min = eval(self.props.param[i]['@min'][0])(dep)
@@ -6923,10 +6509,8 @@ class MultiEditControl extends React.Component{
                   dep = self.props.param[i]['@min'].slice(1).map(function(d){
                     return self.getMMdep(d)
                   })
-                  //console.log(self.props.param[i]['@min'])
-                  min = eval(self.props.param[i]['@min'][0]).apply(this, [].concat.apply([], [dep]));
-                  console.log(min, dep)
-                   minBool = true;
+                    min = eval(self.props.param[i]['@min'][0]).apply(this, [].concat.apply([], [dep]));
+                    minBool = true;
                 }
                 }else{
                 min = self.getMMdep(self.props.param[i]['@min'])
@@ -6953,8 +6537,6 @@ class MultiEditControl extends React.Component{
                 maxBool = true;
                 max = self.props.param[i]['@max'];
               }else if(Array.isArray(self.props.param[i]['@max'])){
-               //var dep = 
-               //console.log(self.props.param[i]['@max'])
                 var dep = self.getMMdep(self.props.param[i]['@max'][1])
                 max = eval(self.props.param[i]['@max'][0])(dep)
                 maxBool = true;
@@ -6985,7 +6567,7 @@ class MultiEditControl extends React.Component{
                 return <DateTimeModal language={self.props.language} branding={self.props.branding} value={v} ref={self['input'+i]} onEdit={self.changeDT}/>
               }
               var dispV = v
-              if(float_dec){
+              if(float_dec && !isNaN(dispV)){
                 dispV = dispV.toFixed(float_dec)
               }
 
@@ -8039,7 +7621,7 @@ if(prodName.length > 17){
 /******************Stats Components end*********************/
 
 /********************Graphs Start********************/
-class HorizontalHisto extends React.Component{
+class BatchPackCountGraph extends React.Component{
 	constructor(props){
 		super(props)
     this.toggle = this.toggle.bind(this);
@@ -8279,7 +7861,7 @@ class BatchBarGraph extends React.Component{
     </div>
   }
 }
-class LineGraph extends React.Component{
+class MainHistogram extends React.Component{
 	constructor(props){
 		super(props)
 		this.parseDataset = this.parseDataset.bind(this);

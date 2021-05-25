@@ -69,8 +69,7 @@ class UdpParamServer{
     var dsp = FtiRpc.udp(this.ip);
     this.dsp = dsp
     console.log('udpport',port)
-   //var arm = new Fti.ArmRpc.ArmRpc(this.ip);
-    //arm.dsp_open_cb(function(){
+
       if(this.vdef){
         console.log('Here is the vdef')
          dsp.rpc0(DRPC_NUMBER,[this.vdef['@rpc_map']['KAPI_RPC_UDPWEBPARAMS'][1][0],port]);
