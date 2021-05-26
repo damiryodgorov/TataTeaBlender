@@ -116,3 +116,7 @@ class LandingPage extends React.Component{
 		return <div></div>
 	}
 }
+
+
+
+ReactDOM.render(<Container/>,document.getElementById('content'))
