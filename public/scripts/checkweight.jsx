@@ -226,6 +226,7 @@ function wordValue(arr, p){
 }
 function isDiff(x, y){
     if((typeof x) != (typeof y)){
+      //console.log('type mismatch')
       return true;
     }
     for(var p in x){
@@ -717,6 +718,7 @@ class LandingPage extends React.Component{
     this.saveProductPassThrough = this.saveProductPassThrough.bind(this);
     this.onPmdClose = this.onPmdClose.bind(this);
     this.checkweight = this.checkweight.bind(this);
+    this.checkWeightSend = this.checkWeightSend
     this.setTheme = this.setTheme.bind(this);
     this.openBatch = this.openBatch.bind(this);
     this.closeCWModal = this.closeCWModal.bind(this);
@@ -1291,7 +1293,7 @@ class LandingPage extends React.Component{
             })
             if(isDiff(iobits,this.state.ioBITs)){
                 noupdate = false;
-                console.log(1347, iobits)
+               // console.log(1347, iobits)
               }
           
           }
@@ -1713,6 +1715,30 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'checkWeightSend'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            return 0
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'cancelCW'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHTCANCEL']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            return 0
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
         socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'updateSystem'){
@@ -2251,6 +2277,12 @@ class LandingPage extends React.Component{
     }
     
   }
+  checkWeightSend(cw,mv){
+    var buf = Buffer.alloc(8)
+    buf.writeFloatLE(cw,0)
+    buf.writeFloatLE(mv,4)
+    this.sendPacket('checkWeightSend', buf)
+  }
   setTrans(v){
     var srec = this.state.srec
     srec['@customstrn'] = v
@@ -2678,6 +2710,7 @@ class ProductSettings extends React.Component{
     this.copyFromFt = this.copyFromFt.bind(this);
     this.advProdMgmt = this.advProdMgmt.bind(this);
     this.copyFromDef = this.copyFromDef.bind(this);
+    this.showProdMgmtTooltip = this.showProdMgmtTooltip.bind(this);
     this.msgm = React.createRef();
     this.prImEx = React.createRef();
     this.pmd = React.createRef();
@@ -2692,6 +2725,7 @@ class ProductSettings extends React.Component{
     this.pgm = React.createRef();
     this.pmgmt = React.createRef();
     this.apmgmt = React.createRef();
+    this.prodMgmtTooltip = React.createRef();
   }
   componentWillReceiveProps(newProps){
     if(this.state.selProd != newProps.editProd){
@@ -3260,7 +3294,9 @@ class ProductSettings extends React.Component{
   advProdMgmt(){
     this.apmgmt.current.show();
   }
-
+  showProdMgmtTooltip(){
+    this.prodMgmtTooltip.current.show();
+  }
   render(){
     var self = this;
     var list = [];
@@ -3452,7 +3488,8 @@ class ProductSettings extends React.Component{
     var SA = (list.length > 8)
 
     var createNew = <div>
-       <div style={{color:'#e1e1e1', fontSize:25}}>Create new product</div>
+       <div style={{color:'#e1e1e1', fontSize:25}}><div style={{display:'inline-block'}}>Create new product</div>  <div  style={{float:'right', display:'inline-block',marginRight:20}}><img src='assets/help.svg' onClick={this.showProdMgmtTooltip} width={30}/></div>
+      </div>
        <div style={{textAlign:'center'}}>
             <CircularButton onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From selected product'}/>
             <CircularButton onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From base product'}/>
@@ -3462,6 +3499,11 @@ class ProductSettings extends React.Component{
          
          
           </div>
+          <Modal ref={this.prodMgmtTooltip}>
+            <div style={{color:'#e1e1e1', whiteSpace:'break-spaces'}}>
+              {vdefMapV2['@tooltips']['ProductManagement'][this.props.language]}
+            </div>
+          </Modal>
     </div>
 
     var usbMsg = ''
@@ -3705,8 +3747,6 @@ class ProdSettingEdit extends React.Component{
       if(this.props.value.indexOf('in') != -1){
         val = val*10;
       }
-    }else if(this.props.param['@name'].indexOf('PhaseAngleAuto') != -1){
-      val = val*Math.pow(10,this.props.param['@decimal'])
     }else if(this.props.param['@decimal']){
       val = val*Math.pow(10,this.props.param['@decimal'])
       console.log('3149',v,val)
@@ -10422,9 +10462,11 @@ class CheckWeightControl extends React.Component{
     this.setCW = this.setCW.bind(this);
     this.sendPacket = this.sendPacket.bind(this);
     this.sendCW = this.sendCW.bind(this);
+    this.cancelCW = this.cancelCW.bind(this);
   }
   setCW(n,v){
     var self = this;
+    console.log('cwset',n,v)
     if(typeof v != 'undefined'){
 
 
@@ -10433,16 +10475,32 @@ class CheckWeightControl extends React.Component{
         this.setState({cwset:parseFloat(v)})
         setTimeout(function (argument) {
           // body...
+          self.sendCW();
+
           self.props.close()
         },150)
       }
     }
   }
   sendCW(){
+     var buf = Buffer.alloc(8)
+          buf.writeFloatLE(this.props.cw,0)
+          buf.writeFloatLE(this.state.cwset,4)
+          this.sendPacket('checkWeightSend', buf)
     this.props.close();
   }
   sendPacket(n,v){
     this.props.sendPacket(n,v)
+  }
+  cancelCW(){
+    var self = this;
+    this.sendPacket('cancelCW',0)
+   setTimeout(function (argument) {
+          // body...
+          //self.sendCW();
+
+          self.props.close()
+        },500)
   }
   render(){
     var cw = this.props.cw.toFixed(1)+'g'
@@ -10453,8 +10511,11 @@ class CheckWeightControl extends React.Component{
         <div style={{background:'#e1e1e1', padding:5, height:400}}>
        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Check Weight'}</div></h2></span>
        <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Check Weight'} value={cw} editable={false} onEdit={this.sendPacket} num={true}/></div>
-         <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Measured Value'} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={'checkweightmeasure'} num={true}/></div>
-        <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={'Confirm'}/>
+         <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Measured Value'} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={{'@name':'checkweightmeasure'}} num={true}/></div>
+        <div style={{marginTop:140}}>
+        <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.cancelCW} lab={'Cancel'}/>
+        
+        <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={'Confirm'}/>
         </div>
         </div>
     </div>

@@ -22,6 +22,14 @@ var fileDownload = require('js-file-download');
 const FtiSockIo = require('./ftisockio.js')
 const Params = require('./params.js')
 
+const SPARCBLUE2 = '#30A8E2'
+const SPARCBLUE1 = '#1C3746'
+const SPARCBLUE3 = '#475C67'
+const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
+const FORTRESSPURPLE2 = '#5d5480'
+const FORTRESSPURPLE3 = '#6d6490'
+const FORTRESSGRAPH = '#b8860b'
+
 var _wsurl = 'ws://' +location.host 
 var socket = new FtiSockIo(_wsurl,true);
 socket.on('vdef', function(vdf){
@@ -101,8 +109,7 @@ class Container  extends React.Component {
     <ErrorBoundary autoReload={false}>
     <LandingPage/>
 
-				<ToastContainer position="top-center" autoClose={1500} hideProgressBar newestOnTop closeOnClick closeButton={false} rtl={false}
-			pauseOnVisibilityChange draggable pauseOnHover transition={FastZoom} toastClassName='notifications-class'/>
+				
 			</ErrorBoundary>
 		</div>
 	}
@@ -111,9 +118,37 @@ class Container  extends React.Component {
 class LandingPage extends React.Component{
 	constructor(props){
 		super(props)
+		this.state = {} //initialize states to be store on the top level component
+		this.onParamMsg = this.onParamMsg.bind(this);
+	}
+	componentDidMount(){
+		var self = this;
+		setTimeout(function (argument) {
+      		self.locate();
+    	}, 500)
+		socket.on('locatedResp' function(xrays){
+			console.log(xrays)
+			if(xrays[0]){
+				socket.emit('vdefReq', xrays[0]) //ask for vdef, will return vdef handled by socket.on('vdef')
+				socket.emit('connectToUnit', xrays[0]) //start stream
+			}
+		})
+		socket.on('paramMsg',function(data){
+			self.onParamMsg(data.data, data.det)
+		})
+	}
+	locate(){
+		socket.emit('locateReq', 'FTI_XRAY')
+	}
+	onParamMsg(data, det){
+		//handle stream
+		console.log(data, det)
 	}
 	render(){
-		return <div></div>
+		var img = 'assets/NewFortressTechnologyLogo-WHT-trans.png'
+		return <div style={{background:FORTRESSPURPLE1}}>
+			<img src={img}/>
+		</div>
 	}
 }
 

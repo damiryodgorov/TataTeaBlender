@@ -603,6 +603,55 @@ const udpCallback = function(_ip,e,app){
 }
 
 
+function relayParamMsg(packet){
+  ////console.log('relay param msg 2')
+
+  for(var pid in passocs){
+    ////console.log(packet)
+    //if(passocs[pid].cw == true){
+      passocs[pid].relayParsed(packet);
+
+    //}
+  }
+  packet = null;
+}
+function relayUserNames(packet){
+  ////console.log('relay param msg 2')
+  console.log('relay User Names')
+  for(var pid in passocs){
+    ////console.log(packet)
+
+    passocs[pid].relayUserNames(packet);
+  }
+  packet = null;
+}
+function relayRpcMsg(packet){
+  //console.log('relayRpcMsg')
+  for(var pid in rassocs){
+    // //console.log(pid)
+    rassocs[pid].relay(packet);
+  }
+  packet = null;
+}
+function relayNetPoll(packet){
+  //console.log('relay net poll')
+  for(var pid in nassocs){
+    nassocs[pid].relay(packet)
+  }
+  packet = null;
+}
+function relaySockMsg(ev,arg){
+  for(var sid in sockrelays){
+    sockrelays[sid].relay(ev,arg)
+  }
+}
+function sendRpcMsg(packet){
+  for(var pid in rassocs){
+    rassocs[pid].send(packet)
+  }
+  packet = null;
+}
+
 var PORT = 3300;
 var IFACE = 'eth0'
 let _TOUCHSCREEN_ADDR = '192.168.10.20'
@@ -639,16 +688,43 @@ wss.on('connection', function(scket,req){
 	})
 	req.on('error', function(err){
   	})
-  	var socket = new FtiSockIOServer(scket)
+  var socket = new FtiSockIOServer(scket)
   	socket.on('close',function(){
     	socket.destroy();
     	socket = null;  
   	})
-  	 socket.on('locateUnicast', function (addr) {
+
+
+  var relayFuncP = function (p) {
+    socket.emit('paramMsg',p)
+    p = null;
+  }
+  var relayUserNamesFunc = function (p) {
+    console.log('relay un func',p)
+    socket.emit('userNames',p)
+    p = null;
+  }
+  var relayRpcFunc = function(p){
+    socket.emit('rpcMsg',p)
+    p = null;
+  }
+  var relayNetFunc = function(p){
+    socket.emit('netpoll',p)
+    p = null;
+  }
+  var sockrelay = function(ev, arg){
+    socket.emit(ev,arg)
+  }
+  	  passocs[socket.id] = {relayParsed:relayFuncP, relayUserNames:relayUserNamesFunc}
+  rassocs[socket.id] = {relay:relayRpcFunc}
+  nassocs[socket.id] = {relay:relayNetFunc}
+  sockrelays[socket.id] = {relay:sockrelay} 
+    socket.on('locateUnicast', function (addr) {
     	var APP_NAME = 'FTI_XRAY'
     	// APP_NAME should match the app name returned via fti arm 
     	locateUnicast(addr,function(){ console.log('located')}, APP_NAME)
 	});
+
   	socket.on('locateReq',function(APP_NAME){
   	 	var ifaces = os.networkInterfaces();  
     	var iface = IFACE
@@ -718,5 +794,12 @@ wss.on('connection', function(scket,req){
         }else{
             socket.emit('noVdef', u)
         }
+  })
+  socket.on('vdefReq', function(det){
+            if(vdefs[det.ip]){
+                socket.emit('vdef',[vdefs[det.ip],det])
+              }else{
+                socket.emit('noVdef', det)
+              }
   })
 })
