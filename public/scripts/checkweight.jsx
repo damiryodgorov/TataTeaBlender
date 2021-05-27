@@ -6902,7 +6902,10 @@ class AccountRow extends React.Component{
     var valArray = [this.state.username, this.state.acc]
     
       var vLabels = valArray.map(function(d,i){
-      var val = d;
+      var val = ""
+      if(typeof d != 'undefined'){
+        val = d
+      }
       var cst = Object.assign({},st)
       if(val.length > 40){
         cst.fontSize = 20
