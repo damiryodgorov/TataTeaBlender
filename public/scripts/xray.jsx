@@ -126,7 +126,7 @@ class LandingPage extends React.Component{
 		setTimeout(function (argument) {
       		self.locate();
     	}, 500)
-		socket.on('locatedResp' function(xrays){
+		socket.on('locatedResp', function(xrays){
 			console.log(xrays)
 			if(xrays[0]){
 				socket.emit('vdefReq', xrays[0]) //ask for vdef, will return vdef handled by socket.on('vdef')
