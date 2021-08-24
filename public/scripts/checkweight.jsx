@@ -2411,6 +2411,9 @@ class LandingPage extends React.Component{
       this.setState({prclosereq:false})
     }
   }
+  goDual(){
+    window.history.back()
+  }
   renderModal() {
     var self = this;
     var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
@@ -2593,6 +2596,7 @@ class LandingPage extends React.Component{
     var batchPerm = (this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccBatchSetup'])
      
     // statusStr = 
+    var home = <div style={{textAlign:'center'}}><img style={{width:60, marginTop:-15, marginBottom:-7}} src={'assets/home.png'}/></div>;
 
     return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
          <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
@@ -2600,14 +2604,17 @@ class LandingPage extends React.Component{
             <tbody>
               <tr>
                 <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} onClick={this.imgClick}  src={img}/></td>
-                <td style={{width:600}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
+                <td style={{width:550}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
                 <ContextMenu id='raptorlogo'>
                   <MenuItem onClick={this.exportVmap}>Export Translations</MenuItem>
                   <MenuItem onClick={this.resetVmap}>Reset Translations</MenuItem>
                 </ContextMenu>
-                
                 </td>
-                  <td style={{height:60, width:200, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
+                  <td>
+                    <div style={{paddingLeft:3, borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}} onClick={this.goDual}>{home}
+                    <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Home'}</div></div>
+                  </td>
+                  <td style={{height:60, width:190, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
                   <FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
                   <td className="logbuttCell" style={{height:60}}  onClick={this.toggleLogin}>
                   <div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
