@@ -146,8 +146,8 @@ function FormatWeight(wgt, unit){
     }else if (unit == 3){
       return (wgt/28.3495).toFixed(2) + ' oz'
     }
-    // return wgt.toFixed(1) + ' g'
-    return wgt.toFixed(2) + ' g'
+    return wgt.toFixed(1) + ' g'
+    //return wgt.toFixed(2) + ' g'
 }
 
 function FormatWeightS(wgt, unit){
@@ -750,6 +750,12 @@ class Container extends React.Component {
   constructor(props){
     super(props)
   }
+  goToLane1(){
+    window.location.href = "http://"+location.host+"/cw.html";
+  }
+  goToLane2(){
+    window.location.href = "http://"+ip2+"/cw.html";
+  }
   render(){
 
     return <div>
@@ -760,19 +766,17 @@ class Container extends React.Component {
                <table class="center">
                 <tbody>
                 <tr style={{marginLeft:10,textAlign:'center'}}>
-                <td><CustomLink to="/cw1" acc={true}>
-                <div style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
-                </CustomLink>
+                <td>
+                <div onClick={this.gotToLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
                 </td>
-                <td><CustomLink to="/cw1" acc={true}>
-                <div><LandingPage soc={socket1}/></div></CustomLink>
+                <td>
+                <div onClick={this.gotToLane1}><LandingPage soc={socket1}/></div>
                 </td>
-                <td><CustomLink to="/cw2" acc={true}>
-                <div style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
-                </CustomLink>
+                <td>
+                <div onClick={this.gotToLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
                 </td>
-                <td><CustomLink to="/cw2" acc={true}>
-                <div><LandingPage soc={socket2}/></div></CustomLink>
+                <td>
+                <div onClick={this.gotToLane2}><LandingPage soc={socket2}/></div>
                 </td>
                 </tr>
                 </tbody>
@@ -782,6 +786,12 @@ class Container extends React.Component {
               </ErrorBoundary>
 
             </div>              
+        </div>
+      </Router>
+    </div>
+  }
+}
+/*
           <Switch>
             <Route path="/cw1" component={() => {
               window.history.back()
@@ -795,12 +805,9 @@ class Container extends React.Component {
               return null;
             }}/>
           </Switch>
-        </div>
-      </Router>
-    </div>
-  }
-}
+*/
 
+/*
 class CustomLink extends React.Component{
   constructor(props){
     super(props)
@@ -815,7 +822,7 @@ class CustomLink extends React.Component{
     }
   }
 }
-
+*/
 class LandingPage extends React.Component{
   constructor(props){
     super(props)

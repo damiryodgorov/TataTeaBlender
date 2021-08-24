@@ -140,8 +140,8 @@ function FormatWeight(wgt, unit){
     }else if (unit == 3){
       return (wgt/28.3495).toFixed(2) + ' oz'
     }
-    // return wgt.toFixed(1) + ' g'
-    return wgt.toFixed(2) + ' g'
+    return wgt.toFixed(1) + ' g'
+    //return wgt.toFixed(2) + ' g'
 }
 
 function FormatWeightS(wgt, unit){
