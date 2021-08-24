@@ -791,7 +791,7 @@ class Container extends React.Component {
 
             <Route path="/cw2" component={() => {
               window.history.back()
-              window.location.href = "http://192.168.50.2/cw.html";
+              window.location.href = "http://"+ip2+"/cw.html";
               return null;
             }}/>
           </Switch>
@@ -927,11 +927,12 @@ class LandingPage extends React.Component{
     ifvisible.on("idle", function(){
       self.logout()
     });
+    var socket = this.props.soc;
     setTimeout(function (argument) {
       self.loadPrefs();
+//      socket.emit('connectToUnit',{ip:location.host, app:'FTI_CW', app_name:'FTI_CW'})      
     }, 500)   
    // socket.on('testusb')
-    var socket = this.props.soc;
     socket.on('userNames', function(p){
        self.setState({usernames:p.det.data.array})
       
@@ -1316,7 +1317,7 @@ class LandingPage extends React.Component{
   loadPrefs() {
     if(this.props.soc.sock.readyState  ==1){
       this.props.soc.emit('getVersion',true);
-      this.props.soc.emit('getPrefsCW',true);
+      //this.props.soc.emit('getPrefsCW',true);
       this.props.soc.emit('getDispSettings');
       this.props.soc.emit('getCustomJSON',JSON.stringify(vdefMapV2))
     }
