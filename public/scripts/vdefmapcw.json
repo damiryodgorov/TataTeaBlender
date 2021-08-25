@@ -11657,9 +11657,9 @@
       "@labels": [
         "Source",
         "Polarity"
-      ]
+      ],
+      "@input": true
     },
-    "@input": true,
     "INPUT_EYE": {
       "@translations": {
         "english": {

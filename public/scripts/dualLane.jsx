@@ -750,10 +750,10 @@ class Container extends React.Component {
   constructor(props){
     super(props)
   }
-  goToLane1(){
+  gotoLane1(){
     window.location.href = "http://"+location.host+"/cw.html";
   }
-  goToLane2(){
+  gotoLane2(){
     window.location.href = "http://"+ip2+"/cw.html";
   }
   render(){
@@ -767,16 +767,16 @@ class Container extends React.Component {
                 <tbody>
                 <tr style={{marginLeft:10,textAlign:'center'}}>
                 <td>
-                <div onClick={this.gotToLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
+                <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
                 </td>
                 <td>
-                <div onClick={this.gotToLane1}><LandingPage soc={socket1}/></div>
+                <div onClick={this.gotoLane1}><LandingPage soc={socket1}/></div>
                 </td>
                 <td>
-                <div onClick={this.gotToLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
+                <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
                 </td>
                 <td>
-                <div onClick={this.gotToLane2}><LandingPage soc={socket2}/></div>
+                <div onClick={this.gotoLane2}><LandingPage soc={socket2}/></div>
                 </td>
                 </tr>
                 </tbody>
