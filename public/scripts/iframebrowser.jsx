@@ -63,7 +63,7 @@ class NavWrapper extends React.Component{
 		setTimeout(function (argument) {
 			
 			self.loadInitPage();
-		}, 500)	
+		}, 10000)	
 	}
 	loadInitPage(){
 		if(socket.sock.readyState  ==1){
