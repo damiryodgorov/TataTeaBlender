@@ -8662,6 +8662,174 @@
         "Main Reject Duration"
       ]
     },
+    "SetTolNegErr": {
+      "@translations": {
+        "english": {
+          "name": "Overide T1 and T2 Limits",
+          "description": "The table used when in Maximum Allowable Variation (MAV) Weighing Mode."
+        },
+        "korean": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "spanish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "french": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "italian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "german": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "turkish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "russian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "polish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "chinese": {
+          "name": "MAV Table",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(val){return val==1;})",
+        "WeighingMode"
+      ],
+      "@labels": [
+        "SetTolNegErr"
+      ]
+    },
+    "TolNegErrPct": {
+      "@translations": {
+        "english": {
+          "name": "Allowed T1-T2 Percentage",
+          "description": "The table used when in Maximum Allowable Variation (MAV) Weighing Mode."
+        },
+        "korean": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "spanish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "french": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "italian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "german": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "turkish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "russian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "polish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "chinese": {
+          "name": "MAV Table",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(val){return val==1;})",
+        "WeighingMode"
+      ],
+      "@labels": [
+        "TolNegErrPct"
+      ]
+    },
+    "TolNegErrorX2": {
+      "@translations": {
+        "english": {
+          "name": "T2 Limit",
+          "description": "The table used when in Maximum Allowable Variation (MAV) Weighing Mode."
+        },
+        "korean": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "spanish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "french": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "italian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "german": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "turkish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "russian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "polish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "chinese": {
+          "name": "MAV Table",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(val){return val==1;})",
+        "WeighingMode"
+      ],
+      "@labels": [
+        "TolNegErrorX2"
+      ]
+    },
     "RejDurSec2": {
       "@translations": {
         "english": {
@@ -46335,6 +46503,21 @@
                 "acc": 0
               },
               {
+                "type": 0,
+                "val": "SetTolNegErr",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "TolNegErrPct",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "TolNegErrorX2",
+                "acc": 0
+              },
+              {
                 "type": 1,
                 "val": {
                   "display": [
@@ -60324,7 +60507,7 @@
     "WeighingMode": {
       "english": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ],
@@ -61308,6 +61491,98 @@
         "length",
         "lead",
         "mid"
+      ]
+    },
+    "SetTolNegErr": {
+      "english": [
+        "no",
+        "yes"
+      ],
+      "korean": [
+        "no",
+        "yes"
+      ],
+      "spanish": [
+        "no",
+        "yes"
+      ],
+      "french": [
+        "no",
+        "yes"
+      ],
+      "portuguese": [
+        "no",
+        "yes"
+      ],
+      "italian": [
+        "no",
+        "yes"
+      ],
+      "german": [
+        "no",
+        "yes"
+      ],
+      "polish": [
+        "no",
+        "yes"
+      ],
+      "turkish": [
+        "no",
+        "yes"
+      ],
+      "russian": [
+        "no",
+        "yes"
+      ],
+      "chinese": [
+        "no",
+        "yes"
+      ]
+    },
+    "TolNegErrPct": {
+      "english": [
+        "2.5%",
+        "2.0%"
+      ],
+      "korean": [
+        "no",
+        "yes"
+      ],
+      "spanish": [
+        "no",
+        "yes"
+      ],
+      "french": [
+        "no",
+        "yes"
+      ],
+      "portuguese": [
+        "no",
+        "yes"
+      ],
+      "italian": [
+        "no",
+        "yes"
+      ],
+      "german": [
+        "no",
+        "yes"
+      ],
+      "polish": [
+        "no",
+        "yes"
+      ],
+      "turkish": [
+        "no",
+        "yes"
+      ],
+      "russian": [
+        "no",
+        "yes"
+      ],
+      "chinese": [
+        "no",
+        "yes"
       ]
     }
   }
