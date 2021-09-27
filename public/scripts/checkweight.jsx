@@ -4,20 +4,18 @@ const ifvisible = require('ifvisible');
 const timezoneJSON = require('./timezones.json')
 //var SmoothieChart = require('./smoothie.js').SmoothieChart;
 //var TimeSeries = require('./smoothie.js').TimeSeries;
-import {CustomFileInput,TrendBar,TickerBox, CanvasElem, SlimGraph, DummyGraph, Modal,GraphModal, AuthfailModal, ProgressModal, MessageModal, AlertModal, AccModal, MessageConsole, LockModal, ScrollArrow} from './components.jsx'
-import {CircularButton, CircularButton2, ButtonWrapper, CustomAlertButton, CustomAlertClassedButton} from './buttons.jsx'
-import {PopoutWheel} from './popwheel.jsx'
-import {CustomKeyboard, KeyboardInputTextButton, EmbeddedKeyboard} from './keyboard.jsx'
-var onClickOutside = require('react-onclickoutside');
-import Notifications, {notify} from 'react-notify-toast';
-import {ToastContainer, toast,Zoom, cssTransition } from 'react-toastify';
+import { Uint64LE } from 'int64-buffer';
+import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu";
+import { cssTransition, toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {css} from 'glamor'
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
-import {XYPlot,MarkSeries,Borders, LabelSeries, XAxis, YAxis,VerticalGridLines, HorizontalGridLines,  HorizontalRectSeries, VerticalRectSeries, HorizontalBarSeries, AreaSeries, VerticalBarSeries, LineSeries} from 'react-vis';
-import {Uint64LE, Int64LE, Uint64BE, Int64BE} from 'int64-buffer';
-import {v4 as uuidv4} from 'uuid';
-import ErrorBoundary from './ErrorBoundary.jsx'
+import { AreaSeries, Borders, HorizontalBarSeries, LabelSeries, VerticalRectSeries, XAxis, XYPlot, YAxis } from 'react-vis';
+import { v4 as uuidv4 } from 'uuid';
+import { CircularButton, CircularButton2 } from './buttons.jsx';
+import { AlertModal, AuthfailModal, LockModal, MessageModal, Modal, ProgressModal, ScrollArrow, TrendBar } from './components.jsx';
+import ErrorBoundary from './ErrorBoundary.jsx';
+import { CustomKeyboard, EmbeddedKeyboard } from './keyboard.jsx';
+import { PopoutWheel } from './popwheel.jsx';
+var onClickOutside = require('react-onclickoutside');
 //import {ZoomInIcon, ZoomOutIcon} from '@material-ui/icons';
 
 var createReactClass = require('create-react-class');
@@ -32,7 +30,6 @@ const _ioBits = ['TACH','EYE','RC_1','RC_2','REJ_EYE','AIR_PRES','REJ_LATCH','BI
                   'TEST','NONE','REJ_MAIN','REJ_ALT','FAULT','TEST_REQ','HALO_FE', 'HALO_SS', 'LS_RED','LS_YEL','LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 var liveTimer = {}
 var myTimers = {}
-
 
 const SPARCBLUE2 = '#30A8E2'
 const SPARCBLUE1 = '#1C3746'
@@ -98,16 +95,16 @@ function roundTo(num, dec) {
     return +(Math.round(num + "e+" + dec)  + "e-" + dec);
 }
 function formatLength(l, u){
+  
   if(typeof l == 'undefined'){
     l = 0;
   }else if(l == null){
     l = 0;
   }
   if(u==0){
-      return (l/25.4).toFixed(1) + " in"
-
-    }
-    else{
+    return (l/25.4).toFixed(1) + " in"
+  }
+  else{
       return Math.round(l) + " mm";
   }
 }
@@ -612,6 +609,7 @@ socket.on('vdef', function(vdf){
     res[10] = {};
     res[11] = {};
     res[12] = {};
+
    	var nVdf = [[],[],[],[],[],[],[],[],[]];
     json["@params"].forEach(function(p ){
       var rec = p['@rec']
@@ -1294,6 +1292,7 @@ class LandingPage extends React.Component{
                   iobits[b] = e.rec[b]
                 }
             })
+            
             if(isDiff(iobits,this.state.ioBITs)){
                 noupdate = false;
                // console.log(1347, iobits)
@@ -1466,6 +1465,7 @@ class LandingPage extends React.Component{
           }
           var ms = new Uint64LE(e.rec['BatchStartMS'].data)
           var sms = new Uint64LE(e.rec['SampleStartMS'].data)
+          console.log("DY Test");
           console.log(inputSrcArr, outputSrcArr)
           console.log(1217, ms.toString(), Date.now())
           console.log('passed')
@@ -1560,7 +1560,6 @@ class LandingPage extends React.Component{
   sendPacket(n,v){
     //LandingPage.sendPacket
     var self = this;
-    console.log(n,v)
     var vdef = vdefByMac[this.state.curDet.mac]
     if(typeof n == 'string'){
       if(n == 'switchProd'){
@@ -2018,8 +2017,7 @@ class LandingPage extends React.Component{
       console.log(819, strArg, typeof strArg, v)
     
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-      console.log(packet)
-        
+
       socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
     }else if(n['@rpcs']['vfdwrite']){
@@ -2063,7 +2061,6 @@ class LandingPage extends React.Component{
             arg2.push(v)
           }else{
             strArg=v
-            
           }
         }
       }
@@ -2085,11 +2082,9 @@ class LandingPage extends React.Component{
         strArg = buf;
       }
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-        
       socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n['@rpcs']['clear']){
       var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
-        
       socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }
     }
@@ -2614,9 +2609,9 @@ class LandingPage extends React.Component{
                   <button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
                   <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Level '+this.state.level}</div>
                   </div></td>
-              <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
-              <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Settings'}</div>
-              </td>
+                  <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
+                  <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Settings'}</div>
+                  </td>
               </tr>
             </tbody>
           </table>
@@ -2825,7 +2820,6 @@ class ProductSettings extends React.Component{
     }
 
     var self = this;
-    console.log(n,v)
     this.props.sendPacket(n,v)
   
   }
@@ -2996,7 +2990,6 @@ class ProductSettings extends React.Component{
     if(this.props.prods[this.state.selProd]){
       curProd = this.props.prods[this.state.selProd]
     }
-
     var pram;
     var val;
     var label = false
@@ -4980,7 +4973,7 @@ class SettingsPage extends React.Component{
             passAcc = true;
           }
           if(par.dt){
-             nodes.push(<SettingItem3 timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+            nodes.push(<SettingItem3 timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
               children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} passAcc={passAcc} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
        
@@ -6302,7 +6295,7 @@ class MultiEditControl extends React.Component{
           }
         }else if((self.props.param[i]['@labels'] == 'OutputSrc')){
            iod = true
-          if(self.props.ioBits[outputSrcArr[d]] == 0){
+          if(self.props.ioBits[outputSrcArr[d]] == 0){            
             //st.color = '#666'
             iogreen = false;
           }
@@ -6659,10 +6652,9 @@ class MultiEditControl extends React.Component{
      return <div>
      <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
       <div><div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
-           <ContextMenuTrigger id={this.props.name + 'ctmid'}>
-        {namestring}
-
-      </ContextMenuTrigger>
+        <ContextMenuTrigger id={this.props.name + 'ctmid'}>
+          {namestring}
+        </ContextMenuTrigger>
       </div>
       </div>
      
@@ -6721,7 +6713,7 @@ class DisplaySettings extends React.Component{
  var nav = (<div className='setNav'>
                 <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_ip'} vMap={vMapV2['Nif_ip']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_ip']['@translations'][this.props.language]['name']} value={this.props.nifip} editable={true} onEdit={this.editIP} param={{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
                 <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_nm'} vMap={vMapV2['Nif_nm']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_nm']['@translations'][this.props.language]['name']} value={this.props.nifnm} editable={true} onEdit={this.editNM} param={{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
-                <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_gw'} vMap={vMapV2['Nif_gw']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_gw']['@translations'][this.props.language]['name']} value={this.props.nifgw} editable={true} onEdit={this.editGW} param={{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
+                
        
           </div>)
 
@@ -8088,6 +8080,7 @@ class PackGraph extends React.Component{
     this.toggleZoom = this.toggleZoom.bind(this);
     this.getMMdep = this.getMMdep.bind(this);
     this.onEdit = this.onEdit.bind(this);
+    this.onEditPackageLength = this.onEditPackageLength.bind(this);
     //this.state = {tare:this.props.srec['TareWeight']}
   }
   componentDidMount(){
@@ -8113,6 +8106,17 @@ class PackGraph extends React.Component{
   }
   onEdit(p, v){
     this.props.onEdit(p,v)
+  }
+  onEditPackageLength(p,v)
+  {
+    if(this.props.srec['AppUnitDist'] === 1)
+    {
+      v=(v/10);
+      this.props.onEdit(p,v);
+    }
+    else{
+      this.props.onEdit(p,v);
+    }
   }
   render(){
  
@@ -8238,7 +8242,7 @@ class PackGraph extends React.Component{
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['SettleDur']} pram={'SettleDur'} name={vMapV2['SettleDur']['@translations'][this.props.language]['name']} value={this.props.prec['SettleDur']+ ' ms'} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['VfdBeltSpeed1']} pram={'VfdBeltSpeed1'} name={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['name']} value={this.props.prec['VfdBeltSpeed1']} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['WeightAvgMode']} pram={'WeightAvgMode'} name={vMapV2['WeightAvgMode']['@translations'][this.props.language]['name']} rVal={this.props.prec['WeightAvgMode']} value={vMapLists['WeightAvgMode'][this.props.language][this.props.prec['WeightAvgMode']]} submitChange={this.props.submitChange}/>
-    <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['EyePkgLength']} pram={'EyePkgLength'} name={vMapV2['EyePkgLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.prec['EyePkgLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
+    <StatDisplay onEdit={this.onEditPackageLength} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['EyePkgLength']} pram={'EyePkgLength'} name={vMapV2['EyePkgLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.prec['EyePkgLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 0} vMap={vMapV2['WeighLength']} pram={'WeighLength'} name={vMapV2['WeighLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.srec['WeighLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 0} vMap={vMapV2['EyeDist']} pram={'EyeDist'} name={vMapV2['EyeDist']['@translations'][this.props.language]['name']} value={formatLength(this.props.srec['EyeDist'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
       </div>
