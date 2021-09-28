@@ -53806,7 +53806,13 @@
                     {
                       "type": 0,
                       "val": "SRecordDate",
-                      "acc": 3
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@dispversion",
+                      "acc": 0,
+                      "passAcc": "PassAccAdvSys"
                     },
                     {
                       "type": 0,
@@ -53814,84 +53820,88 @@
                       "val": "LoadcellSwVer"
                     },
                     {
-                      "type": 0,
-                      "acc": 0,
-                      "val": "IOSwitchSwVer"
-                    },
-                    {
-                      "type": 0,
-                      "val": "BeltSpeedTimeForward",
-                      "acc": 3
-                    },
-                    {
-                      "type": 0,
-                      "val": "BeltSpeedTimeBackward",
-                      "acc": 3
-                    },
-                    {
-                      "type": 0,
-                      "val": "CheckWeigherType",
-                      "acc": 3
-                    },
-                    {
-                      "type": 0,
-                      "val": "InputSupplyVoltage",
-                      "acc": 3
-                    },
-                    {
-                      "type": 0,
-                      "val": "BannerSupplyVoltage",
-                      "acc": 3
-                    },
-                    {
-                      "type": 0,
-                      "val": "HideEmarkMav",
-                      "acc": 3
-                    },
-                    {
-                      "type": 0,
-                      "val": "@customstrn",
-                      "acc": 3
-                    },
-                    {
-                      "type": 0,
-                      "val": "@branding",
-                      "acc": 3
-                    },
-                    {
-                      "type": 5,
-                      "val": "Unused",
-                      "acc": 3
-                    },
-                    {
-                      "type": 4,
-                      "val": "FormatUSB",
-                      "acc": 3
-                    },
-                    {
-                      "type": 4,
-                      "val": "Update",
-                      "acc": 3
-                    },
-                    {
-                      "type": 4,
-                      "val": "Reboot",
-                      "acc": 3
+                      "type": 2,
+                      "acc": 4,
+                      "val": {
+                        "cat":"AllVersions",
+                        "child":0,
+                        "params":[
+                          {
+                            "val":"IOSwitchSwVer",
+                            "type":0,
+                            "acc":0
+                          },
+                          {
+                            "type": 0,
+                            "val": "BeltSpeedTimeForward",
+                            "acc": 3
+                          },
+                          {
+                            "type": 0,
+                            "val": "BeltSpeedTimeBackward",
+                            "acc": 3
+                          },
+                          {
+                            "type": 0,
+                            "val": "CheckWeigherType",
+                            "acc": 3
+                          },
+                          {
+                            "type": 0,
+                            "val": "InputSupplyVoltage",
+                            "acc": 3
+                          },
+                          {
+                            "type": 0,
+                            "val": "BannerSupplyVoltage",
+                            "acc": 3
+                          },
+                          {
+                            "type": 0,
+                            "val": "HideEmarkMav",
+                            "acc": 3
+                          },
+                          {
+                            "type": 0,
+                            "val": "@customstrn",
+                            "acc": 3
+                          },
+                          {
+                            "type": 0,
+                            "val": "@branding",
+                            "acc": 3
+                          },
+                          {
+                            "type": 5,
+                            "val": "Unused",
+                            "acc": 3
+                          },
+                          {
+                            "type": 4,
+                            "val": "FormatUSB",
+                            "acc": 3
+                          },
+                          {
+                            "type": 4,
+                            "val": "Update",
+                            "acc": 3
+                          },
+                          {
+                            "type": 4,
+                            "val": "Reboot",
+                            "acc": 3
+                          }
+                        ]
+                      }
                     }
                   ]
                 },
-                "type": 2,
-                "acc": 4
+                "type": 1,
+                "acc": 0
               },
               {
                 "type": 0,
                 "val": "DspName",
-                "acc": 0,
-                "passAcc": "PassAccAdvSys"
-              },
-              {
-                "type": 0,
-                "val": "@dispversion",
                 "acc": 0,
                 "passAcc": "PassAccAdvSys"
               },
@@ -55464,17 +55474,17 @@
     },
     "System/SysVersion/AllVersions": {
       "@translations": {
-        "english": "System Record Date DY",
-        "korean": "System Record Date DY",
-        "spanish": "System Record Date DY",
+        "english": "System Record Date",
+        "korean": "System Record Date",
+        "spanish": "System Record Date",
         "french": "SYstème Enregistrement Date",
-        "portuguese": "System Record Date DY",
-        "italian": "System Record Date DY",
+        "portuguese": "System Record Date",
+        "italian": "System Record Date",
         "german": "Systemaufzeichnungsdatum",
-        "turkish": "System Record Date DY",
-        "russian": "System Record Date DY",
-        "polish": "System Record Date DY",
-        "chinese": "System Record Date DY"
+        "turkish": "System Record Date",
+        "russian": "System Record Date",
+        "polish": "System Record Date",
+        "chinese": "System Record Date"
       }
     },
     "System/Passwords": {
@@ -60580,8 +60590,7 @@
     "WeighingModeLess": {
       "english": [
         "Tolerances",
-        "Mean Weight Tracking",
-        "TEST DY"
+        "Mean Weight Tracking"
       ],
       "korean": [
         "Tolerances",
