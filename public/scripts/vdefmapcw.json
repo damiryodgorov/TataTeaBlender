@@ -53765,6 +53765,11 @@
                                 },
                                 {
                                   "type": 0,
+                                  "val": "EncPulsesPerRev2",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
                                   "val": "VfdType2",
                                   "acc": 0
                                 },
@@ -53835,6 +53840,11 @@
                                 {
                                   "type": 0,
                                   "val": "VfdState3",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "EncPulsesPerRev3",
                                   "acc": 0
                                 },
                                 {
