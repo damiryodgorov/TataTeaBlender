@@ -2591,12 +2591,18 @@ class LandingPage extends React.Component{
     var batchPerm = (this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccBatchSetup'])
      
     // statusStr = 
-    var home = <div style={{textAlign:'center'}}><img style={{width:60, marginTop:-15, marginBottom:-7}} src={'assets/home.png'}/></div>;
+    var home;
     var lane
     var raptorLogoWidth = 550
     var laneNumber = new URLSearchParams(location.search).get('lane')
     var laneStr = 'LANE '+laneNumber
     if (laneNumber){
+      
+      home = <td>
+              <div style={{paddingLeft:3, borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}} onClick={this.goDual}><div style={{textAlign:'center'}}><img style={{width:60, marginTop:-15, marginBottom:-7}} src={'assets/home.png'}/></div>
+              <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Home'}</div></div>
+              </td>
+
       raptorLogoWidth = 300
       lane = <td style={{color:'white',fontSize:30}}>{laneStr}</td>
     }
@@ -2613,10 +2619,7 @@ class LandingPage extends React.Component{
                 </ContextMenu>
                 </td>
                 {lane}
-                  <td>
-                    <div style={{paddingLeft:3, borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}} onClick={this.goDual}>{home}
-                    <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Home'}</div></div>
-                  </td>
+                {home}
                   <td style={{height:60, width:190, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
                   <FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
                   <td className="logbuttCell" style={{height:60}}  onClick={this.toggleLogin}>
