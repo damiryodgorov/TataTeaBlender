@@ -38068,59 +38068,6 @@
         "Door Lock"
       ]
     },
-    "SAFETY_CIRCUIT": {
-      "@parent": "",
-      "@translations": {
-        "english": {
-          "name": "Safety Circuit",
-          "description": ""
-        },
-        "korean": {
-          "name": "Safety Circuit",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Safety Circuit",
-          "description": ""
-        },
-        "french": {
-          "name": "Safety Circuit",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Safety Circuit",
-          "description": ""
-        },
-        "italian": {
-          "name": "Safety Circuit",
-          "description": ""
-        },
-        "russian": {
-          "name": "Safety Circuit",
-          "description": ""
-        },
-        "polish": {
-          "name": "Safety Circuit",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Safety Circuit",
-          "description": ""
-        },
-        "german": {
-          "name": "Safety Circuit",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Safety Circuit",
-          "description": ""
-        }
-      },
-      "children": [],
-      "@labels": [
-        "Safety Circuit"
-      ]
-    },
     "SHUTDOWN_LANE": {
       "@parent": "",
       "@translations": {
@@ -56797,8 +56744,7 @@
         "Warning",
         "Feedback Up",
         "Feedback Down",
-        "Batch Running",
-        "Safety Circuit"
+        "Batch Running"
       ],
       "korean": [
         "none",
@@ -56813,8 +56759,7 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running",
-        "safety-circuit"
+        "batch-running"
       ],
       "spanish": [
         "none",
@@ -56829,8 +56774,7 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running",
-        "safety-circuit"
+        "batch-running"
       ],
       "french": [
         "none",
@@ -56845,8 +56789,7 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running",
-        "safety-circuit"
+        "batch-running"
       ],
       "portuguese": [
         "none",
@@ -56861,8 +56804,7 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running",
-        "safety-circuit"
+        "batch-running"
       ],
       "italian": [
         "none",
@@ -56877,8 +56819,7 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running",
-        "safety-circuit"
+        "batch-running"
       ],
       "german": [
         "none",
@@ -56893,8 +56834,7 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running",
-        "safety-circuit"
+        "batch-running"
       ],
       "polish": [
         "none",
@@ -56909,8 +56849,7 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running",
-        "safety-circuit"
+        "batch-running"
       ],
       "turkish": [
         "none",
@@ -56925,8 +56864,7 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running",
-        "safety-circuit"
+        "batch-running"
       ],
       "russian": [
         "none",
@@ -56941,8 +56879,7 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running",
-        "safety-circuit"
+        "batch-running"
       ],
       "chinese": [
         "none",
@@ -56956,9 +56893,7 @@
         "door-lock",
         "warning",
         "feedback-up",
-        "feedback-down",
-        "batch-running",
-        "safety-circuit"
+        "feedback-down"
       ]
     },
     "PasswordLength": {
