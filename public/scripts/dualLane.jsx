@@ -751,10 +751,10 @@ class Container extends React.Component {
     super(props)
   }
   gotoLane1(){
-    window.location.href = "http://"+location.host+"/cw.html";
+    window.location.href = "http://"+location.host+"/cw.html?lane=1";
   }
   gotoLane2(){
-    window.location.href = "http://"+ip2+"/cw.html";
+    window.location.href = "http://"+ip2+"/cw.html?lane=2";
   }
   render(){
 

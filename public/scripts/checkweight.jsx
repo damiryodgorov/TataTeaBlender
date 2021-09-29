@@ -2597,19 +2597,27 @@ class LandingPage extends React.Component{
      
     // statusStr = 
     var home = <div style={{textAlign:'center'}}><img style={{width:60, marginTop:-15, marginBottom:-7}} src={'assets/home.png'}/></div>;
-
+    var lane
+    var raptorLogoWidth = 550
+    var laneNumber = new URLSearchParams(location.search).get('lane')
+    var laneStr = 'LANE '+laneNumber
+    if (laneNumber){
+      raptorLogoWidth = 300
+      lane = <td style={{color:'white',fontSize:30}}>{laneStr}</td>
+    }
     return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
          <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
             <tbody>
               <tr>
                 <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} onClick={this.imgClick}  src={img}/></td>
-                <td style={{width:550}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
+                <td style={{width:raptorLogoWidth}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
                 <ContextMenu id='raptorlogo'>
                   <MenuItem onClick={this.exportVmap}>Export Translations</MenuItem>
                   <MenuItem onClick={this.resetVmap}>Reset Translations</MenuItem>
                 </ContextMenu>
                 </td>
+                {lane}
                   <td>
                     <div style={{paddingLeft:3, borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}} onClick={this.goDual}>{home}
                     <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Home'}</div></div>
