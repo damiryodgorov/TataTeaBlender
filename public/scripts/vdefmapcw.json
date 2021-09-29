@@ -10612,7 +10612,163 @@
         "g"
       ]
     },
-    "EncPulsesPerRev": {
+    "EncPulsesPerRev0": {
+      "@translations": {
+        "english": {
+          "name": "Resolution per pulses",
+          "description": "Enables checkweigher motor control. Uses PL71 SD041 board."
+        },
+        "korean": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "french": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "italian": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "german": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "russian": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "polish": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Resolution per pulses",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "EncPulsesPerRev1": {
+      "@translations": {
+        "english": {
+          "name": "Resolution per pulses",
+          "description": "Enables checkweigher motor control. Uses PL71 SD041 board."
+        },
+        "korean": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "french": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "italian": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "german": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "russian": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "polish": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Resolution per pulses",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "EncPulsesPerRev2": {
+      "@translations": {
+        "english": {
+          "name": "Resolution per pulses",
+          "description": "Enables checkweigher motor control. Uses PL71 SD041 board."
+        },
+        "korean": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "french": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "italian": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "german": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "russian": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "polish": {
+          "name": "Resolution per pulses",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Resolution per pulses",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "EncPulsesPerRev3": {
       "@translations": {
         "english": {
           "name": "Resolution per pulses",
@@ -53451,7 +53607,7 @@
                                 },
                                 {
                                   "type": 0,
-                                  "val": "EncPulsesPerRev",
+                                  "val": "EncPulsesPerRev0",
                                   "acc": 0
                                 },
                                 {
@@ -53530,7 +53686,7 @@
                                 },
                                 {
                                   "type": 0,
-                                  "val": "EncPulsesPerRev",
+                                  "val": "EncPulsesPerRev1",
                                   "acc": 0
                                 },
                                 {
@@ -53609,11 +53765,6 @@
                                 },
                                 {
                                   "type": 0,
-                                  "val": "EncPulsesPerRev",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
                                   "val": "VfdType2",
                                   "acc": 0
                                 },
@@ -53684,11 +53835,6 @@
                                 {
                                   "type": 0,
                                   "val": "VfdState3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "EncPulsesPerRev",
                                   "acc": 0
                                 },
                                 {
