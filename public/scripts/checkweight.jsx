@@ -16,8 +16,8 @@ import ErrorBoundary from './ErrorBoundary.jsx';
 import { CustomKeyboard, EmbeddedKeyboard } from './keyboard.jsx';
 import { PopoutWheel } from './popwheel.jsx';
 var onClickOutside = require('react-onclickoutside');
-//import {ZoomInIcon, ZoomOutIcon} from '@material-ui/icons';
-
+//import {ZoomInIcon, ZoomOutIcon} from '@material-ui/icons';ß
+//test commentß
 var createReactClass = require('create-react-class');
 var fileDownload = require('js-file-download');
 
