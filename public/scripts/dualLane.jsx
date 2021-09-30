@@ -4,19 +4,27 @@ const ifvisible = require('ifvisible');
 const timezoneJSON = require('./timezones.json')
 //var SmoothieChart = require('./smoothie.js').SmoothieChart;
 //var TimeSeries = require('./smoothie.js').TimeSeries;
-import { Uint64LE } from 'int64-buffer';
-import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu";
-import { cssTransition, toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { AreaSeries, Borders, HorizontalBarSeries, LabelSeries, VerticalRectSeries, XAxis, XYPlot, YAxis } from 'react-vis';
-import { v4 as uuidv4 } from 'uuid';
-import { CircularButton, CircularButton2 } from './buttons.jsx';
-import { AlertModal, AuthfailModal, LockModal, MessageModal, Modal, ProgressModal, ScrollArrow, TrendBar } from './components.jsx';
-import ErrorBoundary from './ErrorBoundary.jsx';
-import { CustomKeyboard, EmbeddedKeyboard } from './keyboard.jsx';
-import { PopoutWheel } from './popwheel.jsx';
+import {CustomFileInput,TrendBar,TickerBox, CanvasElem, SlimGraph, DummyGraph, Modal,GraphModal, AuthfailModal, ProgressModal, MessageModal, AlertModal, AccModal, MessageConsole, LockModal, ScrollArrow} from './components.jsx'
+import {CircularButton, CircularButton2, ButtonWrapper, CustomAlertButton, CustomAlertClassedButton} from './buttons.jsx'
+import {PopoutWheel} from './popwheel.jsx'
+import {CustomKeyboard, KeyboardInputTextButton, EmbeddedKeyboard} from './keyboard.jsx'
 var onClickOutside = require('react-onclickoutside');
+import Notifications, {notify} from 'react-notify-toast';
+import {ToastContainer, toast,Zoom, cssTransition } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {css} from 'glamor'
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import {XYPlot,MarkSeries,Borders, LabelSeries, XAxis, YAxis,VerticalGridLines, HorizontalGridLines,  HorizontalRectSeries, VerticalRectSeries, HorizontalBarSeries, AreaSeries, VerticalBarSeries, LineSeries} from 'react-vis';
+import {Uint64LE, Int64LE, Uint64BE, Int64BE} from 'int64-buffer';
+import {v4 as uuidv4} from 'uuid';
+import ErrorBoundary from './ErrorBoundary.jsx'
 //import {ZoomInIcon, ZoomOutIcon} from '@material-ui/icons';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 var createReactClass = require('create-react-class');
 var fileDownload = require('js-file-download');
@@ -31,6 +39,7 @@ const _ioBits = ['TACH','EYE','RC_1','RC_2','REJ_EYE','AIR_PRES','REJ_LATCH','BI
 var liveTimer = {}
 var myTimers = {}
 
+
 const SPARCBLUE2 = '#30A8E2'
 const SPARCBLUE1 = '#1C3746'
 const SPARCBLUE3 = '#475C67'
@@ -38,7 +47,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/09/25'
+const DISPLAYVERSION = '2021/08/03'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -61,7 +70,7 @@ var labTransV2 = vdefMapV2['@labels']
 const FtiSockIo = require('./ftisockio.js')
 const Params = require('./params.js')
 const FastZoom = cssTransition({ 
-	enter: 'zoomIn',
+  enter: 'zoomIn',
   exit: 'zoomOut',
   duration: 300  
 })
@@ -71,17 +80,17 @@ let SingletonDataStore = {sysRec:{},prodRec:{}}
 
 /*************Helper functions start**************/
 function setBufferBits(buf,v,byte_pos,bit_pos,bit_len){
-	if(bit_len == 8){
-		buf.writeUInt8(v,byte_pos + bit_pos/8)
-	}else if(bit_len == 16){
-		buf.writeUInt16LE(v, byte_pos)
-	}else if(bit_len > 16){
-		var tbuf = Buffer.from(v)
+  if(bit_len == 8){
+    buf.writeUInt8(v,byte_pos + bit_pos/8)
+  }else if(bit_len == 16){
+    buf.writeUInt16LE(v, byte_pos)
+  }else if(bit_len > 16){
+    var tbuf = Buffer.from(v)
 
-		buf = Buffer.concat(buf.slice(0,byte_pos), tbuf, buf.slice(byte_pos+bit_len/8));
-	}else{
+    buf = Buffer.concat(buf.slice(0,byte_pos), tbuf, buf.slice(byte_pos+bit_len/8));
+  }else{
 
-	}
+  }
 }
 function ToFixed(v,s){
   if(typeof v == 'undefined'){
@@ -95,16 +104,16 @@ function roundTo(num, dec) {
     return +(Math.round(num + "e+" + dec)  + "e-" + dec);
 }
 function formatLength(l, u){
-  
   if(typeof l == 'undefined'){
     l = 0;
   }else if(l == null){
     l = 0;
   }
   if(u==0){
-    return (l/25.4).toFixed(1) + " in"
-  }
-  else{
+      return (l/25.4).toFixed(1) + " in"
+
+    }
+    else{
       return Math.round(l) + " mm";
   }
 }
@@ -213,7 +222,7 @@ function wordValue(arr, p){
     var sa = arr.slice(p["@i_var"], p["@i_var"]+n)
     if(p['@type']){
 
-    	return	 eval(funcJSON['@func'][p['@type']])(sa)
+      return   eval(funcJSON['@func'][p['@type']])(sa)
     //  return eval(funcJSON['@func'][p['@type']].apply(this, sa))
     }else{
       var str = sa.map(function(e){
@@ -259,10 +268,10 @@ function dsp_rpc_paylod_for (n_func, i16_args, byte_data) {
         if (bytes.length > 0) rpc[1] += 4;
         var j=2;
         for(var i=0; i<n_args; i++) {
-        	var i16arg = i16_args[i] 
-        	if(i16arg > 0xffff){
-        		i16arg = 0xffff
-        	}
+          var i16arg = i16_args[i] 
+          if(i16arg > 0xffff){
+            i16arg = 0xffff
+          }
           rpc[j] = i16arg & 0xff; j+= 1;
           rpc[j] = (i16arg >> 8) & 0xff; j+= 1;
         }
@@ -284,8 +293,8 @@ function fletcherCheckBytes (data) {
     return [c1,c2];
 }
 function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
-	var params = []
-	cat.params.forEach(function(par) {
+  var params = []
+  cat.params.forEach(function(par) {
     var pAcc = 0;
 
     if(typeof par.passAcc != 'undefined'){
@@ -301,12 +310,12 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
     pAcc = Math.max(passAcc, pAcc);
     // console.log("pAcc", pAcc )
     // console.log("par", par)
-		if(par.type == 0){
+    if(par.type == 0){
 
-			var p = par.val
-				var _p = null
-   			if(typeof pVdef[0][p] != 'undefined'){
-   				 var data = sysRec[p]
+      var p = par.val
+        var _p = null
+        if(typeof pVdef[0][p] != 'undefined'){
+           var data = sysRec[p]
           if(pVdef[0][p]['@labels'] == "FaultMaskBit"){
             if(sysRec[p.slice(0,-4) + "Warn"]){
               data = data + sysRec[p.slice(0,-4) + "Warn"];
@@ -314,9 +323,9 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
             
           }
           _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc, passAcc:pAcc}
-   			}else if(typeof pVdef[1][p] != 'undefined'){
+        }else if(typeof pVdef[1][p] != 'undefined'){
 
-   				  var data = prodRec[p]
+            var data = prodRec[p]
           if(pVdef[1][p]['@labels'] == "FaultMaskOverride"){
             if(prodRec[p.slice(0,-12) + "Override"] == 0){
               data = 0
@@ -328,49 +337,49 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
             
           }
           _p = {'type':0, '@name':p, '@data':data, '@children':[], acc:par.acc, passAcc:pAcc}
-    		
-    		}else if(typeof pVdef[2][p] != 'undefined'){
+        
+        }else if(typeof pVdef[2][p] != 'undefined'){
            if(par.dt){
             _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc, dt:true, passAcc:pAcc}
           }else{
             _p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc, passAcc:pAcc}
           }
-    			//_p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc, passAcc:pAcc}
-    		}else if(typeof pVdef[3][p] != 'undefined'){
-    			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc, passAcc:pAcc}
-    		}else if(par.val == 'Nif_ip'){
-    			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc, passAcc:pAcc}
-    		}else if(par.val == 'Nif_nm'){
-    			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc, passAcc:pAcc}
-    		}else if(par.val == 'Nif_gw'){
-    			_p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc, passAcc:pAcc}
-    		}else if(par.val == 'Nif_mac'){
+          //_p = {'type':0, '@name':p, '@type':'dyn','@data':dynRec[p], '@children':[], acc:par.acc, passAcc:pAcc}
+        }else if(typeof pVdef[3][p] != 'undefined'){
+          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc, passAcc:pAcc}
+        }else if(par.val == 'Nif_ip'){
+          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc, passAcc:pAcc}
+        }else if(par.val == 'Nif_nm'){
+          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc, passAcc:pAcc}
+        }else if(par.val == 'Nif_gw'){
+          _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc, passAcc:pAcc}
+        }else if(par.val == 'Nif_mac'){
           _p = {'type':0, '@name':p, '@type':'fram','@data':fram[p], '@children':[], acc:par.acc, passAcc:pAcc}
         }
 
 
-    		if(_p != null){
+        if(_p != null){
 
-    	
-    		_vmap[p].children.forEach(function (ch) {
-    			var _ch;
-    			if(typeof pVdef[0][ch] != 'undefined'){
-    			_ch = sysRec[ch]
-    			}else if(typeof pVdef[1][ch] != 'undefined'){
-    			_ch = prodRec[ch]
-    			}else if(typeof pVdef[2][ch] != 'undefined'){
-    			
-    				_ch = dynRec[ch]
-    			}else if(typeof pVdef[3][ch] != 'undefined'){
-    			
-    				_ch = fram[ch]
-    			}else if(ch == 'DCRate_B'){
-    				_ch = prodRec[ch]
-    			}
-    			_p['@children'].push(_ch)	
-    		})
-    			params.push(_p)
-    		}else if(_vmap[p]['@interceptor']){
+      
+        _vmap[p].children.forEach(function (ch) {
+          var _ch;
+          if(typeof pVdef[0][ch] != 'undefined'){
+          _ch = sysRec[ch]
+          }else if(typeof pVdef[1][ch] != 'undefined'){
+          _ch = prodRec[ch]
+          }else if(typeof pVdef[2][ch] != 'undefined'){
+          
+            _ch = dynRec[ch]
+          }else if(typeof pVdef[3][ch] != 'undefined'){
+          
+            _ch = fram[ch]
+          }else if(ch == 'DCRate_B'){
+            _ch = prodRec[ch]
+          }
+          _p['@children'].push(_ch) 
+        })
+          params.push(_p)
+        }else if(_vmap[p]['@interceptor']){
         
             var pname = p.slice(0,-4)
         //    //console.log(pname, p, 342)
@@ -521,11 +530,11 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
             }
                  ///
         }
-    		
-    	}else if(par.type == 1){
-    		if(typeof par.child != 'undefined'){
-    			params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, pAcc), acc:par.acc, child:par.child, passAcc:pAcc})
-    		}else{
+        
+      }else if(par.type == 1){
+        if(typeof par.child != 'undefined'){
+          params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, pAcc), acc:par.acc, child:par.child, passAcc:pAcc})
+        }else{
 
           if(par.packGraph){
             //console.log('packGraph')
@@ -534,18 +543,18 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
                 params.push({type:1, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, pAcc), acc:par.acc, passAcc:pAcc})
 
           }
-    	   }
-    	}else if(par.type == 2){
-    			if(typeof par.child != 'undefined'){
-    			params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, pAcc), acc:par.acc, child:par.child, passAcc:pAcc})
-    		}else{
+         }
+      }else if(par.type == 2){
+          if(typeof par.child != 'undefined'){
+          params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, pAcc), acc:par.acc, child:par.child, passAcc:pAcc})
+        }else{
 
 
-    			params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, pAcc), acc:par.acc, passAcc:pAcc})
-    		}
-    	}else if(par.type == 3){
-    		params.push({type:3, '@name':'Accounts', '@data':'get_accounts', acc:0, passAcc:pAcc})
-    	}else if(par.type == 4){
+          params.push({type:2, '@data':iterateCats2(par.val, pVdef, sysRec, prodRec, _vmap, dynRec, fram, pAcc), acc:par.acc, passAcc:pAcc})
+        }
+      }else if(par.type == 3){
+        params.push({type:3, '@name':'Accounts', '@data':'get_accounts', acc:0, passAcc:pAcc})
+      }else if(par.type == 4){
          if(par.val == 'Reboot'){
           params.push({type:4, '@name':'Reboot','@data':'reboot_display',acc:0, passAcc:pAcc})
         }else if(par.val == 'FormatUSB'){
@@ -558,13 +567,13 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
       }else if(par.type == 5){
         params.push({type:5, '@name':'Unused','@data':'get_unused',acc:0, passAcc:pAcc})
       }
-    					
+              
     })
-	return params
+  return params
 }
 function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
-	cat.params = getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc)	
-	return cat
+  cat.params = getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc)  
+  return cat
 }
 function tickFormatter(t,i) {
   var text = t.split(' ').map(function(v,j){
@@ -592,13 +601,18 @@ function getLabTrans(name, language){
 /*************Helper functions end**************/
 
 /*******************Initialize Page start********************/
-var _wsurl = 'ws://' +location.host 
-var socket = new FtiSockIo(_wsurl,true);
-socket.on('vdef', function(vdf){
+var _wsurl1 = 'ws://' +location.host 
+var queryString = location.search;
+const urlParams = new URLSearchParams(queryString)
+const ip2 = urlParams.get('lane2')
+var _wsurl2 = 'ws://'+ip2
+var socket1 = new FtiSockIo(_wsurl1,true);
+var socket2 = new FtiSockIo(_wsurl2,true);
+socket1.on('vdef', function(vdf){
   console.log('on vdef')
-	var json = vdf[0];
-	_Vdef = json
-	var res = [];
+  var json = vdf[0];
+  _Vdef = json
+  var res = [];
     res[0] = {};
     res[1] = {};
     res[2] = {};
@@ -609,8 +623,7 @@ socket.on('vdef', function(vdf){
     res[10] = {};
     res[11] = {};
     res[12] = {};
-
-   	var nVdf = [[],[],[],[],[],[],[],[],[]];
+    var nVdf = [[],[],[],[],[],[],[],[],[]];
     json["@params"].forEach(function(p ){
       var rec = p['@rec']
       if(p['@rec'] > 5){
@@ -657,7 +670,75 @@ socket.on('vdef', function(vdf){
 
     _pVdef = res;
     if(json['@defines']['LOGICAL_OUTPUT_NAMES']){
-    	outputSrcArr = json['@defines']['LOGICAL_OUTPUT_NAMES'].slice(0)
+      outputSrcArr = json['@defines']['LOGICAL_OUTPUT_NAMES'].slice(0)
+      inputSrcArr = json['@defines']['PHYSICAL_INPUT_NAMES'].slice(0)
+    }
+    vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@pages"]['CWSys']], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
+})
+
+socket2.on('vdef', function(vdf){
+  console.log('on vdef')
+  var json = vdf[0];
+  _Vdef = json
+  var res = [];
+    res[0] = {};
+    res[1] = {};
+    res[2] = {};
+    res[3] = {};
+    res[4] = {};
+    res[5] = {}
+    res[9] = {};
+    res[10] = {};
+    res[11] = {};
+    res[12] = {};
+    var nVdf = [[],[],[],[],[],[],[],[],[]];
+    json["@params"].forEach(function(p ){
+      var rec = p['@rec']
+      if(p['@rec'] > 5){
+        rec = rec + 4
+      }
+      res[rec][p["@name"]] = p;
+      res[9][p["@name"]] = p;
+      nVdf[p["@rec"]].push(p['@name'])
+    }
+    );
+
+     var bob = {}
+     var rob = {}
+     var dob = {}
+      dob['@name'] = '@dispversion'
+    dob['@rpcs'] = {'dispversion':[0]}
+     rob['@name'] = '@customstrn'
+    rob['@labels'] = 'usecustom'
+    rob['@rpcs'] = {'customstrn':[0]}
+    bob['@name'] = '@branding'
+    bob['@labels'] = 'theme'
+    bob['@rpcs'] = {'theme':[0]}
+    res[0]['@branding'] =  bob
+    res[9]['@branding'] =  bob
+    res[0]['@customstrn'] =  rob
+    res[0]['@dispversion'] = dob
+    res[9]['@customstrn'] =  rob
+    res[6] = json["@deps"];
+    res[7] = json["@labels"]
+    res[7]['theme'] = {'english':['SPARC','FORTRESS']}
+    res[7]['usecustom'] =  {'english':['disabled','enabled']}
+    res[8] = [];
+    res[9] = [];
+   for(var par in res[2]){  
+      if(par.indexOf('Fault') != -1){
+        res[8].push(par)
+      }
+    }
+    for(var par in res[2]){  
+      if(par.indexOf('Warn') != -1){
+        res[9].push(par)
+      }
+    }
+
+    _pVdef = res;
+    if(json['@defines']['LOGICAL_OUTPUT_NAMES']){
+      outputSrcArr = json['@defines']['LOGICAL_OUTPUT_NAMES'].slice(0)
       inputSrcArr = json['@defines']['PHYSICAL_INPUT_NAMES'].slice(0)
     }
     vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@pages"]['CWSys']], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
@@ -666,21 +747,82 @@ socket.on('vdef', function(vdf){
 
 /******************Main Components start********************/
 class Container extends React.Component {
-	constructor(props){
-		super(props)
-	}
-	render(){
-		return <div>
-    <ErrorBoundary autoReload={false}>
-    <LandingPage/>
+  constructor(props){
+    super(props)
+  }
+  gotoLane1(){
+    window.location.href = "http://"+location.host+"/cw.html?lane=1";
+  }
+  gotoLane2(){
+    window.location.href = "http://"+ip2+"/cw.html?lane=2";
+  }
+  render(){
 
-				<ToastContainer position="top-center" autoClose={1500} hideProgressBar newestOnTop closeOnClick closeButton={false} rtl={false}
-			pauseOnVisibilityChange draggable pauseOnHover transition={FastZoom} toastClassName='notifications-class'/>
-			</ErrorBoundary>
-		</div>
-	}
+    return <div>
+          <Router>
+        <div>
+            <div className='interceptorMainPageUI' style={{background:FORTRESSPURPLE1, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+FORTRESSPURPLE1}}>
+               <ErrorBoundary autoReload={false}>
+               <table class="center">
+                <tbody>
+                <tr style={{marginLeft:10,textAlign:'center'}}>
+                <td>
+                <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
+                </td>
+                <td>
+                <div onClick={this.gotoLane1}><LandingPage soc={socket1}/></div>
+                </td>
+                <td>
+                <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
+                </td>
+                <td>
+                <div onClick={this.gotoLane2}><LandingPage soc={socket2}/></div>
+                </td>
+                </tr>
+                </tbody>
+                </table>
+                <ToastContainer position="top-center" autoClose={1500} hideProgressBar newestOnTop closeOnClick closeButton={false} rtl={false}
+                pauseOnVisibilityChange draggable pauseOnHover transition={FastZoom} toastClassName='notifications-class'/>
+              </ErrorBoundary>
+
+            </div>              
+        </div>
+      </Router>
+    </div>
+  }
 }
+/*
+          <Switch>
+            <Route path="/cw1" component={() => {
+              window.history.back()
+              window.location.href = "http://"+location.host+"/cw.html";
+              return null;
+            }}/>
 
+            <Route path="/cw2" component={() => {
+              window.history.back()
+              window.location.href = "http://"+ip2+"/cw.html";
+              return null;
+            }}/>
+          </Switch>
+*/
+
+/*
+class CustomLink extends React.Component{
+  constructor(props){
+    super(props)
+  }
+  render(){
+    if(this.props.acc){
+      return <Link to={this.props.to} onClick={this.props.onClick} style={{textDecoration: 'none',color:'inherit'}}>
+      {this.props.children}
+      </Link>
+    }else{
+      return <div onClick={this.props.onClick}>{this.props.children}</div>;
+    }
+  }
+}
+*/
 class LandingPage extends React.Component{
   constructor(props){
     super(props)
@@ -745,10 +887,10 @@ class LandingPage extends React.Component{
     this.formatUSB = this.formatUSB.bind(this);
     this.notify = this.notify.bind(this)
     this.lgctl = React.createRef();
-    this.tBut = React.createRef();
+//    this.tBut = React.createRef();
     this.cwModal = React.createRef();
     this.chBut = React.createRef();
-    this.fclck = React.createRef();
+//    this.fclck = React.createRef();
     this.ss = React.createRef();
     this.sd = React.createRef();
     this.lg = React.createRef();
@@ -756,12 +898,12 @@ class LandingPage extends React.Component{
     this.se = React.createRef();
     this.ste = React.createRef();
     this.hh = React.createRef();
-    this.tb = React.createRef();
+//    this.tb = React.createRef();
     this.bhg = React.createRef();
     this.pmodal = React.createRef();
     this.settingModal = React.createRef();
     this.locateModal = React.createRef();
-    this.batModal = React.createRef();
+//    this.batModal = React.createRef();
     this.pmd = React.createRef();
     this.cwc = React.createRef();
     this.inputMod = React.createRef();
@@ -792,8 +934,10 @@ class LandingPage extends React.Component{
     ifvisible.on("idle", function(){
       self.logout()
     });
+    var socket = this.props.soc;
     setTimeout(function (argument) {
       self.loadPrefs();
+//      socket.emit('connectToUnit',{ip:location.host, app:'FTI_CW', app_name:'FTI_CW'})      
     }, 500)   
    // socket.on('testusb')
     socket.on('userNames', function(p){
@@ -914,6 +1058,8 @@ class LandingPage extends React.Component{
       m = null;
     })
     socket.on('prefs', function(f) {
+      console.log('prefs')
+      console.log(f)
       var detL = self.state.detL
       var cnt = 0;
       var _ip = ''
@@ -932,11 +1078,10 @@ class LandingPage extends React.Component{
       setTimeout(function (argument) {
       // body...
       if(f.length == 1){
-        console.log(2048)
         if(!self.state.connected){
-          console.log(2050)
           if(f[0].banks.length == 1){
             if(vdefByMac[f[0].banks[0].mac]){
+              console.log('call connectToUnit')
                self.connectToUnit(f[0].banks[0])
             }else{
               setTimeout(function () {
@@ -1115,7 +1260,7 @@ class LandingPage extends React.Component{
      // toast("Logged out")
       var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGOUT']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       this.setState({level:0, userid:0,user:-1, username:'Not Logged In',noupdate:false})
 
     }
@@ -1133,13 +1278,13 @@ class LandingPage extends React.Component{
       }
     });
     var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-    socket.emit('rpc', {ip:this.props.ip, data:packet})
+    this.props.soc.emit('rpc', {ip:this.props.ip, data:packet})
     console.log(pack,668)
     this.setState({level:pack.level, username:pack.username,noupdate:false, update:true, userid:pack.user+1, user:pack.user}) 
   }
   authenticate(user,pswd){
     console.log('authenticate here')
-    socket.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.state.curDet.ip})
+    this.props.soc.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.state.curDet.ip})
   }
   loginClosed(){
     this.setState({loginOpen:false});
@@ -1147,7 +1292,7 @@ class LandingPage extends React.Component{
   resetPassword(pack,v){
     var packet = {ip:pack.ip, data:{user:pack.user, password:v}}
     //console.log('packet',packet)
-    socket.emit('writePass', packet)
+    this.props.soc.emit('writePass', packet)
   }
   /****** Login Functions end******/
 
@@ -1177,11 +1322,11 @@ class LandingPage extends React.Component{
   }
 
   loadPrefs() {
-    if(socket.sock.readyState  ==1){
-      socket.emit('getVersion',true);
-      socket.emit('getPrefsCW',true);
-      socket.emit('getDispSettings');
-      socket.emit('getCustomJSON',JSON.stringify(vdefMapV2))
+    if(this.props.soc.sock.readyState  ==1){
+      this.props.soc.emit('getVersion',true);
+      //this.props.soc.emit('getPrefsCW',true);
+      this.props.soc.emit('getDispSettings');
+      this.props.soc.emit('getCustomJSON',JSON.stringify(vdefMapV2))
     }
   }
   getCob (sys,prod,dyn, fram) {
@@ -1211,6 +1356,7 @@ class LandingPage extends React.Component{
     return cob
   }
   notify(msg){
+    /*
       if(this.batModal.current.state.show){
         this.batModal.current.showMsg(msg)
       }else if(this.pmodal.current.state.show){
@@ -1224,9 +1370,11 @@ class LandingPage extends React.Component{
       
 
       }
+      */
   }
   /******************Parse Packets start*******************/
   onParamMsg(e,u){
+    console.log('onParamMsg. IP '+u.ip+', Current IP '+this.state.curDet.ip)
      if(this.state.curDet.ip == u.ip){
       var self = this;
       liveTimer[this.state.curDet.mac] = Date.now()
@@ -1292,7 +1440,6 @@ class LandingPage extends React.Component{
                   iobits[b] = e.rec[b]
                 }
             })
-            
             if(isDiff(iobits,this.state.ioBITs)){
                 noupdate = false;
                // console.log(1347, iobits)
@@ -1339,11 +1486,11 @@ class LandingPage extends React.Component{
           if(e.rec['Taring'] != this.state.rec['Taring']){
             if(e.rec['Taring'] == 1){
               //toast('Taring..')
-              this.tBut.current.tStart('Taring');
+//              this.tBut.current.tStart('Taring');
             }else if(e.rec['Taring'] == 2){
-              this.tBut.current.tDone('Tared')
+//              this.tBut.current.tDone('Tared')
             }else{
-              this.tBut.current.tEnd();
+//              this.tBut.current.tEnd();
             }
           }
           var pw = 0;
@@ -1360,6 +1507,7 @@ class LandingPage extends React.Component{
                this.setState({waitCwgt:true, noupdate:false})
              //},150)
             }else{
+              console.log('chBut current tEnd')
               this.chBut.current.tEnd();
 
              this.cwModal.current.show();
@@ -1377,7 +1525,7 @@ class LandingPage extends React.Component{
             }
           }
           if(e.rec['DateTime'] != this.state.rec['DateTime']){
-            this.fclck.current.setDate(e.rec['DateTime'])
+//            this.fclck.current.setDate(e.rec['DateTime'])
           }
           var cob = this.state.cob
           var pcob = this.state.pcob
@@ -1465,7 +1613,6 @@ class LandingPage extends React.Component{
           }
           var ms = new Uint64LE(e.rec['BatchStartMS'].data)
           var sms = new Uint64LE(e.rec['SampleStartMS'].data)
-          console.log("DY Test");
           console.log(inputSrcArr, outputSrcArr)
           console.log(1217, ms.toString(), Date.now())
           console.log('passed')
@@ -1506,7 +1653,7 @@ class LandingPage extends React.Component{
           }
           this.ss.current.setState({crec:e.rec, pkgwgt:pkgwgt})
           this.se.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
-          this.tb.current.update(e.rec['PackWeight']);
+//          this.tb.current.update(e.rec['PackWeight']);
           //cwc check
           if(e.rec['WeightPassed'] == 9){
             this.setState({cwgt:e.rec['PackWeight'], noupdate:false})
@@ -1560,6 +1707,7 @@ class LandingPage extends React.Component{
   sendPacket(n,v){
     //LandingPage.sendPacket
     var self = this;
+    console.log(n,v)
     var vdef = vdefByMac[this.state.curDet.mac]
     if(typeof n == 'string'){
       if(n == 'switchProd'){
@@ -1576,9 +1724,9 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       }else if(n== 'getProdList'){
-        socket.emit('getProdList', this.state.curDet.ip)
+        this.props.soc.emit('getProdList', this.state.curDet.ip)
       }else if(n=='deleteProd'){
       var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEL_NO_WRITE']
       var pkt = rpc[1].map(function (r) {
@@ -1593,7 +1741,7 @@ class LandingPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n == 'copyCurrentProd'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
         var pkt = rpc[1].map(function (r) {
@@ -1608,7 +1756,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n == 'copyDefProd'){
       var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_DEFAULT']
       var pkt = rpc[1].map(function (r) {
@@ -1623,7 +1771,7 @@ class LandingPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n == 'copyFacProd'){
       var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_FACTORY']
       var pkt = rpc[1].map(function (r) {
@@ -1638,7 +1786,7 @@ class LandingPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'deleteAll'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_DELETEALL']
@@ -1654,7 +1802,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'deleteBatch'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PLANBATCHDELETE']
@@ -1669,7 +1817,7 @@ class LandingPage extends React.Component{
         buf.writeUInt32LE(parseInt(v),0)
      //  var strArg = buf; 
         var packet = dsp_rpc_paylod_for(rpc[0],pkt, buf);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'clearFaults'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARFAULTS']
@@ -1685,7 +1833,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'clearWarnings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARWARNINGS']
@@ -1701,7 +1849,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'checkWeight'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
@@ -1717,7 +1865,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'checkWeightSend'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
@@ -1729,7 +1877,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'cancelCW'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHTCANCEL']
@@ -1741,7 +1889,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'updateSystem'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_UPDATESYSTEM']
@@ -1757,7 +1905,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'importRestore'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_IMPORTRESTORE']
@@ -1773,7 +1921,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'restoreDefault'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_RESTORE']
@@ -1789,7 +1937,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'restoreBackup'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_RESTORE']
@@ -1805,7 +1953,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'backupProduct'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_SAVE']
@@ -1821,7 +1969,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'getProdSettings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
@@ -1837,7 +1985,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'saveProduct'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDWRITE']
@@ -1853,9 +2001,9 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
         setTimeout(function (argument) {
-          socket.emit('getProdList', self.state.curDet.ip)
+          self.props.soc.emit('getProdList', self.state.curDet.ip)
         },150)
       }else if( n == 'refresh'){
       var rec = 0;
@@ -1864,45 +2012,45 @@ class LandingPage extends React.Component{
       }
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
       var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],rec,0])
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       
       }else if( n == 'refresh_buffer'){
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
       var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],v,0])
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       
       }else if( n == 'BatchStart'){
      
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchStartSel'){
      
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
       var buf = Buffer.alloc(4)
       buf.writeUInt32LE(v,0)
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], buf)
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchStartNew'){
      
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
     
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], v)
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchPause'){
      
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PAUSEBATCH']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchEnd'){
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STOPBATCH']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if(n=='DateTime'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_DATETIMEWRITE']
   
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       console.log('DATE TIME SENT', this.state.curDet.ip)
       }else if(n=='DaylightSavings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
@@ -1919,7 +2067,7 @@ class LandingPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if(n=='Timezone'){
         var rpc = vdef[0]['@rpc_map']['KAPI_TIMEZONE_WRITE']
   
@@ -1935,7 +2083,7 @@ class LandingPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }
     }else{
       console.log('here')
@@ -1952,7 +2100,7 @@ class LandingPage extends React.Component{
         }
         var packet = dsp_rpc_paylod_for(arg1, arg2);
       
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n['@rpcs']['write']){
       console.log('should be here')
       var arg1 = n['@rpcs']['write'][0];
@@ -2017,8 +2165,9 @@ class LandingPage extends React.Component{
       console.log(819, strArg, typeof strArg, v)
     
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      console.log(packet)
+        
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
     }else if(n['@rpcs']['vfdwrite']){
       var arg1 = n['@rpcs']['vfdwrite'][0];
@@ -2048,7 +2197,7 @@ class LandingPage extends React.Component{
         }
         
         var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       }else if(n['@rpcs']['apiwrite']){
       var arg1 = n['@rpcs']['apiwrite'][0];
       var arg2 = [];
@@ -2061,6 +2210,7 @@ class LandingPage extends React.Component{
             arg2.push(v)
           }else{
             strArg=v
+            
           }
         }
       }
@@ -2082,10 +2232,12 @@ class LandingPage extends React.Component{
         strArg = buf;
       }
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n['@rpcs']['clear']){
       var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }
     }
   }
@@ -2093,7 +2245,7 @@ class LandingPage extends React.Component{
     if(this.state.connected){
       var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_TARE_WEIGHT_TARE']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }
   }
   calWeight(){
@@ -2103,14 +2255,14 @@ class LandingPage extends React.Component{
     if(this.state.connected){
       var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_USE']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }
   }
   calWeightCancelSend(){
     if(this.state.connected){
       var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_CANCEL']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }
   }
   changeBranding(){}
@@ -2123,7 +2275,7 @@ class LandingPage extends React.Component{
         this.sendPacket('BatchStart')
         this.setState({start:false, pause:true})
       }else if(this.state.srec['BatchMode'] == 1){
-        socket.emit('getPlannedBatches', self.state.curDet.ip)
+        this.props.soc.emit('getPlannedBatches', self.state.curDet.ip)
         setTimeout(function(argument) {
           self.planStart.current.toggle();
 
@@ -2182,25 +2334,25 @@ class LandingPage extends React.Component{
     if(this.state.connected){
       this.sendPacket('refresh')
     }else{
-      socket.emit('locateReq',true)
+      this.props.soc.emit('locateReq',true)
     }
     setTimeout(function () {
       self.settingModal.current.toggle()
     },100)
     setTimeout(function () {
-        socket.emit('getConnectedClients')
+        self.props.soc.emit('getConnectedClients')
     },200)
  
   }
   connectToUnit(det){
-    console.log('connect To Unit')
+    console.log('connect To Unit '+det.ip)
     var self = this;
-    socket.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
+    this.props.soc.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
     var unit = {name:det.name, type:'single', banks:[det]}
     setTimeout(function (argument) {
       // body...
       console.log(1308, unit)
-      socket.emit('savePrefsCW', [unit])
+      self.props.soc.emit('savePrefsCW', [unit])
     },150)
     setTimeout(function (argument) {
       // body...
@@ -2214,7 +2366,7 @@ class LandingPage extends React.Component{
     var self = this;
     if(typeof this.state.curDet.ip != 'undefined'){
         this.pmodal.current.toggle();
-      socket.emit('getProdList', this.state.curDet.ip)
+      this.props.soc.emit('getProdList', this.state.curDet.ip)
       setTimeout(function (argument) {
         // body...
         self.sendPacket('getProdSettings',self.state.srec['ProdNo'])
@@ -2249,16 +2401,16 @@ class LandingPage extends React.Component{
       setTimeout(function (argument) {
         // body...
         console.log('send getPlannedBatches', self.state.curDet.ip)
-        socket.emit('getPlannedBatches', self.state.curDet.ip)
-        socket.emit('getProdList', self.state.curDet.ip)
-        socket.emit('getBatches')
+        self.props.soc.emit('getPlannedBatches', self.state.curDet.ip)
+        self.props.soc.emit('getProdList', self.state.curDet.ip)
+        self.props.soc.emit('getBatches')
       },100)
 
     }
   }
   getBatchList(){
     console.log('getting planned batch list')
-    socket.emit('getPlannedBatches', this.state.curDet.ip)
+    this.props.soc.emit('getPlannedBatches', this.state.curDet.ip)
   }
   onPmdClose(){
     if(this.state.rec['EditProdNeedToSave'] == 1){
@@ -2316,14 +2468,14 @@ class LandingPage extends React.Component{
     }
   }
   reboot(){
-    socket.emit('reboot')
+    this.props.soc.emit('reboot')
   }
   update(){
     //toast('Update in progress..')
-    socket.emit('updateCW')
+    this.props.soc.emit('updateCW')
   }
   formatUSB(){
-    socket.emit('formatInternalUsb')
+    this.props.soc.emit('formatInternalUsb')
     //this.sendPacket('formatUSB',0)
   }
 
@@ -2331,22 +2483,22 @@ class LandingPage extends React.Component{
   transChange(n,l,v){
     var custMap = this.state.custMap
     custMap['@vMap'][n]['@translations'][l]['name'] = v
-    socket.emit('saveCustomJSON',JSON.stringify(custMap));
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
   }
   labChange(n,l,v){
     var custMap = this.state.custMap
     custMap['@labels'][n][l]['name'] = v
-    socket.emit('saveCustomJSON',JSON.stringify(custMap));
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
   }
   submitTooltip(n,l,v){
     var custMap = this.state.custMap
     custMap['@vMap'][n]['@translations'][l]['description'] = v
-    socket.emit('saveCustomJSON',JSON.stringify(custMap));
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
   }
   listChange(n,l,v){
     var custMap = this.state.custMap
     custMap['@lists'][n][l] = v
-    socket.emit('saveCustomJSON',JSON.stringify(custMap));
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
   }
   exportVmap(){
     fileDownload(JSON.stringify(this.state.custMap),'custMap.json')//socket.emit('downloadJSON')
@@ -2355,10 +2507,10 @@ class LandingPage extends React.Component{
 
   getData(){
     console.log('get Batches')
-   socket.emit('getBatches') 
+   this.props.soc.emit('getBatches') 
   }
   resetVmap(){
-    socket.emit('saveCustomJSON', JSON.stringify(vdefMapV2));
+    this.props.soc.emit('saveCustomJSON', JSON.stringify(vdefMapV2));
   }
   toggleGraph(){
     this.setState({histo:!this.state.histo})
@@ -2371,7 +2523,7 @@ class LandingPage extends React.Component{
   }
   forgot(id,ip){
     //console.log('passReset')
-    socket.emit('passReset',{ip:ip,data:{user:id}})
+    this.props.soc.emit('passReset',{ip:ip,data:{user:id}})
   }
   getMMdep(d){
      if(d == 'MaxBeltSpeed'){
@@ -2405,9 +2557,6 @@ class LandingPage extends React.Component{
       this.pmodal.current.forceclose();
       this.setState({prclosereq:false})
     }
-  }
-  goDual(){
-    window.history.back()
   }
   renderModal() {
     var self = this;
@@ -2500,7 +2649,7 @@ class LandingPage extends React.Component{
     
 
     var cont = ''
-    var sd = <div><DisplaySettings nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
+    var sd = <div><DisplaySettings soc={this.props.soc} nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
       <button onClick={this.reboot}>Reboot</button><button onClick={this.formatUSB}>Format USB and Reboot</button></div>
     var unused = ''
     
@@ -2539,9 +2688,9 @@ class LandingPage extends React.Component{
 
     if(this.state.srec['SRecordDate']){
         sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
-        <SettingsPageWSB  timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+        <SettingsPageWSB  soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
-        <BatchWidget acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
+        <BatchWidget soc={this.props.soc} acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
         </div>
 
         cont = sd;
@@ -2552,7 +2701,7 @@ class LandingPage extends React.Component{
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={'Calibrate'}/>
           </div>)
 
-        unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
+        unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.unusedList]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} vdefMap={this.state.vmap}/></div>
     }else{
       dets = this.renderModal()
@@ -2591,70 +2740,42 @@ class LandingPage extends React.Component{
     var batchPerm = (this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccBatchSetup'])
      
     // statusStr = 
-    var home;
-    var lane
-    var raptorLogoWidth = 550
-    var laneNumber = new URLSearchParams(location.search).get('lane')
-    var laneStr = 'LANE '+laneNumber
-    if (laneNumber){
-      
-      home = <td>
-              <div style={{paddingLeft:3, borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}} onClick={this.goDual}><div style={{textAlign:'center'}}><img style={{width:60, marginTop:-15, marginBottom:-7}} src={'assets/home.png'}/></div>
-              <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Home'}</div></div>
-              </td>
-
-      raptorLogoWidth = 300
-      lane = <td style={{color:'white',fontSize:30}}>{laneStr}</td>
-    }
-    return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
-         <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
+/*
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
             <tbody>
               <tr>
                 <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} onClick={this.imgClick}  src={img}/></td>
-                <td style={{width:raptorLogoWidth}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
+                <td style={{width:600}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
                 <ContextMenu id='raptorlogo'>
                   <MenuItem onClick={this.exportVmap}>Export Translations</MenuItem>
                   <MenuItem onClick={this.resetVmap}>Reset Translations</MenuItem>
                 </ContextMenu>
+                
                 </td>
-                {lane}
-                {home}
-                  <td style={{height:60, width:190, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
+                  <td style={{height:60, width:200, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
                   <FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
                   <td className="logbuttCell" style={{height:60}}  onClick={this.toggleLogin}>
                   <div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
                   <button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
                   <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Level '+this.state.level}</div>
                   </div></td>
-                  <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
-                  <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Settings'}</div>
-                  </td>
+              <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
+              <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Settings'}</div>
+              </td>
               </tr>
             </tbody>
           </table>
-          <table><tbody><tr style={{verticalAlign:'top'}}><td>
-          <StatSummary language={language} unit={this.state.srec['WeightUnits']} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange} pkgWeight={pkgWeight}/>
-          </td><td><div><SparcElem ref={this.se} branding={this.state.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={596} font={72}/></div>
-          <div><StatusElem connected={this.state.connected} pAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccClrFaultWarn'])} clearWarnings={this.clearWarnings} clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} 
-              ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
-          <div>
-          </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <MainHistogram weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
-                    winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
-                    branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.state.buckMin} buckMax={this.state.buckMax}>
-          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
-          </td><td>
-            <BatchPackCountGraph language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
-          </td></tr></tbody></table>
-          <div style={{display:'inline-block',paddingTop:5, paddingBottom:5, width:275}} >{play}{stop}</div>
+
           <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
           <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Tare'} onClick={this.tareWeight}/>
           <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
+
+          <div style={{display:'inline-block',paddingTop:5, paddingBottom:5, width:275}} >{play}{stop}</div>
+
         <Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
-          <ProductSettings  usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
+          <ProductSettings  soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
           submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={()=>this.setState({prclosereq:false})}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
           curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
@@ -2670,7 +2791,7 @@ class LandingPage extends React.Component{
         </Modal>
         <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
          <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Batch</div></div>
-         <BatchControl bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
+         <BatchControl soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
           liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
            startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
                    weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
@@ -2688,18 +2809,77 @@ class LandingPage extends React.Component{
           <PlanBatchStart sendPacket={this.sendPacket} pList={this.state.pList} pNames={this.state.prodNames} ref={this.planStart} plannedBatches={this.state.plannedBatches} startP={this.startSel}/>
           <ManBatchStart branding={this.state.branding} pList={this.state.pList} pNames={this.state.prodNames} ref={this.manStart} ip={this.state.curDet.ip} language={language} mac={this.state.curDet.mac} startNew={this.startBuf}/>
          
-        <LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
+        <LogInControl2 soc={this.props.soc} language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
                 accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
         <AuthfailModal ref={this.am} forgot={this.forgot}/>
-      <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
+      <UserPassReset soc={this.props.soc} language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
             <ProgressModal ref={this.prgmd}/><MessageModal ref={this.msgm}/>
         <LogoutModal ref={this.lgoModal} branding={this.state.branding}/>
         <LockModal ref={this.lockModal} branding={this.state.branding}/>
+
+          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/>
+
+*/
+
+    return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
+         <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
+          <table>
+          <tbody>
+          <tr style={{verticalAlign:'top'}}>
+          <td>
+            <table>
+            <tbody>
+            <tr>
+            <td>
+              <div><StatusElem connected={this.state.connected} pAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccClrFaultWarn'])} clearWarnings={this.clearWarnings} clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} 
+              ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={425} font={25} language={language} clearFaults={this.clearFaults} /></div>
+            </td>
+            <td>
+              <div><SparcElem ref={this.se} branding={this.state.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={163} font={25}/></div>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+          </td>
+          </tr>
+
+          <tr style={{verticalAlign:'top'}}>
+          <td>
+          <div style={{background:grbg,border:'1px solid '+grbrdcolor, borderRadius:10,overflow:'hidden', margin: '1px 1px 0px', width:600}}>
+          <MainHistogram weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
+                    winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
+                    branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.state.buckMin} buckMax={this.state.buckMax}>
+          </MainHistogram></div>
+          </td>
+          </tr>
+
+          <tr style={{verticalAlign:'top'}}>
+            <table><tbody>
+            <tr>
+            <td>
+            <StatSummary language={language} unit={this.state.srec['WeightUnits']} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange} pkgWeight={pkgWeight}/>
+            </td>
+            <td>
+            <BatchPackCountGraph language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
+            </td>
+            </tr>
+            </tbody></table>
+          </tr>
+          <tr>
+          <td><div style={{height:30}}>
+          </div>
+          </td>
+          </tr>
+          </tbody></table>
         </div>
       </div>) 
   }
-
+/*          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:110, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:30}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
+          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:110, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:30}} lab={'Tare'} onClick={this.tareWeight}/>
+          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:110, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:30}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
+          <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:110, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:30}} lab={'Check Weight'} onClick={this.checkweight}/>
+*/
 }
 /******************Main Components end********************/
 
@@ -2838,6 +3018,7 @@ class ProductSettings extends React.Component{
     }
 
     var self = this;
+    console.log(n,v)
     this.props.sendPacket(n,v)
   
   }
@@ -3008,6 +3189,7 @@ class ProductSettings extends React.Component{
     if(this.props.prods[this.state.selProd]){
       curProd = this.props.prods[this.state.selProd]
     }
+
     var pram;
     var val;
     var label = false
@@ -3294,7 +3476,7 @@ class ProductSettings extends React.Component{
   }
   onImport(){
     if(this.props.usb){
-       socket.emit('importProds', this.props.mac)
+       this.props.soc.emit('importProds', this.props.mac)
   
     }else{
       //this.msgm.current.show('Plug in USB drive and try again')
@@ -3302,7 +3484,7 @@ class ProductSettings extends React.Component{
   }
   onExport(){
     if(this.props.usb){
-    socket.emit('exportProds', this.props.mac)
+    this.props.soc.emit('exportProds', this.props.mac)
       
     }else{
    //   this.msgm.current.show('Plug in USB drive and try again')
@@ -3310,7 +3492,7 @@ class ProductSettings extends React.Component{
   }
   onBackup(){
     if(this.props.usb){
-    socket.emit('backupProds', this.props.mac)
+    this.props.soc.emit('backupProds', this.props.mac)
       
     }else{
    //   this.msgm.current.show('Plug in USB drive and try again')
@@ -3318,7 +3500,7 @@ class ProductSettings extends React.Component{
   }
   onRestore(){
     if(this.props.usb){
-          socket.emit('restoreProds', this.props.mac)
+          this.props.soc.emit('restoreProds', this.props.mac)
 
     }else{
      
@@ -3492,7 +3674,7 @@ class ProductSettings extends React.Component{
       </div>)
       if(this.state.showAdvanceSettings){
         content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
-        <div style={{height:482}}>  <SettingsPage toggleGraph={this.toggleGraph} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+        <div style={{height:482}}>  <SettingsPage soc={this.props.soc} toggleGraph={this.toggleGraph} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={this.props.level}/>
         </div>
           <div>
@@ -3579,7 +3761,7 @@ class ProductSettings extends React.Component{
       <table style={{borderCollapse:'collapse'}}><tbody>
         <tr>
           <td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:819, paddingTop:0}}>  
-          <BatchWidget acc={(this.props.srec['PassOn'] == 0) || (this.props.level >= this.props.srec['PassAccStartStopBatch'])} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.drec['BatchRunning']} canStartBelts={this.props.drec['CanStartBelts']} onStart={this.props.startB} onResume={this.props.resume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/>
+          <BatchWidget soc={this.props.soc} acc={(this.props.srec['PassOn'] == 0) || (this.props.level >= this.props.srec['PassAccStartStopBatch'])} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.drec['BatchRunning']} canStartBelts={this.props.drec['CanStartBelts']} onStart={this.props.startB} onResume={this.props.resume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/>
           </div></td><td style={{verticalAlign:'top',textAlign:'center'}}>
           <ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
           <div style={{display:'none', background:'#e1e1e1', padding:2}}>
@@ -4021,7 +4203,7 @@ class SettingsPageWSB extends React.Component{
       this.setState({showAccounts:true, cal:false, update:true,mot:false})
     }else if(dat[0] == 'reboot_display'){
       toast('Restarting Display')
-      socket.emit('reboot')
+      this.props.soc.emit('reboot')
     }else if(dat[0] == 'format_usb'){
       //toast('Restarting Display')
       //socket.emit('reboot')
@@ -4119,17 +4301,17 @@ class SettingsPageWSB extends React.Component{
     if(this.state.sel == -1){
       cob = this.props.cob2
     }
-    var sd =<React.Fragment><div > <SettingsPage timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst} toggleGraph={this.toggleGraph} openUnused={this.props.openUnused} submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} 
+    var sd =<React.Fragment><div > <SettingsPage soc={this.props.soc} timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst} toggleGraph={this.toggleGraph} openUnused={this.props.openUnused} submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} 
       int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={this.props.level}/>
       </div>
-      <div style={{display:'none'}}> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
+      <div style={{display:'none'}}> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
     if(this.state.showAccounts){
-      sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap}  setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
+      sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap}  setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
-      <div> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
+      <div> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
     }else if(this.state.cal){
       var calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onCalib} lab={'Calibrate'}/>
@@ -4194,7 +4376,7 @@ class SettingsPageWSB extends React.Component{
           </div>
       }
 
-     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref={this.sd} data={this.state.data} 
+     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref={this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
       <div>
@@ -4202,7 +4384,7 @@ class SettingsPageWSB extends React.Component{
       </div></React.Fragment>
     }else if(this.state.mot){
       sd = <React.Fragment>
-        <div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+        <div style={{display:'none'}}> <SettingsPage soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
 
@@ -4300,7 +4482,7 @@ class SettingsPage extends React.Component{
   }
   update(){
     console.log('update CW Clicked')
-    socket.emit('updateCW')
+    this.props.soc.emit('updateCW')
   }
   goToShortcut(path){
     this.setState({path:path})
@@ -4575,20 +4757,20 @@ class SettingsPage extends React.Component{
     console.log([n,v])
     if(n == 'format_usb'){
 
-      socket.emit('sendReboot')
+      this.props.soc.emit('sendReboot')
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_FORMATUSB']
             var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],rpc[2]);
-      socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.props.dsp, data:packet}) 
  
     }else if(n == 'vfdChange'){
       console.log('vfdChange')
       var packet = dsp_rpc_paylod_for(v['@rpcs']['changevfdwrite'][0], v['@rpcs']['changevfdwrite'][1],v['@rpcs']['changevfdwrite'][2]);
-       socket.emit('rpc', {ip:this.props.dsp, data:packet})
+       this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n=='DateTime'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_DATETIMEWRITE']
   
         var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
-      socket.emit('rpc',{ip:this.props.dsp, data:packet})
+      this.props.soc.emit('rpc',{ip:this.props.dsp, data:packet})
        console.log('DATE TIME SENT', this.props.dsp) 
     }else if(n=='DaylightSavings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
@@ -4605,7 +4787,7 @@ class SettingsPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.props.dsp, data:packet}) 
       }else if(n=='Timezone'){
         var rpc = vdef[0]['@rpc_map']['KAPI_TIMEZONE_WRITE']
   
@@ -4621,17 +4803,17 @@ class SettingsPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.props.dsp, data:packet}) 
       }else if(n['@rpcs']['vfdstart']){
     if(v == 1){
      // n['@rpcs']['vfdstart'][0]
      console.log('vfdstart')
       var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstart'][0], n['@rpcs']['vfdstart'][1],n['@rpcs']['vfdstart'][2]);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+        this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else{
       console.log('vfdstop')
        var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstop'][0], n['@rpcs']['vfdstop'][1],n['@rpcs']['vfdstop'][2]);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+        this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
 
     }
 
@@ -4663,7 +4845,7 @@ class SettingsPage extends React.Component{
         }
         
         var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+        this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['toggle']){
 
       var arg1 = n['@rpcs']['toggle'][0];
@@ -4677,7 +4859,7 @@ class SettingsPage extends React.Component{
       }
       var packet = dsp_rpc_paylod_for(arg1, arg2);
       
-      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+      this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['apiwrite']){
       var arg1 = n['@rpcs']['apiwrite'][0];
       var arg2 = [];
@@ -4720,7 +4902,7 @@ class SettingsPage extends React.Component{
         console.log(strArg, n, 2154)
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
         
-      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+      this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['write']){
       var arg1 = n['@rpcs']['write'][0];
       var arg2 = [];
@@ -4790,11 +4972,11 @@ class SettingsPage extends React.Component{
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
         console.log(strArg, packet, n, 2154)
     
-      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+      this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['clear']){
       var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
         
-      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+      this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['theme']){
       this.props.setTheme(v)
     }else if(n['@rpcs']['customstrn']){
@@ -4826,7 +5008,7 @@ class SettingsPage extends React.Component{
     this.props.getBack();
   }
   reboot(){
-    socket.emit('reboot')
+    this.props.soc.emit('reboot')
   }
   formatUSB(){
     this.sendPacket('format_usb',0)
@@ -4894,7 +5076,7 @@ class SettingsPage extends React.Component{
       nodes = [];
       for(var i = 0; i < catList.length; i++){
         var ct = catList[i]
-        nodes.push(<SettingItem3 submitList={this.submitList} submitTooltip={this.submitTooltip} submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
+        nodes.push(<SettingItem3 soc={this.props.soc} submitList={this.submitList} submitTooltip={this.submitTooltip} submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
           language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} 
           font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} 
           sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
@@ -4991,7 +5173,7 @@ class SettingsPage extends React.Component{
             passAcc = true;
           }
           if(par.dt){
-            nodes.push(<SettingItem3 timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+             nodes.push(<SettingItem3 soc={this.props.soc} timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
               children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} passAcc={passAcc} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
        
@@ -4999,7 +5181,7 @@ class SettingsPage extends React.Component{
 
 
           //console.log(2158, isInt)
-          nodes.push(<SettingItem3 submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+          nodes.push(<SettingItem3 soc={this.props.soc} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
               children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} passAcc={passAcc} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
          }
@@ -5024,7 +5206,7 @@ class SettingsPage extends React.Component{
                         spname = spname.slice(0,-4)
                     }
                   }
-              nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language}
+              nodes.push(<SettingItem3 soc={this.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language}
                onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
                 data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
       
@@ -5032,7 +5214,7 @@ class SettingsPage extends React.Component{
                 if(self.props.wsb && lvl == 1){
                   lenOffset++;
                 }else{
-                  nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+                  nodes.push(<SettingItem3 soc={this.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
               data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
             
                 }
@@ -5051,12 +5233,12 @@ class SettingsPage extends React.Component{
                     ch.unshift(spar['@data'])
                   }
                   
-                  nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
+                  nodes.push(<SettingItem3 soc={this.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
                     font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} backdoor={true}
                    data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
         
           }else{
-            nodes.push(<SettingItem3  submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+            nodes.push(<SettingItem3 soc={this.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
               font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false}  backdoor={true}
               data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
           }
@@ -5065,7 +5247,7 @@ class SettingsPage extends React.Component{
          
           var sc = par['@data']
             
-          nodes.push(<SettingItem3  submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+          nodes.push(<SettingItem3 soc={this.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
             font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
             data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
     
@@ -5085,7 +5267,7 @@ class SettingsPage extends React.Component{
 
          
         }else if(par.type == 5){
-          nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Unused'} name={'Unused'} hasChild={true} 
+          nodes.push(<SettingItem3 soc={this.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Unused'} name={'Unused'} hasChild={true} 
               data={{}} onItemClick={self.openUnused} hasContent={true} acc={true} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
       
           //nodes.push(<CircularButton branding={self.props.branding} onClick={self.openUnused} lab={"Get Unused Settings"}/>)
@@ -5335,7 +5517,7 @@ class SettingItem3 extends React.Component{
   }
   sendPacket(n,v) {
     //
-
+    var self = this
     if(this.props.dynSettings['BatchRunning'] != 0){
       if(n['@locked_by_batch']){
         this.msgm.current.show('Changes will not take effect until batch is stopped.')
@@ -5345,18 +5527,18 @@ class SettingItem3 extends React.Component{
 
     var val = v
     if(n['@name'] == 'Nif_ip'){
-      socket.emit('nifip', v.toString())
+      this.props.soc.emit('nifip', v.toString())
     }else if(n['@name'] == 'Nif_nm'){
-      socket.emit('nifnm', v.toString())
+      this.props.soc.emit('nifnm', v.toString())
     }else if(n['@name'] == 'Nif_gw'){
-      socket.emit('nifgw', v.toString())
+      this.props.soc.emit('nifgw', v.toString())
     }else{
       if(n['@type'] == 'ipv4_address'){
         val = v.split('.').map(function(ip){
           return ("000"+ip).slice(-3);
         }).join('.')
         setTimeout(function(){
-          socket.emit('locateReq');
+          self.props.soc.emit('locateReq');
         },200)
       }
     
@@ -5806,7 +5988,7 @@ class SettingItem3 extends React.Component{
           }
     
 
-          var medctrl= (<MultiEditControl  timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst}  dt={this.props.dt} disabled={disable} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
+          var medctrl= (<MultiEditControl soc={this.props.soc} timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst}  dt={this.props.dt} disabled={disable} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
                       mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
                   onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} pAcc={this.props.passAcc} ref='ed' vst={vst} 
                     lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
@@ -5856,7 +6038,7 @@ class SettingItem3 extends React.Component{
               if(!display){
             sty.display = 'none'
           }
-    var medctrl= (<MultiEditControl dt={this.props.dt} disabled={disable}  getToolTip={this.getToolTip} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} 
+    var medctrl= (<MultiEditControl soc={this.props.soc} dt={this.props.dt} disabled={disable}  getToolTip={this.getToolTip} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} 
       submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus}
        onRequestClose={this.onRequestClose} pAcc={this.props.passAcc} acc={this.props.acc} ref='ed' vst={vst} 
           lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
@@ -6313,7 +6495,7 @@ class MultiEditControl extends React.Component{
           }
         }else if((self.props.param[i]['@labels'] == 'OutputSrc')){
            iod = true
-          if(self.props.ioBits[outputSrcArr[d]] == 0){            
+          if(self.props.ioBits[outputSrcArr[d]] == 0){
             //st.color = '#666'
             iogreen = false;
           }
@@ -6670,9 +6852,10 @@ class MultiEditControl extends React.Component{
      return <div>
      <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
       <div><div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
-        <ContextMenuTrigger id={this.props.name + 'ctmid'}>
-          {namestring}
-        </ContextMenuTrigger>
+           <ContextMenuTrigger id={this.props.name + 'ctmid'}>
+        {namestring}
+
+      </ContextMenuTrigger>
       </div>
       </div>
      
@@ -6707,13 +6890,13 @@ class DisplaySettings extends React.Component{
 
   }
   editIP(v){
-    socket.emit('nifip', v.toString())
+    this.props.soc.emit('nifip', v.toString())
   }
   editNM(v){
-    socket.emit('nifnm', v.toString())
+    this.props.soc.emit('nifnm', v.toString())
   }
   editGW(v){
-    socket.emit('nifgw', v.toString())
+    this.props.soc.emit('nifgw', v.toString())
   }
   sendPacket(n,v){
 
@@ -6731,7 +6914,7 @@ class DisplaySettings extends React.Component{
  var nav = (<div className='setNav'>
                 <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_ip'} vMap={vMapV2['Nif_ip']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_ip']['@translations'][this.props.language]['name']} value={this.props.nifip} editable={true} onEdit={this.editIP} param={{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
                 <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_nm'} vMap={vMapV2['Nif_nm']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_nm']['@translations'][this.props.language]['name']} value={this.props.nifnm} editable={true} onEdit={this.editNM} param={{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
-                
+                <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_gw'} vMap={vMapV2['Nif_gw']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_gw']['@translations'][this.props.language]['name']} value={this.props.nifgw} editable={true} onEdit={this.editGW} param={{'@name':'Nif_gw', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
        
           </div>)
 
@@ -6772,10 +6955,10 @@ class AccountControl extends React.Component{
     this.setState({curlevel:v})
   }
   addAccount(){
-    socket.emit('addAccount', {user:{user:this.state.username, acc:this.state.curlevel, password:this.state.pswd}, ip:this.props.ip})
+    this.props.soc.emit('addAccount', {user:{user:this.state.username, acc:this.state.curlevel, password:this.state.pswd}, ip:this.props.ip})
   }
   removeAccount(account){
-    socket.emit('removeAccount', {ip:this.props.ip, user:account})
+    this.props.soc.emit('removeAccount', {ip:this.props.ip, user:account})
   }
   onFocus(){
 
@@ -6814,7 +6997,7 @@ class AccountControl extends React.Component{
     var accTableRows = [];
     
     this.props.accounts.forEach(function(ac,i){
-      accTableRows.push(<AccountRow branding={self.props.branding} mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > 3} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
+      accTableRows.push(<AccountRow soc={this.props.soc} branding={self.props.branding} mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > 3} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
     })
     
     var backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
@@ -6917,7 +7100,7 @@ class AccountRow extends React.Component{
   }
   remove(){
     if(this.props.saved){
-      socket.emit('removeAccount', {ip:this.props.ip, user:this.state.username})
+      this.props.soc.emit('removeAccount', {ip:this.props.ip, user:this.state.username})
     }else{
       this.setState({username:this.props.username, acc:this.props.acc, password:this.props.password})
     }
@@ -6928,7 +7111,7 @@ class AccountRow extends React.Component{
   }
   addAccount(){
     console.log(8200, 'writeUserData', this.props.uid)
-    socket.emit('writeUserData', {data:{username:this.state.username, acc:this.state.acc, password:this.state.password, user:this.props.uid}, ip:this.props.ip})
+    this.props.soc.emit('writeUserData', {data:{username:this.state.username, acc:this.state.acc, password:this.state.password, user:this.props.uid}, ip:this.props.ip})
     
     //this.setState({changed:false})
   }
@@ -7279,7 +7462,7 @@ class StatSummary extends React.Component{
       sppm = this.state.crec['Sample_PPM'].toFixed(0) + 'ppm'
       
     }
-  return  <div style={{width:260,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
+  return  <div style={{width:295,background:outerbg, borderRadius:10, margin:1, marginBottom:0, border:'1px '+outerbg+' solid', borderTopLeftRadius:0, height:425}}>
       <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
       <StatControl language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange}/>
       <StatControl language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={'Gross Weight'}  submitChange={this.props.submitChange} value={grswt}/>
@@ -7313,11 +7496,11 @@ class StatControl extends React.Component{
   }
   render(){
     var uid = uuidv4()
-    return <div style={{height:61}}>
+    return <div style={{height:50}}>
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
     <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
     </div>
-    <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:25}}>{this.props.value}</div>
+    <div style={{textAlign:'center', marginTop:-4,lineHeight:0.8, fontSize:22}}>{this.props.value}</div>
     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
         <div>{this.props.vMap['english']['name']}</div>
         <div>
@@ -7484,9 +7667,9 @@ class StatDisplay extends React.Component{
     
     }
 
-    return <div style={{height:61, width:'100%', borderBottom:"2px solid #ccc"}} >
+    return <div style={{height:50, width:'100%', borderBottom:"2px solid #ccc"}} >
     <div onClick={this.editSetting}><div style={{textAlign:'center', fontSize:14}}>{this.props.name}</div>
-    <div style={{textAlign:'center',lineHeight:1.4, fontSize:14}} >{this.props.value}</div></div>
+    <div style={{textAlign:'center',lineHeight:0.8, fontSize:14}} >{this.props.value}</div></div>
     <MessageModal ref={this.msgm}/>
     {ckb}
     </div>
@@ -7512,11 +7695,11 @@ class BatchStatControl extends React.Component{
   }
   render(){
     var uid = uuidv4()
-    var batchFont = 25
+    var batchFont = 22
     if(this.props.batch.length > 9){
       batchFont = 20;
     }
-    var sampleFont = 25;
+    var sampleFont = 22;
     if(this.props.sample.length >9){
       sampleFont = 20;
     }
@@ -7526,10 +7709,10 @@ class BatchStatControl extends React.Component{
     if(this.props.sample.lenght > 12){
       sampleFont = 18;
     }
-    return <div style={{height:61}}>
+    return <div style={{height:50}}>
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
     <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu></div>
-    <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:batchFont, whiteSpace:'nowrap'}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
+    <div style={{textAlign:'center', marginTop:-4,lineHeight:0.8, fontSize:batchFont, whiteSpace:'nowrap'}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
      <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
          <button onClick={this.submit}>Submit Change</button>
@@ -7557,9 +7740,9 @@ class SparcElem extends React.Component{
     }
     var innerWidth = Math.min((this.props.width*0.55),160);
     var innerFont = Math.min(Math.floor(this.props.font/2), 16);
-    return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:5, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
+    return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
-      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div></div><div style={{textAlign:'center', marginTop:-10,lineHeight:this.props.font*1.3+'px',height:this.props.font*1.3, fontSize:this.props.font}}>{this.state.value}</div>
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div></div><div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:this.props.font}}>{this.state.value}</div>
     </div>)
   }
 }
@@ -7632,7 +7815,7 @@ if(typeof this.props.prodName != 'undefined'){
    
 }
 if(prodName.length > 17){
-    prodFont = 22
+    prodFont = 20
   } 
 
 
@@ -7688,10 +7871,10 @@ if(prodName.length > 17){
   
 
   }
-    return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:5, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
+    return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
       <div style={{display:'grid', gridTemplateColumns:'160px auto'}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div><div style={{display:'inline-block', fontSize:prodFont, textAlign:'center', lineHeight:'25px', verticalAlign:'top'}}>{this.props.prodName}</div></div>
-       <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:25, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'middle'}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
+       <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:20, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'middle'}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
           <Modal ref={this.fModal} innerStyle={{background:modBg}}>
             <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>Faults</div></div>
      
@@ -7705,21 +7888,21 @@ if(prodName.length > 17){
 
 /********************Graphs Start********************/
 class BatchPackCountGraph extends React.Component{
-	constructor(props){
-		super(props)
+  constructor(props){
+    super(props)
     this.toggle = this.toggle.bind(this);
-		this.state = {batchData:[0, 0, 0, 0, 0, 0, 0, 0], sampleData:[0, 0, 0, 0, 0, 0, 0, 0],batch:true, batchStartTime:'', sampleStartTime:''}
-	}
-	parseCrec(crec){
-		var data = this.state.batchData.slice(0);
+    this.state = {batchData:[0, 0, 0, 0, 0, 0, 0, 0], sampleData:[0, 0, 0, 0, 0, 0, 0, 0],batch:true, batchStartTime:'', sampleStartTime:''}
+  }
+  parseCrec(crec){
+    var data = this.state.batchData.slice(0);
     var sampleData = this.state.sampleData.slice(0);
-		data[0] = crec['TotalCnt']
-		data[1] = crec['PassWeightCnt'];
-		data[2] = crec['LowPassCnt'];
-		data[3] = crec['LowRejCnt']; 
-		data[4] = crec['HighCnt'];
-		data[5] = crec['UnsettledCnt']
-		//data[6] = crec['ImprobableCnt']
+    data[0] = crec['TotalCnt']
+    data[1] = crec['PassWeightCnt'];
+    data[2] = crec['LowPassCnt'];
+    data[3] = crec['LowRejCnt']; 
+    data[4] = crec['HighCnt'];
+    data[5] = crec['UnsettledCnt']
+    //data[6] = crec['ImprobableCnt']
 
     data[6] = crec['CheckWeightCnt']
     sampleData[0] = crec['SampleTotalCnt']
@@ -7741,44 +7924,44 @@ class BatchPackCountGraph extends React.Component{
     }
 
     this.setState({batchData:data, sampleData:sampleData, batchStartTime:bst,sampleStartTime:sst})
-	}
-	parsePack(pack){
-		var data = [0,0,0,0,0,0,0]//this.state.data.slice(0)
-		data[0]++;
-		if(pack<85){
-			data[1]++;
-		}else if(pack<88){
-			data[2]++
-		}else if(pack<92){
-			data[3]++
-		}else if(pack<94){
-			data[4]++
-		}else if(pack<96){
-			data[5]++
-		}else if(pack<100){
-			data[6]++
-		}
-		//this.setState({data:data})
-	}	
+  }
+  parsePack(pack){
+    var data = [0,0,0,0,0,0,0]//this.state.data.slice(0)
+    data[0]++;
+    if(pack<85){
+      data[1]++;
+    }else if(pack<88){
+      data[2]++
+    }else if(pack<92){
+      data[3]++
+    }else if(pack<94){
+      data[4]++
+    }else if(pack<96){
+      data[5]++
+    }else if(pack<100){
+      data[6]++
+    }
+    //this.setState({data:data})
+  } 
   toggle(){
     this.setState({batch:!this.state.batch})
   }
   translateCounts(){
 
   }
-	render(){
-		var outerbg = '#e1e1e1'
-		var self = this;
-		var innerbg = '#5d5480'
-		var fontColor = '#e1e1e1'
-		var graphColor = FORTRESSPURPLE2
-		if(this.props.branding == 'SPARC'){
-			innerbg = SPARCBLUE2
-			fontColor = 'black'
-			graphColor = SPARCBLUE2;
-		}
-		var xDomain = [0,15]
-		var yDomin = [0, 5]
+  render(){
+    var outerbg = '#e1e1e1'
+    var self = this;
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
+    var graphColor = FORTRESSPURPLE2
+    if(this.props.branding == 'SPARC'){
+      innerbg = SPARCBLUE2
+      fontColor = 'black'
+      graphColor = SPARCBLUE2;
+    }
+    var xDomain = [0,15]
+    var yDomin = [0, 5]
     var selData;
     var bText;
     var bsttxt = 'Batch Started at: '+this.state.batchStartTime
@@ -7799,10 +7982,10 @@ class BatchPackCountGraph extends React.Component{
     if(max == 0){
       xDm = [0,1]
     }
-		var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
+    var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
      {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
-		var labelData = data.map(function(d, i){
-			var lax = 'start'
+    var labelData = data.map(function(d, i){
+      var lax = 'start'
       var label = d.x
       var ofs = 0
       if(showCount && i == 1){
@@ -7810,28 +7993,28 @@ class BatchPackCountGraph extends React.Component{
        // lax = 'end'
        // ofs = -20
       }
-			if(d.x > (data[0].x*0.66)){
-				lax = 'end'
-				return {x:d.x,y:d.y,label:label, xOffset:-10, yOffset:0, size:0, style:{fill:'#e1e1e1',textAnchor:lax}}
-			}
-			return	{x:d.x,y:d.y,label:label, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
-		})
+      if(d.x > (data[0].x*0.66)){
+        lax = 'end'
+        return {x:d.x,y:d.y,label:label, xOffset:-10, yOffset:0, size:0, style:{fill:'#e1e1e1',textAnchor:lax}}
+      }
+      return  {x:d.x,y:d.y,label:label, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
+    })
     var butt = <div onClick={this.toggle} style={{width:77, fontSize:18, textAlign:'center'}}>{bText}</div>
-		//var hh = 
-		return <div style={{position:'relative',width:380, height:515,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
+    //var hh = 
+    return <div style={{position:'relative',width:295, height:425,background:outerbg, borderRadius:10, margin:1, marginBottom:0, border:'1px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
-			<div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>Statistics</div></div>
-      <div style={{position:'absolute', left:295, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
+      <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>Statistics</div></div>
+      <div style={{position:'absolute', left:209, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
       <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
-		<XYPlot	height={430} width= {380} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal' xDomain={xDm}>		
+    <XYPlot height={370} width= {292} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal' xDomain={xDm}>    
   
   <HorizontalBarSeries data={data} color={graphColor} />
   <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
   <XAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} hideTicks={max<1} orientation="bottom" tickSizeOuter={0} tickFormat={val => Math.round(val) === val ? val : ""}/>
   <YAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} orientation="left" tickSizeOuter={0} tickFormat={tickFormatter}/>
-		</XYPlot>
-		</div>
-	}
+    </XYPlot>
+    </div>
+  }
 }
 class BatchBarGraph extends React.Component{
   constructor(props){
@@ -7945,12 +8128,12 @@ class BatchBarGraph extends React.Component{
   }
 }
 class MainHistogram extends React.Component{
-	constructor(props){
-		super(props)
-		this.parseDataset = this.parseDataset.bind(this);
-		this.clearFaults = this.clearFaults.bind(this);
-		this.maskFault = this.maskFault.bind(this);
-		this.statusClick = this.statusClick.bind(this);
+  constructor(props){
+    super(props)
+    this.parseDataset = this.parseDataset.bind(this);
+    this.clearFaults = this.clearFaults.bind(this);
+    this.maskFault = this.maskFault.bind(this);
+    this.statusClick = this.statusClick.bind(this);
     this.pushWeight = this.pushWeight.bind(this);
     this.pushBin  = this.pushBin.bind(this);
     this.clearHisto = this.clearHisto.bind(this);
@@ -7960,8 +8143,8 @@ class MainHistogram extends React.Component{
     for(var i = 0; i < 300; i++){
       dtst.push(0)
     }
-		this.state = {pTime:0,weightPassed:0,pmax:2000, pstrt:0,pend:299, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[dtst,dtst.slice(0), dtst.slice(0)],reject:false,over:false,under:false}
-	}
+    this.state = {pTime:0,weightPassed:0,pmax:2000, pstrt:0,pend:299, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[dtst,dtst.slice(0), dtst.slice(0)],reject:false,over:false,under:false}
+  }
   pushBin(x,y){
     this.histo.current.pushBin(x,y);
   }
@@ -7969,87 +8152,87 @@ class MainHistogram extends React.Component{
     console.log('clear Histo')
     this.histo.current.clearHisto();
   }
-	parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend,pTime){
-		var dataSets = this.state.dataSets;
-		if(dataSets.length > 5){
-			dataSets = dataSets.slice(-5)
-		}
+  parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend,pTime){
+    var dataSets = this.state.dataSets;
+    if(dataSets.length > 5){
+      dataSets = dataSets.slice(-5)
+    }
 
-		dataSets.push(data)
-		var setMax = []
-		dataSets.forEach(function (d) {
-			// body...
-			setMax.push(Math.max(...d))
-		})
+    dataSets.push(data)
+    var setMax = []
+    dataSets.forEach(function (d) {
+      // body...
+      setMax.push(Math.max(...d))
+    })
 
-		var max = Math.max(...data)
-		var reject = false;
-		if((pweight > this.props.max) || (pweight < this.props.min)){
-			reject = true;
-	
-		}
+    var max = Math.max(...data)
+    var reject = false;
+    if((pweight > this.props.max) || (pweight < this.props.min)){
+      reject = true;
+  
+    }
     if(this.props.histo && this.state.pTime != pTime){
       this.histo.current.pushWeight(pweight)
     }
     //this.histo.current
-		this.setState({dataSets:dataSets,pmax:(pmax/calFactor)+tareWeight, pmin:(pmin/calFactor)+tareWeight, pstrt:pstrt, pend:pend, decisionRange:[strt, stend], reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(pweight>this.props.max), under:(pweight<this.props.min), calFactor:calFactor, tareWeight:tareWeight, weightPassed:weightPassed,pTime:pTime})
-	}
+    this.setState({dataSets:dataSets,pmax:(pmax/calFactor)+tareWeight, pmin:(pmin/calFactor)+tareWeight, pstrt:pstrt, pend:pend, decisionRange:[strt, stend], reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(pweight>this.props.max), under:(pweight<this.props.min), calFactor:calFactor, tareWeight:tareWeight, weightPassed:weightPassed,pTime:pTime})
+  }
   pushWeight(e){
     this.histo.current.pushWeight(e)
   }
-	clearFaults(){
-		this.props.clearFaults();
+  clearFaults(){
+    this.props.clearFaults();
         this.fModal.current.toggle();
-	}
-	maskFault(){
-		this.props.maskFault();
-	}
-	statusClick(){
-		if(this.props.faults.length != 0){
-			this.fModal.current.toggle();
-		}else if(this.state.weightPassed == 9){
+  }
+  maskFault(){
+    this.props.maskFault();
+  }
+  statusClick(){
+    if(this.props.faults.length != 0){
+      this.fModal.current.toggle();
+    }else if(this.state.weightPassed == 9){
       this.props.cwShow()
     }
-	}
-	render(){
-		var outerbg = '#818a90'
-		var innerbg = '#5d5480'
-		var fontColor = '#e1e1e1'
-		var graphColor = 'darkturquoise'//FORTRESSGRAPH
-		var bg2 = 'rgba(150,150,150,0.5)'
-	 var modBg = FORTRESSPURPLE1
-		if(this.props.branding == 'SPARC'){
-			outerbg = '#e1e1e1'
-			innerbg = SPARCBLUE2
+  }
+  render(){
+    var outerbg = '#818a90'
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
+    var graphColor = 'darkturquoise'//FORTRESSGRAPH
+    var bg2 = 'rgba(150,150,150,0.5)'
+   var modBg = FORTRESSPURPLE1
+    if(this.props.branding == 'SPARC'){
+      outerbg = '#e1e1e1'
+      innerbg = SPARCBLUE2
       modBg = SPARCBLUE2
-			fontColor = 'black'
-			graphColor = SPARCBLUE2;
-			bg2 = 'rgba(150,150,150,0.5)'
-		}
+      fontColor = 'black'
+      graphColor = SPARCBLUE2;
+      bg2 = 'rgba(150,150,150,0.5)'
+    }
 
 
 
-	var bg = 'transparent';
-	var str = 'Good Weight'
-	var fault = false
+  var bg = 'transparent';
+  var str = 'Good Weight'
+  var fault = false
 
-	if(vdefByMac[this.props.det.mac]){
-		str = vdefByMac[this.props.det.mac][0]['@labels']['WeightPassed']['english'][this.state.weightPassed]
-	}
-	if(this.props.faults.length != 0){
+  if(vdefByMac[this.props.det.mac]){
+    str = vdefByMac[this.props.det.mac][0]['@labels']['WeightPassed']['english'][this.state.weightPassed]
+  }
+  if(this.props.faults.length != 0){
 
-		if(this.props.faults.length == 1){
-			if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
+    if(this.props.faults.length == 1){
+      if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
         str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
       }else{
         str = this.props.faults[0] + ' active'  
       }
       
-		}else{
-			str = this.props.faults.length + ' faults active'
-		}
-		fault == true
-	}
+    }else{
+      str = this.props.faults.length + ' faults active'
+    }
+    fault == true
+  }
   if(this.props.warnings.length != 0){
 
     if(this.props.warnings.length == 1){
@@ -8071,20 +8254,22 @@ class MainHistogram extends React.Component{
   }
   var  xyplot = <WeightHistogram buckMin={this.props.buckMin} buckMax={this.props.buckMax} buckets={this.props.buckets} bucketSize={this.props.bucketSize} unit={this.props.weightUnits} ref={this.histo} nom={this.props.nominalWeight} stdev={this.props.stdev}/>
   
-	return	<div style={{background:bg, textAlign:'center', position:'relative'}}>
- 		<div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
+  return  <div style={{background:bg, textAlign:'center', position:'relative'}}>
+    <div style={{width:550,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 
-		<div style={{overflow:'hidden', marginTop:14}}>
-		<div style={{marginTop:-48}}>
  {xyplot}
-		</div>
-		</div>
-			<Modal ref={this.fModal} innerStyle={{background:modBg}}>
-					<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
-				</Modal>
-		</div>
-	}
+      <Modal ref={this.fModal} innerStyle={{background:modBg}}>
+          <FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
+        </Modal>
+    </div>
+  }
 }
+/*    <div style={{overflow:'hidden', marginTop:14}}>
+    <div style={{marginTop:-10}}>
+    </div>
+    </div>
+*/
+
 class PackGraph extends React.Component{
   constructor(props){
     super(props)
@@ -8098,7 +8283,6 @@ class PackGraph extends React.Component{
     this.toggleZoom = this.toggleZoom.bind(this);
     this.getMMdep = this.getMMdep.bind(this);
     this.onEdit = this.onEdit.bind(this);
-    this.onEditPackageLength = this.onEditPackageLength.bind(this);
     //this.state = {tare:this.props.srec['TareWeight']}
   }
   componentDidMount(){
@@ -8124,17 +8308,6 @@ class PackGraph extends React.Component{
   }
   onEdit(p, v){
     this.props.onEdit(p,v)
-  }
-  onEditPackageLength(p,v)
-  {
-    if(this.props.srec['AppUnitDist'] === 1)
-    {
-      v=(v/10);
-      this.props.onEdit(p,v);
-    }
-    else{
-      this.props.onEdit(p,v);
-    }
   }
   render(){
  
@@ -8260,7 +8433,7 @@ class PackGraph extends React.Component{
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['SettleDur']} pram={'SettleDur'} name={vMapV2['SettleDur']['@translations'][this.props.language]['name']} value={this.props.prec['SettleDur']+ ' ms'} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['VfdBeltSpeed1']} pram={'VfdBeltSpeed1'} name={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['name']} value={this.props.prec['VfdBeltSpeed1']} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['WeightAvgMode']} pram={'WeightAvgMode'} name={vMapV2['WeightAvgMode']['@translations'][this.props.language]['name']} rVal={this.props.prec['WeightAvgMode']} value={vMapLists['WeightAvgMode'][this.props.language][this.props.prec['WeightAvgMode']]} submitChange={this.props.submitChange}/>
-    <StatDisplay onEdit={this.onEditPackageLength} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['EyePkgLength']} pram={'EyePkgLength'} name={vMapV2['EyePkgLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.prec['EyePkgLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
+    <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['EyePkgLength']} pram={'EyePkgLength'} name={vMapV2['EyePkgLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.prec['EyePkgLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 0} vMap={vMapV2['WeighLength']} pram={'WeighLength'} name={vMapV2['WeighLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.srec['WeighLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 0} vMap={vMapV2['EyeDist']} pram={'EyeDist'} name={vMapV2['EyeDist']['@translations'][this.props.language]['name']} value={formatLength(this.props.srec['EyeDist'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
       </div>
@@ -8399,7 +8572,7 @@ class WeightHistogram extends React.Component{
 
 
 
-    return <XYPlot xDomain={this.state.range} yDomain={[0,max*1.1]} height={317} width={540} margin={{left:50,right:0,bottom:50,top:50}}>
+    return <XYPlot xDomain={this.state.range} yDomain={[0,max*1.1]} height={150} width={540} margin={{left:50,right:0,bottom:30,top:20}}>
      <XAxis tickFormat={val => roundTo(val*factors[u],sigfigs[u])} tickTotal={10} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
      <YAxis tickFormat={val => Math.round(val) === val ? val : ""} hideTicks={max<1} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
         <VerticalRectSeries data={data} color={'darkturquoise'}/>
@@ -8684,7 +8857,7 @@ class BatchControl extends React.Component{
     var self = this;
 
 
-    socket.on('batchDownload', function (batchFile) {
+    this.props.soc.on('batchDownload', function (batchFile) {
        var bjson = JSON.parse(batchFile.data);
        self.setState({bRec:bjson})
     })
@@ -8751,7 +8924,7 @@ class BatchControl extends React.Component{
   }
   addnewBatch(bat){
     var self = this;
-      socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
+      this.props.soc.emit('writeNewBatch',{data:bat, ip:this.props.ip})
     this.addModal.current.close();
     setTimeout(function () {
       // body...
@@ -8779,7 +8952,7 @@ class BatchControl extends React.Component{
   }
   getPastBatches(){
     var self = this;
-    socket.emit('getBatches')
+    this.props.soc.emit('getBatches')
     //this.pastBatches.current.toggle();
     this.setState({showMode:(this.state.showMode+1)%2})
     setTimeout(function () {
@@ -8790,7 +8963,7 @@ class BatchControl extends React.Component{
     })
   }
   onPastBatchClick(id){
-    socket.emit('downloadBatch', id)
+    this.props.soc.emit('downloadBatch', id)
     this.setState({selID:id})
   }
   deleteBatch(id){
@@ -8811,7 +8984,7 @@ class BatchControl extends React.Component{
         }
        }
         if(this.props.usb){
-          socket.emit('putAndSendTftp', {data:csvstr, filename:this.state.selID.replace(/\^+/g,"_").replace('.json','')+'.csv', opts:{mac:this.props.mac.split('-').join('').toUpperCase()}})
+          this.props.soc.emit('putAndSendTftp', {data:csvstr, filename:this.state.selID.replace(/\^+/g,"_").replace('.json','')+'.csv', opts:{mac:this.props.mac.split('-').join('').toUpperCase()}})
         }else{
 
 
@@ -9068,7 +9241,7 @@ class BatchControl extends React.Component{
     return <div style={{minHeight:400, padding:5}}>
           
           {batchDetails}
-          <div><div style={{display:'inline-block'}}><BatchWidget acc={this.props.startStopAcc} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.batchRunning} canStartBelts={this.props.canStartBelts} onStart={this.onStartClick} onResume={this.props.onResume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/></div>
+          <div><div style={{display:'inline-block'}}><BatchWidget soc={this.props.soc} acc={this.props.startStopAcc} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.batchRunning} canStartBelts={this.props.canStartBelts} onStart={this.onStartClick} onResume={this.props.onResume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/></div>
             <div style={{display:'inline-block', float:'right'}}>
               <div style={{display:'none'}}>    
               <CircularButton2  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.changeMode}><div style={{fontSize:20, lineHeight:'25px'}}><div>Batch Mode</div><div>{bmodes[this.state.startMode]}</div></div></CircularButton2>
@@ -9100,9 +9273,9 @@ class BatchControl extends React.Component{
             <ManBatch branding={this.props.branding} language={this.props.language} mac={this.props.mac} addBatch={this.runnewBatch} prodList={this.state.prodList}/>
             </Modal>
              <Modal x={true} ref={this.pastBatches} Style={{width:900, marginTop:40}} innerStyle={{background:backgroundColor, maxHeight:650}}>
-            <PastBatches branding={this.props.branding} language={this.props.language} mac={this.props.mac} batches={this.props.pBatches}/>
+            <PastBatches soc={this.props.soc} branding={this.props.branding} language={this.props.language} mac={this.props.mac} batches={this.props.pBatches}/>
             </Modal>
-            <PlannedBatches deleteBatch={this.deleteBatch} getBatchList={this.props.getBatchList} branding={this.props.branding} language={this.props.language} ip={this.props.ip} mac={this.props.mac} ref={this.plannedBatches} plannedBatches={this.state.plannedBatches} prMap={prMap} prodList={this.state.prodList}/>
+            <PlannedBatches soc={this.props.soc} deleteBatch={this.deleteBatch} getBatchList={this.props.getBatchList} branding={this.props.branding} language={this.props.language} ip={this.props.ip} mac={this.props.mac} ref={this.plannedBatches} plannedBatches={this.state.plannedBatches} prMap={prMap} prodList={this.state.prodList}/>
             
             {bmodeSelect}
             <MessageModal ref={this.msgm}/>
@@ -9149,7 +9322,7 @@ class PlannedBatches extends React.Component{
     bat.PlanBatchId = this.props.plannedBatches[this.state.selBatch].PlanBatchId
 
     console.log(bat, this.props.ip)
-      socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
+      this.props.soc.emit('writeNewBatch',{data:bat, ip:this.props.ip})
     this.editMD.current.close();
     setTimeout(function () {
       // body...
@@ -9161,7 +9334,7 @@ class PlannedBatches extends React.Component{
   addnewBatch(bat){
     var self = this;
     console.log(bat, this.props.ip)
-      socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
+      this.props.soc.emit('writeNewBatch',{data:bat, ip:this.props.ip})
     this.addModal.current.close();
     setTimeout(function () {
       // body...
@@ -9265,7 +9438,7 @@ class PastBatches extends React.Component{
     super(props)
   }
   downloadBatch(id){
-    socket.emit('downloadBatch', id)
+    this.props.soc.emit('downloadBatch', id)
   }
   render(){
     var self = this;
@@ -10600,21 +10773,21 @@ class CheckWeightControl extends React.Component{
   }
 }
 class CustomLabel extends React.Component{
-	constructor(props) {
-		super(props)
-		this.onClick = this.onClick.bind(this);
-	}
-	onClick () {
-		// body...
-		if(this.props.onClick){
-			this.props.onClick(this.props.index)
-		}
-		
-	}
-	render () {
-		var style = this.props.style || {}
-		return <div onClick={this.onClick} style={style}>{this.props.children}</div>
-	}
+  constructor(props) {
+    super(props)
+    this.onClick = this.onClick.bind(this);
+  }
+  onClick () {
+    // body...
+    if(this.props.onClick){
+      this.props.onClick(this.props.index)
+    }
+    
+  }
+  render () {
+    var style = this.props.style || {}
+    return <div onClick={this.onClick} style={style}>{this.props.children}</div>
+  }
 }
 
 ReactDOM.render(<Container/>,document.getElementById('content'))
