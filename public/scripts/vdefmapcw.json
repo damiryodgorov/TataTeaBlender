@@ -54636,10 +54636,26 @@
                 "acc": 0
               },
               {
-                "type": 0,
-                "val": "RejBinDoorFaultMask",
+                "type": 1,
+                "val": {
+                  "cat":"BinDoorTime",
+                  "child":0,
+                  "params":[
+                    {
+                      "type": 0,
+                      "val": "RejBinDoorFaultMask",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "RejBinDoorTime",
+                      "acc": 0
+                    }
+                  ]
+                },
                 "acc": 0
               },
+              
               {
                 "type": 0,
                 "val": "RejSetupFaultMask",
@@ -55495,6 +55511,21 @@
         "russian": "Tare",
         "polish": "Tare",
         "chinese": "Tare"
+      }
+    },
+    "Fault/BinDoorTime": {
+      "@translations": {
+        "english": "Bin Door",
+        "korean": "Bin Door",
+        "spanish": "Bin Door",
+        "french": "Bin Door",
+        "portuguese": "Bin Door",
+        "italian": "Bin Door",
+        "german": "Bin Door",
+        "turkish": "Bin Door",
+        "russian": "Bin Door",
+        "polish": "Bin Door",
+        "chinese": "Bin Door"
       }
     },
     "Fault/ExcessRej": {
