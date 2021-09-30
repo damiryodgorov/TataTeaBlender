@@ -7730,7 +7730,9 @@ class BatchPackCountGraph extends React.Component{
       sst = crec['SampleStartDate'].toISOString().slice(0,19).split('T').join(' ')
     }
 
-    this.setState({batchData:data, sampleData:sampleData, batchStartTime:bst,sampleStartTime:sst})
+    // this.setState({batchData:data, sampleData:sampleData, batchStartTime:bst,sampleStartTime:sst})
+    this.setState({batchData:data, sampleData:sampleData, batchStartTime:bst,sampleStartTime:sst, weighingMode2:crec["WeighingMode2"]})
+
 	}
 	parsePack(pack){
 		var data = [0,0,0,0,0,0,0]//this.state.data.slice(0)
@@ -7789,9 +7791,15 @@ class BatchPackCountGraph extends React.Component{
     if(max == 0){
       xDm = [0,1]
     }
+    
 		var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
      {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
-		var labelData = data.map(function(d, i){
+		
+    if (this.state.weighingMode2 == 1){
+    var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['T1Lim']['@translations'][this.props.language]['name']},
+    {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
+    }
+    var labelData = data.map(function(d, i){
 			var lax = 'start'
       var label = d.x
       var ofs = 0
