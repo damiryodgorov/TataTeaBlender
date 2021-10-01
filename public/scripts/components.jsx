@@ -522,7 +522,7 @@ class TrendBar extends React.Component{
 				bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + pctgs[0].toFixed(0) +  '%, #00aa00a0 ' +pctgs[0].toFixed(0)
 				+ '%, #00aa00a0 '+pctgs[1].toFixed(0)+'%, #dddd00a0 ' +pctgs[1].toFixed(0) + '%, #dddd00a0)';
 			}
-
+			// console.log("bgstr", bgstr)
 			if(tickerVal < ranges[0]){
 				color = colors[0]
 			}else if(tickerVal <= ranges[1]){
@@ -538,9 +538,15 @@ class TrendBar extends React.Component{
 			// 	return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
 			// })
 			if(this.props.prodSettings["WeighingMode"] == 1){
+				av_ranges = [this.props.t2,this.props.t1, this.props.nominal, this.props.high]
 				avwpctgs = [((this.props.t2 - this.props.lowerbound)*100)/range, ((this.props.t1 - this.props.lowerbound)*100)/range, ((this.props.nominal - this.props.lowerbound)*100)/range , ((this.props.high - this.props.lowerbound)*100)/range]
 
-				av_ranges = [this.props.t2,this.props.t1, this.props.nominal, this.props.high]
+				// colors = ['#ff0000','#00ff00','#ff0000']
+				bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + avwpctgs[0].toFixed(0) +  '%, #FFD700 ' +avwpctgs[0].toFixed(0)
+				+ '%, #FFD700 '+avwpctgs[1].toFixed(0)+'%, #FFFF00 ' +avwpctgs[1].toFixed(0) + '%, #FFFF00 '
+				+avwpctgs[2].toFixed(0) + '%, #00aa00a0 ' +avwpctgs[2].toFixed(0) + '%, #00aa00a0 '
+				+avwpctgs[3].toFixed(0) + '%, #aa0000a0 ' +avwpctgs[3].toFixed(0) + '%, #aa0000a0)';
+				// console.log("bgstr av", bgstr)
 
 				label_names_array = ['T2', 'T1' , 'Nominal' , 'Over']
 				label_names = av_ranges.map(function(r,i) {
