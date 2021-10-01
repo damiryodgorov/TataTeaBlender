@@ -8084,7 +8084,7 @@ class MainHistogram extends React.Component{
  		<div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 
 		<div style={{overflow:'hidden', marginTop:14}}>
-		<div style={{marginTop:-48}}>
+		<div style={{marginTop:-38}}>
  {xyplot}
 		</div>
 		</div>
