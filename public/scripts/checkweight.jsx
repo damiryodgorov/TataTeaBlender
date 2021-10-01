@@ -2571,7 +2571,8 @@ class LandingPage extends React.Component{
     var pkgWeight = 0
 
     if(typeof this.state.prec['ProdName'] != 'undefined'){
-      trendBar = [this.state.prec['NominalWgt']-(1.1*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (1.1*this.state.prec['OverWeightLim']), 165, 200]
+      // trendBar = [this.state.prec['NominalWgt']-(1.1*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (1.1*this.state.prec['OverWeightLim']), 165, 200]
+      trendBar = [this.state.prec['NominalWgt']-(1.1*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (1.1*this.state.prec['OverWeightLim']), this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt']-this.state.prec['TolNegErrorX2'], this.state.prec['NominalWgt']]
       bucketSize = this.state.prec['HistogramBucketSize'];
       buckets = this.state.prec['HistogramBuckets']
       pkgWeight = this.state.prec['PkgWeight']
@@ -2634,7 +2635,7 @@ class LandingPage extends React.Component{
           <MainHistogram weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
                     winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.state.buckMin} buckMax={this.state.buckMax}>
-          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
+          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} nominal={trendBar[6]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
           </td><td>
             <BatchPackCountGraph language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
           </td></tr></tbody></table>

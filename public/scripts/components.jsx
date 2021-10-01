@@ -533,10 +533,32 @@ class TrendBar extends React.Component{
 					color = "#ffdf00"
 				}
 			}
-			labels = ranges.map(function(r,i) {
-				// body...
-				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
-			})
+			// labels = ranges.map(function(r,i) {
+			// 	// body...
+			// 	return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+			// })
+			if(this.props.WeighingMode = 1){
+				avwpctgs = [((this.props.t2 - this.props.lowerbound)*100)/range, ((this.props.t1 - this.props.lowerbound)*100)/range, ((this.props.nominal - this.props.lowerbound)*100)/range , ((this.props.high - this.props.lowerbound)*100)/range]
+
+				av_ranges = [this.props.t2,this.props.t1, this.props.nominal, this.props.high]
+
+				label_names_array = ['T2', 'T1' , 'Nominal' , 'Over']
+				label_names = av_ranges.map(function(r,i) {
+					// body...
+					return <div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{label_names_array[i]}</div>
+					})
+				
+				labels = av_ranges.map(function(r,i) {
+					// body...
+					return <div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+				})
+			}
+			else {
+				labels = ranges.map(function(r,i) {
+					// body...
+					return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+				})
+			}
 
 
 		}
@@ -544,6 +566,19 @@ class TrendBar extends React.Component{
 		var path = 'example_path'
 		var block = 'example_block'
 		//console.log(bgstr)
+		if(this.props.WeighingMode = 1){
+			return (
+				<div className='tickerBox' style={{position:'relative', height:40, color:'#e1e1e1'}}>
+				<div style={{height:20,display:'block',fontSize:16}}>{label_names}</div>
+				<div style={{height:20,display:'block',fontSize:16}}>{labels}</div>
+				<div style={{background:'#000', borderRadius:5}}><div className={path} style={{background:bgstr, height:25,borderRadius:5}}>
+					<div className={block} style = {{left:((tickerVal-this.props.lowerbound)*100)/range+'%',backgroundColor:color, height:25, width:20, marginLeft:-10}}/>
+				</div></div>
+				
+				</div>
+			)
+		}
+
 		return (
 			<div className='tickerBox' style={{position:'relative', height:40, color:'#e1e1e1'}}>
 			<div style={{height:20,display:'block',fontSize:16}}>{labels}</div>
