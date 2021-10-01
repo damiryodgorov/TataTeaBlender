@@ -42738,6 +42738,32 @@
       "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
       "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
     },
+    "SAFETY_CIRCUIT": {
+      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "portuguese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
+    },
+    "CAN_START_BELTS": {
+      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "portuguese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
+    },
     "Select User": {
       "english": "Select username to login with.",
       "korean": "Select username to login with.",
@@ -56912,7 +56938,9 @@
         "Warning",
         "Feedback Up",
         "Feedback Down",
-        "Batch Running"
+        "Batch Running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "korean": [
         "none",
@@ -56927,7 +56955,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "spanish": [
         "none",
@@ -56942,7 +56972,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "french": [
         "none",
@@ -56957,7 +56989,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "portuguese": [
         "none",
@@ -56972,7 +57006,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "italian": [
         "none",
@@ -57002,7 +57038,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "polish": [
         "none",
@@ -57017,7 +57055,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "turkish": [
         "none",
@@ -57047,7 +57087,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "chinese": [
         "none",
@@ -57062,7 +57104,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ]
     },
     "PasswordLength": {

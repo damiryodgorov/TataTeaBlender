@@ -25,6 +25,7 @@ var fileDownload = require('js-file-download');
 
 let inputSrcArr = ["NONE","TACH","EYE","RC1","RC2","ISO_1","IO_PL8_01","IO_PL8_02","IO_PL8_03","IO_PL8_04","IO_PL8_05","IO_PL8_06","IO_PL8_07","IO_PL8_08","IO_PL8_09","IO_PL6_01","IO_PL6_02","IO_PL6_03"];
 let outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
+// let outputSrcArr = ["NONE","REJ_MAIN","REJ_ALT","FAULT","LS_RED","LS_YEL","LS_GRN","LS_BUZ","DOOR_LOCK","WARNING","FEEDBACK_UP","FEEDBACK_DOWN","BATCH_RUNNING","SAFETY_CIRCUIT","CAN_START_BELTS"]
 
 let fileReader;
 
