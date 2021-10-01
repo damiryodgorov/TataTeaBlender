@@ -537,7 +537,7 @@ class TrendBar extends React.Component{
 			// 	// body...
 			// 	return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
 			// })
-			if(this.props.WeighingMode = 1){
+			if(this.props.prodSettings["WeighingMode"]){
 				avwpctgs = [((this.props.t2 - this.props.lowerbound)*100)/range, ((this.props.t1 - this.props.lowerbound)*100)/range, ((this.props.nominal - this.props.lowerbound)*100)/range , ((this.props.high - this.props.lowerbound)*100)/range]
 
 				av_ranges = [this.props.t2,this.props.t1, this.props.nominal, this.props.high]
@@ -566,7 +566,7 @@ class TrendBar extends React.Component{
 		var path = 'example_path'
 		var block = 'example_block'
 		//console.log(bgstr)
-		if(this.props.WeighingMode = 1){
+		if(this.props.prodSettings["WeighingMode"] == 1){
 			return (
 				<div className='tickerBox' style={{position:'relative', height:40, color:'#e1e1e1'}}>
 				<div style={{height:20,display:'block',fontSize:16}}>{label_names}</div>
