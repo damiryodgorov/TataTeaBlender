@@ -522,7 +522,7 @@ class TrendBar extends React.Component{
 				bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + pctgs[0].toFixed(0) +  '%, #00aa00a0 ' +pctgs[0].toFixed(0)
 				+ '%, #00aa00a0 '+pctgs[1].toFixed(0)+'%, #dddd00a0 ' +pctgs[1].toFixed(0) + '%, #dddd00a0)';
 			}
-
+			// console.log("bgstr", bgstr)
 			if(tickerVal < ranges[0]){
 				color = colors[0]
 			}else if(tickerVal <= ranges[1]){
@@ -533,10 +533,38 @@ class TrendBar extends React.Component{
 					color = "#ffdf00"
 				}
 			}
-			labels = ranges.map(function(r,i) {
-				// body...
-				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
-			})
+			// labels = ranges.map(function(r,i) {
+			// 	// body...
+			// 	return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+			// })
+			if(this.props.prodSettings["WeighingMode"] == 1){
+				av_ranges = [this.props.t2,this.props.t1, this.props.nominal, this.props.high]
+				avwpctgs = [((this.props.t2 - this.props.lowerbound)*100)/range, ((this.props.t1 - this.props.lowerbound)*100)/range, ((this.props.nominal - this.props.lowerbound)*100)/range , ((this.props.high - this.props.lowerbound)*100)/range]
+
+				// colors = ['#ff0000','#00ff00','#ff0000']
+				bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + avwpctgs[0].toFixed(0) +  '%, #FFD700 ' +avwpctgs[0].toFixed(0)
+				+ '%, #FFD700 '+avwpctgs[1].toFixed(0)+'%, #FFFF00 ' +avwpctgs[1].toFixed(0) + '%, #FFFF00 '
+				+avwpctgs[2].toFixed(0) + '%, #00aa00a0 ' +avwpctgs[2].toFixed(0) + '%, #00aa00a0 '
+				+avwpctgs[3].toFixed(0) + '%, #aa0000a0 ' +avwpctgs[3].toFixed(0) + '%, #aa0000a0)';
+				// console.log("bgstr av", bgstr)
+
+				label_names_array = ['T2', 'T1' , 'Nominal' , 'Over']
+				label_names = av_ranges.map(function(r,i) {
+					// body...
+					return <div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{label_names_array[i]}</div>
+					})
+				
+				labels = av_ranges.map(function(r,i) {
+					// body...
+					return <div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+				})
+			}
+			else {
+				labels = ranges.map(function(r,i) {
+					// body...
+					return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+				})
+			}
 
 
 		}
@@ -544,6 +572,19 @@ class TrendBar extends React.Component{
 		var path = 'example_path'
 		var block = 'example_block'
 		//console.log(bgstr)
+		if(this.props.prodSettings["WeighingMode"] == 1){
+			return (
+				<div className='tickerBox' style={{position:'relative', height:40, color:'#e1e1e1'}}>
+				<div style={{height:20,display:'block',fontSize:16}}>{label_names}</div>
+				<div style={{height:20,display:'block',fontSize:16}}>{labels}</div>
+				<div style={{background:'#000', borderRadius:5}}><div className={path} style={{background:bgstr, height:25,borderRadius:5}}>
+					<div className={block} style = {{left:((tickerVal-this.props.lowerbound)*100)/range+'%',backgroundColor:color, height:25, width:20, marginLeft:-10}}/>
+				</div></div>
+				
+				</div>
+			)
+		}
+
 		return (
 			<div className='tickerBox' style={{position:'relative', height:40, color:'#e1e1e1'}}>
 			<div style={{height:20,display:'block',fontSize:16}}>{labels}</div>

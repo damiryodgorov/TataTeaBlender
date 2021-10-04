@@ -23,6 +23,7 @@ var fileDownload = require('js-file-download');
 
 let inputSrcArr = ["NONE","TACH","EYE","RC1","RC2","ISO_1","IO_PL8_01","IO_PL8_02","IO_PL8_03","IO_PL8_04","IO_PL8_05","IO_PL8_06","IO_PL8_07","IO_PL8_08","IO_PL8_09","IO_PL6_01","IO_PL6_02","IO_PL6_03"];
 let outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
+// let outputSrcArr = ["NONE","REJ_MAIN","REJ_ALT","FAULT","LS_RED","LS_YEL","LS_GRN","LS_BUZ","DOOR_LOCK","WARNING","FEEDBACK_UP","FEEDBACK_DOWN","BATCH_RUNNING","SAFETY_CIRCUIT","CAN_START_BELTS"]
 
 let fileReader;
 
@@ -595,7 +596,7 @@ function getLabTrans(name, language){
 var _wsurl = 'ws://' +location.host 
 var socket = new FtiSockIo(_wsurl,true);
 socket.on('vdef', function(vdf){
-  console.log('on vdef')
+  // console.log('on vdef')
 	var json = vdf[0];
 	_Vdef = json
 	var res = [];
@@ -844,7 +845,7 @@ class LandingPage extends React.Component{
     })
     socket.on('scpFileSize',function (argument) {
       // body...
-      console.log('scpFileSize', argument)
+      // console.log('scpFileSize', argument)
       self.setState({scpFileSize:argument.size, scpStatus:true})
 
       setTimeout(function () {
@@ -855,7 +856,7 @@ class LandingPage extends React.Component{
     })
     socket.on('fileSize', function (arg) {
       // body...
-        console.log('fileSize', arg)
+        // console.log('fileSize', arg)
         self.prgmd.current.show(arg.filename + ' '+(arg.size*100/self.state.scpFileSize).toFixed(0) + '% transferred')
           
       if(self.state.scpStatus){
@@ -975,13 +976,13 @@ class LandingPage extends React.Component{
     })
     socket.on('prodNames',function (pack) {
       // body...
-      console.log('prodNames')
+      // console.log('prodNames')
       if(self.state.curDet.ip == pack.ip){
         self.setState({pList:pack.list, prodNames:pack.names, noupdate:false})
       }
     })
     socket.on('locatedResp', function (e) {
-      console.log(e,924)
+      // console.log(e,924)
       try{
         if(typeof e[0] != 'undefined'){
           var dets = self.state.detL;
@@ -1074,7 +1075,7 @@ class LandingPage extends React.Component{
       self.setAuthAccount({user:'Not Logged In', level:0, user:-1})
     })
     socket.on('passwordNotify',function(e){
-      console.log(1117,e)
+      // console.log(1117,e)
       var message = 'Call Fortress with ' + e.join(', ');
       self.msgm.current.show(message)
     })
@@ -1134,11 +1135,11 @@ class LandingPage extends React.Component{
     });
     var packet = dsp_rpc_paylod_for(rpc[0],pkt);
     socket.emit('rpc', {ip:this.props.ip, data:packet})
-    console.log(pack,668)
+    // console.log(pack,668)
     this.setState({level:pack.level, username:pack.username,noupdate:false, update:true, userid:pack.user+1, user:pack.user}) 
   }
   authenticate(user,pswd){
-    console.log('authenticate here')
+    // console.log('authenticate here')
     socket.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.state.curDet.ip})
   }
   loginClosed(){
@@ -1201,10 +1202,10 @@ class LandingPage extends React.Component{
     return cob
   }
   getUCob (sys,prod,dyn, fram) {
-    console.log('getUCob')
+    // console.log('getUCob')
     var vdef = vdefByMac[this.state.curDet.mac]
     var _cvdf = JSON.parse(JSON.stringify(vdef[6]['Unused']))
-    console.log(_cvdf)
+    // console.log(_cvdf)
     var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
     vdef = null;
     _cvdf = null;
@@ -1451,24 +1452,23 @@ class LandingPage extends React.Component{
           this.setState({noupdate:false,fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
         }else if(e.type == 5){
           //toast('Weight Record - this message will be removed')
-          console.log('checkweighing pack')
+          // console.log('checkweighing pack')
           var packms = new Uint64LE(e.rec['PackTime'].data)
           e.rec['PackTime'] = packms
           if((e.rec['PackTime'] != this.state.crec['PackTime']) ||(e.rec['TotalCnt'] != this.state.crec['TotalCnt']) ||(e.rec['CheckWeightCnt'] != this.state.crec['CheckWeightCnt'])){
-          console.log('firstpack')
+          // console.log('firstpack')
           var del = 25
           var dur = 50
           if(typeof this.state.prec["SampDelEnd"] != 'undefined'){
-            console.log('This should hit')
+            // console.log('This should hit')
             del = this.state.prec['SampDelEnd'];
             dur = this.state.prec['SampDur'];
           }
           var ms = new Uint64LE(e.rec['BatchStartMS'].data)
           var sms = new Uint64LE(e.rec['SampleStartMS'].data)
-          console.log("DY Test");
-          console.log(inputSrcArr, outputSrcArr)
-          console.log(1217, ms.toString(), Date.now())
-          console.log('passed')
+          // console.log(inputSrcArr, outputSrcArr)
+          // console.log(1217, ms.toString(), Date.now())
+          // console.log('passed')
           var tz = -500
           var tzms = (tz/100)*60*60*1000
           var neg = true
@@ -1521,13 +1521,13 @@ class LandingPage extends React.Component{
           if(typeof this.state.crec['TotalCnt'] != 'undefined'){
             cnt = this.state.crec['TotalCnt']
           }
-          console.log('Histogram Buffer',e)
+          // console.log('Histogram Buffer',e)
           //if(cnt != 0){
           //  this.lg.current.pushWeight(e.rec['HistogramPacks'].slice(0-cnt))
           //}
             //this.setState({init:true})
         }else if(e.type == 7){
-          console.log('Histogram Batch?', e)
+          // console.log('Histogram Batch?', e)
           if(this.btc.current){
               var buckets = 100;
               var bucketSize = 1;
@@ -1560,6 +1560,7 @@ class LandingPage extends React.Component{
   sendPacket(n,v){
     //LandingPage.sendPacket
     var self = this;
+    // console.log(n,v)
     var vdef = vdefByMac[this.state.curDet.mac]
     if(typeof n == 'string'){
       if(n == 'switchProd'){
@@ -1903,7 +1904,7 @@ class LandingPage extends React.Component{
   
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
-      console.log('DATE TIME SENT', this.state.curDet.ip)
+      // console.log('DATE TIME SENT', this.state.curDet.ip)
       }else if(n=='DaylightSavings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
   
@@ -1938,7 +1939,7 @@ class LandingPage extends React.Component{
       socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }
     }else{
-      console.log('here')
+      // console.log('here')
       if(n['@rpcs']['toggle']){
 
         var arg1 = n['@rpcs']['toggle'][0];
@@ -1954,7 +1955,7 @@ class LandingPage extends React.Component{
       
       socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n['@rpcs']['write']){
-      console.log('should be here')
+      // console.log('should be here')
       var arg1 = n['@rpcs']['write'][0];
       var arg2 = [];
       var strArg = null;
@@ -2014,10 +2015,11 @@ class LandingPage extends React.Component{
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
       }
-      console.log(819, strArg, typeof strArg, v)
+      // console.log(819, strArg, typeof strArg, v)
     
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-
+      // console.log(packet)
+        
       socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
     }else if(n['@rpcs']['vfdwrite']){
@@ -2177,7 +2179,7 @@ class LandingPage extends React.Component{
     console.log('netpoll')
   }
   showDisplaySettings(){
-    console.log('why is this looping')
+    // console.log('why is this looping')
     var self = this;
     if(this.state.connected){
       this.sendPacket('refresh')
@@ -2193,13 +2195,13 @@ class LandingPage extends React.Component{
  
   }
   connectToUnit(det){
-    console.log('connect To Unit')
+    // console.log('connect To Unit')
     var self = this;
     socket.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
     var unit = {name:det.name, type:'single', banks:[det]}
     setTimeout(function (argument) {
       // body...
-      console.log(1308, unit)
+      // console.log(1308, unit)
       socket.emit('savePrefsCW', [unit])
     },150)
     setTimeout(function (argument) {
@@ -2223,7 +2225,7 @@ class LandingPage extends React.Component{
   
   }
   imgClick(){
-    console.log('clicked')
+    // console.log('clicked')
     this.imgMD.current.toggle();
     //location.reload();
   }
@@ -2248,7 +2250,7 @@ class LandingPage extends React.Component{
       this.batModal.current.toggle();
       setTimeout(function (argument) {
         // body...
-        console.log('send getPlannedBatches', self.state.curDet.ip)
+        // console.log('send getPlannedBatches', self.state.curDet.ip)
         socket.emit('getPlannedBatches', self.state.curDet.ip)
         socket.emit('getProdList', self.state.curDet.ip)
         socket.emit('getBatches')
@@ -2257,7 +2259,7 @@ class LandingPage extends React.Component{
     }
   }
   getBatchList(){
-    console.log('getting planned batch list')
+    // console.log('getting planned batch list')
     socket.emit('getPlannedBatches', this.state.curDet.ip)
   }
   onPmdClose(){
@@ -2354,7 +2356,7 @@ class LandingPage extends React.Component{
   /**** Update Translations****/
 
   getData(){
-    console.log('get Batches')
+    // console.log('get Batches')
    socket.emit('getBatches') 
   }
   resetVmap(){
@@ -2377,7 +2379,7 @@ class LandingPage extends React.Component{
      if(d == 'MaxBeltSpeed'){
       //this is a hack, due to error in vdef
       d = 'MaxBeltSpeed0'//+= this.props.params[0]['@name'].slice(-1)
-      console.log(d,this.props.params[0]['@name'])
+      // console.log(d,this.props.params[0]['@name'])
     }
       var pVdef = _pVdef;
       
@@ -2568,10 +2570,14 @@ class LandingPage extends React.Component{
     var pkgWeight = 0
 
     if(typeof this.state.prec['ProdName'] != 'undefined'){
-      trendBar = [this.state.prec['NominalWgt']-(1.1*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (1.1*this.state.prec['OverWeightLim']), 165, 200]
+      // trendBar = [this.state.prec['NominalWgt']-(1.1*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (1.1*this.state.prec['OverWeightLim']), 165, 200]
+      trendBar = [this.state.prec['NominalWgt']-(1.1*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (1.1*this.state.prec['OverWeightLim']), this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt']-this.state.prec['TolNegErrorX2'], this.state.prec['NominalWgt']]
       bucketSize = this.state.prec['HistogramBucketSize'];
       buckets = this.state.prec['HistogramBuckets']
       pkgWeight = this.state.prec['PkgWeight']
+      // if(this.state.prec['WeighingMode'] == 1){
+      //   trendBar = [this.state.prec['NominalWgt']-(1.1*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (1.1*this.state.prec['OverWeightLim']), 165, 200]
+      // }
       if(this.state.init){
         trendBar[0] = this.state.buckMin
         trendBar[3] = this.state.buckMax
@@ -2643,7 +2649,7 @@ class LandingPage extends React.Component{
           <MainHistogram weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
                     winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.state.buckMin} buckMax={this.state.buckMax}>
-          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
+          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} nominal={trendBar[6]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
           </td><td>
             <BatchPackCountGraph language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
           </td></tr></tbody></table>
@@ -2838,6 +2844,7 @@ class ProductSettings extends React.Component{
     }
 
     var self = this;
+    // console.log(n,v)
     this.props.sendPacket(n,v)
   
   }
@@ -2986,7 +2993,7 @@ class ProductSettings extends React.Component{
     
   }
   saveProduct(){
-    console.log('saving ', this.state.selProd)
+    // console.log('saving ', this.state.selProd)
     this.props.sendPacket('saveProduct',this.state.selProd)
   }
   saveProductPassThrough(f){
@@ -2994,7 +3001,7 @@ class ProductSettings extends React.Component{
     this.saveProduct();
     setTimeout(function (argument) {
       // body...
-      console.log(f)
+      // console.log(f)
       f();
     },100);
   }
@@ -3212,7 +3219,7 @@ class ProductSettings extends React.Component{
   copyConfirm(target){
     var t = parseInt(target)
     var prodNos = this.props.pList.slice(0)
-    console.log('copyConfirm', t, prodNos)
+    // console.log('copyConfirm', t, prodNos)
     if(t == this.props.srec['ProdNo']){
       this.msgm.current.show('Cannot overwrite current running product.')
     }else{
@@ -3759,7 +3766,7 @@ class ProdSettingEdit extends React.Component{
     }
   }
   submitTooltip(txt){
-    console.log(4467, this.props.name, this.props.language)
+    // console.log(4467, this.props.name, this.props.language)
     this.props.submitTooltip(this.props.name, this.props.language,txt)
   }
   componentDidMount(){
@@ -3777,7 +3784,7 @@ class ProdSettingEdit extends React.Component{
   }    
   onInput(v){
     var self = this;
-    console.log('onInput',v)
+    // console.log('onInput',v)
     var val = v;
     if(val != null && val.toString() != ''){
   
@@ -3790,7 +3797,7 @@ class ProdSettingEdit extends React.Component{
       }
     }else if(this.props.param['@decimal']){
       val = val*Math.pow(10,this.props.param['@decimal'])
-      console.log('3149',v,val)
+      // console.log('3149',v,val)
     }else if(this.props.param['@type'] == 'belt_speed'){
       if(v.indexOf('.') != -1){
         val = val*10
@@ -3815,7 +3822,7 @@ class ProdSettingEdit extends React.Component{
     this.setState({curtrn:e.target.value})
   }
   translatePopup(){
-    console.log('translatePopup', this.props.trans)
+    // console.log('translatePopup', this.props.trans)
     if(this.props.trans){
       this.trnsmdl.current.toggle();
     }
@@ -4299,7 +4306,7 @@ class SettingsPage extends React.Component{
     this.update = this.update.bind(this);
   }
   update(){
-    console.log('update CW Clicked')
+    // console.log('update CW Clicked')
     socket.emit('updateCW')
   }
   goToShortcut(path){
@@ -4572,7 +4579,7 @@ class SettingsPage extends React.Component{
   sendPacket(n,v) {
     var self = this;
     var vdef = vdefByMac[this.props.mac]
-    console.log([n,v])
+    // console.log([n,v])
     if(n == 'format_usb'){
 
       socket.emit('sendReboot')
@@ -4581,7 +4588,7 @@ class SettingsPage extends React.Component{
       socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
  
     }else if(n == 'vfdChange'){
-      console.log('vfdChange')
+      // console.log('vfdChange')
       var packet = dsp_rpc_paylod_for(v['@rpcs']['changevfdwrite'][0], v['@rpcs']['changevfdwrite'][1],v['@rpcs']['changevfdwrite'][2]);
        socket.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n=='DateTime'){
@@ -4589,7 +4596,7 @@ class SettingsPage extends React.Component{
   
         var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
       socket.emit('rpc',{ip:this.props.dsp, data:packet})
-       console.log('DATE TIME SENT', this.props.dsp) 
+      //  console.log('DATE TIME SENT', this.props.dsp) 
     }else if(n=='DaylightSavings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
   
@@ -4625,11 +4632,11 @@ class SettingsPage extends React.Component{
       }else if(n['@rpcs']['vfdstart']){
     if(v == 1){
      // n['@rpcs']['vfdstart'][0]
-     console.log('vfdstart')
+    //  console.log('vfdstart')
       var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstart'][0], n['@rpcs']['vfdstart'][1],n['@rpcs']['vfdstart'][2]);
         socket.emit('rpc', {ip:this.props.dsp, data:packet})
     }else{
-      console.log('vfdstop')
+      // console.log('vfdstop')
        var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstop'][0], n['@rpcs']['vfdstop'][1],n['@rpcs']['vfdstop'][2]);
         socket.emit('rpc', {ip:this.props.dsp, data:packet})
 
@@ -4712,12 +4719,12 @@ class SettingsPage extends React.Component{
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
       }else if(n['@type'] == 'belt_speed'){
-        console.log('change belt speed')
+        // console.log('change belt speed')
         var buf = Buffer.alloc(4)
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
       }
-        console.log(strArg, n, 2154)
+        // console.log(strArg, n, 2154)
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
         
       socket.emit('rpc', {ip:this.props.dsp, data:packet})
@@ -4770,7 +4777,7 @@ class SettingsPage extends React.Component{
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
       }else if(n['@type'] == 'weight'){
-        console.log('should get here', 'sendPacket', v)
+        // console.log('should get here', 'sendPacket', v)
         var buf = Buffer.alloc(4)
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
@@ -4788,7 +4795,7 @@ class SettingsPage extends React.Component{
         strArg = buf;
       }
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-        console.log(strArg, packet, n, 2154)
+        // console.log(strArg, packet, n, 2154)
     
       socket.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['clear']){
@@ -5363,7 +5370,7 @@ class SettingItem3 extends React.Component{
 
     this.props.sendPacket(n,val)  
 
-     console.log('this should execute', n, v)
+    //  console.log('this should execute', n, v)
 
     }
   }
@@ -5681,14 +5688,18 @@ class SettingItem3 extends React.Component{
         }else{*/
           var disaRef = this.getMMdep(vMapV2[this.props.lkey]['disable'][1]);
           disable = eval(vMapV2[this.props.lkey]['disable'][0]).apply(this, [].concat.apply([], [disaRef]));
+          // console.log("disable", disable)
        // }
        
       }
 
     }
-    if(this.props.lkey == 'MavTable'){
-      console.log('Mav', display)
-    }
+    // if(this.props.lkey == 'MavTable'){
+    //   // console.log('Mav', display)
+    // }
+    // if(this.props.lkey == 'SetTolNegErr'){
+    //   // console.log('SetTolNegErr', display)
+    // }
        
     if(this.props.mobile){
       sty.height = 45;
@@ -5874,16 +5885,16 @@ class MultiEditControl extends React.Component{
     var tlist = []
     var elist = []
     var liststring = ''
-    console.log('constructing MEC')
+    // console.log('constructing MEC')
     if(typeof this.props.param[0]['@labels'] != 'undefined'){
       var labname = this.props.param[0]['@labels'] 
       if(typeof vMapLists[this.props.param[0]['@labels']] != 'undefined'){
-        console.log(vMapLists[this.props.param[0]['@labels']], 'THIS IS WEIRD')
+        // console.log(vMapLists[this.props.param[0]['@labels']], 'THIS IS WEIRD')
         liststring = vMapLists[this.props.param[0]['@labels']][this.props.language].join(',')
         tlist = vMapLists[this.props.param[0]['@labels']][this.props.language].slice(0);
         elist = vMapLists[this.props.param[0]['@labels']]['english'].slice(0);
       }else{
-       console.log('WOW', this.props.param)
+      //  console.log('WOW', this.props.param)
         liststring = vdefByMac[this.props.mac][0]['@labels'][this.props.param[0]['@labels']][this.props.language].join(',');
         vMapLists[this.props.param[0]['@labels']] = JSON.parse(JSON.stringify(vdefByMac[this.props.mac][0]['@labels'][this.props.param[0]['@labels']]))
         vdefMapV2['@languages'].forEach(function (l) {
@@ -5940,16 +5951,16 @@ class MultiEditControl extends React.Component{
        var tlist = []
     var elist = []
     var liststring = ''
-    console.log('constructing MEC')
+    // console.log('constructing MEC')
     if(typeof newProps.param[0]['@labels'] != 'undefined' || newProps.language != this.props.language){
       var labname = newProps.param[0]['@labels'] 
       if(typeof vMapLists[newProps.param[0]['@labels']] != 'undefined'){
-        console.log(vMapLists[newProps.param[0]['@labels']], 'THIS IS WEIRD')
+        // console.log(vMapLists[newProps.param[0]['@labels']], 'THIS IS WEIRD')
         liststring = vMapLists[newProps.param[0]['@labels']][newProps.language].join(',')
         tlist = vMapLists[newProps.param[0]['@labels']][newProps.language].slice(0);
         elist = vMapLists[newProps.param[0]['@labels']]['english'].slice(0);
       }else{
-       console.log('WOW', newProps.param)
+      //  console.log('WOW', newProps.param)
         liststring = vdefByMac[newProps.mac][0]['@labels'][newProps.param[0]['@labels']][newProps.language].join(',');
         vMapLists[newProps.param[0]['@labels']] = JSON.parse(JSON.stringify(vdefByMac[newProps.mac][0]['@labels'][newProps.param[0]['@labels']]))
         vdefMapV2['@languages'].forEach(function (l) {
@@ -6015,7 +6026,7 @@ class MultiEditControl extends React.Component{
       val = val*Math.pow(10,this.props.param[i]['@decimal'])
     }else if(this.props.param[i]['@decimal']){
       val = val*Math.pow(10,this.props.param[i]['@decimal'])
-      console.log('3149',v,val)
+      // console.log('3149',v,val)
     }else if(this.props.param[i]['@type'] == 'belt_speed'){
       if(v.indexOf('.') != -1){
         val = val*10
@@ -6127,11 +6138,11 @@ class MultiEditControl extends React.Component{
     }
   }
   vfdStart(){
-    console.log('start clicked')
+    // console.log('start clicked')
     this.props.sendPacket(this.props.param[0],1)
   }
   vfdStop(){
-    console.log('stop clicked')
+    // console.log('stop clicked')
     this.props.sendPacket(this.props.param[0],2)
   }
     onPointerDown(){
@@ -6184,7 +6195,7 @@ class MultiEditControl extends React.Component{
       this.props.sendPacket('DaylightSavings',dst)
     }
     changeDT(dt){
-      console.log('changeDT', dt)
+      // console.log('changeDT', dt)
       this.props.sendPacket('DateTime', dt)
     //  this.dtsModal.current.close();
     }
@@ -6927,7 +6938,7 @@ class AccountRow extends React.Component{
   
   }
   addAccount(){
-    console.log(8200, 'writeUserData', this.props.uid)
+    // console.log(8200, 'writeUserData', this.props.uid)
     socket.emit('writeUserData', {data:{username:this.state.username, acc:this.state.acc, password:this.state.password, user:this.props.uid}, ip:this.props.ip})
     
     //this.setState({changed:false})
@@ -7367,7 +7378,7 @@ class StatDisplay extends React.Component{
   }
   onInput(v){
     var self = this;
-    console.log('onInput',v)
+    // console.log('onInput',v)
     var val = v;
     if(val != null && val.toString() != ''){
   
@@ -7740,7 +7751,9 @@ class BatchPackCountGraph extends React.Component{
       sst = crec['SampleStartDate'].toISOString().slice(0,19).split('T').join(' ')
     }
 
-    this.setState({batchData:data, sampleData:sampleData, batchStartTime:bst,sampleStartTime:sst})
+    // this.setState({batchData:data, sampleData:sampleData, batchStartTime:bst,sampleStartTime:sst})
+    this.setState({batchData:data, sampleData:sampleData, batchStartTime:bst,sampleStartTime:sst, weighingMode2:crec["WeighingMode2"]})
+
 	}
 	parsePack(pack){
 		var data = [0,0,0,0,0,0,0]//this.state.data.slice(0)
@@ -7799,14 +7812,22 @@ class BatchPackCountGraph extends React.Component{
     if(max == 0){
       xDm = [0,1]
     }
+    
 		var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
      {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
-		var labelData = data.map(function(d, i){
+		
+    if (this.state.weighingMode2 == 1){
+    var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['BetweenT1T2']['@translations'][this.props.language]['name']},
+    {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
+    }
+    var labelData = data.map(function(d, i){
 			var lax = 'start'
       var label = d.x
       var ofs = 0
       if(showCount && i == 1){
-        label = label + '/' + self.props.bCount
+        if ( typeof self.props.bCount != 'undefined' ){
+          label = label + '/' + self.props.bCount
+        }
        // lax = 'end'
        // ofs = -20
       }
@@ -7966,7 +7987,7 @@ class MainHistogram extends React.Component{
     this.histo.current.pushBin(x,y);
   }
   clearHisto(){
-    console.log('clear Histo')
+    // console.log('clear Histo')
     this.histo.current.clearHisto();
   }
 	parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend,pTime){
@@ -8075,7 +8096,7 @@ class MainHistogram extends React.Component{
  		<div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 
 		<div style={{overflow:'hidden', marginTop:14}}>
-		<div style={{marginTop:-48}}>
+		<div style={{marginTop:-38}}>
  {xyplot}
 		</div>
 		</div>
@@ -8182,7 +8203,7 @@ class PackGraph extends React.Component{
 
   var zoombut = 'assets/zoom.svg'
     //}
-  console.log(decMin,decMax) 
+  // console.log(decMin,decMax) 
   var dM = decMax*1;
   var dm = decMin*1     
   const yellowBox = {y:dM,y0:dm,x0:weighWin[0] - this.props.crec['WindowStart'],x:weighWin[1] - this.props.crec['WindowStart']} 
@@ -8287,10 +8308,11 @@ class WeightHistogram extends React.Component{
     this.clearHisto = this.clearHisto.bind(this);
     this.pushBin = this.pushBin.bind(this);
     this.state ={bins:bins,divs:divs,range:[range0,range1]}
+    // console.log("this.state.range", this.state.range)
   }
   componentWillReceiveProps(props){
     if(props.nom != this.props.nom || props.bucketSize != this.props.bucketSize || props.buckets != this.props.buckets || props.buckMin != this.props.buckMin || props.buckMax != this.props.buckMax){
-      console.log('get props')
+      // console.log('get props')
       var divs = []
       var bins = []
       var range0 = props.buckMin
@@ -8320,11 +8342,11 @@ class WeightHistogram extends React.Component{
     this.state ={bins:bins,divs:divs,range:[range0,range1]}
   }
   pushBin(batch, bins){
-    console.log('get bins')
+    // console.log('get bins')
     this.setState({bins:batch.slice(0,bins)})
   }
   pushWeight(w){
-    console.log('array', w)
+    // console.log('array', w)
     var bins = this.state.bins.slice(0)
     var divs = this.state.divs.slice(0)
     if(Array.isArray(w)){
@@ -8425,7 +8447,7 @@ class BatchHistogram extends React.Component{
     }
   }
   parseHisto(histo, bucketSize, bucketNum, bucketMin, bucketMax){
-    console.log('parseHisto', histo, bucketSize, bucketNum)
+    // console.log('parseHisto', histo, bucketSize, bucketNum)
     if(this.props.ovHisto != true){
         this.setState({histo:histo, bucketSize:bucketSize, bucketNum:bucketNum, bucketMin:bucketMin, bucketMax:bucketMax})
 
@@ -8761,7 +8783,7 @@ class BatchControl extends React.Component{
     
   }
   runnewBatch(batchJson){
-    console.log('run')
+    // console.log('run')
     //socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
     var buf = Buffer.alloc(26)
     buf.writeUInt32LE(batchJson.PlanBatchId,0)
@@ -8903,7 +8925,7 @@ class BatchControl extends React.Component{
     var midSt = {display:'table-cell', width:'100%'}
     var dots = {borderBottom:'1px dotted', marginBottom:3}
     var bmodes = ['Auto','Planned Batch', 'Manual Entry']
-    console.log('vMapLists', vMapLists)
+    // console.log('vMapLists', vMapLists)
     var passPer = 0;
     if(typeof this.props.crec['PassWeightPer'] != 'undefined'){
       passPer = this.props.crec['PassWeightPer']
@@ -9148,7 +9170,7 @@ class PlannedBatches extends React.Component{
     var self = this;
     bat.PlanBatchId = this.props.plannedBatches[this.state.selBatch].PlanBatchId
 
-    console.log(bat, this.props.ip)
+    // console.log(bat, this.props.ip)
       socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
     this.editMD.current.close();
     setTimeout(function () {
@@ -9160,7 +9182,7 @@ class PlannedBatches extends React.Component{
   }
   addnewBatch(bat){
     var self = this;
-    console.log(bat, this.props.ip)
+    // console.log(bat, this.props.ip)
       socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
     this.addModal.current.close();
     setTimeout(function () {
@@ -9498,7 +9520,7 @@ class ManBatch extends React.Component{
     this.props.addBatch({PlanBatchId:this.state.PlanBatchId,PlanBatchRef:this.state.PlanBatchRef,PlanProdNum:this.state.PlanBatchProdNum,PlanNumPacks:this.state.PlanBatchNumPacks})
   }
   render(){
-    console.log('param',vdefByMac[this.props.mac][1][12]['PlanBatchId'], vdefByMac[this.props.mac][1][12]['PlanBatchRef'],vdefByMac[this.props.mac][1][12]['PlanNumPacks'], vdefByMac[this.props.mac][1][12]['PlanProdNum'])
+    // console.log('param',vdefByMac[this.props.mac][1][12]['PlanBatchId'], vdefByMac[this.props.mac][1][12]['PlanBatchRef'],vdefByMac[this.props.mac][1][12]['PlanNumPacks'], vdefByMac[this.props.mac][1][12]['PlanProdNum'])
     var self = this;
 
     var selProdName = '';
@@ -9681,7 +9703,7 @@ class DateTimeSelector extends React.Component{
       _date ++
     }
     date[i] = _date;
-    console.log(_date, date, i)
+    // console.log(_date, date, i)
     this.setState({year:(date[0] + 1996).toString(), month:('00'+ date[1]).slice(-2).toString(), day:('00'+ date[2]).slice(-2).toString()})
   }
   onTimeChange(_time,i){
@@ -9849,7 +9871,7 @@ class DateTimeSelect extends React.Component{
       _date ++
     }
     date[i] = _date;
-    console.log(_date, date, i)
+    // console.log(_date, date, i)
     this.setState({year:(date[0] + 1996).toString(), month:('00'+ date[1]).slice(-2).toString(), day:('00'+ date[2]).slice(-2).toString()})
   }
   onTimeChange(_time,i){
@@ -10026,7 +10048,7 @@ class LogoutModal extends React.Component{
     this.do = this.do.bind(this);
   }
   show(func, arg, alertMessage){
-    console.log('show copy modal')
+    // console.log('show copy modal')
     this.setState({show:true,func:func, arg:arg, alertMessage:alertMessage})
   }
   close () {
@@ -10037,7 +10059,7 @@ class LogoutModal extends React.Component{
     
   }
   do(){
-    console.log('THis SHould DO')
+    // console.log('THis SHould DO')
     this.state.func(this.state.arg)
   }
   render () {
@@ -10130,7 +10152,7 @@ class CopyModal extends React.Component{
     this.do = this.do.bind(this);
   }
   show(func, arg, alertMessage){
-    console.log('show copy modal')
+    // console.log('show copy modal')
     this.setState({show:true,func:func, arg:arg, alertMessage:alertMessage})
   }
   close () {
@@ -10141,7 +10163,7 @@ class CopyModal extends React.Component{
     
   }
   do(){
-    console.log('THis SHould DO')
+    // console.log('THis SHould DO')
     this.state.func(this.state.arg)
   }
   render () {
@@ -10235,7 +10257,7 @@ class DeleteModal extends React.Component{
     //this.discard = this.discard.bind(this);
   }
   show (p) {
-    console.log(p)
+    // console.log(p)
     this.setState({show:true, p:p})
   }
   close () {
@@ -10344,7 +10366,7 @@ class PromptModal extends React.Component{
 
   }
   show (func) {
-    console.log(func)
+    // console.log(func)
     this.setState({show:true, func:func})
   }
   close () {
@@ -10544,12 +10566,12 @@ class CheckWeightControl extends React.Component{
   }
   setCW(n,v){
     var self = this;
-    console.log('cwset',n,v)
+    // console.log('cwset',n,v)
     if(typeof v != 'undefined'){
 
 
       if(v != null){
-        console.log(v)
+        // console.log(v)
         this.setState({cwset:parseFloat(v)})
         setTimeout(function (argument) {
           // body...
