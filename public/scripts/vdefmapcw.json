@@ -48868,6 +48868,59 @@
         "PassAccDoor"
       ]
     },
+    "BetweenT1T2": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Between T1/T2",
+          "description": ""
+        },
+        "korean": {
+          "name": "Between T1/T2",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Between T1/T2",
+          "description": ""
+        },
+        "french": {
+          "name": "Between T1/T2",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Between T1/T2",
+          "description": ""
+        },
+        "italian": {
+          "name": "Between T1/T2",
+          "description": ""
+        },
+        "russian": {
+          "name": "Between T1/T2",
+          "description": ""
+        },
+        "polish": {
+          "name": "Between T1/T2",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Between T1/T2",
+          "description": ""
+        },
+        "german": {
+          "name": "Between T1/T2",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Between T1/T2",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "PassAccDoor"
+      ]
+    },
     "T1Lim": {
       "@parent": "",
       "@translations": {
