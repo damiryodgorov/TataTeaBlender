@@ -14700,6 +14700,10 @@
         }
       },
       "children": [],
+      "display": [
+        "(function(val){return val!=1;})",
+        "WeighingMode"
+      ],
       "@labels": [
         "Under Weight Limit"
       ]
@@ -16920,6 +16924,174 @@
       ],
       "@labels": [
         "Main Reject Duration"
+      ]
+    },
+    "SetTolNegErr": {
+      "@translations": {
+        "english": {
+          "name": "Overide T1 and T2 Limits",
+          "description": "The table used when in Maximum Allowable Variation (MAV) Weighing Mode."
+        },
+        "korean": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "spanish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "french": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "italian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "german": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "turkish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "russian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "polish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "chinese": {
+          "name": "MAV Table",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(val){return val==1;})",
+        "WeighingMode"
+      ],
+      "@labels": [
+        "SetTolNegErr"
+      ]
+    },
+    "TolNegErrPct": {
+      "@translations": {
+        "english": {
+          "name": "Allowed T1-T2 Percentage",
+          "description": "The table used when in Maximum Allowable Variation (MAV) Weighing Mode."
+        },
+        "korean": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "spanish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "french": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "italian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "german": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "turkish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "russian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "polish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "chinese": {
+          "name": "MAV Table",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(val){return val==1;})",
+        "WeighingMode"
+      ],
+      "@labels": [
+        "TolNegErrPct"
+      ]
+    },
+    "TolNegErrorX2": {
+      "@translations": {
+        "english": {
+          "name": "T2 Limit",
+          "description": "The table used when in Maximum Allowable Variation (MAV) Weighing Mode."
+        },
+        "korean": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "spanish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "french": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "italian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "german": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "turkish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "russian": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "polish": {
+          "name": "MAV Table",
+          "description": ""
+        },
+        "chinese": {
+          "name": "MAV Table",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(val){return val==1;})",
+        "WeighingMode"
+      ],
+      "@labels": [
+        "TolNegErrorX2"
       ]
     },
     "RejDurSec2": {
@@ -48696,6 +48868,63 @@
         "PassAccDoor"
       ]
     },
+    "T1Lim": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "T1 Limit",
+          "description": ""
+        },
+        "korean": {
+          "name": "T1 Limit",
+          "description": ""
+        },
+        "spanish": {
+          "name": "T1 Limit",
+          "description": ""
+        },
+        "french": {
+          "name": "T1 Limit",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "T1 Limit",
+          "description": ""
+        },
+        "italian": {
+          "name": "T1 Limit",
+          "description": ""
+        },
+        "russian": {
+          "name": "T1 Limit",
+          "description": ""
+        },
+        "polish": {
+          "name": "T1 Limit",
+          "description": ""
+        },
+        "chinese": {
+          "name": "T1 Limit",
+          "description": ""
+        },
+        "german": {
+          "name": "T1 Limit",
+          "description": ""
+        },
+        "turkish": {
+          "name": "T1 Limit",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(val){return val==1;})",
+        "WeighingMode"
+      ],
+      "@labels": [
+        "T1Lim"
+      ]
+    },
     "PassWeightCnt": {
       "@parent": "",
       "@translations": {
@@ -50808,6 +51037,32 @@
       "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
     },
     "BATCH_RUNNING": {
+      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "portuguese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
+    },
+    "SAFETY_CIRCUIT": {
+      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "portuguese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
+    },
+    "CAN_START_BELTS": {
       "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
       "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
       "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
@@ -54750,6 +55005,26 @@
                 "acc": 0
               },
               {
+                "type": 0,
+                "val": "SetTolNegErr",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "TolNegErrPct",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "TolNegErrorX2",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "T1Lim",
+                "acc": 0
+              },
+              {
                 "type": 1,
                 "val": {
                   "display": [
@@ -57003,7 +57278,9 @@
         "Warning",
         "Feedback Up",
         "Feedback Down",
-        "Batch Running"
+        "Batch Running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "korean": [
         "none",
@@ -57018,7 +57295,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "spanish": [
         "none",
@@ -57033,7 +57312,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "french": [
         "none",
@@ -57048,7 +57329,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "portuguese": [
         "none",
@@ -57063,7 +57346,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "italian": [
         "none",
@@ -57078,7 +57363,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "german": [
         "none",
@@ -57093,7 +57380,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "polish": [
         "none",
@@ -57108,7 +57397,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "turkish": [
         "none",
@@ -57123,7 +57414,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "russian": [
         "none",
@@ -57138,7 +57431,9 @@
         "warning",
         "feedback-up",
         "feedback-down",
-        "batch-running"
+        "batch-running",
+        "Safety Circuit",
+        "Can Start Belts"
       ],
       "chinese": [
         "none",
@@ -57152,7 +57447,9 @@
         "door-lock",
         "warning",
         "feedback-up",
-        "feedback-down"
+        "feedback-down",
+        "Safety Circuit",
+        "Can Start Belts"
       ]
     },
     "PasswordLength": {
@@ -60716,19 +61013,19 @@
     "WeighingMode": {
       "english": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ],
       "korean": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ],
       "spanish": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ],
@@ -60740,43 +61037,43 @@
       ],
       "portuguese": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ],
       "italian": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ],
       "german": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ],
       "polish": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ],
       "turkish": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ],
       "russian": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ],
       "chinese": [
         "Tolerances",
-        "E-Mark",
+        "Average Weights",
         "MAV",
         "Mean Weight Tracking"
       ]
@@ -61700,6 +61997,98 @@
         "length",
         "lead",
         "mid"
+      ]
+    },
+    "SetTolNegErr": {
+      "english": [
+        "no",
+        "yes"
+      ],
+      "korean": [
+        "no",
+        "yes"
+      ],
+      "spanish": [
+        "no",
+        "yes"
+      ],
+      "french": [
+        "no",
+        "yes"
+      ],
+      "portuguese": [
+        "no",
+        "yes"
+      ],
+      "italian": [
+        "no",
+        "yes"
+      ],
+      "german": [
+        "no",
+        "yes"
+      ],
+      "polish": [
+        "no",
+        "yes"
+      ],
+      "turkish": [
+        "no",
+        "yes"
+      ],
+      "russian": [
+        "no",
+        "yes"
+      ],
+      "chinese": [
+        "no",
+        "yes"
+      ]
+    },
+    "TolNegErrPct": {
+      "english": [
+        "2.5%",
+        "2.0%"
+      ],
+      "korean": [
+        "no",
+        "yes"
+      ],
+      "spanish": [
+        "no",
+        "yes"
+      ],
+      "french": [
+        "no",
+        "yes"
+      ],
+      "portuguese": [
+        "no",
+        "yes"
+      ],
+      "italian": [
+        "no",
+        "yes"
+      ],
+      "german": [
+        "no",
+        "yes"
+      ],
+      "polish": [
+        "no",
+        "yes"
+      ],
+      "turkish": [
+        "no",
+        "yes"
+      ],
+      "russian": [
+        "no",
+        "yes"
+      ],
+      "chinese": [
+        "no",
+        "yes"
       ]
     }
   }
