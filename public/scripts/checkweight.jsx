@@ -803,7 +803,7 @@ class LandingPage extends React.Component{
     })
     socket.on('batchJson',function (json) {
       // body...
-      console.log('batchJson',json.replace(/\s/g, '').replace(/\0/g, ''))
+      // console.log('batchJson',json.replace(/\s/g, '').replace(/\0/g, ''))
       self.setState({plannedBatches:JSON.parse(json.replace(/\s/g, '').replace(/\0/g, ''))})
     })
     socket.on('confirmProdImport', function (c) {
@@ -8939,7 +8939,11 @@ class BatchControl extends React.Component{
     
     if(batchCount != 0){
       if(typeof this.props.crec['PassWeightCnt'] != 'undefined'){
-        packNum = this.props.crec['PassWeightCnt']+'/' +batchCount
+        // packNum = this.props.crec['PassWeightCnt']+'/' +batchCount
+        if ( typeof batchCount != 'undefined' ){
+          packNum = this.props.crec['PassWeightCnt']+'/' +batchCount
+        }
+
       }
     }
 
