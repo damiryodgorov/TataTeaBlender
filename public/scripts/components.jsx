@@ -459,6 +459,8 @@ class TrendBar extends React.Component{
 		this.setState({ticks:data})
 	}
 	render(){
+		console.log("Prod settings parameter ",this.props.prodSettings);
+		console.log("Weight passed ", this.props.weightPassed);
 		var target = (this.props.low+this.props.high)/2;
 		var tickerVal = this.state.ticks;
 		if(tickerVal < this.props.lowerbound){
@@ -514,6 +516,7 @@ class TrendBar extends React.Component{
 
 			pctgs = [((this.props.low - this.props.lowerbound)*100)/range, ((this.props.high - this.props.lowerbound)*100)/range]
 			ranges = [this.props.low,this.props.high]
+			av_ranges = [this.props.t2,this.props.t1, this.props.nominal, this.props.high]
 			bgcolors = ['#aa0000a0','#00aa00a0','#aa0000a0']
 			colors = ['#ff0000','#00ff00','#ff0000']
 			bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + pctgs[0].toFixed(0) +  '%, #00aa00a0 ' +pctgs[0].toFixed(0)
@@ -523,22 +526,45 @@ class TrendBar extends React.Component{
 				+ '%, #00aa00a0 '+pctgs[1].toFixed(0)+'%, #dddd00a0 ' +pctgs[1].toFixed(0) + '%, #dddd00a0)';
 			}
 			// console.log("bgstr", bgstr)
-			if(tickerVal < ranges[0]){
-				color = colors[0]
-			}else if(tickerVal <= ranges[1]){
-				color = colors[1]
-			}else{
-				color = colors[2]
-				if(this.props.allowOverweight == 1){
-					color = "#ffdf00"
+			if(this.props.prodSettings["WeighingMode"] == 1)
+			{
+				if(tickerVal < av_ranges[0]){
+					color = colors[0]
+				}else if(tickerVal <= av_ranges[1] && this.props.weightPassed!== 1){
+					color = colors[1]
+				}else if(tickerVal <= av_ranges[2] && this.props.weightPassed!== 1){
+					color = colors[1]
+				}
+				else if(tickerVal <= av_ranges[3] && tickerVal > av_ranges[2]){
+					color = colors[1]
+				}
+				else{
+					color = colors[2]
+					if(this.props.allowOverweight == 1){
+						color = "#ffdf00"
+					}
 				}
 			}
+			else{
+				if(tickerVal < ranges[0]){
+					color = colors[0]
+				}else if(tickerVal <= ranges[1]){
+					color = colors[1]
+				}else{
+					color = colors[2]
+					if(this.props.allowOverweight == 1){
+						color = "#ffdf00"
+					}
+				}
+			}
+			
+			
 			// labels = ranges.map(function(r,i) {
 			// 	// body...
 			// 	return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
 			// })
 			if(this.props.prodSettings["WeighingMode"] == 1){
-				av_ranges = [this.props.t2,this.props.t1, this.props.nominal, this.props.high]
+				
 				avwpctgs = [((this.props.t2 - this.props.lowerbound)*100)/range, ((this.props.t1 - this.props.lowerbound)*100)/range, ((this.props.nominal - this.props.lowerbound)*100)/range , ((this.props.high - this.props.lowerbound)*100)/range]
 
 				// colors = ['#ff0000','#00ff00','#ff0000']

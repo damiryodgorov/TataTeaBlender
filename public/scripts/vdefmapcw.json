@@ -54813,6 +54813,11 @@
                       "type": 0,
                       "val": "ExcessRejTime",
                       "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "ExcessRejects",
+                      "acc": 0
                     }
                   ]
                 },
