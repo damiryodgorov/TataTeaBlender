@@ -54799,8 +54799,23 @@
                 "acc": 0
               },
               {
-                "type": 0,
-                "val": "ExcessRejFaultMask",
+                "type": 1,
+                "val": {
+                  "cat":"ExcessRej",
+                  "child":0,
+                  "params":[
+                    {
+                      "type": 0,
+                      "val": "ExcessRejFaultMask",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "ExcessRejTime",
+                      "acc": 0
+                    }
+                  ]
+                },
                 "acc": 0
               },
               {
