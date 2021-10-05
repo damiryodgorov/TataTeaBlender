@@ -803,7 +803,7 @@ class LandingPage extends React.Component{
     })
     socket.on('batchJson',function (json) {
       // body...
-      console.log('batchJson',json.replace(/\s/g, '').replace(/\0/g, ''))
+      // console.log('batchJson',json.replace(/\s/g, '').replace(/\0/g, ''))
       self.setState({plannedBatches:JSON.parse(json.replace(/\s/g, '').replace(/\0/g, ''))})
     })
     socket.on('confirmProdImport', function (c) {
@@ -2676,7 +2676,7 @@ class LandingPage extends React.Component{
         </Modal>
         <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
          <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Batch</div></div>
-         <BatchControl bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
+         <BatchControl weighingMode={this.state.crec['WeighingMode2']} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
           liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
            startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
                    weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
@@ -8939,9 +8939,21 @@ class BatchControl extends React.Component{
     
     if(batchCount != 0){
       if(typeof this.props.crec['PassWeightCnt'] != 'undefined'){
-        packNum = this.props.crec['PassWeightCnt']+'/' +batchCount
+        // packNum = this.props.crec['PassWeightCnt']+'/' +batchCount
+        if ( typeof batchCount != 'undefined' ){
+          packNum = this.props.crec['PassWeightCnt']+'/' +batchCount
+        }
+
       }
     }
+
+    if (this.props.weighingMode == 1) {
+            
+      var lowPass = "Between T1/T2"
+      }
+      else {
+        var lowPass = "Low Pass"
+      }
 
     var batchSummary = <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
           <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batNum}</div></div>
@@ -8971,7 +8983,7 @@ class BatchControl extends React.Component{
            <div style={{fontSize:17, whiteSpace:'nowrap'}}>
           <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
           <div><div style={titleSt}>Low Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowRejCnt']}</div></div>
-          <div><div style={titleSt}>Low Pass</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowPassCnt']}</div></div>
+          <div><div style={titleSt}>{lowPass}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowPassCnt']}</div></div>
           <div><div style={titleSt}>High</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['HighCnt']}</div></div>
           <div><div style={titleSt}>Unsettled</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['UnsettledCnt']}</div></div>
           <div><div style={titleSt}>Check Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['CheckWeightCnt']}</div></div>
