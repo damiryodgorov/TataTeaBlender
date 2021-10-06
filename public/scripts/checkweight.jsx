@@ -8827,7 +8827,6 @@ class BatchControl extends React.Component{
     //if(this.state.selID.split('%')[0] == this.state.bRec['Batch ID']){
 
       var bjson = this.state.bRec//JSON.parse(batchFile.data);
-      console.log(bjson);
        var csvstr = 'Name, Value, Units'.toUpperCase()+'\n';
        for(var b in bjson){
         if(b.indexOf('Histogram Buckets') == -1){
