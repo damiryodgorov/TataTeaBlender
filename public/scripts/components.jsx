@@ -459,8 +459,6 @@ class TrendBar extends React.Component{
 		this.setState({ticks:data})
 	}
 	render(){
-		console.log("Prod settings parameter ",this.props.prodSettings);
-		console.log("Weight passed ", this.props.weightPassed);
 		var target = (this.props.low+this.props.high)/2;
 		var tickerVal = this.state.ticks;
 		if(tickerVal < this.props.lowerbound){

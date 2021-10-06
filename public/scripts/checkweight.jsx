@@ -8823,25 +8823,26 @@ class BatchControl extends React.Component{
     },1500)
   }
   downloadBatch(){
-    if(this.state.selID.split('%')[0] == this.state.bRec['Batch ID']){
-      
-        var bjson = this.state.bRec//JSON.parse(batchFile.data);
-       var csvstr = ''
+
+    //if(this.state.selID.split('%')[0] == this.state.bRec['Batch ID']){
+
+      var bjson = this.state.bRec//JSON.parse(batchFile.data);
+      console.log(bjson);
+       var csvstr = 'Name, Value, Units'.toUpperCase()+'\n';
        for(var b in bjson){
         if(b.indexOf('Histogram Buckets') == -1){
-          csvstr += b +','+bjson[b].toString().split(',').join(' ') + '\n'
+          csvstr += b +','+bjson[b].value.toString().split(',').join(' ')+', '+bjson[b].units.toString().split(',').join(' ') + '\n';
         }
+        //bjson[b].toString().split(',').join(' ')
        }
         if(this.props.usb){
           socket.emit('putAndSendTftp', {data:csvstr, filename:this.state.selID.replace(/\^+/g,"_").replace('.json','')+'.csv', opts:{mac:this.props.mac.split('-').join('').toUpperCase()}})
         }else{
-
-
         //fileDownload(csvstr, this.state.selID.replace('.json','')+'.csv') 
         }
       
        
-    }
+    //}
   }
   batchSettings(){
     this.bSettings.current.toggle()
