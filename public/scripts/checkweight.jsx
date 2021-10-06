@@ -2614,7 +2614,7 @@ class LandingPage extends React.Component{
     }
     return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
          <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
-         <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-15}}>
+         <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
             <tbody>
               <tr>
                 <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} onClick={this.imgClick}  src={img}/></td>
@@ -8096,7 +8096,7 @@ class MainHistogram extends React.Component{
  		<div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 
 		<div style={{overflow:'hidden', marginTop:14}}>
-		<div style={{marginTop:-38,maxHeight:320}}>
+		<div style={{marginTop:-48}}>
  {xyplot}
 		</div>
 		</div>
@@ -8421,7 +8421,7 @@ class WeightHistogram extends React.Component{
 
 
 
-    return <XYPlot xDomain={this.state.range} yDomain={[0,max*1.1]} height={317} width={540} margin={{left:50,right:0,bottom:50,top:50}}>
+    return <XYPlot xDomain={this.state.range} yDomain={[0,max*1.1]} height={317} width={540} margin={{left:50,right:0,bottom:50,top:65}}>
      <XAxis tickFormat={val => roundTo(val*factors[u],sigfigs[u])} tickTotal={10} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
      <YAxis tickFormat={val => Math.round(val) === val ? val : ""} hideTicks={max<1} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
         <VerticalRectSeries data={data} color={'darkturquoise'}/>
