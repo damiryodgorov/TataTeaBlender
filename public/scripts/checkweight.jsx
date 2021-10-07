@@ -9047,9 +9047,7 @@ class BatchControl extends React.Component{
               strZeros+="0"
               }
               var batchIdStr = strZeros+this.state.bRec['Batch ID'].value.toString()
-              console.log(batchIdStr)
-              console.log(this.state.bRec);
-              console.log(JSON.stringify(this.state.selID))
+
               if(this.state.selID.split('%')[0] === batchIdStr){
               //if(this.state.bRec['Batch ID'] == this.state.selID.split('%')[0]){
                 var fontSize = 20
