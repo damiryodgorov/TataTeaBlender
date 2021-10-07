@@ -608,6 +608,7 @@ const ip2 = urlParams.get('lane2')
 var _wsurl2 = 'ws://'+ip2
 var socket1 = new FtiSockIo(_wsurl1,true);
 var socket2 = new FtiSockIo(_wsurl2,true);
+var socket3 = new FtiSockIo('ws://192.168.50.52:3300',true)
 socket1.on('vdef', function(vdf){
   console.log('on vdef')
   var json = vdf[0];
@@ -751,9 +752,11 @@ class Container extends React.Component {
     super(props)
   }
   gotoLane1(){
+    socket3.emit('setIp', location.host)
     window.location.href = "http://"+location.host+"/cw.html?lane=1";
   }
   gotoLane2(){
+    socket3.emit('setIp', ip2)
     window.location.href = "http://"+ip2+"/cw.html?lane=2";
   }
   render(){

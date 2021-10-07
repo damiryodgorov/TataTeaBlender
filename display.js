@@ -348,7 +348,7 @@ wss.on('error', function(error){
 
 })
 //wss.on('')
-wss.on('connection', function(scket, req){ 
+wss.on('connection', function(scket, req){
   //console.log(1360, scket)
   exec('mount --options remount,rw /dev/root /')
   let loginLevel = 0;
