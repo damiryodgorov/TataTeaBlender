@@ -809,16 +809,16 @@ class LandingPage extends React.Component{
     socket.on('confirmProdImport', function (c) {
       // body...
       if(typeof self.state.fram['InternalIP'] != 'undefined'){
-          if(window.location.host != self.state.fram['InternalIP']){
-            console.log('confrim import sent to remote')
-          }else{
+//          if(window.location.host != self.state.fram['InternalIP']){
+//            console.log('confrim import sent to remote')
+//          }else{
             self.sendPacket('importRestore')
             setTimeout(function () {
               // body...
               self.sendPacket('getProdList')
               self.notify('Successfully Imported Settings')
             },2000)      
-          }
+//          }
       }
       
     })
@@ -8825,7 +8825,7 @@ class BatchControl extends React.Component{
   downloadBatch(){
     var strZeros = ""
     for (var n=0; n < (11-this.state.bRec['Batch ID'].value.toString().length); n++){
-    strZeros+="0"
+      strZeros+="0"
     }
     var batchIdStr = strZeros+this.state.bRec['Batch ID'].value.toString()
     if(this.state.selID.split('%')[0] === batchIdStr){
