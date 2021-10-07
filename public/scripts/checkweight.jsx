@@ -8823,9 +8823,12 @@ class BatchControl extends React.Component{
     },1500)
   }
   downloadBatch(){
-
-    //if(this.state.selID.split('%')[0] == this.state.bRec['Batch ID']){
-
+    var strZeros = ""
+    for (var n=0; n < (11-this.state.bRec['Batch ID'].value.toString().length); n++){
+    strZeros+="0"
+    }
+    var batchIdStr = strZeros+this.state.bRec['Batch ID'].value.toString()
+    if(this.state.selID.split('%')[0] === batchIdStr){
       var bjson = this.state.bRec//JSON.parse(batchFile.data);
        var csvstr = 'Name, Value, Units'.toUpperCase()+'\n';
        for(var b in bjson){
@@ -8839,9 +8842,7 @@ class BatchControl extends React.Component{
         }else{
         //fileDownload(csvstr, this.state.selID.replace('.json','')+'.csv') 
         }
-      
-       
-    //}
+    }
   }
   batchSettings(){
     this.bSettings.current.toggle()
@@ -9039,46 +9040,58 @@ class BatchControl extends React.Component{
           <div onClick={this.downloadBatch} style={{display:'table-cell',color:(this.props.usb ? '#000': '#888'),height:66, width:300, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>Download CSV</div>
           </div></div>
           if(this.state.selID.length > 0){
-            if(this.state.bRec['Batch ID'] == this.state.selID.split('%')[0]){
-              var fontSize = 20
-              if(this.state.bRec['Product Name'].trim().length > 16){
-                fontSize = 16;
+            if(typeof this.state.bRec['Batch ID']!='undefined')
+            {
+              var strZeros = ""
+              for (var n=0; n < (11-this.state.bRec['Batch ID'].value.toString().length); n++){
+              strZeros+="0"
               }
-              batchSummary = <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
-              <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch ID']}</div></div>
-              <div><div style={titleSt}>Batch Ref</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Ref']}</div></div>
-              <div><div style={titleSt}>Product</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fontSize}}>{this.state.bRec['Product Name'].trim()}</div></div></div>
-              <div><div style={titleSt}>Start Time</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Start Time']}</div></div>
-              </div>
+              var batchIdStr = strZeros+this.state.bRec['Batch ID'].value.toString()
+              console.log(batchIdStr)
+              console.log(this.state.bRec);
+              console.log(JSON.stringify(this.state.selID))
+              if(this.state.selID.split('%')[0] === batchIdStr){
+              //if(this.state.bRec['Batch ID'] == this.state.selID.split('%')[0]){
+                var fontSize = 20
+                if(this.state.bRec['Product Name'].value.trim().length > 16){
+                  fontSize = 16;
+                }
+                batchSummary = <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
+                <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch ID'].value}</div></div>
+                <div><div style={titleSt}>Batch Ref</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Ref'].value}</div></div>
+                <div><div style={titleSt}>Product</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fontSize}}>{this.state.bRec['Product Name'].value.trim()}</div></div></div>
+                <div><div style={titleSt}>Start Time</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Start Time'].value}</div></div>
+                </div>
+              
+                batchInfo =  <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5, whiteSpace:'nowrap'}}>
+                  <div style={{textAlign:'center'}}>Batch Information</div>
+                  <div style={{fontSize:15}}>
+                  <div><div style={titleSt}>Total Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+                  <div><div style={titleSt}>Passed Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
+                  <div><div style={titleSt}>Passed Weight Percentage</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Percentage weight passed'].value}</div></div>
+                  <div><div style={titleSt}>Lowest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Lowest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+                  <div><div style={titleSt}>Highest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Highest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+                  <div><div style={titleSt}>Nominal Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.prod['NominalWgt'], this.props.srec['WeightUnits'])}</div></div>
+                  <div><div style={titleSt}>Average Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Avg Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+                  <div><div style={titleSt}>Standard Deviation</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Std Dev Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
+                  <div><div style={titleSt}>Total Giveaway</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Giveaway'].value), this.props.srec['WeightUnits'])}</div></div>
+                  <div><div style={titleSt}>Packs Per Minute</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.state.bRec['Packs Per Minute'].value,1)}</div></div>
+                  </div></div>
 
-               batchInfo =  <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5, whiteSpace:'nowrap'}}>
-                <div style={{textAlign:'center'}}>Batch Information</div>
-                <div style={{fontSize:15}}>
-                <div><div style={titleSt}>Total Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Weight']), this.props.srec['WeightUnits'])}</div></div>
-                <div><div style={titleSt}>Passed Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Good Weight']), this.props.srec['WeightUnits'])}</div></div>
-                <div><div style={titleSt}>Passed Weight Percentage</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Percentage weight passed']}</div></div>
-                <div><div style={titleSt}>Lowest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Lowest Good Weight']), this.props.srec['WeightUnits'])}</div></div>
-                <div><div style={titleSt}>Highest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Lowest Good Weight']), this.props.srec['WeightUnits'])}</div></div>
-                <div><div style={titleSt}>Nominal Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.prod['NominalWgt'], this.props.srec['WeightUnits'])}</div></div>
-                <div><div style={titleSt}>Average Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Avg Good Weight']), this.props.srec['WeightUnits'])}</div></div>
-                <div><div style={titleSt}>Standard Deviation</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Std Dev Good Weights']), this.props.srec['WeightUnits'])}</div></div>
-                <div><div style={titleSt}>Total Giveaway</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Giveaway']), this.props.srec['WeightUnits'])}</div></div>
-                <div><div style={titleSt}>Packs Per Minute</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.state.bRec['Packs Per Minute'],1)}</div></div>
-                </div></div>
+                  batchWeights = <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>Batch Weights</div>
+                    <div>
+                    <div style={{fontSize:17, whiteSpace:'nowrap'}}>
+                    <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Good Weights'].value}</div></div>
+                    <div><div style={titleSt}>Low Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Under Weights'].value}</div></div>
+                    <div><div style={titleSt}>High</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Over Weights'].value}</div></div>
+                    <div><div style={titleSt}>Unsettled</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Unsettled Weights'].value}</div></div>
+                    <div><div style={titleSt}>Check Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Check Weights'].value}</div></div>
+                    </div> 
+                    </div>
+                    </div>
 
-                batchWeights = <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>Batch Weights</div>
-                  <div>
-                  <div style={{fontSize:17, whiteSpace:'nowrap'}}>
-                  <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Good Weights']}</div></div>
-                  <div><div style={titleSt}>Low Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Low Weights']}</div></div>
-                  <div><div style={titleSt}>High</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['High Weights']}</div></div>
-                  <div><div style={titleSt}>Unsettled</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Unsettled Weights']}</div></div>
-                  <div><div style={titleSt}>Check Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Check Weights']}</div></div>
-                  </div> 
-                  </div>
-                  </div>
-
-                  bHisto = <BatchHistogram unit={this.props.weightUnits} ref={this.bhg} ovHisto={true} histo={this.state.bRec['Histogram Buckets']} refreshHisto={this.refreshHisto}/>
+                    bHisto = <BatchHistogram unit={this.props.weightUnits} ref={this.bhg} ovHisto={true} histo={this.state.bRec['Histogram Buckets']} refreshHisto={this.refreshHisto}/>
+              } 
             }
           }
           batchDetails =           <div style={{display:'grid', gridTemplateColumns:'315px auto'}}><div style={{display:'inline-block',verticalAlign:'top'}}>{batchList}</div>
