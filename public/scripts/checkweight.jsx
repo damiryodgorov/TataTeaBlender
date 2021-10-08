@@ -809,39 +809,33 @@ class LandingPage extends React.Component{
     socket.on('confirmProdImport', function (c) {
       // body...
       if(typeof self.state.fram['InternalIP'] != 'undefined'){
-//          if(window.location.host != self.state.fram['InternalIP']){
-//            console.log('confrim import sent to remote')
-//          }else{
+          if((window.location.host === self.state.fram['InternalIP'])||(window.location.host === '192.168.50.50')||(window.location.host === '192.168.50.51')){
             self.sendPacket('importRestore')
             setTimeout(function () {
               // body...
               self.sendPacket('getProdList')
               self.notify('Successfully Imported Settings')
             },2000)      
-//          }
-      }
-      
+          }
+      }     
     })
     /*****  Update Related Stuff ****/
     socket.on('confirmUpdate', function(c){
-       if(typeof self.state.fram['InternalIP'] != 'undefined'){
-          if(window.location.host != self.state.fram['InternalIP']){
-            console.log('confirm update sent to remote')
-          }else{
-            self.prgmd.current.show('Files copied.. Checking display update')
-            socket.emit('updateDisplay')
-          }
+      if(typeof self.state.fram['InternalIP'] != 'undefined'){
+        if ((window.location.host === self.state.fram['InternalIP'])||(window.location.host === '192.168.50.50')||(window.location.host === '192.168.50.51')){
+          self.prgmd.current.show('Files copied.. Checking display update')
+          socket.emit('updateDisplay')
         }
+      }
     })
     socket.on('confirmDisplayUpdate', function (argument) {
       self.setState({scpStatus:false})
       if(typeof self.state.fram['InternalIP'] != 'undefined'){
-          if(window.location.host != self.state.fram['InternalIP']){
-          }else{
-            self.prgmd.current.show('Updating Checkweigher')
-            self.sendPacket('updateSystem')
-          }
+        if ((window.location.host === self.state.fram['InternalIP'])||(window.location.host === '192.168.50.50')||(window.location.host === '192.168.50.51')){
+          self.prgmd.current.show('Updating Checkweigher')
+          self.sendPacket('updateSystem')
         }
+      }
     })
     socket.on('scpFileSize',function (argument) {
       // body...
