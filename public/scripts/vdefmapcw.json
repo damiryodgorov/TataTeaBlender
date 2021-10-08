@@ -24889,6 +24889,110 @@
         "System Record Date"
       ]
     },
+    "LoggerMinutes": {
+      "@translations": {
+        "english": {
+          "name": "Logger Minutes",
+          "description": ""
+        },
+        "korean": {
+          "name": "시스템 기록일",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Fecha Registro Sistema",
+          "description": ""
+        },
+        "french": {
+          "name": "Système Enregistrement Date",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Data do Registro do Sistema",
+          "description": ""
+        },
+        "italian": {
+          "name": "Data Registrazione Sistema",
+          "description": ""
+        },
+        "german": {
+          "name": "Datum System-Datenerfassung",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Logger Minutes",
+          "description": ""
+        },
+        "russian": {
+          "name": "Logger Minutes",
+          "description": ""
+        },
+        "polish": {
+          "name": "Logger Minutes",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Logger Minutes",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "System Record Date"
+      ]
+    },
+    "LoggerState": {
+      "@translations": {
+        "english": {
+          "name": "Logger State",
+          "description": ""
+        },
+        "korean": {
+          "name": "시스템 기록일",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Fecha Registro Sistema",
+          "description": ""
+        },
+        "french": {
+          "name": "Système Enregistrement Date",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Data do Registro do Sistema",
+          "description": ""
+        },
+        "italian": {
+          "name": "Data Registrazione Sistema",
+          "description": ""
+        },
+        "german": {
+          "name": "Datum System-Datenerfassung",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Logger State",
+          "description": ""
+        },
+        "russian": {
+          "name": "Logger State",
+          "description": ""
+        },
+        "polish": {
+          "name": "Logger State",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Logger State",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "System Record Date"
+      ]
+    },
     "ProdNo": {
       "@translations": {
         "english": {
@@ -54313,6 +54417,16 @@
                             "val":"IOSwitchSwVer",
                             "type":0,
                             "acc":0
+                          },
+                          {
+                            "type": 0,
+                            "val": "LoggerMinutes",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "LoggerState",
+                            "acc": 0
                           },
                           {
                             "type": 0,
