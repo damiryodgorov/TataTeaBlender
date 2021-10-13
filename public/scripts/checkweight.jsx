@@ -132,9 +132,21 @@ function FormatWeight(wgt, unit){
     wgt = 0;
   }
     if(unit == 1){
-      return (wgt/1000).toFixed(3) + ' kg'
+      if(wgt>=10000000)
+      {
+        return (wgt/1000000).toFixed(3)+' tonne'
+      }
+      else{
+        return (wgt/1000).toFixed(3) + ' kg'
+      }
     }else if(unit == 2){
-      return (wgt/453.59237).toFixed(1) + ' lbs'
+      if(wgt>=10000000)
+      {
+        return (((wgt/453.59237).toFixed(1))/2000).toFixed(1) + ' US ton'
+      }
+      else{
+        return (wgt/453.59237).toFixed(1) + ' lbs'
+      }
     }else if (unit == 3){
       return (wgt/28.3495).toFixed(2) + ' oz'
     }
@@ -148,10 +160,24 @@ function FormatWeightS(wgt, unit){
   }else if(wgt == null){
     wgt = 0;
   }
+
     if(unit == 1){
-      return (wgt/1000).toFixed(3) + ' kg'
+      if(wgt>=10000000)
+      {
+        return (wgt/1000000).toFixed(3)+' tonne'
+      }
+      else{
+        return (wgt/1000).toFixed(3) + ' kg'
+      }
     }else if(unit == 2){
-      return (wgt/453.59237).toFixed(1) + ' lbs'
+      if(wgt>=10000000)
+      {
+        return (((wgt/453.59237).toFixed(1))/2000).toFixed(1) + ' US ton'
+      }
+      else{
+        return (wgt/453.59237).toFixed(1) + ' lbs'
+      }
+        
     }else if (unit == 3){
       return (wgt/28.3495).toFixed(2) + ' oz'
     }
@@ -7238,7 +7264,6 @@ class StatSummary extends React.Component{
     var outerbg = '#818a90'
     var innerbg = '#5d5480'
     var fontColor = '#e1e1e1'
-
     //if(this.props.branding == 'SPARC'){
       outerbg = '#e1e1e1'
     
