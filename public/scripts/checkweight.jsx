@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/10/07'
+const DISPLAYVERSION = '2021/10/13'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -3346,7 +3346,6 @@ class ProductSettings extends React.Component{
     var content = ''
     var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
     var selStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:25,lineHeight:'47px'}
-
     var searchColor = SPARCBLUE1;
     if(this.props.branding == 'FORTRESS'){
       searchColor = FORTRESSPURPLE2
@@ -3442,7 +3441,6 @@ class ProductSettings extends React.Component{
           <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={nwgt} param={vdefByMac[this.props.mac][1][1]['NominalWgt']} tooltip={vMapV2['NominalWgt']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Over Weight Limit'} value={ovwgt} param={vdefByMac[this.props.mac][1][1]['OverWeightLim']} tooltip={vMapV2['OverWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Packaging Weight'} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} tooltip={vMapV2['EyePkgLength']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}  tooltip={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true} shortcut={[1,2]} onShortcut={this.onShortcut} /></div>
@@ -3450,34 +3448,45 @@ class ProductSettings extends React.Component{
 
           <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
             <div style={{width:'90%',padding:'2.5%',margin:'2.5%',background:'linear-gradient(90deg,#919aa0, #e1e1e1)', height:285, overflowY:'scroll'}}>
-              <div><div style={{width:'60%',display:'inline-block'}}>Overweight Accept</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['OverWeightAllowed'][this.props.language][curProd['OverWeightAllowed']]}</div></div>
-              <div><div style={{width:'60%',display:'inline-block'}}>Product Speed</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}</div></div>
-              <div><div style={{width:'60%',display:'inline-block'}}>Feedback Control</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['FeedbackMode'][this.props.language][curProd['FeedbackMode']]}</div></div>
-              <div><div style={{width:'50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
-                
-                <div style={{width:'63%',display:'inline-block'}}>Correction Rate</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{curProd['FeedbackCorRate'] + ' g/s'}</div>
-                <div style={{width:'63%',display:'inline-block'}}>Dead Zone</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>±{FormatWeight(curProd['FeedbackDeadZone'],weightUnits)}</div>
-                <div style={{width:'63%',display:'inline-block'}}>Sample Count</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{curProd['FeedbackSampCnt']}pcs</div>
-            
+              <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>Overweight Accept</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['OverWeightAllowed'][this.props.language][curProd['OverWeightAllowed']]}</div></div>
+              <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>Product Speed</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}</div></div>
+              {
+                this.props.curProd['FeedbackMode'] != 0 && 
+                <React.Fragment>
+                  <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>Feedback Control</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['FeedbackMode'][this.props.language][curProd['FeedbackMode']]}</div></div>
+                    <div><div style={{width:this.props.curProd['FeedbackMode'] == 2 ? '55%':'45%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
+                      
+                      <div style={{width:'63%',display:'inline-block'}}>Correction Rate</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{curProd['FeedbackCorRate'] + ' g/s'}</div>
+                      <div style={{width:'63%',display:'inline-block'}}>Dead Zone</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>±{FormatWeight(curProd['FeedbackDeadZone'],weightUnits)}</div>
+                      <div style={{width:'63%',display:'inline-block'}}>Sample Count</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{curProd['FeedbackSampCnt']}pcs</div>
+                  
+                    </div>
+                    <div style={{width:this.props.curProd['FeedbackMode'] == 2 ? '45%':'50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
+                      
+                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Wait Count</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}pcs</div>
+                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Hi Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackHiLim'],weightUnits)}</div>
+                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Lo Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackLoLim'], weightUnits)}</div>
+                  
+                    </div></div>
+                  </React.Fragment>
+              }
+              <div><div style={{width:'53%',display:'inline-block', fontSize:17}}>Measurement Standard</div><div style={{width:'47%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
+              <div><div style={{width: this.props.curProd['WeighingMode'] == 1 ? '60%' : '50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
+                {/*<div style={{width:'63%',display:'inline-block'}}>Number of Packs</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>10</div>*/}
               </div>
-              <div style={{width:'50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
-                
-                <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Wait Count</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}pcs</div>
-                <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Hi Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackHiLim'],weightUnits)}</div>
-                <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Lo Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackLoLim'], weightUnits)}</div>
-            
-              </div></div>
-              <div><div style={{width:'60%',display:'inline-block'}}>Measurement Standard</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
-              <div><div style={{width:'50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
-                
-                <div style={{width:'63%',display:'inline-block'}}>Number of Packs</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>10</div>
-              
-              </div>
-              <div style={{width:'50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
-                
-                <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Overweight Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['OverWeightLim'], weightUnits)}</div>
-                <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Underweight Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['UnderWeightLim'], weightUnits)}</div>
-            
+              <div style={{width:this.props.curProd['WeighingMode'] == 1 ? '40%' : '50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
+                {
+                 this.props.curProd['WeighingMode'] == 1 ?
+                  <React.Fragment>
+                    <div style={{width:'63%',display:'inline-block'}}>T1 Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['T1Lim'], weightUnits)}</div> 
+                    <div style={{width:'63%',display:'inline-block'}}>T2 Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['TolNegErrorX2'], weightUnits)}</div> 
+                  </React.Fragment>
+                  :
+                  <React.Fragment>
+                    <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Overweight Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['OverWeightLim'], weightUnits)}</div>
+                    <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Underweight Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['UnderWeightLim'], weightUnits)}</div>
+                  </React.Fragment>
+                } 
               </div></div>
             </div>
             <CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Advanced'}/>
