@@ -593,13 +593,87 @@ function getLabTrans(name, language){
 /*************Helper functions end**************/
 
 /*******************Initialize Page start********************/
-var _wsurl = 'ws://' +location.host 
-var socket = new FtiSockIo(_wsurl,true);
-socket.on('vdef', function(vdf){
-  // console.log('on vdef')
-	var json = vdf[0];
-	_Vdef = json
-	var res = [];
+var _wsurl1 = 'ws://' +location.host
+const urlParams = new URLSearchParams(location.search)
+const ip2 = urlParams.get('lane2')
+if (ip2){
+  var _wsurl2 = 'ws://'+ip2
+  var socket2 = new FtiSockIo(_wsurl2,true);
+  socket2.on('vdef', function(vdf){
+    console.log('on vdef')
+    var json = vdf[0];
+    _Vdef = json
+    var res = [];
+      res[0] = {};
+      res[1] = {};
+      res[2] = {};
+      res[3] = {};
+      res[4] = {};
+      res[5] = {}
+      res[9] = {};
+      res[10] = {};
+      res[11] = {};
+      res[12] = {};
+      var nVdf = [[],[],[],[],[],[],[],[],[]];
+      json["@params"].forEach(function(p ){
+        var rec = p['@rec']
+        if(p['@rec'] > 5){
+          rec = rec + 4
+        }
+        res[rec][p["@name"]] = p;
+        res[9][p["@name"]] = p;
+        nVdf[p["@rec"]].push(p['@name'])
+      }
+      );
+
+       var bob = {}
+       var rob = {}
+       var dob = {}
+        dob['@name'] = '@dispversion'
+      dob['@rpcs'] = {'dispversion':[0]}
+       rob['@name'] = '@customstrn'
+      rob['@labels'] = 'usecustom'
+      rob['@rpcs'] = {'customstrn':[0]}
+      bob['@name'] = '@branding'
+      bob['@labels'] = 'theme'
+      bob['@rpcs'] = {'theme':[0]}
+      res[0]['@branding'] =  bob
+      res[9]['@branding'] =  bob
+      res[0]['@customstrn'] =  rob
+      res[0]['@dispversion'] = dob
+      res[9]['@customstrn'] =  rob
+      res[6] = json["@deps"];
+      res[7] = json["@labels"]
+      res[7]['theme'] = {'english':['SPARC','FORTRESS']}
+      res[7]['usecustom'] =  {'english':['disabled','enabled']}
+      res[8] = [];
+      res[9] = [];
+     for(var par in res[2]){  
+        if(par.indexOf('Fault') != -1){
+          res[8].push(par)
+        }
+      }
+      for(var par in res[2]){  
+        if(par.indexOf('Warn') != -1){
+          res[9].push(par)
+        }
+      }
+
+      _pVdef = res;
+      if(json['@defines']['LOGICAL_OUTPUT_NAMES']){
+        outputSrcArr = json['@defines']['LOGICAL_OUTPUT_NAMES'].slice(0)
+        inputSrcArr = json['@defines']['PHYSICAL_INPUT_NAMES'].slice(0)
+      }
+      vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@pages"]['CWSys']], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
+  })
+}
+var socket1 = new FtiSockIo(_wsurl1,true);
+var socket3 = new FtiSockIo('ws://192.168.50.52:3300',true)
+socket1.on('vdef', function(vdf){
+  console.log('on vdef')
+  var json = vdf[0];
+  _Vdef = json
+  var res = [];
     res[0] = {};
     res[1] = {};
     res[2] = {};
@@ -610,8 +684,7 @@ socket.on('vdef', function(vdf){
     res[10] = {};
     res[11] = {};
     res[12] = {};
-
-   	var nVdf = [[],[],[],[],[],[],[],[],[]];
+    var nVdf = [[],[],[],[],[],[],[],[],[]];
     json["@params"].forEach(function(p ){
       var rec = p['@rec']
       if(p['@rec'] > 5){
@@ -658,27 +731,81 @@ socket.on('vdef', function(vdf){
 
     _pVdef = res;
     if(json['@defines']['LOGICAL_OUTPUT_NAMES']){
-    	outputSrcArr = json['@defines']['LOGICAL_OUTPUT_NAMES'].slice(0)
+      outputSrcArr = json['@defines']['LOGICAL_OUTPUT_NAMES'].slice(0)
       inputSrcArr = json['@defines']['PHYSICAL_INPUT_NAMES'].slice(0)
     }
     vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@pages"]['CWSys']], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
 })
+
 /*******************Initialize Page end********************/
 
 /******************Main Components start********************/
 class Container extends React.Component {
 	constructor(props){
 		super(props)
+    this.state = {page:this.props.page}
+    this.gotoLane1 = this.gotoLane1.bind(this)
+    this.gotoLane2 = this.gotoLane2.bind(this)
+    this.gotoDual = this.gotoDual.bind(this)
+    this.refLane1 = React.createRef();
+    this.refLane2 = React.createRef();
+    this.refDual1 = React.createRef();
+    this.refDual2 = React.createRef();
 	}
+  gotoLane1(){
+    socket3.emit('setIp', location.host)
+    this.setState({page:'cw1'})
+
+  }
+  gotoLane2(){
+    socket3.emit('setIp', ip2)
+    this.setState({page:'cw2'})
+  }
+  gotoDual(){
+    var self = this;
+    this.setState({page:'dual'})
+
+  }
 	render(){
+    var landingPage
+    if (this.state.page === 'single'){
+      landingPage = <LandingPage ref={this.refLane1} soc={socket1}/>
+    }else if (this.state.page === 'cw1'){
+      landingPage = <LandingPage ref={this.refLane1} soc={socket1} toDual={this.gotoDual} lane={1}/>
+    }else if (this.state.page === 'cw2'){
+      landingPage = <LandingPage ref={this.refLane2} soc={socket2} toDual={this.gotoDual} lane={2}/>
+    }else if (this.state.page === 'dual'){
+      landingPage = <div className='interceptorMainPageUI' style={{background:FORTRESSPURPLE1, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+FORTRESSPURPLE1}}>
+                <table class="center">
+                <tbody>
+                <tr style={{marginLeft:10,textAlign:'center'}}>
+                <td>
+                <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
+                </td>
+                <td>
+                <div onClick={this.gotoLane1}><DualPage ref={this.refDual1} soc={socket1}/></div>
+                </td>
+                <td>
+                <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
+                </td>
+                <td>
+                <div onClick={this.gotoLane2}><DualPage ref={this.refDual2} soc={socket2}/></div>
+                </td>
+                </tr>
+                </tbody>
+                </table></div>
+
+    }
 		return <div>
     <ErrorBoundary autoReload={false}>
-    <LandingPage/>
-
+    
+      {landingPage}
 				<ToastContainer position="top-center" autoClose={1500} hideProgressBar newestOnTop closeOnClick closeButton={false} rtl={false}
+      
 			pauseOnVisibilityChange draggable pauseOnHover transition={FastZoom} toastClassName='notifications-class'/>
 			</ErrorBoundary>
 		</div>
+
 	}
 }
 
@@ -745,6 +872,7 @@ class LandingPage extends React.Component{
     this.getData = this.getData.bind(this);
     this.formatUSB = this.formatUSB.bind(this);
     this.notify = this.notify.bind(this)
+    this.goDual = this.goDual.bind(this)
     this.lgctl = React.createRef();
     this.tBut = React.createRef();
     this.cwModal = React.createRef();
@@ -781,6 +909,7 @@ class LandingPage extends React.Component{
   /*************Lifecycle functions start***************/
   /* Most of the serverside communication will be handled here*/
   componentDidMount(){
+    console.log('Component Landing page did mount')
     var self = this;
     this.state.timer = setInterval(function(){
       if(self.state.connected){
@@ -793,20 +922,22 @@ class LandingPage extends React.Component{
     ifvisible.on("idle", function(){
       self.logout()
     });
+//    let socket = this.props.soc;
     setTimeout(function (argument) {
       self.loadPrefs();
     }, 500)   
+
    // socket.on('testusb')
-    socket.on('userNames', function(p){
+    this.props.soc.on('userNames', function(p){
        self.setState({usernames:p.det.data.array})
       
     })
-    socket.on('batchJson',function (json) {
+    this.props.soc.on('batchJson',function (json) {
       // body...
       // console.log('batchJson',json.replace(/\s/g, '').replace(/\0/g, ''))
       self.setState({plannedBatches:JSON.parse(json.replace(/\s/g, '').replace(/\0/g, ''))})
     })
-    socket.on('confirmProdImport', function (c) {
+    this.props.soc.on('confirmProdImport', function (c) {
       // body...
       if(typeof self.state.fram['InternalIP'] != 'undefined'){
           if((window.location.host === self.state.fram['InternalIP'])||(window.location.host === '192.168.50.50')||(window.location.host === '192.168.50.51')){
@@ -820,15 +951,15 @@ class LandingPage extends React.Component{
       }     
     })
     /*****  Update Related Stuff ****/
-    socket.on('confirmUpdate', function(c){
+    this.props.soc.on('confirmUpdate', function(c){
       if(typeof self.state.fram['InternalIP'] != 'undefined'){
         if ((window.location.host === self.state.fram['InternalIP'])||(window.location.host === '192.168.50.50')||(window.location.host === '192.168.50.51')){
           self.prgmd.current.show('Files copied.. Checking display update')
-          socket.emit('updateDisplay')
+          self.props.soc.emit('updateDisplay')
         }
       }
     })
-    socket.on('confirmDisplayUpdate', function (argument) {
+    this.props.soc.on('confirmDisplayUpdate', function (argument) {
       self.setState({scpStatus:false})
       if(typeof self.state.fram['InternalIP'] != 'undefined'){
         if ((window.location.host === self.state.fram['InternalIP'])||(window.location.host === '192.168.50.50')||(window.location.host === '192.168.50.51')){
@@ -837,18 +968,18 @@ class LandingPage extends React.Component{
         }
       }
     })
-    socket.on('scpFileSize',function (argument) {
+    this.props.soc.on('scpFileSize',function (argument) {
       // body...
       // console.log('scpFileSize', argument)
       self.setState({scpFileSize:argument.size, scpStatus:true})
 
       setTimeout(function () {
         // body...
-        socket.emit('pollFileSize', argument.filename)
+        self.props.soc.emit('pollFileSize', argument.filename)
       },2000)
 
     })
-    socket.on('fileSize', function (arg) {
+    this.props.soc.on('fileSize', function (arg) {
       // body...
         // console.log('fileSize', arg)
         self.prgmd.current.show(arg.filename + ' '+(arg.size*100/self.state.scpFileSize).toFixed(0) + '% transferred')
@@ -856,21 +987,21 @@ class LandingPage extends React.Component{
       if(self.state.scpStatus){
           setTimeout(function () {
             // body...
-            socket.emit('pollFileSize', arg.filename)
+            self.props.soc.emit('pollFileSize', arg.filename)
           }, 1000)
       }
     })
-    socket.on('prgNotify', function (str) {
+    this.props.soc.on('prgNotify', function (str) {
       // body...
       self.prgmd.current.show(str)
     })
 
-    socket.on('connectedClients',function (c) {
+    this.props.soc.on('connectedClients',function (c) {
       var fram = self.state.fram
       fram.ConnectedClients = c
       self.setState({connectedClients:c,fram:fram, noupdate:false})
     })
-    socket.on('custJSON',function (json) {
+    this.props.soc.on('custJSON',function (json) {
       if(self.state.customMap){
         vMapV2 = json['@vMap']
         vMapLists = json['@lists']
@@ -882,33 +1013,33 @@ class LandingPage extends React.Component{
       }
       
     })
-    socket.on('resetConfirm', function (r) {
+    this.props.soc.on('resetConfirm', function (r) {
       //socket.emit('locateReq',true);
     })
-    socket.on('nif', function(iface){
+    this.props.soc.on('nif', function(iface){
       self.setState({nifip:iface.address, nifnm:iface.netmask})
     })
-    socket.on('version',function (version) {
+    this.props.soc.on('version',function (version) {
       self.setState({version:version})
     })
-    socket.on('gw', function(gw){
+    this.props.soc.on('gw', function(gw){
       self.setState({nifgw:gw})
     })
-    socket.on('displayUpdate', function(){
+    this.props.soc.on('displayUpdate', function(){
     //  self.refs.updateModal.toggle();
     })
-    socket.on('updateProgress',function(r){
+    this.props.soc.on('updateProgress',function(r){
       self.setState({progress:r})
     })
-    socket.on('onReset', function(r){
+    this.props.soc.on('onReset', function(r){
       self.setState({currentPage:'landing', curDet:''});
     })
   
-    socket.on('netpoll', function(m){
+    this.props.soc.on('netpoll', function(m){
       self.onNetpoll(m.data, m.det)
       m = null;
     })
-    socket.on('prefs', function(f) {
+    this.props.soc.on('prefs', function(f) {
       var detL = self.state.detL
       var cnt = 0;
       var _ip = ''
@@ -920,9 +1051,9 @@ class LandingPage extends React.Component{
         })
       })
       if(cnt == 1){
-        socket.emit('locateUnicast', _ip, true)
+        self.props.soc.emit('locateUnicast', _ip, true)
       }else{
-        socket.emit('locateReq',true)
+        self.props.soc.emit('locateReq',true)
       }
       setTimeout(function (argument) {
       // body...
@@ -952,30 +1083,30 @@ class LandingPage extends React.Component{
 
       self.setState({mbunits:f, detL:detL})
     })
-    socket.on('notify',function(msg){
+    this.props.soc.on('notify',function(msg){
       self.notify(msg)
     })
-    socket.on('progressNotify',function(pk){
+    this.props.soc.on('progressNotify',function(pk){
       var on = pk.on;
       var msg = pk.msg;
       var percentage = pk.percentage
     })
-    socket.on('noVdef', function(det){
+    this.props.soc.on('noVdef', function(det){
       setTimeout(function(){
-        socket.emit('vdefReq', det);
+        self.props.soc.emit('vdefReq', det);
       }, 1000)
     })
-    socket.on('notvisible', function(e){
+    this.props.soc.on('notvisible', function(e){
       toast('Detectors located, but network does not match')
     })
-    socket.on('prodNames',function (pack) {
+    this.props.soc.on('prodNames',function (pack) {
       // body...
       // console.log('prodNames')
       if(self.state.curDet.ip == pack.ip){
         self.setState({pList:pack.list, prodNames:pack.names, noupdate:false})
       }
     })
-    socket.on('locatedResp', function (e) {
+    this.props.soc.on('locatedResp', function (e) {
       // console.log(e,924)
       try{
         if(typeof e[0] != 'undefined'){
@@ -992,7 +1123,7 @@ class LandingPage extends React.Component{
               macs.push(d.mac)
               dets[d.mac] = d
             }          
-            socket.emit('vdefReq', d);
+            self.props.soc.emit('vdefReq', d);
           })
           var mbunits = self.state.mbunits;
           var cnt = 0;
@@ -1029,33 +1160,33 @@ class LandingPage extends React.Component{
     }
       }catch(er){
       }
-      socket.emit('getTimezones')
+      self.props.soc.emit('getTimezones')
     });
-      socket.on('dispSettings', function(disp){
+    this.props.soc.on('dispSettings', function(disp){
         self.setState({automode:disp.mode})
       })  
     
-    socket.on('paramMsgCW', function(data) {
+    this.props.soc.on('paramMsgCW', function(data) {
       self.onParamMsg(data.data, data.det)
       data = null;
     })
-    socket.on('rpcMsg', function (data) {
+    this.props.soc.on('rpcMsg', function (data) {
       self.onRMsg(data.data, data.det)
       data = null;
     })
-    socket.on('loggedIn', function(data){
+    this.props.soc.on('loggedIn', function(data){
       self.setState({curUser:data.id, level:data.level})
     })
 
-    socket.on('logOut', function(){
+    this.props.soc.on('logOut', function(){
       self.setState({curUser:'', level:0})
     })
-    socket.on('accounts', function(data){
+    this.props.soc.on('accounts', function(data){
       self.setState({accounts:data.data})
     })
 
 
-    socket.on('authResp', function(pack){
+    this.props.soc.on('authResp', function(pack){
       if(pack.reset){
          self.resetPass.current.show(pack)
         self.setAuthAccount(pack)
@@ -1064,20 +1195,20 @@ class LandingPage extends React.Component{
   
       }
     })
-    socket.on('authFail', function(pack){
+    this.props.soc.on('authFail', function(pack){
       self.am.current.show(pack.user, pack.ip)
       self.setAuthAccount({user:'Not Logged In', level:0, user:-1})
     })
-    socket.on('passwordNotify',function(e){
+    this.props.soc.on('passwordNotify',function(e){
       // console.log(1117,e)
       var message = 'Call Fortress with ' + e.join(', ');
       self.msgm.current.show(message)
     })
-    socket.on('timezones',function (e) {
+    this.props.soc.on('timezones',function (e) {
       // body...
       self.setState({timezones:e})
     })
-    socket.on('batchList', function (list) {
+    this.props.soc.on('batchList', function (list) {
       self.setState({batchList:list.reverse()})
     })
   }
@@ -1110,7 +1241,7 @@ class LandingPage extends React.Component{
      // toast("Logged out")
       var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGOUT']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       this.setState({level:0, userid:0,user:-1, username:'Not Logged In',noupdate:false})
 
     }
@@ -1128,13 +1259,13 @@ class LandingPage extends React.Component{
       }
     });
     var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-    socket.emit('rpc', {ip:this.props.ip, data:packet})
+    this.props.soc.emit('rpc', {ip:this.props.ip, data:packet})
     // console.log(pack,668)
     this.setState({level:pack.level, username:pack.username,noupdate:false, update:true, userid:pack.user+1, user:pack.user}) 
   }
   authenticate(user,pswd){
     // console.log('authenticate here')
-    socket.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.state.curDet.ip})
+    this.props.soc.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.state.curDet.ip})
   }
   loginClosed(){
     this.setState({loginOpen:false});
@@ -1142,7 +1273,7 @@ class LandingPage extends React.Component{
   resetPassword(pack,v){
     var packet = {ip:pack.ip, data:{user:pack.user, password:v}}
     //console.log('packet',packet)
-    socket.emit('writePass', packet)
+    this.props.soc.emit('writePass', packet)
   }
   /****** Login Functions end******/
 
@@ -1172,11 +1303,11 @@ class LandingPage extends React.Component{
   }
 
   loadPrefs() {
-    if(socket.sock.readyState  ==1){
-      socket.emit('getVersion',true);
-      socket.emit('getPrefsCW',true);
-      socket.emit('getDispSettings');
-      socket.emit('getCustomJSON',JSON.stringify(vdefMapV2))
+    if(this.props.soc.sock.readyState  ==1){
+      this.props.soc.emit('getVersion',true);
+      this.props.soc.emit('getPrefsCW',true);
+      this.props.soc.emit('getDispSettings');
+      this.props.soc.emit('getCustomJSON',JSON.stringify(vdefMapV2))
     }
   }
   getCob (sys,prod,dyn, fram) {
@@ -1372,7 +1503,9 @@ class LandingPage extends React.Component{
             }
           }
           if(e.rec['DateTime'] != this.state.rec['DateTime']){
-            this.fclck.current.setDate(e.rec['DateTime'])
+            if (typeof this.fclck != 'undefined'){
+              this.fclck.current.setDate(e.rec['DateTime'])
+            }
           }
           var cob = this.state.cob
           var pcob = this.state.pcob
@@ -1571,9 +1704,9 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       }else if(n== 'getProdList'){
-        socket.emit('getProdList', this.state.curDet.ip)
+        this.props.soc.emit('getProdList', this.state.curDet.ip)
       }else if(n=='deleteProd'){
       var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEL_NO_WRITE']
       var pkt = rpc[1].map(function (r) {
@@ -1588,7 +1721,7 @@ class LandingPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n == 'copyCurrentProd'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
         var pkt = rpc[1].map(function (r) {
@@ -1603,7 +1736,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n == 'copyDefProd'){
       var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_DEFAULT']
       var pkt = rpc[1].map(function (r) {
@@ -1618,7 +1751,7 @@ class LandingPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n == 'copyFacProd'){
       var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_FACTORY']
       var pkt = rpc[1].map(function (r) {
@@ -1633,7 +1766,7 @@ class LandingPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'deleteAll'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_DELETEALL']
@@ -1649,7 +1782,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'deleteBatch'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PLANBATCHDELETE']
@@ -1664,7 +1797,7 @@ class LandingPage extends React.Component{
         buf.writeUInt32LE(parseInt(v),0)
      //  var strArg = buf; 
         var packet = dsp_rpc_paylod_for(rpc[0],pkt, buf);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'clearFaults'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARFAULTS']
@@ -1680,7 +1813,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'clearWarnings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARWARNINGS']
@@ -1696,7 +1829,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'checkWeight'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
@@ -1712,7 +1845,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'checkWeightSend'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
@@ -1724,7 +1857,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'cancelCW'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHTCANCEL']
@@ -1736,7 +1869,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'updateSystem'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_UPDATESYSTEM']
@@ -1752,7 +1885,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'importRestore'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_IMPORTRESTORE']
@@ -1768,7 +1901,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'restoreDefault'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_RESTORE']
@@ -1784,7 +1917,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'restoreBackup'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_RESTORE']
@@ -1800,7 +1933,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'backupProduct'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_SAVE']
@@ -1816,7 +1949,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'getProdSettings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
@@ -1832,7 +1965,7 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
       }else if(n == 'saveProduct'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDWRITE']
@@ -1848,9 +1981,9 @@ class LandingPage extends React.Component{
           }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
         setTimeout(function (argument) {
-          socket.emit('getProdList', self.state.curDet.ip)
+          self.props.soc.emit('getProdList', self.state.curDet.ip)
         },150)
       }else if( n == 'refresh'){
       var rec = 0;
@@ -1859,45 +1992,45 @@ class LandingPage extends React.Component{
       }
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
       var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],rec,0])
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       
       }else if( n == 'refresh_buffer'){
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
       var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],v,0])
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       
       }else if( n == 'BatchStart'){
      
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchStartSel'){
      
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
       var buf = Buffer.alloc(4)
       buf.writeUInt32LE(v,0)
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], buf)
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchStartNew'){
      
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
     
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], v)
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchPause'){
      
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PAUSEBATCH']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if( n == 'BatchEnd'){
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STOPBATCH']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if(n=='DateTime'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_DATETIMEWRITE']
   
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       // console.log('DATE TIME SENT', this.state.curDet.ip)
       }else if(n=='DaylightSavings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
@@ -1914,7 +2047,7 @@ class LandingPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }else if(n=='Timezone'){
         var rpc = vdef[0]['@rpc_map']['KAPI_TIMEZONE_WRITE']
   
@@ -1930,7 +2063,7 @@ class LandingPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
       }
     }else{
       // console.log('here')
@@ -1947,7 +2080,7 @@ class LandingPage extends React.Component{
         }
         var packet = dsp_rpc_paylod_for(arg1, arg2);
       
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n['@rpcs']['write']){
       // console.log('should be here')
       var arg1 = n['@rpcs']['write'][0];
@@ -2014,7 +2147,7 @@ class LandingPage extends React.Component{
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
       // console.log(packet)
         
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       
     }else if(n['@rpcs']['vfdwrite']){
       var arg1 = n['@rpcs']['vfdwrite'][0];
@@ -2044,7 +2177,7 @@ class LandingPage extends React.Component{
         }
         
         var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
-        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
       }else if(n['@rpcs']['apiwrite']){
       var arg1 = n['@rpcs']['apiwrite'][0];
       var arg2 = [];
@@ -2078,10 +2211,10 @@ class LandingPage extends React.Component{
         strArg = buf;
       }
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }else if(n['@rpcs']['clear']){
       var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }
     }
   }
@@ -2089,7 +2222,7 @@ class LandingPage extends React.Component{
     if(this.state.connected){
       var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_TARE_WEIGHT_TARE']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }
   }
   calWeight(){
@@ -2099,14 +2232,14 @@ class LandingPage extends React.Component{
     if(this.state.connected){
       var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_USE']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }
   }
   calWeightCancelSend(){
     if(this.state.connected){
       var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_CANCEL']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
-      socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }
   }
   changeBranding(){}
@@ -2119,7 +2252,7 @@ class LandingPage extends React.Component{
         this.sendPacket('BatchStart')
         this.setState({start:false, pause:true})
       }else if(this.state.srec['BatchMode'] == 1){
-        socket.emit('getPlannedBatches', self.state.curDet.ip)
+        this.props.soc.emit('getPlannedBatches', self.state.curDet.ip)
         setTimeout(function(argument) {
           self.planStart.current.toggle();
 
@@ -2178,25 +2311,25 @@ class LandingPage extends React.Component{
     if(this.state.connected){
       this.sendPacket('refresh')
     }else{
-      socket.emit('locateReq',true)
+      this.props.soc.emit('locateReq',true)
     }
     setTimeout(function () {
       self.settingModal.current.toggle()
     },100)
     setTimeout(function () {
-        socket.emit('getConnectedClients')
+        self.props.soc.emit('getConnectedClients')
     },200)
  
   }
   connectToUnit(det){
     // console.log('connect To Unit')
     var self = this;
-    socket.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
+    this.props.soc.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
     var unit = {name:det.name, type:'single', banks:[det]}
     setTimeout(function (argument) {
       // body...
       // console.log(1308, unit)
-      socket.emit('savePrefsCW', [unit])
+      self.props.soc.emit('savePrefsCW', [unit])
     },150)
     setTimeout(function (argument) {
       // body...
@@ -2210,7 +2343,7 @@ class LandingPage extends React.Component{
     var self = this;
     if(typeof this.state.curDet.ip != 'undefined'){
         this.pmodal.current.toggle();
-      socket.emit('getProdList', this.state.curDet.ip)
+      this.props.soc.emit('getProdList', this.state.curDet.ip)
       setTimeout(function (argument) {
         // body...
         self.sendPacket('getProdSettings',self.state.srec['ProdNo'])
@@ -2245,16 +2378,16 @@ class LandingPage extends React.Component{
       setTimeout(function (argument) {
         // body...
         // console.log('send getPlannedBatches', self.state.curDet.ip)
-        socket.emit('getPlannedBatches', self.state.curDet.ip)
-        socket.emit('getProdList', self.state.curDet.ip)
-        socket.emit('getBatches')
+        self.props.soc.emit('getPlannedBatches', self.state.curDet.ip)
+        self.props.soc.emit('getProdList', self.state.curDet.ip)
+        self.props.soc.emit('getBatches')
       },100)
 
     }
   }
   getBatchList(){
     // console.log('getting planned batch list')
-    socket.emit('getPlannedBatches', this.state.curDet.ip)
+    this.props.soc.emit('getPlannedBatches', this.state.curDet.ip)
   }
   onPmdClose(){
     if(this.state.rec['EditProdNeedToSave'] == 1){
@@ -2312,14 +2445,14 @@ class LandingPage extends React.Component{
     }
   }
   reboot(){
-    socket.emit('reboot')
+    this.props.soc.emit('reboot')
   }
   update(){
     //toast('Update in progress..')
-    socket.emit('updateCW')
+    this.props.soc.emit('updateCW')
   }
   formatUSB(){
-    socket.emit('formatInternalUsb')
+    this.props.soc.emit('formatInternalUsb')
     //this.sendPacket('formatUSB',0)
   }
 
@@ -2327,22 +2460,22 @@ class LandingPage extends React.Component{
   transChange(n,l,v){
     var custMap = this.state.custMap
     custMap['@vMap'][n]['@translations'][l]['name'] = v
-    socket.emit('saveCustomJSON',JSON.stringify(custMap));
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
   }
   labChange(n,l,v){
     var custMap = this.state.custMap
     custMap['@labels'][n][l]['name'] = v
-    socket.emit('saveCustomJSON',JSON.stringify(custMap));
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
   }
   submitTooltip(n,l,v){
     var custMap = this.state.custMap
     custMap['@vMap'][n]['@translations'][l]['description'] = v
-    socket.emit('saveCustomJSON',JSON.stringify(custMap));
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
   }
   listChange(n,l,v){
     var custMap = this.state.custMap
     custMap['@lists'][n][l] = v
-    socket.emit('saveCustomJSON',JSON.stringify(custMap));
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
   }
   exportVmap(){
     fileDownload(JSON.stringify(this.state.custMap),'custMap.json')//socket.emit('downloadJSON')
@@ -2351,10 +2484,10 @@ class LandingPage extends React.Component{
 
   getData(){
     // console.log('get Batches')
-   socket.emit('getBatches') 
+   this.props.soc.emit('getBatches') 
   }
   resetVmap(){
-    socket.emit('saveCustomJSON', JSON.stringify(vdefMapV2));
+    this.props.soc.emit('saveCustomJSON', JSON.stringify(vdefMapV2));
   }
   toggleGraph(){
     this.setState({histo:!this.state.histo})
@@ -2367,7 +2500,7 @@ class LandingPage extends React.Component{
   }
   forgot(id,ip){
     //console.log('passReset')
-    socket.emit('passReset',{ip:ip,data:{user:id}})
+    this.props.soc.emit('passReset',{ip:ip,data:{user:id}})
   }
   getMMdep(d){
      if(d == 'MaxBeltSpeed'){
@@ -2403,7 +2536,7 @@ class LandingPage extends React.Component{
     }
   }
   goDual(){
-    window.history.back()
+    this.props.toDual()
   }
   renderModal() {
     var self = this;
@@ -2496,7 +2629,7 @@ class LandingPage extends React.Component{
     
 
     var cont = ''
-    var sd = <div><DisplaySettings nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
+    var sd = <div><DisplaySettings soc={this.props.soc} nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
       <button onClick={this.reboot}>Reboot</button><button onClick={this.formatUSB}>Format USB and Reboot</button></div>
     var unused = ''
     
@@ -2535,7 +2668,7 @@ class LandingPage extends React.Component{
 
     if(this.state.srec['SRecordDate']){
         sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
-        <SettingsPageWSB  timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+        <SettingsPageWSB  soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
         <BatchWidget acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
         </div>
@@ -2548,7 +2681,7 @@ class LandingPage extends React.Component{
           <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={'Calibrate'}/>
           </div>)
 
-        unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
+        unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.unusedList]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} vdefMap={this.state.vmap}/></div>
     }else{
       dets = this.renderModal()
@@ -2594,9 +2727,10 @@ class LandingPage extends React.Component{
     var home;
     var lane
     var raptorLogoWidth = 550
-    var laneNumber = new URLSearchParams(location.search).get('lane')
-    var laneStr = 'LANE '+laneNumber
-    if (laneNumber){
+//    var laneNumber = new URLSearchParams(location.search).get('lane')
+//    var laneStr = 'LANE '+laneNumber
+    if (this.props.lane){
+      var laneStr = 'LANE '+this.props.lane
       
       home = <td>
               <div style={{paddingLeft:3, borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}} onClick={this.goDual}><div style={{textAlign:'center'}}><img style={{width:60, marginTop:-15, marginBottom:-7}} src={'assets/home.png'}/></div>
@@ -2654,7 +2788,7 @@ class LandingPage extends React.Component{
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
         <Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
-          <ProductSettings  usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
+          <ProductSettings soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
           submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={()=>this.setState({prclosereq:false})}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
           curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
@@ -2670,12 +2804,12 @@ class LandingPage extends React.Component{
         </Modal>
         <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
          <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Batch</div></div>
-         <BatchControl bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
+         <BatchControl soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
           liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
            startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
                    weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
         </Modal>
-        <Modal  x={true} ref={this.unusedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
+        <Modal  x={true} ref={this.unuProductSettingssedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
         {unused}   
         </Modal>
         <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
@@ -2701,6 +2835,2069 @@ class LandingPage extends React.Component{
   }
 
 }
+
+class DualPage extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {plannedBatches:[],buckMin:0,batchList:[], buckMax:100, prclosereq:false,histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},
+      live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,currentView:'',data:[],unusedList:{},cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
+      branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
+      curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
+      detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false}
+    this.exportVmap = this.exportVmap.bind(this);
+    this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
+    this.changeBranding = this.changeBranding.bind(this);
+    this.loadPrefs = this.loadPrefs.bind(this)
+    this.renderModal = this.renderModal.bind(this);
+    this.showDisplaySettings = this.showDisplaySettings.bind(this);
+    this.connectToUnit = this.connectToUnit.bind(this);
+    this.tareWeight = this.tareWeight.bind(this);
+    this.calWeight = this.calWeight.bind(this);
+    this.onRMsg = this.onRMsg.bind(this);
+    this.pModalToggle = this.pModalToggle.bind(this);
+    this.sendPacket = this.sendPacket.bind(this);
+    this.calWeightSend = this.calWeightSend.bind(this);
+    this.calWeightCancelSend = this.calWeightCancelSend.bind(this);
+    this.getCob = this.getCob.bind(this);
+    this.getUCob = this.getUCob.bind(this);
+    this.settingClick = this.settingClick.bind(this);
+    this.changeView = this.changeView.bind(this);
+    this.toggleLogin = this.toggleLogin.bind(this);
+    this.login = this.login.bind(this);
+    this.loginClosed = this.loginClosed.bind(this);
+    this.authenticate = this.authenticate.bind(this);
+    this.setAuthAccount = this.setAuthAccount.bind(this);
+    this.logout = this.logout.bind(this);
+    this.clearFaults = this.clearFaults.bind(this);
+    this.clearWarnings = this.clearWarnings.bind(this);
+    this.saveProductPassThrough = this.saveProductPassThrough.bind(this);
+    this.onPmdClose = this.onPmdClose.bind(this);
+    this.checkweight = this.checkweight.bind(this);
+    this.checkWeightSend = this.checkWeightSend
+    this.setTheme = this.setTheme.bind(this);
+    this.openBatch = this.openBatch.bind(this);
+    this.closeCWModal = this.closeCWModal.bind(this);
+    this.setTrans = this.setTrans.bind(this);
+    this.transChange = this.transChange.bind(this);
+    this.labChange = this.labChange.bind(this);
+    this.listChange = this.listChange.bind(this);
+    this.submitTooltip = this.submitTooltip.bind(this);
+    this.toggleGraph = this.toggleGraph.bind(this);
+    this.getBuffer = this.getBuffer.bind(this);
+    this.getRefBuffer = this.getRefBuffer.bind(this);
+    this.testWebView = this.testWebView.bind(this);
+    this.pause = this.pause.bind(this);
+    this.getBatchList = this.getBatchList.bind(this);
+    this.imgClick = this.imgClick.bind(this);
+    this.openUnused = this.openUnused.bind(this);
+    this.passThrough = this.passThrough.bind(this);
+    this.stopConfirmed = this.stopConfirmed.bind(this);
+    this.resume = this.resume.bind(this);
+    this.getProdList = this.getProdList.bind(this);
+    this.startBuf = this.startBuf.bind(this);
+    this.getData = this.getData.bind(this);
+    this.formatUSB = this.formatUSB.bind(this);
+    this.notify = this.notify.bind(this)
+    this.lgctl = React.createRef();
+//    this.tBut = React.createRef();
+    this.cwModal = React.createRef();
+    this.chBut = React.createRef();
+//    this.fclck = React.createRef();
+    this.ss = React.createRef();
+    this.sd = React.createRef();
+    this.lg = React.createRef();
+    this.btc = React.createRef();
+    this.se = React.createRef();
+    this.ste = React.createRef();
+    this.hh = React.createRef();
+//    this.tb = React.createRef();
+    this.bhg = React.createRef();
+    this.pmodal = React.createRef();
+    this.settingModal = React.createRef();
+    this.locateModal = React.createRef();
+//    this.batModal = React.createRef();
+    this.pmd = React.createRef();
+    this.cwc = React.createRef();
+    this.inputMod = React.createRef();
+    this.imgMD = React.createRef();
+    this.unusedModal = React.createRef();
+    this.stopConfirm = React.createRef();
+    this.am = React.createRef();
+    this.resetPass = React.createRef();
+    this.msgm = React.createRef();
+    this.lgoModal = React.createRef();
+    this.lockModal = React.createRef();
+    this.planStart = React.createRef();
+    this.manStart = React.createRef();
+    this.prgmd = React.createRef();
+  }
+  /*************Lifecycle functions start***************/
+  /* Most of the serverside communication will be handled here*/
+  componentDidMount(){
+    console.log('Component DualPage did mount')
+    var self = this;
+    this.state.timer = setInterval(function(){
+      if(self.state.connected){
+        if((Date.now() - liveTimer[self.state.curDet.mac]) > 1500){
+          self.setState({live:false, noupdate:false})
+        }
+      }
+    }, 1500)
+    ifvisible.setIdleDuration(300);
+    ifvisible.on("idle", function(){
+      self.logout()
+    });
+    //let socket = this.props.soc;
+    setTimeout(function (argument) {
+      self.loadPrefs();
+//      socket.emit('connectToUnit',{ip:location.host, app:'FTI_CW', app_name:'FTI_CW'})      
+    }, 500)   
+   // socket.on('testusb')
+    this.props.soc.on('userNames', function(p){
+       self.setState({usernames:p.det.data.array})
+      
+    })
+    this.props.soc.on('batchJson',function (json) {
+      // body...
+      console.log('batchJson',json.replace(/\s/g, '').replace(/\0/g, ''))
+      self.setState({plannedBatches:JSON.parse(json.replace(/\s/g, '').replace(/\0/g, ''))})
+    })
+    this.props.soc.on('confirmProdImport', function (c) {
+      // body...
+      if(typeof self.state.fram['InternalIP'] != 'undefined'){
+          if(window.location.host != self.state.fram['InternalIP']){
+            console.log('confrim import sent to remote')
+          }else{
+            self.sendPacket('importRestore')
+            setTimeout(function () {
+              // body...
+              self.sendPacket('getProdList')
+              self.notify('Successfully Imported Settings')
+            },2000)      
+          }
+      }
+      
+    })
+    /*****  Update Related Stuff ****/
+    this.props.soc.on('confirmUpdate', function(c){
+       if(typeof self.state.fram['InternalIP'] != 'undefined'){
+          if(window.location.host != self.state.fram['InternalIP']){
+            console.log('confirm update sent to remote')
+          }else{
+            self.prgmd.current.show('Files copied.. Checking display update')
+            self.props.soc.emit('updateDisplay')
+          }
+        }
+    })
+    this.props.soc.on('confirmDisplayUpdate', function (argument) {
+      self.setState({scpStatus:false})
+      if(typeof self.state.fram['InternalIP'] != 'undefined'){
+          if(window.location.host != self.state.fram['InternalIP']){
+          }else{
+            self.prgmd.current.show('Updating Checkweigher')
+            self.sendPacket('updateSystem')
+          }
+        }
+    })
+    this.props.soc.on('scpFileSize',function (argument) {
+      // body...
+      console.log('scpFileSize', argument)
+      self.setState({scpFileSize:argument.size, scpStatus:true})
+
+      setTimeout(function () {
+        // body...
+        self.props.soc.emit('pollFileSize', argument.filename)
+      },2000)
+
+    })
+    this.props.soc.on('fileSize', function (arg) {
+      // body...
+        console.log('fileSize', arg)
+        self.prgmd.current.show(arg.filename + ' '+(arg.size*100/self.state.scpFileSize).toFixed(0) + '% transferred')
+          
+      if(self.state.scpStatus){
+          setTimeout(function () {
+            // body...
+            self.props.soc.emit('pollFileSize', arg.filename)
+          }, 1000)
+      }
+    })
+    this.props.soc.on('prgNotify', function (str) {
+      // body...
+      self.prgmd.current.show(str)
+    })
+
+    this.props.soc.on('connectedClients',function (c) {
+      var fram = self.state.fram
+      fram.ConnectedClients = c
+      self.setState({connectedClients:c,fram:fram, noupdate:false})
+    })
+    this.props.soc.on('custJSON',function (json) {
+      if(self.state.customMap){
+        vMapV2 = json['@vMap']
+        vMapLists = json['@lists']
+        catMapV2 = json['@catmap']
+        labTransV2 = json['@labels']
+        self.setState({custMap:json,vMap:json, noupdate:false})
+      }else{
+          self.setState({custMap:json, noupdate:false})
+      }
+      
+    })
+    this.props.soc.on('resetConfirm', function (r) {
+      //socket.emit('locateReq',true);
+    })
+    this.props.soc.on('nif', function(iface){
+      self.setState({nifip:iface.address, nifnm:iface.netmask})
+    })
+    this.props.soc.on('version',function (version) {
+      self.setState({version:version})
+    })
+    this.props.soc.on('gw', function(gw){
+      self.setState({nifgw:gw})
+    })
+    this.props.soc.on('displayUpdate', function(){
+    //  self.refs.updateModal.toggle();
+    })
+    this.props.soc.on('updateProgress',function(r){
+      self.setState({progress:r})
+    })
+    this.props.soc.on('onReset', function(r){
+      self.setState({currentPage:'landing', curDet:''});
+    })
+  
+    this.props.soc.on('netpoll', function(m){
+      self.onNetpoll(m.data, m.det)
+      m = null;
+    })
+    this.props.soc.on('prefs', function(f) {
+      console.log('prefs')
+      console.log(f)
+      var detL = self.state.detL
+      var cnt = 0;
+      var _ip = ''
+      f.forEach(function (u) {
+        u.banks.forEach(function(b){
+          detL[b.mac] = null
+          cnt++;
+          _ip = b.ip
+        })
+      })
+      if(cnt == 1){
+        self.props.soc.emit('locateUnicast', _ip, true)
+      }else{
+        self.props.soc.emit('locateReq',true)
+      }
+      setTimeout(function (argument) {
+      // body...
+      if(f.length == 1){
+        if(!self.state.connected){
+          if(f[0].banks.length == 1){
+            if(vdefByMac[f[0].banks[0].mac]){
+              console.log('call connectToUnit')
+               self.connectToUnit(f[0].banks[0])
+            }else{
+              setTimeout(function () {
+                if(!self.state.connected){
+                  if(vdefByMac[f[0].banks[0].mac]){
+                    self.connectToUnit(f[0].banks[0])
+                  }else{
+                    console.log('no vdef', vdefByMac)
+                  }
+                }
+              },4000)
+            }
+          }
+          
+        } 
+      }
+    },800)
+
+      self.setState({mbunits:f, detL:detL})
+    })
+    this.props.soc.on('notify',function(msg){
+      self.notify(msg)
+    })
+    this.props.soc.on('progressNotify',function(pk){
+      var on = pk.on;
+      var msg = pk.msg;
+      var percentage = pk.percentage
+    })
+    this.props.soc.on('noVdef', function(det){
+      setTimeout(function(){
+        self.props.soc.emit('vdefReq', det);
+      }, 1000)
+    })
+    this.props.soc.on('notvisible', function(e){
+      toast('Detectors located, but network does not match')
+    })
+    this.props.soc.on('prodNames',function (pack) {
+      // body...
+      console.log('prodNames')
+      if(self.state.curDet.ip == pack.ip){
+        self.setState({pList:pack.list, prodNames:pack.names, noupdate:false})
+      }
+    })
+    this.props.soc.on('locatedResp', function (e) {
+      console.log(e,924)
+      try{
+        if(typeof e[0] != 'undefined'){
+          var dets = self.state.detL;
+          var macs = self.state.macList.slice(0);
+          
+          
+          var detectors = [];
+          e.forEach(function(d){
+          
+            macs.push(d.mac)
+            dets[d.mac] = d;
+            if(macs.indexOf(d.mac) == -1){
+              macs.push(d.mac)
+              dets[d.mac] = d
+            }          
+            self.props.soc.emit('vdefReq', d);
+          })
+          var mbunits = self.state.mbunits;
+          var cnt = 0;
+          var curbnk 
+          mbunits.forEach(function(u){
+            var banks = u.banks.map(function(b){
+              cnt++;
+              if(dets[b.mac]){
+                var _bank = dets[b.mac]
+                _bank.interceptor = false;
+                curbnk = _bank
+                return _bank
+              }else{
+                return b
+              }
+            })
+            u.banks = banks;
+          })
+          var curDet = self.state.curDet;
+
+          if(self.state.currentPage != 'landing'){
+            if(dets[curDet.mac]){
+              curDet = dets[curDet.mac];
+            }
+            else{
+            }
+      }
+  
+      var nfip = self.state.nifip;
+      if(e.length > 1){
+        nfip = e[0].nif_ip
+      }
+      self.setState({dets:e, detL:dets, mbunits:mbunits,curDet:curDet, macList:macs, nifip:nfip})
+    }
+      }catch(er){
+      }
+      self.props.soc.emit('getTimezones')
+    });
+      this.props.soc.on('dispSettings', function(disp){
+        self.setState({automode:disp.mode})
+      })  
+    
+    this.props.soc.on('paramMsgCW', function(data) {
+      self.onParamMsg(data.data, data.det)
+      data = null;
+    })
+    this.props.soc.on('rpcMsg', function (data) {
+      self.onRMsg(data.data, data.det)
+      data = null;
+    })
+    this.props.soc.on('loggedIn', function(data){
+      self.setState({curUser:data.id, level:data.level})
+    })
+
+    this.props.soc.on('logOut', function(){
+      self.setState({curUser:'', level:0})
+    })
+    this.props.soc.on('accounts', function(data){
+      self.setState({accounts:data.data})
+    })
+
+
+    this.props.soc.on('authResp', function(pack){
+      if(pack.reset){
+         self.resetPass.current.show(pack)
+        self.setAuthAccount(pack)
+      }else{
+        self.setAuthAccount(pack)
+  
+      }
+    })
+    this.props.soc.on('authFail', function(pack){
+      self.am.current.show(pack.user, pack.ip)
+      self.setAuthAccount({user:'Not Logged In', level:0, user:-1})
+    })
+    this.props.soc.on('passwordNotify',function(e){
+      console.log(1117,e)
+      var message = 'Call Fortress with ' + e.join(', ');
+      self.msgm.current.show(message)
+    })
+    this.props.soc.on('timezones',function (e) {
+      // body...
+      self.setState({timezones:e})
+    })
+    this.props.soc.on('batchList', function (list) {
+      self.setState({batchList:list.reverse()})
+    })
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    //by specifying noupdate in setState, we can hold off on render
+    if(true ==  nextState.noupdate){
+      return false;
+    }
+    return true;
+  }
+  /*************Lifecycle functions end  ***************/
+
+  /****** Login Functions start******/
+  toggleLogin(){
+    var self = this;
+    if(this.state.user == -1){
+      this.lgctl.current.login();
+      this.setState({loginOpen:true})
+    }else{
+      setTimeout(function (argument) {
+        // body...
+         self.lgoModal.current.show(self.logout, 0, "You will be logged out")
+      },100)
+     
+    }
+  }
+  logout(){
+    if(this.state.level != 0){
+
+     // toast("Logged out")
+      var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGOUT']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      this.setState({level:0, userid:0,user:-1, username:'Not Logged In',noupdate:false})
+
+    }
+  }
+  login(v){
+    this.setState({level:v,noupdate:false})
+  }
+  setAuthAccount(pack){
+    var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGIN']
+    var pkt = rpc[1].map(function (r) {
+      if(!isNaN(r)){
+        return r
+      }else{
+        return pack.user
+      }
+    });
+    var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+    this.props.soc.emit('rpc', {ip:this.props.ip, data:packet})
+    console.log(pack,668)
+    this.setState({level:pack.level, username:pack.username,noupdate:false, update:true, userid:pack.user+1, user:pack.user}) 
+  }
+  authenticate(user,pswd){
+    console.log('authenticate here')
+    this.props.soc.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.state.curDet.ip})
+  }
+  loginClosed(){
+    this.setState({loginOpen:false});
+  }
+  resetPassword(pack,v){
+    var packet = {ip:pack.ip, data:{user:pack.user, password:v}}
+    //console.log('packet',packet)
+    this.props.soc.emit('writePass', packet)
+  }
+  /****** Login Functions end******/
+
+  changeView (d) {
+    this.setState({currentView:d[0], data:d[1]})
+  }
+  settingClick (s,n) {
+    if((Array.isArray(s))&&(s[0] == 'get_accounts')){
+      console.log('get accounts')
+    }else if((Array.isArray(s))&&(s[0] == 'reboot_display')){
+
+    }else if((Array.isArray(s))&&(s[0] == 'format_usb')){
+
+    }else{
+      var set = this.state.data.slice(0)
+      if(Array.isArray(s)){
+        set.push(s)
+      }else{
+        set.push(s)
+        set.push(n)
+      }
+      var self = this;
+      setTimeout(function () {
+        self.changeView(['SettingsDisplay',set]);
+      },100)
+    }
+  }
+
+  loadPrefs() {
+    console.log('loadPrefs()')
+    if(this.props.soc.sock.readyState  ==1){
+      console.log('socket is ready')
+      this.props.soc.emit('getVersion',true);
+      this.props.soc.emit('getPrefsCW',true);
+      this.props.soc.emit('getDispSettings');
+      this.props.soc.emit('getCustomJSON',JSON.stringify(vdefMapV2))
+    }
+  }
+  getCob (sys,prod,dyn, fram) {
+    var vdef = vdefByMac[this.state.curDet.mac]
+    var _cvdf = JSON.parse(JSON.stringify(vdef[4][0]))
+    var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram,0)
+    vdef = null;
+    _cvdf = null;
+    return cob
+  }
+  getPCob (sys,prod,dyn, fram) {
+    var vdef = vdefByMac[this.state.curDet.mac]
+    var _cvdf = JSON.parse(JSON.stringify(vdef[6]['CWProd']))
+    var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram,sys['PassAccAdvProdEdit'])
+    vdef = null;
+    _cvdf = null;
+    return cob
+  }
+  getUCob (sys,prod,dyn, fram) {
+    console.log('getUCob')
+    var vdef = vdefByMac[this.state.curDet.mac]
+    var _cvdf = JSON.parse(JSON.stringify(vdef[6]['Unused']))
+    console.log(_cvdf)
+    var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram)
+    vdef = null;
+    _cvdf = null;
+    return cob
+  }
+  notify(msg){
+    /*
+      if(this.batModal.current.state.show){
+        this.batModal.current.showMsg(msg)
+      }else if(this.pmodal.current.state.show){
+        this.pmodal.current.showMsg(msg)
+      }else if(this.settingModal.current.state.show){
+        this.settingModal.current.showMsg(msg)
+      }else if(this.cwModal.current.state.show){
+        this.cwModal.current.showMsg(msg)
+      }else{
+        this.msgm.current.show(msg)
+      
+
+      }
+      */
+  }
+  /******************Parse Packets start*******************/
+  onParamMsg(e,u){
+    console.log('onParamMsg. IP '+u.ip+', Current IP '+this.state.curDet.ip)
+     if(this.state.curDet.ip == u.ip){
+      var self = this;
+      liveTimer[this.state.curDet.mac] = Date.now()
+      if(typeof e != 'undefined'){
+        var pVdef = vdefByMac[this.state.curDet.mac][1]
+        var vdf = vdefByMac[this.state.curDet.mac][0]
+        if(e.type == 0){
+          SingletonDataStore.sysRec = e.rec;
+          var language = vdf['@labels']['Language']['english'][e.rec['Language']];
+          if(language == 'russian' || language == 'polish' || language == 'chinese'){
+            //language = 'korean'
+          }
+          if(e.rec['RemoteDisplayLock'] == 1){
+            if(typeof this.state.fram['InternalIP'] != 'undefined'){
+              if(window.location.host != this.state.fram['InternalIP']){
+                this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
+              }
+            }
+            
+          }
+          if(this.state.branding == 'SPARC'){
+            e.rec['@branding'] = 0;
+          }else{
+            e.rec['@branding'] = 1;
+          }
+          e.rec['@dispversion'] = DISPLAYVERSION;
+          if(this.state.customMap){
+            e.rec['@customstrn'] = 1;
+          }else{
+            e.rec['@customstrn'] = 0;
+          }
+          var lcms = new Uint64LE(e.rec['LastCalTime'].data)
+          e.rec['LastCalTime'] = lcms
+           e.rec['LastCalTimeStr'] = new Date(parseInt(lcms.toString())).toISOString().split('T')[0]
+          if(e.rec['AutoLogoutMinutes'] != this.state.srec['AutoLogoutMinutes']){
+            ifvisible.setIdleDuration(e.rec['AutoLogoutMinutes']*60)
+          }
+          this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), unusedList:this.getUCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
+        }else if(e.type == 1){
+          this.getProdList()
+          SingletonDataStore.prodRec = e.rec;
+          setTimeout(function (argument) {
+            // body...
+            if(!self.state.init){
+              self.getRefBuffer(7)
+            }
+          },200)
+          this.setState({noupdate:false,prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), unusedList:this.getUCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
+        }else if(e.type == 2){
+          var iobits = {}
+          var noupdate = true
+          SingletonDataStore.dynRec = e.rec;
+          if (vdf['@defines']['PHYSICAL_INPUT_NAMES']){
+            vdf['@defines']['PHYSICAL_INPUT_NAMES'].forEach(function (b) {
+              // body...
+            if(typeof e.rec[b] != 'undefined'){
+                  iobits[b] = e.rec[b]
+                }
+            })
+            vdf['@defines']['LOGICAL_OUTPUT_NAMES'].forEach(function (b) {
+              // body...
+            if(typeof e.rec[b] != 'undefined'){
+                  iobits[b] = e.rec[b]
+                }
+            })
+            if(isDiff(iobits,this.state.ioBITs)){
+                noupdate = false;
+               // console.log(1347, iobits)
+              }
+          
+          }
+          if(e.rec['EditProdNeedToSave'] != self.state.rec['EditProdNeedToSave']){
+            noupdate=false;
+          }
+            var faultArray = [];
+            var warningArray = [];
+
+          pVdef[8].forEach(function(f){
+          if(e.rec[f] != 0){
+            faultArray.push(f)
+              if(self.state.prec[f+'Warn'] == 1){
+                //warningArray.push(f)
+              }
+            }
+          });
+          pVdef[9].forEach(function(f){
+          if(e.rec[f] != 0){
+            warningArray.push(f)
+            }
+          });
+          
+            if(this.state.faultArray.length != faultArray.length){
+              noupdate = false;
+            }else if(this.state.warningArray.length != warningArray.length){
+              noupdate = false;
+            }else{
+              faultArray.forEach(function (f) {
+                if(self.state.faultArray.indexOf(f) == -1){
+                  noupdate = false; 
+                }
+              })
+              warningArray.forEach(function (w) {
+                // body...
+                if(self.state.warningArray.indexOf(w) == -1){
+                  noupdate = false;
+                }
+              })
+            }
+          if(e.rec['Taring'] != this.state.rec['Taring']){
+            if(e.rec['Taring'] == 1){
+              //toast('Taring..')
+//              this.tBut.current.tStart('Taring');
+            }else if(e.rec['Taring'] == 2){
+//              this.tBut.current.tDone('Tared')
+            }else{
+//              this.tBut.current.tEnd();
+            }
+          }
+          var pw = 0;
+          if(typeof this.state.crec['PackWeight'] != 'undefined'){
+            pw = this.state.crec['PackWeight']
+          }
+           if((e.rec['CheckingWeight'] != this.state.rec['CheckingWeight']) && (typeof this.state.rec['CheckingWeight'] != 'undefined')){
+            if(e.rec['CheckingWeight'] == 1){
+              //toast('Taring..')
+              this.chBut.current.tStart('Check Weight');
+              this.cwModal.current.show();
+           //  setTimeout(function (argument) {
+               // body...
+               this.setState({waitCwgt:true, noupdate:false})
+             //},150)
+            }else{
+              console.log('chBut current tEnd')
+              this.chBut.current.tEnd();
+
+             this.cwModal.current.show();
+
+              this.setState({waitCwgt:false, noupdate:false})
+          
+          
+            }
+          }
+           if((e.rec['RejSetupInvalid'] != this.state.rec['RejSetupInvalid'])){
+            if(e.rec['RejSetupInvalid'] == 1){
+              //toast('Taring..')
+              this.notify('Reject Setup is invalid!')
+          
+            }
+          }
+          if(e.rec['DateTime'] != this.state.rec['DateTime']){
+//            this.fclck.current.setDate(e.rec['DateTime'])
+          }
+          var cob = this.state.cob
+          var pcob = this.state.pcob
+          if(this.state.updateCount == 0){
+            var lw = 0;
+            if(typeof e.rec['LiveWeight'] != 'undefined'){
+              lw = e.rec['LiveWeight']
+            }
+          
+
+
+              this.ss.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
+              if(this.sd.current){
+                //console.log('update Live Weight')
+                this.sd.current.updateLiveWeight(lw)
+              }
+              cob = this.getCob(this.state.srec, this.state.prec, e.rec,this.state.fram);
+              pcob = this.getPCob(this.state.srec, this.state.prec, e.rec,this.state.fram)
+            noupdate = false
+          }
+          if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
+            noupdate = false;
+          }
+          if(e.rec['BatchRunning'] != this.state.rec['BatchRunning']){
+            if(typeof this.state.rec['BatchRunning'] != 'undefined'){
+              if(e.rec['BatchRunning'] == 1){
+                //toast('Batch Started');
+                this.ste.current.showMsg('Batch Started')
+                //this.lg.current.clearHisto();
+                setTimeout(function () {
+                  self.getRefBuffer(7)
+                  // body...
+                },100)
+              }else if(e.rec['BatchRunning'] == 2){
+               // toast('Batch Paused')
+               this.ste.current.showMsg('Batch Paused')
+              }else{
+                //this.msgm.current.show('Batch Stopped')
+                this.ste.current.showMsg('Batch Stopped')
+               //  toast('Batch Stopped')
+              }
+              noupdate = false
+            }
+            if(e.rec['BatchRunComplete'] != this.state.rec['BatchRunComplete']){
+              if(typeof this.state.rec['BatchRunComplete'] != 'undefined'){
+                if(e.rec['BatchRunComplete'] == 1){
+                  this.msgm.current.show('Batch Completed')
+                  this.ste.current.showMsg('Batch Completed')
+                }
+              }
+            }
+          }
+          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
+          
+          
+        }else if(e.type == 3){
+          e.rec.Nif_ip = this.state.nifip
+          e.rec.Nif_gw = this.state.nifgw
+          e.rec.Nif_nm = this.state.nifnm
+          e.rec.Nif_mac = this.state.curDet.mac
+          e.rec.ConnectedClients = this.state.connectedClients
+          SingletonDataStore.framRec = e.rec;
+          if(this.state.srec['RemoteDisplayLock'] == 1){
+            if(typeof e.rec['InternalIP'] != 'undefined'){
+              if(window.location.host != e.rec['InternalIP']){
+                this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
+              }
+            }
+            
+          }
+          this.setState({noupdate:false,fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
+        }else if(e.type == 5){
+          //toast('Weight Record - this message will be removed')
+          console.log('checkweighing pack')
+          var packms = new Uint64LE(e.rec['PackTime'].data)
+          e.rec['PackTime'] = packms
+          if((e.rec['PackTime'] != this.state.crec['PackTime']) ||(e.rec['TotalCnt'] != this.state.crec['TotalCnt']) ||(e.rec['CheckWeightCnt'] != this.state.crec['CheckWeightCnt'])){
+          console.log('firstpack')
+          var del = 25
+          var dur = 50
+          if(typeof this.state.prec["SampDelEnd"] != 'undefined'){
+            console.log('This should hit')
+            del = this.state.prec['SampDelEnd'];
+            dur = this.state.prec['SampDur'];
+          }
+          var ms = new Uint64LE(e.rec['BatchStartMS'].data)
+          var sms = new Uint64LE(e.rec['SampleStartMS'].data)
+          console.log(inputSrcArr, outputSrcArr)
+          console.log(1217, ms.toString(), Date.now())
+          console.log('passed')
+          var tz = -500
+          var tzms = (tz/100)*60*60*1000
+          var neg = true
+          if(typeof this.state.srec['Timezone'] != 'undefined'){
+            tz = uintToInt(this.state.srec['Timezone'], 16)
+            var neg = (tz < 0)
+          }
+          
+          var hours = Math.floor(Math.abs(tz)/100)*60*60*1000
+          var mins = ((Math.abs(tz)%100)/100)*60*60*1000
+
+          if(neg){
+            hours = hours * -1
+            mins = mins * -1
+          }
+          
+
+          e.rec['BatchStartDate'] = new Date(parseInt(ms.toString())) //+ hours + mins)
+          e.rec['SampleStartDate'] = new Date(parseInt(sms.toString())) //+ hours + mins)
+          e.rec['BatchStartMS'] = parseInt(ms.toString())
+          e.rec['SampleStartMS'] = parseInt(sms.toString())
+          e.rec['packTare'] = this.state.srec['TareWeight'];
+          e.rec['packCal'] = this.state.srec['CalFactor']
+          SingletonDataStore.crec = e.rec;
+          this.setState({crec:e.rec, noupdate:true})
+          this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+              this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
+          this.hh.current.parseCrec(e.rec)
+          if(this.btc.current){
+            this.btc.current.parseCrec(e.rec)
+          }
+          var pkgwgt = 0;
+          if(typeof this.state.prec['PkgWeight'] != 'undefined'){
+            pkgwgt = this.state.prec['PkgWeight']
+          }
+          this.ss.current.setState({crec:e.rec, pkgwgt:pkgwgt})
+          this.se.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
+//          this.tb.current.update(e.rec['PackWeight']);
+          //cwc check
+          if(e.rec['WeightPassed'] == 9){
+            this.setState({cwgt:e.rec['PackWeight'], noupdate:false})
+          }
+          }else{
+            console.log('repeated pack')
+          }
+
+
+        }else if(e.type == 6){
+          var cnt = 0;
+          if(typeof this.state.crec['TotalCnt'] != 'undefined'){
+            cnt = this.state.crec['TotalCnt']
+          }
+          console.log('Histogram Buffer',e)
+          //if(cnt != 0){
+          //  this.lg.current.pushWeight(e.rec['HistogramPacks'].slice(0-cnt))
+          //}
+            //this.setState({init:true})
+        }else if(e.type == 7){
+          console.log('Histogram Batch?', e)
+          if(this.btc.current){
+              var buckets = 100;
+              var bucketSize = 1;
+              if(typeof this.state.prec['ProdName'] != 'undefined'){
+                  bucketSize = this.state.prec['HistogramBucketSize'];
+                  buckets = this.state.prec['HistogramBuckets']
+              }    
+              this.btc.current.parseHisto(e.rec['HistogramBatch'], bucketSize, buckets, e.rec['BucketMax'], e.rec['BucketMin'])
+          }
+          this.lg.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
+          this.setState({buckMin:e.rec['BucketMin'], buckMax:e.rec['BucketMax'], init:true})
+        }else if(e.type == 15){
+          var prodList = this.state.prodList;
+          var prodListRaw = this.state.prodListRaw
+          prodList[e.prodNo] = Object.assign({},e.rec);
+          prodListRaw[e.prodNo] = e.raw
+          this.setState({prodList:prodList, prodListRaw:prodListRaw, noupdate:false})
+        }
+      }
+    }
+  }
+  onRMsg(e,det){
+    console.log('onRMsg',e)
+  }
+  getProdList(){
+    this.sendPacket('getProdList')
+  }
+  /******************Parse Packets end*******************/
+  
+  sendPacket(n,v){
+    //LandingPage.sendPacket
+    var self = this;
+    console.log(n,v)
+    var vdef = vdefByMac[this.state.curDet.mac]
+    if(typeof n == 'string'){
+      if(n == 'switchProd'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NO_APIWRITE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      }else if(n== 'getProdList'){
+        this.props.soc.emit('getProdList', this.state.curDet.ip)
+      }else if(n=='deleteProd'){
+      var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEL_NO_WRITE']
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          if(isNaN(v)){
+            return 0
+          }else{
+            return parseInt(v)
+          }
+        }
+      })
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }else if(n == 'copyCurrentProd'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }else if(n == 'copyDefProd'){
+      var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_DEFAULT']
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          if(isNaN(v)){
+            return 0
+          }else{
+            return parseInt(v)
+          }
+        }
+      })
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }else if(n == 'copyFacProd'){
+      var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_FACTORY']
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          if(isNaN(v)){
+            return 0
+          }else{
+            return parseInt(v)
+          }
+        }
+      })
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'deleteAll'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_DELETEALL']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'deleteBatch'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PLANBATCHDELETE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            return 0;
+          }
+        })
+         var buf = Buffer.alloc(4)
+        buf.writeUInt32LE(parseInt(v),0)
+     //  var strArg = buf; 
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt, buf);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'clearFaults'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARFAULTS']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'clearWarnings'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARWARNINGS']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'checkWeight'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'checkWeightSend'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            return 0
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'cancelCW'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHTCANCEL']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            return 0
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'updateSystem'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_UPDATESYSTEM']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'importRestore'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_IMPORTRESTORE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'restoreDefault'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_RESTORE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'restoreBackup'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_RESTORE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'backupProduct'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_SAVE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'getProdSettings'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'saveProduct'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDWRITE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        setTimeout(function (argument) {
+          self.props.soc.emit('getProdList', self.state.curDet.ip)
+        },150)
+      }else if( n == 'refresh'){
+      var rec = 0;
+      if(v){
+        rec = v
+      }
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
+      var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],rec,0])
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      
+      }else if( n == 'refresh_buffer'){
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
+      var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],v,0])
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      
+      }else if( n == 'BatchStart'){
+     
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if( n == 'BatchStartSel'){
+     
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
+      var buf = Buffer.alloc(4)
+      buf.writeUInt32LE(v,0)
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], buf)
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if( n == 'BatchStartNew'){
+     
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
+    
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], v)
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if( n == 'BatchPause'){
+     
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PAUSEBATCH']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if( n == 'BatchEnd'){
+      var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STOPBATCH']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if(n=='DateTime'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_RPC_DATETIMEWRITE']
+  
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      console.log('DATE TIME SENT', this.state.curDet.ip)
+      }else if(n=='DaylightSavings'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
+  
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          if(isNaN(v)){
+            return 0
+          }else{
+            return parseInt(v)
+          }
+        }
+      })
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }else if(n=='Timezone'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_TIMEZONE_WRITE']
+  
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          if(isNaN(v)){
+            return 0
+          }else{
+            return parseInt(v)
+          }
+        }
+      })
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      this.props.soc.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+      }
+    }else{
+      console.log('here')
+      if(n['@rpcs']['toggle']){
+
+        var arg1 = n['@rpcs']['toggle'][0];
+        var arg2 = [];
+        for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
+          if(!isNaN(n['@rpcs']['toggle'][1][i])){
+            arg2.push(n['@rpcs']['toggle'][1][i])
+          }else{
+            arg2.push(v)
+          }
+        }
+        var packet = dsp_rpc_paylod_for(arg1, arg2);
+      
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }else if(n['@rpcs']['write']){
+      console.log('should be here')
+      var arg1 = n['@rpcs']['write'][0];
+      var arg2 = [];
+      var strArg = null;
+      var flag = false
+      for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
+        if(!isNaN(n['@rpcs']['write'][1][i])){
+          ////console.log('where')
+          arg2.push(n['@rpcs']['write'][1][i])
+        }else if(n['@rpcs']['write'][1][i] == n['@name']){
+          ////console.log('the')
+          if(!isNaN(v) && (n['@type'] != 'int32')){
+            arg2.push(v)
+          }
+          else{
+            arg2.push(0)
+            strArg=v
+          }
+          flag = true;
+        }else{
+          ////console.log('fuck')
+          var dep = n['@rpcs']['write'][1][i]
+          if(dep.charAt(0) == '%'){
+
+          }
+        }
+      }
+      if(n['@rpcs']['write'][2]){
+        if(Array.isArray(n['@rpcs']['write'][2])){
+          strArg = n['@rpcs']['write'][2]
+        }
+        else if(typeof n['@rpcs']['write'][2] == 'string'){
+          strArg = v
+        }
+        flag = true;
+      }
+      if(!flag){
+        strArg = v;
+      }
+      if(n['@type'] == 'int32'){
+        var buf = Buffer.alloc(4)
+        buf.writeUInt32LE(parseInt(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'weight'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float_dist'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'belt_speed'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }
+      console.log(819, strArg, typeof strArg, v)
+    
+      var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+      console.log(packet)
+        
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+    }else if(n['@rpcs']['vfdwrite']){
+      var arg1 = n['@rpcs']['vfdwrite'][0];
+      var arg2 = [];
+      var ind = n['@rpcs']['vfdwrite'][2][0];
+      var strArg = null;
+      
+      for(var i = 0; i<n['@rpcs']['vfdwrite'][1].length;i++){
+        if(!isNaN(n['@rpcs']['vfdwrite'][1][i])){
+          arg2.push(n['@rpcs']['vfdwrite'][1][i])
+        }else if(n['@rpcs']['vfdwrite'][1][i] == n['@name']){
+          if(!isNaN(v)){
+            arg2.push(v)
+          }else{
+            strArg=v
+            
+          }
+        }
+       
+    }
+     var buf = Buffer.alloc(5)
+        buf.writeUInt8(ind,0)
+        if((n['@type'] == 'float')||(n['@type'] == 'weight')||(n['@type'] == 'float_dist')||(n['@type'] == 'belt_speed')||(n['@type'] == 'fdbk_rate')){
+          buf.writeFloatLE(parseFloat(v),1)
+        }else{
+          buf.writeUInt32LE(parseInt(v),1);
+        }
+        
+        var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      }else if(n['@rpcs']['apiwrite']){
+      var arg1 = n['@rpcs']['apiwrite'][0];
+      var arg2 = [];
+      var strArg = null;
+      for(var i = 0; i<n['@rpcs']['apiwrite'][1].length;i++){
+        if(!isNaN(n['@rpcs']['apiwrite'][1][i])){
+          arg2.push(n['@rpcs']['apiwrite'][1][i])
+        }else if(n['@rpcs']['apiwrite'][1][i] == n['@name']){
+          if(!isNaN(v)){
+            arg2.push(v)
+          }else{
+            strArg=v
+            
+          }
+        }
+      }
+      if(n['@type'] == 'int32'){
+        var buf = Buffer.alloc(4)
+        buf.writeUInt32LE(parseInt(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'weight'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }else if(n['@type'] == 'float_dist'){
+        var buf = Buffer.alloc(4)
+        buf.writeFloatLE(parseFloat(v),0)
+        strArg = buf;
+      }
+      var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+        
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }else if(n['@rpcs']['clear']){
+      var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
+        
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }
+    }
+  }
+  tareWeight(){
+    if(this.state.connected){
+      var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_TARE_WEIGHT_TARE']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }
+  }
+  calWeight(){
+    this.cwModal.current.toggle()
+  } 
+  calWeightSend(){
+    if(this.state.connected){
+      var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_USE']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }
+  }
+  calWeightCancelSend(){
+    if(this.state.connected){
+      var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_CANCEL']
+      var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
+      this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+    }
+  }
+  changeBranding(){}
+
+  /**************Batch control******************/
+  start(){
+    var self = this;
+    if((this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])){
+      if(this.state.srec['BatchMode'] == 0){
+        this.sendPacket('BatchStart')
+        this.setState({start:false, pause:true})
+      }else if(this.state.srec['BatchMode'] == 1){
+        this.props.soc.emit('getPlannedBatches', self.state.curDet.ip)
+        setTimeout(function(argument) {
+          self.planStart.current.toggle();
+
+
+          // body...
+        },200)
+        
+      }else if(this.state.srec['BatchMode'] == 2){
+          this.manStart.current.toggle();
+
+
+          // body...
+        
+      }
+    }else{
+      this.msgm.current.show('Access Denied')
+    }
+    
+  }
+  resume(){
+    //if(this.state.srec['BatchMode'] == 0){
+      this.sendPacket('BatchStart')
+      this.setState({start:false, pause:true})
+   // }
+  }
+  startSel(n){ this.sendPacket('BatchStartSel',n); }
+  startBuf(b){ this.sendPacket('BatchStartNew',b); }
+  pause(){
+    this.sendPacket('BatchPause')
+    this.setState({start:true, pause:false, stop:true})
+  }
+  stop(){
+    var self =this;
+    this.sendPacket('BatchPause')
+    this.setState({start:true, pause:false, stop:true})
+    setTimeout(function(){
+      self.stopConfirm.current.show()
+    }, 150)
+    
+  }
+  stopConfirmed(){
+    if((this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])){
+      this.sendPacket('BatchEnd')
+      this.setState({start:true, pause:false})
+     }else{
+      this.msgm.current.show('Access Denied')
+    }
+  }
+  /****************Batch control end**************/
+  onNetpoll(){
+    console.log('netpoll')
+  }
+  showDisplaySettings(){
+    console.log('why is this looping')
+    var self = this;
+    if(this.state.connected){
+      this.sendPacket('refresh')
+    }else{
+      this.props.soc.emit('locateReq',true)
+    }
+    setTimeout(function () {
+      self.settingModal.current.toggle()
+    },100)
+    setTimeout(function () {
+        self.props.soc.emit('getConnectedClients')
+    },200)
+ 
+  }
+  connectToUnit(det){
+    console.log('connect To Unit '+det.ip)
+    var self = this;
+    this.props.soc.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
+    var unit = {name:det.name, type:'single', banks:[det]}
+    setTimeout(function (argument) {
+      // body...
+      console.log(1308, unit)
+      self.props.soc.emit('savePrefsCW', [unit])
+    },150)
+    setTimeout(function (argument) {
+      // body...
+      self.sendPacket('refresh')
+    },300)
+  //  setTimeout(function(){socket.emit('getProdList',det.ip)},150)
+    this.setState({curDet:det, connected:true})
+  }
+
+  pModalToggle(){
+    var self = this;
+    if(typeof this.state.curDet.ip != 'undefined'){
+        this.pmodal.current.toggle();
+      this.props.soc.emit('getProdList', this.state.curDet.ip)
+      setTimeout(function (argument) {
+        // body...
+        self.sendPacket('getProdSettings',self.state.srec['ProdNo'])
+      },500)
+    }
+  
+  }
+  imgClick(){
+    console.log('clicked')
+    this.imgMD.current.toggle();
+    //location.reload();
+  }
+  getBuffer(){
+    this.sendPacket('refresh_buffer',6)
+  }
+  getRefBuffer(){
+    this.sendPacket('refresh_buffer',7)
+  }
+  clearFaults(){
+    this.sendPacket('clearFaults');
+
+  }
+  clearWarnings(){
+    this.sendPacket('clearWarnings')
+  }
+  openBatch(){
+    var self = this;
+    if((typeof this.state.curDet.ip != 'undefined')&&(typeof this.state.crec['TotalWeight'] != 'undefined')){
+      this.sendPacket('refresh', 7)
+
+      this.batModal.current.toggle();
+      setTimeout(function (argument) {
+        // body...
+        console.log('send getPlannedBatches', self.state.curDet.ip)
+        self.props.soc.emit('getPlannedBatches', self.state.curDet.ip)
+        self.props.soc.emit('getProdList', self.state.curDet.ip)
+        self.props.soc.emit('getBatches')
+      },100)
+
+    }
+  }
+  getBatchList(){
+    console.log('getting planned batch list')
+    this.props.soc.emit('getPlannedBatches', this.state.curDet.ip)
+  }
+  onPmdClose(){
+    if(this.state.rec['EditProdNeedToSave'] == 1){
+        this.pmd.current.show(function () {});
+        this.setState({prclosereq:true})
+    } 
+  }
+  checkweight(){
+    if((this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccCheckWeight'])){
+      this.sendPacket('checkWeight')
+    }else{
+      this.msgm.current.show('Access Denied');
+      this.chBut.current.tEnd();
+    }
+    
+  }
+  checkWeightSend(cw,mv){
+    var buf = Buffer.alloc(8)
+    buf.writeFloatLE(cw,0)
+    buf.writeFloatLE(mv,4)
+    this.sendPacket('checkWeightSend', buf)
+  }
+  setTrans(v){
+    var srec = this.state.srec
+    srec['@customstrn'] = v
+    if(v == 0){
+      vMapV2 = vdefMapV2['@vMap']
+      vMapLists = vdefMapV2['@lists']
+      catMapV2 = vdefMapV2['@catmap']
+      labTransV2 = vdefMapV2['@labels']
+      this.setState({customMap:false, vmap:vdefMapV2,noupdate:false, srec:srec,cob:this.getCob(srec, this.state.prec, this.state.rec,this.state.fram)})
+    }else if(v == 1){
+
+      vMapV2 = this.state.custMap['@vMap']
+      vMapLists = this.state.custMap['@lists']
+      catMapV2 = this.state.custMap['@catmap']
+      labTransV2 = this.state.custMap['@labels']
+
+      this.setState({customMap:true, vmap:this.state.custMap,noupdate:false, srec:srec,cob:this.getCob(srec, this.state.prec, this.state.rec,this.state.fram)})
+    }
+  }
+  setTheme(v){
+    var srec = this.state.srec
+
+      srec['@branding'] = v
+    if(v == 0){
+      this.setState({branding:'SPARC',noupdate:false, srec:srec,cob:this.getCob(srec, this.state.prec, this.state.rec,this.state.fram)})
+    }else if(v == 1){
+      this.setState({branding:'FORTRESS',noupdate:false, srec:srec,cob:this.getCob(srec, this.state.prec, this.state.rec,this.state.fram)})
+    }
+  }
+  closeCWModal(){
+    if(this.cwModal.current){
+      this.cwModal.current.close();
+    }
+  }
+  reboot(){
+    this.props.soc.emit('reboot')
+  }
+  update(){
+    //toast('Update in progress..')
+    this.props.soc.emit('updateCW')
+  }
+  formatUSB(){
+    this.props.soc.emit('formatInternalUsb')
+    //this.sendPacket('formatUSB',0)
+  }
+
+  /**** Update Translations****/
+  transChange(n,l,v){
+    var custMap = this.state.custMap
+    custMap['@vMap'][n]['@translations'][l]['name'] = v
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
+  }
+  labChange(n,l,v){
+    var custMap = this.state.custMap
+    custMap['@labels'][n][l]['name'] = v
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
+  }
+  submitTooltip(n,l,v){
+    var custMap = this.state.custMap
+    custMap['@vMap'][n]['@translations'][l]['description'] = v
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
+  }
+  listChange(n,l,v){
+    var custMap = this.state.custMap
+    custMap['@lists'][n][l] = v
+    this.props.soc.emit('saveCustomJSON',JSON.stringify(custMap));
+  }
+  exportVmap(){
+    fileDownload(JSON.stringify(this.state.custMap),'custMap.json')//socket.emit('downloadJSON')
+  }
+  /**** Update Translations****/
+
+  getData(){
+    console.log('get Batches')
+   this.props.soc.emit('getBatches') 
+  }
+  resetVmap(){
+    this.props.soc.emit('saveCustomJSON', JSON.stringify(vdefMapV2));
+  }
+  toggleGraph(){
+    this.setState({histo:!this.state.histo})
+  }
+  testWebView(){
+    this.webviewModal.current.toggle();
+  }
+  openUnused(){
+    this.unusedModal.current.toggle();
+  }
+  forgot(id,ip){
+    //console.log('passReset')
+    this.props.soc.emit('passReset',{ip:ip,data:{user:id}})
+  }
+  getMMdep(d){
+     if(d == 'MaxBeltSpeed'){
+      //this is a hack, due to error in vdef
+      d = 'MaxBeltSpeed0'//+= this.props.params[0]['@name'].slice(-1)
+      console.log(d,this.props.params[0]['@name'])
+    }
+      var pVdef = _pVdef;
+      
+      if(typeof pVdef[0][d] != 'undefined'){
+        return this.state.srec[d]
+      }else if(typeof pVdef[1][d] != 'undefined'){
+        return this.state.prec[d]
+      }else if(typeof pVdef[2][d] != 'undefined'){
+        return this.state.rec[d]
+      }
+  }
+  saveProductPassThrough(){
+    if(this.state.rec['EditProdNeedToSave'] == 1){
+      this.sendPacket('saveProduct', this.state.srec['EditProdNo']) 
+      if(this.state.prclosereq){
+
+      this.pmodal.current.forceclose();
+      this.setState({prclosereq:false})
+    }
+    }
+  }
+  passThrough(){
+    if(this.state.prclosereq){
+
+      this.pmodal.current.forceclose();
+      this.setState({prclosereq:false})
+    }
+  }
+  renderModal() {
+    var self = this;
+    var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
+
+    var detectors = this.state.dets.map(function (det, i) {
+      // body...
+      return   <div> <CircularButton branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
+       
+    })
+      return (<div>
+        {detectors}
+      </div>)
+  }
+  render(){
+    //LandingPage.render
+    var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
+    var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
+    var st = {textAlign:'center',lineHeight:'60px', height:60, width:536}
+    var config = 'config_w'
+    var find = 'find_w'
+    var klass = 'interceptorDynamicView'
+    var pl = 'assets/play-arrow-fti.svg'
+    var pauseb = 'assets/pause.svg'
+    var stp = 'assets/stop-fti.svg'
+    var backgroundColor;
+    var grbg = '#e1e1e1'
+    var img = 'assets/NewFortressTechnologyLogo-WHT-trans.png'
+    var psbtklass = 'circularButton'
+    var psbtcolor = 'black'
+    var grbrdcolor = '#e1e1e1'
+    var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'57px'}
+    
+    var raptor = <div style={{textAlign:'center'}}><img style={{width:219, marginTop:5, marginBottom:-5}} src={'assets/RaptorLogo.svg'}/></div>;
+    var language = this.state.language
+    
+    if(this.state.branding == 'FORTRESS'){
+      backgroundColor = FORTRESSPURPLE1
+      grbrdcolor = '#e1e1e1'
+      psbtcolor = '#1C3746'
+      psbtklass = 'circularButton_sp'
+    }else{
+      grbrdcolor = '#e1e1e1'
+      psbtcolor = '#1C3746'
+      psbtklass = 'circularButton_sp'
+      backgroundColor = SPARCBLUE1
+      grbg = '#e1e1e1'
+      img = 'assets/sparc-logo-rgb-reversed.svg'
+      pl = 'assets/play-arrow-sp.svg'
+      stp = 'assets/stop-sp.svg'
+    }
+    // var play, stop;
+    // var sttxt = 'Start'
+    // play = <div onClick={this.start} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
+    // stop = ''
+    // if(this.state.rec['BatchRunning'] == 2){
+    //   sttxt = 'Resume'
+    //   play = <div onClick={this.resume} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
+    //   stop = <div onClick={this.stop} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block',width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>End Batch</div></div> 
+    // }else if(this.state.rec['BatchRunning'] == 1){
+    //   play = <div onClick={this.pause} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause/Stop</div></div>
+    //   stop = ''
+    // }
+
+    // New Changes to add with greyed out functionality on startup 
+    var play, stop;
+    var sttxt = 'Start'
+    
+    // if CanStartBelts == 0
+    play = <div style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#a9a9a9', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
+    stop = ''
+    if(this.state.rec['BatchRunning'] == 0){
+      if(this.state.rec['CanStartBelts'] == 1){
+        play = <div onClick={this.start} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
+        }
+    }
+    else if(this.state.rec['BatchRunning'] == 1){
+      play = <div onClick={this.pause} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause/Stop</div></div>
+      stop = ''
+    }
+    else if(this.state.rec['BatchRunning'] == 2){
+      sttxt = 'Resume'
+      play = <div onClick={this.resume} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
+      stop = <div onClick={this.stop} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block',width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>End Batch</div></div> 
+      if(this.state.rec['CanStartBelts'] == 0){
+        play = <div  style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#a9a9a9', display:'inline-block',marginLeft:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
+      }
+
+    }
+    
+
+    var cont = ''
+    var sd = <div><DisplaySettings soc={this.props.soc} nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
+      <button onClick={this.reboot}>Reboot</button><button onClick={this.formatUSB}>Format USB and Reboot</button></div>
+    var unused = ''
+    
+    var cald = ''
+    var dets = ''
+
+    var lw = 0;
+    var statusStr = 'Good Weight'
+    if(typeof this.state.crec['PackWeight'] != 'undefined'){        
+      if(this.state.crec['PackWeight']){
+        lw = this.state.crec['PackWeight']
+      }
+      if(typeof this.state.crec['WindowStart'] != 'undefined'){
+        winStart = this.state.crec['WindowStart']
+        winEnd = this.state.crec['WindowEnd']
+      }
+      statusStr = vMapLists['WeightPassed']['english'][this.state.crec['WeightPassed']]
+    }
+    
+    var statusLed = '';
+    if(this.state.faultArray.length + this.state.warningArray.length> 0){
+      statusLed = <img src="assets/led_circle_red.png"/>
+    if(this.state.faultArray.length == 1){
+      if(typeof vMapV2[this.state.faultArray[0]+'Mask'] != 'undefined'){
+        statusStr = vMapV2[this.state.faultArray[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+      }else{
+         statusStr = this.state.faultArray[0] + ' active'  
+      }
+    }else{
+      statusStr = this.state.faultArray.length + ' faults active'
+    }
+    }else if(this.state.crec['WeightPassed']%2 == 1){
+      statusLed = <img src="assets/led_circle_yellow.png"/>
+    }
+
+
+    if(this.state.srec['SRecordDate']){
+        sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
+        <SettingsPageWSB  soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+          onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
+        <BatchWidget soc={this.props.soc} acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
+        </div>
+
+        cont = sd;
+        cald = (<div style={{background:'#e1e1e1', padding:10}}>
+          <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['CalWeight']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.srec['CalWeight'], this.state.srec['WeightUnits'])} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['OverWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['OverWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['UnderWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['UnderWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
+          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={'Calibrate'}/>
+          </div>)
+
+        unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
+          onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.unusedList]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} vdefMap={this.state.vmap}/></div>
+    }else{
+      dets = this.renderModal()
+      cont = <div><div style={{display:'table-cell', width:330,backgroundColor:'#e1e1e1',textAlign:'center'}} >
+        <div style={{textAlign:'center', fontSize:25, marginTop:5, marginBottom:5}}>Located Units</div>{dets}</div><div style={{display:'table-cell', width:840, paddingLeft:5, paddingRight:5}}>{sd}</div></div>
+    } 
+
+    var trendBar = [15,16.5,17.5,19,15.5,18.5]
+    var winStart = 0;
+    var winEnd = 300
+    var bucketSize = 4
+    var buckets = 100
+    var pkgWeight = 0
+
+    if(typeof this.state.prec['ProdName'] != 'undefined'){
+      trendBar = [this.state.prec['NominalWgt']-(1.1*this.state.prec['UnderWeightLim']),this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim'], this.state.prec['NominalWgt'] + this.state.prec['OverWeightLim'], this.state.prec['NominalWgt'] + (1.1*this.state.prec['OverWeightLim']), 165, 200]
+      bucketSize = this.state.prec['HistogramBucketSize'];
+      buckets = this.state.prec['HistogramBuckets']
+      pkgWeight = this.state.prec['PkgWeight']
+      if(this.state.init){
+        trendBar[0] = this.state.buckMin
+        trendBar[3] = this.state.buckMax
+      }
+    }
+    
+    var logklass = 'logout'
+    if(this.state.user == -1){
+      logklass = 'login'
+    }
+
+    
+    var wu = 0
+    if(typeof this.state.srec['WeightUnits'] != 'undefined'){
+      wu = this.state.srec['WeightUnits']
+    }
+    var batchPerm = (this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccBatchSetup'])
+     
+    // statusStr = 
+/*
+         <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
+            <tbody>
+              <tr>
+                <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} onClick={this.imgClick}  src={img}/></td>
+                <td style={{width:600}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
+                <ContextMenu id='raptorlogo'>
+                  <MenuItem onClick={this.exportVmap}>Export Translations</MenuItem>
+                  <MenuItem onClick={this.resetVmap}>Reset Translations</MenuItem>
+                </ContextMenu>
+                
+                </td>
+                  <td style={{height:60, width:200, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
+                  <FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
+                  <td className="logbuttCell" style={{height:60}}  onClick={this.toggleLogin}>
+                  <div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
+                  <button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
+                  <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Level '+this.state.level}</div>
+                  </div></td>
+              <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
+              <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Settings'}</div>
+              </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
+          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Tare'} onClick={this.tareWeight}/>
+          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
+          <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
+
+          <div style={{display:'inline-block',paddingTop:5, paddingBottom:5, width:275}} >{play}{stop}</div>
+
+        <Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
+          <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
+          <ProductSettings  soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
+          submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={()=>this.setState({prclosereq:false})}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
+          curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
+        </Modal>
+         <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
+          {cont}
+          <div>{this.state.connectedClients}</div>
+        </Modal>
+        <Modal  x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:620}}>
+          {this.renderModal()}
+        </Modal> 
+        <Modal  x={true} ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:410}}>
+         <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.cwc} cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
+        </Modal>
+        <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
+         <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Batch</div></div>
+         <BatchControl soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
+          liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
+           startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
+                   weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
+        </Modal>
+        <Modal  x={true} ref={this.unusedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
+        {unused}   
+        </Modal>
+        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
+        <Modal ref={this.imgMD}>
+        <div style={{height:600}}>
+            <button onClick={()=>location.reload()}>Refresh Page</button>
+            <button onClick={()=> window.history.back()}>Go Back</button>
+          </div>
+          </Modal>
+          <PlanBatchStart sendPacket={this.sendPacket} pList={this.state.pList} pNames={this.state.prodNames} ref={this.planStart} plannedBatches={this.state.plannedBatches} startP={this.startSel}/>
+          <ManBatchStart branding={this.state.branding} pList={this.state.pList} pNames={this.state.prodNames} ref={this.manStart} ip={this.state.curDet.ip} language={language} mac={this.state.curDet.mac} startNew={this.startBuf}/>
+         
+        <LogInControl2 soc={this.props.soc} language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
+                pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
+                accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
+        <AuthfailModal ref={this.am} forgot={this.forgot}/>
+      <UserPassReset soc={this.props.soc} language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
+            <ProgressModal ref={this.prgmd}/><MessageModal ref={this.msgm}/>
+        <LogoutModal ref={this.lgoModal} branding={this.state.branding}/>
+        <LockModal ref={this.lockModal} branding={this.state.branding}/>
+
+          <TrendBar weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/>
+
+*/
+
+    return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
+         <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
+          <table>
+          <tbody>
+          <tr style={{verticalAlign:'top'}}>
+          <td>
+            <table>
+            <tbody>
+            <tr>
+            <td>
+              <div><StatusElemDual connected={this.state.connected} pAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccClrFaultWarn'])} clearWarnings={this.clearWarnings} clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} 
+              ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={425} font={25} language={language} clearFaults={this.clearFaults} /></div>
+            </td>
+            <td>
+              <div><SparcElemDual ref={this.se} branding={this.state.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={163} font={25}/></div>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+          </td>
+          </tr>
+
+          <tr style={{verticalAlign:'top'}}>
+          <td>
+          <div style={{background:grbg,border:'1px solid '+grbrdcolor, borderRadius:10,overflow:'hidden', margin: '1px 1px 0px', width:600}}>
+          <MainHistogramDual weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
+                    winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
+                    branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.state.buckMin} buckMax={this.state.buckMax}>
+          </MainHistogramDual></div>
+          </td>
+          </tr>
+
+          <tr style={{verticalAlign:'top'}}>
+            <table><tbody>
+            <tr>
+            <td>
+            <StatSummaryDual language={language} unit={this.state.srec['WeightUnits']} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange} pkgWeight={pkgWeight}/>
+            </td>
+            <td>
+            <BatchPackCountGraphDual language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
+            </td>
+            </tr>
+            </tbody></table>
+          </tr>
+          <tr>
+          <td><div style={{height:30}}>
+          </div>
+          </td>
+          </tr>
+          </tbody></table>
+        </div>
+      </div>) 
+  }
+/*          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:110, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:30}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
+          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:110, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:30}} lab={'Tare'} onClick={this.tareWeight}/>
+          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:110, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:30}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
+          <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:110, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:30}} lab={'Check Weight'} onClick={this.checkweight}/>
+*/
+}
+
 /******************Main Components end********************/
 
 /******************Settings Components start********************/
@@ -3295,7 +5492,7 @@ class ProductSettings extends React.Component{
   }
   onImport(){
     if(this.props.usb){
-       socket.emit('importProds', this.props.mac)
+       this.props.soc.emit('importProds', this.props.mac)
   
     }else{
       //this.msgm.current.show('Plug in USB drive and try again')
@@ -3303,7 +5500,7 @@ class ProductSettings extends React.Component{
   }
   onExport(){
     if(this.props.usb){
-    socket.emit('exportProds', this.props.mac)
+    this.props.soc.emit('exportProds', this.props.mac)
       
     }else{
    //   this.msgm.current.show('Plug in USB drive and try again')
@@ -3311,7 +5508,7 @@ class ProductSettings extends React.Component{
   }
   onBackup(){
     if(this.props.usb){
-    socket.emit('backupProds', this.props.mac)
+    this.props.soc.emit('backupProds', this.props.mac)
       
     }else{
    //   this.msgm.current.show('Plug in USB drive and try again')
@@ -3319,7 +5516,7 @@ class ProductSettings extends React.Component{
   }
   onRestore(){
     if(this.props.usb){
-          socket.emit('restoreProds', this.props.mac)
+          this.props.soc.emit('restoreProds', this.props.mac)
 
     }else{
      
@@ -3493,7 +5690,7 @@ class ProductSettings extends React.Component{
       </div>)
       if(this.state.showAdvanceSettings){
         content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
-        <div style={{height:482}}>  <SettingsPage toggleGraph={this.toggleGraph} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+        <div style={{height:482}}>  <SettingsPage soc={this.props.soc} toggleGraph={this.toggleGraph} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={this.props.level}/>
         </div>
           <div>
@@ -4022,7 +6219,7 @@ class SettingsPageWSB extends React.Component{
       this.setState({showAccounts:true, cal:false, update:true,mot:false})
     }else if(dat[0] == 'reboot_display'){
       toast('Restarting Display')
-      socket.emit('reboot')
+      this.props.soc.emit('reboot')
     }else if(dat[0] == 'format_usb'){
       //toast('Restarting Display')
       //socket.emit('reboot')
@@ -4120,17 +6317,17 @@ class SettingsPageWSB extends React.Component{
     if(this.state.sel == -1){
       cob = this.props.cob2
     }
-    var sd =<React.Fragment><div > <SettingsPage timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst} toggleGraph={this.toggleGraph} openUnused={this.props.openUnused} submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} 
+    var sd =<React.Fragment><div > <SettingsPage soc={this.props.soc} timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst} toggleGraph={this.toggleGraph} openUnused={this.props.openUnused} submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} 
       int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={this.props.level}/>
       </div>
-      <div style={{display:'none'}}> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
+      <div style={{display:'none'}}> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
     if(this.state.showAccounts){
-      sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap}  setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
+      sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap}  setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
-      <div> <AccountControl goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
+      <div> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
     }else if(this.state.cal){
       var calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onCalib} lab={'Calibrate'}/>
@@ -4195,7 +6392,7 @@ class SettingsPageWSB extends React.Component{
           </div>
       }
 
-     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref={this.sd} data={this.state.data} 
+     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref={this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
       <div>
@@ -4203,7 +6400,7 @@ class SettingsPageWSB extends React.Component{
       </div></React.Fragment>
     }else if(this.state.mot){
       sd = <React.Fragment>
-        <div style={{display:'none'}}> <SettingsPage submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+        <div style={{display:'none'}}> <SettingsPage soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
 
@@ -4301,7 +6498,7 @@ class SettingsPage extends React.Component{
   }
   update(){
     // console.log('update CW Clicked')
-    socket.emit('updateCW')
+    this.props.soc.emit('updateCW')
   }
   goToShortcut(path){
     this.setState({path:path})
@@ -4576,20 +6773,20 @@ class SettingsPage extends React.Component{
     // console.log([n,v])
     if(n == 'format_usb'){
 
-      socket.emit('sendReboot')
+      this.props.soc.emit('sendReboot')
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_FORMATUSB']
             var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],rpc[2]);
-      socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.props.dsp, data:packet}) 
  
     }else if(n == 'vfdChange'){
       // console.log('vfdChange')
       var packet = dsp_rpc_paylod_for(v['@rpcs']['changevfdwrite'][0], v['@rpcs']['changevfdwrite'][1],v['@rpcs']['changevfdwrite'][2]);
-       socket.emit('rpc', {ip:this.props.dsp, data:packet})
+       this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n=='DateTime'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_DATETIMEWRITE']
   
         var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
-      socket.emit('rpc',{ip:this.props.dsp, data:packet})
+      this.props.soc.emit('rpc',{ip:this.props.dsp, data:packet})
       //  console.log('DATE TIME SENT', this.props.dsp) 
     }else if(n=='DaylightSavings'){
         var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
@@ -4606,7 +6803,7 @@ class SettingsPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.props.dsp, data:packet}) 
       }else if(n=='Timezone'){
         var rpc = vdef[0]['@rpc_map']['KAPI_TIMEZONE_WRITE']
   
@@ -4622,17 +6819,17 @@ class SettingsPage extends React.Component{
         }
       })
       var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-      socket.emit('rpc',{ip:this.props.dsp, data:packet}) 
+      this.props.soc.emit('rpc',{ip:this.props.dsp, data:packet}) 
       }else if(n['@rpcs']['vfdstart']){
     if(v == 1){
      // n['@rpcs']['vfdstart'][0]
     //  console.log('vfdstart')
       var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstart'][0], n['@rpcs']['vfdstart'][1],n['@rpcs']['vfdstart'][2]);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+        this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else{
       // console.log('vfdstop')
        var packet = dsp_rpc_paylod_for(n['@rpcs']['vfdstop'][0], n['@rpcs']['vfdstop'][1],n['@rpcs']['vfdstop'][2]);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+        this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
 
     }
 
@@ -4664,7 +6861,7 @@ class SettingsPage extends React.Component{
         }
         
         var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
-        socket.emit('rpc', {ip:this.props.dsp, data:packet})
+        this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['toggle']){
 
       var arg1 = n['@rpcs']['toggle'][0];
@@ -4678,7 +6875,7 @@ class SettingsPage extends React.Component{
       }
       var packet = dsp_rpc_paylod_for(arg1, arg2);
       
-      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+      this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['apiwrite']){
       var arg1 = n['@rpcs']['apiwrite'][0];
       var arg2 = [];
@@ -4721,7 +6918,7 @@ class SettingsPage extends React.Component{
         // console.log(strArg, n, 2154)
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
         
-      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+      this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['write']){
       var arg1 = n['@rpcs']['write'][0];
       var arg2 = [];
@@ -4791,11 +6988,11 @@ class SettingsPage extends React.Component{
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
         // console.log(strArg, packet, n, 2154)
     
-      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+      this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['clear']){
       var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
         
-      socket.emit('rpc', {ip:this.props.dsp, data:packet})
+      this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['theme']){
       this.props.setTheme(v)
     }else if(n['@rpcs']['customstrn']){
@@ -4827,7 +7024,7 @@ class SettingsPage extends React.Component{
     this.props.getBack();
   }
   reboot(){
-    socket.emit('reboot')
+    this.props.soc.emit('reboot')
   }
   formatUSB(){
     this.sendPacket('format_usb',0)
@@ -4895,7 +7092,7 @@ class SettingsPage extends React.Component{
       nodes = [];
       for(var i = 0; i < catList.length; i++){
         var ct = catList[i]
-        nodes.push(<SettingItem3 submitList={this.submitList} submitTooltip={this.submitTooltip} submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
+        nodes.push(<SettingItem3 soc={this.props.soc} submitList={this.submitList} submitTooltip={this.submitTooltip} submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
           language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} 
           font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} 
           sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
@@ -4992,7 +7189,7 @@ class SettingsPage extends React.Component{
             passAcc = true;
           }
           if(par.dt){
-            nodes.push(<SettingItem3 timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+            nodes.push(<SettingItem3 soc={self.props.soc} timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
               children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} passAcc={passAcc} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
        
@@ -5000,7 +7197,7 @@ class SettingsPage extends React.Component{
 
 
           //console.log(2158, isInt)
-          nodes.push(<SettingItem3 submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+          nodes.push(<SettingItem3 soc={self.props.soc} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
               children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} passAcc={passAcc} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
          }
@@ -5025,7 +7222,7 @@ class SettingsPage extends React.Component{
                         spname = spname.slice(0,-4)
                     }
                   }
-              nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language}
+              nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language}
                onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
                 data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
       
@@ -5033,7 +7230,7 @@ class SettingsPage extends React.Component{
                 if(self.props.wsb && lvl == 1){
                   lenOffset++;
                 }else{
-                  nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+                  nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
               data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
             
                 }
@@ -5052,12 +7249,12 @@ class SettingsPage extends React.Component{
                     ch.unshift(spar['@data'])
                   }
                   
-                  nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
+                  nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
                     font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} backdoor={true}
                    data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
         
           }else{
-            nodes.push(<SettingItem3  submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+            nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
               font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false}  backdoor={true}
               data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
           }
@@ -5066,7 +7263,7 @@ class SettingsPage extends React.Component{
          
           var sc = par['@data']
             
-          nodes.push(<SettingItem3  submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+          nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
             font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
             data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
     
@@ -5086,7 +7283,7 @@ class SettingsPage extends React.Component{
 
          
         }else if(par.type == 5){
-          nodes.push(<SettingItem3 submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Unused'} name={'Unused'} hasChild={true} 
+          nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Unused'} name={'Unused'} hasChild={true} 
               data={{}} onItemClick={self.openUnused} hasContent={true} acc={true} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
       
           //nodes.push(<CircularButton branding={self.props.branding} onClick={self.openUnused} lab={"Get Unused Settings"}/>)
@@ -5336,7 +7533,7 @@ class SettingItem3 extends React.Component{
   }
   sendPacket(n,v) {
     //
-
+    var self = this
     if(this.props.dynSettings['BatchRunning'] != 0){
       if(n['@locked_by_batch']){
         this.msgm.current.show('Changes will not take effect until batch is stopped.')
@@ -5346,18 +7543,18 @@ class SettingItem3 extends React.Component{
 
     var val = v
     if(n['@name'] == 'Nif_ip'){
-      socket.emit('nifip', v.toString())
+      this.props.soc.emit('nifip', v.toString())
     }else if(n['@name'] == 'Nif_nm'){
-      socket.emit('nifnm', v.toString())
+      this.props.soc.emit('nifnm', v.toString())
     }else if(n['@name'] == 'Nif_gw'){
-      socket.emit('nifgw', v.toString())
+      this.props.soc.emit('nifgw', v.toString())
     }else{
       if(n['@type'] == 'ipv4_address'){
         val = v.split('.').map(function(ip){
           return ("000"+ip).slice(-3);
         }).join('.')
         setTimeout(function(){
-          socket.emit('locateReq');
+          self.props.soc.emit('locateReq');
         },200)
       }
     
@@ -6712,13 +8909,13 @@ class DisplaySettings extends React.Component{
 
   }
   editIP(v){
-    socket.emit('nifip', v.toString())
+    this.props.soc.emit('nifip', v.toString())
   }
   editNM(v){
-    socket.emit('nifnm', v.toString())
+    this.props.soc.emit('nifnm', v.toString())
   }
   editGW(v){
-    socket.emit('nifgw', v.toString())
+    this.props.soc.emit('nifgw', v.toString())
   }
   sendPacket(n,v){
 
@@ -6777,10 +8974,10 @@ class AccountControl extends React.Component{
     this.setState({curlevel:v})
   }
   addAccount(){
-    socket.emit('addAccount', {user:{user:this.state.username, acc:this.state.curlevel, password:this.state.pswd}, ip:this.props.ip})
+    this.props.soc.emit('addAccount', {user:{user:this.state.username, acc:this.state.curlevel, password:this.state.pswd}, ip:this.props.ip})
   }
   removeAccount(account){
-    socket.emit('removeAccount', {ip:this.props.ip, user:account})
+    this.props.soc.emit('removeAccount', {ip:this.props.ip, user:account})
   }
   onFocus(){
 
@@ -6819,7 +9016,7 @@ class AccountControl extends React.Component{
     var accTableRows = [];
     
     this.props.accounts.forEach(function(ac,i){
-      accTableRows.push(<AccountRow branding={self.props.branding} mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > 3} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
+      accTableRows.push(<AccountRow soc={self.props.soc} branding={self.props.branding} mobile={self.props.mobile} language={self.props.language} lvl={self.props.level} change={self.props.level > 3} username={ac.username} acc={ac.acc} password={'*******'} uid={i} saved={true} ip={self.props.ip}/>)
     })
     
     var backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
@@ -6922,7 +9119,7 @@ class AccountRow extends React.Component{
   }
   remove(){
     if(this.props.saved){
-      socket.emit('removeAccount', {ip:this.props.ip, user:this.state.username})
+      this.props.soc.emit('removeAccount', {ip:this.props.ip, user:this.state.username})
     }else{
       this.setState({username:this.props.username, acc:this.props.acc, password:this.props.password})
     }
@@ -6933,7 +9130,7 @@ class AccountRow extends React.Component{
   }
   addAccount(){
     // console.log(8200, 'writeUserData', this.props.uid)
-    socket.emit('writeUserData', {data:{username:this.state.username, acc:this.state.acc, password:this.state.password, user:this.props.uid}, ip:this.props.ip})
+    this.props.soc.emit('writeUserData', {data:{username:this.state.username, acc:this.state.acc, password:this.state.password, user:this.props.uid}, ip:this.props.ip})
     
     //this.setState({changed:false})
   }
@@ -7707,6 +9904,753 @@ if(prodName.length > 17){
   }
 }
 /******************Stats Components end*********************/
+
+/******************Stats Dual Components Start *************/
+class StatSummaryDual extends React.Component{
+  constructor(props){
+    super(props)
+    this.parsePack = this.parsePack.bind(this);
+    this.state = {count:0, grossWeight:0,currentWeight:0, rec:{},crec:{},lw:'0.0 g', pkgwgt:0}
+  }
+  parsePack(max){
+    this.setState({count:this.state.count+1,grossWeight:this.state.grossWeight + max,currentWeight:max})
+
+  }
+  render(){
+    var outerbg = '#818a90'
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
+
+    //if(this.props.branding == 'SPARC'){
+      outerbg = '#e1e1e1'
+    
+    if(this.props.branding == 'SPARC'){ 
+      innerbg = SPARCBLUE2
+      fontColor = 'black'
+    }
+    //}
+
+    var av = 0;
+    if(this.state.count != 0){
+      av = (this.state.grossWeight/this.state.count)
+    }
+    var grstr;
+    if(this.state.grossWeight < 10000){
+      grstr = this.state.grossWeight.toFixed(1)+'g'
+    }else if(this.state.grossWeight < 10000000){
+      grstr = (this.state.grossWeight/1000).toFixed(3)+'kg'
+    }else{
+      grstr = (this.state.grossWeight/1000000).toFixed(3)+'t'
+    }
+    var grswt = 0;
+    var avg = 0;
+    var stdev = 0;
+    var tot = 0;
+    var gvb = 0;
+    var gvs = 0;
+    var savg = 0;
+    var sstdev = 0;
+    var stot = 0;
+    var ppm = 0;
+    var sppm = 0;
+    var unit = 0;
+    var pkgwgt = this.state.pkgwgt
+    if(typeof this.props.unit != 'undefined'){
+      unit = this.props.unit
+    }
+    if(!isNaN(this.state.crec['PackWeight'])){
+      grswt = FormatWeight(this.state.crec['PackWeight']+pkgwgt, unit)//this.state.crec['PackWeight'].toFixed(1) + 'g'
+      avg = FormatWeight(this.state.crec['AvgWeight'], unit)//this.state.crec['AvgWeight'].toFixed(1) +'g'
+      savg = FormatWeight(this.state.crec['SampleAvgWeight'], unit)//this.state.crec['SampleAvgWeight'].toFixed(1) + 'g'
+      stdev = FormatWeightD(this.state.crec['StdDev'], unit, 2)
+      sstdev = FormatWeightD(this.state.crec['SampleStdDev'], unit, 2)
+      tot = FormatWeightS(this.state.crec['TotalWeight'], unit)//this.state.crec['TotalWeight'].toFixed(1)+'g'
+      stot = FormatWeightS(this.state.crec['SampleTotalWeight'], unit)//this.state.crec['SampleTotalWeight'].toFixed(1)+'g'
+      gvb = FormatWeightS(this.state.crec['GiveawayBatch'], unit)//this.state.crec['GiveawayBatch'].toFixed(1)+'g'
+      gvs = FormatWeightS(this.state.crec['SampleGiveawayBatch'], unit)//this.state.crec['SampleGiveawayBatch'].toFixed(1)+'g'
+      pkgwgt = FormatWeight(pkgwgt, unit)
+     // if(this.state.crec['Batch_PPM']){
+        ppm = this.state.crec['Batch_PPM'].toFixed(0) + 'ppm'
+      //}
+      sppm = this.state.crec['Sample_PPM'].toFixed(0) + 'ppm'
+      
+    }
+  return  <div style={{width:295,background:outerbg, borderRadius:10, margin:1, marginBottom:0, border:'1px '+outerbg+' solid', borderTopLeftRadius:0, height:425}}>
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
+      <StatControlDual language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange}/>
+      <StatControlDual language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={'Gross Weight'}  submitChange={this.props.submitChange} value={grswt}/>
+      <StatControlDual language={this.props.language} vMap={vMapV2['PkgWeight']['@translations']} pram={'PkgWeight'} name={vMapV2['PkgWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value={pkgwgt}/>
+      <BatchStatControlDual name={labTransV2['@TotalWeightBS'][this.props.language]['name']} pram={'@TotalWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={tot} sample={stot}/>
+      <BatchStatControlDual name={labTransV2['@AvgWeightBS'][this.props.language]['name']} pram={'@AvgWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={avg} sample={savg}/>
+      <BatchStatControlDual name={labTransV2['@StdDevBS'][this.props.language]['name']} pram={'@StdDevBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={stdev} sample={sstdev}/>
+      <BatchStatControlDual name={labTransV2['@GiveAwayBS'][this.props.language]['name']} pram={'@GiveAwayBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={gvb} sample={gvs}/>
+      <BatchStatControlDual name={labTransV2['@ProductionRateBS'][this.props.language]['name']} pram={'@ProductionRateBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={ppm} sample={sppm}/>
+
+    </div>
+  }
+}
+class StatControlDual extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {curtrns:this.props.name}
+    this.translateModal = React.createRef();
+    this.translate = this.translate.bind(this)
+    this.onChange = this.onChange.bind(this);
+    this.submit = this.submit.bind(this);
+  }
+  onChange(e){
+    this.setState({curtrns:e.target.value})
+  }
+  translate(){
+    this.translateModal.current.toggle();
+  }
+  submit(){
+    this.props.submitChange(this.props.pram, this.props.language, this.state.curtrns)
+  }
+  render(){
+    var uid = uuidv4()
+    return <div style={{height:50}}>
+    <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
+    </div>
+    <div style={{textAlign:'center', marginTop:-4,lineHeight:0.8, fontSize:22}}>{this.props.value}</div>
+    <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+        <div>{this.props.vMap['english']['name']}</div>
+        <div>
+          Current Language: {this.props.language}
+        </div>
+         <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
+         <button onClick={this.submit}>Submit Change</button>
+        </Modal>
+    </div>
+  }
+}
+class BatchStatControlDual extends React.Component{
+  constructor(props){
+    super(props)
+      this.state = {curtrns:this.props.name}
+    this.translateModal = React.createRef();
+    this.translate = this.translate.bind(this)
+    this.onChange = this.onChange.bind(this);  
+    this.submit = this.submit.bind(this);
+  }
+  onChange(e){
+    this.setState({curtrns:e.target.value})
+  }
+  translate(){
+    this.translateModal.current.toggle();
+  }
+  submit(){
+    this.props.submitChange(this.props.pram, this.props.language, this.state.curtrns)
+  }
+  render(){
+    var uid = uuidv4()
+    var batchFont = 22
+    if(this.props.batch.length > 9){
+      batchFont = 20;
+    }
+    var sampleFont = 22;
+    if(this.props.sample.length >9){
+      sampleFont = 20;
+    }
+    if(this.props.batch.length > 12){
+      batchFont = 18
+    }
+    if(this.props.sample.lenght > 12){
+      sampleFont = 18;
+    }
+    return <div style={{height:50}}>
+    <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu></div>
+    <div style={{textAlign:'center', marginTop:-4,lineHeight:0.8, fontSize:batchFont, whiteSpace:'nowrap'}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
+     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+         <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
+         <button onClick={this.submit}>Submit Change</button>
+        </Modal>
+    </div>
+  }
+}
+
+class SparcElemDual extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {value:this.props.value}
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({value:newProps.value})
+  }
+
+  render(){
+    var outerbg ='#e1e1e1'
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
+
+    if(this.props.branding == 'SPARC'){
+      innerbg = SPARCBLUE2
+      fontColor = 'black'
+    }
+    var innerWidth = Math.min((this.props.width*0.55),160);
+    var innerFont = Math.min(Math.floor(this.props.font/2), 16);
+    return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
+
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div></div><div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:this.props.font}}>{this.state.value}</div>
+    </div>)
+  }
+}
+class StatusElemDual extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {value:this.props.value, reject:false, msg:'', showMsg:false}
+    this.fModal = React.createRef();
+    this.toggleFault = this.toggleFault.bind(this);
+    this.clearFaults = this.clearFaults.bind(this);
+    this.clearWarnings = this.clearWarnings.bind(this);
+    this.showMsg = this.showMsg.bind(this);
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({value:newProps.value})
+  }
+  showMsg(m){
+    var self = this;
+    this.setState({showMsg:true, msg:m})
+    setTimeout(function () {
+      // body...
+      self.setState({showMsg:false, msg:''})
+    }, 1500)
+
+  }
+  maskFault(){
+
+  }
+  clearFaults(){
+    this.props.clearFaults();
+    this.fModal.current.toggle();
+  }
+  clearWarnings(){
+     this.props.clearWarnings();
+    this.fModal.current.toggle();
+  }
+  toggleFault(f){
+    if(f){
+      this.fModal.current.toggle();
+    }
+  }
+  render(){
+    var outerbg ='#e1e1e1'
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
+    var bg2 = 'rgba(150,150,150,0.5)'
+   var modBg = FORTRESSPURPLE1
+    if(this.props.branding == 'SPARC'){
+      outerbg = '#e1e1e1'
+      innerbg = SPARCBLUE2
+      modBg = SPARCBLUE2
+      fontColor = 'black'
+    //  graphColor = SPARCBLUE2;
+      bg2 = 'rgba(150,150,150,0.5)'
+    }
+    if(this.props.branding == 'SPARC'){
+      innerbg = SPARCBLUE2
+      fontColor = 'black'
+    }
+    var innerWidth = Math.min((this.props.width*0.55),160);
+    var innerFont = Math.min(Math.floor(this.props.font/2), 16);
+      var bg = 'transparent';
+  var str = 'Connecting...'
+  var fault = false
+
+var prodFont = 25;
+var prodName = ''
+if(typeof this.props.prodName != 'undefined'){
+  prodName = this.props.prodName
+   
+}
+if(prodName.length > 17){
+    prodFont = 20
+  } 
+
+
+  //if(this.)
+  if(this.props.connected){
+  if(vMapLists){
+    str = vMapLists['WeightPassed']['english'][this.props.weightPassed]
+    if(this.props.weightPassed%2 == 0){
+      outerbg = '#39ff14' //neon green
+    }else if(this.props.weightPassed == 9){
+      outerbg = 'royalblue'
+    }else if(this.props.weightPassed%2 == 1){
+      outerbg = '#ff9300'
+    }
+  }
+  if(this.state.reject){
+
+    outerbg = 'ff9300'
+  }
+  if(this.props.warnings.length != 0){
+    if(this.props.warnings.length == 1){
+      if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+      }else{
+        str = this.props.warnings[0] + ' active'  
+      }
+      
+    }else{
+      str = this.props.warnings.length + ' warnings active'
+    }
+    fault = true
+    outerbg = 'orange'
+  }
+  if(this.props.faults.length != 0){
+     if(this.props.faults.length == 1){
+      if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+      }else{
+        str = this.props.faults[0] + ' active'  
+      }
+      
+    }else{
+      str = this.props.faults.length + ' faults active'
+    }
+    fault = true
+    outerbg = 'red'
+  }
+  
+  if(this.state.showMsg){
+    str = this.state.msg;
+  }
+
+  
+
+  }
+    return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
+
+      <div style={{display:'grid', gridTemplateColumns:'160px auto'}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div><div style={{display:'inline-block', fontSize:prodFont, textAlign:'center', lineHeight:'25px', verticalAlign:'top'}}>{this.props.prodName}</div></div>
+       <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:20, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'middle'}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
+          <Modal ref={this.fModal} innerStyle={{background:modBg}}>
+            <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>Faults</div></div>
+     
+          <FaultDiv branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
+        </Modal>
+
+    </div>)
+  }
+}
+/******************Stats Dual Components end*********************/
+
+/********************Graphs Dual Start********************/
+class BatchPackCountGraphDual extends React.Component{
+  constructor(props){
+    super(props)
+    this.toggle = this.toggle.bind(this);
+    this.state = {batchData:[0, 0, 0, 0, 0, 0, 0, 0], sampleData:[0, 0, 0, 0, 0, 0, 0, 0],batch:true, batchStartTime:'', sampleStartTime:''}
+  }
+  parseCrec(crec){
+    var data = this.state.batchData.slice(0);
+    var sampleData = this.state.sampleData.slice(0);
+    data[0] = crec['TotalCnt']
+    data[1] = crec['PassWeightCnt'];
+    data[2] = crec['LowPassCnt'];
+    data[3] = crec['LowRejCnt']; 
+    data[4] = crec['HighCnt'];
+    data[5] = crec['UnsettledCnt']
+    //data[6] = crec['ImprobableCnt']
+
+    data[6] = crec['CheckWeightCnt']
+    sampleData[0] = crec['SampleTotalCnt']
+    sampleData[1] = crec['SamplePassWeightCnt']
+    sampleData[2] = crec['SampleLowPassCnt']
+    sampleData[3] = crec['SampleLowRejCnt']
+    sampleData[4] = crec['SampleHighCnt']
+    sampleData[5] = crec['SampleUnsettledCnt']
+    //sampleData[6] = crec['SampleImprobableCnt']
+    sampleData[6] = crec['SampleCheckWeightCnt']
+
+    var bst = ''
+    var sst = ''
+    if(crec['BatchStartMS'] != 0){
+      bst = crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' ')
+    }
+    if(crec['SampleStartMS'] != 0){
+      sst = crec['SampleStartDate'].toISOString().slice(0,19).split('T').join(' ')
+    }
+
+    this.setState({batchData:data, sampleData:sampleData, batchStartTime:bst,sampleStartTime:sst})
+  }
+  parsePack(pack){
+    var data = [0,0,0,0,0,0,0]//this.state.data.slice(0)
+    data[0]++;
+    if(pack<85){
+      data[1]++;
+    }else if(pack<88){
+      data[2]++
+    }else if(pack<92){
+      data[3]++
+    }else if(pack<94){
+      data[4]++
+    }else if(pack<96){
+      data[5]++
+    }else if(pack<100){
+      data[6]++
+    }
+    //this.setState({data:data})
+  } 
+  toggle(){
+    this.setState({batch:!this.state.batch})
+  }
+  translateCounts(){
+
+  }
+  render(){
+    var outerbg = '#e1e1e1'
+    var self = this;
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
+    var graphColor = FORTRESSPURPLE2
+    if(this.props.branding == 'SPARC'){
+      innerbg = SPARCBLUE2
+      fontColor = 'black'
+      graphColor = SPARCBLUE2;
+    }
+    var xDomain = [0,15]
+    var yDomin = [0, 5]
+    var selData;
+    var bText;
+    var bsttxt = 'Batch Started at: '+this.state.batchStartTime
+    var max = 0;
+    var showCount = false
+    if(this.state.batch){
+      bText = 'Batch'
+      showCount = ((this.props.bRunning != 0) && (this.props.bCount != 0) && (this.state.batchData[0] > 0))
+      selData = this.state.batchData.slice(0)
+    }else{
+      bText = 'Sample'
+      bsttxt = 'Sample Started at: '+this.state.sampleStartTime
+      selData = this.state.sampleData.slice(0)
+    }
+    
+    max = Math.max(...selData)
+    var xDm = [0,max]
+    if(max == 0){
+      xDm = [0,1]
+    }
+    var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
+     {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
+    var labelData = data.map(function(d, i){
+      var lax = 'start'
+      var label = d.x
+      var ofs = 0
+      if(showCount && i == 1){
+        if ( typeof self.props.bCount != 'undefined' ){
+          label = label + '/' + self.props.bCount
+        }
+       // lax = 'end'
+       // ofs = -20
+      }
+      if(d.x > (data[0].x*0.66)){
+        lax = 'end'
+        return {x:d.x,y:d.y,label:label, xOffset:-10, yOffset:0, size:0, style:{fill:'#e1e1e1',textAnchor:lax}}
+      }
+      return  {x:d.x,y:d.y,label:label, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
+    })
+    var butt = <div onClick={this.toggle} style={{width:77, fontSize:18, textAlign:'center'}}>{bText}</div>
+    //var hh = 
+    return <div style={{position:'relative',width:295, height:425,background:outerbg, borderRadius:10, margin:1, marginBottom:0, border:'1px '+outerbg+' solid', borderTopLeftRadius:0}}>
+
+      <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>Statistics</div></div>
+      <div style={{position:'absolute', left:209, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
+      <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
+    <XYPlot height={370} width= {292} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal' xDomain={xDm}>    
+  
+  <HorizontalBarSeries data={data} color={graphColor} />
+  <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
+  <XAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} hideTicks={max<1} orientation="bottom" tickSizeOuter={0} tickFormat={val => Math.round(val) === val ? val : ""}/>
+  <YAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} orientation="left" tickSizeOuter={0} tickFormat={tickFormatter}/>
+    </XYPlot>
+    </div>
+  }
+}
+
+class MainHistogramDual extends React.Component{
+  constructor(props){
+    super(props)
+    this.parseDataset = this.parseDataset.bind(this);
+    this.clearFaults = this.clearFaults.bind(this);
+    this.maskFault = this.maskFault.bind(this);
+    this.statusClick = this.statusClick.bind(this);
+    this.pushWeight = this.pushWeight.bind(this);
+    this.pushBin  = this.pushBin.bind(this);
+    this.clearHisto = this.clearHisto.bind(this);
+    this.fModal = React.createRef();
+    this.histo = React.createRef();
+    var dtst = []
+    for(var i = 0; i < 300; i++){
+      dtst.push(0)
+    }
+    this.state = {pTime:0,weightPassed:0,pmax:2000, pstrt:0,pend:299, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[dtst,dtst.slice(0), dtst.slice(0)],reject:false,over:false,under:false}
+  }
+  pushBin(x,y){
+    this.histo.current.pushBin(x,y);
+  }
+  clearHisto(){
+    console.log('clear Histo')
+    this.histo.current.clearHisto();
+  }
+  parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend,pTime){
+    var dataSets = this.state.dataSets;
+    if(dataSets.length > 5){
+      dataSets = dataSets.slice(-5)
+    }
+
+    dataSets.push(data)
+    var setMax = []
+    dataSets.forEach(function (d) {
+      // body...
+      setMax.push(Math.max(...d))
+    })
+
+    var max = Math.max(...data)
+    var reject = false;
+    if((pweight > this.props.max) || (pweight < this.props.min)){
+      reject = true;
+  
+    }
+    if(this.props.histo && this.state.pTime != pTime){
+      this.histo.current.pushWeight(pweight)
+    }
+    //this.histo.current
+    this.setState({dataSets:dataSets,pmax:(pmax/calFactor)+tareWeight, pmin:(pmin/calFactor)+tareWeight, pstrt:pstrt, pend:pend, decisionRange:[strt, stend], reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(pweight>this.props.max), under:(pweight<this.props.min), calFactor:calFactor, tareWeight:tareWeight, weightPassed:weightPassed,pTime:pTime})
+  }
+  pushWeight(e){
+    this.histo.current.pushWeight(e)
+  }
+  clearFaults(){
+    this.props.clearFaults();
+        this.fModal.current.toggle();
+  }
+  maskFault(){
+    this.props.maskFault();
+  }
+  statusClick(){
+    if(this.props.faults.length != 0){
+      this.fModal.current.toggle();
+    }else if(this.state.weightPassed == 9){
+      this.props.cwShow()
+    }
+  }
+  render(){
+    var outerbg = '#818a90'
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
+    var graphColor = 'darkturquoise'//FORTRESSGRAPH
+    var bg2 = 'rgba(150,150,150,0.5)'
+   var modBg = FORTRESSPURPLE1
+    if(this.props.branding == 'SPARC'){
+      outerbg = '#e1e1e1'
+      innerbg = SPARCBLUE2
+      modBg = SPARCBLUE2
+      fontColor = 'black'
+      graphColor = SPARCBLUE2;
+      bg2 = 'rgba(150,150,150,0.5)'
+    }
+
+
+
+  var bg = 'transparent';
+  var str = 'Good Weight'
+  var fault = false
+
+  if(vdefByMac[this.props.det.mac]){
+    str = vdefByMac[this.props.det.mac][0]['@labels']['WeightPassed']['english'][this.state.weightPassed]
+  }
+  if(this.props.faults.length != 0){
+
+    if(this.props.faults.length == 1){
+      if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+      }else{
+        str = this.props.faults[0] + ' active'  
+      }
+      
+    }else{
+      str = this.props.faults.length + ' faults active'
+    }
+    fault == true
+  }
+  if(this.props.warnings.length != 0){
+
+    if(this.props.warnings.length == 1){
+      if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+      }else{
+        str = this.props.warnings[0] + ' active'  
+      }
+      
+    }else{
+      str = this.props.warnings.length + ' warnings active'
+    }
+    fault == true
+  }
+
+
+  if(this.props.connected == false){
+    str = 'Not Connected'
+  }
+  var  xyplot = <WeightHistogramDual buckMin={this.props.buckMin} buckMax={this.props.buckMax} buckets={this.props.buckets} bucketSize={this.props.bucketSize} unit={this.props.weightUnits} ref={this.histo} nom={this.props.nominalWeight} stdev={this.props.stdev}/>
+  
+  return  <div style={{background:bg, textAlign:'center', position:'relative'}}>
+    <div style={{width:550,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
+
+ {xyplot}
+      <Modal ref={this.fModal} innerStyle={{background:modBg}}>
+          <FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
+        </Modal>
+    </div>
+  }
+}
+/*    <div style={{overflow:'hidden', marginTop:14}}>
+    <div style={{marginTop:-10}}>
+    </div>
+    </div>
+*/
+class WeightHistogramDual extends React.Component{
+  constructor(props){
+    super(props)
+    var divs = []
+    var bins = []
+    var range0 = this.props.buckMin
+    var range1 = this.props.buckMax
+    var div = (range1-range0)/this.props.buckets
+    
+    for(var i = 0; i<this.props.buckets; i++){
+      divs.push([range0+(div*i), range0+ (div* (i+1))])
+      bins.push(0);
+    }
+    
+    this.pushWeight = this.pushWeight.bind(this);
+    this.clearHisto = this.clearHisto.bind(this);
+    this.pushBin = this.pushBin.bind(this);
+    this.state ={bins:bins,divs:divs,range:[range0,range1]}
+  }
+  componentWillReceiveProps(props){
+    if(props.nom != this.props.nom || props.bucketSize != this.props.bucketSize || props.buckets != this.props.buckets || props.buckMin != this.props.buckMin || props.buckMax != this.props.buckMax){
+      console.log('get props')
+      var divs = []
+      var bins = []
+      var range0 = props.buckMin
+      var range1 = props.buckMax
+      var div = (range1-range0)/props.buckets
+      if(props.bucketSize){
+        div = props.bucketSize
+      }
+      for(var i = 0; i<props.buckets; i++){
+        divs.push([range0+(div*i), Math.min(range0+ (div*(i+1)), range1)])
+        bins.push(0)
+      }
+  
+    this.setState({divs:divs,range:[range0,range1]})
+    }
+  }
+  clearHisto(){
+    var divs = []
+    var bins = []
+    var range0 = this.props.buckMin
+    var range1 = this.props.buckMax
+    var div = (range1-range0)/this.props.buckets
+    for(var i = 0; i<this.props.buckets; i++){
+      divs.push([range0+(div*i), range0+ (div* (i+1))])
+      bins.push(0)
+    }
+    this.state ={bins:bins,divs:divs,range:[range0,range1]}
+  }
+  pushBin(batch, bins){
+    console.log('get bins')
+    this.setState({bins:batch.slice(0,bins)})
+  }
+  pushWeight(w){
+    console.log('array', w)
+    var bins = this.state.bins.slice(0)
+    var divs = this.state.divs.slice(0)
+    if(Array.isArray(w)){
+
+      bins = [];
+      for(var j= 0; j<this.props.buckets; j++){
+        // divs.push([range0+(div*i), range0+ (div* (i+1))])
+        bins.push(0)
+        //bins.push(64-Math.pow((8-i),2))
+      }
+      w.forEach(function (wgt) {
+        var i = 0;
+        while((i < divs.length - 1)&&(wgt > divs[i][1])){
+          i++;
+        }
+        bins[i]++;
+      })
+    }else{
+      if(w < this.props.buckMin || w> this.props.buckMax){
+        //disregard out of range packs
+      }else{
+        var i = 0;
+      while((i < divs.length - 1)&&(w > divs[i][1])){
+        i++;
+      }
+      bins[i]++;
+      }
+      
+    }
+    this.setState({bins:bins})
+  }
+  render(){
+    var self = this;
+    var divs = this.state.divs
+    var max = 0
+    var data = this.state.bins.map(function(d,i){
+      max = Math.max(d,max);
+     // console.log(divs.length, i)
+     if(divs.length > i){
+      return {y0:0, y:d, x0:divs[i][0], x:divs[i][1]}
+     }else{
+      return {y0:0, y:d, x0:0, x:0}
+     }
+      
+    })
+    var ticks = 1
+    while((max/ticks)>10){
+      if(ticks<5){
+        ticks*=5
+      }else{
+        ticks*=2
+      }
+    }
+    var labDat = [];
+    var tick = 0;
+    if(divs.length > 0){
+    while(tick <= max){
+      labDat.push({x:divs[0][0],y:tick})
+      tick += ticks
+    }
+  }
+  var u = 0;
+  if(this.props.unit){
+    u = this.props.unit
+  }
+  var factors = [1, 0.001, 0.002201, 0.035274]
+  var sigfigs = [1, 2, 2, 1]
+    var labelData = labDat.map(function(d){
+      var lax = 'end'
+      return  {x:d.x,y:d.y,label:d.y, xOffset:-15, yOffset:0, size:0.5, labelAnchorX:lax, style:{fill:'#888', fontSize:14}}
+    })
+
+
+
+    return <XYPlot xDomain={this.state.range} yDomain={[0,max*1.1]} height={150} width={540} margin={{left:50,right:0,bottom:30,top:20}}>
+     <XAxis tickFormat={val => roundTo(val*factors[u],sigfigs[u])} tickTotal={10} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
+     <YAxis tickFormat={val => Math.round(val) === val ? val : ""} hideTicks={max<1} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
+        <VerticalRectSeries data={data} color={'darkturquoise'}/>
+    </XYPlot>
+  }
+}
+
+/******************Graphs Dual Components Ends **************/
 
 /********************Graphs Start********************/
 class BatchPackCountGraph extends React.Component{
@@ -8700,7 +11644,7 @@ class BatchControl extends React.Component{
     var self = this;
 
 
-    socket.on('batchDownload', function (batchFile) {
+    this.props.soc.on('batchDownload', function (batchFile) {
        var bjson = JSON.parse(batchFile.data);
        self.setState({bRec:bjson})
     })
@@ -8767,7 +11711,7 @@ class BatchControl extends React.Component{
   }
   addnewBatch(bat){
     var self = this;
-      socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
+      this.props.soc.emit('writeNewBatch',{data:bat, ip:this.props.ip})
     this.addModal.current.close();
     setTimeout(function () {
       // body...
@@ -8795,7 +11739,7 @@ class BatchControl extends React.Component{
   }
   getPastBatches(){
     var self = this;
-    socket.emit('getBatches')
+    this.props.soc.emit('getBatches')
     //this.pastBatches.current.toggle();
     this.setState({showMode:(this.state.showMode+1)%2})
     setTimeout(function () {
@@ -8806,7 +11750,7 @@ class BatchControl extends React.Component{
     })
   }
   onPastBatchClick(id){
-    socket.emit('downloadBatch', id)
+    this.props.soc.emit('downloadBatch', id)
     this.setState({selID:id})
   }
   deleteBatch(id){
@@ -8832,7 +11776,7 @@ class BatchControl extends React.Component{
         //bjson[b].toString().split(',').join(' ')
        }
         if(this.props.usb){
-          socket.emit('putAndSendTftp', {data:csvstr, filename:this.state.selID.replace(/\^+/g,"_").replace('.json','')+'.csv', opts:{mac:this.props.mac.split('-').join('').toUpperCase()}})
+          this.props.soc.emit('putAndSendTftp', {data:csvstr, filename:this.state.selID.replace(/\^+/g,"_").replace('.json','')+'.csv', opts:{mac:this.props.mac.split('-').join('').toUpperCase()}})
         }else{
         //fileDownload(csvstr, this.state.selID.replace('.json','')+'.csv') 
         }
@@ -9140,9 +12084,9 @@ class BatchControl extends React.Component{
             <ManBatch branding={this.props.branding} language={this.props.language} mac={this.props.mac} addBatch={this.runnewBatch} prodList={this.state.prodList}/>
             </Modal>
              <Modal x={true} ref={this.pastBatches} Style={{width:900, marginTop:40}} innerStyle={{background:backgroundColor, maxHeight:650}}>
-            <PastBatches branding={this.props.branding} language={this.props.language} mac={this.props.mac} batches={this.props.pBatches}/>
+            <PastBatches soc={this.props.soc} branding={this.props.branding} language={this.props.language} mac={this.props.mac} batches={this.props.pBatches}/>
             </Modal>
-            <PlannedBatches deleteBatch={this.deleteBatch} getBatchList={this.props.getBatchList} branding={this.props.branding} language={this.props.language} ip={this.props.ip} mac={this.props.mac} ref={this.plannedBatches} plannedBatches={this.state.plannedBatches} prMap={prMap} prodList={this.state.prodList}/>
+            <PlannedBatches soc={this.props.soc} deleteBatch={this.deleteBatch} getBatchList={this.props.getBatchList} branding={this.props.branding} language={this.props.language} ip={this.props.ip} mac={this.props.mac} ref={this.plannedBatches} plannedBatches={this.state.plannedBatches} prMap={prMap} prodList={this.state.prodList}/>
             
             {bmodeSelect}
             <MessageModal ref={this.msgm}/>
@@ -9189,7 +12133,7 @@ class PlannedBatches extends React.Component{
     bat.PlanBatchId = this.props.plannedBatches[this.state.selBatch].PlanBatchId
 
     // console.log(bat, this.props.ip)
-      socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
+      this.props.soc.emit('writeNewBatch',{data:bat, ip:this.props.ip})
     this.editMD.current.close();
     setTimeout(function () {
       // body...
@@ -9201,7 +12145,7 @@ class PlannedBatches extends React.Component{
   addnewBatch(bat){
     var self = this;
     // console.log(bat, this.props.ip)
-      socket.emit('writeNewBatch',{data:bat, ip:this.props.ip})
+      this.props.soc.emit('writeNewBatch',{data:bat, ip:this.props.ip})
     this.addModal.current.close();
     setTimeout(function () {
       // body...
@@ -9305,7 +12249,7 @@ class PastBatches extends React.Component{
     super(props)
   }
   downloadBatch(id){
-    socket.emit('downloadBatch', id)
+    this.props.soc.emit('downloadBatch', id)
   }
   render(){
     var self = this;
@@ -10656,5 +13600,8 @@ class CustomLabel extends React.Component{
 		return <div onClick={this.onClick} style={style}>{this.props.children}</div>
 	}
 }
-
-ReactDOM.render(<Container/>,document.getElementById('content'))
+if (ip2){
+  ReactDOM.render(<Container page={'dual'}/>,document.getElementById('content'))
+}else{
+  ReactDOM.render(<Container page={'single'}/>,document.getElementById('content'))
+}
