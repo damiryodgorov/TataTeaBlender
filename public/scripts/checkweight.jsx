@@ -747,10 +747,6 @@ class Container extends React.Component {
     this.gotoLane1 = this.gotoLane1.bind(this)
     this.gotoLane2 = this.gotoLane2.bind(this)
     this.gotoDual = this.gotoDual.bind(this)
-    this.refLane1 = React.createRef();
-    this.refLane2 = React.createRef();
-    this.refDual1 = React.createRef();
-    this.refDual2 = React.createRef();
 	}
   gotoLane1(){
     socket3.emit('setIp', location.host)
@@ -767,6 +763,7 @@ class Container extends React.Component {
 
   }
 	render(){
+/*
     var landingPage
     if (this.state.page === 'single'){
       landingPage = <LandingPage ref={this.refLane1} soc={socket1}/>
@@ -775,6 +772,8 @@ class Container extends React.Component {
     }else if (this.state.page === 'cw2'){
       landingPage = <LandingPage ref={this.refLane2} soc={socket2} toDual={this.gotoDual} lane={2}/>
     }else if (this.state.page === 'dual'){
+
+
       landingPage = <div className='interceptorMainPageUI' style={{background:FORTRESSPURPLE1, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+FORTRESSPURPLE1}}>
                 <table class="center">
                 <tbody>
@@ -796,10 +795,41 @@ class Container extends React.Component {
                 </table></div>
 
     }
+*/
 		return <div>
     <ErrorBoundary autoReload={false}>
-    
-      {landingPage}
+      <div style={{ display: (this.state.page === 'single') ? null : 'none' }}>
+        <LandingPage soc={socket1}/>
+      </div>
+      <div style={{ display: (this.state.page === 'cw1') ? null : 'none' }}>
+        <LandingPage soc={socket1} toDual={this.gotoDual} lane={1}/>
+      </div>
+      <div style={{ display: (this.state.page === 'cw2') ? null : 'none' }}>
+        <LandingPage soc={socket2} toDual={this.gotoDual} lane={2}/>
+      </div>
+      <div style={{ display: (this.state.page === 'dual') ? null : 'none' }}>
+        <div className='interceptorMainPageUI' style={{background:FORTRESSPURPLE1, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+FORTRESSPURPLE1}}>
+                <table class="center">
+                <tbody>
+                <tr style={{marginLeft:10,textAlign:'center'}}>
+                <td>
+                <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
+                </td>
+                <td>
+                <div onClick={this.gotoLane1}><DualPage soc={socket1}/></div>
+                </td>
+                <td>
+                <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
+                </td>
+                <td>
+                <div onClick={this.gotoLane2}><DualPage soc={socket2}/></div>
+                </td>
+                </tr>
+                </tbody>
+                </table>
+        </div>
+      </div>
+
 				<ToastContainer position="top-center" autoClose={1500} hideProgressBar newestOnTop closeOnClick closeButton={false} rtl={false}
       
 			pauseOnVisibilityChange draggable pauseOnHover transition={FastZoom} toastClassName='notifications-class'/>
@@ -2950,7 +2980,7 @@ class DualPage extends React.Component{
     });
     //let socket = this.props.soc;
     setTimeout(function (argument) {
-      self.loadPrefs();
+      //self.loadPrefs();
 //      socket.emit('connectToUnit',{ip:location.host, app:'FTI_CW', app_name:'FTI_CW'})      
     }, 500)   
    // socket.on('testusb')
