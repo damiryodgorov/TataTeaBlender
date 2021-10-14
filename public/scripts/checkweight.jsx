@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/10/13'
+const DISPLAYVERSION = '2021/10/14'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -142,7 +142,7 @@ function FormatWeight(wgt, unit){
     }else if(unit == 2){
       if(wgt>=10000000)
       {
-        return (((wgt/453.59237).toFixed(1))/2000).toFixed(1) + ' US ton'
+        return (((wgt/453.59237).toFixed(1))/2000).toFixed(1) + ' ton'
       }
       else{
         return (wgt/453.59237).toFixed(1) + ' lbs'
@@ -3373,6 +3373,8 @@ class ProductSettings extends React.Component{
     var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
     var selStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:25,lineHeight:'47px'}
     var searchColor = SPARCBLUE1;
+    var newFeedbackCorRate="";
+    
     if(this.props.branding == 'FORTRESS'){
       searchColor = FORTRESSPURPLE2
     }
@@ -3446,6 +3448,18 @@ class ProductSettings extends React.Component{
         prodEditAcc = true;
         advProdEditAcc = true;
       }
+      
+      if(typeof curProd['FeedbackCorRate']!='undefined' && typeof curProd['FeedbackCorRate']=='string'){
+        if(curProd['FeedbackCorRate'].includes('grams/pulse'))
+        {
+          newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/pulse","g/pls");
+        }else if(curProd['FeedbackCorRate'].includes('grams/sec')){
+          newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/sec","g/s");
+        }
+      }else{
+        newFeedbackCorRate = curProd['FeedbackCorRate'];
+      }
+
       content =( 
       <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
         <div>
@@ -3480,14 +3494,14 @@ class ProductSettings extends React.Component{
                 this.props.curProd['FeedbackMode'] != 0 && 
                 <React.Fragment>
                   <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>Feedback Control</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['FeedbackMode'][this.props.language][curProd['FeedbackMode']]}</div></div>
-                    <div><div style={{width:this.props.curProd['FeedbackMode'] == 2 ? '55%':'45%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
+                    <div><div style={{width:'55%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
                       
-                      <div style={{width:'63%',display:'inline-block'}}>Correction Rate</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{curProd['FeedbackCorRate'] + ' g/s'}</div>
+                      <div style={{width:'63%',display:'inline-block'}}>Correction Rate</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{newFeedbackCorRate}</div>
                       <div style={{width:'63%',display:'inline-block'}}>Dead Zone</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>±{FormatWeight(curProd['FeedbackDeadZone'],weightUnits)}</div>
                       <div style={{width:'63%',display:'inline-block'}}>Sample Count</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{curProd['FeedbackSampCnt']}pcs</div>
                   
                     </div>
-                    <div style={{width:this.props.curProd['FeedbackMode'] == 2 ? '45%':'50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
+                    <div style={{width:'45%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
                       
                       <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Wait Count</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}pcs</div>
                       <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Hi Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackHiLim'],weightUnits)}</div>
