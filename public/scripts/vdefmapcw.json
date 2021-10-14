@@ -16292,7 +16292,7 @@
       "@translations": {
         "english": {
           "name": "Main Reject Delay",
-          "description": "Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates"
+          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates"
         },
         "korean": {
           "name": "주 리젝트 딜레이",
@@ -16320,19 +16320,19 @@
         },
         "turkish": {
           "name": "Main Reject Delay",
-          "description": "Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates"
+          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates"
         },
         "russian": {
           "name": "Main Reject Delay",
-          "description": "Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates"
+          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates"
         },
         "polish": {
           "name": "Main Reject Delay",
-          "description": "Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates"
+          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates"
         },
         "chinese": {
           "name": "Main Reject Delay",
-          "description": "Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates"
+          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates"
         }
       },
       "children": [],
@@ -16396,7 +16396,7 @@
       "@translations": {
         "english": {
           "name": "Main Reject",
-          "description": "Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates. Main Reject Duration is the number of seconds for which the main reject device will be activated"
+          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates. Main Reject Duration is the distance for which the main reject device will be activated"
         },
         "korean": {
           "name": "주 리젝트",
@@ -16424,19 +16424,19 @@
         },
         "turkish": {
           "name": "Main Reject",
-          "description": "Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates"
+          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates"
         },
         "russian": {
           "name": "Main Reject",
-          "description": "Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates. Main Reject Duration is the number of seconds for which the main reject device will be activated"
+          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates. Main Reject Duration is the distance for which the main reject device will be activated"
         },
         "polish": {
           "name": "Main Reject",
-          "description": "Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates. Main Reject Duration is the number of seconds for which the main reject device will be activated"
+          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates. Main Reject Duration is the distance for which the main reject device will be activated"
         },
         "chinese": {
           "name": "Main Reject",
-          "description": "Main Reject Delay is the number of seconds from the moment of detection before the main reject device activates. Main Reject Duration is the number of seconds for which the main reject device will be activated"
+          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates. Main Reject Duration is the distance for which the main reject device will be activated"
         }
       },
       "children": [
