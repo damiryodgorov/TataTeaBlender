@@ -923,12 +923,17 @@ class LandingPage extends React.Component{
     this.chBut = React.createRef();
     this.fclck = React.createRef();
     this.ss = React.createRef();
+    this.ssDual = React.createRef();
     this.sd = React.createRef();
     this.lg = React.createRef();
+    this.lgDual = React.createRef();
     this.btc = React.createRef();
     this.se = React.createRef();
+    this.seDual = React.createRef();
     this.ste = React.createRef();
+    this.steDual = React.createRef();
     this.hh = React.createRef();
+    this.hhDual = React.createRef();
     this.tb = React.createRef();
     this.bhg = React.createRef();
     this.pmodal = React.createRef();
@@ -1404,6 +1409,7 @@ class LandingPage extends React.Component{
         var pVdef = vdefByMac[this.state.curDet.mac][1]
         var vdf = vdefByMac[this.state.curDet.mac][0]
         if(e.type == 0){
+          console.log('received system records')
           SingletonDataStore.sysRec = e.rec;
           var language = vdf['@labels']['Language']['english'][e.rec['Language']];
           if(language == 'russian' || language == 'polish' || language == 'chinese'){
@@ -1444,6 +1450,8 @@ class LandingPage extends React.Component{
               self.getRefBuffer(7)
             }
           },200)
+          console.log('received product records')
+          console.log(e.rec)
           this.setState({noupdate:false,prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), unusedList:this.getUCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
         }else if(e.type == 2){
           var iobits = {}
@@ -1562,6 +1570,7 @@ class LandingPage extends React.Component{
 
 
               this.ss.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
+              this.ssDual.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
               if(this.sd.current){
                 //console.log('update Live Weight')
                 this.sd.current.updateLiveWeight(lw)
@@ -1578,6 +1587,7 @@ class LandingPage extends React.Component{
               if(e.rec['BatchRunning'] == 1){
                 //toast('Batch Started');
                 this.ste.current.showMsg('Batch Started')
+                this.steDual.current.showMsg('Batch Started')
                 //this.lg.current.clearHisto();
                 setTimeout(function () {
                   self.getRefBuffer(7)
@@ -1586,9 +1596,11 @@ class LandingPage extends React.Component{
               }else if(e.rec['BatchRunning'] == 2){
                // toast('Batch Paused')
                this.ste.current.showMsg('Batch Paused')
+               this.steDual.current.showMsg('Batch Paused')
               }else{
                 //this.msgm.current.show('Batch Stopped')
                 this.ste.current.showMsg('Batch Stopped')
+                this.steDual.current.showMsg('Batch Stopped')
                //  toast('Batch Stopped')
               }
               noupdate = false
@@ -1598,6 +1610,7 @@ class LandingPage extends React.Component{
                 if(e.rec['BatchRunComplete'] == 1){
                   this.msgm.current.show('Batch Completed')
                   this.ste.current.showMsg('Batch Completed')
+                  this.steDual.current.showMsg('Batch Completed')
                 }
               }
             }
@@ -1667,7 +1680,10 @@ class LandingPage extends React.Component{
           this.setState({crec:e.rec, noupdate:true})
           this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
+          this.lgDual.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+              this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
           this.hh.current.parseCrec(e.rec)
+          this.hhDual.current.parseCrec(e.rec)
           if(this.btc.current){
             this.btc.current.parseCrec(e.rec)
           }
@@ -1676,7 +1692,9 @@ class LandingPage extends React.Component{
             pkgwgt = this.state.prec['PkgWeight']
           }
           this.ss.current.setState({crec:e.rec, pkgwgt:pkgwgt})
+          this.ssDual.current.setState({crec:e.rec, pkgwgt:pkgwgt})
           this.se.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
+          this.seDual.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
           this.tb.current.update(e.rec['PackWeight']);
           //cwc check
           if(e.rec['WeightPassed'] == 9){
@@ -1709,6 +1727,7 @@ class LandingPage extends React.Component{
               this.btc.current.parseHisto(e.rec['HistogramBatch'], bucketSize, buckets, e.rec['BucketMax'], e.rec['BucketMin'])
           }
           this.lg.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
+          this.lgDual.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
           this.setState({buckMin:e.rec['BucketMin'], buckMax:e.rec['BucketMax'], init:true})
         }else if(e.type == 15){
           var prodList = this.state.prodList;
@@ -2883,6 +2902,7 @@ class LandingPage extends React.Component{
 class DualPage extends React.Component{
   constructor(props){
     super(props)
+    this.state = {counter:0}
 /*
     this.state = {plannedBatches:[],buckMin:0,batchList:[], buckMax:100, prclosereq:false,histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},
       live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,currentView:'',data:[],unusedList:{},cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
@@ -2977,10 +2997,10 @@ class DualPage extends React.Component{
     this.manStart = React.createRef();
     this.prgmd = React.createRef();
 */    
-    this.ste = React.createRef();
-    this.se = React.createRef();
-    this.lg = React.createRef();
-    this.ss = React.createRef();
+//    this.ste = React.createRef();
+//    this.se = React.createRef();
+//    this.lg = React.createRef();
+//    this.ss = React.createRef();
   }
   /*************Lifecycle functions start***************/
   /* Most of the serverside communication will be handled here*/
@@ -2994,6 +3014,10 @@ class DualPage extends React.Component{
     setTimeout(function(){
       self.setState({noupdate:false})
     },50)
+
+    setInterval(function(){
+      self.setState({counter:self.state.counter+1})
+    },1000)
 /* 
     this.state.timer = setInterval(function(){
       if(self.props.lane && self.props.lane.current && self.props.lane.current.state.connected){
@@ -4961,10 +4985,10 @@ class DualPage extends React.Component{
               <tr>
               <td>
                 <div><StatusElemDual connected={this.props.lane.current.state.connected} pAcc={(this.props.lane.current.state.srec['PassOn'] == 0) || (this.props.lane.current.state.level >= this.props.lane.current.state.rec['PassAccClrFaultWarn'])} prodName={this.props.lane.current.state.prec['ProdName']} warnings={this.props.lane.current.state.warningArray} weightPassed={this.props.lane.current.state.crec['WeightPassed']} faults={this.props.lane.current.state.faultArray} 
-                ref={this.ste} branding={this.props.lane.current.state.branding} value={'g'} name={'Status'} width={425} font={25} language={language} /></div>
+                ref={this.props.lane.current.steDual} branding={this.props.lane.current.state.branding} value={'g'} name={'Status'} width={425} font={25} language={language} /></div>
               </td>
               <td>
-                <div><SparcElemDual ref={this.se} branding={this.props.lane.current.state.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={163} font={25}/></div>
+                <div><SparcElemDual ref={this.props.lane.current.seDual} branding={this.props.lane.current.state.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={163} font={25}/></div>
               </td>
               </tr>
               </tbody>
@@ -4977,7 +5001,7 @@ class DualPage extends React.Component{
             <div style={{background:grbg,border:'1px solid '+grbrdcolor, borderRadius:10,overflow:'hidden', margin: '1px 1px 0px', width:600}}>
             <MainHistogramDual weightUnits={this.props.lane.current.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.props.lane.current.state.connected} language={language} det={this.props.lane.current.state.curDet} faults={this.props.lane.current.state.faultArray} warnings={this.props.lane.current.state.warningArray} 
                       winMode={this.props.lane.current.state.prec['WindowMode']} winMax={this.props.lane.current.state.prec['WindowMax']} winMin={this.props.lane.current.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.props.lane.current.state.prec['NominalWgt']+this.props.lane.current.state.prec['OverWeightLim']} min={this.props.lane.current.state.prec['NominalWgt']-this.props.lane.current.state.prec['UnderWeightLim']} 
-                      branding={this.props.lane.current.state.branding} ref={this.lg} prodName={this.props.lane.current.state.prec['ProdName']} nominalWeight={this.props.lane.current.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.props.lane.current.state.buckMin} buckMax={this.props.lane.current.state.buckMax}>
+                      branding={this.props.lane.current.state.branding} ref={this.props.lane.current.lgDual} prodName={this.props.lane.current.state.prec['ProdName']} nominalWeight={this.props.lane.current.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.props.lane.current.state.buckMin} buckMax={this.props.lane.current.state.buckMax}>
             </MainHistogramDual></div>
             </td>
             </tr>
@@ -4986,10 +5010,10 @@ class DualPage extends React.Component{
               <table><tbody>
               <tr>
               <td>
-              <StatSummaryDual language={language} unit={this.props.lane.current.state.srec['WeightUnits']} branding={this.props.lane.current.state.branding} ref={this.ss} pkgWeight={pkgWeight}/>
+              <StatSummaryDual language={language} unit={this.props.lane.current.state.srec['WeightUnits']} branding={this.props.lane.current.state.branding} ref={this.props.lane.current.ssDual} pkgWeight={pkgWeight}/>
               </td>
               <td>
-              <BatchPackCountGraphDual language={language} branding={this.props.lane.current.state.branding} ref={this.hh} bCount={this.props.lane.current.state.prec['BatchCount']} bRunning={this.props.lane.current.state.rec['BatchRunning']}/>
+              <BatchPackCountGraphDual language={language} branding={this.props.lane.current.state.branding} ref={this.props.lane.current.hhDual} bCount={this.props.lane.current.state.prec['BatchCount']} bRunning={this.props.lane.current.state.rec['BatchRunning']}/>
               </td>
               </tr>
               </tbody></table>
@@ -10342,7 +10366,7 @@ if(prodName.length > 17){
   }
     return(<div style={{width:this.props.width,background:outerbg, borderRadius:10, marginTop:5,marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
-      <div style={{display:'grid', gridTemplateColumns:'160px auto'}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div><div style={{display:'inline-block', fontSize:prodFont, textAlign:'center', lineHeight:'25px', verticalAlign:'top'}}>{this.props.prodName}</div></div>
+      <div style={{display:'grid', gridTemplateColumns:'160px auto'}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div><div style={{display:'inline-block', fontSize:prodFont, textAlign:'center', lineHeight:'25px', verticalAlign:'top'}}>{prodName}</div></div>
        <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:20, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'middle'}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
           <Modal ref={this.fModal} innerStyle={{background:modBg}}>
             <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>Faults</div></div>

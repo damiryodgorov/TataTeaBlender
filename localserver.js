@@ -512,6 +512,7 @@ function getAccountsJSON(ip, callback){
 }
 
 function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
+//  console.log('processParamCW')
   var rec_type = e.readUInt8(0)
   var buf = e.slice(1)
  // if(rec_type != 2){
@@ -524,6 +525,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
   var rec = {};
    var userrec = {};
   if(rec_type == 0){
+    console.log('SYS REC CW')
     nVdf[0].forEach(function (p) {
       rec[p] = getVal(buf, 0, p, pVdef,_deps[ip])
     })
