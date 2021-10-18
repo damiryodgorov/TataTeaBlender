@@ -3641,10 +3641,10 @@ class ProductSettings extends React.Component{
           </div>
           <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:490, background:'#e1e1e1',overflowY:'scroll'}}>{prods}
           </div>
-          <div style={{height:85,lineHeight:'85px', background:'#e1e1e1', borderTop:'1px solid #ccc'}}>
-          <div onClick={this.prodMgmt} style={{display:'table-cell',height:85, borderRight:'2px solid #ccc', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>Product Management</div>
+          <div style={{height:85,lineHeight:'85px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
+          <div onClick={this.prodMgmt} style={{display:'table-cell',height:85, borderRight:'2px solid #362c66', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>Product Management</div>
           
-          <div onClick={this.toggleSearch} style={{display:'table-cell',height:85, borderLeft:'2px solid #ccc',width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}><img src='assets/search.svg' style={{width:40}}/><div style={{marginTop:-10, fontSize:16}}>Search</div></div>
+          <div onClick={this.toggleSearch} style={{display:'table-cell',height:85, borderLeft:'2px solid #362c66',width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}><img src='assets/search.svg' style={{width:40}}/><div style={{marginTop:-10, fontSize:16}}>Search</div></div>
           </div>
           <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
       
@@ -7057,11 +7057,12 @@ class AccountRow extends React.Component{
           bgClr = SPARCBLUE2
           txtClr = '#000'
         }
-      var pw =  <PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
-    var userkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-    var pswdkb =  <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
-  
-      var edit = <Modal mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
+      
+      var pw = <PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+    var userkb = <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
+    var pswdkb = <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
+      
+      var edit =  this.state.username=='ADMIN' ? <AlertModal ref={this.ed}/> : <Modal mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
       <div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
 
         <div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Username: '}
@@ -7070,10 +7071,10 @@ class AccountRow extends React.Component{
         </div>    <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div>
         <div style={{marginTop:5}} onClick={() => this.pw.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Level: '}
         </div>    <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.acc}</label></div></div>
-            </div>
+      </div>
         {pw}{userkb}{pswdkb}
       </Modal>
-        
+  
       var num = true
       var lbl = namestring
 
@@ -7086,6 +7087,7 @@ class AccountRow extends React.Component{
         {vLabels}
       </div>
       {edit}
+
       <MessageModal ref={this.msgm}/>
       </div>)
       //return(<div className={'sItem noChild'}><div><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>{edit}</div>)
@@ -8574,7 +8576,7 @@ class PlanBatchStart extends React.Component{
       if(self.state.ind == i){
         bgc = '#7ccc7c'
       }
-      return  <div onClick={() => self.onStartBatchClick(i)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
+      return  <div onClick={() => self.onStartBatchClick(i)} style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
         <div>Batch Id: {bat['PlanBatchId']}</div>
         <div>Batch Ref: {bat['PlanBatchRef']}</div>
        <div>Product: {prMap[bat['PlanProdNum']]}</div>
@@ -8913,7 +8915,7 @@ class BatchControl extends React.Component{
       if(self.state.startBatch == i){
         bgc = '#7ccc7c'
       } 
-      return  <div onClick={() => self.onStartBatchClick(i)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
+      return  <div onClick={() => self.onStartBatchClick(i)} style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
         <div>Batch Id: {bat['PlanBatchId']}</div>
         <div>Batch Ref: {bat['PlanBatchRef']}</div>
        <div>Product: {prMap[bat['PlanProdNum']]}</div>
@@ -9036,7 +9038,7 @@ class BatchControl extends React.Component{
           </div>
          
     var bmodeSelect =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[vdefByMac[this.props.mac][1][0]['BatchMode']]} ioBits={this.props.ioBits} vMap={vMapV2['BatchMode']} language={this.props.language}  interceptor={false} name={'Batch Mode'} ref={this.ed} val={[this.state.startMode]} options={[bmodes]} onChange={this.selectChanged}/>
-    var changeModeBut = <div onClick={this.batchSettings} style={{display:'table-cell',height:80, borderRight:'2px solid #ccc', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}>Batch Settings</div>
+    var changeModeBut = <div onClick={this.batchSettings} style={{display:'table-cell',height:80, borderRight:'2px solid #362c66', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}>Batch Settings</div>
     var bHisto = <BatchHistogram unit={this.props.weightUnits} ref={this.bhg} refreshHisto={this.refreshHisto} width={620}/>
     var batchDetails =           <div >
           <div style={{display:'grid',verticalAlign:'top', gridTemplateRows:'200px 2px auto', backgroundColor:'#e1e1e1'}}>
@@ -9067,7 +9069,7 @@ class BatchControl extends React.Component{
            bgc = '#7ccc7c'
           }
           //bat.stats.birthtime.slice(0,-1).split('T').join(' ')
-          return <div onClick={() => self.onPastBatchClick(bat.id)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
+          return <div onClick={() => self.onPastBatchClick(bat.id)} style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
             <div>Batch Id: {info[0]}</div>
             <div>Batch Ref: {info[1]}</div>
             <div>Product: {info[2].replace('.json','')}</div>
@@ -9078,8 +9080,8 @@ class BatchControl extends React.Component{
 
    
         batchList = <div style={{width:300, background:'#e1e1e1', border:'2px solid #e1e1e1', height:515, marginLeft:5, marginRight:5, marginBottom:0}}>
-          <div style={{height:450}}><div style={{borderBottom:'2px solid #ccc', lineHeight:'60px', height:60, textAlign:'center'}}>Past Batches</div><div style={{height:388, overflowY:'scroll'}}>{pastBatches}</div></div>
-          <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #ccc'}}>
+          <div style={{height:450}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>Past Batches</div><div style={{height:388, overflowY:'scroll'}}>{pastBatches}</div></div>
+          <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
           <div onClick={this.downloadBatch} style={{display:'table-cell',color:(this.props.usb ? '#000': '#888'),height:66, width:300, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>Download CSV</div>
           </div></div>
           if(this.state.selID.length > 0){
@@ -9164,7 +9166,7 @@ class BatchControl extends React.Component{
               </div>
                <div style={{height:80,lineHeight:'80px', background:'#e1e1e1', borderTop:'1px solid #ccc', marginTop:5, textAlign:'center'}}>
           {changeModeBut}
-         <div onClick={this.getPastBatches} style={{display:'table-cell',height:80, borderLeft:'2px solid #ccc',width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}><div style={{fontSize:18}}>{this.state.showMode == 0 ? 'Past Batches' : 'Current Batch'}</div></div>
+         <div onClick={this.getPastBatches} style={{display:'table-cell',height:80, borderLeft:'2px solid #362c66',width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}><div style={{fontSize:18}}>{this.state.showMode == 0 ? 'Past Batches' : 'Current Batch'}</div></div>
           </div>
             </div>
 
@@ -9286,7 +9288,7 @@ class PlannedBatches extends React.Component{
       }
         del =  <img src='assets/trash.svg' style={{width:30}} onClick={()=>self.deleteBatch(bat['PlanBatchId'])}/>
       
-      return  <div style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc, display:'grid', gridTemplateColumns:'260px 40px'}}>
+      return  <div style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc, display:'grid', gridTemplateColumns:'260px 40px'}}>
         <div  onClick={() => self.onBatchClick(i)}><div>Batch Id: {bat['PlanBatchId']}</div>
         <div>Batch Ref: {bat['PlanBatchRef']}</div>
         <div>Product: {self.props.prMap[bat['PlanProdNum']]}</div>
@@ -9325,11 +9327,11 @@ class PlannedBatches extends React.Component{
       return <Modal x ref={this.md}>
       <div style={{display:'grid', gridTemplateColumns:'315px auto'}}>
         <div style={{margin:1, background:"#e1e1e1"}}>
-        <div style={{height:426}}><div style={{borderBottom:'2px solid #ccc', lineHeight:'60px', height:60, textAlign:'center'}}>Planned Batches</div><div style={{height:362, overflowY:'scroll'}}>{plannedBatches}</div>
+        <div style={{height:426}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>Planned Batches</div><div style={{height:362, overflowY:'scroll'}}>{plannedBatches}</div>
         </div>
-          <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #ccc'}}>
-          <div onClick={this.addBatch} style={{display:'table-cell',height:66, borderRight:'2px solid #ccc', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>+ Add New Batch</div>
-          <div onClick={this.editBatch} style={{display:'table-cell',height:66, borderLeft:'2px solid #ccc',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>Edit Batch</div>
+          <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
+          <div onClick={this.addBatch} style={{display:'table-cell',height:66, borderRight:'2px solid #362c66', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>+ Add New Batch</div>
+          <div onClick={this.editBatch} style={{display:'table-cell',height:66, borderLeft:'2px solid #362c66',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>Edit Batch</div>
            </div>          
         </div>
         <div style={{margin:1, background:"#e1e1e1"}}>
