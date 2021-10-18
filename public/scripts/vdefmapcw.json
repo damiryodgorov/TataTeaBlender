@@ -22637,6 +22637,177 @@
       ],
       "@input": true
     },
+    "@START_BATCH": {
+      "@translations": {
+        "english": {
+          "name": "Start Batch",
+          "description": ""
+        },
+        "korean": {
+          "name": "Start Batch",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Start Batch",
+          "description": ""
+        },
+        "french": {
+          "name": "Start Batch",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Start Batch",
+          "description": ""
+        },
+        "italian": {
+          "name": "Start Batch",
+          "description": ""
+        },
+        "german": {
+          "name": "Start Batch",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Start Batch",
+          "description": ""
+        },
+        "russian": {
+          "name": "Start Batch",
+          "description": ""
+        },
+        "polish": {
+          "name": "Start Batch",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Start Batch",
+          "description": ""
+        }
+      },
+      "children": [
+        "INPUT_START_BATCH",
+        "INPUT_POL_START_BATCH"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@PAUSE_BATCH": {
+      "@translations": {
+        "english": {
+          "name": "Pause Batch",
+          "description": ""
+        },
+        "korean": {
+          "name": "Pause Batch",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Pause Batch",
+          "description": ""
+        },
+        "french": {
+          "name": "Pause Batch",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Pause Batch",
+          "description": ""
+        },
+        "italian": {
+          "name": "Pause Batch",
+          "description": ""
+        },
+        "german": {
+          "name": "Pause Batch",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Pause Batch",
+          "description": ""
+        },
+        "russian": {
+          "name": "Pause Batch",
+          "description": ""
+        },
+        "polish": {
+          "name": "Pause Batch",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Pause Batch",
+          "description": ""
+        }
+      },
+      "children": [
+        "INPUT_PAUSE_BATCH",
+        "INPUT_POL_PAUSE_BATCH"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@END_BATCH": {
+      "@translations": {
+        "english": {
+          "name": "End Batch",
+          "description": ""
+        },
+        "korean": {
+          "name": "End Batch",
+          "description": ""
+        },
+        "spanish": {
+          "name": "End Batch",
+          "description": ""
+        },
+        "french": {
+          "name": "End Batch",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "End Batch",
+          "description": ""
+        },
+        "italian": {
+          "name": "End Batch",
+          "description": ""
+        },
+        "german": {
+          "name": "End Batch",
+          "description": ""
+        },
+        "turkish": {
+          "name": "End Batch",
+          "description": ""
+        },
+        "russian": {
+          "name": "End Batch",
+          "description": ""
+        },
+        "polish": {
+          "name": "End Batch",
+          "description": ""
+        },
+        "chinese": {
+          "name": "End Batch",
+          "description": ""
+        }
+      },
+      "children": [
+        "INPUT_END_BATCH",
+        "INPUT_POL_END_BATCH"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
     "@BatchMinutes": {
       "@translations": {
         "english": {
@@ -54660,6 +54831,21 @@
                     {
                       "type": 0,
                       "val": "@INPUT_CRO",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@START_BATCH",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@PAUSE_BATCH",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@END_BATCH",
                       "acc": 0
                     }
                   ]
