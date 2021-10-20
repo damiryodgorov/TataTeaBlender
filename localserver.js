@@ -501,7 +501,7 @@ const udpCallback = function(_ip,e,app){
       e = null;
 }
 
-
+/*
 function getAccountsJSON(ip, callback){
   getJSONStringTftp(ip, '/accounts.json', function(str){
     accountJSONs[ip] = JSON.parse(str.toString())
@@ -510,8 +510,9 @@ function getAccountsJSON(ip, callback){
     //console.log(e)
   })
 }
-
+*/
 function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
+//  console.log('processParamCW')
   var rec_type = e.readUInt8(0)
   var buf = e.slice(1)
  // if(rec_type != 2){
@@ -524,6 +525,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
   var rec = {};
    var userrec = {};
   if(rec_type == 0){
+    console.log('SYS REC CW')
     nVdf[0].forEach(function (p) {
       rec[p] = getVal(buf, 0, p, pVdef,_deps[ip])
     })
@@ -1894,9 +1896,9 @@ wss.on('connection', function(scket, req){
   socket.on('connectToUnit', function(u){
     console.log('connect sing!! ', JSON.stringify(u))
     udpConSing(u.ip,u.app)
-    getAccountsJSON(u.ip,function(json){
-      socket.emit('accounts', {data:json,ip:u.ip, mac:macs[ip]})
-    })
+//    getAccountsJSON(u.ip,function(json){
+//      socket.emit('accounts', {data:json,ip:u.ip, mac:macs[ip]})
+//    })
      if(vdefs[u.ip]){
                 socket.emit('vdef',[vdefs[u.ip],u])
               }else{
@@ -2071,6 +2073,7 @@ wss.on('connection', function(scket, req){
             
    
   }) 
+/*
   socket.on('addAccount', function(pack){
 
     //console.log(pack)
@@ -2085,6 +2088,7 @@ wss.on('connection', function(scket, req){
     })
     },500)
   })
+
   socket.on('removeAccount', function(pack){
     var accJson = JSON.parse(JSON.stringify(accountJSONs[pack.ip]));
     delete accJson[pack.user]
@@ -2096,7 +2100,7 @@ wss.on('connection', function(scket, req){
     })
     },500)
   })
-
+*/
 
   socket.on('savePrefs', function (f) {
     // body...
