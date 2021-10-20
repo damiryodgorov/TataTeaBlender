@@ -949,17 +949,12 @@ class LandingPage extends React.Component{
     this.chBut = React.createRef();
     this.fclck = React.createRef();
     this.ss = React.createRef();
-    this.ssDual = React.createRef();
     this.sd = React.createRef();
     this.lg = React.createRef();
-    this.lgDual = React.createRef();
     this.btc = React.createRef();
     this.se = React.createRef();
-    this.seDual = React.createRef();
     this.ste = React.createRef();
-    this.steDual = React.createRef();
     this.hh = React.createRef();
-    this.hhDual = React.createRef();
     this.tb = React.createRef();
     this.bhg = React.createRef();
     this.pmodal = React.createRef();
@@ -980,6 +975,13 @@ class LandingPage extends React.Component{
     this.planStart = React.createRef();
     this.manStart = React.createRef();
     this.prgmd = React.createRef();
+    if (ip2){
+      this.ssDual = React.createRef();
+      this.lgDual = React.createRef();
+      this.seDual = React.createRef();
+      this.steDual = React.createRef();
+      this.hhDual = React.createRef();
+    }
   }
   /*************Lifecycle functions start***************/
   /* Most of the serverside communication will be handled here*/
@@ -1596,7 +1598,9 @@ class LandingPage extends React.Component{
 
 
               this.ss.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
-              this.ssDual.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
+              if (ip2){
+                this.ssDual.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
+              }
               if(this.sd.current){
                 //console.log('update Live Weight')
                 this.sd.current.updateLiveWeight(lw)
@@ -1613,7 +1617,9 @@ class LandingPage extends React.Component{
               if(e.rec['BatchRunning'] == 1){
                 //toast('Batch Started');
                 this.ste.current.showMsg('Batch Started')
-                this.steDual.current.showMsg('Batch Started')
+                if (ip2){
+                  this.steDual.current.showMsg('Batch Started')
+                }
                 //this.lg.current.clearHisto();
                 setTimeout(function () {
                   self.getRefBuffer(7)
@@ -1621,12 +1627,16 @@ class LandingPage extends React.Component{
                 },100)
               }else if(e.rec['BatchRunning'] == 2){
                // toast('Batch Paused')
-               this.ste.current.showMsg('Batch Paused')
-               this.steDual.current.showMsg('Batch Paused')
+                this.ste.current.showMsg('Batch Paused')
+                if (ip2){
+                  this.steDual.current.showMsg('Batch Paused')
+                }
               }else{
                 //this.msgm.current.show('Batch Stopped')
                 this.ste.current.showMsg('Batch Stopped')
-                this.steDual.current.showMsg('Batch Stopped')
+                if (ip2){
+                  this.steDual.current.showMsg('Batch Stopped')
+                }
                //  toast('Batch Stopped')
               }
               noupdate = false
@@ -1636,7 +1646,9 @@ class LandingPage extends React.Component{
                 if(e.rec['BatchRunComplete'] == 1){
                   this.msgm.current.show('Batch Completed')
                   this.ste.current.showMsg('Batch Completed')
-                  this.steDual.current.showMsg('Batch Completed')
+                  if (ip2){
+                    this.steDual.current.showMsg('Batch Completed')
+                  }
                 }
               }
             }
@@ -1706,10 +1718,14 @@ class LandingPage extends React.Component{
           this.setState({crec:e.rec, noupdate:true})
           this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
-          this.lgDual.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+          if (ip2){
+            this.lgDual.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
+          }
           this.hh.current.parseCrec(e.rec)
-          this.hhDual.current.parseCrec(e.rec)
+          if (ip2){
+            this.hhDual.current.parseCrec(e.rec)
+          }
           if(this.btc.current){
             this.btc.current.parseCrec(e.rec)
           }
@@ -1718,9 +1734,13 @@ class LandingPage extends React.Component{
             pkgwgt = this.state.prec['PkgWeight']
           }
           this.ss.current.setState({crec:e.rec, pkgwgt:pkgwgt})
-          this.ssDual.current.setState({crec:e.rec, pkgwgt:pkgwgt})
+          if (ip2){
+            this.ssDual.current.setState({crec:e.rec, pkgwgt:pkgwgt})
+          }
           this.se.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
-          this.seDual.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
+          if (ip2){
+            this.seDual.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
+          }
           this.tb.current.update(e.rec['PackWeight']);
           //cwc check
           if(e.rec['WeightPassed'] == 9){
@@ -1753,7 +1773,9 @@ class LandingPage extends React.Component{
               this.btc.current.parseHisto(e.rec['HistogramBatch'], bucketSize, buckets, e.rec['BucketMax'], e.rec['BucketMin'])
           }
           this.lg.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
-          this.lgDual.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
+          if (ip2){
+            this.lgDual.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
+          }
           this.setState({buckMin:e.rec['BucketMin'], buckMax:e.rec['BucketMax'], init:true})
         }else if(e.type == 15){
           var prodList = this.state.prodList;
