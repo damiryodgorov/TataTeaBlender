@@ -4596,6 +4596,9 @@ class ProductSettings extends React.Component{
           <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={nwgt} param={vdefByMac[this.props.mac][1][1]['NominalWgt']} tooltip={vMapV2['NominalWgt']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Over Weight Limit'} value={ovwgt} param={vdefByMac[this.props.mac][1][1]['OverWeightLim']} tooltip={vMapV2['OverWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            {this.props.curProd['WeighingMode'] != 1 &&
+              <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Under Weight Limit'} value={udwgt} param={vdefByMac[this.props.mac][1][1]['UnderWeightLim']} tooltip={vMapV2['UnderWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            }
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Packaging Weight'} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} tooltip={vMapV2['EyePkgLength']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}  tooltip={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true} shortcut={[1,2]} onShortcut={this.onShortcut} /></div>
@@ -4636,7 +4639,7 @@ class ProductSettings extends React.Component{
                     <div style={{width:'63%',display:'inline-block'}}>T1 Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['T1Lim'], weightUnits)}</div> 
                     <div style={{width:'63%',display:'inline-block'}}>T2 Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['TolNegErrorX2'], weightUnits)}</div> 
                   </React.Fragment>
-                  :
+                  : this.props.curProd['WeighingMode']!=0 &&
                   <React.Fragment>
                     <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Overweight Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['OverWeightLim'], weightUnits)}</div>
                     <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Underweight Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['UnderWeightLim'], weightUnits)}</div>
@@ -4757,9 +4760,9 @@ class ProductSettings extends React.Component{
           <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:490, background:'#e1e1e1',overflowY:'scroll'}}>{prods}
           </div>
           <div style={{height:85,lineHeight:'85px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
-          <div onClick={this.prodMgmt} style={{display:'table-cell',height:85, borderRight:'2px solid #362c66', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>Product Management</div>
+          <div onClick={this.prodMgmt} style={{display:'table-cell',height:85, borderRight:'1px solid #362c66', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>Product Management</div>
           
-          <div onClick={this.toggleSearch} style={{display:'table-cell',height:85, borderLeft:'2px solid #362c66',width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}><img src='assets/search.svg' style={{width:40}}/><div style={{marginTop:-10, fontSize:16}}>Search</div></div>
+          <div onClick={this.toggleSearch} style={{display:'table-cell',height:85, borderLeft:'1px solid #362c66',width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}><img src='assets/search.svg' style={{width:40}}/><div style={{marginTop:-10, fontSize:16}}>Search</div></div>
           </div>
           <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
       
@@ -9871,6 +9874,7 @@ class BatchControl extends React.Component{
     this.props.soc.on('batchDownload', function (batchFile) {
        var bjson = JSON.parse(batchFile.data);
        self.setState({bRec:bjson})
+       console.log("Downloaded batch",bjson);
     })
   }
   startBatchToggle(){
@@ -10033,7 +10037,7 @@ class BatchControl extends React.Component{
       if(self.state.startBatch == i){
         bgc = '#7ccc7c'
       } 
-      return  <div onClick={() => self.onStartBatchClick(i)} style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
+      return <div  style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
         <div>Batch Id: {bat['PlanBatchId']}</div>
         <div>Batch Ref: {bat['PlanBatchRef']}</div>
        <div>Product: {prMap[bat['PlanProdNum']]}</div>
@@ -10111,8 +10115,7 @@ class BatchControl extends React.Component{
       }
     }
 
-    if (weighingMode == 1) {
-            
+    if (weighingMode == 1) {   
       var lowPass = "Between T1/T2"
       }
       else {
@@ -10187,7 +10190,7 @@ class BatchControl extends React.Component{
            bgc = '#7ccc7c'
           }
           //bat.stats.birthtime.slice(0,-1).split('T').join(' ')
-          return <div onClick={() => self.onPastBatchClick(bat.id)} style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
+          return <div onClick={() => self.onPastBatchClick(bat.id)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
             <div>Batch Id: {info[0]}</div>
             <div>Batch Ref: {info[1]}</div>
             <div>Product: {info[2].replace('.json','')}</div>
@@ -11802,11 +11805,16 @@ class CheckWeightControl extends React.Component{
         <div style={{background:'#e1e1e1', padding:5, height:400}}>
        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Check Weight'}</div></h2></span>
        <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Check Weight'} value={cw} editable={false} onEdit={this.sendPacket} num={true}/></div>
-       <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Measured Value'} value={this.state.cwset.toFixed(1)+'g'} editable={typeof cw != 'undefined' && cw == 'Waiting for Weight' ? false : true} onEdit={this.setCW} param={{'@name':'checkweightmeasure'}} num={true}/></div>
+       <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Measured Value'} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={{'@name':'checkweightmeasure'}} num={true}/></div>
         <div style={{marginTop:140}}>
         <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.cancelCW} lab={'Cancel'}/>
+        {
+          cw!='Waiting for Weight' && this.state.cwset != 0 ?
+          <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={'Confirm'}/>
+          :
+          <CircularButton disabled={true} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
+        }
         
-        <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={'Confirm'}/>
         </div>
         </div>
     </div>
