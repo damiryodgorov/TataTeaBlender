@@ -9874,7 +9874,6 @@ class BatchControl extends React.Component{
     this.props.soc.on('batchDownload', function (batchFile) {
        var bjson = JSON.parse(batchFile.data);
        self.setState({bRec:bjson})
-       console.log("Downloaded batch",bjson);
     })
   }
   startBatchToggle(){
