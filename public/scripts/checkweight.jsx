@@ -7939,8 +7939,8 @@ class AccountControl extends React.Component{
     super(props)
     this.state = ({accounts:this.props.accounts, curlevel:0, username:'', pswd:'', newUser:false})
     this.selectChanged = this.selectChanged.bind(this);
-    this.addAccount = this.addAccount.bind(this);
-    this.removeAccount = this.removeAccount.bind(this);
+//    this.addAccount = this.addAccount.bind(this);
+//    this.removeAccount = this.removeAccount.bind(this);
     this.goBack = this.goBack.bind(this);
     this.pw = React.createRef();
     this.username = React.createRef();
@@ -7955,9 +7955,9 @@ class AccountControl extends React.Component{
 //  addAccount(){
 //    this.props.soc.emit('addAccount', {user:{user:this.state.username, acc:this.state.curlevel, password:this.state.pswd}, ip:this.props.ip})
 //  }
-  removeAccount(account){
-    this.props.soc.emit('removeAccount', {ip:this.props.ip, user:account})
-  }
+//  removeAccount(account){
+//    this.props.soc.emit('removeAccount', {ip:this.props.ip, user:account})
+//  }
   onFocus(){
 
   }
@@ -8032,7 +8032,7 @@ class AccountRow extends React.Component{
     this.setLevel = this.setLevel.bind(this);
     this.setUserName = this.setUserName.bind(this);
     this.setPassword = this.setPassword.bind(this);
-    this.remove = this.remove.bind(this);
+//    this.remove = this.remove.bind(this);
     this.saveChanges = this.saveChanges.bind(this);
     this.addAccount = this.addAccount.bind(this);
     this.valClick = this.valClick.bind(this);
