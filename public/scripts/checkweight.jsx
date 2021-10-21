@@ -784,6 +784,15 @@ class Container extends React.Component {
       self.setState({update:true})
     },50)
   }
+
+  shouldComponentUpdate(){
+    var page = this.props.page
+    if (page == 'dual'){
+      return true
+    }
+    return false
+  }
+
   gotoLane1(){
     socket3.emit('setIp', location.host)
     this.setState({page:'cw1'})
@@ -835,7 +844,7 @@ class Container extends React.Component {
                 <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
                 </td>
                 <td>
-                <div onClick={this.gotoLane1}><DualPage lane={this.lane1} update={this.state.updateLane1}/></div>
+                <div onClick={this.gotoLane1}><DualPage lane={this.lane1} update={this.state.updateLane1} page={this.state.page}/></div>
                 </td>
                 <td>
                 <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
@@ -852,10 +861,10 @@ class Container extends React.Component {
     return <div>
     <ErrorBoundary autoReload={false}>
       <div style={{ display: (this.state.page === 'cw1') ? null : 'none' }}>
-        <LandingPage ref={this.lane1} soc={socket1} toDual={this.gotoDual} lane={1} update={this.updateDual}/>
+        <LandingPage ref={this.lane1} soc={socket1} toDual={this.gotoDual} lane={1} update={this.updateDual} page={this.state.page}/>
       </div>
       <div style={{ display: (this.state.page === 'cw2') ? null : 'none' }}>
-        <LandingPage ref={this.lane2} soc={socket2} toDual={this.gotoDual} lane={2} update={this.updateDual}/>
+        <LandingPage ref={this.lane2} soc={socket2} toDual={this.gotoDual} lane={2} update={this.updateDual} page={this.state.page}/>
       </div>
       <div style={{ display: (this.state.page === 'dual') ? null : 'none' }}>
         {dualPage}
@@ -1287,7 +1296,7 @@ class LandingPage extends React.Component{
   }
   shouldComponentUpdate(nextProps, nextState){
     //by specifying noupdate in setState, we can hold off on render
-    if(true ==  nextState.noupdate){
+    if((true ==  nextState.noupdate)||(this.props.page == 'dual')){
       return false;
     }
     return true;
