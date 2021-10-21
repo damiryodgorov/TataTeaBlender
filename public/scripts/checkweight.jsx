@@ -770,7 +770,7 @@ socket1.on('vdef', function(vdf){
 class Container extends React.Component {
 	constructor(props){
 		super(props)
-    this.state = {page:this.props.page,updateLane1:false,updateLane2:false}
+    this.state = {page:this.props.page,update:false,updateLane1:false,updateLane2:false}
     this.gotoLane1 = this.gotoLane1.bind(this)
     this.gotoLane2 = this.gotoLane2.bind(this)
     this.gotoDual = this.gotoDual.bind(this)
