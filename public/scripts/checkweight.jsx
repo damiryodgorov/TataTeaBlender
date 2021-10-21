@@ -887,7 +887,8 @@ class LandingPage extends React.Component{
       live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,currentView:'',data:[],unusedList:{},cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
-      detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false}
+      detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false,
+      checkPrecInterval:null}
     this.exportVmap = this.exportVmap.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
@@ -1298,6 +1299,18 @@ class LandingPage extends React.Component{
     //by specifying noupdate in setState, we can hold off on render
     if((true ==  nextState.noupdate)||(this.props.page == 'dual')){
       return false;
+    }else if(this.props.page == 'cw1'){
+      if (this.props.lane == 1){
+        return true;
+      }else{
+        return false;
+      }
+    }else if(this.props.page == 'cw2'){
+      if (this.props.lane == 2){
+        return true;
+      }else{
+        return false;
+      }
     }
     return true;
   }
@@ -2466,10 +2479,16 @@ class LandingPage extends React.Component{
       // body...
       self.sendPacket('refresh')
     },300)
-    setTimeout(function (argument) {
-      // body...
-      self.sendPacket('refresh',1)
-    },500)
+    if (this.state.checkPrecInterval == null){
+      var interval = setInterval(function(){
+        if (JSON.stringify(self.state.prec) === '{}'){
+          self.sendPacket('refresh',1)
+        }else{
+          clearInterval(self.state.checkPrecInterval)
+        }
+      },500)
+      this.setState({checkPrecInterval:interval})
+    }
   //  setTimeout(function(){socket.emit('getProdList',det.ip)},150)
     this.setState({curDet:det, connected:true})
     if (this.props.lane){
