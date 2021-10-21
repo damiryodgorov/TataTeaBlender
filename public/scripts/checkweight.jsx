@@ -770,13 +770,20 @@ socket1.on('vdef', function(vdf){
 class Container extends React.Component {
 	constructor(props){
 		super(props)
-    this.state = {page:this.props.page}
+    this.state = {page:this.props.page,updateLane1:false,updateLane2:false}
     this.gotoLane1 = this.gotoLane1.bind(this)
     this.gotoLane2 = this.gotoLane2.bind(this)
     this.gotoDual = this.gotoDual.bind(this)
+    this.updateDual = this.updateDual.bind(this)
     this.lane1 = React.createRef()
     this.lane2 = React.createRef()
 	}
+  componentDidMount(){
+    var self = this
+    setTimeout(function(){
+      self.setState({update:true})
+    },50)
+  }
   gotoLane1(){
     socket3.emit('setIp', location.host)
     this.setState({page:'cw1'})
@@ -791,6 +798,21 @@ class Container extends React.Component {
     this.setState({page:'dual'})
 
   }
+  updateDual(lane){
+    if (lane==1){
+      if (this.state.updateLane1){
+        this.setState({updateLane1:false})
+      }else{
+        this.setState({updateLane1:true})
+      }
+    }else if (lane==2){
+      if (this.state.updateLane2){
+        this.setState({updateLane2:false})
+      }else{
+        this.setState({updateLane2:true})
+      }
+    }
+  }
 	render(){
     if (this.state.page === 'single'){
     return <div>
@@ -803,16 +825,9 @@ class Container extends React.Component {
       </ErrorBoundary>
     </div>
     }else{
-    return <div>
-    <ErrorBoundary autoReload={false}>
-      <div style={{ display: (this.state.page === 'cw1') ? null : 'none' }}>
-        <LandingPage ref={this.lane1} soc={socket1} toDual={this.gotoDual} lane={1}/>
-      </div>
-      <div style={{ display: (this.state.page === 'cw2') ? null : 'none' }}>
-        <LandingPage ref={this.lane2} soc={socket2} toDual={this.gotoDual} lane={2}/>
-      </div>
-      <div style={{ display: (this.state.page === 'dual') ? null : 'none' }}>
-        <div className='interceptorMainPageUI' style={{background:FORTRESSPURPLE1, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+FORTRESSPURPLE1}}>
+      var dualPage
+      if (this.lane1 && this.lane1.current && this.lane2 && this.lane2.current){
+        dualPage = <div className='interceptorMainPageUI' style={{background:FORTRESSPURPLE1, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+FORTRESSPURPLE1}}>
                 <table class="center">
                 <tbody>
                 <tr style={{marginLeft:10,textAlign:'center'}}>
@@ -820,18 +835,30 @@ class Container extends React.Component {
                 <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
                 </td>
                 <td>
-                <div onClick={this.gotoLane1}><DualPage lane={this.lane1}/></div>
+                <div onClick={this.gotoLane1}><DualPage lane={this.lane1} update={this.state.updateLane1}/></div>
                 </td>
                 <td>
                 <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
                 </td>
                 <td>
-                <div onClick={this.gotoLane2}><DualPage lane={this.lane2}/></div>
+                <div onClick={this.gotoLane2}><DualPage lane={this.lane2} update={this.state.updateLane2}/></div>
                 </td>
                 </tr>
                 </tbody>
                 </table>
-        </div>
+                </div>
+
+      }
+    return <div>
+    <ErrorBoundary autoReload={false}>
+      <div style={{ display: (this.state.page === 'cw1') ? null : 'none' }}>
+        <LandingPage ref={this.lane1} soc={socket1} toDual={this.gotoDual} lane={1} update={this.updateDual}/>
+      </div>
+      <div style={{ display: (this.state.page === 'cw2') ? null : 'none' }}>
+        <LandingPage ref={this.lane2} soc={socket2} toDual={this.gotoDual} lane={2} update={this.updateDual}/>
+      </div>
+      <div style={{ display: (this.state.page === 'dual') ? null : 'none' }}>
+        {dualPage}
       </div>
 
         <ToastContainer position="top-center" autoClose={1500} hideProgressBar newestOnTop closeOnClick closeButton={false} rtl={false}
@@ -840,41 +867,6 @@ class Container extends React.Component {
       </ErrorBoundary>
     </div>
     }
-/*
-    var landingPage
-    if (this.state.page === 'single'){
-      landingPage = <LandingPage ref={this.refLane1} soc={socket1}/>
-    }else if (this.state.page === 'cw1'){
-      landingPage = <LandingPage ref={this.refLane1} soc={socket1} toDual={this.gotoDual} lane={1}/>
-    }else if (this.state.page === 'cw2'){
-      landingPage = <LandingPage ref={this.refLane2} soc={socket2} toDual={this.gotoDual} lane={2}/>
-    }else if (this.state.page === 'dual'){
-
-
-      landingPage = <div className='interceptorMainPageUI' style={{background:FORTRESSPURPLE1, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+FORTRESSPURPLE1}}>
-                <table class="center">
-                <tbody>
-                <tr style={{marginLeft:10,textAlign:'center'}}>
-                <td>
-                <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
-                </td>
-                <td>
-                <div onClick={this.gotoLane1}><DualPage ref={this.refDual1} soc={socket1}/></div>
-                </td>
-                <td>
-                <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
-                </td>
-                <td>
-                <div onClick={this.gotoLane2}><DualPage ref={this.refDual2} soc={socket2}/></div>
-                </td>
-                </tr>
-                </tbody>
-                </table></div>
-
-    }
-*/
-
-
 	}
 }
 
@@ -975,14 +967,15 @@ class LandingPage extends React.Component{
     this.planStart = React.createRef();
     this.manStart = React.createRef();
     this.prgmd = React.createRef();
-    if (ip2){
+//    if (ip2){
       this.ssDual = React.createRef();
       this.lgDual = React.createRef();
       this.seDual = React.createRef();
       this.steDual = React.createRef();
       this.hhDual = React.createRef();
-    }
+//    }
   }
+
   /*************Lifecycle functions start***************/
   /* Most of the serverside communication will be handled here*/
   componentDidMount(){
@@ -1471,6 +1464,9 @@ class LandingPage extends React.Component{
             ifvisible.setIdleDuration(e.rec['AutoLogoutMinutes']*60)
           }
           this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), unusedList:this.getUCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
+          if (this.props.lane){
+            this.props.update(this.props.lane)
+          }
         }else if(e.type == 1){
           this.getProdList()
           SingletonDataStore.prodRec = e.rec;
@@ -1481,6 +1477,9 @@ class LandingPage extends React.Component{
             }
           },200)
           this.setState({noupdate:false,prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), unusedList:this.getUCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
+          if (this.props.lane){
+            this.props.update(this.props.lane)
+          }
         }else if(e.type == 2){
           var iobits = {}
           var noupdate = true
@@ -1563,8 +1562,8 @@ class LandingPage extends React.Component{
               this.cwModal.current.show();
            //  setTimeout(function (argument) {
                // body...
-               this.setState({waitCwgt:true, noupdate:false})
-             //},150)
+              this.setState({waitCwgt:true, noupdate:false})
+            //},150)
             }else{
               this.chBut.current.tEnd();
 
@@ -1598,7 +1597,7 @@ class LandingPage extends React.Component{
 
 
               this.ss.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
-              if (ip2){
+              if (this.ssDual && this.ssDual.current){
                 this.ssDual.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
               }
               if(this.sd.current){
@@ -1607,6 +1606,9 @@ class LandingPage extends React.Component{
               }
               cob = this.getCob(this.state.srec, this.state.prec, e.rec,this.state.fram);
               pcob = this.getPCob(this.state.srec, this.state.prec, e.rec,this.state.fram)
+              if (this.props.lane){
+                this.props.update(this.props.lane)
+              }
             noupdate = false
           }
           if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
@@ -1617,7 +1619,7 @@ class LandingPage extends React.Component{
               if(e.rec['BatchRunning'] == 1){
                 //toast('Batch Started');
                 this.ste.current.showMsg('Batch Started')
-                if (ip2){
+                if (this.steDual && this.steDual.current){
                   this.steDual.current.showMsg('Batch Started')
                 }
                 //this.lg.current.clearHisto();
@@ -1628,25 +1630,28 @@ class LandingPage extends React.Component{
               }else if(e.rec['BatchRunning'] == 2){
                // toast('Batch Paused')
                 this.ste.current.showMsg('Batch Paused')
-                if (ip2){
+                if (this.steDual && this.steDual.current){
                   this.steDual.current.showMsg('Batch Paused')
                 }
               }else{
                 //this.msgm.current.show('Batch Stopped')
                 this.ste.current.showMsg('Batch Stopped')
-                if (ip2){
+                if (this.steDual && this.steDual.current){
                   this.steDual.current.showMsg('Batch Stopped')
                 }
                //  toast('Batch Stopped')
               }
               noupdate = false
+              if (this.props.lane){
+                this.props.update(this.props.lane)
+              }
             }
             if(e.rec['BatchRunComplete'] != this.state.rec['BatchRunComplete']){
               if(typeof this.state.rec['BatchRunComplete'] != 'undefined'){
                 if(e.rec['BatchRunComplete'] == 1){
                   this.msgm.current.show('Batch Completed')
                   this.ste.current.showMsg('Batch Completed')
-                  if (ip2){
+                  if (this.steDual && this.steDual.current){
                     this.steDual.current.showMsg('Batch Completed')
                   }
                 }
@@ -1718,12 +1723,12 @@ class LandingPage extends React.Component{
           this.setState({crec:e.rec, noupdate:true})
           this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
-          if (ip2){
+          if (this.lgDual && this.lgDual.current){
             this.lgDual.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
           }
           this.hh.current.parseCrec(e.rec)
-          if (ip2){
+          if (this.hhDual && this.hhDual.current){
             this.hhDual.current.parseCrec(e.rec)
           }
           if(this.btc.current){
@@ -1734,11 +1739,11 @@ class LandingPage extends React.Component{
             pkgwgt = this.state.prec['PkgWeight']
           }
           this.ss.current.setState({crec:e.rec, pkgwgt:pkgwgt})
-          if (ip2){
+          if (this.ssDual && this.ssDual.current){
             this.ssDual.current.setState({crec:e.rec, pkgwgt:pkgwgt})
           }
           this.se.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
-          if (ip2){
+          if (this.seDual && this.seDual.current){
             this.seDual.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
           }
           this.tb.current.update(e.rec['PackWeight']);
@@ -1748,6 +1753,9 @@ class LandingPage extends React.Component{
           }
           }else{
             console.log('repeated pack')
+          }
+          if (this.props.lane){
+            this.props.update(this.props.lane)
           }
 
 
@@ -1773,10 +1781,13 @@ class LandingPage extends React.Component{
               this.btc.current.parseHisto(e.rec['HistogramBatch'], bucketSize, buckets, e.rec['BucketMax'], e.rec['BucketMin'])
           }
           this.lg.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
-          if (ip2){
+          if (this.lgDual && this.lgDual.current){
             this.lgDual.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
           }
           this.setState({buckMin:e.rec['BucketMin'], buckMax:e.rec['BucketMax'], init:true})
+          if (this.props.lane){
+            this.props.update(this.props.lane)
+          }
         }else if(e.type == 15){
           var prodList = this.state.prodList;
           var prodListRaw = this.state.prodListRaw
@@ -2452,6 +2463,10 @@ class LandingPage extends React.Component{
     },500)
   //  setTimeout(function(){socket.emit('getProdList',det.ip)},150)
     this.setState({curDet:det, connected:true})
+    if (this.props.lane){
+      this.props.update(this.props.lane)
+    }
+
   }
 
   pModalToggle(){
@@ -2954,6 +2969,16 @@ class LandingPage extends React.Component{
 class DualPage extends React.Component{
   constructor(props){
     super(props)
+//    this.state = {updating:false}
+  }
+
+  componentDidMount(){
+//    var self = this
+//    this.setState({updating:true})
+//    setInterval(function(){
+//      self.setState({updating:true})
+//    },1000)
+    
   }
 
   render(){
@@ -2965,13 +2990,13 @@ class DualPage extends React.Component{
     var wu = 0
     var lw = 0;
     
-
-    if (this.props.lane && this.props.lane.current && this.props.lane.current.state){
-      language = this.props.lane.current.state.language
-      if(typeof this.props.lane.current.state.srec['WeightUnits'] != 'undefined'){
-        wu = this.props.lane.current.state.srec['WeightUnits']
+    var laneState = this.props.lane.current.state
+    if (laneState){
+      language = laneState.language
+      if(typeof laneState.srec['WeightUnits'] != 'undefined'){
+        wu = laneState.srec['WeightUnits']
       }
-      if(this.props.lane.current.state.branding == 'FORTRESS'){
+      if(laneState.branding == 'FORTRESS'){
         backgroundColor = FORTRESSPURPLE1
         grbrdcolor = '#e1e1e1'
         psbtcolor = '#1C3746'
@@ -2988,24 +3013,24 @@ class DualPage extends React.Component{
       var buckets = 100
       var pkgWeight = 0
 
-      if(typeof this.props.lane.current.state.crec['PackWeight'] != 'undefined'){        
-        if(this.props.lane.current.state.crec['PackWeight']){
-          lw = this.props.lane.current.state.crec['PackWeight']
+      if(typeof laneState.crec['PackWeight'] != 'undefined'){        
+        if(laneState.crec['PackWeight']){
+          lw = laneState.crec['PackWeight']
         }
-        if(typeof this.props.lane.current.state.crec['WindowStart'] != 'undefined'){
-          winStart = this.props.lane.current.state.crec['WindowStart']
-          winEnd = this.props.lane.current.state.crec['WindowEnd']
+        if(typeof laneState.crec['WindowStart'] != 'undefined'){
+          winStart = laneState.crec['WindowStart']
+          winEnd = laneState.crec['WindowEnd']
         }
       }
 
-      if(typeof this.props.lane.current.state.prec['ProdName'] != 'undefined'){
-        trendBar = [this.props.lane.current.state.prec['NominalWgt']-(1.1*this.props.lane.current.state.prec['UnderWeightLim']),this.props.lane.current.state.prec['NominalWgt']-this.props.lane.current.state.prec['UnderWeightLim'], this.props.lane.current.state.prec['NominalWgt'] + this.props.lane.current.state.prec['OverWeightLim'], this.props.lane.current.state.prec['NominalWgt'] + (1.1*this.props.lane.current.state.prec['OverWeightLim']), 165, 200]
-        bucketSize = this.props.lane.current.state.prec['HistogramBucketSize'];
-        buckets = this.props.lane.current.state.prec['HistogramBuckets']
-        pkgWeight = this.props.lane.current.state.prec['PkgWeight']
-        if(this.props.lane.current.state.init){
-          trendBar[0] = this.props.lane.current.state.buckMin
-          trendBar[3] = this.props.lane.current.state.buckMax
+      if(typeof laneState.prec['ProdName'] != 'undefined'){
+        trendBar = [laneState.prec['NominalWgt']-(1.1*laneState.prec['UnderWeightLim']),laneState.prec['NominalWgt']-laneState.prec['UnderWeightLim'], laneState.prec['NominalWgt'] + laneState.prec['OverWeightLim'], laneState.prec['NominalWgt'] + (1.1*laneState.prec['OverWeightLim']), 165, 200]
+        bucketSize = laneState.prec['HistogramBucketSize'];
+        buckets = laneState.prec['HistogramBuckets']
+        pkgWeight = laneState.prec['PkgWeight']
+        if(laneState.init){
+          trendBar[0] = laneState.buckMin
+          trendBar[3] = laneState.buckMax
         }
       }
 
@@ -3019,11 +3044,11 @@ class DualPage extends React.Component{
               <tbody>
               <tr>
               <td>
-                <div><StatusElemDual connected={this.props.lane.current.state.connected} pAcc={(this.props.lane.current.state.srec['PassOn'] == 0) || (this.props.lane.current.state.level >= this.props.lane.current.state.rec['PassAccClrFaultWarn'])} prodName={this.props.lane.current.state.prec['ProdName']} warnings={this.props.lane.current.state.warningArray} weightPassed={this.props.lane.current.state.crec['WeightPassed']} faults={this.props.lane.current.state.faultArray} 
-                ref={this.props.lane.current.steDual} branding={this.props.lane.current.state.branding} value={'g'} name={'Status'} width={425} font={25} language={language} /></div>
+                <div><StatusElemDual connected={laneState.connected} pAcc={(laneState.srec['PassOn'] == 0) || (laneState.level >= laneState.rec['PassAccClrFaultWarn'])} prodName={laneState.prec['ProdName']} warnings={laneState.warningArray} weightPassed={laneState.crec['WeightPassed']} faults={laneState.faultArray} 
+                ref={this.props.lane.current.steDual} branding={laneState.branding} value={'g'} name={'Status'} width={425} font={25} language={language} /></div>
               </td>
               <td>
-                <div><SparcElemDual ref={this.props.lane.current.seDual} branding={this.props.lane.current.state.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={163} font={25}/></div>
+                <div><SparcElemDual ref={this.props.lane.current.seDual} branding={laneState.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={163} font={25}/></div>
               </td>
               </tr>
               </tbody>
@@ -3034,9 +3059,9 @@ class DualPage extends React.Component{
             <tr style={{verticalAlign:'top'}}>
             <td>
             <div style={{background:grbg,border:'1px solid '+grbrdcolor, borderRadius:10,overflow:'hidden', margin: '1px 1px 0px', width:600}}>
-            <MainHistogramDual weightUnits={this.props.lane.current.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.props.lane.current.state.connected} language={language} det={this.props.lane.current.state.curDet} faults={this.props.lane.current.state.faultArray} warnings={this.props.lane.current.state.warningArray} 
-                      winMode={this.props.lane.current.state.prec['WindowMode']} winMax={this.props.lane.current.state.prec['WindowMax']} winMin={this.props.lane.current.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.props.lane.current.state.prec['NominalWgt']+this.props.lane.current.state.prec['OverWeightLim']} min={this.props.lane.current.state.prec['NominalWgt']-this.props.lane.current.state.prec['UnderWeightLim']} 
-                      branding={this.props.lane.current.state.branding} ref={this.props.lane.current.lgDual} prodName={this.props.lane.current.state.prec['ProdName']} nominalWeight={this.props.lane.current.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.props.lane.current.state.buckMin} buckMax={this.props.lane.current.state.buckMax}>
+            <MainHistogramDual weightUnits={laneState.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={laneState.connected} language={language} det={laneState.curDet} faults={laneState.faultArray} warnings={laneState.warningArray} 
+                      winMode={laneState.prec['WindowMode']} winMax={laneState.prec['WindowMax']} winMin={laneState.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={laneState.prec['NominalWgt']+laneState.prec['OverWeightLim']} min={laneState.prec['NominalWgt']-laneState.prec['UnderWeightLim']} 
+                      branding={laneState.branding} ref={this.props.lane.current.lgDual} prodName={laneState.prec['ProdName']} nominalWeight={laneState.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={laneState.buckMin} buckMax={laneState.buckMax}>
             </MainHistogramDual></div>
             </td>
             </tr>
@@ -3045,10 +3070,10 @@ class DualPage extends React.Component{
               <table><tbody>
               <tr>
               <td>
-              <StatSummaryDual language={language} unit={this.props.lane.current.state.srec['WeightUnits']} branding={this.props.lane.current.state.branding} ref={this.props.lane.current.ssDual} pkgWeight={pkgWeight}/>
+              <StatSummaryDual language={language} unit={laneState.srec['WeightUnits']} branding={laneState.branding} ref={this.props.lane.current.ssDual} pkgWeight={pkgWeight}/>
               </td>
               <td>
-              <BatchPackCountGraphDual language={language} branding={this.props.lane.current.state.branding} ref={this.props.lane.current.hhDual} bCount={this.props.lane.current.state.prec['BatchCount']} bRunning={this.props.lane.current.state.rec['BatchRunning']}/>
+              <BatchPackCountGraphDual language={language} branding={laneState.branding} ref={this.props.lane.current.hhDual} bCount={laneState.prec['BatchCount']} bRunning={laneState.rec['BatchRunning']}/>
               </td>
               </tr>
               </tbody></table>
