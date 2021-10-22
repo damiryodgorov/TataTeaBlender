@@ -508,7 +508,9 @@ class TrendBar extends React.Component{
 			}
 			labels = ranges.map(function(r,i) {
 				// body...
-				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{r.toFixed(1)}</div>
+				return  <li key={i}>
+					<div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{r.toFixed(1)}</div>
+					</li>
 			})
 		}else{
 
@@ -575,18 +577,23 @@ class TrendBar extends React.Component{
 				label_names_array = ['T2', 'T1' , 'Nominal' , 'Over']
 				label_names = av_ranges.map(function(r,i) {
 					// body...
-					return <div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{label_names_array[i]}</div>
+					return <li key={i}>
+						<div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{label_names_array[i]}</div>
+						</li>
 					})
 				
 				labels = av_ranges.map(function(r,i) {
 					// body...
-					return <div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+					return <li key={i}><div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+						</li>
 				})
 			}
 			else {
 				labels = ranges.map(function(r,i) {
 					// body...
-					return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+					return <li key={i}>
+						<div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+						</li>
 				})
 			}
 
