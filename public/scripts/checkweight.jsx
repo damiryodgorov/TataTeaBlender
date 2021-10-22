@@ -7864,7 +7864,8 @@ class BatchPackCountGraph extends React.Component{
     }
     var labelData = data.map(function(d, i){
 			var lax = 'start'
-      var label = d.x
+      // var label = d.x
+      var label = (d.x).toString()
       var ofs = 0
       if(showCount && i == 1){
         if ( typeof self.props.bCount != 'undefined' ){

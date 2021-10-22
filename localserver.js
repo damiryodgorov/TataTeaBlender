@@ -26,6 +26,7 @@ const wss = new WebSocket.Server({server:http})
 const stream = require('stream')
 const os = require('os');
 //const usb = require('usb');
+console.log("1")
 const sys = require('sys');
 const exec = require('child_process').exec;
 const crc = require('crc');
@@ -35,7 +36,7 @@ var Helpers = require('./helpers.js');
 
 var dispSettings = require('./displaySetting.json')
 const usbPath = '/run/media/sda1/'
-
+console.log("2")
 
 
 var uintToInt = Helpers.uintToInt;
@@ -59,7 +60,7 @@ var toArrayBuffer = Helpers.toArrayBuffer;
 var swap16 = Helpers.swap16;
 var dsp_rpc_paylod_for = Helpers.dsp_rpc_paylod_for;
 
-
+console.log("3")
 
 let passocs = {}
 let rassocs = {}
@@ -80,7 +81,7 @@ let networking = new NetworkInfo();
 var PORT = 3300;
 var IFACE = 'eth0'
 let _TOUCHSCREEN_ADDR = '192.168.10.20'
-
+console.log("4")
 if(process.argv.length >= 2){
   console.log('args: ',process.argv)
   var args = process.argv.slice(-2)
@@ -89,7 +90,7 @@ if(process.argv.length >= 2){
 }else{
   console.log('process argv length ', process.argv.length)
 }
-
+console.log("5")
 class FtiSockIOServer{
   constructor(sock){
     this.sock = sock
@@ -1278,18 +1279,19 @@ process.on('uncaughtException', (err) => {
   if(fs.existsSync(usbPath)){
     _dir = usbPath
   }
-  fs.writeFileSync(_dir +'/error.txt', errstring);
+  // fs.writeFileSync(_dir +'/error.txt', errstring);
+  fs.writeFileSync(_dir +'error.txt', errstring);
   exec('sudo sh reboot.sh',function(){
     process.abort();
   })
   
 });
-if(fs.existsSync(usbPath)){
-  if(!fs.existsSync(path.join(usbPath, 'json/'))){
-      fs.mkdir(path.join(usbPath,'json/'));
+// if(fs.existsSync(usbPath)){
+//   if(!fs.existsSync(path.join(usbPath, 'json/'))){
+//       fs.mkdir(path.join(usbPath,'json/'));
 
-  }
-}
+//   }
+// }
 console.log('starting ts on '+PORT)
 app.set('port', (process.env.PORT || PORT));
 app.use('/', express.static(path.join(__dirname,'public')));
