@@ -8220,6 +8220,58 @@
         "g"
       ]
     },
+    "ADCTemp": {
+      "@translations": {
+        "english": {
+          "name": "ADC Temperature",
+          "description": ""
+        },
+        "korean": {
+          "name": "ADC Temperature",
+          "description": ""
+        },
+        "spanish": {
+          "name": "ADC Temperature",
+          "description": ""
+        },
+        "french": {
+          "name": "ADC Temperature",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "ADC Temperature",
+          "description": ""
+        },
+        "italian": {
+          "name": "ADC Temperature",
+          "description": ""
+        },
+        "german": {
+          "name": "ADC Temperature",
+          "description": ""
+        },
+        "turkish": {
+          "name": "ADC Temperature",
+          "description": ""
+        },
+        "russian": {
+          "name": "ADC Temperature",
+          "description": ""
+        },
+        "polish": {
+          "name": "ADC Temperature",
+          "description": ""
+        },
+        "chinese": {
+          "name": "ADC Temperature",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
     "RemoteDisplayLock": {
       "@translations": {
         "english": {
@@ -9100,6 +9152,230 @@
         }
       },
       "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "VfdTemp0": {
+      "@translations": {
+        "english": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "korean": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "french": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "italian": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "german": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "russian": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "polish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Vfd Temperature",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(e){return e == 2})",
+        "VfdType0"
+      ],
+      "@labels": [
+        "g"
+      ]
+    },
+    "VfdTemp1": {
+      "@translations": {
+        "english": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "korean": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "french": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "italian": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "german": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "russian": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "polish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Vfd Temperature",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(e){return e == 2})",
+        "VfdType1"
+      ],
+      "@labels": [
+        "g"
+      ]
+    },
+    "VfdTemp2": {
+      "@translations": {
+        "english": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "korean": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "french": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "italian": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "german": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "russian": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "polish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Vfd Temperature",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(e){return e == 2})",
+        "VfdType2"
+      ],
+      "@labels": [
+        "g"
+      ]
+    },
+    "VfdTemp3": {
+      "@translations": {
+        "english": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "korean": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "french": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "italian": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "german": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "russian": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "polish": {
+          "name": "Vfd Temperature",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Vfd Temperature",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display": [
+        "(function(e){return e == 2})",
+        "VfdType3"
+      ],
       "@labels": [
         "g"
       ]
@@ -54002,6 +54278,11 @@
                             "type": 0,
                             "val": "LoadcellNoise",
                             "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "ADCTemp",
+                            "acc": 0
                           }
                         ]
                       },
@@ -54252,6 +54533,11 @@
                                   "type": 0,
                                   "val": "RealBeltSpeed0",
                                   "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdTemp0",
+                                  "acc": 3
                                 }
                               ]
                             },
@@ -54331,6 +54617,11 @@
                                   "type": 0,
                                   "val": "RealBeltSpeed1",
                                   "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdTemp1",
+                                  "acc": 3
                                 }
                               ]
                             },
@@ -54410,6 +54701,11 @@
                                   "type": 0,
                                   "val": "RealBeltSpeed2",
                                   "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdTemp2",
+                                  "acc": 3
                                 }
                               ]
                             },
@@ -54489,6 +54785,11 @@
                                   "type": 0,
                                   "val": "RealBeltSpeed3",
                                   "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdTemp3",
+                                  "acc": 3
                                 }
                               ]
                             },
