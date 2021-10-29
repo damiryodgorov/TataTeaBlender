@@ -1648,6 +1648,7 @@ class LandingPage extends React.Component{
               }
             noupdate = false
             updateSignalRecords = true
+            this.setState({ioBITs:iobits})
           }
           if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
             noupdate = false;
@@ -1698,7 +1699,7 @@ class LandingPage extends React.Component{
             }
             updateSignalRecords = true
           }
-          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,ioBITs:iobits,updateCount:(this.state.updateCount+1)%10, noupdate:noupdate, live:true})
+          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%10, noupdate:noupdate, live:true})
           if (updateSignalRecords){
             this.setState({rec:e.rec})
           }
