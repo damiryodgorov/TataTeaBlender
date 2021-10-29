@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/10/28'
+const DISPLAYVERSION = '2021/10/29'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -622,6 +622,8 @@ function getLabTrans(name, language){
 var _wsurl1 = 'ws://' +location.host
 const urlParams = new URLSearchParams(location.search)
 const ip2 = urlParams.get('lane2')
+var external = urlParams.get('ext')
+console.log('External: '+external)
 if (ip2){
   var _wsurl2 = 'ws://'+ip2
   var socket2 = new FtiSockIo(_wsurl2,true);
@@ -695,7 +697,10 @@ if (ip2){
 }
 var socket1 = new FtiSockIo(_wsurl1,true);
 console.log(socket1)
-var socket3 = new FtiSockIo('ws://192.168.50.52:3300',true)
+if (!external){
+  console.log('Internal Connection')
+  var socket3 = new FtiSockIo('ws://192.168.50.52:3300',true)
+}
 socket1.on('vdef', function(vdf){
   console.log('on vdef')
   var json = vdf[0];
@@ -794,12 +799,16 @@ class Container extends React.Component {
   }
 
   gotoLane1(){
-    socket3.emit('setIp', location.host)
+    if (!external){
+      socket3.emit('setIp', location.host)
+    }
     this.setState({page:'cw1'})
 
   }
   gotoLane2(){
-    socket3.emit('setIp', ip2)
+    if (!external){
+      socket3.emit('setIp', ip2)
+    }
     this.setState({page:'cw2'})
   }
   gotoDual(){
@@ -850,7 +859,7 @@ class Container extends React.Component {
                 <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
                 </td>
                 <td>
-                <div onClick={this.gotoLane2}><DualPage lane={this.lane2} update={this.state.updateLane2}/></div>
+                <div onClick={this.gotoLane2}><DualPage lane={this.lane2} update={this.state.updateLane2} page={this.state.page}/></div>
                 </td>
                 </tr>
                 </tbody>
@@ -984,6 +993,7 @@ class LandingPage extends React.Component{
       this.steDual = React.createRef();
       this.hhDual = React.createRef();
 //    }
+    this.prodSet = React.createRef();
   }
 
   /*************Lifecycle functions start***************/
@@ -1008,7 +1018,7 @@ class LandingPage extends React.Component{
 //        console.log('Product Records not loaded')
 //        self.loadPrefs();
 //      }
- //   }, 10000)   
+//    }, 100)   
 
    // socket.on('testusb')
     this.props.soc.on('userNames', function(p){
@@ -1503,6 +1513,7 @@ class LandingPage extends React.Component{
             this.props.update(this.props.lane)
           }
         }else if(e.type == 2){
+          var updateSignalRecords = false
           var iobits = {}
           var noupdate = true
           SingletonDataStore.dynRec = e.rec;
@@ -1528,6 +1539,7 @@ class LandingPage extends React.Component{
           }
           if(e.rec['EditProdNeedToSave'] != self.state.rec['EditProdNeedToSave']){
             noupdate=false;
+            updateSignalRecords = true
           }
             var faultArray = [];
             var warningArray = [];
@@ -1572,6 +1584,7 @@ class LandingPage extends React.Component{
             }else{
               this.tBut.current.tEnd();
             }
+            updateSignalRecords = true
           }
           var pw = 0;
           if(typeof this.state.crec['PackWeight'] != 'undefined'){
@@ -1595,6 +1608,7 @@ class LandingPage extends React.Component{
           
           
             }
+            updateSignalRecords = true
           }
            if((e.rec['RejSetupInvalid'] != this.state.rec['RejSetupInvalid'])){
             if(e.rec['RejSetupInvalid'] == 1){
@@ -1602,11 +1616,13 @@ class LandingPage extends React.Component{
               this.notify('Reject Setup is invalid!')
           
             }
+            updateSignalRecords = true
           }
           if(e.rec['DateTime'] != this.state.rec['DateTime']){
             if (typeof this.fclck != 'undefined'){
               this.fclck.current.setDate(e.rec['DateTime'])
             }
+            updateSignalRecords = true
           }
           var cob = this.state.cob
           var pcob = this.state.pcob
@@ -1617,13 +1633,12 @@ class LandingPage extends React.Component{
             }
           
 
-
               this.ss.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
-              if (this.ssDual && this.ssDual.current){
+              if (this.ssDual && this.ssDual.current && (this.props.page == 'dual')){
                 this.ssDual.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
               }
               if(this.sd.current){
-                //console.log('update Live Weight')
+//                console.log('update Live Weight')
                 this.sd.current.updateLiveWeight(lw)
               }
               cob = this.getCob(this.state.srec, this.state.prec, e.rec,this.state.fram);
@@ -1632,9 +1647,11 @@ class LandingPage extends React.Component{
                 this.props.update(this.props.lane)
               }
             noupdate = false
+            updateSignalRecords = true
           }
           if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
             noupdate = false;
+            updateSignalRecords = true
           }
           if(e.rec['BatchRunning'] != this.state.rec['BatchRunning']){
             if(typeof this.state.rec['BatchRunning'] != 'undefined'){
@@ -1652,13 +1669,13 @@ class LandingPage extends React.Component{
               }else if(e.rec['BatchRunning'] == 2){
                // toast('Batch Paused')
                 this.ste.current.showMsg('Batch Paused')
-                if (this.steDual && this.steDual.current){
+                if (this.steDual && this.steDual.current && (this.props.page == 'dual')){
                   this.steDual.current.showMsg('Batch Paused')
                 }
               }else{
                 //this.msgm.current.show('Batch Stopped')
                 this.ste.current.showMsg('Batch Stopped')
-                if (this.steDual && this.steDual.current){
+                if (this.steDual && this.steDual.current && (this.props.page == 'dual')){
                   this.steDual.current.showMsg('Batch Stopped')
                 }
                //  toast('Batch Stopped')
@@ -1673,15 +1690,18 @@ class LandingPage extends React.Component{
                 if(e.rec['BatchRunComplete'] == 1){
                   this.msgm.current.show('Batch Completed')
                   this.ste.current.showMsg('Batch Completed')
-                  if (this.steDual && this.steDual.current){
+                  if (this.steDual && this.steDual.current && (this.props.page == 'dual')){
                     this.steDual.current.showMsg('Batch Completed')
                   }
                 }
               }
             }
+            updateSignalRecords = true
           }
-          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,ioBITs:iobits,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
-          
+          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,ioBITs:iobits,updateCount:(this.state.updateCount+1)%10, noupdate:noupdate, live:true})
+          if (updateSignalRecords){
+            this.setState({rec:e.rec})
+          }
           
         }else if(e.type == 3){
           e.rec.Nif_ip = this.state.nifip
@@ -1745,12 +1765,12 @@ class LandingPage extends React.Component{
           this.setState({crec:e.rec, noupdate:true})
           this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
-          if (this.lgDual && this.lgDual.current){
+          if (this.lgDual && this.lgDual.current && (this.props.page == 'dual')){
             this.lgDual.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
           }
           this.hh.current.parseCrec(e.rec)
-          if (this.hhDual && this.hhDual.current){
+          if (this.hhDual && this.hhDual.current && (this.props.page == 'dual')){
             this.hhDual.current.parseCrec(e.rec)
           }
           if(this.btc.current){
@@ -1761,11 +1781,11 @@ class LandingPage extends React.Component{
             pkgwgt = this.state.prec['PkgWeight']
           }
           this.ss.current.setState({crec:e.rec, pkgwgt:pkgwgt})
-          if (this.ssDual && this.ssDual.current){
+          if (this.ssDual && this.ssDual.current && (this.props.page == 'dual')){
             this.ssDual.current.setState({crec:e.rec, pkgwgt:pkgwgt})
           }
           this.se.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
-          if (this.seDual && this.seDual.current){
+          if (this.seDual && this.seDual.current && (this.props.page == 'dual')){
             this.seDual.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
           }
           this.tb.current.update(e.rec['PackWeight']);
@@ -1803,7 +1823,7 @@ class LandingPage extends React.Component{
               this.btc.current.parseHisto(e.rec['HistogramBatch'], bucketSize, buckets, e.rec['BucketMax'], e.rec['BucketMin'])
           }
           this.lg.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
-          if (this.lgDual && this.lgDual.current){
+          if (this.lgDual && this.lgDual.current && (this.props.page == 'dual')){
             this.lgDual.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
           }
           this.setState({buckMin:e.rec['BucketMin'], buckMax:e.rec['BucketMax'], init:true})
@@ -2507,7 +2527,6 @@ class LandingPage extends React.Component{
         self.sendPacket('getProdSettings',self.state.srec['ProdNo'])
       },500)
     }
-  
   }
   imgClick(){
     // console.log('clicked')
@@ -2551,7 +2570,7 @@ class LandingPage extends React.Component{
     if(this.state.rec['EditProdNeedToSave'] == 1){
         this.pmd.current.show(function () {});
         this.setState({prclosereq:true})
-    } 
+    }
   }
   checkweight(){
     if((this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccCheckWeight'])){
@@ -3007,6 +3026,13 @@ class DualPage extends React.Component{
 //      self.setState({updating:true})
 //    },1000)
     
+  }
+
+  shouldComponentUpdate(){
+    if (this.props.update){
+      return true
+    }
+    return false
   }
 
   render(){
@@ -4165,7 +4191,7 @@ class ProductSettings extends React.Component{
     setTimeout(function (argument) {
       // body...
       // console.log(f)
-      f();
+      //f();
     },100);
   }
   passThrough(f){
@@ -5997,14 +6023,14 @@ class SettingsPage extends React.Component{
     }
   }
   onFocus() {
-      this.props.setOverride(true)
+      //this.props.setOverride(true)
   }
   onRequestClose() {
     // body...
     var self = this;
       setTimeout(function () {
         // body...
-        self.props.setOverride(false)
+        //self.props.setOverride(false)
       },100)
       
   }
@@ -6013,7 +6039,7 @@ class SettingsPage extends React.Component{
       if(path.length > 0){
           path.pop();
           this.setState({path:path})
-          this.props.goBack();
+          //this.props.goBack();
       }
       ////console.log(this.props.data)
   }
