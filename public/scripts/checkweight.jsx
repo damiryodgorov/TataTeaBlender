@@ -897,7 +897,7 @@ class LandingPage extends React.Component{
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
       detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false,
-      checkPrecInterval:null,liveWeight:0.0}
+      checkPrecInterval:null,liveWeight:0.0,updateCount2:0}
     this.exportVmap = this.exportVmap.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
@@ -1307,16 +1307,16 @@ class LandingPage extends React.Component{
   }
   shouldComponentUpdate(nextProps, nextState){
     //by specifying noupdate in setState, we can hold off on render
-    if((true ==  nextState.noupdate)||(this.props.page == 'dual')){
+    if((true ==  nextState.noupdate)||(nextProps.page == 'dual')){
       return false;
-    }else if(this.props.page == 'cw1'){
-      if (this.props.lane == 1){
+    }else if(nextProps.page == 'cw1'){
+      if (nextProps.lane == 1){
         return true;
       }else{
         return false;
       }
-    }else if(this.props.page == 'cw2'){
-      if (this.props.lane == 2){
+    }else if(nextProps.page == 'cw2'){
+      if (nextProps.lane == 2){
         return true;
       }else{
         return false;
@@ -1641,8 +1641,13 @@ class LandingPage extends React.Component{
                 this.props.update(this.props.lane)
               }
             noupdate = false
-            this.setState({ioBITs:iobits,liveWeight:e.rec['LiveWeight']})
+            this.setState({liveWeight:e.rec['LiveWeight'],rec:e.rec})
           }
+          if(this.state.updateCount2 == 0){
+            noupdate = false
+            this.setState({ioBITs:iobits})
+          }
+
           if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
             noupdate = false;
           }
@@ -1686,11 +1691,14 @@ class LandingPage extends React.Component{
                   if (this.steDual && this.steDual.current){
                     this.steDual.current.showMsg('Batch Completed')
                   }
+                  if (this.props.lane){
+                    this.props.update(this.props.lane)
+                  }
                 }
               }
             }
           }
-          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,updateCount:(this.state.updateCount+1)%10, noupdate:noupdate, live:true})
+          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%10, updateCount2:(this.state.updateCount2+1)%20,noupdate:noupdate, live:true})
           
         }else if(e.type == 3){
           e.rec.Nif_ip = this.state.nifip
@@ -3017,8 +3025,8 @@ class DualPage extends React.Component{
     
   }
 
-  shouldComponentUpdate(){
-    if (this.props.update && (this.props.page == 'dual')){
+  shouldComponentUpdate(nextProps,nextState){
+    if (nextProps.update && (nextProps.page == 'dual')){
       return true
     }
     return false
@@ -7615,7 +7623,7 @@ class MultiEditControl extends React.Component{
       }
       if(vfdsetup){
         ioindicator = <img onClick={()=>this.vfdSModal.current.toggle()} src='assets/config.svg' style={{position:'absolute', width:30, height:30, left:15, top:10}}/>
-        vfdsetupbutt =<Modal ref={this.vfdSModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+        vfdsetupbutt =<Modal ref={this.vfdSModal} mobile={this.props.mobile} innerStyle={{background:modBG}}>
 
         <div>
           <div style={{color:txtClr}}>To set up this VFD unit, make sure all other VFD units are disconnected first. Press confirm to carry on with the setup.</div>
