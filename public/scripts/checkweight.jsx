@@ -1513,7 +1513,6 @@ class LandingPage extends React.Component{
             this.props.update(this.props.lane)
           }
         }else if(e.type == 2){
-          var updateSignalRecords = false
           var iobits = {}
           var noupdate = true
           SingletonDataStore.dynRec = e.rec;
@@ -1539,7 +1538,6 @@ class LandingPage extends React.Component{
           }
           if(e.rec['EditProdNeedToSave'] != self.state.rec['EditProdNeedToSave']){
             noupdate=false;
-            updateSignalRecords = true
           }
             var faultArray = [];
             var warningArray = [];
@@ -1584,7 +1582,6 @@ class LandingPage extends React.Component{
             }else{
               this.tBut.current.tEnd();
             }
-            updateSignalRecords = true
           }
           var pw = 0;
           if(typeof this.state.crec['PackWeight'] != 'undefined'){
@@ -1608,7 +1605,6 @@ class LandingPage extends React.Component{
           
           
             }
-            updateSignalRecords = true
           }
            if((e.rec['RejSetupInvalid'] != this.state.rec['RejSetupInvalid'])){
             if(e.rec['RejSetupInvalid'] == 1){
@@ -1616,13 +1612,11 @@ class LandingPage extends React.Component{
               this.notify('Reject Setup is invalid!')
           
             }
-            updateSignalRecords = true
           }
           if(e.rec['DateTime'] != this.state.rec['DateTime']){
             if (typeof this.fclck != 'undefined'){
               this.fclck.current.setDate(e.rec['DateTime'])
             }
-            updateSignalRecords = true
           }
           var cob = this.state.cob
           var pcob = this.state.pcob
@@ -1634,7 +1628,7 @@ class LandingPage extends React.Component{
           
 
               this.ss.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
-              if (this.ssDual && this.ssDual.current && (this.props.page == 'dual')){
+              if (this.ssDual && this.ssDual.current){
                 this.ssDual.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
               }
               if(this.sd.current){
@@ -1647,12 +1641,10 @@ class LandingPage extends React.Component{
                 this.props.update(this.props.lane)
               }
             noupdate = false
-            updateSignalRecords = true
             this.setState({ioBITs:iobits})
           }
           if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
             noupdate = false;
-            updateSignalRecords = true
           }
           if(e.rec['BatchRunning'] != this.state.rec['BatchRunning']){
             if(typeof this.state.rec['BatchRunning'] != 'undefined'){
@@ -1670,13 +1662,13 @@ class LandingPage extends React.Component{
               }else if(e.rec['BatchRunning'] == 2){
                // toast('Batch Paused')
                 this.ste.current.showMsg('Batch Paused')
-                if (this.steDual && this.steDual.current && (this.props.page == 'dual')){
+                if (this.steDual && this.steDual.current){
                   this.steDual.current.showMsg('Batch Paused')
                 }
               }else{
                 //this.msgm.current.show('Batch Stopped')
                 this.ste.current.showMsg('Batch Stopped')
-                if (this.steDual && this.steDual.current && (this.props.page == 'dual')){
+                if (this.steDual && this.steDual.current){
                   this.steDual.current.showMsg('Batch Stopped')
                 }
                //  toast('Batch Stopped')
@@ -1691,18 +1683,14 @@ class LandingPage extends React.Component{
                 if(e.rec['BatchRunComplete'] == 1){
                   this.msgm.current.show('Batch Completed')
                   this.ste.current.showMsg('Batch Completed')
-                  if (this.steDual && this.steDual.current && (this.props.page == 'dual')){
+                  if (this.steDual && this.steDual.current){
                     this.steDual.current.showMsg('Batch Completed')
                   }
                 }
               }
             }
-            updateSignalRecords = true
           }
-          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%10, noupdate:noupdate, live:true})
-          if (updateSignalRecords){
-            this.setState({rec:e.rec})
-          }
+          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,rec:e.rec,updateCount:(this.state.updateCount+1)%10, noupdate:noupdate, live:true})
           
         }else if(e.type == 3){
           e.rec.Nif_ip = this.state.nifip
@@ -1766,12 +1754,12 @@ class LandingPage extends React.Component{
           this.setState({crec:e.rec, noupdate:true})
           this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
-          if (this.lgDual && this.lgDual.current && (this.props.page == 'dual')){
+          if (this.lgDual && this.lgDual.current){
             this.lgDual.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
           }
           this.hh.current.parseCrec(e.rec)
-          if (this.hhDual && this.hhDual.current && (this.props.page == 'dual')){
+          if (this.hhDual && this.hhDual.current){
             this.hhDual.current.parseCrec(e.rec)
           }
           if(this.btc.current){
@@ -1782,11 +1770,11 @@ class LandingPage extends React.Component{
             pkgwgt = this.state.prec['PkgWeight']
           }
           this.ss.current.setState({crec:e.rec, pkgwgt:pkgwgt})
-          if (this.ssDual && this.ssDual.current && (this.props.page == 'dual')){
+          if (this.ssDual && this.ssDual.current){
             this.ssDual.current.setState({crec:e.rec, pkgwgt:pkgwgt})
           }
           this.se.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
-          if (this.seDual && this.seDual.current && (this.props.page == 'dual')){
+          if (this.seDual && this.seDual.current){
             this.seDual.current.setState({crec:e.rec["PackWeight"].toFixed(1) + 'g'})
           }
           this.tb.current.update(e.rec['PackWeight']);
@@ -1824,7 +1812,7 @@ class LandingPage extends React.Component{
               this.btc.current.parseHisto(e.rec['HistogramBatch'], bucketSize, buckets, e.rec['BucketMax'], e.rec['BucketMin'])
           }
           this.lg.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
-          if (this.lgDual && this.lgDual.current && (this.props.page == 'dual')){
+          if (this.lgDual && this.lgDual.current){
             this.lgDual.current.pushBin(e.rec['HistogramBatch'], this.state.prec['HistogramBuckets'])
           }
           this.setState({buckMin:e.rec['BucketMin'], buckMax:e.rec['BucketMax'], init:true})
@@ -3030,7 +3018,7 @@ class DualPage extends React.Component{
   }
 
   shouldComponentUpdate(){
-    if (this.props.update){
+    if (this.props.update && (this.props.page == 'dual')){
       return true
     }
     return false
