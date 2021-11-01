@@ -897,7 +897,7 @@ class LandingPage extends React.Component{
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
       detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false,
-      checkPrecInterval:null}
+      checkPrecInterval:null,liveWeight:0.0}
     this.exportVmap = this.exportVmap.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
@@ -1641,7 +1641,7 @@ class LandingPage extends React.Component{
                 this.props.update(this.props.lane)
               }
             noupdate = false
-            this.setState({ioBITs:iobits})
+            this.setState({ioBITs:iobits,liveWeight:e.rec['LiveWeight']})
           }
           if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
             noupdate = false;
@@ -2836,7 +2836,7 @@ class LandingPage extends React.Component{
         sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
         <SettingsPageWSB  soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
-        <BatchWidget acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
+        <BatchWidget acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
         </div>
 
         cont = sd;
@@ -2954,7 +2954,7 @@ class LandingPage extends React.Component{
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
         <Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
-          <ProductSettings soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
+          <ProductSettings soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
           submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={()=>this.setState({prclosereq:false})}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
           curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
@@ -2971,7 +2971,7 @@ class LandingPage extends React.Component{
         <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
          <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Batch</div></div>
          <BatchControl soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
-          liveWeight={FormatWeight(this.state.rec['LiveWeight'],this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
+          liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
            startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
                    weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
         </Modal>
