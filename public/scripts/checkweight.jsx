@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/11/01'
+const DISPLAYVERSION = '2021/11/02'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -897,7 +897,7 @@ class LandingPage extends React.Component{
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
       detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false,
-      checkPrecInterval:null,liveWeight:0.0,updateCount2:0}
+      checkPrecInterval:null,liveWeight:0.0}
     this.exportVmap = this.exportVmap.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
@@ -1529,12 +1529,12 @@ class LandingPage extends React.Component{
                   iobits[b] = e.rec[b]
                 }
             })
-            
+/*            
             if(isDiff(iobits,this.state.ioBITs)){
                 noupdate = false;
                // console.log(1347, iobits)
               }
-          
+*/          
           }
           if(e.rec['EditProdNeedToSave'] != self.state.rec['EditProdNeedToSave']){
             noupdate=false;
@@ -1641,11 +1641,7 @@ class LandingPage extends React.Component{
                 this.props.update(this.props.lane)
               }
             noupdate = false
-            this.setState({liveWeight:e.rec['LiveWeight'],rec:e.rec})
-          }
-          if(this.state.updateCount2 == 0){
-            noupdate = false
-            this.setState({ioBITs:iobits})
+            this.setState({liveWeight:e.rec['LiveWeight'],rec:e.rec,ioBITs:iobits})
           }
 
           if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
@@ -1698,7 +1694,7 @@ class LandingPage extends React.Component{
               }
             }
           }
-          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%10, updateCount2:(this.state.updateCount2+1)%20,noupdate:noupdate, live:true})
+          this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
           
         }else if(e.type == 3){
           e.rec.Nif_ip = this.state.nifip
