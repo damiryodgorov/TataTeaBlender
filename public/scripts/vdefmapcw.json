@@ -8584,6 +8584,58 @@
         "g"
       ]
     },
+    "MetalDetectorFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Metal Detector",
+          "description": ""
+        },
+        "korean": {
+          "name": "Metal Detector",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Metal Detector",
+          "description": ""
+        },
+        "french": {
+          "name": "Metal Detector",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Metal Detector",
+          "description": ""
+        },
+        "italian": {
+          "name": "Metal Detector",
+          "description": ""
+        },
+        "german": {
+          "name": "Metal Detector",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Metal Detector",
+          "description": ""
+        },
+        "russian": {
+          "name": "Metal Detector",
+          "description": ""
+        },
+        "polish": {
+          "name": "Metal Detector",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Metal Detector",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
     "LastCalTime": {
       "@translations": {
         "english": {
@@ -23077,6 +23129,63 @@
       "children": [
         "INPUT_END_BATCH",
         "INPUT_POL_END_BATCH"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@MDFAULT": {
+      "@translations": {
+        "english": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        },
+        "korean": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        },
+        "french": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        },
+        "italian": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        },
+        "german": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        },
+        "russian": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        },
+        "polish": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Metal Detector Fault",
+          "description": ""
+        }
+      },
+      "children": [
+        "INPUT_MD_FAULT",
+        "INPUT_POL_MD_FAULT"
       ],
       "@labels": [
         "Source",
@@ -55148,6 +55257,11 @@
                       "type": 0,
                       "val": "@END_BATCH",
                       "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@MDFAULT",
+                      "acc": 0
                     }
                   ]
                 },
@@ -55598,6 +55712,11 @@
               {
                 "type": 0,
                 "val": "LastCalibrateFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "MetalDetectorFaultMask",
                 "acc": 0
               }
             ]
