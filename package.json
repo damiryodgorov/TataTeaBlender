@@ -29,7 +29,7 @@
     "crypto": "^1.0.1",
     "css-loader": "^1.0.1",
     "express": "^4.17.1",
-    "fs": "0.0.1-security",
+    "fs-filesystem": "^1.0.1",
     "glamor": "^2.20.40",
     "helmet": "^4.6.0",
     "http": "0.0.1-security",
