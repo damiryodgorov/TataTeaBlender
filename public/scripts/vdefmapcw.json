@@ -26748,7 +26748,7 @@
     "RejBinFullFaultMaskOverride": {
       "@translations": {
         "english": {
-          "name": "Bin Full",
+          "name": "Reject Bin Full",
           "description": "The reject bin is full"
         },
         "korean": {
@@ -26800,7 +26800,7 @@
     "RejBinDoorFaultMask": {
       "@translations": {
         "english": {
-          "name": "Bin Door",
+          "name": "Reject Bin Door",
           "description": "This fault or warning occurs when the reject bin door is open for longer than the reject bin door time."
         },
         "korean": {
@@ -26852,7 +26852,7 @@
     "RejBinDoorFaultMaskOverride": {
       "@translations": {
         "english": {
-          "name": "Reject Bin Door Fault",
+          "name": "Reject Bin Door",
           "description": "The reject bin door is open"
         },
         "korean": {
@@ -26880,25 +26880,25 @@
           "description": "Der Auswurfbehälter ist voll, bitte leeren."
         },
         "turkish": {
-          "name": "Reject Bin Door Fault",
+          "name": "Reject Bin Door",
           "description": "The reject bin door is open"
         },
         "russian": {
-          "name": "Reject Bin Door Fault",
+          "name": "Reject Bin Door",
           "description": "The reject bin door is open"
         },
         "polish": {
-          "name": "Reject Bin Door Fault",
+          "name": "Reject Bin Door",
           "description": "The reject bin door is open"
         },
         "chinese": {
-          "name": "Reject Bin Door Fault",
+          "name": "Reject Bin Door",
           "description": "The reject bin door is open"
         }
       },
       "children": [],
       "@labels": [
-        "Reject Bin Full Fault"
+        "Reject Bin Full"
       ]
     },
     "AirFaultMask": {
@@ -28828,47 +28828,47 @@
     "ProdBackupFaultMaskOverride": {
       "@translations": {
         "english": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": "This fault or warning occurs when the product backup sensor has been blocked for the set eye block time."
         },
         "korean": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": ""
         },
         "spanish": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": ""
         },
         "french": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": ""
         },
         "portuguese": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": ""
         },
         "italian": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": ""
         },
         "german": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": ""
         },
         "turkish": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": ""
         },
         "russian": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": ""
         },
         "polish": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": ""
         },
         "chinese": {
-          "name": "Product Backup fault",
+          "name": "Product Backup",
           "description": ""
         }
       },
@@ -29764,47 +29764,47 @@
     "TareFaultMaskOverride": {
       "@translations": {
         "english": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": "This fault or warning occurs when the checkweigher has not been tared for the tare fault time."
         },
         "korean": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": ""
         },
         "spanish": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": ""
         },
         "french": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": ""
         },
         "portuguese": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": ""
         },
         "italian": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": ""
         },
         "german": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": ""
         },
         "turkish": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": ""
         },
         "russian": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": ""
         },
         "polish": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": ""
         },
         "chinese": {
-          "name": "Tare Fault",
+          "name": "Tare",
           "description": ""
         }
       },
@@ -32044,11 +32044,11 @@
       "@parent": "",
       "@translations": {
         "english": {
-          "name": "Excess Rejects",
+          "name": "Excess Rejects Packs",
           "description": "Number of rejected packs in the allotted time that will cause an excess reject fault or warning."
         },
         "korean": {
-          "name": "Excess Rejects",
+          "name": "Excess Rejects Packs",
           "description": ""
         },
         "spanish": {
@@ -32056,35 +32056,35 @@
           "description": ""
         },
         "french": {
-          "name": "Excess Rejects",
+          "name": "Excess Rejects Packs",
           "description": ""
         },
         "portuguese": {
-          "name": "Excess Rejects",
+          "name": "Excess Rejects Packs",
           "description": ""
         },
         "italian": {
-          "name": "Excess Rejects",
+          "name": "Excess Rejects Packs",
           "description": ""
         },
         "russian": {
-          "name": "Excess Rejects",
+          "name": "Excess Rejects Packs",
           "description": ""
         },
         "polish": {
-          "name": "Excess Rejects",
+          "name": "Excess Rejects Packs",
           "description": ""
         },
         "chinese": {
-          "name": "Excess Rejects",
+          "name": "Excess Rejects Packs",
           "description": ""
         },
         "german": {
-          "name": "Excess Rejects",
+          "name": "Excess Rejects Packs",
           "description": ""
         },
         "turkish": {
-          "name": "Excess Rejects",
+          "name": "Excess Rejects Packs",
           "description": ""
         }
       },
@@ -54510,6 +54510,30 @@
                           {
                             "type": 1,
                             "val": {
+                              "cat": "RejectChecks",
+                              "params": [
+                                {
+                                  "type": 0,
+                                  "val": "RejCheckTime",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "SplitPkgLength",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "Rej2Check",
+                                  "acc": 0
+                                }
+                              ]
+                            },
+                            "acc": 0
+                          },
+                          {
+                            "type": 1,
+                            "val": {
                               "cat": "Additional Settings",
                               "params": [
                                 {
@@ -55850,6 +55874,16 @@
                   ]
                 },
                 "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "HistogramBuckets",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "HistogramBucketSize",
+                "acc": 0
               }
             ]
           },
@@ -55872,6 +55906,11 @@
                     },
                     {
                       "type": 0,
+                      "val": "BeltSpeedFaultMaskOverride",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
                       "val": "RejConfirmFaultMaskOverride",
                       "acc": 0
                     },
@@ -55888,11 +55927,6 @@
                     {
                       "type": 0,
                       "val": "PeyeBlockFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RejBinFullFaultMaskOverride",
                       "acc": 0
                     },
                     {
@@ -55943,6 +55977,11 @@
                     {
                       "type": 0,
                       "val": "TareFaultMaskOverride",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "RejBinFullFaultMaskOverride",
                       "acc": 0
                     },
                     {
@@ -55998,31 +56037,6 @@
                       "type": 1,
                       "val": {
                         "child": 0,
-                        "cat": "ExcessRej",
-                        "params": [
-                          {
-                            "type": 0,
-                            "val": "ExcessRejects",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "ExcessRejTime",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "ExcessRejFaultMaskOverride",
-                            "acc": 0
-                          }
-                        ]
-                      },
-                      "acc": 0
-                    },
-                    {
-                      "type": 1,
-                      "val": {
-                        "child": 0,
                         "cat": "RejectCheck",
                         "params": [
                           {
@@ -56032,28 +56046,22 @@
                           },
                           {
                             "type": 0,
-                            "val": "RejCheckTime",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
                             "val": "RejRetMode",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "SplitPkgLength",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "Rej2Check",
                             "acc": 0
                           }
                         ]
                       },
                       "acc": 0
-                    },
+                    }
+                  ]
+                },
+                "acc": 0
+              },
+              {
+                "type": 1,
+                "val": {
+                  "cat": "RejectOffsets",
+                  "params": [
                     {
                       "type": 0,
                       "val": "RejDelFudge",
@@ -56072,100 +56080,6 @@
                     {
                       "type": 0,
                       "val": "RejDurFudge2",
-                      "acc": 0
-                    }
-                  ]
-                },
-                "acc": 0
-              },
-              {
-                "type": 1,
-                "val": {
-                  "cat": "VFD",
-                  "params": [
-                    {
-                      "type": 0,
-                      "val": "VfdBeltSpeed0",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "VfdBeltSpeed1",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "VfdBeltSpeed2",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "VfdBeltSpeed3",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "SameBeltSpeeds",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RejDelClock",
-                      "acc": 0
-                    }
-                  ]
-                },
-                "acc": 0
-              },
-              {
-                "type": 1,
-                "val": {
-                  "packGraph": true,
-                  "cat": "Plot",
-                  "params": [
-                    {
-                      "type": 0,
-                      "val": "WeighDelBeg",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "WeighDelEnd",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "WindowDelBeg",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "WindowDelEnd",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "WindowMin",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "WindowMax",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "WindowMode",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "HistogramBuckets",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "HistogramBucketSize",
                       "acc": 0
                     }
                   ]
@@ -56269,6 +56183,40 @@
           "acc": 0
         },
         {
+          "type": 1,
+          "val": {
+            "cat": "VFD",
+            "params": [
+              {
+                "type": 0,
+                "val": "VfdBeltSpeed0",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "VfdBeltSpeed1",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "VfdBeltSpeed2",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "VfdBeltSpeed3",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "SameBeltSpeeds",
+                "acc": 0
+              }
+            ]
+          },
+          "acc": 0
+        },
+        {
           "type": 0,
           "val": "SampleResetMinutes",
           "acc": 0
@@ -56354,6 +56302,21 @@
         "russian": "Reject",
         "polish": "Reject",
         "chinese": "Reject"
+      }
+    },
+    "Overrides/RejectOffsets": {
+      "@translations": {
+        "english": "Reject Offsets",
+        "korean": "거부",
+        "spanish": "Rechazo",
+        "french": "Rejet",
+        "portuguese": "Reject Offsets",
+        "italian": "Rifiuto",
+        "german": "Auswurf",
+        "turkish": "Reject Offsets",
+        "russian": "Reject Offsets",
+        "polish": "Reject Offsets",
+        "chinese": "Reject Offsets"
       }
     },
     "CWProd": {
@@ -56462,21 +56425,6 @@
       }
     },
     "VFD": {
-      "@translations": {
-        "english": "Belt Speed",
-        "korean": "Belt Speed",
-        "spanish": "Belt Speed",
-        "french": "Belt Speed",
-        "portuguese": "Belt Speed",
-        "italian": "Belt Speed",
-        "german": "Belt Speed",
-        "turkish": "Belt Speed",
-        "russian": "Belt Speed",
-        "polish": "Belt Speed",
-        "chinese": "Belt Speed"
-      }
-    },
-    "Overrides/VFD": {
       "@translations": {
         "english": "Belt Speed",
         "korean": "Belt Speed",
@@ -56639,6 +56587,21 @@
         "russian": "Faults",
         "polish": "Faults",
         "chinese": "Faults"
+      }
+    },
+    "CWProd/VFD": {
+      "@translations": {
+        "english": "Belt Speed",
+        "korean": "Belt Speed",
+        "spanish": "Belt Speed",
+        "french": "Belt Speed",
+        "portuguese": "Belt Speed",
+        "italian": "Belt Speed",
+        "german": "Belt Speed",
+        "turkish": "Belt Speed",
+        "russian": "Belt Speed",
+        "polish": "Belt Speed",
+        "chinese": "Belt Speed"
       }
     },
     "System/FRAM": {
@@ -57228,6 +57191,21 @@
         "russian": "Dimensions",
         "polish": "Dimensions",
         "chinese": "Dimensions"
+      }
+    },
+    "System/Advanced/Reject/RejectChecks": {
+      "@translations": {
+        "english": "Reject Checks",
+        "korean": "Reject Checks",
+        "spanish": "Reject Checks",
+        "french": "Reject Checks",
+        "portuguese": "Reject Checks",
+        "italian": "Reject Checks",
+        "german": "Reject Checks",
+        "turkish": "Reject Checks",
+        "russian": "Reject Checks",
+        "polish": "Reject Checks",
+        "chinese": "Reject Checks"
       }
     },
     "System/Advanced/Reject/Belt Speed": {
@@ -62408,9 +62386,9 @@
       ],
       "english": [
         "default",
-        "masked",
-        "enabled",
-        "warn"
+        "disabled",
+        "fault",
+        "warning"
       ],
       "korean": [
         "",
@@ -62456,9 +62434,9 @@
       ],
       "russian": [
         "default",
-        "masked",
-        "enabled",
-        "warn"
+        "disabled",
+        "fault",
+        "warning"
       ]
     },
     "WindowMode": {
