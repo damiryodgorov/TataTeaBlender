@@ -25864,47 +25864,47 @@
     "BeltSpeedFaultMaskOverride": {
       "@translations": {
         "english": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": "This fault or warning occurs when the belt speed is outside the set belt speed tolerance for more than the belt speed fault time. "
         },
         "korean": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "spanish": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "french": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "portuguese": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "italian": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "german": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "turkish": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "russian": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "polish": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "chinese": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         }
       },
@@ -54524,6 +54524,16 @@
                                 },
                                 {
                                   "type": 0,
+                                  "val": "RejConfMode",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "RejRetMode",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
                                   "val": "Rej2Check",
                                   "acc": 0
                                 }
@@ -56001,6 +56011,35 @@
                     {
                       "type": 1,
                       "val": {
+                        "cat": "RejectOffsets",
+                        "params": [
+                          {
+                            "type": 0,
+                            "val": "RejDelFudge",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "RejDelFudge2",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "RejDurFudge",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "RejDurFudge2",
+                            "acc": 0
+                          }
+                        ]
+                      },
+                      "acc": 0
+                    },
+                    {
+                      "type": 1,
+                      "val": {
                         "child": 0,
                         "cat": "PhotoReject",
                         "params": [
@@ -56051,35 +56090,6 @@
                           }
                         ]
                       },
-                      "acc": 0
-                    }
-                  ]
-                },
-                "acc": 0
-              },
-              {
-                "type": 1,
-                "val": {
-                  "cat": "RejectOffsets",
-                  "params": [
-                    {
-                      "type": 0,
-                      "val": "RejDelFudge",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RejDelFudge2",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RejDurFudge",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RejDurFudge2",
                       "acc": 0
                     }
                   ]
@@ -56304,7 +56314,7 @@
         "chinese": "Reject"
       }
     },
-    "Overrides/RejectOffsets": {
+    "Overrides/Reject/RejectOffsets": {
       "@translations": {
         "english": "Reject Offsets",
         "korean": "거부",
@@ -61084,92 +61094,114 @@
     },
     "RejConfMode": {
       "turkish": [
+        null,
         "kapali",
         null
       ],
       "english": [
+        "default",
         "off",
         "on"
       ],
       "korean": [
         null,
+        null,
         null
       ],
       "german": [
+        null,
         "aus",
         null
       ],
       "polish": [
+        null,
         "wyl",
         null
       ],
       "italian": [
+        "default",
         "Off",
         null
       ],
       "spanish": [
+        "default",
         "off",
         "on"
       ],
       "french": [
+        "default",
         "off",
         "on"
       ],
       "portuguese": [
+        "default",
         "off",
         "on"
       ],
       "russian": [
+        "default",
         "off",
         "on"
       ],
       "chinese": [
+        "default",
         "off",
         "on"
       ]
     },
     "RejRetMode": {
       "english": [
+        "default",
         "off",
         "on"
       ],
       "korean": [
+        "default",
         "off",
         "on"
       ],
       "spanish": [
+        "default",
         "off",
         "on"
       ],
       "french": [
+        "default",
         "off",
         "on"
       ],
       "portuguese": [
+        "default",
         "off",
         "on"
       ],
       "italian": [
+        "default",
         "off",
         "on"
       ],
       "german": [
+        "default",
         "off",
         "on"
       ],
       "polish": [
+        "default",
         "off",
         "on"
       ],
       "turkish": [
+        "default",
         "off",
         "on"
       ],
       "russian": [
+        "default",
         "off",
         "on"
       ],
       "chinese": [
+        "default",
         "off",
         "on"
       ]
@@ -62704,67 +62736,67 @@
     },
     "PhotoRejectOverride": {
       "english": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
       ],
       "korean": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
       ],
       "spanish": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
       ],
       "french": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
       ],
       "portuguese": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
       ],
       "italian": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
       ],
       "german": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
       ],
       "polish": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
       ],
       "turkish": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
       ],
       "russian": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
       ],
       "chinese": [
-        "use system setting",
+        "default",
         "length",
         "lead",
         "mid"
