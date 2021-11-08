@@ -310,7 +310,7 @@ class PopoutWheelModalC extends React.Component{
 					params = self.props.params[i]
 				}
 			// body...
-			return <PopoutWheelSelector ovWidth={self.props.ovWidth} inputs={self.props.inputs} outputs={self.props.outputs} params={params}  height={height} ioBits={self.props.ioBits} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
+			return <PopoutWheelSelector key={i} ovWidth={self.props.ovWidth} inputs={self.props.inputs} outputs={self.props.outputs} params={params}  height={height} ioBits={self.props.ioBits} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
 			})
 		}else{
 			wheels  = this.state.value.map(function (m,i) {
@@ -328,7 +328,7 @@ class PopoutWheelModalC extends React.Component{
 					//console.log(params)
 				}
 			// body...
-			return <PopoutWheelSelector ovWidth={self.props.ovWidth} inputs={self.props.inputs} outputs={self.props.outputs} params={params}  height={height} ioBits={self.props.ioBits} label={lb} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
+			return <PopoutWheelSelector key={i} ovWidth={self.props.ovWidth} inputs={self.props.inputs} outputs={self.props.outputs} params={params}  height={height} ioBits={self.props.ioBits} label={lb} interceptor={self.props.interceptor} Id={self.props.name+i} value={m} options={self.props.options[i]} index={i} onChange={self.select}/>
 			})
 		}
 		
