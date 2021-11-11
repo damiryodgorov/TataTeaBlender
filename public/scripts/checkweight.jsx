@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/11/02'
+const DISPLAYVERSION = '2021/11/03'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -2714,7 +2714,7 @@ class LandingPage extends React.Component{
 
     var detectors = this.state.dets.map(function (det, i) {
       // body...
-      return   <div> <CircularButton branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
+      return   <div key={i}> <CircularButton branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
        
     })
       return (<div>
