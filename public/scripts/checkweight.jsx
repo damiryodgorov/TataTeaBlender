@@ -4717,7 +4717,6 @@ class ProductSettings extends React.Component{
     }
     
     var scrollInd = 0
-    console.log("List of all products",list);
     var prods = list.map(function (prd,i) {
       if(prd.no == self.state.selProd){
         scrollInd = i;
@@ -4790,7 +4789,7 @@ class ProductSettings extends React.Component{
     //   <div onClick={this.copyTo} style={{display:'table-cell',height:85, borderRight:'2px solid #ccc', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
        
     return <div style={{width:1155}}>
-      <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>Product</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:400}}>{'Current Product dy test: '+spstr }</div></div>
+      <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>Product</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:400}}>{'Current Product: '+spstr }</div></div>
       <table style={{borderCollapse:'collapse'}}><tbody>
         <tr>
           <td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:819, paddingTop:0}}>  
