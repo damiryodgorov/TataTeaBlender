@@ -25913,6 +25913,58 @@
         "Reference Fault"
       ]
     },
+    "FaultClearTimeOverride": {
+      "@translations": {
+        "english": {
+          "name": "Clear Time",
+          "description": "Amount of time a fault will stay cleared if the fault source still present. "
+        },
+        "korean": {
+          "name": "폴트 클리어 시간",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Tiempo Borrado Fallo",
+          "description": ""
+        },
+        "french": {
+          "name": "Temps sans Défaillance/Erreur",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Tempo Limpar Falhas",
+          "description": ""
+        },
+        "italian": {
+          "name": "Tempo Cancellazione Errore",
+          "description": ""
+        },
+        "german": {
+          "name": "Fehler-Lösch-Zeit",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Fault Clear Time",
+          "description": ""
+        },
+        "russian": {
+          "name": "Fault Clear Time",
+          "description": ""
+        },
+        "polish": {
+          "name": "Fault Clear Time",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Fault Clear Time",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Fault Clear Time"
+      ]
+    },
     "RefFaultMaskOverride": {
       "@translations": {
         "english": {
@@ -43825,6 +43877,112 @@
         "RejRetMode"
       ]
     },
+    "RejRetModeOverride": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Reject Return",
+          "description": "Enables the sensor that verifies if the reject device returned properly."
+        },
+        "korean": {
+          "name": "Reject Return",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Modo Rechazo Ret.",
+          "description": ""
+        },
+        "french": {
+          "name": "Reject Return",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Reject Return",
+          "description": ""
+        },
+        "italian": {
+          "name": "Reject Return",
+          "description": ""
+        },
+        "russian": {
+          "name": "Reject Return",
+          "description": ""
+        },
+        "polish": {
+          "name": "Reject Return",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Reject Return",
+          "description": ""
+        },
+        "german": {
+          "name": "Reject Return",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Reject Return",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "RejRetModeOverride"
+      ]
+    },
+    "RejConfModeOverride": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Reject Confirm",
+          "description": "Enables the sensor that verifies if a pack was rejected properly."
+        },
+        "korean": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Modo Conf. Rechazo",
+          "description": ""
+        },
+        "french": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "italian": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "russian": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "polish": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "german": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Reject Confirm",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "RejConfModeOverride"
+      ]
+    },
     "RevMode": {
       "@parent": "",
       "@translations": {
@@ -55911,7 +56069,7 @@
                   "params": [
                     {
                       "type": 0,
-                      "val": "FaultClearTime",
+                      "val": "FaultClearTimeOverride",
                       "acc": 0
                     },
                     {
@@ -56011,35 +56169,6 @@
                     {
                       "type": 1,
                       "val": {
-                        "cat": "RejectOffsets",
-                        "params": [
-                          {
-                            "type": 0,
-                            "val": "RejDelFudge",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejDelFudge2",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejDurFudge",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejDurFudge2",
-                            "acc": 0
-                          }
-                        ]
-                      },
-                      "acc": 0
-                    },
-                    {
-                      "type": 1,
-                      "val": {
                         "child": 0,
                         "cat": "PhotoReject",
                         "params": [
@@ -56080,12 +56209,41 @@
                         "params": [
                           {
                             "type": 0,
-                            "val": "RejConfMode",
+                            "val": "RejConfModeOverride",
                             "acc": 0
                           },
                           {
                             "type": 0,
-                            "val": "RejRetMode",
+                            "val": "RejRetModeOverride",
+                            "acc": 0
+                          }
+                        ]
+                      },
+                      "acc": 0
+                    },
+                    {
+                      "type": 1,
+                      "val": {
+                        "cat": "RejectOffsets",
+                        "params": [
+                          {
+                            "type": 0,
+                            "val": "RejDelFudge",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "RejDelFudge2",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "RejDurFudge",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "RejDurFudge2",
                             "acc": 0
                           }
                         ]
@@ -61191,6 +61349,120 @@
         "on"
       ],
       "turkish": [
+        "default",
+        "off",
+        "on"
+      ],
+      "russian": [
+        "default",
+        "off",
+        "on"
+      ],
+      "chinese": [
+        "default",
+        "off",
+        "on"
+      ]
+    },
+    "RejRetModeOverride": {
+      "english": [
+        "default",
+        "off",
+        "on"
+      ],
+      "korean": [
+        "default",
+        "off",
+        "on"
+      ],
+      "spanish": [
+        "default",
+        "off",
+        "on"
+      ],
+      "french": [
+        "default",
+        "off",
+        "on"
+      ],
+      "portuguese": [
+        "default",
+        "off",
+        "on"
+      ],
+      "italian": [
+        "default",
+        "off",
+        "on"
+      ],
+      "german": [
+        "default",
+        "off",
+        "on"
+      ],
+      "polish": [
+        "default",
+        "off",
+        "on"
+      ],
+      "turkish": [
+        "default",
+        "off",
+        "on"
+      ],
+      "russian": [
+        "default",
+        "off",
+        "on"
+      ],
+      "chinese": [
+        "default",
+        "off",
+        "on"
+      ]
+    },
+    "RejConfModeOverride": {
+      "turkish": [
+        null,
+        "kapali",
+        null
+      ],
+      "english": [
+        "default",
+        "off",
+        "on"
+      ],
+      "korean": [
+        null,
+        null,
+        null
+      ],
+      "german": [
+        null,
+        "aus",
+        null
+      ],
+      "polish": [
+        null,
+        "wyl",
+        null
+      ],
+      "italian": [
+        "default",
+        "Off",
+        null
+      ],
+      "spanish": [
+        "default",
+        "off",
+        "on"
+      ],
+      "french": [
+        "default",
+        "off",
+        "on"
+      ],
+      "portuguese": [
         "default",
         "off",
         "on"
