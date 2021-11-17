@@ -18514,6 +18514,58 @@
         "Eye Block Time"
       ]
     },
+    "EyeBlockTimeOverride": {
+      "@translations": {
+        "english": {
+          "name": "Eye Block Fault Distance",
+          "description": "Used to generate a fault if the weight photoeye is blocked by a multiple of package length.  For example, if the pack is 100mm and  the Eye Block Fault Time is set to 1.5, the system will fault once the length of the perceived pack exceeds 150mm"
+        },
+        "korean": {
+          "name": "아이 차단 시간",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Tiempo Bloqueo Fotocélula",
+          "description": ""
+        },
+        "french": {
+          "name": "Temps Capteur Optique Obstrué",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Tempo Fotocélula Bloqueado",
+          "description": ""
+        },
+        "italian": {
+          "name": "Tempo Blocco Fotocellula",
+          "description": ""
+        },
+        "german": {
+          "name": "Blockierzeit Lichtschranke",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Eye Block Time",
+          "description": ""
+        },
+        "russian": {
+          "name": "Eye Block Time",
+          "description": ""
+        },
+        "polish": {
+          "name": "Eye Block Time",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Eye Block Time",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Eye Block Time"
+      ]
+    },
     "RejCheckTime": {
       "@translations": {
         "english": {
@@ -30866,6 +30918,58 @@
       ]
     },
     "EyeMinGapDist": {
+      "@translations": {
+        "english": {
+          "name": "Minimum Product Gap",
+          "description": "Minimum distance that a Photoeye requires to register a new pack.  If the pack is causing multiple weights, this value should be increased. "
+        },
+        "korean": {
+          "name": "품목 최단거리",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Dist. Mín. Sep. Fotocélula",
+          "description": ""
+        },
+        "french": {
+          "name": "Intervalle Minimal Produit",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Minimum Product Gap",
+          "description": ""
+        },
+        "italian": {
+          "name": "Minimum Product Gap",
+          "description": ""
+        },
+        "german": {
+          "name": "Minimum Produktlücke",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Minimum Product Gap",
+          "description": ""
+        },
+        "russian": {
+          "name": "Minimum Product Gap",
+          "description": ""
+        },
+        "polish": {
+          "name": "Minimum Product Gap",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Minimum Product Gap",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "IP"
+      ]
+    },
+    "EyeMinGapDistOverride": {
       "@translations": {
         "english": {
           "name": "Minimum Product Gap",
@@ -56189,12 +56293,12 @@
                           },
                           {
                             "type": 0,
-                            "val": "EyeBlockTime",
+                            "val": "EyeBlockTimeOverride",
                             "acc": 0
                           },
                           {
                             "type": 0,
-                            "val": "EyeMinGapDist",
+                            "val": "EyeMinGapDistOverride",
                             "acc": 0
                           }
                         ]
