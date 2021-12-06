@@ -8738,9 +8738,9 @@ class StatDisplay extends React.Component{
       }
     
     }
-
-    return <div style={{height:61, width:'100%', borderBottom:"2px solid #ccc"}} >
-    <div onClick={this.editSetting}><div style={{textAlign:'center', fontSize:14}}>{this.props.name}</div>
+    var unEditableContent = this.props.name=='Weigh Conveyor Length' || this.props.name=='Weight Photoeye Distance';
+    return <div style={{height:55, paddingTop:10, width:'100%', borderBottom:"2px solid #888", backgroundColor: unEditableContent && "#ccc"}} >
+    <div onClick={this.editSetting}><div style={{textAlign:'center',fontSize:14}}>{this.props.name}</div>
     <div style={{textAlign:'center',lineHeight:1.4, fontSize:14}} >{this.props.value}</div></div>
     <MessageModal ref={this.msgm}/>
     {ckb}
