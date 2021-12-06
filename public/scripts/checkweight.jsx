@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/11/09'
+const DISPLAYVERSION = '2021/12/06'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -327,7 +327,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
 
     pAcc = Math.max(passAcc, pAcc);
     // console.log("pAcc", pAcc )
-    // console.log("par", par)
+    //console.log("par", par)
 		if(par.type == 0){
 
 			var p = par.val
@@ -3942,7 +3942,9 @@ class ProductSettings extends React.Component{
     this.advProdMgmt = this.advProdMgmt.bind(this);
     this.copyFromDef = this.copyFromDef.bind(this);
     this.showProdMgmtTooltip = this.showProdMgmtTooltip.bind(this);
+    this.stopConfirmed = this.stopConfirmed.bind(this);
     this.msgm = React.createRef();
+    this.stopConfirm = React.createRef();
     this.prImEx = React.createRef();
     this.pmd = React.createRef();
     this.pmd2 = React.createRef();
@@ -4024,11 +4026,8 @@ class ProductSettings extends React.Component{
         this.msgm.current.show('Changes not permitted until batch is stopped.')
       }
     }
-
     var self = this;
-    // console.log(n,v)
     this.props.sendPacket(n,v)
-  
   }
   onAdvanced(){
     //Show SettingsPage
@@ -4045,6 +4044,7 @@ class ProductSettings extends React.Component{
     var cob =  iterateCats2(_cvdf, vdef[1],sys,prod, vdef[5],dyn,fram,sys['PassAccAdvProdEdit'])
     vdef = null;
     _cvdf = null;
+   
     return cob
   }
   componentWillReceiveProps(newProps){
@@ -4059,9 +4059,8 @@ class ProductSettings extends React.Component{
       curProd = newProps.prods[this.state.selProd]
       
     }
-    //console.log(curProd)
+    
     this.setState({prodList:prodList, cob2:this.getPCob(newProps.srec, curProd, newProps.drec, newProps.fram),selProd:newProps.editProd});
-
   }
   updateFilterString(str){
     var list = []
@@ -4105,7 +4104,7 @@ class ProductSettings extends React.Component{
       self.props.sendPacket('getProdList')
     },300)
   }
-   copyDefProd(target=-1){
+  copyDefProd(target=-1){
     var self = this;
     var nextNum = this.props.pList[this.props.pList.length - 1] + 1;
     if(target != -1){
@@ -4117,7 +4116,7 @@ class ProductSettings extends React.Component{
       self.props.sendPacket('getProdList')
     },300)
   }
-   copyFacProd(target=-1){
+  copyFacProd(target=-1){
     var self = this;
     var nextNum = this.props.pList[this.props.pList.length - 1] + 1;
     if(target != -1){
@@ -4162,8 +4161,28 @@ class ProductSettings extends React.Component{
       }
   }
   onValChange(p,v){}
+  stop(){
+    var self =this;
+    setTimeout(function(){
+      self.stopConfirm.current.show()
+    }, 150)
+  }
+  stopConfirmed(){
+    var prodEditAcc = this.props.level >= this.props.srec['PassAccSelectProduct'];
+    if(this.props.srec['PassOn'] == 0){
+      prodEditAcc = true;
+    }
+    if(prodEditAcc){
+      this.props.sendPacket('switchProd',this.state.selProd)
+    }else{
+      this.msgm.current.show('Access Denied')
+    }
+  }
   selectRunningProd(){
     var prodEditAcc = this.props.level >= this.props.srec['PassAccSelectProduct'];
+    if(this.props.drec['BatchRunning']==1){
+      this.stop();
+    }else{
       if(this.props.srec['PassOn'] == 0){
         prodEditAcc = true;
       }
@@ -4172,7 +4191,7 @@ class ProductSettings extends React.Component{
       }else{
         this.msgm.current.show('Access Denied')
       }
-    
+    }    
   }
   saveProduct(){
     // console.log('saving ', this.state.selProd)
@@ -4620,12 +4639,21 @@ class ProductSettings extends React.Component{
       }else{
         newFeedbackCorRate = curProd['FeedbackCorRate'];
       }
+      /**Fetching the current product name */
+      var rp = {}
+      if(this.props.runningProd){
+        this.state.prodList.forEach(function(prod) {   
+          if(self.props.runningProd == prod.no){
+            rp = prod 
+          }
+        })
+      }
 
       content =( 
       <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
         <div>
         <div style={{display:'inline-block', verticalAlign:'top'}}>
-        <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
+        <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={'Product Name'} value={rp.name} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
         <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={'Select Product'}/>
         <img src='assets/graph.svg' style={{position:'absolute', width:40, left:770, marginTop:15}} onClick={this.toggleGraph}/>
         
@@ -4721,6 +4749,7 @@ class ProductSettings extends React.Component{
       if(prd.no == self.state.selProd){
         scrollInd = i;
       }
+      
       return <div> <ProductSelectItem advAcc={advProdEditAcc} sendPacket={self.props.sendPacket} branding={self.props.branding} name={prd.name} p={prd.no} isNull={prd.null} deleteProd={self.deleteProd} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
          </div>
     })
@@ -4743,13 +4772,13 @@ class ProductSettings extends React.Component{
     var SA = (list.length > 8)
 
     var createNew = <div>
-       <div style={{color:'#e1e1e1', fontSize:25}}><div style={{display:'inline-block'}}>Create new product</div>  <div  style={{float:'right', display:'inline-block',marginRight:20}}><img src='assets/help.svg' onClick={this.showProdMgmtTooltip} width={30}/></div>
+       <div style={{color:'#e1e1e1', fontSize:25}}><div style={{display:'inline-block'}}>Create New Product:</div>  <div  style={{float:'right', display:'inline-block',marginRight:20}}><img src='assets/help.svg' onClick={this.showProdMgmtTooltip} width={30}/></div>
       </div>
        <div style={{textAlign:'center'}}>
-            <CircularButton onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From selected product'}/>
-            <CircularButton onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From base product'}/>
+            <CircularButton onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From Selected Product'}/>
+            <CircularButton onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From Base Product'}/>
          
-            <CircularButton onClick={this.copyFromFt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From factory product'}/>
+            <CircularButton onClick={this.copyFromFt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From Factory Product'}/>
             <CircularButton onClick={this.advProdMgmt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Product Records Management'}/>
          
          
@@ -4817,7 +4846,7 @@ class ProductSettings extends React.Component{
       </tbody></table>
       <PromptModal branding={this.props.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
       <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
-
+      
       <CopyModal ref={this.cfModal}  branding={this.props.branding}/>
       <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
       <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
@@ -4829,7 +4858,7 @@ class ProductSettings extends React.Component{
         {createNew}
         <Modal x={true} Style={{width:870, marginTop:50}} ref={this.apmgmt} branding={this.props.branding}>{advProdMgmt}</Modal>
       </Modal>
-      
+      <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
       <MessageModal ref={this.msgm}/>
     </div>
     //<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'} onClick={this.selectRunningProd}/>
@@ -4938,16 +4967,15 @@ class ProductSelectItem extends React.Component{
       //st.fontSize = 18
     }
     return (<div style={{background:"transparent", color:color, position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-flex', alignItems:'center', width:22}}>{check}</div><div style={{fontSize:22, verticalAlign:'top',display:'inline-block', width:40, paddingRight:3, height:65, lineHeight:'65px', textAlign:'right'}}>{this.props.p + '.  '}</div><div onClick={this.switchProd} style={st}><div style={{display:'block', width:'inherit'}}>{name}</div></div> <div style={{display:'inline-flex', width:22}}>{del}{config}</div></div>
-         <Modal ref={this.confModal} Style={{color:'#e1e1e1',width:800, maxWidth:800}}>
+        <Modal ref={this.confModal} Style={{color:'#e1e1e1',width:800, maxWidth:800}}>
                <div style={{textAlign:'center'}}>
                <div style={{fontSize:25, padding:10}}>Save and Restore</div>
                <CircularButton onClick={this.restoreDefault} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to factory settings'}/>
               <CircularButton onClick={this.restoreBackup} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to base product'}/>
        <CircularButton onClick={this.backupProduct} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Save selected product to base product'}/>
         </div>
-        <MessageModal ref={this.msgm}/>
           </Modal>
-        
+        <MessageModal ref={this.msgm}/>
       </div>)
   }
 }
@@ -5279,7 +5307,12 @@ class SettingsPageWSB extends React.Component{
   }
   onCalib(){
     if((this.props.sysSettings['PassOn'] == 0)||(this.props.level >= this.props.sysSettings['PassAccCalMenu'])){
-      this.props.onCal()
+      if((this.props.dynSettings['BatchRunning'] == 0))
+      {
+        this.props.onCal()
+      }else{
+        this.msgm.current.show('Batch needs to be ended');
+      }
     }else{
       this.msgm.current.show('Access Denied');
     }
@@ -5349,7 +5382,7 @@ class SettingsPageWSB extends React.Component{
       var calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onCalib} lab={'Calibrate'}/>
           </div>
           
-    if((this.props.calibState != 0) && (this.props.calibState != 7)){
+    if((this.props.calibState != 0) && (this.props.calibState != 7) && (this.props.dynSettings['BatchRunning'] == 0)){
       calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onCalib} lab={'Calibrate'}/>
                     <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalCancel} lab={'Cancel'}/>
           </div>
@@ -5983,6 +6016,7 @@ class SettingsPage extends React.Component{
         var buf = Buffer.alloc(4)
         buf.writeFloatLE(parseFloat(v),0)
         strArg = buf;
+        console.log("alert strArg "+strArg);
       }else if(n['@type'] == 'weight'){
         // console.log('should get here', 'sendPacket', v)
         var buf = Buffer.alloc(4)
@@ -6002,8 +6036,8 @@ class SettingsPage extends React.Component{
         strArg = buf;
       }
       var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+      //var packet = dsp_rpc_paylod_for(21, [6,17,0],null);
         // console.log(strArg, packet, n, 2154)
-    
       this.props.soc.emit('rpc', {ip:this.props.dsp, data:packet})
     }else if(n['@rpcs']['clear']){
       var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
@@ -6173,6 +6207,7 @@ class SettingsPage extends React.Component{
       
       nodes = []
       data[lvl - 1 ][0].params.forEach(function (par,i) {
+        
         if(par.type == 0){
                 var p = par
                 var pname = par['@name']
@@ -6205,13 +6240,12 @@ class SettingsPage extends React.Component{
             passAcc = true;
           }
           if(par.dt){
+            
             nodes.push(<SettingItem3 soc={self.props.soc} timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
               children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} passAcc={passAcc} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
        
            }else{
-
-
           //console.log(2158, isInt)
           nodes.push(<SettingItem3 soc={self.props.soc} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
@@ -6366,7 +6400,7 @@ class SettingsPage extends React.Component{
         <MenuItem onClick={this.translatePopup}>
           Translate Setting
         </MenuItem>
-      </ContextMenu>
+        </ContextMenu>
 
       {trnsmdl}{nav}
 
@@ -6574,7 +6608,6 @@ class SettingItem3 extends React.Component{
         },200)
       }
     
-
     this.props.sendPacket(n,val)  
 
     //  console.log('this should execute', n, v)
@@ -7074,6 +7107,7 @@ class SettingItem3 extends React.Component{
               if(!display){
             sty.display = 'none'
           }
+       
     var medctrl= (<MultiEditControl dt={this.props.dt} disabled={disable}  getToolTip={this.getToolTip} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} 
       submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus}
        onRequestClose={this.onRequestClose} pAcc={this.props.passAcc} acc={this.props.acc} ref='ed' vst={vst} 
@@ -7560,7 +7594,7 @@ class MultiEditControl extends React.Component{
       if(iod && i == 1){
         _st.width = 190
       }
-      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val}</CustomLabel>)
+      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val == '0.00 seconds' ? 'Default' : val}</CustomLabel>)
     })
     
 
@@ -9652,9 +9686,10 @@ class BatchHistogram extends React.Component{
     if(props.ovHisto){
       this.setState({histo:props.histo})
     }else{
-      if(this.props.ovHisto != props.ovHisto){
+      this.props.refreshHisto()
+      /*if(this.props.ovHisto != props.ovHisto){
         this.props.refreshHisto()
-      }
+      }*/
     }
   }
   parseHisto(histo, bucketSize, bucketNum, bucketMin, bucketMax){
@@ -9915,7 +9950,6 @@ class BatchControl extends React.Component{
  
   componentDidMount(){
     var self = this;
-
 
     this.props.soc.on('batchDownload', function (batchFile) {
        var bjson = JSON.parse(batchFile.data);
@@ -10262,7 +10296,7 @@ class BatchControl extends React.Component{
           </div>
 
     if(this.state.showMode == 1){
-
+      
       if(typeof this.props.pBatches != 'undefined'){
         pastBatches = this.props.pBatches.map(function (bat) {
           var bgc = '#e1e1e1'
@@ -10326,7 +10360,6 @@ class BatchControl extends React.Component{
     }
     
     return <div style={{minHeight:400, padding:5}}>
-          
           {batchDetails}
           <div><div style={{display:'inline-block'}}><BatchWidget acc={this.props.startStopAcc} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.batchRunning} canStartBelts={this.props.canStartBelts} onStart={this.onStartClick} onResume={this.props.onResume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/></div>
             <div style={{display:'inline-block', float:'right'}}>
@@ -10359,8 +10392,8 @@ class BatchControl extends React.Component{
             <Modal x={true} ref={this.manModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
             <ManBatch branding={this.props.branding} language={this.props.language} mac={this.props.mac} addBatch={this.runnewBatch} prodList={this.state.prodList}/>
             </Modal>
-             <Modal x={true} ref={this.pastBatches} Style={{width:900, marginTop:40}} innerStyle={{background:backgroundColor, maxHeight:650}}>
-            <PastBatches soc={this.props.soc} branding={this.props.branding} language={this.props.language} mac={this.props.mac} batches={this.props.pBatches}/>
+            <Modal x={true} ref={this.pastBatches} Style={{width:900, marginTop:40}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+              <PastBatches soc={this.props.soc} branding={this.props.branding} language={this.props.language} mac={this.props.mac} batches={this.props.pBatches}/>
             </Modal>
             <PlannedBatches soc={this.props.soc} deleteBatch={this.deleteBatch} getBatchList={this.props.getBatchList} branding={this.props.branding} language={this.props.language} ip={this.props.ip} mac={this.props.mac} ref={this.plannedBatches} plannedBatches={this.state.plannedBatches} prMap={prMap} prodList={this.state.prodList}/>
             

@@ -148,6 +148,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 				}
 			}
 		}
+	
 		this.props.onChange(this.state.value)
 	},
 	onDelete:function () {
@@ -259,8 +260,14 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			dvclr = '#111'
 		}
 		var label = 'Enter'
+		var helpText = '';
 		if(this.props.label && this.props.label.length > 0){
-			label = this.props.label;
+			if(this.props.label.includes('Clear Time -')){
+				label = this.props.label;
+				helpText='Showing 0 means default';
+			}else{
+				label = this.props.label;
+			}			
 		}
 
 		if(typeof this.props.tooltip != 'undefined'){
@@ -392,10 +399,12 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		if(this.props.mobile){
 			minW = 300
 		}
-
+		
 		return <div style={{paddingLeft:7,paddingRight:7}} className = {klass}>
 		<div style={{minWidth:minW,fontSize:20}}><div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:vclr,marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' >
-			{label}</span></div>{but2}</div>
+			{label}</span> 
+			<br/>
+			<span className='flexBox' >{helpText}</span></div>{but2}</div>
 		{mmaxdiv}
 	<div style={{height:70, position:'relative'}}>		<svg style={{position:'absolute', top:14, marginLeft:3}} onClick={this.clear} xmlns="http://www.w3.org/2000/svg" height="40" version="1.1" viewBox="0 0 32 32" width="40"><g id="Layer_1"/><g id="x_x5F_alt"><path d="M16,0C7.164,0,0,7.164,0,16s7.164,16,16,16s16-7.164,16-16S24.836,0,16,0z M23.914,21.086   l-2.828,2.828L16,18.828l-5.086,5.086l-2.828-2.828L13.172,16l-5.086-5.086l2.828-2.828L16,13.172l5.086-5.086l2.828,2.828   L18.828,16L23.914,21.086z" fill="#E1E1E1"/></g></svg>
 	<div style={{background:'rgba(150,150,150,0.3)',display:'inline-block',fontSize:25,lineHeight:'65px',textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:65,color:dvclr, whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}}>{dispval}</div>{but1}

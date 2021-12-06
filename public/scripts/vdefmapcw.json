@@ -48942,47 +48942,47 @@
       "@parent": "",
       "@translations": {
         "english": {
-          "name": "Weight Table Length",
+          "name": "Weigh Conveyor Length",
           "description": "Length of the weight table, measured between the outer crowns of the rollers."
         },
         "korean": {
-          "name": "Weigh Length",
+          "name": "Weigh Conveyor Length",
           "description": ""
         },
         "spanish": {
-          "name": "Weigh Length",
+          "name": "Weigh Conveyor Length",
           "description": ""
         },
         "french": {
-          "name": "Weigh Length",
+          "name": "Weigh Conveyor Length",
           "description": ""
         },
         "portuguese": {
-          "name": "Weigh Length",
+          "name": "Weigh Conveyor Length",
           "description": ""
         },
         "italian": {
-          "name": "Weigh Length",
+          "name": "Weigh Conveyor Length",
           "description": ""
         },
         "russian": {
-          "name": "Weigh Length",
+          "name": "Weigh Conveyor Length",
           "description": ""
         },
         "polish": {
-          "name": "Weigh Length",
+          "name": "Weigh Conveyor Length",
           "description": ""
         },
         "chinese": {
-          "name": "Weigh Length",
+          "name": "Weigh Conveyor Length",
           "description": ""
         },
         "german": {
-          "name": "Weigh Length",
+          "name": "Weigh Conveyor Length",
           "description": ""
         },
         "turkish": {
-          "name": "Weigh Length",
+          "name": "Weigh Conveyor Length",
           "description": ""
         }
       },
@@ -56369,6 +56369,11 @@
             "params": [
               {
                 "type": 0,
+                "val": "FeedbackMode",
+                "acc": 0
+              },
+              {
+                "type": 0,
                 "val": "FeedbackTarWgt",
                 "acc": 0
               },
@@ -56390,11 +56395,6 @@
               {
                 "type": 0,
                 "val": "FeedbackCorRate",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "FeedbackMode",
                 "acc": 0
               },
               {
@@ -58088,15 +58088,15 @@
     "InputSrc": {
       "english": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58108,15 +58108,15 @@
       ],
       "turkish": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58128,15 +58128,15 @@
       ],
       "polish": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58148,15 +58148,15 @@
       ],
       "italian": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58168,15 +58168,15 @@
       ],
       "korean": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58188,15 +58188,15 @@
       ],
       "spanish": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58208,15 +58208,15 @@
       ],
       "french": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58228,15 +58228,15 @@
       ],
       "portuguese": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58248,15 +58248,15 @@
       ],
       "german": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58268,15 +58268,15 @@
       ],
       "russian": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58288,15 +58288,15 @@
       ],
       "chinese": [
         "none",
-        "PL11_03",
-        "PL12_03",
-        "PL13_03",
-        "PL14_03",
-        "PL15_03",
-        "PL16_03",
-        "PL17_03",
-        "PL18_03",
-        "PL19_03",
+        "PL11",
+        "PL12",
+        "PL13",
+        "PL14",
+        "PL15",
+        "PL16",
+        "PL17",
+        "PL18",
+        "PL19",
         "PL20_01",
         "PL20_02",
         "PL20_03",
@@ -58543,16 +58543,16 @@
     },
     "HaloBoard": {
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
         "",
         ""
       ],
       "spanish": [
-        "desactivado",
-        "activado"
+        "Desactivado",
+        "Activado"
       ],
       "french": [
         "",
@@ -58567,96 +58567,96 @@
         ""
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "turkish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "DaylightSavings": {
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "italian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "turkish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "UnitMode": {
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "aus",
-        "an"
+        "Aus",
+        "An"
       ],
       "italian": [
         "Off",
         "On"
       ],
       "spanish": [
-        "desactivado",
-        "activado"
+        "Desactivado",
+        "Activado"
       ],
       "french": [
         "",
@@ -58667,130 +58667,130 @@
         ""
       ],
       "polish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "WeightUnits": {
       "turkish": [
-        "grams",
-        "kg",
-        "lbs",
-        "oz"
+        "Grams",
+        "Kg",
+        "Lbs",
+        "Oz"
       ],
       "english": [
-        "grams",
-        "kilograms",
-        "pounds",
-        "ounces"
+        "Grams",
+        "Kilograms",
+        "Pounds",
+        "Ounces"
       ],
       "korean": [
-        "grams",
-        "kg",
-        "lbs",
-        "oz"
+        "Grams",
+        "Kg",
+        "Lbs",
+        "Oz"
       ],
       "german": [
-        "grams",
-        "kg",
-        "lbs",
-        "oz"
+        "Grams",
+        "Kg",
+        "Lbs",
+        "Oz"
       ],
       "italian": [
-        "grams",
-        "kg",
-        "lbs",
-        "oz"
+        "Grams",
+        "Kg",
+        "Lbs",
+        "Oz"
       ],
       "spanish": [
-        "grams",
-        "kg",
-        "lbs",
-        "oz"
+        "Grams",
+        "Kg",
+        "Lbs",
+        "Oz"
       ],
       "french": [
-        "grams",
-        "kg",
-        "lbs",
-        "oz"
+        "Grams",
+        "Kg",
+        "Lbs",
+        "Oz"
       ],
       "portuguese": [
-        "grams",
-        "kg",
-        "lbs",
-        "oz"
+        "Grams",
+        "Kg",
+        "Lbs",
+        "Oz"
       ],
       "polish": [
-        "grams",
-        "kg",
-        "lbs",
-        "oz"
+        "Grams",
+        "Kg",
+        "Lbs",
+        "Oz"
       ],
       "russian": [
-        "grams",
-        "kg",
-        "lbs",
-        "oz"
+        "Grams",
+        "Kg",
+        "Lbs",
+        "Oz"
       ],
       "chinese": [
-        "grams",
-        "kg",
-        "lbs",
-        "oz"
+        "Grams",
+        "Kg",
+        "Lbs",
+        "Oz"
       ]
     },
     "PassOn": {
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
         null,
         null
       ],
       "german": [
-        "aus",
-        "an"
+        "Aus",
+        "An"
       ],
       "polish": [
-        "wyl",
-        "wl"
+        "Wyl",
+        "Wl"
       ],
       "italian": [
         "Off",
         "On"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "AppUnitDist": {
@@ -58803,16 +58803,16 @@
         "Metric"
       ],
       "korean": [
-        "in",
-        "mm"
+        "In",
+        "Mm"
       ],
       "french": [
         "\"",
-        "mm"
+        "Mm"
       ],
       "polish": [
-        "in",
-        "mm"
+        "In",
+        "Mm"
       ],
       "italian": [
         "",
@@ -58823,46 +58823,46 @@
         "毫米"
       ],
       "spanish": [
-        "in",
-        "mm"
+        "In",
+        "Mm"
       ],
       "portuguese": [
-        "in",
-        "mm"
+        "In",
+        "Mm"
       ],
       "german": [
-        "in",
-        "mm"
+        "In",
+        "Mm"
       ],
       "russian": [
-        "in",
-        "mm"
+        "In",
+        "Mm"
       ]
     },
     "FaultLatch": {
       "portuguese": [
-        "desligado",
-        "activas"
+        "Desligado",
+        "Activas"
       ],
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "aus",
-        "an"
+        "Aus",
+        "An"
       ],
       "polish": [
-        "wyl",
-        "wl"
+        "Wyl",
+        "Wl"
       ],
       "italian": [
         "Off",
@@ -58873,30 +58873,30 @@
         "开"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "PowerupRej": {
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "wyl",
-        "wl"
+        "Wyl",
+        "Wl"
       ],
       "italian": [
         "Off",
@@ -58907,90 +58907,90 @@
         ""
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "FaultStore": {
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
         "关",
         "开"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "italian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "turkish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "BannerRejMode": {
       "turkish": [
-        "ilk",
-        "alt",
+        "Ilk",
+        "Alt",
         ""
       ],
       "english": [
-        "main",
-        "alt",
-        "any"
+        "Main",
+        "Alt",
+        "Any"
       ],
       "polish": [
-        "glowny",
-        "drugi",
+        "Glowny",
+        "Drugi",
         ""
       ],
       "italian": [
@@ -58999,53 +58999,53 @@
         ""
       ],
       "korean": [
-        "main",
-        "alt",
-        "any"
+        "Main",
+        "Alt",
+        "Any"
       ],
       "spanish": [
-        "main",
-        "alt",
-        "any"
+        "Main",
+        "Alt",
+        "Any"
       ],
       "french": [
-        "main",
-        "alt",
-        "any"
+        "Main",
+        "Alt",
+        "Any"
       ],
       "portuguese": [
-        "main",
-        "alt",
-        "any"
+        "Main",
+        "Alt",
+        "Any"
       ],
       "german": [
-        "main",
-        "alt",
-        "any"
+        "Main",
+        "Alt",
+        "Any"
       ],
       "russian": [
-        "main",
-        "alt",
-        "any"
+        "Main",
+        "Alt",
+        "Any"
       ],
       "chinese": [
-        "main",
-        "alt",
-        "any"
+        "Main",
+        "Alt",
+        "Any"
       ]
     },
     "BannerBuzzMode": {
       "turkish": [
-        "ilk",
-        "alt"
+        "Ilk",
+        "Alt"
       ],
       "english": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ],
       "polish": [
-        "glowny",
-        "drugi"
+        "Glowny",
+        "Drugi"
       ],
       "italian": [
         "Primo",
@@ -59056,39 +59056,39 @@
         "选择"
       ],
       "korean": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ],
       "spanish": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ],
       "french": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ],
       "portuguese": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ],
       "german": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ],
       "russian": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ]
     },
     "FaultMaskBit": {
       "portuguese": [
-        "desativado",
-        "ativado",
+        "Desativado",
+        "Ativado",
         ""
       ],
       "turkish": [
-        "pasif",
-        "aktif",
+        "Pasif",
+        "Aktif",
         ""
       ],
       "english": [
@@ -59102,23 +59102,23 @@
         ""
       ],
       "french": [
-        "non-act",
-        "activer",
+        "Non-act",
+        "Activer",
         ""
       ],
       "german": [
-        "aus",
-        "an",
+        "Aus",
+        "An",
         ""
       ],
       "polish": [
-        "maska",
-        "zalacz",
+        "Maska",
+        "Zalacz",
         ""
       ],
       "spanish": [
-        "dishabilitado",
-        "habilitado",
+        "Dishabilitado",
+        "Habilitado",
         ""
       ],
       "italian": [
@@ -59132,16 +59132,16 @@
         ""
       ],
       "russian": [
-        "masked",
-        "enabled",
-        "warn"
+        "Masked",
+        "Enabled",
+        "Warn"
       ]
     },
     "FaultWarnBit": {
       "english": [
-        "mask",
-        "enabled",
-        "warn"
+        "Mask",
+        "Enabled",
+        "Warn"
       ],
       "korean": [
         "",
@@ -59149,9 +59149,9 @@
         ""
       ],
       "spanish": [
-        "enmascarado",
-        "habilitado",
-        "aviso"
+        "Enmascarado",
+        "Habilitado",
+        "Aviso"
       ],
       "french": [
         "",
@@ -59169,29 +59169,29 @@
         ""
       ],
       "german": [
-        "mask",
-        "enabled",
-        "warn"
+        "Mask",
+        "Enabled",
+        "Warn"
       ],
       "polish": [
-        "mask",
-        "enabled",
-        "warn"
+        "Mask",
+        "Enabled",
+        "Warn"
       ],
       "turkish": [
-        "mask",
-        "enabled",
-        "warn"
+        "Mask",
+        "Enabled",
+        "Warn"
       ],
       "russian": [
-        "mask",
-        "enabled",
-        "warn"
+        "Mask",
+        "Enabled",
+        "Warn"
       ],
       "chinese": [
-        "mask",
-        "enabled",
-        "warn"
+        "Mask",
+        "Enabled",
+        "Warn"
       ]
     },
     "OutputPol": {
@@ -59264,140 +59264,140 @@
     },
     "FilterNoise": {
       "turkish": [
-        "kapali",
-        "hizli",
-        "orta",
-        "yavas",
-        "n1",
-        "n2",
-        "n3",
-        "n4",
-        "n5",
-        "n6",
-        "n7",
-        "n8",
-        "n9",
-        "n10",
-        "n11"
+        "Kapali",
+        "Hizli",
+        "Orta",
+        "Yavas",
+        "N1",
+        "N2",
+        "N3",
+        "N4",
+        "N5",
+        "N6",
+        "N7",
+        "N8",
+        "N9",
+        "N10",
+        "N11"
       ],
       "english": [
-        "off",
-        "fast",
-        "med",
-        "slow",
-        "n1",
-        "n2",
-        "n3",
-        "n4",
-        "n5",
-        "n6",
-        "n7",
-        "n8",
-        "n9",
-        "n10",
-        "n11"
+        "Off",
+        "Fast",
+        "Med",
+        "Slow",
+        "N1",
+        "N2",
+        "N3",
+        "N4",
+        "N5",
+        "N6",
+        "N7",
+        "N8",
+        "N9",
+        "N10",
+        "N11"
       ],
       "portuguese": [
-        "off",
-        "fast",
-        "med",
-        "slow",
-        "n1",
-        "n2",
-        "n3",
-        "n4",
-        "n5",
-        "n6",
-        "n7",
-        "n8",
-        "n9",
-        "n10",
-        "n11"
+        "Off",
+        "Fast",
+        "Med",
+        "Slow",
+        "N1",
+        "N2",
+        "N3",
+        "N4",
+        "N5",
+        "N6",
+        "N7",
+        "N8",
+        "N9",
+        "N10",
+        "N11"
       ],
       "spanish": [
-        "off",
-        "rápdio",
-        "medio",
-        "lento",
-        "n1",
-        "n2",
-        "n3",
-        "n4",
-        "n5",
-        "n6",
-        "n7",
-        "n8",
-        "n9",
-        "n10",
-        "n11"
+        "Off",
+        "Rápdio",
+        "Medio",
+        "Lento",
+        "N1",
+        "N2",
+        "N3",
+        "N4",
+        "N5",
+        "N6",
+        "N7",
+        "N8",
+        "N9",
+        "N10",
+        "N11"
       ],
       "french": [
-        "off",
-        "vite",
-        "med",
-        "lent",
-        "n1",
-        "n2",
-        "n3",
-        "n4",
-        "n5",
-        "n6",
-        "n7",
-        "n8",
-        "n9",
-        "n10",
-        "n11"
+        "Off",
+        "Vite",
+        "Med",
+        "Lent",
+        "N1",
+        "N2",
+        "N3",
+        "N4",
+        "N5",
+        "N6",
+        "N7",
+        "N8",
+        "N9",
+        "N10",
+        "N11"
       ],
       "german": [
-        "aus",
-        "schnell",
-        "med",
-        "langsam",
-        "n1",
-        "n2",
-        "n3",
-        "n4",
-        "n5",
-        "n6",
-        "n7",
-        "n8",
-        "n9",
-        "n10",
-        "n11"
+        "Aus",
+        "Schnell",
+        "Med",
+        "Langsam",
+        "N1",
+        "N2",
+        "N3",
+        "N4",
+        "N5",
+        "N6",
+        "N7",
+        "N8",
+        "N9",
+        "N10",
+        "N11"
       ],
       "polish": [
-        "wyl",
-        "szybki",
-        "sredni",
-        "wolny",
-        "n1",
-        "n2",
-        "n3",
-        "n4",
-        "n5",
-        "n6",
-        "n7",
-        "n8",
-        "n9",
-        "n10",
-        "n11"
+        "Wyl",
+        "Szybki",
+        "Sredni",
+        "Wolny",
+        "N1",
+        "N2",
+        "N3",
+        "N4",
+        "N5",
+        "N6",
+        "N7",
+        "N8",
+        "N9",
+        "N10",
+        "N11"
       ],
       "italian": [
         "Off",
         "Rapido",
         "Medio",
         "Basso",
-        "n1",
-        "n2",
-        "n3",
-        "n4",
-        "n5",
-        "n6",
-        "n7",
-        "n8",
-        "n9",
-        "n10",
-        "n11"
+        "N1",
+        "N2",
+        "N3",
+        "N4",
+        "N5",
+        "N6",
+        "N7",
+        "N8",
+        "N9",
+        "N10",
+        "N11"
       ],
       "korean": [
         "",
@@ -59417,58 +59417,58 @@
         ""
       ],
       "russian": [
-        "off",
-        "fast",
-        "med",
-        "slow",
-        "n1",
-        "n2",
-        "n3",
-        "n4",
-        "n5",
-        "n6",
-        "n7",
-        "n8",
-        "n9",
-        "n10",
-        "n11"
+        "Off",
+        "Fast",
+        "Med",
+        "Slow",
+        "N1",
+        "N2",
+        "N3",
+        "N4",
+        "N5",
+        "N6",
+        "N7",
+        "N8",
+        "N9",
+        "N10",
+        "N11"
       ],
       "chinese": [
-        "off",
-        "fast",
-        "med",
-        "slow",
-        "n1",
-        "n2",
-        "n3",
-        "n4",
-        "n5",
-        "n6",
-        "n7",
-        "n8",
-        "n9",
-        "n10",
-        "n11"
+        "Off",
+        "Fast",
+        "Med",
+        "Slow",
+        "N1",
+        "N2",
+        "N3",
+        "N4",
+        "N5",
+        "N6",
+        "N7",
+        "N8",
+        "N9",
+        "N10",
+        "N11"
       ]
     },
     "PhaseSpeed": {
       "portuguese": [
-        "fixo",
-        "automatico",
-        "rapido",
+        "Fixo",
+        "Automatico",
+        "Rapido",
         ""
       ],
       "turkish": [
-        "sabit",
-        "oto",
-        "hizli",
-        "ogren"
+        "Sabit",
+        "Oto",
+        "Hizli",
+        "Ogren"
       ],
       "english": [
-        "fixed",
-        "auto",
-        "fast",
-        "learn"
+        "Fixed",
+        "Auto",
+        "Fast",
+        "Learn"
       ],
       "korean": [
         "고정",
@@ -59477,28 +59477,28 @@
         ""
       ],
       "french": [
-        "fixe",
-        "auto",
-        "vite",
-        "learn"
+        "Fixe",
+        "Auto",
+        "Vite",
+        "Learn"
       ],
       "german": [
-        "fest",
-        "auto",
-        "schnell",
+        "Fest",
+        "Auto",
+        "Schnell",
         ""
       ],
       "polish": [
-        "stala",
-        "auto",
-        "szybka",
-        "naucz"
+        "Stala",
+        "Auto",
+        "Szybka",
+        "Naucz"
       ],
       "spanish": [
-        "fijo",
-        "auto",
-        "rápido",
-        "memorizar"
+        "Fijo",
+        "Auto",
+        "Rápido",
+        "Memorizar"
       ],
       "italian": [
         "Fissa",
@@ -59513,36 +59513,36 @@
         "学习"
       ],
       "russian": [
-        "fixed",
-        "auto",
-        "fast",
-        "learn"
+        "Fixed",
+        "Auto",
+        "Fast",
+        "Learn"
       ]
     },
     "OscPower": {
       "turkish": [
-        "dusuk",
-        "yuksek"
+        "Dusuk",
+        "Yuksek"
       ],
       "english": [
-        "low",
-        "high"
+        "Low",
+        "High"
       ],
       "korean": [
-        "lo",
-        "high"
+        "Lo",
+        "High"
       ],
       "german": [
-        "niedrig",
-        "hoch"
+        "Niedrig",
+        "Hoch"
       ],
       "polish": [
-        "niski",
-        "wysoki"
+        "Niski",
+        "Wysoki"
       ],
       "spanish": [
-        "bajo",
-        "alto"
+        "Bajo",
+        "Alto"
       ],
       "italian": [
         "Basso",
@@ -59557,28 +59557,28 @@
         ""
       ],
       "russian": [
-        "low",
-        "high"
+        "Low",
+        "High"
       ],
       "chinese": [
-        "low",
-        "high"
+        "Low",
+        "High"
       ]
     },
     "PhaseMode": {
       "portuguese": [
-        "seco",
-        "umido",
+        "Seco",
+        "Umido",
         ""
       ],
       "turkish": [
-        "kuru",
-        "nemli",
+        "Kuru",
+        "Nemli",
         ""
       ],
       "english": [
-        "dry",
-        "wet",
+        "Dry",
+        "Wet",
         "DSA"
       ],
       "korean": [
@@ -59587,22 +59587,22 @@
         ""
       ],
       "french": [
-        "sec",
-        "hum"
+        "Sec",
+        "Hum"
       ],
       "german": [
-        "trocken",
-        "nass",
+        "Trocken",
+        "Nass",
         ""
       ],
       "polish": [
-        "suchy",
-        "mokry",
+        "Suchy",
+        "Mokry",
         "DSA"
       ],
       "spanish": [
-        "seco",
-        "húmedo",
+        "Seco",
+        "Húmedo",
         "DSA"
       ],
       "italian": [
@@ -59616,31 +59616,31 @@
         ""
       ],
       "russian": [
-        "dry",
-        "wet",
+        "Dry",
+        "Wet",
         "DSA"
       ]
     },
     "PhaseModeHold": {
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "aus",
-        "an"
+        "Aus",
+        "An"
       ],
       "polish": [
-        "wyl",
-        "wl"
+        "Wyl",
+        "Wl"
       ],
       "italian": [
         "Off",
@@ -59651,8 +59651,8 @@
         "开"
       ],
       "spanish": [
-        "desactivado",
-        "activado"
+        "Desactivado",
+        "Activado"
       ],
       "french": [
         "",
@@ -59663,21 +59663,21 @@
         ""
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "DetMode": {
       "turkish": [
-        "peak",
+        "Peak",
         "FM"
       ],
       "english": [
-        "peak",
+        "Peak",
         "FM"
       ],
       "polish": [
-        "pik",
+        "Pik",
         "FM"
       ],
       "italian": [
@@ -59689,7 +59689,7 @@
         ""
       ],
       "spanish": [
-        "pico",
+        "Pico",
         "FM"
       ],
       "french": [
@@ -59701,15 +59701,15 @@
         ""
       ],
       "german": [
-        "peak",
+        "Peak",
         "FM"
       ],
       "russian": [
-        "peak",
+        "Peak",
         "FM"
       ],
       "chinese": [
-        "peak",
+        "Peak",
         "FM"
       ]
     },
@@ -59818,16 +59818,16 @@
     },
     "TestConfigAck": {
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
         "",
         ""
       ],
       "spanish": [
-        "desactivado",
-        "activado"
+        "Desactivado",
+        "Activado"
       ],
       "french": [
         "",
@@ -59842,30 +59842,30 @@
         ""
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "turkish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "TestConfigOperator": {
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
         "关",
@@ -59876,8 +59876,8 @@
         ""
       ],
       "spanish": [
-        "desactivado",
-        "activado"
+        "Desactivado",
+        "Activado"
       ],
       "french": [
         "",
@@ -59892,34 +59892,34 @@
         ""
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "turkish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "TestConfigHaloMode": {
       "english": [
-        "mid",
-        "cycle"
+        "Mid",
+        "Cycle"
       ],
       "korean": [
         "",
         ""
       ],
       "spanish": [
-        "medio",
-        "ciclo"
+        "Medio",
+        "Ciclo"
       ],
       "french": [
         "",
@@ -59934,56 +59934,56 @@
         ""
       ],
       "german": [
-        "mid",
-        "cycle"
+        "Mid",
+        "Cycle"
       ],
       "polish": [
-        "mid",
-        "cycle"
+        "Mid",
+        "Cycle"
       ],
       "turkish": [
-        "mid",
-        "cycle"
+        "Mid",
+        "Cycle"
       ],
       "russian": [
-        "mid",
-        "cycle"
+        "Mid",
+        "Cycle"
       ],
       "chinese": [
-        "mid",
-        "cycle"
+        "Mid",
+        "Cycle"
       ]
     },
     "RejLatchMode": {
       "portuguese": [
         null,
         null,
-        "alternar"
+        "Alternar"
       ],
       "turkish": [
-        "kapali",
-        "acik",
-        "gecis"
+        "Kapali",
+        "Acik",
+        "Gecis"
       ],
       "english": [
-        "off",
-        "on",
-        "toggle"
+        "Off",
+        "On",
+        "Toggle"
       ],
       "korean": [
-        "off",
-        "on",
-        "toggle"
+        "Off",
+        "On",
+        "Toggle"
       ],
       "german": [
-        "aus",
-        "an",
-        "toggle"
+        "Aus",
+        "An",
+        "Toggle"
       ],
       "polish": [
-        "wyl",
-        "wl",
-        "przewin"
+        "Wyl",
+        "Wl",
+        "Przewin"
       ],
       "italian": [
         "Off",
@@ -59991,50 +59991,50 @@
         "Cambia"
       ],
       "spanish": [
-        "off",
-        "on",
-        "toggle"
+        "Off",
+        "On",
+        "Toggle"
       ],
       "french": [
-        "off",
-        "on",
-        "toggle"
+        "Off",
+        "On",
+        "Toggle"
       ],
       "russian": [
-        "off",
-        "on",
-        "toggle"
+        "Off",
+        "On",
+        "Toggle"
       ],
       "chinese": [
-        "off",
-        "on",
-        "toggle"
+        "Off",
+        "On",
+        "Toggle"
       ]
     },
     "EyeDetSwipe": {
       "portuguese": [
-        "desligado",
-        "activas"
+        "Desligado",
+        "Activas"
       ],
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "aus",
-        "an"
+        "Aus",
+        "An"
       ],
       "polish": [
-        "wyl",
-        "wl"
+        "Wyl",
+        "Wl"
       ],
       "italian": [
         "Off",
@@ -60045,80 +60045,80 @@
         "开"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "Rej2Latch": {
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "wyl",
-        "wl"
+        "Wyl",
+        "Wl"
       ],
       "italian": [
         "Off",
         "On"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "Rej2Fault": {
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "wyl",
-        "wl"
+        "Wyl",
+        "Wl"
       ],
       "italian": [
         "Off",
@@ -60129,87 +60129,87 @@
         "开"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "Rej2Check": {
       "portuguese": [
-        "principal",
-        "secundarias"
+        "Principal",
+        "Secundarias"
       ],
       "turkish": [
-        "ana",
-        "alt"
+        "Ana",
+        "Alt"
       ],
       "english": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ],
       "korean": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ],
       "german": [
-        "haupt",
-        "alt"
+        "Haupt",
+        "Alt"
       ],
       "polish": [
-        "glowny",
-        "drugi"
+        "Glowny",
+        "Drugi"
       ],
       "spanish": [
-        "princpal",
-        "alto"
+        "Princpal",
+        "Alto"
       ],
       "italian": [
         "Princ",
         "Alt."
       ],
       "french": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ],
       "russian": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ],
       "chinese": [
-        "main",
-        "alt"
+        "Main",
+        "Alt"
       ]
     },
     "PeakMode": {
       "portuguese": [
-        "detectar",
-        "foto",
-        "tempo"
+        "Detectar",
+        "Foto",
+        "Tempo"
       ],
       "turkish": [
-        "tespit",
-        "foto",
-        "sure"
+        "Tespit",
+        "Foto",
+        "Sure"
       ],
       "english": [
-        "detect",
-        "photo",
-        "time"
+        "Detect",
+        "Photo",
+        "Time"
       ],
       "korean": [
         "검출",
@@ -60217,24 +60217,24 @@
         "시간"
       ],
       "french": [
-        "detect",
-        "photo",
-        "time"
+        "Detect",
+        "Photo",
+        "Time"
       ],
       "german": [
-        "detektion",
-        "fotoz.",
-        "zeit"
+        "Detektion",
+        "Fotoz.",
+        "Zeit"
       ],
       "polish": [
-        "detekcja",
-        "fotokom",
-        "czas"
+        "Detekcja",
+        "Fotokom",
+        "Czas"
       ],
       "spanish": [
-        "detección",
-        "fotocélula",
-        "tiempo"
+        "Detección",
+        "Fotocélula",
+        "Tiempo"
       ],
       "italian": [
         "Rilevato",
@@ -60247,35 +60247,35 @@
         "时间"
       ],
       "russian": [
-        "detect",
-        "photo",
-        "time"
+        "Detect",
+        "Photo",
+        "Time"
       ]
     },
     "RejOnProdHi": {
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "wyl",
-        "wl"
+        "Wyl",
+        "Wl"
       ],
       "italian": [
         "Off",
         "On"
       ],
       "spanish": [
-        "desactivado",
-        "activado"
+        "Desactivado",
+        "Activado"
       ],
       "french": [
         "",
@@ -60286,42 +60286,42 @@
         ""
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "SameBeltSpeeds": {
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "wyl",
-        "wl"
+        "Wyl",
+        "Wl"
       ],
       "italian": [
         "Off",
         "On"
       ],
       "spanish": [
-        "desactivado",
-        "activado"
+        "Desactivado",
+        "Activado"
       ],
       "french": [
         "",
@@ -60332,76 +60332,76 @@
         ""
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "SplitPkgLength": {
       "portuguese": [
-        "comprimento",
-        "divisao"
+        "Comprimento",
+        "Divisao"
       ],
       "turkish": [
-        "uzunluk",
-        "cift"
+        "Uzunluk",
+        "Cift"
       ],
       "english": [
-        "length",
-        "split"
+        "Length",
+        "Split"
       ],
       "french": [
-        "longueur",
-        "diviser"
+        "Longueur",
+        "Diviser"
       ],
       "german": [
-        "lange",
-        "gespalten"
+        "Lange",
+        "Gespalten"
       ],
       "polish": [
-        "dlugosc",
-        "podziel"
+        "Dlugosc",
+        "Podziel"
       ],
       "spanish": [
-        "longitud",
-        "division"
+        "Longitud",
+        "Division"
       ],
       "italian": [
         "Lunghezza",
         "Dividere"
       ],
       "korean": [
-        "length",
-        "split"
+        "Length",
+        "Split"
       ],
       "russian": [
-        "length",
-        "split"
+        "Length",
+        "Split"
       ],
       "chinese": [
-        "length",
-        "split"
+        "Length",
+        "Split"
       ]
     },
     "AutoLearn": {
       "turkish": [
-        "hizli",
-        "ogren"
+        "Hizli",
+        "Ogren"
       ],
       "english": [
-        "fast",
-        "learn"
+        "Fast",
+        "Learn"
       ],
       "polish": [
-        "szybko",
-        "naucz"
+        "Szybko",
+        "Naucz"
       ],
       "italian": [
         "Rapido",
@@ -60416,8 +60416,8 @@
         ""
       ],
       "spanish": [
-        "rápido",
-        "memorizar"
+        "Rápido",
+        "Memorizar"
       ],
       "french": [
         "",
@@ -60428,22 +60428,22 @@
         ""
       ],
       "german": [
-        "fast",
-        "learn"
+        "Fast",
+        "Learn"
       ],
       "russian": [
-        "fast",
-        "learn"
+        "Fast",
+        "Learn"
       ]
     },
     "RejDelClock": {
       "portuguese": [
-        "interno",
-        "externa"
+        "Interno",
+        "Externa"
       ],
       "turkish": [
-        "ic",
-        "dis"
+        "Ic",
+        "Dis"
       ],
       "english": [
         "Internal Timer",
@@ -60454,49 +60454,49 @@
         "외부"
       ],
       "polish": [
-        "wewn.",
-        "zewn."
+        "Wewn.",
+        "Zewn."
       ],
       "italian": [
         "Interno",
         "Esterno"
       ],
       "spanish": [
-        "int",
-        "ext"
+        "Int",
+        "Ext"
       ],
       "french": [
-        "int",
-        "ext"
+        "Int",
+        "Ext"
       ],
       "german": [
-        "int",
-        "ext"
+        "Int",
+        "Ext"
       ],
       "russian": [
-        "int",
-        "ext"
+        "Int",
+        "Ext"
       ],
       "chinese": [
-        "int",
-        "ext"
+        "Int",
+        "Ext"
       ]
     },
     "RejMode": {
       "portuguese": [
-        "normal",
-        "foto",
-        "reverso"
+        "Normal",
+        "Foto",
+        "Reverso"
       ],
       "turkish": [
-        "normal",
-        "foto",
-        "ters"
+        "Normal",
+        "Foto",
+        "Ters"
       ],
       "english": [
-        "normal",
-        "photo",
-        "reverse"
+        "Normal",
+        "Photo",
+        "Reverse"
       ],
       "korean": [
         "일반",
@@ -60504,24 +60504,24 @@
         "역기능"
       ],
       "french": [
-        "normal",
-        "photo",
-        "inverse"
+        "Normal",
+        "Photo",
+        "Inverse"
       ],
       "german": [
-        "normal",
-        "fotoz.",
-        "inverse"
+        "Normal",
+        "Fotoz.",
+        "Inverse"
       ],
       "polish": [
-        "normalny",
-        "fotokom",
-        "odwrocony"
+        "Normalny",
+        "Fotokom",
+        "Odwrocony"
       ],
       "spanish": [
-        "normal",
-        "fotocélula",
-        "reverso"
+        "Normal",
+        "Fotocélula",
+        "Reverso"
       ],
       "italian": [
         "Normale",
@@ -60534,59 +60534,59 @@
         "颠倒"
       ],
       "russian": [
-        "normal",
-        "photo",
-        "reverse"
+        "Normal",
+        "Photo",
+        "Reverse"
       ]
     },
     "EyeReject": {
       "portuguese": [
-        "medio",
-        "frente",
-        "largura",
-        "desligado"
+        "Medio",
+        "Frente",
+        "Largura",
+        "Desligado"
       ],
       "turkish": [
-        "orta",
-        "giris",
-        "genislik",
-        "kapali"
+        "Orta",
+        "Giris",
+        "Genislik",
+        "Kapali"
       ],
       "english": [
-        "mid",
-        "lead",
-        "length",
-        "off"
+        "Mid",
+        "Lead",
+        "Length",
+        "Off"
       ],
       "korean": [
         "중간",
         "앞",
         "폭",
-        "off"
+        "Off"
       ],
       "french": [
-        "milieu",
-        "debut",
-        "largeur",
-        "off"
+        "Milieu",
+        "Debut",
+        "Largeur",
+        "Off"
       ],
       "german": [
         "Mitte",
         "Vorderkante",
         "Laenge",
-        "aus"
+        "Aus"
       ],
       "polish": [
-        "srodek",
-        "poczatek",
-        "szerokosc",
-        "wyl"
+        "Srodek",
+        "Poczatek",
+        "Szerokosc",
+        "Wyl"
       ],
       "spanish": [
-        "medio",
-        "frent",
-        "ancho",
-        "off"
+        "Medio",
+        "Frent",
+        "Ancho",
+        "Off"
       ],
       "italian": [
         "Centro",
@@ -60601,35 +60601,35 @@
         "关"
       ],
       "russian": [
-        "mid",
-        "lead",
-        "length",
-        "off"
+        "Mid",
+        "Lead",
+        "Length",
+        "Off"
       ]
     },
     "RejCheckMode": {
       "turkish": [
-        "kapali",
+        "Kapali",
         "1",
         "2"
       ],
       "english": [
-        "off",
+        "Off",
         "1",
         "2"
       ],
       "korean": [
-        "off",
+        "Off",
         "1",
         "2"
       ],
       "german": [
-        "aus",
+        "Aus",
         "1",
         "2"
       ],
       "polish": [
-        "wyl",
+        "Wyl",
         "1",
         "2"
       ],
@@ -60639,7 +60639,7 @@
         "2"
       ],
       "spanish": [
-        "desactivado",
+        "Desactivado",
         "1",
         "2"
       ],
@@ -60654,36 +60654,36 @@
         ""
       ],
       "russian": [
-        "off",
+        "Off",
         "1",
         "2"
       ],
       "chinese": [
-        "off",
+        "Off",
         "1",
         "2"
       ]
     },
     "FaultRejMode": {
       "turkish": [
-        "kapali",
-        "acik"
+        "Kapali",
+        "Acik"
       ],
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "aus",
-        "an"
+        "Aus",
+        "An"
       ],
       "polish": [
-        "wyl",
-        "wl"
+        "Wyl",
+        "Wl"
       ],
       "italian": [
         "Off",
@@ -60694,20 +60694,20 @@
         "开"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "TestMode": {
@@ -60720,17 +60720,17 @@
       ],
       "turkish": [
         "",
-        "manuel",
+        "Manuel",
         "",
-        "manuel 2",
+        "Manuel 2",
         ""
       ],
       "english": [
-        "prompt",
-        "manual",
-        "halo",
-        "manual2",
-        "halo2"
+        "Prompt",
+        "Manual",
+        "Halo",
+        "Manual2",
+        "Halo2"
       ],
       "korean": [
         "",
@@ -60740,32 +60740,32 @@
         ""
       ],
       "french": [
-        "prompt",
-        "manual",
-        "halo",
-        "manuel 2",
-        "halo 2"
+        "Prompt",
+        "Manual",
+        "Halo",
+        "Manuel 2",
+        "Halo 2"
       ],
       "german": [
         "",
-        "manuell",
+        "Manuell",
         "",
-        "manuell 2",
+        "Manuell 2",
         ""
       ],
       "polish": [
         "",
-        "reczny",
+        "Reczny",
         "",
-        "reczny 2",
+        "Reczny 2",
         ""
       ],
       "spanish": [
-        "prompt",
-        "manual",
-        "halo",
-        "manual2",
-        "halo2"
+        "Prompt",
+        "Manual",
+        "Halo",
+        "Manual2",
+        "Halo2"
       ],
       "italian": [
         "",
@@ -60775,18 +60775,18 @@
         ""
       ],
       "russian": [
-        "prompt",
-        "manual",
-        "halo",
-        "manual2",
-        "halo2"
+        "Prompt",
+        "Manual",
+        "Halo",
+        "Manual2",
+        "Halo2"
       ],
       "chinese": [
-        "prompt",
-        "manual",
-        "halo",
-        "manual2",
-        "halo2"
+        "Prompt",
+        "Manual",
+        "Halo",
+        "Manual2",
+        "Halo2"
       ]
     },
     "PhaseDSALearn": {
@@ -60837,14 +60837,14 @@
     },
     "FaultSrc": {
       "portuguese": [
-        "sem falhas",
+        "Sem falhas",
         "Produto Memoria",
         "Confirme Rejeitar",
         "Fotocelula Bloco",
         "Rejeitar Posicao",
         "Pressao do ar",
         "Excesso Rejeita",
-        "rede tampao",
+        "Rede tampao",
         "Rejeitar Memoria",
         "",
         "",
@@ -60864,7 +60864,7 @@
         ""
       ],
       "turkish": [
-        "hata yok",
+        "Hata yok",
         "Urun hafizasi",
         "Ayirma kontrolu",
         "Fotosel engelli",
@@ -60891,7 +60891,7 @@
         ""
       ],
       "english": [
-        "no faults",
+        "No faults",
         "Prod Memory",
         "Reject Check",
         "Peye Block",
@@ -60941,7 +60941,7 @@
         ""
       ],
       "french": [
-        "no probleme",
+        "No probleme",
         "Memoire Prod",
         "Verific Rejet",
         "Photo Bloque",
@@ -60966,7 +60966,7 @@
         ""
       ],
       "german": [
-        "keine Fehler",
+        "Keine Fehler",
         "Prod Speicher",
         "Auswurfsbest",
         "Fotozellenblock.",
@@ -60981,7 +60981,7 @@
         "",
         "",
         "",
-        "schwache Batterie",
+        "Schwache Batterie",
         "Datum und Ziet",
         "",
         "",
@@ -60993,7 +60993,7 @@
         ""
       ],
       "polish": [
-        "brak bledow",
+        "Brak bledow",
         "Pamiec Prod.",
         "Potw. Odrzutu",
         "\nBlokada Fotokomorki",
@@ -61074,7 +61074,7 @@
         ""
       ],
       "russian": [
-        "no faults",
+        "No faults",
         "Prod Memory",
         "Reject Check",
         "Peye Block",
@@ -61099,7 +61099,7 @@
         "VFD Fault"
       ],
       "chinese": [
-        "no faults",
+        "No faults",
         "Prod Memory",
         "Reject Check",
         "Peye Block",
@@ -61126,62 +61126,62 @@
     },
     "IOBoardType": {
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "italian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "turkish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "SHBConnector": {
       "english": [
-        "digital",
-        "analog"
+        "Digital",
+        "Analog"
       ],
       "korean": [
         "",
         ""
       ],
       "spanish": [
-        "digital",
-        "analógico"
+        "Digital",
+        "Analógico"
       ],
       "french": [
         "",
@@ -61196,38 +61196,38 @@
         ""
       ],
       "german": [
-        "digital",
-        "analog"
+        "Digital",
+        "Analog"
       ],
       "polish": [
-        "digital",
-        "analog"
+        "Digital",
+        "Analog"
       ],
       "turkish": [
-        "digital",
-        "analog"
+        "Digital",
+        "Analog"
       ],
       "russian": [
-        "digital",
-        "analog"
+        "Digital",
+        "Analog"
       ],
       "chinese": [
-        "digital",
-        "analog"
+        "Digital",
+        "Analog"
       ]
     },
     "LearnSens": {
       "english": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "korean": [
         "",
         ""
       ],
       "spanish": [
-        "no",
-        "si"
+        "No",
+        "Si"
       ],
       "french": [
         "",
@@ -61242,38 +61242,38 @@
         ""
       ],
       "german": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "polish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "turkish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "russian": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "chinese": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ]
     },
     "LearnPhase": {
       "english": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "korean": [
         "",
         ""
       ],
       "spanish": [
-        "no",
-        "si"
+        "No",
+        "Si"
       ],
       "french": [
         "",
@@ -61288,82 +61288,82 @@
         ""
       ],
       "german": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "polish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "turkish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "russian": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "chinese": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ]
     },
     "PhotoMode": {
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "italian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "turkish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "spanish": [
-        "desactivado",
-        "activado"
+        "Desactivado",
+        "Activado"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "RejConfMode": {
       "turkish": [
         null,
-        "kapali",
+        "Kapali",
         null
       ],
       "english": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "korean": [
         null,
@@ -61372,169 +61372,169 @@
       ],
       "german": [
         null,
-        "aus",
+        "Aus",
         null
       ],
       "polish": [
         null,
-        "wyl",
+        "Wyl",
         null
       ],
       "italian": [
-        "default",
+        "Default",
         "Off",
         null
       ],
       "spanish": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "french": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "russian": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "chinese": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ]
     },
     "RejRetMode": {
       "english": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "korean": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "spanish": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "french": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "italian": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "german": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "polish": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "turkish": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "russian": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "chinese": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ]
     },
     "RejRetModeOverride": {
       "english": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "korean": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "spanish": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "french": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "italian": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "german": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "polish": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "turkish": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "russian": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "chinese": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ]
     },
     "RejConfModeOverride": {
       "turkish": [
         null,
-        "kapali",
+        "Kapali",
         null
       ],
       "english": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "korean": [
         null,
@@ -61543,57 +61543,57 @@
       ],
       "german": [
         null,
-        "aus",
+        "Aus",
         null
       ],
       "polish": [
         null,
-        "wyl",
+        "Wyl",
         null
       ],
       "italian": [
-        "default",
+        "Default",
         "Off",
         null
       ],
       "spanish": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "french": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "russian": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ],
       "chinese": [
-        "default",
-        "off",
-        "on"
+        "Default",
+        "Off",
+        "On"
       ]
     },
     "RevMode": {
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
         "",
         ""
       ],
       "spanish": [
-        "desactivado",
-        "activado"
+        "Desactivado",
+        "Activado"
       ],
       "french": [
         "",
@@ -61608,230 +61608,230 @@
         ""
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "turkish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "ManRejState": {
       "turkish": [
-        "gusuk",
-        "yuksek"
+        "Gusuk",
+        "Yuksek"
       ],
       "english": [
-        "low",
-        "hi"
+        "Low",
+        "Hi"
       ],
       "korean": [
-        "low",
-        "hi"
+        "Low",
+        "Hi"
       ],
       "german": [
-        "neg",
-        "pos"
+        "Neg",
+        "Pos"
       ],
       "polish": [
-        "niski",
-        "wysoki"
+        "Niski",
+        "Wysoki"
       ],
       "spanish": [
-        "bajo",
-        "alto"
+        "Bajo",
+        "Alto"
       ],
       "italian": [
-        "bassa",
-        "alta"
+        "Bassa",
+        "Alta"
       ],
       "chinese": [
         "低",
         "高"
       ],
       "french": [
-        "low",
-        "hi"
+        "Low",
+        "Hi"
       ],
       "portuguese": [
-        "low",
-        "hi"
+        "Low",
+        "Hi"
       ],
       "russian": [
-        "low",
-        "hi"
+        "Low",
+        "Hi"
       ]
     },
     "AutoPhase": {
       "english": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "korean": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "spanish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "french": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "portuguese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "italian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "german": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "polish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "turkish": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "russian": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ],
       "chinese": [
-        "off",
-        "on"
+        "Off",
+        "On"
       ]
     },
     "LatchAccess": {
       "english": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "spanish": [
-        "deshabilitado",
-        "habilitado"
+        "Deshabilitado",
+        "Habilitado"
       ],
       "korean": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "french": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "portuguese": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "italian": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "german": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "polish": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "turkish": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "russian": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "chinese": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ]
     },
     "Subscribe": {
       "english": [
-        "none",
-        "faults",
-        "reports",
-        "faults & reports"
+        "None",
+        "Faults",
+        "Reports",
+        "Faults & Reports"
       ],
       "spanish": [
-        "nada",
-        "fallos",
-        "informes",
-        "fallos e informes"
+        "Nada",
+        "Fallos",
+        "Informes",
+        "Fallos e informes"
       ],
       "korean": [
-        "none",
-        "faults",
-        "reports",
-        "faults & reports"
+        "None",
+        "Faults",
+        "Reports",
+        "Faults & Reports"
       ],
       "french": [
-        "none",
-        "faults",
-        "reports",
-        "faults & reports"
+        "None",
+        "Faults",
+        "Reports",
+        "Faults & Reports"
       ],
       "portuguese": [
-        "none",
-        "faults",
-        "reports",
-        "faults & reports"
+        "None",
+        "Faults",
+        "Reports",
+        "Faults & Reports"
       ],
       "italian": [
-        "none",
-        "faults",
-        "reports",
-        "faults & reports"
+        "None",
+        "Faults",
+        "Reports",
+        "Faults & Reports"
       ],
       "german": [
-        "none",
-        "faults",
-        "reports",
-        "faults & reports"
+        "None",
+        "Faults",
+        "Reports",
+        "Faults & Reports"
       ],
       "polish": [
-        "none",
-        "faults",
-        "reports",
-        "faults & reports"
+        "None",
+        "Faults",
+        "Reports",
+        "Faults & Reports"
       ],
       "turkish": [
-        "none",
-        "faults",
-        "reports",
-        "faults & reports"
+        "None",
+        "Faults",
+        "Reports",
+        "Faults & Reports"
       ],
       "russian": [
-        "none",
-        "faults",
-        "reports",
-        "faults & reports"
+        "None",
+        "Faults",
+        "Reports",
+        "Faults & Reports"
       ],
       "chinese": [
-        "none",
-        "faults",
-        "reports",
-        "faults & reports"
+        "None",
+        "Faults",
+        "Reports",
+        "Faults & Reports"
       ]
     },
     "ConnectionType": {
@@ -61882,9 +61882,9 @@
     },
     "InterceptorMode": {
       "english": [
-        "dual freq",
-        "single (A)",
-        "single (B)"
+        "Dual freq",
+        "Single (A)",
+        "Single (B)"
       ],
       "korean": [
         "",
@@ -61892,9 +61892,9 @@
         ""
       ],
       "spanish": [
-        "dual freq",
-        "single (A)",
-        "single (B)"
+        "Dual freq",
+        "Single (A)",
+        "Single (B)"
       ],
       "french": [
         "",
@@ -61912,43 +61912,43 @@
         ""
       ],
       "german": [
-        "dual freq",
-        "single (A)",
-        "single (B)"
+        "Dual freq",
+        "Single (A)",
+        "Single (B)"
       ],
       "polish": [
-        "dual freq",
-        "single (A)",
-        "single (B)"
+        "Dual freq",
+        "Single (A)",
+        "Single (B)"
       ],
       "turkish": [
-        "dual freq",
-        "single (A)",
-        "single (B)"
+        "Dual freq",
+        "Single (A)",
+        "Single (B)"
       ],
       "russian": [
-        "dual freq",
-        "single (A)",
-        "single (B)"
+        "Dual freq",
+        "Single (A)",
+        "Single (B)"
       ],
       "chinese": [
-        "dual freq",
-        "single (A)",
-        "single (B)"
+        "Dual freq",
+        "Single (A)",
+        "Single (B)"
       ]
     },
     "SigModeCombined": {
       "english": [
-        "norm",
-        "add"
+        "Norm",
+        "Add"
       ],
       "korean": [
         "",
         ""
       ],
       "spanish": [
-        "norm",
-        "add"
+        "Norm",
+        "Add"
       ],
       "french": [
         "",
@@ -61963,24 +61963,24 @@
         ""
       ],
       "german": [
-        "norm",
-        "add"
+        "Norm",
+        "Add"
       ],
       "polish": [
-        "norm",
-        "add"
+        "Norm",
+        "Add"
       ],
       "turkish": [
-        "norm",
-        "add"
+        "Norm",
+        "Add"
       ],
       "russian": [
-        "norm",
-        "add"
+        "Norm",
+        "Add"
       ],
       "chinese": [
-        "norm",
-        "add"
+        "Norm",
+        "Add"
       ]
     },
     "PackTrigMode": {
@@ -61989,158 +61989,158 @@
         "After Weight Table"
       ],
       "korean": [
-        "before",
-        "after"
+        "Before",
+        "After"
       ],
       "spanish": [
-        "before",
-        "after"
+        "Before",
+        "After"
       ],
       "french": [
-        "before",
-        "after"
+        "Before",
+        "After"
       ],
       "portuguese": [
-        "before",
-        "after"
+        "Before",
+        "After"
       ],
       "italian": [
-        "before",
-        "after"
+        "Before",
+        "After"
       ],
       "german": [
-        "before",
-        "after"
+        "Before",
+        "After"
       ],
       "polish": [
-        "before",
-        "after"
+        "Before",
+        "After"
       ],
       "turkish": [
-        "before",
-        "after"
+        "Before",
+        "After"
       ],
       "russian": [
-        "before",
-        "after"
+        "Before",
+        "After"
       ],
       "chinese": [
-        "before",
-        "after"
+        "Before",
+        "After"
       ]
     },
     "VfdState": {
       "english": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "korean": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "spanish": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "french": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "portuguese": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "italian": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "german": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "polish": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "turkish": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "russian": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ],
       "chinese": [
-        "disabled",
-        "enabled"
+        "Disabled",
+        "Enabled"
       ]
     },
     "VfdType": {
       "english": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ],
       "korean": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ],
       "spanish": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ],
       "french": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ],
       "portuguese": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ],
       "italian": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ],
       "german": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ],
       "polish": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ],
       "turkish": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ],
       "russian": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ],
       "chinese": [
-        "none",
-        "md50",
-        "pf4m",
-        "md200"
+        "None",
+        "Md50",
+        "Pf4m",
+        "Md200"
       ]
     },
     "VfdDir": {
@@ -62309,101 +62309,101 @@
         "Lowest standard deviation"
       ],
       "korean": [
-        "highest avg",
-        "low std dev"
+        "Highest avg",
+        "Low std dev"
       ],
       "spanish": [
-        "highest avg",
-        "low std dev"
+        "Highest avg",
+        "Low std dev"
       ],
       "french": [
-        "highest avg",
-        "low std dev"
+        "Highest avg",
+        "Low std dev"
       ],
       "portuguese": [
-        "highest avg",
-        "low std dev"
+        "Highest avg",
+        "Low std dev"
       ],
       "italian": [
-        "highest avg",
-        "low std dev"
+        "Highest avg",
+        "Low std dev"
       ],
       "german": [
-        "highest avg",
-        "low std dev"
+        "Highest avg",
+        "Low std dev"
       ],
       "polish": [
-        "highest avg",
-        "low std dev"
+        "Highest avg",
+        "Low std dev"
       ],
       "turkish": [
-        "highest avg",
-        "low std dev"
+        "Highest avg",
+        "Low std dev"
       ],
       "russian": [
-        "highest avg",
-        "low std dev"
+        "Highest avg",
+        "Low std dev"
       ],
       "chinese": [
-        "highest avg",
-        "low std dev"
+        "Highest avg",
+        "Low std dev"
       ]
     },
     "AutoTaring": {
       "english": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "korean": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "spanish": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "french": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "portuguese": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "italian": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "german": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "polish": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "turkish": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "russian": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "chinese": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ]
     },
     "BatchMode": {
@@ -62413,157 +62413,157 @@
         "Manual Entry"
       ],
       "korean": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "spanish": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "french": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "portuguese": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "italian": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "german": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "polish": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "turkish": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "russian": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ],
       "chinese": [
-        "off",
-        "after pack",
-        "continuous"
+        "Off",
+        "After pack",
+        "Continuous"
       ]
     },
     "FeedbackMode": {
       "english": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ],
       "korean": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ],
       "spanish": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ],
       "french": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ],
       "portuguese": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ],
       "italian": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ],
       "german": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ],
       "polish": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ],
       "turkish": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ],
       "russian": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ],
       "chinese": [
-        "off",
-        "width",
-        "pulse"
+        "Off",
+        "Width",
+        "Pulse"
       ]
     },
     "OverWeightAllowed": {
       "english": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "korean": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "spanish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "french": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "portuguese": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "italian": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "german": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "polish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "turkish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "russian": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "chinese": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ]
     },
     "WeightPassed": {
@@ -62574,9 +62574,9 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ],
       "korean": [
@@ -62586,9 +62586,9 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ],
       "spanish": [
@@ -62598,9 +62598,9 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ],
       "french": [
@@ -62610,9 +62610,9 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ],
       "portuguese": [
@@ -62622,9 +62622,9 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ],
       "italian": [
@@ -62634,9 +62634,9 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ],
       "german": [
@@ -62646,9 +62646,9 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ],
       "polish": [
@@ -62658,9 +62658,9 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ],
       "turkish": [
@@ -62670,9 +62670,9 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ],
       "russian": [
@@ -62682,9 +62682,9 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ],
       "chinese": [
@@ -62694,85 +62694,85 @@
         "High Reject",
         "High Pass",
         "Unsettled",
-        "unused",
+        "Unused",
         "Improbable",
-        "unused",
+        "Unused",
         "Check Weight"
       ]
     },
     "OutputPolProd": {
       "english": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
         "1"
       ],
       "korean": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
         "1"
       ],
       "spanish": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
         "1"
       ],
       "french": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
         "1"
       ],
       "portuguese": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
         "1"
       ],
       "italian": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
         "1"
       ],
       "german": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
         "1"
       ],
       "polish": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
         "1"
       ],
       "turkish": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
         "1"
       ],
       "russian": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
         "1"
       ],
       "chinese": [
-        "disabled",
+        "Disabled",
         "+",
         "-",
         "0",
@@ -62782,21 +62782,21 @@
     "FaultMaskOverride": {
       "portuguese": [
         "",
-        "desativado",
-        "ativado",
+        "Desativado",
+        "Ativado",
         ""
       ],
       "turkish": [
         "",
-        "pasif",
-        "aktif",
+        "Pasif",
+        "Aktif",
         ""
       ],
       "english": [
-        "default",
-        "disabled",
-        "fault",
-        "warning"
+        "Default",
+        "Disabled",
+        "Fault",
+        "Warning"
       ],
       "korean": [
         "",
@@ -62806,26 +62806,26 @@
       ],
       "french": [
         "",
-        "non-act",
-        "activer",
+        "Non-act",
+        "Activer",
         ""
       ],
       "german": [
         "",
-        "aus",
-        "an",
+        "Aus",
+        "An",
         ""
       ],
       "polish": [
         "",
-        "maska",
-        "zalacz",
+        "Maska",
+        "Zalacz",
         ""
       ],
       "spanish": [
         "",
-        "dishabilitado",
-        "habilitado",
+        "Dishabilitado",
+        "Habilitado",
         ""
       ],
       "italian": [
@@ -62841,170 +62841,170 @@
         ""
       ],
       "russian": [
-        "default",
-        "disabled",
-        "fault",
-        "warning"
+        "Default",
+        "Disabled",
+        "Fault",
+        "Warning"
       ]
     },
     "WindowMode": {
       "english": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ],
       "korean": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ],
       "spanish": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ],
       "french": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ],
       "portuguese": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ],
       "italian": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ],
       "german": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ],
       "polish": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ],
       "turkish": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ],
       "russian": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ],
       "chinese": [
-        "auto",
-        "manual"
+        "Auto",
+        "Manual"
       ]
     },
     "EthPortsPower": {
       "english": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ],
       "korean": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ],
       "spanish": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ],
       "french": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ],
       "portuguese": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ],
       "italian": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ],
       "german": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ],
       "polish": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ],
       "turkish": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ],
       "russian": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ],
       "chinese": [
-        "off",
-        "single",
-        "double"
+        "Off",
+        "Single",
+        "Double"
       ]
     },
     "PhotoReject": {
       "english": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "korean": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "spanish": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "french": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "portuguese": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "italian": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "german": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "polish": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "turkish": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "russian": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "chinese": [
-        "length",
-        "lead",
-        "mid"
+        "Length",
+        "Lead",
+        "Mid"
       ]
     },
     "MavTable": {
@@ -63066,162 +63066,162 @@
     },
     "VfdStatus": {
       "english": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ],
       "korean": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ],
       "spanish": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ],
       "french": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ],
       "portuguese": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ],
       "italian": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ],
       "german": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ],
       "polish": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ],
       "turkish": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ],
       "russian": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ],
       "chinese": [
-        "disconnected",
-        "connected"
+        "Disconnected",
+        "Connected"
       ]
     },
     "PhotoRejectOverride": {
       "english": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "korean": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "spanish": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "french": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "portuguese": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "italian": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "german": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "polish": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "turkish": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "russian": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ],
       "chinese": [
-        "default",
-        "length",
-        "lead",
-        "mid"
+        "Default",
+        "Length",
+        "Lead",
+        "Mid"
       ]
     },
     "SetTolNegErr": {
       "english": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "korean": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "spanish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "french": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "portuguese": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "italian": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "german": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "polish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "turkish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "russian": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "chinese": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ]
     },
     "TolNegErrPct": {
@@ -63230,44 +63230,44 @@
         "2.0%"
       ],
       "korean": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "spanish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "french": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "portuguese": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "italian": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "german": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "polish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "turkish": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "russian": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ],
       "chinese": [
-        "no",
-        "yes"
+        "No",
+        "Yes"
       ]
     }
   }
