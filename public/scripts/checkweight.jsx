@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/12/07'
+const DISPLAYVERSION = '2021/12/08'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -1012,6 +1012,9 @@ class LandingPage extends React.Component{
     ifvisible.on("idle", function(){
       self.logout()
     });
+    setTimeout(function (argument) {
+      self.loadPrefs();
+    }, 100)
 //    let socket = this.props.soc;
 //    setTimeout(function (argument) {
 //      if (JSON.stringify(self.state.prec) === '{}'){
@@ -1019,7 +1022,6 @@ class LandingPage extends React.Component{
 //        self.loadPrefs();
 //      }
 //    }, 100)   
-
    // socket.on('testusb')
     this.props.soc.on('userNames', function(p){
        self.setState({usernames:p.det.data.array})
@@ -4180,7 +4182,7 @@ class ProductSettings extends React.Component{
   }
   selectRunningProd(){
     var prodEditAcc = this.props.level >= this.props.srec['PassAccSelectProduct'];
-    if(this.props.drec['BatchRunning']==1){
+    if(this.props.drec['BatchRunning']==1 || this.props.drec['BatchRunning']==2){
       this.stop();
     }else{
       if(this.props.srec['PassOn'] == 0){
@@ -5360,6 +5362,7 @@ class SettingsPageWSB extends React.Component{
         cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={c} selected={self.state.sel == i} ind={i} onClick={self.setPath}/></div>)
       }
     })
+    //<CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} />
     cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} /></div>)
    
     var cob;
@@ -5388,7 +5391,7 @@ class SettingsPageWSB extends React.Component{
           </div>
           
     }
-    var calStuff = (        <div style={{background:'#e1e1e1', padding:10}}>
+    var calStuff = (  <div style={{background:'#e1e1e1', padding:10}}>
        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
           
           <div style={{marginTop:5}}>
@@ -5398,7 +5401,7 @@ class SettingsPageWSB extends React.Component{
           </div>
           <div style={{marginTop:5}}>
           <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'RawWeight'} vMap={vMapV2['RawWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['RawWeight']['@translations'][this.props.language]['name']} value={this.props.dynSettings['RawWeight']} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['RawWeight']} num={true}/></div>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTare'} vMap={vMapV2['LastCalTare']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['LastCalTare']['@translations'][this.props.language]['name']} value={this.props.sysSettings['LastCalTare'].toFixed(1)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTare']} num={true}/></div>
+          {console.log('LastCalTare var ', this.props.sysSettings['LastCalTare']), console.log('LastCalTares2 var ', this.props.sysSettings['LastCalTare2']),console.log('LastCalTares3 var ', this.props.sysSettings['LastCalTare3']) /*<div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTare'} vMap={vMapV2['LastCalTare']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['LastCalTare']['@translations'][this.props.language]['name']} value={this.props.sysSettings['LastCalTare'].toFixed(1)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTare']} num={true}/></div>*/}
           </div>
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.props.sysSettings['CalWeight'], weightUnits)} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
@@ -5406,8 +5409,8 @@ class SettingsPageWSB extends React.Component{
           {calBut}
           </div>)
       if(this.props.sysSettings['CheckWeigherType'] == 1){
-        calStuff =        <div style={{background:'#e1e1e1', padding:10}}>
-       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
+        calStuff =  <div style={{background:'#e1e1e1', padding:10}}>
+        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
           
           <div style={{marginTop:5}}>
           <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200}  label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.state.liveWeight, weightUnits)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
@@ -5434,7 +5437,7 @@ class SettingsPageWSB extends React.Component{
           <div style={{display:'inline-block', width:395}}>
           <ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/>
           </div>
-          </div>
+        </div>
           
           <div style={{marginTop:0, fontSize:24, textAlign:'center'}}>{calStr}</div>
           {calBut}
@@ -5482,6 +5485,8 @@ class CatSelectItem extends React.Component{
     this.onClick = this.onClick.bind(this);
   }
   onClick(){
+    console.log("Data props ",this.props.data);
+    console.log("props ind ",this.props.ind);
     this.props.onClick(this.props.data, this.props.ind)
   }
   render () {
