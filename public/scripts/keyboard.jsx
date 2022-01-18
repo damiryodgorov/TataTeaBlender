@@ -264,7 +264,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		if(this.props.label && this.props.label.length > 0){
 			if(this.props.label.includes('Clear Time -')){
 				label = this.props.label;
-				helpText='Showing 0 means default';
+				helpText='Enter 0 to use default';
 			}else{
 				label = this.props.label;
 			}			

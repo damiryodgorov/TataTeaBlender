@@ -8535,47 +8535,47 @@
     "LastCalibrateFaultMask": {
       "@translations": {
         "english": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         },
         "korean": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         },
         "spanish": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         },
         "french": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         },
         "portuguese": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         },
         "italian": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         },
         "german": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         },
         "turkish": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         },
         "russian": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         },
         "polish": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         },
         "chinese": {
-          "name": "Last Calibrate",
+          "name": "Calibration Due",
           "description": ""
         }
       },
@@ -8628,6 +8628,110 @@
         },
         "chinese": {
           "name": "Metal Detector",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "RejPositionFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "korean": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "french": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "italian": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "german": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "russian": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "polish": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Reject Position",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "RejectConfirmFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "korean": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "french": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "italian": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "german": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "russian": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "polish": {
+          "name": "Reject Confirm",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Reject Confirm",
           "description": ""
         }
       },
@@ -16720,67 +16824,10 @@
         "Main Reject Delay"
       ]
     },
-    "RejCOMBINED": {
-      "@translations": {
-        "english": {
-          "name": "Main Reject",
-          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates. Main Reject Duration is the distance for which the main reject device will be activated"
-        },
-        "korean": {
-          "name": "주 리젝트",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Rechazo Principal",
-          "description": ""
-        },
-        "french": {
-          "name": "Rejet Principal",
-          "description": "Le Délai de Rejet Principal est nombre de secondes s'étant écoulées depuis la détection jusqu'au moment précédent le déclenchement du Système de Rejet Principal"
-        },
-        "portuguese": {
-          "name": "Relé Geral",
-          "description": ""
-        },
-        "italian": {
-          "name": "Rifiuto Principale",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurf-Verzögerungszeit ",
-          "description": "Auswurfverzögerungszeit,hier kann die Zeitverzögerung, ab dem Zeitpunkt der Erkennung eingestellt werden, bevor die Auswurfvorrichtung aktiviert wird."
-        },
-        "turkish": {
-          "name": "Main Reject",
-          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates"
-        },
-        "russian": {
-          "name": "Main Reject",
-          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates. Main Reject Duration is the distance for which the main reject device will be activated"
-        },
-        "polish": {
-          "name": "Main Reject",
-          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates. Main Reject Duration is the distance for which the main reject device will be activated"
-        },
-        "chinese": {
-          "name": "Main Reject",
-          "description": "Main Reject Delay is the distance from the moment of detection before the main reject device activates. Main Reject Duration is the distance for which the main reject device will be activated"
-        }
-      },
-      "children": [
-        "RejDelDist",
-        "RejDur"
-      ],
-      "@labels": [
-        "Distance",
-        "Duration"
-      ],
-      "@combo": true
-    },
     "RejCOMBINED2": {
       "@translations": {
         "english": {
-          "name": "Alternate Reject",
+          "name": "Alternate Reject Duration",
           "description": "Alternate Reject Delay is the number of seconds from the moment of detection before the alternate reject device activates. Alternate Reject Duration is the number of seconds for which the alternate reject device will be activated"
         },
         "korean": {
@@ -16788,39 +16835,39 @@
           "description": ""
         },
         "spanish": {
-          "name": "Alternate Reject",
+          "name": "Alternate Reject Duration",
           "description": ""
         },
         "french": {
-          "name": "Alternate Reject",
+          "name": "Alternate Reject Duration",
           "description": ""
         },
         "portuguese": {
-          "name": "Alternate Reject",
+          "name": "Alternate Reject Duration",
           "description": ""
         },
         "italian": {
-          "name": "Alternate Reject",
+          "name": "Alternate Reject Duration",
           "description": ""
         },
         "german": {
-          "name": "Alternate Reject",
+          "name": "Alternate Reject Duration",
           "description": ""
         },
         "turkish": {
-          "name": "Alternate Reject",
+          "name": "Alternate Reject Duration",
           "description": ""
         },
         "russian": {
-          "name": "Alternate Reject",
+          "name": "Alternate Reject Duration",
           "description": ""
         },
         "polish": {
-          "name": "Alternate Reject",
+          "name": "Alternate Reject Duration",
           "description": ""
         },
         "chinese": {
-          "name": "Alternate Reject",
+          "name": "Alternate Reject Duration",
           "description": ""
         }
       },
@@ -17146,7 +17193,7 @@
         "Alternate Reject Delay"
       ]
     },
-    "RejDurSec": {
+    "RejDur": {
       "@translations": {
         "english": {
           "name": "Main Reject Duration",
@@ -17193,9 +17240,9 @@
           "description": "Main Reject Duration is the number of seconds for which the main reject device will be activated"
         }
       },
-      "children": [],
+      "children": [
+      ],
       "@labels": [
-        "Main Reject Duration"
       ]
     },
     "MavTable": {
@@ -17422,7 +17469,7 @@
         "TolNegErrorX2"
       ]
     },
-    "RejDurSec2": {
+    "RejDur2": {
       "@translations": {
         "english": {
           "name": "Alternate Reject Duration",
@@ -21263,10 +21310,10 @@
       ],
       "@input": true
     },
-    "@INPUT_REJ_CONF": {
+    "@INPUT_REJ_POS1": {
       "@translations": {
         "english": {
-          "name": "Reject Confirm",
+          "name": "Reject Position 1",
           "description": "Input source for sensor to indicate if a pack has been rejected. Set polarity to low by default."
         },
         "korean": {
@@ -21274,45 +21321,45 @@
           "description": ""
         },
         "spanish": {
-          "name": "Reject Confirm",
+          "name": "Reject Position 1",
           "description": ""
         },
         "french": {
-          "name": "Reject Confirm",
+          "name": "Reject Position 1",
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Confirm",
+          "name": "Reject Position 1",
           "description": ""
         },
         "italian": {
-          "name": "Reject Confirm",
+          "name": "Reject Position 1",
           "description": ""
         },
         "german": {
-          "name": "Reject Confirm",
+          "name": "Reject Position 1",
           "description": ""
         },
         "turkish": {
-          "name": "Reject Confirm",
+          "name": "Reject Position 1",
           "description": ""
         },
         "russian": {
-          "name": "Reject Confirm",
+          "name": "Reject Position 1",
           "description": ""
         },
         "polish": {
-          "name": "Reject Confirm",
+          "name": "Reject Position 1",
           "description": ""
         },
         "chinese": {
-          "name": "Reject Confirm",
+          "name": "Reject Position 1",
           "description": ""
         }
       },
       "children": [
-        "INPUT_REJ_CONF",
-        "INPUT_POL_REJ_CONF"
+        "INPUT_REJ_POS1",
+        "INPUT_POL_REJ_POS1"
       ],
       "@labels": [
         "Source",
@@ -21320,10 +21367,10 @@
       ],
       "@input": true
     },
-    "@INPUT_REJ_RET": {
+    "@INPUT_REJ_POS2": {
       "@translations": {
         "english": {
-          "name": "Reject Return",
+          "name": "Reject Position 2",
           "description": "Input source for sensor to indicate if the reject device has returned to its default position. Set polarity to low by default."
         },
         "korean": {
@@ -21331,45 +21378,159 @@
           "description": ""
         },
         "spanish": {
-          "name": "Reject Return",
+          "name": "Reject Position 2",
           "description": ""
         },
         "french": {
-          "name": "Reject Return",
+          "name": "Reject Position 2",
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Return",
+          "name": "Reject Position 2",
           "description": ""
         },
         "italian": {
-          "name": "Reject Return",
+          "name": "Reject Position 2",
           "description": ""
         },
         "german": {
-          "name": "Reject Return",
+          "name": "Reject Position 2",
           "description": ""
         },
         "turkish": {
-          "name": "Reject Return",
+          "name": "Reject Position 2",
           "description": ""
         },
         "russian": {
-          "name": "Reject Return",
+          "name": "Reject Position 2",
           "description": ""
         },
         "polish": {
-          "name": "Reject Return",
+          "name": "Reject Position 2",
           "description": ""
         },
         "chinese": {
-          "name": "Reject Return",
+          "name": "Reject Position 2",
           "description": ""
         }
       },
       "children": [
-        "INPUT_REJ_RET",
-        "INPUT_POL_REJ_RET"
+        "INPUT_REJ_POS2",
+        "INPUT_POL_REJ_POS2"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@INPUT_REJ_CONF1": {
+      "@translations": {
+        "english": {
+          "name": "Reject Confirm 1",
+          "description": "Input source for sensor to indicate if the reject device has returned to its default position. Set polarity to low by default."
+        },
+        "korean": {
+          "name": "리젝트 리턴",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Reject Confirm 1",
+          "description": ""
+        },
+        "french": {
+          "name": "Reject Confirm 1",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Reject Confirm 1",
+          "description": ""
+        },
+        "italian": {
+          "name": "Reject Confirm 1",
+          "description": ""
+        },
+        "german": {
+          "name": "Reject Confirm 1",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Reject Confirm 1",
+          "description": ""
+        },
+        "russian": {
+          "name": "Reject Confirm 1",
+          "description": ""
+        },
+        "polish": {
+          "name": "Reject Confirm 1",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Reject Confirm 1",
+          "description": ""
+        }
+      },
+      "children": [
+        "INPUT_REJ_CONF1",
+        "INPUT_POL_REJ_CONF1"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@INPUT_REJ_CONF2": {
+      "@translations": {
+        "english": {
+          "name": "Reject Confirm 2",
+          "description": "Input source for sensor to indicate if the reject device has returned to its default position. Set polarity to low by default."
+        },
+        "korean": {
+          "name": "리젝트 리턴",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Reject Confirm 2",
+          "description": ""
+        },
+        "french": {
+          "name": "Reject Confirm 2",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Reject Confirm 2",
+          "description": ""
+        },
+        "italian": {
+          "name": "Reject Confirm 2",
+          "description": ""
+        },
+        "german": {
+          "name": "Reject Confirm 2",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Reject Confirm 2",
+          "description": ""
+        },
+        "russian": {
+          "name": "Reject Confirm 2",
+          "description": ""
+        },
+        "polish": {
+          "name": "Reject Confirm 2",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Reject Confirm 2",
+          "description": ""
+        }
+      },
+      "children": [
+        "INPUT_REJ_CONF2",
+        "INPUT_POL_REJ_CONF2"
       ],
       "@labels": [
         "Source",
@@ -23238,6 +23399,63 @@
       "children": [
         "INPUT_MD_FAULT",
         "INPUT_POL_MD_FAULT"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@MD_REJECT": {
+      "@translations": {
+        "english": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        },
+        "korean": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        },
+        "french": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        },
+        "italian": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        },
+        "german": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        },
+        "russian": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        },
+        "polish": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Metal Detector Reject",
+          "description": ""
+        }
+      },
+      "children": [
+        "INPUT_MD_REJECT",
+        "INPUT_POL_MD_REJECT"
       ],
       "@labels": [
         "Source",
@@ -25760,47 +25978,47 @@
     "BeltSpeedFaultMask": {
       "@translations": {
         "english": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": "This fault or warning occurs when the belt speed is outside the set belt speed tolerance for more than the belt speed fault time. "
         },
         "korean": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "spanish": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "french": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "portuguese": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "italian": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "german": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "turkish": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "russian": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "polish": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         },
         "chinese": {
-          "name": "Belt Speed Fault",
+          "name": "Belt Speed",
           "description": ""
         }
       },
@@ -26384,7 +26602,7 @@
     "RejConfirmFaultMask": {
       "@translations": {
         "english": {
-          "name": "Reject Confirm",
+          "name": "Reject Position",
           "description": "This fault or warning occurs when a pack should be rejected but the reject confirm sensor does not get tripped."
         },
         "korean": {
@@ -26412,28 +26630,132 @@
           "description": ""
         },
         "turkish": {
-          "name": "Reject Confirm Fault",
+          "name": "Reject Position",
           "description": ""
         },
         "russian": {
-          "name": "Reject Confirm Fault",
+          "name": "Reject Position",
           "description": ""
         },
         "polish": {
-          "name": "Reject Confirm Fault",
+          "name": "Reject Position",
           "description": ""
         },
         "chinese": {
-          "name": "Reject Confirm Fault",
+          "name": "Reject Position",
           "description": ""
         }
       },
       "children": [],
       "@labels": [
-        "Reject Confirm Fault"
+        "Reject Confirm"
       ]
     },
-    "RejConfirmFaultMaskOverride": {
+    "RejPos1Mode": {
+      "@translations": {
+        "english": {
+          "name": "Reject Position 1",
+          "description": "This fault or warning occurs when a pack should be rejected but the reject confirm sensor does not get tripped."
+        },
+        "korean": {
+          "name": "리젝트 컨펌 폴트",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Fallo Confirmación Rechazo",
+          "description": ""
+        },
+        "french": {
+          "name": "Défaillance/Erreur de Confirmation de rejet",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Falha Comfirmação de Rejeção",
+          "description": ""
+        },
+        "italian": {
+          "name": "Errore Conferma Rifiuto",
+          "description": ""
+        },
+        "german": {
+          "name": "Fehler Auswurfbestätigung",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Reject Position 1",
+          "description": ""
+        },
+        "russian": {
+          "name": "Reject Position 1",
+          "description": ""
+        },
+        "polish": {
+          "name": "Reject Position 1",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Reject Position 1",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Reject Position 1"
+      ]
+    },
+    "RejPos2Mode": {
+      "@translations": {
+        "english": {
+          "name": "Reject Position 2",
+          "description": "This fault or warning occurs when a pack should be rejected but the reject confirm sensor does not get tripped."
+        },
+        "korean": {
+          "name": "리젝트 컨펌 폴트",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Fallo Confirmación Rechazo",
+          "description": ""
+        },
+        "french": {
+          "name": "Défaillance/Erreur de Confirmation de rejet",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Falha Comfirmação de Rejeção",
+          "description": ""
+        },
+        "italian": {
+          "name": "Errore Conferma Rifiuto",
+          "description": ""
+        },
+        "german": {
+          "name": "Fehler Auswurfbestätigung",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Reject Position 2",
+          "description": ""
+        },
+        "russian": {
+          "name": "Reject Position 2",
+          "description": ""
+        },
+        "polish": {
+          "name": "Reject Position 2",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Reject Position 2",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Reject Position 2"
+      ]
+    },
+    "RejectConfirmFaultMaskOverride": {
       "@translations": {
         "english": {
           "name": "Reject Confirm",
@@ -26464,25 +26786,25 @@
           "description": ""
         },
         "turkish": {
-          "name": "Reject Confirm Fault",
+          "name": "Reject Confirm",
           "description": ""
         },
         "russian": {
-          "name": "Reject Confirm Fault",
+          "name": "Reject Confirm",
           "description": ""
         },
         "polish": {
-          "name": "Reject Confirm Fault",
+          "name": "Reject Confirm",
           "description": ""
         },
         "chinese": {
-          "name": "Reject Confirm Fault",
+          "name": "Reject Confirm",
           "description": ""
         }
       },
       "children": [],
       "@labels": [
-        "Reject Confirm Fault"
+        "Reject Confirm"
       ]
     },
     "PhaseFaultMask": {
@@ -27003,6 +27325,58 @@
       "children": [],
       "@labels": [
         "Reject Bin Full"
+      ]
+    },
+    "RejPositionFaultMaskOverride": {
+      "@translations": {
+        "english": {
+          "name": "Reject Position",
+          "description": ""
+        },
+        "korean": {
+          "name": "리젝트 보관함 용량초과 폴트",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Máscara Fallo Puerta Rechazo",
+          "description": ""
+        },
+        "french": {
+          "name": "Défaillance/Erreur de Contenant Plein",
+          "description": "Le contenant de rejets est plein"
+        },
+        "portuguese": {
+          "name": "Falha Caixa Cheia",
+          "description": ""
+        },
+        "italian": {
+          "name": "Errore Contenitore Pieno",
+          "description": ""
+        },
+        "german": {
+          "name": "Fehler Auswurfbehälter voll",
+          "description": "Der Auswurfbehälter ist voll, bitte leeren."
+        },
+        "turkish": {
+          "name": "Reject Position",
+          "description": "The reject bin door is open"
+        },
+        "russian": {
+          "name": "Reject Position",
+          "description": "The reject bin door is open"
+        },
+        "polish": {
+          "name": "Reject Position",
+          "description": "The reject bin door is open"
+        },
+        "chinese": {
+          "name": "Reject Position",
+          "description": "The reject bin door is open"
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Reject Position"
       ]
     },
     "AirFaultMask": {
@@ -33597,11 +33971,11 @@
       "@parent": "",
       "@translations": {
         "english": {
-          "name": "Reject Confirm Fault Warning",
+          "name": "Reject Confirm Warning",
           "description": ""
         },
         "korean": {
-          "name": "Reject Confirm Fault Warning",
+          "name": "Reject Confirm Warning",
           "description": ""
         },
         "spanish": {
@@ -33609,41 +33983,41 @@
           "description": ""
         },
         "french": {
-          "name": "Reject Confirm Fault Warning",
+          "name": "Reject Confirm Warning",
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Confirm Fault Warning",
+          "name": "Reject Confirm Warning",
           "description": ""
         },
         "italian": {
-          "name": "Reject Confirm Fault Warning",
+          "name": "Reject Confirm Warning",
           "description": ""
         },
         "russian": {
-          "name": "Reject Confirm Fault Warning",
+          "name": "Reject Confirm Warning",
           "description": ""
         },
         "polish": {
-          "name": "Reject Confirm Fault Warning",
+          "name": "Reject Confirm Warning",
           "description": ""
         },
         "chinese": {
-          "name": "Reject Confirm Fault Warning",
+          "name": "Reject Confirm Warning",
           "description": ""
         },
         "german": {
-          "name": "Reject Confirm Fault Warning",
+          "name": "Reject Confirm Warning",
           "description": ""
         },
         "turkish": {
-          "name": "Reject Confirm Fault Warning",
+          "name": "Reject Confirm Warning",
           "description": ""
         }
       },
       "children": [],
       "@labels": [
-        "Reject Confirm Fault Warning"
+        "Reject Confirm Warning"
       ]
     },
     "PhaseFaultWarn": {
@@ -43239,7 +43613,7 @@
         "INPUT_POL_REJ_RET"
       ]
     },
-    "INPUT_REJ_CONF": {
+    "INPUT_REJ_POS1": {
       "@parent": "",
       "@translations": {
         "english": {
@@ -43247,7 +43621,7 @@
           "description": ""
         },
         "korean": {
-          "name": "INPUT_REJ_CONF",
+          "name": "INPUT_REJ_POS1",
           "description": ""
         },
         "spanish": {
@@ -43255,15 +43629,15 @@
           "description": ""
         },
         "french": {
-          "name": "INPUT_REJ_CONF",
+          "name": "INPUT_REJ_POS1",
           "description": ""
         },
         "portuguese": {
-          "name": "INPUT_REJ_CONF",
+          "name": "INPUT_REJ_POS1",
           "description": ""
         },
         "italian": {
-          "name": "INPUT_REJ_CONF",
+          "name": "INPUT_REJ_POS1",
           "description": ""
         },
         "russian": {
@@ -43289,7 +43663,7 @@
       },
       "children": [],
       "@labels": [
-        "INPUT_REJ_CONF"
+        "INPUT_REJ_POS1"
       ]
     },
     "INPUT_REJ_RET": {
@@ -49529,7 +49903,7 @@
       "@parent": "",
       "@translations": {
         "english": {
-          "name": "Improbable Weight",
+          "name": "Metal Reject Weight",
           "description": ""
         },
         "korean": {
@@ -49553,23 +49927,23 @@
           "description": ""
         },
         "russian": {
-          "name": "Improbable Weight",
+          "name": "Metal Reject Weight",
           "description": ""
         },
         "polish": {
-          "name": "Improbable Weight",
+          "name": "Metal Reject Weight",
           "description": ""
         },
         "chinese": {
-          "name": "Improbable Weight",
+          "name": "Metal Reject Weight",
           "description": ""
         },
         "german": {
-          "name": "Improbable Weight",
+          "name": "Metal Reject Weight",
           "description": ""
         },
         "turkish": {
-          "name": "Improbable Weight",
+          "name": "Metal Reject Weight",
           "description": ""
         }
       },
@@ -50051,6 +50425,59 @@
         },
         "turkish": {
           "name": "Check Weight",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "PassAccDoor"
+      ]
+    },
+    "MetalRejectCnt": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Metal Reject",
+          "description": ""
+        },
+        "korean": {
+          "name": "Metal Reject",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Metal Reject",
+          "description": ""
+        },
+        "french": {
+          "name": "Metal Reject",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Metal Reject",
+          "description": ""
+        },
+        "italian": {
+          "name": "Metal Reject",
+          "description": ""
+        },
+        "russian": {
+          "name": "Metal Reject",
+          "description": ""
+        },
+        "polish": {
+          "name": "Metal Reject",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Metal Reject",
+          "description": ""
+        },
+        "german": {
+          "name": "Metal Reject",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Metal Reject",
           "description": ""
         }
       },
@@ -54676,19 +55103,29 @@
                             "acc": 0
                           },
                           {
-                            "type": 0,
-                            "val": "WindowMin",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "WindowMax",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "WindowMode",
-                            "acc": 0
+                            "type": 1,
+                            "acc": 0,
+                            "val": {
+                              "cat": "PlotMode",
+                              "child": 0,
+                              "params": [
+                                {
+                                  "type": 0,
+                                  "val": "WindowMode",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "WindowMin",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "WindowMax",
+                                  "acc": 0
+                                }
+                              ]
+                            }
                           }
                         ]
                       },
@@ -54786,46 +55223,7 @@
                                 },
                                 {
                                   "type": 0,
-                                  "val": "RejConfMode",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "RejRetMode",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
                                   "val": "Rej2Check",
-                                  "acc": 0
-                                }
-                              ]
-                            },
-                            "acc": 0
-                          },
-                          {
-                            "type": 1,
-                            "val": {
-                              "cat": "Additional Settings",
-                              "params": [
-                                {
-                                  "type": 0,
-                                  "val": "ManRejState",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "EncFreq",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "RejDelClock",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "RejBinDoorTime",
                                   "acc": 0
                                 }
                               ]
@@ -54839,12 +55237,12 @@
                           },
                           {
                             "type": 0,
-                            "val": "RejCOMBINED",
+                            "val": "RejDur",
                             "acc": 0
                           },
                           {
                             "type": 0,
-                            "val": "RejCOMBINED2",
+                            "val": "RejDur2",
                             "acc": 0
                           },
                           {
@@ -54855,6 +55253,21 @@
                           {
                             "type": 0,
                             "val": "RejectDevice2Delay",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "EncFreq",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "RejDelClock",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "ManRejState",
                             "acc": 0
                           }
                         ]
@@ -55287,13 +55700,13 @@
                       "type": 2,
                       "acc": 4,
                       "val": {
-                        "cat":"AllVersions",
-                        "child":0,
-                        "params":[
+                        "cat": "AllVersions",
+                        "child": 0,
+                        "params": [
                           {
-                            "val":"IOSwitchSwVer",
-                            "type":0,
-                            "acc":0
+                            "val": "IOSwitchSwVer",
+                            "type": 0,
+                            "acc": 0
                           },
                           {
                             "type": 0,
@@ -55426,12 +55839,22 @@
                     },
                     {
                       "type": 0,
-                      "val": "@INPUT_REJ_CONF",
+                      "val": "@INPUT_REJ_POS1",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@INPUT_REJ_RET",
+                      "val": "@INPUT_REJ_POS2",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@INPUT_REJ_CONF1",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@INPUT_REJ_CONF2",
                       "acc": 0
                     },
                     {
@@ -55557,6 +55980,11 @@
                     {
                       "type": 0,
                       "val": "@MDFAULT",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@MD_REJECT",
                       "acc": 0
                     }
                   ]
@@ -55766,7 +56194,12 @@
               },
               {
                 "type": 0,
-                "val": "RejConfirmFaultMask",
+                "val": "RejPositionFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "RejectConfirmFaultMask",
                 "acc": 0
               },
               {
@@ -55812,9 +56245,9 @@
               {
                 "type": 1,
                 "val": {
-                  "cat":"ExcessRej",
-                  "child":0,
-                  "params":[
+                  "cat": "ExcessRej",
+                  "child": 0,
+                  "params": [
                     {
                       "type": 0,
                       "val": "ExcessRejFaultMask",
@@ -55977,9 +56410,9 @@
               {
                 "type": 1,
                 "val": {
-                  "cat":"BinDoorTime",
-                  "child":0,
-                  "params":[
+                  "cat": "BinDoorTime",
+                  "child": 0,
+                  "params": [
                     {
                       "type": 0,
                       "val": "RejBinDoorFaultMask",
@@ -55994,7 +56427,6 @@
                 },
                 "acc": 0
               },
-              
               {
                 "type": 0,
                 "val": "RejSetupFaultMask",
@@ -56183,11 +56615,6 @@
                     },
                     {
                       "type": 0,
-                      "val": "RejConfirmFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
                       "val": "PhaseFaultMaskOverride",
                       "acc": 0
                     },
@@ -56260,6 +56687,16 @@
                       "type": 0,
                       "val": "RejBinDoorFaultMaskOverride",
                       "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "RejPositionFaultMaskOverride",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "RejectConfirmFaultMaskOverride",
+                      "acc": 0
                     }
                   ]
                 },
@@ -56299,26 +56736,6 @@
                           {
                             "type": 0,
                             "val": "EyeMinGapDistOverride",
-                            "acc": 0
-                          }
-                        ]
-                      },
-                      "acc": 0
-                    },
-                    {
-                      "type": 1,
-                      "val": {
-                        "child": 0,
-                        "cat": "RejectCheck",
-                        "params": [
-                          {
-                            "type": 0,
-                            "val": "RejConfModeOverride",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejRetModeOverride",
                             "acc": 0
                           }
                         ]
@@ -56934,6 +57351,21 @@
         "russian": "Plot Settings",
         "polish": "Plot Settings",
         "chinese": "Plot Settings"
+      }
+    },
+    "System/Advanced/PlotSettings/PlotMode": {
+      "@translations": {
+        "english": "Plot Mode",
+        "korean": "Plot Mode",
+        "spanish": "Plot Mode",
+        "french": "Plot Mode",
+        "portuguese": "Plot Mode",
+        "italian": "Plot Mode",
+        "german": "Plot Mode",
+        "turkish": "Plot Mode",
+        "russian": "Plot Mode",
+        "polish": "Plot Mode",
+        "chinese": "Plot Mode"
       }
     },
     "System/Advanced/Reject": {
@@ -61411,6 +61843,212 @@
         "On"
       ]
     },
+    "RejPos1ModeOverride": {
+      "turkish": [
+        null,
+        "Kapali",
+        null
+      ],
+      "english": [
+        "Default",
+        "Off",
+        "On"
+      ],
+      "korean": [
+        null,
+        null,
+        null
+      ],
+      "german": [
+        null,
+        "Aus",
+        null
+      ],
+      "polish": [
+        null,
+        "Wyl",
+        null
+      ],
+      "italian": [
+        "Default",
+        "Off",
+        null
+      ],
+      "spanish": [
+        "Default",
+        "Off",
+        "On"
+      ],
+      "french": [
+        "Default",
+        "Off",
+        "On"
+      ],
+      "portuguese": [
+        "Default",
+        "Off",
+        "On"
+      ],
+      "russian": [
+        "Default",
+        "Off",
+        "On"
+      ],
+      "chinese": [
+        "Default",
+        "Off",
+        "On"
+      ]
+    },
+    "RejPos2ModeOverride": {
+      "turkish": [
+        null,
+        "Kapali",
+        null
+      ],
+      "english": [
+        "Default",
+        "Off",
+        "On"
+      ],
+      "korean": [
+        null,
+        null,
+        null
+      ],
+      "german": [
+        null,
+        "Aus",
+        null
+      ],
+      "polish": [
+        null,
+        "Wyl",
+        null
+      ],
+      "italian": [
+        "Default",
+        "Off",
+        null
+      ],
+      "spanish": [
+        "Default",
+        "Off",
+        "On"
+      ],
+      "french": [
+        "Default",
+        "Off",
+        "On"
+      ],
+      "portuguese": [
+        "Default",
+        "Off",
+        "On"
+      ],
+      "russian": [
+        "Default",
+        "Off",
+        "On"
+      ],
+      "chinese": [
+        "Default",
+        "Off",
+        "On"
+      ]
+    },
+    "RejPos1Mode": {
+      "turkish": [
+        "Kapali",
+        null
+      ],
+      "english": [
+        "Off",
+        "On"
+      ],
+      "korean": [
+        null,
+        null
+      ],
+      "german": [
+        "Aus",
+        null
+      ],
+      "polish": [
+        "Wyl",
+        null
+      ],
+      "italian": [
+        "Off",
+        null
+      ],
+      "spanish": [
+        "Off",
+        "On"
+      ],
+      "french": [
+        "Off",
+        "On"
+      ],
+      "portuguese": [
+        "Off",
+        "On"
+      ],
+      "russian": [
+        "Off",
+        "On"
+      ],
+      "chinese": [
+        "Off",
+        "On"
+      ]
+    },
+    "RejPos2Mode": {
+      "turkish": [
+        "Kapali",
+        null
+      ],
+      "english": [
+        "Off",
+        "On"
+      ],
+      "korean": [
+        null,
+        null
+      ],
+      "german": [
+        "Aus",
+        null
+      ],
+      "polish": [
+        "Wyl",
+        null
+      ],
+      "italian": [
+        "Off",
+        null
+      ],
+      "spanish": [
+        "Off",
+        "On"
+      ],
+      "french": [
+        "Off",
+        "On"
+      ],
+      "portuguese": [
+        "Off",
+        "On"
+      ],
+      "russian": [
+        "Off",
+        "On"
+      ],
+      "chinese": [
+        "Off",
+        "On"
+      ]
+    },
     "RejRetMode": {
       "english": [
         "Default",
@@ -61635,11 +62273,11 @@
       ],
       "english": [
         "Low",
-        "Hi"
+        "High"
       ],
       "korean": [
         "Low",
-        "Hi"
+        "High"
       ],
       "german": [
         "Neg",
@@ -61663,15 +62301,15 @@
       ],
       "french": [
         "Low",
-        "Hi"
+        "High"
       ],
       "portuguese": [
         "Low",
-        "Hi"
+        "High"
       ],
       "russian": [
         "Low",
-        "Hi"
+        "High"
       ]
     },
     "AutoPhase": {
@@ -62575,7 +63213,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ],
@@ -62587,7 +63225,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ],
@@ -62599,7 +63237,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ],
@@ -62611,7 +63249,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ],
@@ -62623,7 +63261,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ],
@@ -62635,7 +63273,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ],
@@ -62647,7 +63285,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ],
@@ -62659,7 +63297,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ],
@@ -62671,7 +63309,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ],
@@ -62683,7 +63321,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ],
@@ -62695,7 +63333,7 @@
         "High Pass",
         "Unsettled",
         "Unused",
-        "Improbable",
+        "Metal Reject",
         "Unused",
         "Check Weight"
       ]

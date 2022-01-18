@@ -66,7 +66,12 @@ class PopoutWheelModal extends React.Component{
 		this.onChange = this.onChange.bind(this);
 	}
 	toggle () {
-		this.setState({show:true})
+		if(this.props.name!='Manual Reject')
+		{
+			this.setState({show:true})
+		}else{
+			this.onChange(0,0,'undefined')
+		}
 	}
 	close (v) {
 		var self = this;

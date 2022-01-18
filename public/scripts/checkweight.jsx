@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/12/08'
+const DISPLAYVERSION = '2021/12/15'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -897,7 +897,7 @@ class LandingPage extends React.Component{
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
       detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false,
-      checkPrecInterval:null,liveWeight:0.0}
+      checkPrecInterval:null,liveWeight:0.0, packSamples:{}}
     this.exportVmap = this.exportVmap.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
@@ -1758,11 +1758,22 @@ class LandingPage extends React.Component{
           e.rec['packCal'] = this.state.srec['CalFactor']
           SingletonDataStore.crec = e.rec;
           this.setState({crec:e.rec, noupdate:true})
-          this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+          if(this.state.packSamples.length > 0){
+            this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
+          }else{
+            this.lg.current.parseDataset(new Array(100).fill(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+            this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
+          }
+          
           if (this.lgDual && this.lgDual.current){
-            this.lgDual.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+            if(this.state.packSamples.length > 0){
+              this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+                this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
+            }else{
+            this.lgDual.current.parseDataset(new Array(100).fill(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
+            }
           }
           this.hh.current.parseCrec(e.rec)
           if (this.hhDual && this.hhDual.current){
@@ -1800,6 +1811,13 @@ class LandingPage extends React.Component{
           var cnt = 0;
           if(typeof this.state.crec['TotalCnt'] != 'undefined'){
             cnt = this.state.crec['TotalCnt']
+          }
+          this.setState({packSamples:e.rec,noupdate:true})
+          this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+            this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
+          if (this.lgDual && this.lgDual.current){
+            this.lgDual.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+              this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
           }
           // console.log('Histogram Buffer',e)
           //if(cnt != 0){
@@ -2840,7 +2858,7 @@ class LandingPage extends React.Component{
 
     if(this.state.srec['SRecordDate']){
         sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
-        <SettingsPageWSB  soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+        <SettingsPageWSB  packSamples={this.state.packSamples} soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
         <BatchWidget acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
         </div>
@@ -2960,7 +2978,7 @@ class LandingPage extends React.Component{
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
         <Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
-          <ProductSettings soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
+          <ProductSettings packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
           submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={()=>this.setState({prclosereq:false})}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
           curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
@@ -3550,6 +3568,7 @@ class BatchPackCountGraphDual extends React.Component{
       fontColor = 'black'
       graphColor = SPARCBLUE2;
     }
+    
     var xDomain = [0,15]
     var yDomin = [0, 5]
     var selData;
@@ -3941,6 +3960,7 @@ class ProductSettings extends React.Component{
     this.onRestore = this.onRestore.bind(this);
     this.onBackup = this.onBackup.bind(this);
     this.copyFromFt = this.copyFromFt.bind(this);
+    this.deleteAllProducts = this.deleteAllProducts.bind(this);
     this.advProdMgmt = this.advProdMgmt.bind(this);
     this.copyFromDef = this.copyFromDef.bind(this);
     this.showProdMgmtTooltip = this.showProdMgmtTooltip.bind(this);
@@ -3979,9 +3999,9 @@ class ProductSettings extends React.Component{
     setTimeout(function(argument) {
       self.props.sendPacket('getProdSettings', self.props.editProd)
     },300)
-  
     var el = document.getElementById('prodListScrollBox')
     el.scrollTop = scrollInd*66
+    this.props.sendPacket("refresh_buffer",6)
   }
   shouldComponentUpdate(newProps, newState){
     //console.log('Component Will Receive')
@@ -4535,12 +4555,11 @@ class ProductSettings extends React.Component{
    //   this.msgm.current.show('Plug in USB drive and try again')
     }
   }
-  deleteAll(){
+  deleteAllProducts(){
     if((this.props.srec['PassOn'] == 0) || (this.props.level >= 4 )){
       this.sendPacket('deleteAll')
     }else{
-      this.msgm.current.show('Access Denied')
-    }
+      this.msgm.current.show('Access Denied')}
   }
   advProdMgmt(){
     this.apmgmt.current.show();
@@ -4802,18 +4821,16 @@ class ProductSettings extends React.Component{
     var advProdMgmt = <div>
        <div style={{color:'#e1e1e1', fontSize:25}}>Advanced Options</div>
        {usbMsg}
-       <div>
+          <div>
             <CircularButton onClick={this.onImport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Import'}/>
             <CircularButton onClick={this.onExport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Export'}/>
-         
           </div>
           <div>
             <CircularButton onClick={this.onRestore} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Restore'}/>
             <CircularButton onClick={this.onBackup} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Backup'}/>
-         
           </div>
           <div>
-          <CircularButton onClick={this.deleteAll} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Delete All'}/>
+            <CircularButton onClick={this.deleteAllProducts} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Delete All'}/>
           </div>
     </div>
 
@@ -4852,7 +4869,7 @@ class ProductSettings extends React.Component{
       <CopyModal ref={this.cfModal}  branding={this.props.branding}/>
       <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
       <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
-        <PackGraph onEdit={this.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={1} acc={advProdEditAcc} language={this.props.language} crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
+        <PackGraph packSamples={this.props.packSamples} onEdit={this.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={1} acc={advProdEditAcc} language={this.props.language} crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
         <PromptModal branding={this.props.branding} ref={this.pmd2} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
       
       </Modal>
@@ -5211,7 +5228,7 @@ class ProdSettingEdit extends React.Component{
 class SettingsPageWSB extends React.Component{
   constructor(props){
     super(props);
-    this.state = {sel:0, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0,mot:false}
+    this.state = {calButtonPressed:false,sel:0, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0,mot:false}
     this.setPath = this.setPath.bind(this);
     this.onHandleClick = this.onHandleClick.bind(this);
     this.backAccount = this.backAccount.bind(this);
@@ -5222,6 +5239,7 @@ class SettingsPageWSB extends React.Component{
     this.updateLiveWeight = this.updateLiveWeight.bind(this);
     this.toggleGraph = this.toggleGraph.bind(this)
     this.sendPacket = this.sendPacket.bind(this);
+    this.showCalibrationSteps = this.showCalibrationSteps.bind(this);
     this.sd = React.createRef();
     this.pgm = React.createRef();
     this.msgm = React.createRef();
@@ -5234,6 +5252,7 @@ class SettingsPageWSB extends React.Component{
   }
   componentDidMount(){
     this.sd.current.setPath([0]);
+    this.props.sendPacket("refresh_buffer",6);
   }
   componentWillReceiveProps(newProps){
     this.setState({update:true})
@@ -5307,11 +5326,12 @@ class SettingsPageWSB extends React.Component{
       }
     // getMMdep={this.getMMdep} return this.props.getMMdep(v)
   }
-  onCalib(){
+  onCalib(str){
     if((this.props.sysSettings['PassOn'] == 0)||(this.props.level >= this.props.sysSettings['PassAccCalMenu'])){
       if((this.props.dynSettings['BatchRunning'] == 0))
       {
         this.props.onCal()
+        this.setState({calButtonPressed:true})
       }else{
         this.msgm.current.show('Batch needs to be ended');
       }
@@ -5319,10 +5339,69 @@ class SettingsPageWSB extends React.Component{
       this.msgm.current.show('Access Denied');
     }
   }
+  showCalibrationSteps(){
+    var calStr = '';
+        if(this.props.calibState == 1){
+          calStr = 'Taring..'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 2){
+          calStr = 'Place calibration weight on weight conveyor and press Calibrate.'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 3){
+          calStr = 'Calibrating..'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 4){
+          calStr = 'Remove weight and press Calibrate to tare.'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 5){
+          calStr = 'Taring..'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 6){
+          calStr = 'Calibration Successful.'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 7){
+          calStr = 'Calibration Failed.'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 8){
+          calStr = 'Place calibration weight on position 1 and press Calibrate.'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 9){
+          calStr = 'Calibrating loadcell 1..'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 10){
+          calStr = 'Place calibration weight on position 2 and press Calibrate.'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 11){
+          calStr = 'Calibrating loadcell 2..'
+          this.msgm.current.show(calStr);
+        }else if(this.props.calibState == 12){
+          calStr = 'Place calibration weight on position 3 and press Calibrate.'
+          this.msgm.current.show(calStr);
+          this.setState({calButtonPressed:false})
+        }else if(this.props.calibState == 13){
+          calStr = 'Calibrating loadcell 3..'
+          this.msgm.current.show(calStr);
+        }else if(this.props.calibState == 14){
+          calStr = 'Calibration cancelled.'
+          this.msgm.current.show(calStr);
+        }
+  }
   render(){
     var self = this;
     var weightUnits = this.props.sysSettings['WeightUnits'];
-    var calStr = 'Press calibrate to start calibration. \n Ensure weight conveyor is empty before starting.';
+
+    var calStr = 'Press calibrate to start calibration. \n Ensure weight conveyor is empty before starting.'
+
     if(this.props.calibState == 1){
       calStr = 'Taring..'
     }else if(this.props.calibState == 2){
@@ -5352,8 +5431,8 @@ class SettingsPageWSB extends React.Component{
     }else if(this.props.calibState == 14){
       calStr = 'Calibration cancelled.'
     }
-    
 
+    //if(this.state.calButtonPressed){this.showCalibrationSteps();}
     var calAcc = (this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccCalMenu']);
 
     var cats = []
@@ -5473,7 +5552,7 @@ class SettingsPageWSB extends React.Component{
     return <div>
       <table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{ height:525, background:'#e1e1e1', paddingBottom:10}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
      <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
-        <PackGraph onEdit={this.props.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={0} acc={(this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccAdvSys'])} language={this.props.language} crec={this.props.crec} prec={this.props.prodSettings} srec={this.props.sysSettings}/>
+        <PackGraph packSamples={this.props.packSamples} onEdit={this.props.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={0} acc={(this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccAdvSys'])} language={this.props.language} crec={this.props.crec} prec={this.props.prodSettings} srec={this.props.sysSettings}/>
        </Modal>
       <MessageModal ref={this.msgm}/>
     </div>
@@ -7064,7 +7143,7 @@ class SettingItem3 extends React.Component{
 
           var medctrl= (<MultiEditControl  timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst}  dt={this.props.dt} disabled={disable} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
                       mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
-                  onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} pAcc={this.props.passAcc} ref='ed' vst={vst} 
+                    onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} pAcc={this.props.passAcc} ref='ed' vst={vst} 
                     lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
                     label={this.state.label} int={false} name={lkey}/>)
 
@@ -7112,7 +7191,6 @@ class SettingItem3 extends React.Component{
               if(!display){
             sty.display = 'none'
           }
-       
     var medctrl= (<MultiEditControl dt={this.props.dt} disabled={disable}  getToolTip={this.getToolTip} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} 
       submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus}
        onRequestClose={this.onRequestClose} pAcc={this.props.passAcc} acc={this.props.acc} ref='ed' vst={vst} 
@@ -7365,10 +7443,15 @@ class MultiEditControl extends React.Component{
           }, 100);
           //this.refs['input' + ind].toggle();
         }else if(this.pw.current){
-          setTimeout(function(){
-            self.pw.current.toggle();
-      
-          },100)
+         // console.log("val", val);
+          /*if(this.props.name == "ManRejState")
+          {
+            
+          }*/
+            setTimeout(function(){
+              self.pw.current.toggle();
+            },100)
+          
         }
       }else if(this['input' + ind].current){
           setTimeout(function (argument) {
@@ -8981,8 +9064,9 @@ class BatchPackCountGraph extends React.Component{
 		data[4] = crec['HighCnt'];
 		data[5] = crec['UnsettledCnt']
 		//data[6] = crec['ImprobableCnt']
-
-    data[6] = crec['CheckWeightCnt']
+    data[6] = crec['MetalRejectCnt']
+    data[7] = crec['CheckWeightCnt']
+    
     sampleData[0] = crec['SampleTotalCnt']
     sampleData[1] = crec['SamplePassWeightCnt']
     sampleData[2] = crec['SampleLowPassCnt']
@@ -8990,7 +9074,8 @@ class BatchPackCountGraph extends React.Component{
     sampleData[4] = crec['SampleHighCnt']
     sampleData[5] = crec['SampleUnsettledCnt']
     //sampleData[6] = crec['SampleImprobableCnt']
-    sampleData[6] = crec['SampleCheckWeightCnt']
+    sampleData[6] = crec['SampleMetalRejectCnt']
+    sampleData[7] = crec['SampleCheckWeightCnt']
 
     var bst = ''
     var sst = ''
@@ -9006,7 +9091,7 @@ class BatchPackCountGraph extends React.Component{
 
 	}
 	parsePack(pack){
-		var data = [0,0,0,0,0,0,0]//this.state.data.slice(0)
+		var data = [0,0,0,0,0,0,0,0]//this.state.data.slice(0)
 		data[0]++;
 		if(pack<85){
 			data[1]++;
@@ -9064,11 +9149,11 @@ class BatchPackCountGraph extends React.Component{
     }
     
 		var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
-     {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
+     {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['MetalRejectCnt']['@translations'][this.props.language]['name']},{x:selData[7], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
 		
     if (this.state.weighingMode2 == 1){
     var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['BetweenT1T2']['@translations'][this.props.language]['name']},
-    {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
+    {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['MetalRejectCnt']['@translations'][this.props.language]['name']},{x:selData[7], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
     }
     var labelData = data.map(function(d, i){
 			var lax = 'start'
@@ -9096,8 +9181,8 @@ class BatchPackCountGraph extends React.Component{
       <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
 		<XYPlot	height={430} width= {380} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal' xDomain={xDm}>		
   
-  <HorizontalBarSeries data={data} color={graphColor} />
-  <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
+    <HorizontalBarSeries data={data} color={graphColor} />
+    <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
   <XAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} hideTicks={max<1} orientation="bottom" tickSizeOuter={0} tickFormat={val => Math.round(val) === val ? val : ""}/>
   <YAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} orientation="left" tickSizeOuter={0} tickFormat={tickFormatter}/>
 		</XYPlot>
@@ -9359,7 +9444,7 @@ class MainHistogram extends React.Component{
 class PackGraph extends React.Component{
   constructor(props){
     super(props)
-     var settleWin = this.props.crec['SettleWinEnd']-this.props.crec['SettleWinStart']
+     var settleWin = this.props.packSamples['SettleWinEnd']-this.props.packSamples['SettleWinStart']
      var timeFactor = 1
      if(settleWin>0){
       timeFactor = this.props.prec['SettleDur']/settleWin
@@ -9376,7 +9461,7 @@ class PackGraph extends React.Component{
     this.setState({zoom:false})
   }
   componentWillReceiveProps(newProps){
-     var settleWin = newProps.crec['SettleWinEnd'] - newProps.crec['SettleWinStart'];
+     var settleWin = newProps.packSamples['SettleWinEnd'] - newProps.packSamples['SettleWinStart'];
      var timeFactor = 1
      if(settleWin>0){
       timeFactor = newProps.prec['SettleDur']/settleWin
@@ -9408,20 +9493,19 @@ class PackGraph extends React.Component{
     }
   }
   render(){
- 
-
-    var winL = this.props.crec['WindowEnd'] - this.props.crec['WindowStart']
-    var data = this.props.crec['PackSamples']
+    this.props.onEdit("refresh_buffer",6)
+    var winL = this.props.packSamples['WindowEnd'] - this.props.packSamples['WindowStart']
+    var data = this.props.packSamples['PackSamples']
     if(typeof data != 'undefined'){
       data = data.slice(0);
     }else{
       data = Array(300).fill(0)
     }
-    var settleWin = [this.props.crec['SettleWinStart'],this.props.crec['SettleWinEnd']]
+    var settleWin = [this.props.packSamples['SettleWinStart'],this.props.packSamples['SettleWinEnd']]
     var packRange = [this.props.crec['PackMin']+this.props.prec['PkgWeight'],this.props.crec['PackMax']+this.props.prec['PkgWeight']]
     var calFactor = this.props.crec['packCal']
     var tare = this.props.crec['packTare']
-    var weighWin = [this.props.crec['WeighWinStart'],this.props.crec['WeighWinEnd']]
+    var weighWin = [this.props.packSamples['WeighWinStart'],this.props.packSamples['WeighWinEnd']]
     var timeFactor = this.state.timeFactor
 
     if(typeof tare == 'undefined'){
@@ -9436,7 +9520,7 @@ class PackGraph extends React.Component{
     var self = this;
     //(dsl != 0){
       //var decSet =  this.state.dataSets[dsl-1].slice(this.state.pstrt, this.state.pend)
-      var decSet = data.slice(this.props.crec['WeighWinStart'], this.props.crec['WeighWinEnd'])
+      var decSet = data.slice(this.props.packSamples['WeighWinStart'], this.props.packSamples['WeighWinEnd'])
       decMin = Math.min(...decSet);
       decMax = Math.max(...decSet);
 
@@ -9456,11 +9540,11 @@ class PackGraph extends React.Component{
   // console.log(decMin,decMax) 
   var dM = decMax*1;
   var dm = decMin*1     
-  const yellowBox = {y:dM,y0:dm,x0:weighWin[0] - this.props.crec['WindowStart'],x:weighWin[1] - this.props.crec['WindowStart']} 
+  const yellowBox = {y:dM,y0:dm,x0:weighWin[0] - this.props.packSamples['WindowStart'],x:weighWin[1] - this.props.packSamples['WindowStart']} 
   var xdm = [0,winL]
   
   if(this.state.zoom){
-    xdm = [settleWin[0] - this.props.crec['WindowStart'],settleWin[1] - this.props.crec['WindowStart']]
+    xdm = [settleWin[0] - this.props.packSamples['WindowStart'],settleWin[1] - this.props.packSamples['WindowStart']]
     ydm = [packRange[0],packRange[1]]
     zoombut ='assets/zoom-out-lens.svg'
   }
@@ -9508,7 +9592,7 @@ class PackGraph extends React.Component{
       
       <img onClick={this.toggleZoom} src={zoombut} style={{width:32, marginLeft:815}}/>
     <XYPlot height={400} width={850} yDomain={ydm} xDomain={xdm} margin={{left:20,right:0,bottom:30,top:10}}>
-     <AreaSeries data={data.slice(this.props.crec['WindowStart'], this.props.crec['WindowEnd']).map(function (y,x) {
+     <AreaSeries data={data.slice(this.props.packSamples['WindowStart'], this.props.packSamples['WindowEnd']).map(function (y,x) {
       // body...
       return {y:y, x:x}
     })}/>
@@ -9517,7 +9601,7 @@ class PackGraph extends React.Component{
     <XAxis tickFormat={val => val%10 == 0 ? val*timeFactor.toFixed(0) : ""} hideTicks={winL == 0} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
   
     <VerticalRectSeries curve='curveMonotoneX' strokeStyle='dashed' stack={true} opacity={0.8} stroke="#ffa500" fill='transparent' strokeWidth={3} data={[yellowBox]}/>
-    <VerticalRectSeries onSeriesClick={this.toggleZoom} curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:packRange[0],y:packRange[1],x0:settleWin[0] - this.props.crec['WindowStart'],x:settleWin[1] - this.props.crec['WindowStart']}]}/>
+    <VerticalRectSeries onSeriesClick={this.toggleZoom} curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:packRange[0],y:packRange[1],x0:settleWin[0] - this.props.packSamples['WindowStart'],x:settleWin[1] - this.props.packSamples['WindowStart']}]}/>
     
     <LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/>
     
@@ -9994,6 +10078,7 @@ class BatchControl extends React.Component{
     data[5] = crec['UnsettledCnt']
     //data[6] = crec['ImprobableCnt']
     data[6] = crec['CheckWeightCnt']
+    data[7] = crec['CheckWeightCnt']
 
     sampleData[0] = crec['SampleTotalCnt']
     sampleData[1] = crec['SamplePassWeightCnt']
@@ -10003,6 +10088,7 @@ class BatchControl extends React.Component{
     sampleData[5] = crec['SampleUnsettledCnt']
    // sampleData[6] = crec['SampleImprobableCnt']
     sampleData[6] = crec['SampleCheckWeightCnt']
+    sampleData[7] = crec['SampleCheckWeightCnt']
     this.setState({batchData:data, sampleData:sampleData, batchStartTime:crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' '),sampleStartTime:crec['BatchStartDate'].toISOString().slice(0,19).split('T').join(' '),batchMin:crec['BatchMinutes'], sampleMin:crec['SampleMinutes']})
   }
   sendPacket(n,v){
@@ -10268,12 +10354,14 @@ class BatchControl extends React.Component{
         <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>Batch Weights</div>
           <div>
            <div style={{fontSize:17, whiteSpace:'nowrap'}}>
-          <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
+          <div><div style={titleSt}>Check Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['CheckWeightCnt']}</div></div>
+          <div><div style={titleSt}>Metal Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['MetalRejectCnt']}</div></div>
+          <div><div style={titleSt}>Unsettled</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['UnsettledCnt']}</div></div>
+          <div><div style={titleSt}>High</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['HighCnt']}</div></div>
           <div><div style={titleSt}>Low Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowRejCnt']}</div></div>
           <div><div style={titleSt}>{lowPass}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowPassCnt']}</div></div>
-          <div><div style={titleSt}>High</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['HighCnt']}</div></div>
-          <div><div style={titleSt}>Unsettled</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['UnsettledCnt']}</div></div>
-          <div><div style={titleSt}>Check Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['CheckWeightCnt']}</div></div>
+          <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
+          <div><div style={titleSt}>Total</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['TotalCnt']}</div></div>
           </div> 
           </div>
         </div>
