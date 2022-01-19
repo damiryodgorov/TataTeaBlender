@@ -15826,7 +15826,7 @@
       "@translations": {
         "english": {
           "name": "Max Plot Weight",
-          "description": "Used when Window mode is in Manual, not Auto. Use to explicitly set the Maximum weight value for the graph."
+          "description": "Sets the maximum weight value for the graph when Plot Mode is in Manual."
         },
         "korean": {
           "name": "Window Max",
@@ -15878,7 +15878,7 @@
       "@translations": {
         "english": {
           "name": "Min Plot Weight",
-          "description": "Used when Window mode is in Manual, not Auto. Use to explicitly set the Minimum weight value for the graph."
+          "description": "Sets the minimum weight value for the graph when Plot Mode is in Manual."
         },
         "korean": {
           "name": "Sample Delay End",
@@ -15930,7 +15930,7 @@
       "@translations": {
         "english": {
           "name": "Plot Mode",
-          "description": "Set to use explicit minimum and maximum values for the graph. Use with 'Min Plot Weight' and 'Max Plot Weight'."
+          "description": "Auto mode will automatically size the weight graph based on the samples collected.\n\nManual mode will manually set the minimum and maximum weight values visible on the weight graph."
         },
         "korean": {
           "name": "Window Mode",
@@ -17577,7 +17577,7 @@
       "@translations": {
         "english": {
           "name": "Exit Distance",
-          "description": "Distance from the start of the Weight Table to the Exit Photoeye"
+          "description": "Distance from the start of the Weight Table to the Exit Photoeye."
         },
         "korean": {
           "name": "리젝트 퇴장 거리",
@@ -17733,7 +17733,7 @@
       "@translations": {
         "english": {
           "name": "Reject Activation Time",
-          "description": "Adds a delay to the reject device."
+          "description": "The delay between the main reject signal being sent and the main reject device affecting the pack."
         },
         "korean": {
           "name": "Reject Device Delay",
@@ -17785,7 +17785,7 @@
       "@translations": {
         "english": {
           "name": "Alternate Reject Activation Time",
-          "description": "Adds a delay to the alternate reject device."
+          "description": "The delay between the alternate reject signal being sent and the alternate reject device affecting the pack."
         },
         "korean": {
           "name": "Alternate Reject Activation Time",
@@ -18305,7 +18305,7 @@
       "@translations": {
         "english": {
           "name": "Photo Reject",
-          "description": "The “mid” option of Photo Reject means that the reject device will hit the middle of the package regardless of the package size (kicker rejects) – it can be changed to “lead” (leading edge for diverter rejects) or “width” (entire length of package for retracting rejects)"
+          "description": "- Use “Length” mode for reject devices that should reject for the entire length of the package.\n- Use “Mid” mode for reject devices that should reject at the middle of the package.\n- Use “Lead” mode for reject devices that should reject at the start of the package.\n- Use \"Toggle\" mode for reject devices that switch between rejecting on each side of the conveyor."
         },
         "korean": {
           "name": "포토 리젝트",
@@ -36410,7 +36410,7 @@
       "@translations": {
         "english": {
           "name": "Reject Confirm Source",
-          "description": "The reject device used for the reject check system."
+          "description": "Selects which reject system timing to use for the reject confirm and reject position faults. Usually used with Main Reject."
         },
         "korean": {
           "name": "Reject Confirm Source",
