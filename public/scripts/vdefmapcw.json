@@ -55035,60 +55035,6 @@
                   "params": [
                     {
                       "val": {
-                        "cat": "Loadcell",
-                        "params": [
-                          {
-                            "type": 0,
-                            "val": "LoadcellFreq",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "LoadcellRate",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "DemodMode",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "DemodScale",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "LiveWeightAvg",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "MasterAvgFilter",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "SampPerSec",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "LoadcellNoise",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "ADCTemp",
-                            "acc": 0
-                          }
-                        ]
-                      },
-                      "type": 1,
-                      "acc": 0
-                    },
-                    {
-                      "val": {
                         "cat": "PlotSettings",
                         "packGraph": true,
                         "params": [
@@ -55101,31 +55047,6 @@
                             "type": 0,
                             "val": "WindowDelEnd",
                             "acc": 0
-                          },
-                          {
-                            "type": 1,
-                            "acc": 0,
-                            "val": {
-                              "cat": "PlotMode",
-                              "child": 0,
-                              "params": [
-                                {
-                                  "type": 0,
-                                  "val": "WindowMode",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "WindowMin",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "WindowMax",
-                                  "acc": 0
-                                }
-                              ]
-                            }
                           }
                         ]
                       },
@@ -55701,8 +55622,62 @@
                       "acc": 4,
                       "val": {
                         "cat": "AllVersions",
-                        "child": 0,
+                        "child": 1,
                         "params": [
+                          {
+                            "val": {
+                              "cat": "Loadcell",
+                              "params": [
+                                {
+                                  "type": 0,
+                                  "val": "LoadcellFreq",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "LoadcellRate",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "DemodMode",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "DemodScale",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "LiveWeightAvg",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "MasterAvgFilter",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "SampPerSec",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "LoadcellNoise",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "ADCTemp",
+                                  "acc": 0
+                                }
+                              ]
+                            },
+                            "type": 1,
+                            "acc": 0
+                          },
                           {
                             "val": "IOSwitchSwVer",
                             "type": 0,
@@ -55757,6 +55732,31 @@
                             "type": 0,
                             "val": "@branding",
                             "acc": 3
+                          },
+                          {
+                            "type": 1,
+                            "acc": 0,
+                            "val": {
+                              "cat": "PlotMode",
+                              "child": 0,
+                              "params": [
+                                {
+                                  "type": 0,
+                                  "val": "WindowMode",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "WindowMin",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "WindowMax",
+                                  "acc": 0
+                                }
+                              ]
+                            }
                           },
                           {
                             "type": 5,
@@ -57353,21 +57353,6 @@
         "chinese": "Plot Settings"
       }
     },
-    "System/Advanced/PlotSettings/PlotMode": {
-      "@translations": {
-        "english": "Plot Mode",
-        "korean": "Plot Mode",
-        "spanish": "Plot Mode",
-        "french": "Plot Mode",
-        "portuguese": "Plot Mode",
-        "italian": "Plot Mode",
-        "german": "Plot Mode",
-        "turkish": "Plot Mode",
-        "russian": "Plot Mode",
-        "polish": "Plot Mode",
-        "chinese": "Plot Mode"
-      }
-    },
     "System/Advanced/Reject": {
       "@translations": {
         "english": "Reject",
@@ -57426,6 +57411,36 @@
         "russian": "System Record Date",
         "polish": "System Record Date",
         "chinese": "System Record Date"
+      }
+    },
+    "System/SysVersion/AllVersions/Loadcell": {
+      "@translations": {
+        "english": "Loadcell Settings",
+        "korean": "Loadcell Settings",
+        "spanish": "Loadcell Settings",
+        "french": "Loadcell Settings",
+        "portuguese": "Loadcell Settings",
+        "italian": "Loadcell Settings",
+        "german": "Loadcell Settings",
+        "turkish": "Loadcell Settings",
+        "russian": "Loadcell Settings",
+        "polish": "Loadcell Settings",
+        "chinese": "Loadcell Settings"
+      }
+    },
+    "System/SysVersion/AllVersions/PlotMode": {
+      "@translations": {
+        "english": "Plot Mode",
+        "korean": "Plot Mode",
+        "spanish": "Plot Mode",
+        "french": "Plot Mode",
+        "portuguese": "Plot Mode",
+        "italian": "Plot Mode",
+        "german": "Plot Mode",
+        "turkish": "Plot Mode",
+        "russian": "Plot Mode",
+        "polish": "Plot Mode",
+        "chinese": "Plot Mode"
       }
     },
     "System/Passwords": {

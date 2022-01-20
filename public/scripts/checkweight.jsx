@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/12/16'
+const DISPLAYVERSION = '2021/12/17'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -51,6 +51,7 @@ var _pVdef;
 var _nVdf;
 
 var categories;
+var calibCount;
 var netMap = vdefMapV2['@netpollsmap']
 
 var vMapV2 = vdefMapV2["@vMap"]
@@ -108,6 +109,17 @@ function formatLength(l, u){
   else{
       return Math.round(l) + " mm";
   }
+}
+function formatBeltSpeed(speed, unit){
+  var newSpeed = speed;
+  if(unit == 1 && speed.includes('ft/min')){
+    newSpeed = speed.replace('ft/min','');
+    newSpeed = (Number(newSpeed)/3.281).toFixed(1) + " M/min"
+  }else if (unit == 0 && speed.includes('M/min')){
+    newSpeed = speed.replace('M/min','');
+    newSpeed = (Number(newSpeed)*3.281) + " ft/min";
+  }
+  return newSpeed;
 }
 function FormatWeightD(wgt, unit, d){
   if(typeof wgt == 'undefined'){
@@ -5228,7 +5240,7 @@ class ProdSettingEdit extends React.Component{
 class SettingsPageWSB extends React.Component{
   constructor(props){
     super(props);
-    this.state = {calButtonPressed:false,sel:0, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0,mot:false}
+    this.state = {sel:0, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0,mot:false, showMessage:false}
     this.setPath = this.setPath.bind(this);
     this.onHandleClick = this.onHandleClick.bind(this);
     this.backAccount = this.backAccount.bind(this);
@@ -5326,12 +5338,13 @@ class SettingsPageWSB extends React.Component{
       }
     // getMMdep={this.getMMdep} return this.props.getMMdep(v)
   }
-  onCalib(str){
+  onCalib(){
     if((this.props.sysSettings['PassOn'] == 0)||(this.props.level >= this.props.sysSettings['PassAccCalMenu'])){
       if((this.props.dynSettings['BatchRunning'] == 0))
       {
         this.props.onCal()
-        this.setState({calButtonPressed:true})
+        calibCount = 0;
+        this.showCalibrationSteps();
       }else{
         this.msgm.current.show('Batch needs to be ended');
       }
@@ -5341,100 +5354,70 @@ class SettingsPageWSB extends React.Component{
   }
   showCalibrationSteps(){
     var calStr = '';
-        if(this.props.calibState == 1){
-          calStr = 'Taring..'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 2){
-          calStr = 'Place calibration weight on weight conveyor and press Calibrate.'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 3){
-          calStr = 'Calibrating..'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 4){
-          calStr = 'Remove weight and press Calibrate to tare.'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 5){
-          calStr = 'Taring..'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 6){
-          calStr = 'Calibration Successful.'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 7){
-          calStr = 'Calibration Failed.'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 8){
-          calStr = 'Place calibration weight on position 1 and press Calibrate.'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 9){
-          calStr = 'Calibrating loadcell 1..'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 10){
-          calStr = 'Place calibration weight on position 2 and press Calibrate.'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 11){
-          calStr = 'Calibrating loadcell 2..'
-          this.msgm.current.show(calStr);
-        }else if(this.props.calibState == 12){
-          calStr = 'Place calibration weight on position 3 and press Calibrate.'
-          this.msgm.current.show(calStr);
-          this.setState({calButtonPressed:false})
-        }else if(this.props.calibState == 13){
-          calStr = 'Calibrating loadcell 3..'
-          this.msgm.current.show(calStr);
-        }else if(this.props.calibState == 14){
-          calStr = 'Calibration cancelled.'
-          this.msgm.current.show(calStr);
-        }
+    if(this.props.calibState == 1 && calibCount!=1){
+      calStr = 'Taring..'
+      calibCount=1;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 2 && calibCount!=2){
+      calStr = 'Place calibration weight on weight conveyor and press Calibrate.'
+      calibCount=2;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 3 && calibCount!=3){
+      calStr = 'Calibrating..'
+      calibCount=3;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 4 && calibCount!=4){
+      calStr = 'Remove weight and press Calibrate to tare.'
+      calibCount=4;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 5 && calibCount!=5){
+      calStr = 'Taring..'
+      calibCount=5;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 6 && calibCount!=6){
+      calStr = 'Calibration Successful.'
+      calibCount=6;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 7 && calibCount!=7){
+      calStr = 'Calibration Failed.'
+      calibCount=7;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 8 && calibCount!=8){
+      calStr = 'Place calibration weight on position 1 and press Calibrate.'
+      calibCount=8;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 9 && calibCount!=9){
+      calStr = 'Calibrating loadcell 1..'
+      calibCount=9;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 10 && calibCount!=10){
+      calStr = 'Place calibration weight on position 2 and press Calibrate.'
+      calibCount=10;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 11 && calibCount!=11){
+      calStr = 'Calibrating loadcell 2..'
+      calibCount=11;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 12 && calibCount!=12){
+      calStr = 'Place calibration weight on position 3 and press Calibrate.'
+      calibCount=12;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 13 && calibCount!=13){
+      calStr = 'Calibrating loadcell 3..'
+      calibCount=13;
+      this.msgm.current.show(calStr);
+    }else if(this.props.calibState == 14 && calibCount!=14){
+      calStr = 'Calibration cancelled.'
+      calibCount=14;
+      this.msgm.current.show(calStr);
+    }
+    
   }
   render(){
     var self = this;
     var weightUnits = this.props.sysSettings['WeightUnits'];
-
     var calStr = 'Press calibrate to start calibration. \n Ensure weight conveyor is empty before starting.'
-
-    if(this.props.calibState == 1){
-      calStr = 'Taring..'
-    }else if(this.props.calibState == 2){
-      calStr = 'Place calibration weight on weight conveyor and press Calibrate.'
-    }else if(this.props.calibState == 3){
-      calStr = 'Calibrating..'
-    }else if(this.props.calibState == 4){
-      calStr = 'Remove weight and press Calibrate to tare.'
-    }else if(this.props.calibState == 5){
-      calStr = 'Taring..'
-    }else if(this.props.calibState == 6){
-      calStr = 'Calibration Successful.'
-    }else if(this.props.calibState == 7){
-      calStr = 'Calibration Failed.'
-    }else if(this.props.calibState == 8){
-      calStr = 'Place calibration weight on position 1 and press Calibrate.'
-    }else if(this.props.calibState == 9){
-      calStr = 'Calibrating loadcell 1..'
-    }else if(this.props.calibState == 10){
-      calStr = 'Place calibration weight on position 2 and press Calibrate.'
-    }else if(this.props.calibState == 11){
-      calStr = 'Calibrating loadcell 2..'
-    }else if(this.props.calibState == 12){
-      calStr = 'Place calibration weight on position 3 and press Calibrate.'
-    }else if(this.props.calibState == 13){
-      calStr = 'Calibrating loadcell 3..'
-    }else if(this.props.calibState == 14){
-      calStr = 'Calibration cancelled.'
-    }
-
-    //if(this.state.calButtonPressed){this.showCalibrationSteps();}
     var calAcc = (this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccCalMenu']);
-
     var cats = []
     this.props.cvdf[0].params.forEach(function (c,i) {
       if(c.type == 1){
@@ -5484,7 +5467,7 @@ class SettingsPageWSB extends React.Component{
           </div>
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.props.sysSettings['CalWeight'], weightUnits)} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
-          <div style={{marginTop:44, fontSize:24, textAlign:'center'}}>{calStr}</div>
+          <div style={{marginTop:44, fontSize:24, textAlign:'center'}}>{this.props.calibState == 0 ? calStr : this.showCalibrationSteps()}</div>
           {calBut}
           </div>)
       if(this.props.sysSettings['CheckWeigherType'] == 1){
@@ -5551,10 +5534,10 @@ class SettingsPageWSB extends React.Component{
 
     return <div>
       <table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{ height:525, background:'#e1e1e1', paddingBottom:10}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
-     <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
+      <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
         <PackGraph packSamples={this.props.packSamples} onEdit={this.props.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={0} acc={(this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccAdvSys'])} language={this.props.language} crec={this.props.crec} prec={this.props.prodSettings} srec={this.props.sysSettings}/>
-       </Modal>
-      <MessageModal ref={this.msgm}/>
+      </Modal>
+      <MessageModal ref={this.msgm}/> 
     </div>
   }
 }
@@ -5564,8 +5547,6 @@ class CatSelectItem extends React.Component{
     this.onClick = this.onClick.bind(this);
   }
   onClick(){
-    console.log("Data props ",this.props.data);
-    console.log("props ind ",this.props.ind);
     this.props.onClick(this.props.data, this.props.ind)
   }
   render () {
@@ -7682,7 +7663,7 @@ class MultiEditControl extends React.Component{
       if(iod && i == 1){
         _st.width = 190
       }
-      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val == '0.00 seconds' ? 'Default' : val}</CustomLabel>)
+      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val == '0.00 seconds' ? 'Default' : val == '0 mm' ? 'Default' : val == '0.000 x Product Length' ? 'Default' : val}</CustomLabel>)
     })
     
 
@@ -9610,10 +9591,9 @@ class PackGraph extends React.Component{
     <div style={{textAlign:'center'}}>ms</div>
     </div>
     <div  style={{background:'#e1e1e1', paddingTop:5, marginLeft:5, overflowY:'scroll'}}>
-    
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['FilterFreq']} pram={'FilterFreq'} name={vMapV2['FilterFreq']['@translations'][this.props.language]['name']} value={this.props.prec['FilterFreq'].toFixed(1)+ ' Hz'} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['SettleDur']} pram={'SettleDur'} name={vMapV2['SettleDur']['@translations'][this.props.language]['name']} value={this.props.prec['SettleDur']+ ' ms'} submitChange={this.props.submitChange}/>
-    <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['VfdBeltSpeed1']} pram={'VfdBeltSpeed1'} name={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['name']} value={this.props.prec['VfdBeltSpeed1']} submitChange={this.props.submitChange}/>
+    <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['VfdBeltSpeed1']} pram={'VfdBeltSpeed1'} name={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['name']} value={formatBeltSpeed(this.props.prec['VfdBeltSpeed1'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['WeightAvgMode']} pram={'WeightAvgMode'} name={vMapV2['WeightAvgMode']['@translations'][this.props.language]['name']} rVal={this.props.prec['WeightAvgMode']} value={vMapLists['WeightAvgMode'][this.props.language][this.props.prec['WeightAvgMode']]} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEditPackageLength} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['EyePkgLength']} pram={'EyePkgLength'} name={vMapV2['EyePkgLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.prec['EyePkgLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
     <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 0} vMap={vMapV2['WeighLength']} pram={'WeighLength'} name={vMapV2['WeighLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.srec['WeighLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
