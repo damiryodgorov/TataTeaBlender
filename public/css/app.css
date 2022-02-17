@@ -1284,6 +1284,14 @@ li {
     margin-left: auto;
     margin-right: auto;
 }
+.modal-outer2{
+    position: relative;
+    margin-top: 25px;
+    width: 90%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
 .selectmodal-outer{
     position: relative;
     margin-top: 75px;

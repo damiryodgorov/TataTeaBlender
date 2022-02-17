@@ -223,7 +223,7 @@ class Modal extends React.Component{
 		var self = this;
 		////console.log(4530, self.props.onClose)
 		if(this.props.closeOv != true){
-			this.setState({show:false})
+				this.setState({show:false})
 			setTimeout(function(){
 				if(typeof self.props.onClose != 'undefined'){
 			
@@ -235,7 +235,6 @@ class Modal extends React.Component{
 			},50)
 		}else{
 			if(typeof self.props.onClose != 'undefined'){
-			
 				self.props.onClose();
 			}
 		}
@@ -294,6 +293,7 @@ class Modal extends React.Component{
 	}
 	render () {
 		var cont = '';
+		var className;
 		var h = !this.state.show
 		if(typeof this.props.override != 'undefined'){
 			if(this.props.override == 1){
@@ -303,18 +303,33 @@ class Modal extends React.Component{
 			}
 		}
 
-
 		if(!h){
 			var im =''
 			if(this.props.dfMeter){
 				im = <StealthMeterBar ref={this.mb} clear={this.clear} mobile={this.props.mobile}/>
 			}
-				cont = (<ModalCont x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
+			if(this.props.systemSettingTooltip){
+				cont = (<ModalCont systemSettingsTooltip={'yes'} x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
 					{im}{this.props.children}
 					<MessageModal ref={this.msgm}/>
 					</ModalCont>)
+			}
+			else{
+				if(this.props.onCancel!='undefined'){
+					cont = (<ModalCont x={this.props.x} onCancel={this.props.onCancel} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
+						{im}{this.props.children}
+						<MessageModal ref={this.msgm}/>
+						</ModalCont>)
+				}
+				else{
+					cont = (<ModalCont x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
+						{im}{this.props.children}
+						<MessageModal ref={this.msgm}/>
+						</ModalCont>)
+				}
+			}
+				
 		
-
 		return(<div className={this.state.className} hidden={h}>
 			{cont}
 	</div>)
@@ -324,15 +339,21 @@ class Modal extends React.Component{
 	}
 	}
 }
+
 class ModalC extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {keyboardVisible:false}
 		this.toggle = this.toggle.bind(this);
 		this.handleClickOutside = this.handleClickOutside.bind(this);
+		this.endCalibration = this.endCalibration.bind(this);
 	}
 	toggle(){
 		this.props.toggle()
+	}
+	endCalibration(){
+		this.props.toggle()
+		this.props.onCancel()
 	}
 	handleClickOutside(e){
 		if(!this.state.keyboardVisible){
@@ -343,7 +364,13 @@ class ModalC extends React.Component{
 		var style= this.props.Style || {}
 		var cs = this.props.innerStyle || {}
 		var button = ''
-		
+		var className;
+		if(this.props.systemSettingsTooltip){
+			className = 'modal-outer2'
+		}
+		else{
+			className = 'modal-outer'
+		}
 		if(this.props.mobile){
 			cs.padding = 7;
 			cs.maxHeight = '83%'
@@ -352,10 +379,15 @@ class ModalC extends React.Component{
 			style.overflow = 'scroll'
 			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
 		}else if(this.props.x == true){
-			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
+			if(this.props.onCancel!='undefined'){
+				button = <button className='modal-close' onClick={this.endCalibration}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
+			}
+			else{
+				button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
+			}
 		}
 
-				return (<div className='modal-outer' style={style}>
+				return (<div className={className} style={style}>
 					
 				<div className='modal-content' style={cs}>
 				{button}
@@ -810,6 +842,7 @@ class AuthfailModal extends React.Component{
 		this.show = this.show.bind(this);
 		this.close = this.close.bind(this);
 		this.forgot = this.forgot.bind(this);
+		this.tryAgain = this.tryAgain.bind(this);
 	}
 	show (userid, ip) {
 		this.setState({show:true, userid:userid,ip:ip})
@@ -819,15 +852,21 @@ class AuthfailModal extends React.Component{
 		setTimeout(function () {
 			self.setState({show:false})
 		},100)
-		
 	}
 	forgot(){
 		this.props.forgot(this.state.userid,this.state.ip);
 	}
+	tryAgain(){
+		var self = this;
+		setTimeout(function () {
+			self.setState({show:false})
+		},100)
+		self.props.tryAgain();
+	}
 	render () {
 		var	cont = ""
 		if(this.state.show){
-		cont =  <AFModalCont vMap={this.props.vMap} accept={this.forgot} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</AFModalCont>
+		cont =  <AFModalCont vMap={this.props.vMap} tryAgain={this.tryAgain} accept={this.forgot} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</AFModalCont>
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
 	{/*	<div className='modal-x' onClick={this.close}>
@@ -876,7 +915,7 @@ class AFModalC extends React.Component{
 	cancel(){
 		var self = this;
 		setTimeout(function(){
-			self.close();
+			self.props.tryAgain();
 			
 		}, 100)
 	}
@@ -1005,7 +1044,6 @@ class MessageModal extends React.Component{
 		setTimeout(function () {
 			self.setState({show:false})
 		},100)
-		
 	}
 	
 	render () {
@@ -1079,7 +1117,7 @@ class MModalC extends React.Component{
 				 return( <div className='alertmodal-outer'>
 	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Alert</div>
 	  			{this.props.children}
-				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Confirm</button></div>
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{this.props.children.props.children == "Batch needs to be ended prior to calibration."? 'Dismiss' : 'Confirm'}</button></div>
 	  		
 		  </div>)
 			}

@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2021/12/17'
+const DISPLAYVERSION = '2022/01/23'
 
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
@@ -51,7 +51,6 @@ var _pVdef;
 var _nVdf;
 
 var categories;
-var calibCount;
 var netMap = vdefMapV2['@netpollsmap']
 
 var vMapV2 = vdefMapV2["@vMap"]
@@ -117,7 +116,7 @@ function formatBeltSpeed(speed, unit){
     newSpeed = (Number(newSpeed)/3.281).toFixed(1) + " M/min"
   }else if (unit == 0 && speed.includes('M/min')){
     newSpeed = speed.replace('M/min','');
-    newSpeed = (Number(newSpeed)*3.281) + " ft/min";
+    newSpeed = Math.round((Number(newSpeed)*3.27)).toFixed(1) + " ft/min";
   }
   return newSpeed;
 }
@@ -635,7 +634,6 @@ var _wsurl1 = 'ws://' +location.host
 const urlParams = new URLSearchParams(location.search)
 const ip2 = urlParams.get('lane2')
 var external = urlParams.get('ext')
-console.log('External: '+external)
 if (ip2){
   var _wsurl2 = 'ws://'+ip2
   var socket2 = new FtiSockIo(_wsurl2,true);
@@ -708,9 +706,7 @@ if (ip2){
   })
 }
 var socket1 = new FtiSockIo(_wsurl1,true);
-console.log(socket1)
 if (!external){
-  console.log('Internal Connection')
   var socket3 = new FtiSockIo('ws://192.168.50.52:3300',true)
 }
 socket1.on('vdef', function(vdf){
@@ -909,7 +905,7 @@ class LandingPage extends React.Component{
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
       detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false,
-      checkPrecInterval:null,liveWeight:0.0, packSamples:{}}
+      checkPrecInterval:null,liveWeight:0.0, packSamples:{},confirmPressed:0}
     this.exportVmap = this.exportVmap.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
@@ -966,6 +962,11 @@ class LandingPage extends React.Component{
     this.formatUSB = this.formatUSB.bind(this);
     this.notify = this.notify.bind(this)
     this.goDual = this.goDual.bind(this)
+    this.closeProductMenu = this.closeProductMenu.bind(this);
+    this.forgotPassword = this.forgotPassword.bind(this);
+    this.tryAgain = this.tryAgain.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
+    this.resetCalibration = this.resetCalibration.bind(this);
     this.lgctl = React.createRef();
     this.tBut = React.createRef();
     this.cwModal = React.createRef();
@@ -1304,10 +1305,9 @@ class LandingPage extends React.Component{
     })
     this.props.soc.on('authFail', function(pack){
       self.am.current.show(pack.user, pack.ip)
-      self.setAuthAccount({user:'Not Logged In', level:0, user:-1})
+      self.setAuthAccount({username:'Not Logged In', level:0, user:-1})
     })
     this.props.soc.on('passwordNotify',function(e){
-      // console.log(1117,e)
       var message = 'Call Fortress with ' + e.join(', ');
       self.msgm.current.show(message)
     })
@@ -1459,7 +1459,7 @@ class LandingPage extends React.Component{
       if(this.batModal.current.state.show){
         this.batModal.current.showMsg(msg)
       }else if(this.pmodal.current.state.show){
-        this.pmodal.current.showMsg(msg)
+       this.pmodal.current.showMsg(msg)
       }else if(this.settingModal.current.state.show){
         this.settingModal.current.showMsg(msg)
       }else if(this.cwModal.current.state.show){
@@ -1623,8 +1623,7 @@ class LandingPage extends React.Component{
            if((e.rec['RejSetupInvalid'] != this.state.rec['RejSetupInvalid'])){
             if(e.rec['RejSetupInvalid'] == 1){
               //toast('Taring..')
-              this.notify('Reject Setup is invalid!')
-          
+              this.notify('Reject Setup is invalid!')          
             }
           }
           if(e.rec['DateTime'] != this.state.rec['DateTime']){
@@ -1820,22 +1819,22 @@ class LandingPage extends React.Component{
 
 
         }else if(e.type == 6){
-          var cnt = 0;
+         var cnt = 0;
           if(typeof this.state.crec['TotalCnt'] != 'undefined'){
             cnt = this.state.crec['TotalCnt']
           }
           this.setState({packSamples:e.rec,noupdate:true})
-          this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
+         /*this.lg.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
             this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
           if (this.lgDual && this.lgDual.current){
             this.lgDual.current.parseDataset(e.rec['PackSamples'].slice(0), e.rec['SettleWinStart'], e.rec['SettleWinEnd'], e.rec['PackMax'], e.rec['PackMin'], this.state.srec['CalFactor'], 
               this.state.srec['TareWeight'], e.rec['PackWeight'], e.rec['WeightPassed'], e.rec['WeighWinStart'], e.rec['WeighWinEnd'], new Uint64LE(e.rec['PackTime']));
+          }*/
+          /*console.log('Histogram Buffer',e)
+          if(cnt != 0){
+            this.lg.current.pushWeight(e.rec['HistogramPacks'].slice(0-cnt))
           }
-          // console.log('Histogram Buffer',e)
-          //if(cnt != 0){
-          //  this.lg.current.pushWeight(e.rec['HistogramPacks'].slice(0-cnt))
-          //}
-            //this.setState({init:true})
+            this.setState({init:true})*/
         }else if(e.type == 7){
           // console.log('Histogram Batch?', e)
           if(this.btc.current){
@@ -1972,7 +1971,6 @@ class LandingPage extends React.Component{
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
         this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-      
       }else if(n == 'deleteBatch'){
         var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PLANBATCHDELETE']
         var pkt = rpc[1].map(function (r) {
@@ -2094,6 +2092,22 @@ class LandingPage extends React.Component{
       
       }else if(n == 'restoreDefault'){
         var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_RESTORE']
+        var pkt = rpc[1].map(function (r) {
+          if(!isNaN(r)){
+            return r
+          }else{
+            if(isNaN(v)){
+              return 0
+            }else{
+              return parseInt(v)
+            }
+          }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      
+      }else if(n == 'factoryReset'){
+        var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_RESET']
         var pkt = rpc[1].map(function (r) {
           if(!isNaN(r)){
             return r
@@ -2423,6 +2437,7 @@ class LandingPage extends React.Component{
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
       this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
     }
+    this.setState({confirmPressed:0})
   }
   calWeightCancelSend(){
     if(this.state.connected){
@@ -2604,7 +2619,6 @@ class LandingPage extends React.Component{
       this.msgm.current.show('Access Denied');
       this.chBut.current.tEnd();
     }
-    
   }
   checkWeightSend(cw,mv){
     var buf = Buffer.alloc(8)
@@ -2681,11 +2695,11 @@ class LandingPage extends React.Component{
   }
   exportVmap(){
     fileDownload(JSON.stringify(this.state.custMap),'custMap.json')//socket.emit('downloadJSON')
+    //fileDownload(JSON.stringify(this.state.custMap),'custMap.csv')
   }
   /**** Update Translations****/
 
   getData(){
-    // console.log('get Batches')
    this.props.soc.emit('getBatches') 
   }
   resetVmap(){
@@ -2700,9 +2714,11 @@ class LandingPage extends React.Component{
   openUnused(){
     this.unusedModal.current.toggle();
   }
-  forgot(id,ip){
-    //console.log('passReset')
+  forgotPassword(id,ip){
     this.props.soc.emit('passReset',{ip:ip,data:{user:id}})
+  }
+  tryAgain(){
+    this.lgctl.current.login();
   }
   getMMdep(d){
      if(d == 'MaxBeltSpeed'){
@@ -2753,6 +2769,12 @@ class LandingPage extends React.Component{
         {detectors}
       </div>)
   }
+  closeProductMenu(){
+    this.setState({prclosereq:false})
+  }
+  resetCalibration(){
+    this.setState({confirmPressed:1})
+  }
   render(){
     //LandingPage.render
     var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
@@ -2774,7 +2796,6 @@ class LandingPage extends React.Component{
     
     var raptor = <div style={{textAlign:'center'}}><img style={{width:219, marginTop:5, marginBottom:-5}} src={'assets/RaptorLogo.svg'}/></div>;
     var language = this.state.language
-    
     if(this.state.branding == 'FORTRESS'){
       backgroundColor = FORTRESSPURPLE1
       grbrdcolor = '#e1e1e1'
@@ -2870,7 +2891,7 @@ class LandingPage extends React.Component{
 
     if(this.state.srec['SRecordDate']){
         sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
-        <SettingsPageWSB  packSamples={this.state.packSamples} soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+        <SettingsPageWSB  resetCalibration={this.resetCalibration} packSamples={this.state.packSamples} soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.confirmPressed == 1 ? 0 : this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
         <BatchWidget acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
         </div>
@@ -2976,7 +2997,7 @@ class LandingPage extends React.Component{
               ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
-          <MainHistogram weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
+          <MainHistogram sendPacket={this.sendPacket} weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
                     winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.state.buckMin} buckMax={this.state.buckMax}>
           <TrendBar weightPassed={this.state.crec['WeightPassed']} weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} nominal={trendBar[6]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
@@ -2988,10 +3009,10 @@ class LandingPage extends React.Component{
           <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Tare'} onClick={this.tareWeight}/>
           <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
-        <Modal  x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
+        <Modal x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
           <ProductSettings packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
-          submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={()=>this.setState({prclosereq:false})}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
+          submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={this.closeProductMenu}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
           curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
          <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
@@ -3018,7 +3039,6 @@ class LandingPage extends React.Component{
         <Modal ref={this.imgMD}>
         <div style={{height:600}}>
             <button onClick={()=>location.reload()}>Refresh Page</button>
-            <button onClick={()=> window.history.back()}>Go Back</button>
           </div>
           </Modal>
           <PlanBatchStart sendPacket={this.sendPacket} pList={this.state.pList} pNames={this.state.prodNames} ref={this.planStart} plannedBatches={this.state.plannedBatches} startP={this.startSel}/>
@@ -3027,7 +3047,7 @@ class LandingPage extends React.Component{
         <LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
                 accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
-        <AuthfailModal ref={this.am} forgot={this.forgot}/>
+        <AuthfailModal ref={this.am} forgot={this.forgotPassword} tryAgain={this.tryAgain}/>
       <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
             <ProgressModal ref={this.prgmd}/><MessageModal ref={this.msgm}/>
         <LogoutModal ref={this.lgoModal} branding={this.state.branding}/>
@@ -3973,12 +3993,14 @@ class ProductSettings extends React.Component{
     this.onBackup = this.onBackup.bind(this);
     this.copyFromFt = this.copyFromFt.bind(this);
     this.deleteAllProducts = this.deleteAllProducts.bind(this);
+    this.showAlertMessageForProducts = this.showAlertMessageForProducts.bind(this);
     this.advProdMgmt = this.advProdMgmt.bind(this);
     this.copyFromDef = this.copyFromDef.bind(this);
     this.showProdMgmtTooltip = this.showProdMgmtTooltip.bind(this);
     this.stopConfirmed = this.stopConfirmed.bind(this);
     this.msgm = React.createRef();
     this.stopConfirm = React.createRef();
+    this.deleteAllProductsAlert = React.createRef();
     this.prImEx = React.createRef();
     this.pmd = React.createRef();
     this.pmd2 = React.createRef();
@@ -4207,25 +4229,31 @@ class ProductSettings extends React.Component{
       prodEditAcc = true;
     }
     if(prodEditAcc){
-      this.props.sendPacket('switchProd',this.state.selProd)
+      this.props.sendPacket('switchProd',this.state.selProd);
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show('Access Denied');
     }
   }
   selectRunningProd(){
     var prodEditAcc = this.props.level >= this.props.srec['PassAccSelectProduct'];
-    if(this.props.drec['BatchRunning']==1 || this.props.drec['BatchRunning']==2){
-      this.stop();
-    }else{
       if(this.props.srec['PassOn'] == 0){
         prodEditAcc = true;
       }
       if(prodEditAcc){
-        this.props.sendPacket('switchProd',this.state.selProd)
+        if(this.props.drec['BatchRunning']==1 || this.props.drec['BatchRunning']==2){
+          if(this.props.curProd['BatchNumber'] != this.props.prods[this.state.selProd]['BatchNumber'])
+          {
+            this.stop();
+          }
+        }else{
+          //if(this.props.curProd['BatchNumber'] != this.props.prods[this.state.selProd]['BatchNumber'])
+          //{
+            this.props.sendPacket('switchProd',this.state.selProd);
+         // }
+        }
       }else{
-        this.msgm.current.show('Access Denied')
-      }
-    }    
+        this.msgm.current.show('Access Denied');
+      }  
   }
   saveProduct(){
     // console.log('saving ', this.state.selProd)
@@ -4510,6 +4538,7 @@ class ProductSettings extends React.Component{
     if(d == 'MaxBeltSpeed'){
       d = 'MaxBeltSpeed0'
     }
+
     var res = vdefByMac[this.props.mac];
       var pVdef = _pVdef;
       var dec = 0;
@@ -4567,9 +4596,22 @@ class ProductSettings extends React.Component{
    //   this.msgm.current.show('Plug in USB drive and try again')
     }
   }
+  showAlertMessageForProducts(){
+    this.deleteAllProductsAlert.current.show();
+  }
   deleteAllProducts(){
     if((this.props.srec['PassOn'] == 0) || (this.props.level >= 4 )){
+      var self=this;
       this.sendPacket('deleteAll')
+      setTimeout(function (argument) {
+        // body...
+        self.props.sendPacket('getProdList')
+      },300)
+      /*setTimeout(()=>{
+        this.msgm.current.show('Products Deleted Successfully');
+      },2000)*/
+      
+      //this.props.onClose();
     }else{
       this.msgm.current.show('Access Denied')}
   }
@@ -4686,7 +4728,7 @@ class ProductSettings extends React.Component{
       <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
         <div>
         <div style={{display:'inline-block', verticalAlign:'top'}}>
-        <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={'Product Name'} value={rp.name} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
+        <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
         <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={'Select Product'}/>
         <img src='assets/graph.svg' style={{position:'absolute', width:40, left:770, marginTop:15}} onClick={this.toggleGraph}/>
         
@@ -4733,7 +4775,7 @@ class ProductSettings extends React.Component{
                       <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Lo Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackLoLim'], weightUnits)}</div>
                   
                     </div></div>
-                  </React.Fragment>
+                </React.Fragment>
               }
               <div><div style={{width:'53%',display:'inline-block', fontSize:17}}>Weighing Mode</div><div style={{width:'47%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
               <div><div style={{width: this.props.curProd['WeighingMode'] == 1 ? '60%' : '50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
@@ -4842,7 +4884,7 @@ class ProductSettings extends React.Component{
             <CircularButton onClick={this.onBackup} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Backup'}/>
           </div>
           <div>
-            <CircularButton onClick={this.deleteAllProducts} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Delete All'}/>
+            <CircularButton onClick={this.showAlertMessageForProducts} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Delete All'}/>
           </div>
     </div>
 
@@ -4890,6 +4932,7 @@ class ProductSettings extends React.Component{
         <Modal x={true} Style={{width:870, marginTop:50}} ref={this.apmgmt} branding={this.props.branding}>{advProdMgmt}</Modal>
       </Modal>
       <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
+      <AlertModal ref={this.deleteAllProductsAlert} accept={this.deleteAllProducts}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to delete all product records?"}</div></AlertModal>
       <MessageModal ref={this.msgm}/>
     </div>
     //<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'} onClick={this.selectRunningProd}/>
@@ -4901,12 +4944,18 @@ class ProductSelectItem extends React.Component{
     super(props)
     this.confModal = React.createRef();
     this.msgm = React.createRef();
+    this.restoreFactorySettings = React.createRef();
+    this.restoreBaseProduct = React.createRef();
+    this.saveSelectedProduct = React.createRef();
     this.switchProd = this.switchProd.bind(this);
     this.deleteProd = this.deleteProd.bind(this); 
     this.advChanges = this.advChanges.bind(this);
     this.restoreDefault = this.restoreDefault.bind(this);
     this.restoreBackup = this.restoreBackup.bind(this);
     this.backupProduct = this.backupProduct.bind(this);
+    this.restoreDefaultMessage = this.restoreDefaultMessage.bind(this);
+    this.restoreBackupMessage = this.restoreBackupMessage.bind(this);
+    this.backupProductMessage = this.backupProductMessage.bind(this);
   }
   switchProd(){
     var self = this;
@@ -4938,6 +4987,24 @@ class ProductSelectItem extends React.Component{
       }
     },100)
     
+  }
+  restoreDefaultMessage(){
+    var self=this;
+    setTimeout(function(){
+      self.restoreFactorySettings.current.show();
+    }, 150)
+  }
+  restoreBackupMessage(){
+    var self=this;
+    setTimeout(function(){
+      self.restoreBaseProduct.current.show();
+    }, 150)
+  }
+  backupProductMessage(){
+    var self=this;
+    setTimeout(function(){
+      self.saveSelectedProduct.current.show();
+    }, 150)
   }
   restoreDefault(){
     var self = this;
@@ -5001,11 +5068,14 @@ class ProductSelectItem extends React.Component{
         <Modal ref={this.confModal} Style={{color:'#e1e1e1',width:800, maxWidth:800}}>
                <div style={{textAlign:'center'}}>
                <div style={{fontSize:25, padding:10}}>Save and Restore</div>
-               <CircularButton onClick={this.restoreDefault} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to factory settings'}/>
-              <CircularButton onClick={this.restoreBackup} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to base product'}/>
-       <CircularButton onClick={this.backupProduct} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Save selected product to base product'}/>
+               <CircularButton onClick={this.restoreDefaultMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to factory settings'}/>
+               <CircularButton onClick={this.restoreBackupMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to base product'}/>
+               <CircularButton onClick={this.backupProductMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Save selected product to base product'}/>
         </div>
           </Modal>
+        <AlertModal ref={this.restoreFactorySettings} accept={this.restoreDefault}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to restore selected product?"}</div></AlertModal>
+        <AlertModal ref={this.restoreBaseProduct} accept={this.restoreBackup}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to restore selected product?"}</div></AlertModal>
+        <AlertModal ref={this.saveSelectedProduct} accept={this.backupProduct}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to save selected product?"}</div></AlertModal>
         <MessageModal ref={this.msgm}/>
       </div>)
   }
@@ -5240,7 +5310,7 @@ class ProdSettingEdit extends React.Component{
 class SettingsPageWSB extends React.Component{
   constructor(props){
     super(props);
-    this.state = {sel:0, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0,mot:false, showMessage:false}
+    this.state = {sel:0, data:[], path:[],showAccounts:false, cal:false, liveWeight:0, update:true,calib:0,mot:false}
     this.setPath = this.setPath.bind(this);
     this.onHandleClick = this.onHandleClick.bind(this);
     this.backAccount = this.backAccount.bind(this);
@@ -5251,10 +5321,12 @@ class SettingsPageWSB extends React.Component{
     this.updateLiveWeight = this.updateLiveWeight.bind(this);
     this.toggleGraph = this.toggleGraph.bind(this)
     this.sendPacket = this.sendPacket.bind(this);
-    this.showCalibrationSteps = this.showCalibrationSteps.bind(this);
+    this.startCalibration = this.startCalibration.bind(this);
+    this.closeCalibrationWindow = this.closeCalibrationWindow.bind(this);
     this.sd = React.createRef();
     this.pgm = React.createRef();
     this.msgm = React.createRef();
+    this.calibrationModal = React.createRef();
   }
   toggleGraph(){
     this.pgm.current.toggle();
@@ -5339,84 +5411,26 @@ class SettingsPageWSB extends React.Component{
     // getMMdep={this.getMMdep} return this.props.getMMdep(v)
   }
   onCalib(){
+    this.props.onCal()
+  }
+  startCalibration(){
     if((this.props.sysSettings['PassOn'] == 0)||(this.props.level >= this.props.sysSettings['PassAccCalMenu'])){
       if((this.props.dynSettings['BatchRunning'] == 0))
       {
-        this.props.onCal()
-        calibCount = 0;
-        this.showCalibrationSteps();
+        this.calibrationModal.current.show();      
       }else{
-        this.msgm.current.show('Batch needs to be ended');
+        this.msgm.current.show('Batch needs to be ended prior to calibration.');
       }
     }else{
       this.msgm.current.show('Access Denied');
     }
   }
-  showCalibrationSteps(){
-    var calStr = '';
-    if(this.props.calibState == 1 && calibCount!=1){
-      calStr = 'Taring..'
-      calibCount=1;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 2 && calibCount!=2){
-      calStr = 'Place calibration weight on weight conveyor and press Calibrate.'
-      calibCount=2;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 3 && calibCount!=3){
-      calStr = 'Calibrating..'
-      calibCount=3;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 4 && calibCount!=4){
-      calStr = 'Remove weight and press Calibrate to tare.'
-      calibCount=4;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 5 && calibCount!=5){
-      calStr = 'Taring..'
-      calibCount=5;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 6 && calibCount!=6){
-      calStr = 'Calibration Successful.'
-      calibCount=6;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 7 && calibCount!=7){
-      calStr = 'Calibration Failed.'
-      calibCount=7;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 8 && calibCount!=8){
-      calStr = 'Place calibration weight on position 1 and press Calibrate.'
-      calibCount=8;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 9 && calibCount!=9){
-      calStr = 'Calibrating loadcell 1..'
-      calibCount=9;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 10 && calibCount!=10){
-      calStr = 'Place calibration weight on position 2 and press Calibrate.'
-      calibCount=10;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 11 && calibCount!=11){
-      calStr = 'Calibrating loadcell 2..'
-      calibCount=11;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 12 && calibCount!=12){
-      calStr = 'Place calibration weight on position 3 and press Calibrate.'
-      calibCount=12;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 13 && calibCount!=13){
-      calStr = 'Calibrating loadcell 3..'
-      calibCount=13;
-      this.msgm.current.show(calStr);
-    }else if(this.props.calibState == 14 && calibCount!=14){
-      calStr = 'Calibration cancelled.'
-      calibCount=14;
-      this.msgm.current.show(calStr);
-    }
-    
+  closeCalibrationWindow(){
+    this.calibrationModal.current.close(); 
   }
   render(){
     var self = this;
     var weightUnits = this.props.sysSettings['WeightUnits'];
-    var calStr = 'Press calibrate to start calibration. \n Ensure weight conveyor is empty before starting.'
     var calAcc = (this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccCalMenu']);
     var cats = []
     this.props.cvdf[0].params.forEach(function (c,i) {
@@ -5444,15 +5458,9 @@ class SettingsPageWSB extends React.Component{
       <div> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
     }else if(this.state.cal){
-      var calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onCalib} lab={'Calibrate'}/>
+      var calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.startCalibration} lab={'Calibrate'}/>
           </div>
           
-    if((this.props.calibState != 0) && (this.props.calibState != 7) && (this.props.dynSettings['BatchRunning'] == 0)){
-      calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onCalib} lab={'Calibrate'}/>
-                    <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalCancel} lab={'Cancel'}/>
-          </div>
-          
-    }
     var calStuff = (  <div style={{background:'#e1e1e1', padding:10}}>
        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
           
@@ -5465,9 +5473,13 @@ class SettingsPageWSB extends React.Component{
           <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'RawWeight'} vMap={vMapV2['RawWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['RawWeight']['@translations'][this.props.language]['name']} value={this.props.dynSettings['RawWeight']} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['RawWeight']} num={true}/></div>
           <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTare'} vMap={vMapV2['LastCalTare']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['LastCalTare']['@translations'][this.props.language]['name']} value={this.props.sysSettings['LastCalTare'].toFixed(1)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTare']} num={true}/></div>
           </div>
+          {
+            console.log("props all", this.props)
+          }
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.props.sysSettings['CalWeight'], weightUnits)} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
-          <div style={{marginTop:44, fontSize:24, textAlign:'center'}}>{this.props.calibState == 0 ? calStr : this.showCalibrationSteps()}</div>
+          <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'ADCTemp'} vMap={vMapV2['ADCTemp']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ADCTemp']['@translations'][this.props.language]['name']} value={this.props.dynSettings['ADCTemp']+' C'} param={vdefByMac[this.props.mac][1][0]['ADCTemp']} editable={false} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['ADCTemp']['@translations'][this.props.language]['description']}/></div>
+          <div style={{marginTop:44, fontSize:24, textAlign:'center'}}></div>
           {calBut}
           </div>)
       if(this.props.sysSettings['CheckWeigherType'] == 1){
@@ -5501,7 +5513,7 @@ class SettingsPageWSB extends React.Component{
           </div>
         </div>
           
-          <div style={{marginTop:0, fontSize:24, textAlign:'center'}}>{calStr}</div>
+          <div style={{marginTop:0, fontSize:24, textAlign:'center'}}></div>
           {calBut}
           </div>
       }
@@ -5531,11 +5543,14 @@ class SettingsPageWSB extends React.Component{
          </div>
       </React.Fragment>
     }
-
+    var backgroundColor = FORTRESSPURPLE1;
     return <div>
       <table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{ height:525, background:'#e1e1e1', paddingBottom:10}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
       <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
         <PackGraph packSamples={this.props.packSamples} onEdit={this.props.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={0} acc={(this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccAdvSys'])} language={this.props.language} crec={this.props.crec} prec={this.props.prodSettings} srec={this.props.sysSettings}/>
+      </Modal>
+      <Modal x={true} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
+        <CalibrationControl resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationWindow} calibState={this.props.calibState} onCalib={this.onCalib} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
       </Modal>
       <MessageModal ref={this.msgm}/> 
     </div>
@@ -5602,6 +5617,8 @@ class SettingsPage extends React.Component{
     this.submitChange = this.submitChange.bind(this)
     this.submitList = this.submitList.bind(this);
     this.trnsmdl = React.createRef();
+    this.factoryResetMessage = React.createRef();
+    this.systemSettingsOverrides = React.createRef();
     this.translatePopup = this.translatePopup.bind(this);
     this.curtrnChange = this.curtrnChange.bind(this);
     this.submitTooltip = this.submitTooltip.bind(this);
@@ -5609,6 +5626,9 @@ class SettingsPage extends React.Component{
     this.goToShortcut = this.goToShortcut.bind(this);
     this.formatUSB = this.formatUSB.bind(this);
     this.update = this.update.bind(this);
+    this.showSystemSettingOverridesTooltip = this.showSystemSettingOverridesTooltip.bind(this);
+    this.factoryReset = this.factoryReset.bind(this);
+    this.showFactoryResetMessage = this.showFactoryResetMessage.bind(this);
   }
   update(){
     // console.log('update CW Clicked')
@@ -6147,6 +6167,15 @@ class SettingsPage extends React.Component{
   translatePopup(){
     this.trnsmdl.current.toggle();
   }
+  showSystemSettingOverridesTooltip(){
+    this.systemSettingsOverrides.current.show();
+  }
+  showFactoryResetMessage(){
+    this.factoryResetMessage.current.show();
+  }
+  factoryReset(){
+    this.props.sendPacket('factoryReset')
+  }
   render(){
     var self = this;
       var isInt = this.props.int
@@ -6216,7 +6245,6 @@ class SettingsPage extends React.Component{
       len = catList.length;
       nav = nodes;
     }else{
-
       var cat = data[lvl - 1 ][0].cat;
       if(data[lvl-1][0].packGraph){
      //console.log(5143,data[lvl-1])
@@ -6407,14 +6435,23 @@ class SettingsPage extends React.Component{
 
       len = data[lvl - 1 ][0].params.length;
       var ph = ""
-      if((len - lenOffset) > 6){
+      if((len - lenOffset) > 7){
           ph = <div style={{display:'block', width:'100%', height:20}}></div>
           SA = true;
+      }
+      if(pathString=='System/Advanced'){
+        ph = <div style={{display:'block', width:'100%', height:20}}></div>
+        SA = true;
       }
       nav = (
           <div className='setNav' style={{maxHeight:maxHeight}} onScroll={this.handleScroll} id={this.props.Id}>
             {nodes}
             {ph}
+           {pathString=='System/Advanced' && <div style={{marginTop:-20}}>
+             <button className="sItem" onClick={this.showFactoryResetMessage} style={{border:'5px solid red',width:200,height:60}}><p style={{marginTop:-8}}>Factory Reset</p></button>
+             <button className="sItem" onClick={()=>location.reload()} style={{border:'5px solid #818a90',width:200,height:60}}><p style={{marginTop:-8}}>Reconnect</p></button>
+           </div>
+           } 
           </div>)
     }
 
@@ -6444,7 +6481,7 @@ class SettingsPage extends React.Component{
 
     var className = "menuCategory expanded";
     var tstl = {display:'inline-block', textAlign:'center'}
-    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}{label == 'System Setting Overrides' && <img src='assets/help.svg' onClick={this.showSystemSettingOverridesTooltip} style={{position:'absolute', width:30, left:780, backgroundColor:"black", borderRadius:'100%'}}/>}</div></h2></span>)
     if (this.state.font == 1){
         titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
     }else if (this.state.font == 0){
@@ -6452,7 +6489,6 @@ class SettingsPage extends React.Component{
     }
     catList = null;
     //console.log(4713,SA)
-
     return(
       <div className='settingsDiv'>
       <ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
@@ -6468,9 +6504,16 @@ class SettingsPage extends React.Component{
         </ContextMenu>
 
       {trnsmdl}{nav}
-
+     
       </div>
       <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+      <Modal ref={this.systemSettingsOverrides} systemSettingTooltip={'yes'}>
+        <div style={{color:'#e1e1e1', whiteSpace:'break-spaces'}}>
+            <h2 style={{fontSize:20}}>System Settings Overrides</h2>
+            {vdefMapV2['@tooltips']['SystemSettingsOverridesTooltip'][this.props.language]}
+        </div>
+      </Modal>
+      <AlertModal ref={this.factoryResetMessage} accept={this.factoryReset}><div style={{color:"#e1e1e1"}}>{"Are you sure?"}</div></AlertModal>
       </div>
     );
   }
@@ -6943,6 +6986,10 @@ class SettingItem3 extends React.Component{
         d += '0' //this.state.pram[0]['@name'].slice(-1)
         //hack to make it not crash
       }
+      if(d == 'MinBeltSpeed'){
+        d += '0' //this.state.pram[0]['@name'].slice(-1)
+        //hack to make it not crash
+      }
      var res = vdefByMac[this.props.mac];
       var pVdef = _pVdef;
       var dec = 0;
@@ -7213,7 +7260,7 @@ class MultiEditControl extends React.Component{
       
     }
     if(typeof this.props.vMap == 'undefined'){
-      console.log(this.props.param, 5679)
+      //console.log(this.props.param, 5679)
     }
     this.state = ({val:this.props.data.slice(0), changed:false,tlist:tlist,elist:elist,liststring:liststring, mode:0, size:this.props.size,touchActive:false, curtrn:this.props.vMap['@translations'][this.props.language]['name']})
     this.selectChanged = this.selectChanged.bind(this);
@@ -7611,7 +7658,7 @@ class MultiEditControl extends React.Component{
           list = vMapLists[self.props.param[i]['@labels']]
         }
         if(typeof list['english'] == 'undefined'){
-          console.log(self.props.param[i])
+          //console.log(self.props.param[i])
         }
         val = list['english'][d];
         
@@ -7663,7 +7710,7 @@ class MultiEditControl extends React.Component{
       if(iod && i == 1){
         _st.width = 190
       }
-      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val == '0.00 seconds' ? 'Default' : val == '0 mm' ? 'Default' : val == '0.000 x Product Length' ? 'Default' : val}</CustomLabel>)
+      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val == '0.00 seconds' ? 'Default' : val == '0 mm' || val == '0.0 in' ? 'Default' : val == '0.000 x Product Length' ? 'Default' : val}</CustomLabel>)
     })
     
 
@@ -8392,7 +8439,7 @@ class LogInControl2 extends React.Component{
     list.unshift('Not Logged In')
     if(!this.props.isOpen){
 
-      this.setState({val:props.val, list:list})
+      //this.setState({val:props.val, list:list})
     }else{
       ////console.log('this was the issue... why Though?')
       this.setState({list:list})
@@ -9406,7 +9453,7 @@ class MainHistogram extends React.Component{
   if(this.props.connected == false){
     str = 'Not Connected'
   }
-  var  xyplot = <WeightHistogram buckMin={this.props.buckMin} buckMax={this.props.buckMax} buckets={this.props.buckets} bucketSize={this.props.bucketSize} unit={this.props.weightUnits} ref={this.histo} nom={this.props.nominalWeight} stdev={this.props.stdev}/>
+  var  xyplot = <WeightHistogram sendPacket={this.props.sendPacket} buckMin={this.props.buckMin} buckMax={this.props.buckMax} buckets={this.props.buckets} bucketSize={this.props.bucketSize} unit={this.props.weightUnits} ref={this.histo} nom={this.props.nominalWeight} stdev={this.props.stdev}/>
   
 	return	<div style={{background:bg, textAlign:'center', position:'relative'}}>
  		<div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
@@ -9733,8 +9780,6 @@ class WeightHistogram extends React.Component{
       return  {x:d.x,y:d.y,label:d.y, xOffset:-15, yOffset:0, size:0.5, labelAnchorX:lax, style:{fill:'#888', fontSize:14}}
     })
 
-
-
     return <XYPlot xDomain={this.state.range} yDomain={[0,max*1.1]} height={317} width={540} margin={{left:50,right:0,bottom:50,top:65}}>
      <XAxis tickFormat={val => roundTo(val*factors[u],sigfigs[u])} tickTotal={10} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
      <YAxis tickFormat={val => Math.round(val) === val ? val : ""} hideTicks={max<1} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
@@ -9793,9 +9838,9 @@ class BatchHistogram extends React.Component{
     <div style={{marginBottom:10, textAlign:'center'}}>{'Batch Histogram'}
     </div>
     <XYPlot xDomain={[0,this.state.bucketNum]} height={180} width={width} margin={{left:50,right:20,bottom:50,top:50}}>
-         <XAxis tickFormat={val => ToFixed(val*factors[u],sigfigs[u])} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
-     <YAxis tickFormat={val => Math.round(val) === val ? val : ""} hideTicks={max<1} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
-  <VerticalRectSeries data={data} color={'darkturquoise'}/>
+      <XAxis tickFormat={val => ToFixed(val*factors[u],sigfigs[u])} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
+      <YAxis tickFormat={val => Math.round(val) === val ? val : ""} hideTicks={max<1} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
+    <VerticalRectSeries data={data} color={'darkturquoise'}/>
       </XYPlot>
       </div>
   }
@@ -11960,7 +12005,7 @@ class CheckWeightControl extends React.Component{
         <div style={{background:'#e1e1e1', padding:5, height:400}}>
        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Check Weight'}</div></h2></span>
        <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Check Weight'} value={cw} editable={false} onEdit={this.sendPacket} num={true}/></div>
-       <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Measured Value'} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={{'@name':'checkweightmeasure'}} num={true}/></div>
+       <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Measured Value'} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={{'@name':'checkweightmeasure'}} tooltip={vdefMapV2['@tooltips']['MeasuredValue'][this.props.language]} num={true}/></div>
         <div style={{marginTop:140}}>
         <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.cancelCW} lab={'Cancel'}/>
         {
@@ -11971,6 +12016,81 @@ class CheckWeightControl extends React.Component{
         }
         
         </div>
+        </div>
+    </div>
+  }
+}
+
+class CalibrationControl extends React.Component{
+  constructor(props){
+    super(props)
+    this.endProcess  = this.endProcess.bind(this);
+  }
+  endProcess(){
+    this.props.resetCalibration();
+    this.props.closeCalibrationWindow();
+  }
+  render(){
+    var calStr = 'Press calibrate to start calibration. \n Ensure weight conveyor is empty before starting.'
+    var calibPicture;
+    if(this.props.calibState == 1){
+      calStr = 'Taring..'
+    }else if(this.props.calibState == 2){
+      calStr = 'Place calibration weight on weight conveyor and press Calibrate.'
+    }else if(this.props.calibState == 3){
+      calStr = 'Calibrating..'
+    }else if(this.props.calibState == 4){
+      calStr = 'Remove weight and press Calibrate to tare.'
+    }else if(this.props.calibState == 5){
+      calStr = 'Taring..'
+    }else if(this.props.calibState == 6){
+      calStr = 'Calibration Successful.'
+    }else if(this.props.calibState == 7){
+      calStr = 'Calibration Failed.'
+    }else if(this.props.calibState == 8){
+      calStr = 'Place calibration weight on position 1 and press Calibrate.'
+      calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
+    }else if(this.props.calibState == 9){
+      calStr = 'Calibrating loadcell 1..'
+    }else if(this.props.calibState == 10){
+      calStr = 'Place calibration weight on position 2 and press Calibrate.'
+      calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
+    }else if(this.props.calibState == 11){
+      calStr = 'Calibrating loadcell 2..'
+    }else if(this.props.calibState == 12){
+      calStr = 'Place calibration weight on position 3 and press Calibrate.'
+      calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
+    }else if(this.props.calibState == 13){
+      calStr = 'Calibrating loadcell 3..'
+    }else if(this.props.calibState == 14){
+      calStr = 'Calibration cancelled.'
+    }
+    var calBut = <div style={{textAlign:'center'}}>
+          <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalib} lab={'Calibrate'}/>
+          </div>
+          
+    if((this.props.calibState != 0) && (this.props.calibState != 7) && (this.props.dynSettings == 0)&&(this.props.calibState != 6)){
+      calBut = <div style={{textAlign:'center'}}>
+            <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalib} lab={'Calibrate'}/>
+            <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalCancel}lab={'Cancel'}/>
+          </div>        
+    }
+    if(this.props.calibState == 6){
+      calBut = <div style={{textAlign:'center'}}>
+          <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.endProcess} lab={'Confirm'}/>
+        </div>      
+    }
+    return <div>
+        <div style={{background:'#e1e1e1', padding:5, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 430 : 250}}>
+          <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibration Process'}</div></h2></span>
+
+          <div style={{marginTop: this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 20 : 50}}>
+              <div style={{fontSize:24, textAlign:'center'}}>
+                {calibPicture}
+                {calStr}
+              </div>
+                {calBut}
+          </div>
         </div>
     </div>
   }

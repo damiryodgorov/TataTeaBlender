@@ -9264,7 +9264,7 @@
       "@translations": {
         "english": {
           "name": "Weight Average Mode",
-          "description": "Determines the method of selecting the best samples used to calculate weight."
+          "description": "The method of selecting the weight samples used to calculate settled weight."
         },
         "korean": {
           "name": "Weight Average Mode",
@@ -10164,7 +10164,7 @@
       "@translations": {
         "english": {
           "name": "Check Weight Timeout",
-          "description": "The time allowed to pass a check weight after it is initiated."
+          "description": "The time allowed to pass a check weight pack before it will fault."
         },
         "korean": {
           "name": "Check Weight Timeout",
@@ -10840,7 +10840,7 @@
       "@translations": {
         "english": {
           "name": "Motor Control",
-          "description": "Enables checkweigher motor control. Uses PL71 SD041 board."
+          "description": "Enables motor control for motor connected to PL71 on SD041 board."
         },
         "korean": {
           "name": "Motor Control",
@@ -10892,7 +10892,7 @@
       "@translations": {
         "english": {
           "name": "Motor Control",
-          "description": "Enables checkweigher motor control. Uses PL71 SD041 board."
+          "description": "Enables motor control for motor connected to PL72 on SD041 board."
         },
         "korean": {
           "name": "Motor Control",
@@ -10944,7 +10944,7 @@
       "@translations": {
         "english": {
           "name": "Motor Control",
-          "description": "Enables checkweigher motor control. Uses PL71 SD041 board."
+          "description": "Enables motor control for motor connected to PL73 on SD041 board."
         },
         "korean": {
           "name": "Motor Control",
@@ -10996,7 +10996,7 @@
       "@translations": {
         "english": {
           "name": "Motor Control",
-          "description": "Enables checkweigher motor control. Uses PL71 SD041 board."
+          "description": "Enables motor control for motor connected to PL74 on SD041 board."
         },
         "korean": {
           "name": "Motor Control",
@@ -11048,7 +11048,7 @@
       "@translations": {
         "english": {
           "name": "Resolution per pulses",
-          "description": "Enables checkweigher motor control. Uses PL71 SD041 board."
+          "description": "If MD200 Controller Type is selected, this value is the encoder pulses per revolution of the motor.\n\nIf the PF4M Controller Type is selected, this value is the encoder pulses per revolution of the roller."
         },
         "korean": {
           "name": "Resolution per pulses",
@@ -11672,7 +11672,7 @@
       "@translations": {
         "english": {
           "name": "Direction",
-          "description": "The movement direction of the conveyor."
+          "description": "The rotation direction of motor."
         },
         "korean": {
           "name": "Direction",
@@ -11724,7 +11724,7 @@
       "@translations": {
         "english": {
           "name": "Direction",
-          "description": "The movement direction of the conveyor."
+          "description": "The rotation direction of motor."
         },
         "korean": {
           "name": "Direction",
@@ -11776,7 +11776,7 @@
       "@translations": {
         "english": {
           "name": "Direction",
-          "description": "The movement direction of the conveyor."
+          "description": "The rotation direction of motor."
         },
         "korean": {
           "name": "Direction",
@@ -11828,7 +11828,7 @@
       "@translations": {
         "english": {
           "name": "Direction",
-          "description": "The movement direction of the conveyor."
+          "description": "The rotation direction of motor."
         },
         "korean": {
           "name": "Direction",
@@ -11880,7 +11880,7 @@
       "@translations": {
         "english": {
           "name": "Motor Poles",
-          "description": "The number of set poles per motor."
+          "description": "The number of poles for motor 1. Contact Fortress Technology before changing."
         },
         "korean": {
           "name": "Conversion",
@@ -11932,7 +11932,7 @@
       "@translations": {
         "english": {
           "name": "Motor Poles",
-          "description": "The number of set poles per motor."
+          "description": "The number of poles for motor 2. Contact Fortress Technology before changing."
         },
         "korean": {
           "name": "Conversion",
@@ -11984,7 +11984,7 @@
       "@translations": {
         "english": {
           "name": "Motor Poles",
-          "description": "The number of set poles per motor."
+          "description": "The number of poles for motor 3. Contact Fortress Technology before changing."
         },
         "korean": {
           "name": "Conversion",
@@ -12036,7 +12036,7 @@
       "@translations": {
         "english": {
           "name": "Motor Poles",
-          "description": "The number of set poles per motor."
+          "description": "The number of poles for motor 4. Contact Fortress Technology before changing."
         },
         "korean": {
           "name": "Conversion",
@@ -12504,7 +12504,7 @@
       "@translations": {
         "english": {
           "name": "Maximum Current",
-          "description": "The maximum current for motor 1."
+          "description": "This is the maximum current for motor 1."
         },
         "korean": {
           "name": "Maximum Current",
@@ -12556,7 +12556,7 @@
       "@translations": {
         "english": {
           "name": "Maximum Current",
-          "description": "The maximum current for motor 2."
+          "description": "This is the maximum current for motor 2."
         },
         "korean": {
           "name": "Maximum Current",
@@ -12608,7 +12608,7 @@
       "@translations": {
         "english": {
           "name": "Maximum Current",
-          "description": "The maximum current for motor 3."
+          "description": "This is the maximum current for motor 3."
         },
         "korean": {
           "name": "Maximum Current",
@@ -12660,7 +12660,7 @@
       "@translations": {
         "english": {
           "name": "Maximum Current",
-          "description": "The maximum current for motor 4."
+          "description": "This is the maximum current for motor 4."
         },
         "korean": {
           "name": "Maximum Current",
@@ -13156,7 +13156,7 @@
       "@translations": {
         "english": {
           "name": "Gear Ratio",
-          "description": "This is the rated gear ratio for the gear box in use. A 1:5 ratio will be expressed as 0.2."
+          "description": "This is the gear box ratio for motor 1. \n\nFor example, a ratio of 1:5 will be expressed as 0.2."
         },
         "korean": {
           "name": "Gear Ratio",
@@ -13208,7 +13208,7 @@
       "@translations": {
         "english": {
           "name": "Gear Ratio",
-          "description": "This is the rated gear ratio for the gear box in use. A 1:5 ratio will be expressed as 0.2."
+          "description": "This is the gear box ratio for motor 2. \n\nFor example, a ratio of 1:5 will be expressed as 0.2."
         },
         "korean": {
           "name": "Gear Ratio",
@@ -13260,7 +13260,7 @@
       "@translations": {
         "english": {
           "name": "Gear Ratio",
-          "description": "This is the rated gear ratio for the gear box in use. A 1:5 ratio will be expressed as 0.2."
+          "description": "This is the gear box ratio for motor 3. \n\nFor example, a ratio of 1:5 will be expressed as 0.2."
         },
         "korean": {
           "name": "Gear Ratio",
@@ -13312,7 +13312,7 @@
       "@translations": {
         "english": {
           "name": "Gear Ratio",
-          "description": "This is the rated gear ratio for the gear box in use. A 1:5 ratio will be expressed as 0.2."
+          "description": "This is the gear box ratio for motor 4. \n\nFor example, a ratio of 1:5 will be expressed as 0.2."
         },
         "korean": {
           "name": "Gear Ratio",
@@ -13364,7 +13364,7 @@
       "@translations": {
         "english": {
           "name": "Pulley Ratio",
-          "description": "This is the ratio of the pulley in use. A ratio of 2:1 will be expressed as 2."
+          "description": "This is the pulley ratio for motor 1.\n\nFor example, a ratio of 2:1 will be expressed as 2."
         },
         "korean": {
           "name": "Pulley Ratio",
@@ -13416,7 +13416,7 @@
       "@translations": {
         "english": {
           "name": "Pulley Ratio",
-          "description": "This is the ratio of the pulley in use. A ratio of 2:1 will be expressed as 2."
+          "description": "This is the pulley ratio for motor 2.\n\nFor example, a ratio of 2:1 will be expressed as 2."
         },
         "korean": {
           "name": "Pulley Ratio",
@@ -13468,7 +13468,7 @@
       "@translations": {
         "english": {
           "name": "Pulley Ratio",
-          "description": "This is the ratio of the pulley in use. A ratio of 2:1 will be expressed as 2."
+          "description": "This is the pulley ratio for motor 3.\n\nFor example, a ratio of 2:1 will be expressed as 2."
         },
         "korean": {
           "name": "Pulley Ratio",
@@ -13520,7 +13520,7 @@
       "@translations": {
         "english": {
           "name": "Pulley Ratio",
-          "description": "This is the ratio of the pulley in use. A ratio of 2:1 will be expressed as 2."
+          "description": "This is the pulley ratio for motor 4.\n\nFor example, a ratio of 2:1 will be expressed as 2."
         },
         "korean": {
           "name": "Pulley Ratio",
@@ -13572,7 +13572,7 @@
       "@translations": {
         "english": {
           "name": "Roller Diameter",
-          "description": "This is the measured diameter of the drive roller used in the conveyor."
+          "description": "This is the diameter of the drive roller or sprocket."
         },
         "korean": {
           "name": "Roller Diameter",
@@ -13624,7 +13624,7 @@
       "@translations": {
         "english": {
           "name": "Roller Diameter",
-          "description": "This is the measured diameter of the drive roller used in the conveyor."
+          "description": "This is the diameter of the drive roller or sprocket."
         },
         "korean": {
           "name": "Roller Diameter",
@@ -13676,7 +13676,7 @@
       "@translations": {
         "english": {
           "name": "Roller Diameter",
-          "description": "This is the measured diameter of the drive roller used in the conveyor."
+          "description": "This is the diameter of the drive roller or sprocket."
         },
         "korean": {
           "name": "Roller Diameter",
@@ -13728,7 +13728,7 @@
       "@translations": {
         "english": {
           "name": "Roller Diameter",
-          "description": "This is the measured diameter of the drive roller used in the conveyor."
+          "description": "This is the diameter of the drive roller or sprocket."
         },
         "korean": {
           "name": "Roller Diameter",
@@ -13936,7 +13936,7 @@
       "@translations": {
         "english": {
           "name": "Batch Mode",
-          "description": ""
+          "description": "Auto - Batch will automatically be generated on start.\n\nPlanned - A Planned Batch must be created before starting. \n\nManual - Batch info must be manually entered on start."
         },
         "korean": {
           "name": "Batch Mode",
@@ -14092,7 +14092,7 @@
       "@translations": {
         "english": {
           "name": "Low Limit",
-          "description": "The lower limit for inclusion in the feedback loop.\n\nWithin the limit, the weight will be used for the feedback mechanism; outside will not."
+          "description": "The lower limit for inclusion in the feedback loop."
         },
         "korean": {
           "name": "Feedback Low Limit",
@@ -14144,7 +14144,7 @@
       "@translations": {
         "english": {
           "name": "Feedback Threshold",
-          "description": "The threshold outside of the target weight which a feedback signal will be sent to the filler."
+          "description": "The deadzone around the target weight where a feedback signal is not required."
         },
         "korean": {
           "name": "Feedback Dead Zone",
@@ -14196,7 +14196,7 @@
       "@translations": {
         "english": {
           "name": "Correction Rate",
-          "description": "In width mode, 1 second of signal pulse will tell the filler to adjust by the set amount.\n\nIn pulse mode, each pulse will tell the filler to adjust by the set amount."
+          "description": "Width Mode - 1 second of signal pulse will tell the filler to adjust by this amount.\n\nPulse Mode - each pulse will tell the filler to adjust by this amount."
         },
         "korean": {
           "name": "Feedback Correction Rate",
@@ -14352,7 +14352,7 @@
       "@translations": {
         "english": {
           "name": "Mode",
-          "description": "When off, no feedback occurs.\n\nWidth mode will send a single feedback signal pulse with the duration based on the correction rate and the required adjustment.\n\nPulse mode will send a series of pulses based on the correction rate and the required adjustment."
+          "description": "Off - no feedback control.\n\nWidth - sends a feedback pulse where the duration is based on the correction rate and the required adjustment.\n\nPulse - sends a series of pulses based on the correction rate and the required adjustment."
         },
         "korean": {
           "name": "Feedback Mode",
@@ -16086,7 +16086,7 @@
       "@translations": {
         "english": {
           "name": "After-pack Tare Delay",
-          "description": "For after-pack mode, a tare will be attempted after the set amount after each pack.\n\nFor continuous mode, a tare will be attempted after the set amount after the last tare or pack."
+          "description": "If a tare is required after a pack, the system will wait this amount of time."
         },
         "korean": {
           "name": "AutoTareDelay",
@@ -16142,7 +16142,7 @@
       "@translations": {
         "english": {
           "name": "Continuous Tare Delay",
-          "description": "For after-pack mode, a tare will be attempted after the set amount after each pack.\n\nFor continuous mode, a tare will be attempted after the set amount after the last tare or pack."
+          "description": "A tare will be attempted this long after the last tare."
         },
         "korean": {
           "name": "Continuous Tare Delay",
@@ -16302,7 +16302,7 @@
       "@translations": {
         "english": {
           "name": "Max Tare Change",
-          "description": "This is the maximum allowed difference between the current and the previous tare points, outside of which the tare will fail."
+          "description": "This is the maximum allowed difference between the current and the previous tare points, outside of which the tare will not complete."
         },
         "korean": {
           "name": "Max Tare Change",
@@ -16354,7 +16354,7 @@
       "@translations": {
         "english": {
           "name": "Settle Weight",
-          "description": "This is the maximum allowable variation of the samples within the Settle Duration to get a valid weight reading."
+          "description": "All weight samples within the Settle Duration must be within this value to get a valid weight reading."
         },
         "korean": {
           "name": "Settle Weight",
@@ -16406,7 +16406,7 @@
       "@translations": {
         "english": {
           "name": "Auto Tare",
-          "description": "\"Off\" will deactivate auto-tare.\n\n\"After Pack\" will trigger a tare after each pack.\n\n\"Continuous\" will constantly trigger a tare after a set interval."
+          "description": "Off - Auto-taring deactivated.\n\nAfter Pack - Triggers a tare after each pack.\n\nContinuous - Triggers a tare after a set interval."
         },
         "korean": {
           "name": "Auto Tare",
@@ -17041,7 +17041,7 @@
       "@translations": {
         "english": {
           "name": "Reject Duration Offset",
-          "description": "The adjustment to the reject duration for the main reject device in encoder pulses. A negative value will decrease the duration of the reject."
+          "description": "Adjustment to the main reject duration. A positive value will cause the duration to be longer."
         },
         "korean": {
           "name": "Reject Duration Fudge Factor",
@@ -17093,7 +17093,7 @@
       "@translations": {
         "english": {
           "name": "Alternate Reject Distance Offset",
-          "description": "The adjustment to the expected reject position for the alternate reject device in encoder pulses. A negative value will cause a reject to happen earlier."
+          "description": "Adjustment to the alternate reject timing. A negative value will cause a reject to happen earlier."
         },
         "korean": {
           "name": "Alternate Reject Fudge Factor",
@@ -17145,7 +17145,7 @@
       "@translations": {
         "english": {
           "name": "Alternate Reject Duration Offset",
-          "description": "The adjustment to the reject duration for the alternate reject device in encoder pulses. A negative value will decrease the duration of the reject."
+          "description": "Adjustment to the main reject duration. A positive value will cause the duration to be longer."
         },
         "korean": {
           "name": "Alternate Reject Duration Fudge Factor",
@@ -17249,7 +17249,7 @@
       "@translations": {
         "english": {
           "name": "MAV Table",
-          "description": "The table used when in Maximum Allowable Variation (MAV) Weighing Mode."
+          "description": "The table used to determine Underweight Limit when in Maximum Allowable Variation (MAV) Weighing Mode."
         },
         "korean": {
           "name": "MAV Table",
@@ -17305,7 +17305,7 @@
       "@translations": {
         "english": {
           "name": "Overide T1 and T2 Limits",
-          "description": "The table used when in Maximum Allowable Variation (MAV) Weighing Mode."
+          "description": "Ability to manually enter values for T1 and T2 Limits."
         },
         "korean": {
           "name": "MAV Table",
@@ -17361,7 +17361,7 @@
       "@translations": {
         "english": {
           "name": "Allowed T1-T2 Percentage",
-          "description": "The table used when in Maximum Allowable Variation (MAV) Weighing Mode."
+          "description": "Percentage of good packs allowed to be between T1 and T2."
         },
         "korean": {
           "name": "MAV Table",
@@ -17417,7 +17417,7 @@
       "@translations": {
         "english": {
           "name": "T2 Limit",
-          "description": "The table used when in Maximum Allowable Variation (MAV) Weighing Mode."
+          "description": "This is the acceptable weight tolerance below the nominal weight."
         },
         "korean": {
           "name": "MAV Table",
@@ -17889,7 +17889,7 @@
       "@translations": {
         "english": {
           "name": "Length Units ",
-          "description": "This setting will determine the units of measure as well as set the belt speed units.  \"Metric\" will give distances in millimetres and belt speed in Meters per Minute.  \"Imperial\" will give distances in inches and  belt speed in feet per minute."
+          "description": "Metric - mm, M/min\n\nImperial - in, ft/min"
         },
         "korean": {
           "name": "단위 ",
@@ -18409,7 +18409,7 @@
       "@translations": {
         "english": {
           "name": "Reject Bin Door Time",
-          "description": "Time allowed in seconds for the bin door to remain open before the fault or warning occurs."
+          "description": "Time allowed in seconds for a reject bin door to remain open before the fault or warning occurs."
         },
         "korean": {
           "name": "리젝트 보관함 오픈시간",
@@ -18461,7 +18461,7 @@
       "@translations": {
         "english": {
           "name": "Clear Time",
-          "description": "Amount of time a fault will stay cleared if the fault source still present. "
+          "description": "Amount of time a fault will stay cleared if the fault source is still present."
         },
         "korean": {
           "name": "폴트 클리어 시간",
@@ -18669,7 +18669,7 @@
       "@translations": {
         "english": {
           "name": "Excess Reject Time",
-          "description": "Allotted amount of time during which the set amount of rejected packs will cause an excess reject fault or warning."
+          "description": "System will fault if set number of rejects happen within this time."
         },
         "korean": {
           "name": "초과 리젝트 시간",
@@ -20182,7 +20182,7 @@
       "@translations": {
         "english": {
           "name": "Tachometer 1",
-          "description": "Tachometer 1 Input.  This input is limited to inputs that have encoder hardware"
+          "description": "Encoder signal for motor 1. Must use PL16, PL17, PL18, or PL19 as inputs."
         },
         "korean": {
           "name": "타코미터",
@@ -20239,7 +20239,7 @@
       "@translations": {
         "english": {
           "name": "Tachometer 2",
-          "description": "Tachometer 2 Input.  This input is limited to inputs that have encoder hardware"
+          "description": "Encoder signal for motor 2. Must use PL16, PL17, PL18, or PL19 as inputs."
         },
         "korean": {
           "name": "타코미터",
@@ -20296,7 +20296,7 @@
       "@translations": {
         "english": {
           "name": "Tachometer 3",
-          "description": "Tachometer 3 Input.  This input is limited to inputs that have encoder hardware"
+          "description": "Encoder signal for motor 3. Must use PL16, PL17, PL18, or PL19 as inputs."
         },
         "korean": {
           "name": "타코미터",
@@ -20353,7 +20353,7 @@
       "@translations": {
         "english": {
           "name": "Tachometer 4",
-          "description": "Tachometer 4 Input.  This input is limited to inputs that have encoder hardware"
+          "description": "Encoder signal for motor 4. Must use PL16, PL17, PL18, or PL19 as inputs."
         },
         "korean": {
           "name": "타코미터",
@@ -20466,7 +20466,7 @@
       "@translations": {
         "english": {
           "name": "Weight Photoeye",
-          "description": "Input source for photo-eye before the weight conveyor. Select polarity so it is low by default and high when a pack passes."
+          "description": "Input source for photo eye before the weigh conveyor. Should be low by default."
         },
         "korean": {
           "name": "포토아이",
@@ -20805,7 +20805,7 @@
       "@translations": {
         "english": {
           "name": "Exit Photoeye",
-          "description": "Input source for photo-eye at end of conveyor. Set polarity to low by default."
+          "description": "Input source for photo eye at exit of checkweigher system. Should be low by default."
         },
         "korean": {
           "name": "리젝트 아이",
@@ -20975,7 +20975,7 @@
       "@translations": {
         "english": {
           "name": "Air Pressure",
-          "description": "Input source for sensor detecting air pressure. Set polarity to high when air is present."
+          "description": "Input source for sensor detecting air pressure. Should be high when air is present."
         },
         "korean": {
           "name": "공기압",
@@ -21031,7 +21031,7 @@
       "@translations": {
         "english": {
           "name": "Reject Latch Reset",
-          "description": "Input source to clear the reject latch. Set polarity to low by default."
+          "description": "Input source to clear the reject latch. Should be low by default."
         },
         "korean": {
           "name": "리젝트 래치",
@@ -21144,7 +21144,7 @@
       "@translations": {
         "english": {
           "name": "Bin Full",
-          "description": "Input source for sensor to indicate if the reject bin is full. Set polarity to low by default."
+          "description": "Input source for sensor to indicate if the reject bin is full. Should be low by default."
         },
         "korean": {
           "name": "보관함 용량초과",
@@ -21314,7 +21314,7 @@
       "@translations": {
         "english": {
           "name": "Reject Position 1",
-          "description": "Input source for sensor to indicate if a pack has been rejected. Set polarity to low by default."
+          "description": "Input source for sensor to indicate if reject device is in home position. Should be high when reject is in home position."
         },
         "korean": {
           "name": "리젝트 컨펌",
@@ -21371,7 +21371,7 @@
       "@translations": {
         "english": {
           "name": "Reject Position 2",
-          "description": "Input source for sensor to indicate if the reject device has returned to its default position. Set polarity to low by default."
+          "description": "Input source for sensor to indicate if reject device is in reject position. Should be low when reject is in home position."
         },
         "korean": {
           "name": "리젝트 리턴",
@@ -21428,7 +21428,7 @@
       "@translations": {
         "english": {
           "name": "Reject Confirm 1",
-          "description": "Input source for sensor to indicate if the reject device has returned to its default position. Set polarity to low by default."
+          "description": "Input source to indicate if a pack has been rejected properly into reject bin 1. Should be low by default."
         },
         "korean": {
           "name": "리젝트 리턴",
@@ -21485,7 +21485,7 @@
       "@translations": {
         "english": {
           "name": "Reject Confirm 2",
-          "description": "Input source for sensor to indicate if the reject device has returned to its default position. Set polarity to low by default."
+          "description": "Input source to indicate if a pack has been rejected properly into reject bin 2. Should be low by default."
         },
         "korean": {
           "name": "리젝트 리턴",
@@ -21598,7 +21598,7 @@
       "@translations": {
         "english": {
           "name": "Door 1 Open",
-          "description": "Input source for sensor to indicate if reject bin door 1 is open. Set polarity to low by default."
+          "description": "Input source for sensor to indicate if reject bin door 1 is open. Should be low by default."
         },
         "korean": {
           "name": "문 1 열림",
@@ -21711,7 +21711,7 @@
       "@translations": {
         "english": {
           "name": "Door 2 Open",
-          "description": "Input source for sensor to indicate if reject bin door 2 is open. Set polarity to low by default."
+          "description": "Input source for sensor to indicate if reject bin door 2 is open. Should be low by default."
         },
         "korean": {
           "name": "문 2 열림",
@@ -21824,7 +21824,7 @@
       "@translations": {
         "english": {
           "name": "Clear Faults",
-          "description": "Input source used to clear faults. Set polarity to low by default - high signal will clear faults. "
+          "description": "Input source used to clear faults. Should be low by default - high signal will clear faults. "
         },
         "korean": {
           "name": "폴트 클리어",
@@ -21937,7 +21937,7 @@
       "@translations": {
         "english": {
           "name": "Clear Warnings",
-          "description": "Input source used to clear warnings. Set polarity to low by default - high signal will clear warnings."
+          "description": "Input source used to clear warnings. Should be low by default - high signal will clear warnings."
         },
         "korean": {
           "name": "경고 클리어",
@@ -22898,7 +22898,7 @@
       "@translations": {
         "english": {
           "name": "Product Backup",
-          "description": "Input source for sensor indicating product is backed up. Set polarity to low by default."
+          "description": "Input source for sensor indicating product is backed up. Should be low by default."
         },
         "korean": {
           "name": "품목 백업",
@@ -22955,7 +22955,7 @@
       "@translations": {
         "english": {
           "name": "E-Stop",
-          "description": "Input source used to monitor the safety circuit status. This should be high when the safety circuit is triggered."
+          "description": "Input source used to monitor the e-stop status. This should be high when the e-stop is triggered."
         },
         "korean": {
           "name": "비상정지",
@@ -23125,7 +23125,7 @@
       "@translations": {
         "english": {
           "name": "CRO",
-          "description": "Link CRO button with connection and select polarity."
+          "description": "Input source to indicate if CRO mode is being used. Should be high be default."
         },
         "korean": {
           "name": "CRO",
@@ -23182,7 +23182,7 @@
       "@translations": {
         "english": {
           "name": "Start Batch",
-          "description": ""
+          "description": "Input source used to start batch. Should be low by default."
         },
         "korean": {
           "name": "Start Batch",
@@ -23239,7 +23239,7 @@
       "@translations": {
         "english": {
           "name": "Pause Batch",
-          "description": ""
+          "description": "Input source used to pause batch. Should be low by default."
         },
         "korean": {
           "name": "Pause Batch",
@@ -23296,7 +23296,7 @@
       "@translations": {
         "english": {
           "name": "End Batch",
-          "description": ""
+          "description": "Input source used to end batch. Should be low by default."
         },
         "korean": {
           "name": "End Batch",
@@ -23353,7 +23353,7 @@
       "@translations": {
         "english": {
           "name": "Metal Detector Fault",
-          "description": ""
+          "description": "Input source used to indicate there is a fault on the metal detector system. Should be low by default."
         },
         "korean": {
           "name": "Metal Detector Fault",
@@ -23410,7 +23410,7 @@
       "@translations": {
         "english": {
           "name": "Metal Detector Reject",
-          "description": ""
+          "description": "Input source used to indicate a pack is a metal reject. Should be low by default."
         },
         "korean": {
           "name": "Metal Detector Reject",
@@ -25979,7 +25979,7 @@
       "@translations": {
         "english": {
           "name": "Belt Speed",
-          "description": "This fault or warning occurs when the belt speed is outside the set belt speed tolerance for more than the belt speed fault time. "
+          "description": "This fault or warning occurs when the belt speed is outside the set Belt Speed Fault Tolerance for more than the Belt Speed Fault Time. "
         },
         "korean": {
           "name": "Belt Speed",
@@ -26031,7 +26031,7 @@
       "@translations": {
         "english": {
           "name": "Belt Speed Fault Tolerance",
-          "description": "If the belt speed reading is within the set tolerance, no fault or warning will occur."
+          "description": "If the belt speed reading surpasses the set tolerance, a fault or warning will occur."
         },
         "korean": {
           "name": "Belt Speed Fault Tolerance",
@@ -26083,7 +26083,7 @@
       "@translations": {
         "english": {
           "name": "Belt Speed Fault Time",
-          "description": "This is the amount of time the belt speed reading can be outside the belt speed tolerance range. "
+          "description": "This is the amount of time the belt speed reading can be outside the Belt Speed Fault Tolerance range before faulting. "
         },
         "korean": {
           "name": "Belt Speed Fault Time",
@@ -26343,7 +26343,7 @@
       "@translations": {
         "english": {
           "name": "Reject Setup",
-          "description": ""
+          "description": "This fault or warning occurs when the main reject setup cannot reject properly."
         },
         "korean": {
           "name": "Reject Setup",
@@ -26395,7 +26395,7 @@
       "@translations": {
         "english": {
           "name": "Alternate Reject Setup",
-          "description": ""
+          "description": "This fault or warning occurs when the alternate reject setup cannot reject properly."
         },
         "korean": {
           "name": "Alternate Reject Setup",
@@ -27019,7 +27019,7 @@
       "@translations": {
         "english": {
           "name": "Photoeye Block",
-          "description": "This fault or warning occurs photo eye has been or is blocked for longer than the photo eye block time. "
+          "description": "This fault or warning occurs if the Weigh Photo Eye is blocked for longer than the Photo Eye Block Time. "
         },
         "korean": {
           "name": "포토아이 차단 폴트",
@@ -27227,7 +27227,7 @@
       "@translations": {
         "english": {
           "name": "Reject Bin Door",
-          "description": "This fault or warning occurs when the reject bin door is open for longer than the reject bin door time."
+          "description": "This fault or warning occurs when the reject bin door is open for longer than the Reject Bin Door Time."
         },
         "korean": {
           "name": "리젝트 보관함 용량초과 폴트",
@@ -27487,7 +27487,7 @@
       "@translations": {
         "english": {
           "name": "Excess Rejects",
-          "description": "This fault or warning occurs when the number of rejects exceeds the set excess rejects value within the excess reject time. "
+          "description": "This fault or warning occurs when the number of rejects reaches the set limit within the set time. "
         },
         "korean": {
           "name": "리젝트 초과 폴트",
@@ -27799,7 +27799,7 @@
       "@translations": {
         "english": {
           "name": "Pack Memory Overflow",
-          "description": "This fault or warning occurs when the there is too many reject packs that have yet to be physically rejected."
+          "description": "This fault or warning occurs when there are too many packs in the check weigher system."
         },
         "korean": {
           "name": "리젝트 메모리 폴트",
@@ -27903,7 +27903,7 @@
       "@translations": {
         "english": {
           "name": "Reject Exit",
-          "description": "This fault or warning occurs when a pack that should have been rejected has passed through the exit photo eye."
+          "description": "This fault or warning occurs when a reject pack passes through the Exit Photo Eye."
         },
         "korean": {
           "name": "리젝트 퇴장 폴트",
@@ -28215,7 +28215,7 @@
       "@translations": {
         "english": {
           "name": "Missing Pack",
-          "description": "This fault or warning occurs when a pack that should have passed through the exit eye did not."
+          "description": "This fault or warning occurs when an expected pack does not exit the system."
         },
         "korean": {
           "name": "퇴장 팩 없음 폴트",
@@ -28319,7 +28319,7 @@
       "@translations": {
         "english": {
           "name": "New Pack",
-          "description": "This fault or warning occurs when a pack passes through the exit eye without passing through the infeed eye."
+          "description": "This fault or warning occurs when an unexpected pack leaves the system."
         },
         "korean": {
           "name": "퇴장 새 팩 폴트",
@@ -28735,7 +28735,7 @@
       "@translations": {
         "english": {
           "name": "Internal USB",
-          "description": "This fault or warning occurs when the internal USB on the DSP board has an issue and may need to be replaced."
+          "description": "This fault or warning occurs when the internal USB on the controller has an issue and may need to be replaced."
         },
         "korean": {
           "name": "내부 Usb 폴트",
@@ -28839,7 +28839,7 @@
       "@translations": {
         "english": {
           "name": "IO Board",
-          "description": "This fault or warning occurs when the io board fails."
+          "description": "This fault or warning occurs when the IO Board is not connected."
         },
         "korean": {
           "name": "IO 보드 폴트",
@@ -29047,7 +29047,7 @@
       "@translations": {
         "english": {
           "name": "Signal",
-          "description": "This fault occurs when there is no signal being received from the weight loadcell."
+          "description": "This fault occurs when there is no signal being received from the SD040 board."
         },
         "korean": {
           "name": "시그널 폴트",
@@ -29151,7 +29151,7 @@
       "@translations": {
         "english": {
           "name": "E-Stop",
-          "description": "This fault or warning when the E-stop safety circuit is activated."
+          "description": "This fault or warning when the E-Stop input is active."
         },
         "korean": {
           "name": "E-Stop Fault",
@@ -29255,7 +29255,7 @@
       "@translations": {
         "english": {
           "name": "Product Backup",
-          "description": "This fault or warning occurs when the product backup sensor has been blocked for the set eye block time."
+          "description": "This fault or warning occurs when the product backup photo eye has been blocked for the set Eye Block Distance."
         },
         "korean": {
           "name": "Product Backup fault",
@@ -29359,7 +29359,7 @@
       "@translations": {
         "english": {
           "name": "Calibrate",
-          "description": "This fault or warning occurs when a calibration fails."
+          "description": "This fault or warning occurs when a calibration fails or times out."
         },
         "korean": {
           "name": "Calibrate Fault",
@@ -29567,7 +29567,7 @@
       "@translations": {
         "english": {
           "name": "Conveyor Fault 1",
-          "description": "This fault or warning occurs when the conveyor connected to the motor control 1 malfunctions."
+          "description": "This fault or warning occurs when the conveyor connected to the Motor Controller 1 malfunctions."
         },
         "korean": {
           "name": "Conveyor Fault 1",
@@ -29671,7 +29671,7 @@
       "@translations": {
         "english": {
           "name": "Conveyor Fault 2",
-          "description": "This fault or warning occurs when the conveyor connected to the motor control 2 malfunctions."
+          "description": "This fault or warning occurs when the conveyor connected to the Motor Controller 2 malfunctions."
         },
         "korean": {
           "name": "Conveyor Fault 2",
@@ -29775,7 +29775,7 @@
       "@translations": {
         "english": {
           "name": "Conveyor Fault 3",
-          "description": "This fault or warning occurs when the conveyor connected to the motor control 3 malfunctions."
+          "description": "This fault or warning occurs when the conveyor connected to the Motor Controller 3 malfunctions."
         },
         "korean": {
           "name": "Conveyor Fault 3",
@@ -29879,7 +29879,7 @@
       "@translations": {
         "english": {
           "name": "Conveyor Fault 4",
-          "description": "This fault or warning occurs when the conveyor connected to the motor control 4 malfunctions."
+          "description": "This fault or warning occurs when the conveyor connected to the Motor Controller 4 malfunctions."
         },
         "korean": {
           "name": "Conveyor Fault 4",
@@ -29983,7 +29983,7 @@
       "@translations": {
         "english": {
           "name": "CRO",
-          "description": "This fault or warning occurs when conveyor-run-only mode is enabled."
+          "description": "This fault or warning occurs when Conveyor-Run-Only mode is enabled."
         },
         "korean": {
           "name": "CRO",
@@ -30087,7 +30087,7 @@
       "@translations": {
         "english": {
           "name": "Check Weight",
-          "description": "This fault or warning occurs when the check weight times out."
+          "description": "This fault or warning occurs when the check weight request times out."
         },
         "korean": {
           "name": "Check Weight",
@@ -30191,7 +30191,7 @@
       "@translations": {
         "english": {
           "name": "Tare",
-          "description": "This fault or warning occurs when the checkweigher has not been tared for the tare fault time."
+          "description": "This fault or warning occurs when the checkweigher has not been tared for the Tare Fault Time."
         },
         "korean": {
           "name": "Tare Fault",
@@ -31139,7 +31139,7 @@
       "@translations": {
         "english": {
           "name": "Password On",
-          "description": ""
+          "description": "Turn on to enable password protection."
         },
         "korean": {
           "name": "비밀번호 액티브",
@@ -31243,7 +31243,7 @@
       "@translations": {
         "english": {
           "name": "Weight Photoeye Distance",
-          "description": "Distance of the Weight Photoeye from the beginning of the Weight Table.  Positive numbers are offset towards the in-feed of the system, where negative would be if the offset is towards the out-feed of the system"
+          "description": "Distance of the Weight Photoeye from the beginning of the Weight Table.  Positive numbers are offset towards the out-feed of the system, where negative would be if the offset is towards the in-feed of the system"
         },
         "korean": {
           "name": "포토아이 거리",
@@ -31886,7 +31886,7 @@
       "@translations": {
         "english": {
           "name": "NTP Server IP",
-          "description": ""
+          "description": "IP address of local NTP server to be used."
         },
         "korean": {
           "name": "NTP 서버 IP",
@@ -31991,7 +31991,7 @@
       "@translations": {
         "english": {
           "name": "NTP Server",
-          "description": ""
+          "description": "Off - Does not connect to any NTP server.\n\nInternet - Will try to connect to an NTP server on the internet. Requires internet access.\n\nLocal - Will try to connect to an NTP server on the local network. Must specify NTP Server IP."
         },
         "korean": {
           "name": "NTP 서버",
@@ -32575,7 +32575,7 @@
       "@translations": {
         "english": {
           "name": "Excess Rejects Packs",
-          "description": "Number of rejected packs in the allotted time that will cause an excess reject fault or warning."
+          "description": "System will fault if this many rejects happen within the set time."
         },
         "korean": {
           "name": "Excess Rejects Packs",
@@ -42717,7 +42717,7 @@
       "@translations": {
         "english": {
           "name": "Calibrate Settle Duration",
-          "description": "This is the settle duration required for calibration."
+          "description": "This is the minimum time required for each weighing step of the calibration."
         },
         "korean": {
           "name": "Calibrate Settle Duration",
@@ -49370,7 +49370,7 @@
       "@translations": {
         "english": {
           "name": "Mean Weight Pack Count",
-          "description": "The number of packs used to determine the mean weight"
+          "description": "The number of packs used to determine the mean weight."
         },
         "korean": {
           "name": "Mean Weight Pack Count",
@@ -49480,7 +49480,7 @@
       "@translations": {
         "english": {
           "name": "Mean Weight Upper Tolerance",
-          "description": "The maximum allowed drift above the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift above the nominal weight for the Mean Weight Average."
         },
         "korean": {
           "name": "Mean Weight Upper Tolerance",
@@ -49533,47 +49533,47 @@
       "@translations": {
         "english": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         },
         "korean": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         },
         "spanish": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         },
         "french": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         },
         "portuguese": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         },
         "italian": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         },
         "russian": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         },
         "polish": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         },
         "chinese": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         },
         "german": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         },
         "turkish": {
           "name": "Mean Weight Lower Tolerance",
-          "description": "The maximum allowed drift below the nominal weight for the mean weight average"
+          "description": "The maximum allowed drift below the nominal weight for the Mean Weight Average."
         }
       },
       "children": [],
@@ -49586,7 +49586,7 @@
       "@translations": {
         "english": {
           "name": "VFD Max RPM",
-          "description": "The maximum allowed rpm for the motor. This will determine the maximum belt speed."
+          "description": "The maximum allowed rpm for the VFD."
         },
         "korean": {
           "name": "VFD Max RPM",
@@ -49630,6 +49630,10 @@
         }
       },
       "children": [],
+      "display":[
+        "(function(e){return e == 1})",
+        "VfdType0"
+      ],
       "@labels": [
         "PassAccDoor"
       ]
@@ -49683,6 +49687,10 @@
         }
       },
       "children": [],
+      "display":[
+        "(function(e){return e == 1})",
+        "VfdType1"
+      ],
       "@labels": [
         "PassAccDoor"
       ]
@@ -49736,6 +49744,10 @@
         }
       },
       "children": [],
+      "display":[
+        "(function(e){return e == 1})",
+        "VfdType2"
+      ],
       "@labels": [
         "PassAccDoor"
       ]
@@ -49789,6 +49801,466 @@
         }
       },
       "children": [],
+      "display":[
+        "(function(e){return e == 1})",
+        "VfdType3"
+      ],
+      "@labels": [
+        "PassAccDoor"
+      ]
+    },
+    "VfdMaxFreq0": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "korean": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "spanish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "french": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "italian": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "russian": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "polish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "chinese": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "german": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "turkish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display":[
+        "(function(e){return e == 2})",
+        "VfdType0"
+      ],
+      "@labels": [
+        "PassAccDoor"
+      ]
+    },
+    "VfdMaxFreq1": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "korean": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "spanish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "french": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "italian": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "russian": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "polish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "chinese": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "german": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "turkish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display":[
+        "(function(e){return e == 2})",
+        "VfdType1"
+      ],
+      "@labels": [
+        "PassAccDoor"
+      ]
+    },
+    "VfdMaxFreq2": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "korean": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "spanish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "french": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "italian": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "russian": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "polish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "chinese": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "german": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "turkish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display":[
+        "(function(e){return e == 2})",
+        "VfdType2"
+      ],
+      "@labels": [
+        "PassAccDoor"
+      ]
+    },
+    "VfdMaxFreq3": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "korean": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "spanish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "french": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "italian": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "russian": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "polish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "chinese": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "german": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        },
+        "turkish": {
+          "name": "VFD Max Frequency",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display":[
+        "(function(e){return e == 2})",
+        "VfdType3"
+      ],
+      "@labels": [
+        "PassAccDoor"
+      ]
+    },
+    "VfdMinFreq0": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "korean": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "spanish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "french": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "italian": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "russian": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "polish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "chinese": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "german": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "turkish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display":[
+        "(function(e){return e == 2})",
+        "VfdType0"
+      ],
+      "@labels": [
+        "PassAccDoor"
+      ]
+    },
+    "VfdMinFreq1": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "korean": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "spanish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "french": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "italian": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "russian": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "polish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "chinese": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "german": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "turkish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display":[
+        "(function(e){return e == 2})",
+        "VfdType1"
+      ],
+      "@labels": [
+        "PassAccDoor"
+      ]
+    },
+    "VfdMinFreq2": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "korean": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "spanish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "french": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "italian": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "russian": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "polish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "chinese": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "german": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "turkish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display":[
+        "(function(e){return e == 2})",
+        "VfdType2"
+      ],
+      "@labels": [
+        "PassAccDoor"
+      ]
+    },
+    "VfdMinFreq3": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "korean": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "spanish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "french": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "italian": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "russian": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "polish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "chinese": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "german": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        },
+        "turkish": {
+          "name": "VFD Min Frequency",
+          "description": ""
+        }
+      },
+      "children": [],
+      "display":[
+        "(function(e){return e == 2})",
+        "VfdType3"
+      ],
       "@labels": [
         "PassAccDoor"
       ]
@@ -49851,7 +50323,7 @@
       "@translations": {
         "english": {
           "name": "Tare Settle Duration",
-          "description": "The duration of samples used to calculate tare point."
+          "description": "The duration of settled weight samples required to calculate tare point."
         },
         "korean": {
           "name": "Tare Settle Duration",
@@ -50222,7 +50694,7 @@
       "@translations": {
         "english": {
           "name": "T1 Limit",
-          "description": ""
+          "description": "Packs below this limit but above T2 Limit will count towards the Allowed T1-T2 Percentage."
         },
         "korean": {
           "name": "T1 Limit",
@@ -50650,7 +51122,7 @@
       "@translations": {
         "english": {
           "name": "Sample Reset Time",
-          "description": "The time after which the sample statistics will be reset."
+          "description": "The sample statistics will be reset after this time."
         },
         "korean": {
           "name": "샘플 리셋 시간",
@@ -50807,47 +51279,47 @@
     "@OUT_IOS_PL30_1A2": {
       "@translations": {
         "english": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "french": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "german": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         }
       },
@@ -50864,47 +51336,47 @@
     "@OUT_PL30_1A2": {
       "@translations": {
         "english": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": "Reject Main - Main Reject output\nFault - Fault Output\nLight Red - Red Light for Banner Control\n"
         },
         "korean": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "french": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "german": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         }
       },
@@ -50921,47 +51393,47 @@
     "@OUT_IOS_PL30_3A4": {
       "@translations": {
         "english": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "french": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "german": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         }
       },
@@ -50978,47 +51450,47 @@
     "@OUT_PL30_3A4": {
       "@translations": {
         "english": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": "Link Output connected to ISO PL30 3A4 and select polarity."
         },
         "korean": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "french": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "german": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL30 3A4",
+          "name": "PL30 3A4",
           "description": ""
         }
       },
@@ -51035,47 +51507,47 @@
     "@OUT_IOS_PL30_5A6": {
       "@translations": {
         "english": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "french": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "german": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         }
       },
@@ -51092,47 +51564,47 @@
     "@OUT_PL30_5A6": {
       "@translations": {
         "english": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": "Link Output connected to ISO PL30 5A6 and select polarity."
         },
         "korean": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "french": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "german": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL30 5A6",
+          "name": "PL30 5A6",
           "description": ""
         }
       },
@@ -51149,47 +51621,47 @@
     "@OUT_IOS_PL30_7A8": {
       "@translations": {
         "english": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "french": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "german": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         }
       },
@@ -51206,47 +51678,47 @@
     "@OUT_PL30_7A8": {
       "@translations": {
         "english": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": "Link Output connected to ISO PL30 7A8 and select polarity."
         },
         "korean": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "french": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "german": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL30 7A8",
+          "name": "PL30 7A8",
           "description": ""
         }
       },
@@ -51263,47 +51735,47 @@
     "@OUT_IOS_PL31_1A2": {
       "@translations": {
         "english": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "french": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "german": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         }
       },
@@ -51320,47 +51792,47 @@
     "@OUT_PL31_1A2": {
       "@translations": {
         "english": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": "Link Output connected to ISO PL31 1A2 and select polarity."
         },
         "korean": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "french": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "german": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL31 1A2",
+          "name": "PL31 1A2",
           "description": ""
         }
       },
@@ -51377,47 +51849,47 @@
     "@OUT_IOS_PL31_3A4": {
       "@translations": {
         "english": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "french": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "german": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         }
       },
@@ -51434,47 +51906,47 @@
     "@OUT_PL31_3A4": {
       "@translations": {
         "english": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": "Link Output connected to ISO PL31 3A4 and select polarity."
         },
         "korean": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "french": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "german": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL31 3A4",
+          "name": "PL31 3A4",
           "description": ""
         }
       },
@@ -51491,47 +51963,47 @@
     "@OUT_IOS_PL31_5A6": {
       "@translations": {
         "english": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "french": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "german": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         }
       },
@@ -51548,47 +52020,47 @@
     "@OUT_PL31_5A6": {
       "@translations": {
         "english": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": "Link Output connected to ISO PL31 5A6 and select polarity."
         },
         "korean": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "french": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "german": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL31 5A6",
+          "name": "PL31 5A6",
           "description": ""
         }
       },
@@ -51605,47 +52077,47 @@
     "@OUT_IOS_PL31_7A8": {
       "@translations": {
         "english": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "french": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "german": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         }
       },
@@ -51662,47 +52134,47 @@
     "@OUT_PL31_7A8": {
       "@translations": {
         "english": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": "Link Output connected to ISO PL31 7A8 and select polarity."
         },
         "korean": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "french": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "german": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL31 7A8",
+          "name": "PL31 7A8",
           "description": ""
         }
       },
@@ -51719,47 +52191,47 @@
     "@OUT_IOS_PL40_01": {
       "@translations": {
         "english": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "french": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "german": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         }
       },
@@ -51776,47 +52248,47 @@
     "@OUT_PL40_01": {
       "@translations": {
         "english": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": "Link Output connected to ISO PL40 01 and select polarity."
         },
         "korean": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "french": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "german": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL40 01",
+          "name": "PL40 01",
           "description": ""
         }
       },
@@ -51833,47 +52305,47 @@
     "@OUT_IOS_PL40_02": {
       "@translations": {
         "english": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "french": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "german": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         }
       },
@@ -51890,47 +52362,47 @@
     "@OUT_PL40_02": {
       "@translations": {
         "english": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": "Link Output connected to ISO PL40 02 and select polarity."
         },
         "korean": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "french": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "german": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL40 02",
+          "name": "PL40 02",
           "description": ""
         }
       },
@@ -51947,47 +52419,47 @@
     "@OUT_IOS_PL40_03": {
       "@translations": {
         "english": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "french": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "german": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         }
       },
@@ -52004,47 +52476,47 @@
     "@OUT_PL40_03": {
       "@translations": {
         "english": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": "Link Output connected to ISO PL40 03 and select polarity."
         },
         "korean": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "french": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "german": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL40 03",
+          "name": "PL40 03",
           "description": ""
         }
       },
@@ -52061,47 +52533,47 @@
     "@OUT_IOS_PL40_04": {
       "@translations": {
         "english": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "french": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "german": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         }
       },
@@ -52118,47 +52590,47 @@
     "@OUT_PL40_04": {
       "@translations": {
         "english": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": "Link Output connected to ISO PL40 04 and select polarity."
         },
         "korean": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "french": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "german": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL40 04",
+          "name": "PL40 04",
           "description": ""
         }
       },
@@ -52175,47 +52647,47 @@
     "OUT_PHY_IOS_PL30_1A2": {
       "@translations": {
         "english": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "korean": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "spanish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "french": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "portuguese": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "italian": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "german": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "turkish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "russian": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "polish": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         },
         "chinese": {
-          "name": "IOS PL30 1A2",
+          "name": "PL30 1A2",
           "description": ""
         }
       },
@@ -52502,6 +52974,32 @@
       "russian": "Selected Product is the current product being editted. \n Base Product is the user-saved default product. \n Factory product is the default product as setup by the manufacturer.",
       "polish": "Selected Product is the current product being editted. \n Base Product is the user-saved default product. \n Factory product is the default product as setup by the manufacturer.",
       "chinese": "Selected Product is the current product being editted. \n Base Product is the user-saved default product. \n Factory product is the default product as setup by the manufacturer."
+    },
+    "SystemSettingsOverridesTooltip": {
+      "english": "These menus provide per-product adjustments for Fault and Reject settings.",
+      "korean":  "These menus provide per-product adjustments for Fault and Reject settings.",
+      "spanish": "These menus provide per-product adjustments for Fault and Reject settings.",
+      "french":  "These menus provide per-product adjustments for Fault and Reject settings.",
+      "portuguese":  "These menus provide per-product adjustments for Fault and Reject settings.",
+      "italian":  "These menus provide per-product adjustments for Fault and Reject settings.",
+      "german": "These menus provide per-product adjustments for Fault and Reject settings.",
+      "turkish": "These menus provide per-product adjustments for Fault and Reject settings.",
+      "russian": "These menus provide per-product adjustments for Fault and Reject settings.",
+      "polish":  "These menus provide per-product adjustments for Fault and Reject settings.",
+      "chinese": "These menus provide per-product adjustments for Fault and Reject settings."
+    },
+    "MeasuredValue": {
+      "english": "Enter the product weight as measured on a static scale.",
+      "korean": "Enter the product weight as measured on a static scale.",
+      "spanish": "Enter the product weight as measured on a static scale.",
+      "french": "Enter the product weight as measured on a static scale.",
+      "portuguese": "Enter the product weight as measured on a static scale.",
+      "italian": "Enter the product weight as measured on a static scale.",
+      "german": "Enter the product weight as measured on a static scale.",
+      "turkish": "Enter the product weight as measured on a static scale.",
+      "russian": "Enter the product weight as measured on a static scale.",
+      "polish": "Enter the product weight as measured on a static scale.",
+      "chinese": "Enter the product weight as measured on a static scale."
     }
   },
   "@netpollsmap": {
@@ -55277,6 +55775,16 @@
                                   "type": 0,
                                   "val": "VfdTemp0",
                                   "acc": 3
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdMinFreq0",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdMaxFreq0",
+                                  "acc": 0
                                 }
                               ]
                             },
@@ -55361,6 +55869,16 @@
                                   "type": 0,
                                   "val": "VfdTemp1",
                                   "acc": 3
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdMinFreq1",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdMaxFreq1",
+                                  "acc": 0
                                 }
                               ]
                             },
@@ -55445,6 +55963,16 @@
                                   "type": 0,
                                   "val": "VfdTemp2",
                                   "acc": 3
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdMinFreq2",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdMaxFreq2",
+                                  "acc": 0
                                 }
                               ]
                             },
@@ -55529,6 +56057,16 @@
                                   "type": 0,
                                   "val": "VfdTemp3",
                                   "acc": 3
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdMinFreq3",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "VfdMaxFreq3",
+                                  "acc": 0
                                 }
                               ]
                             },
@@ -55666,11 +56204,6 @@
                                 {
                                   "type": 0,
                                   "val": "LoadcellNoise",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "ADCTemp",
                                   "acc": 0
                                 }
                               ]
@@ -58770,7 +59303,7 @@
         "Feedback Down",
         "Batch Running",
         "Safety Circuit",
-        "Can Start Belts"
+        "Healthy"
       ],
       "korean": [
         "none",
@@ -62731,69 +63264,58 @@
     "VfdType": {
       "english": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"        
       ],
       "korean": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"
       ],
       "spanish": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"
       ],
       "french": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"
       ],
       "portuguese": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"
       ],
       "italian": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"
       ],
       "german": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"
       ],
       "polish": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"
       ],
       "turkish": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"
       ],
       "russian": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"
       ],
       "chinese": [
         "None",
-        "Md50",
-        "Pf4m",
-        "Md200"
+        "Md200",
+        "Pf4m"
       ]
     },
     "VfdDir": {

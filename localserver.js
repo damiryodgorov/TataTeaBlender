@@ -254,8 +254,10 @@ function initSocks(arr,cw, cb){
   udpCon('init',cw, cb)
 }
 function getPlannedBatches(ip,callback,failed){
-  var tclient = tftp.createClient({host:ip, retries:10, timeout:1000})
+  /*var tclient = tftp.createClient({host:ip, retries:10, timeout:1000})
+  //var get = tclient.createGetStream('../../../../../tmp/batches/Planned_batches.json');
   var get = tclient.createGetStream('/Planned_batches.json');
+  //console.log("path of the get ", get);
   var raw = [];
   get.on('data', (chunk)=>{
     raw.push(chunk);
@@ -268,6 +270,10 @@ function getPlannedBatches(ip,callback,failed){
     tclient = null;
     raw = null;
     get = null;
+  })*/
+  fs.readFile('/tmp/batches/Planned_batches.json', (err, buffer)=>{
+    var json = buffer.toString();
+    callback(json);
   })
 }
 
