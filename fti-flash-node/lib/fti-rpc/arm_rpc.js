@@ -4,6 +4,7 @@ var Crc = require('crc');
 var crypto = require('crypto');
 var aesjs = require('aes-js')
 var fs = require('fs');
+//var sizeof = require('object-sizeof');
 //var Sync = require('sync');
 
 const ARM_RPC_PORT = 10002
@@ -13,6 +14,7 @@ const LOCATOR_PORT = 27182
 const ARM_RPC_ECHO 		   =  0
 const ARM_RPC_VERSION 	   =  1
 const ARM_RPC_LCD		   =  2
+const ARM_RPC_KEY_PRESS	   =  2
 const ARM_RPC_SYNC         =  3 // Sync RPC number
 const ARM_RPC_READ         =  4 // read bytes from arm memory
 const ARM_RPC_WRITE        =  5 // write bytes to arm memory
@@ -33,6 +35,8 @@ const ARM_RPC_ERROR = 255
 
 const KEY_FRMW = Buffer.from([0x7E, 0xB2, 0x8A, 0xF9, 0x5F, 0xFB, 0xB9, 0xA7, 0x47, 0x02, 0xC8, 0x3A, 0xCE, 0xF2, 0x35, 0xF7])
 
+var PRESSED_KEY_VALUE;
+
 class ArmRpcError extends Error{}
 class ArmRpcErrorTimeout extends ArmRpcError{}
 class ArmRpcErrorChecksum extends ArmRpcError{}
@@ -43,9 +47,9 @@ class ArmRpcBase{
 		if(!host){
 			return this;
 		}
+		
 		port = port || ARM_RPC_PORT;
 		loc_port = loc_port || 0;
-
 		this.rem_ip = host
 		this.rem_port = port
 		this.loc_port = loc_port
@@ -53,11 +57,10 @@ class ArmRpcBase{
 			console.log(e)
 		}
 		var self = this;
-		this.init_socket()
+		this.init_socket();
 		//Sync(function(){
 			//self.socket = self.init_socket.sync(null);	
 		//})
-		
 	}
 	clearCB(cb,e){
 		this.callBack = null;
@@ -68,9 +71,8 @@ class ArmRpcBase{
 	}
 	onMessage(e){
 		var data = this.verify_rpc_ack(e)
-		this.callBack(data);
-
-		
+		this.callBack(data);		
+		//console.log("e value",e)
 	}
 	init_socket(){
 		/*
@@ -78,6 +80,7 @@ class ArmRpcBase{
         @socket = UDPSocket.new
         @socket.bind('0.0.0.0', @loc_port)
 		*/
+		
 		var self = this;
 		console.log("socket init")
 		if(this.socket){
@@ -96,7 +99,6 @@ class ArmRpcBase{
 			}
 		})
 		this.socket.bind(0,'0.0.0.0');
-
 	}
 
 	rpc(data, time_out, trys){
@@ -132,7 +134,7 @@ class ArmRpcBase{
 
 
 	}
-	packet_for(data, callBack){
+	packet_for(data, callback){
 		if(Array.isArray(data)){
 			data = Buffer.from(Array.prototype.concat.apply([],data));
 		}
@@ -218,6 +220,140 @@ class ArmRpcBase{
 
 		})
 		
+	}
+	armRpcLcdRegister(session_key){
+		var self = this;
+		self.MASTER_KEY = [138, 23, 225,  96, 151, 39,  79,  57, 65, 108, 240, 251, 252, 54, 34,  87];
+		/**Construction of ARPC */
+		var buffy = Buffer.alloc(4);
+		var bufflen = Buffer.alloc(2)
+		bufflen.writeUInt16LE(8,0);
+		buffy.writeUInt8(ARM_RPC_LCD,0);
+		buffy.writeUInt8(0,1);
+		buffy.writeUInt16LE(5000,2);
+		var crcBuff = new Buffer(4)
+		crcBuff.writeUInt32LE(Crc.crc32(buffy));
+		var buff2= Buffer.concat([bufflen, buffy, crcBuff]);
+		var padding = Buffer.alloc(6);
+		var finalPacket = Buffer.concat([buff2, padding]);
+
+		/**Decrypting the SESSION_KEY received from the LocatorData packet */
+		var aes1 = crypto.createDecipheriv('aes-128-ecb', new Buffer(self.MASTER_KEY), "");
+		aes1.setAutoPadding(false);
+		session_key = Buffer.from(session_key);
+		var decryptedKey = aes1.update(session_key.slice(0,session_key.byteLength).toString('binary'),'binary');
+		decryptedKey = Buffer.concat([decryptedKey,aes1.final()]);
+		/**End of Decryption */
+
+		/**Encrypting the packet using the received SESSION KEY from LocatorData packet */
+		var aes2 = crypto.createCipheriv('aes-128-ecb', decryptedKey, "");
+		aes2.setAutoPadding(false);
+		var encrypted = aes2.update(finalPacket);
+		encrypted = Buffer.concat([encrypted,aes2.final()]);
+		/**End of Encryption */
+		
+		/**Sending  UDP payload to the DSP*/
+		//self.socket.send(encrypted,0,encrypted.length,self.rem_port,self.rem_ip)	
+		return encrypted;
+	}
+	armRpcButtonClicked(buttonName, session_key){
+		/**Changing the PRESSED_KEY_VALUE based on the button clicked */
+		if(buttonName == 'f1')
+		{
+			PRESSED_KEY_VALUE = 65;
+		}
+		if(buttonName == 'f2')
+		{
+			PRESSED_KEY_VALUE = 57;
+		}
+		if(buttonName == 'f3')
+		{
+			PRESSED_KEY_VALUE = 51;
+		}
+		if(buttonName == 'f4')
+		{
+			PRESSED_KEY_VALUE = 56;
+		}
+		if(buttonName == 'enterBtn')
+		{
+			PRESSED_KEY_VALUE = 50;
+		}
+		if(buttonName == 'exitBtn')
+		{
+			PRESSED_KEY_VALUE = 49;
+		}
+		if(buttonName == 'menuBtn')
+		{
+			PRESSED_KEY_VALUE = 66;
+		}
+		if(buttonName == 'plusButton')
+		{
+			PRESSED_KEY_VALUE = 67;
+		}
+		if(buttonName == 'minusButton')
+		{
+			PRESSED_KEY_VALUE = 53;
+		}
+		if(buttonName == 'leftArrow')
+		{
+			PRESSED_KEY_VALUE = 54;
+		}
+		if(buttonName == 'rightArrow')
+		{
+			PRESSED_KEY_VALUE = 52;
+		}
+		if(buttonName == 'sensitivityBtn')
+		{
+			PRESSED_KEY_VALUE = 55;
+		}
+		if(buttonName == 'selectProductBtn')
+		{
+			PRESSED_KEY_VALUE = 68;
+		}
+		if(buttonName == 'calibrateBtn')
+		{
+			PRESSED_KEY_VALUE = 35;
+		}
+		if(buttonName == 'testBtn')
+		{
+			PRESSED_KEY_VALUE = 48;
+		}
+		if(buttonName == 'selectUnitBtn')
+		{
+			PRESSED_KEY_VALUE = 42;
+		}
+
+		var self = this;
+		self.MASTER_KEY = [138, 23, 225,  96, 151, 39,  79,  57, 65, 108, 240, 251, 252, 54, 34,  87];
+		/**Construction of ARPC */
+		var buffy = Buffer.alloc(4);
+		var bufflen = Buffer.alloc(2)
+		bufflen.writeUInt16LE(8,0);
+		buffy.writeUInt8(ARM_RPC_KEY_PRESS,0);
+		buffy.writeUInt8(2,1);
+		buffy.writeUInt16LE(PRESSED_KEY_VALUE,2);
+		var crcBuff = new Buffer(4)
+		crcBuff.writeUInt32LE(Crc.crc32(buffy));
+		var buff2= Buffer.concat([bufflen, buffy, crcBuff]);
+		var padding = Buffer.alloc(6);
+		var finalPacket = Buffer.concat([buff2, padding]);
+
+		/**Decrypting the SESSION_KEY received from the LocatorData packet */
+		var aes1 = crypto.createDecipheriv('aes-128-ecb', new Buffer(self.MASTER_KEY), "");
+		aes1.setAutoPadding(false);
+		session_key = Buffer.from(session_key);
+		var decryptedKey = aes1.update(session_key.slice(0,session_key.byteLength).toString('binary'),'binary');
+		decryptedKey = Buffer.concat([decryptedKey,aes1.final()]);
+		/**End of Decryption */
+
+		/**Encrypting the packet using the received SESSION KEY from LocatorData packet */
+		var aes2 = crypto.createCipheriv('aes-128-ecb', decryptedKey, "");
+		aes2.setAutoPadding(false);
+		var encrypted = aes2.update(finalPacket);
+		encrypted = Buffer.concat([encrypted,aes2.final()]);
+		/**End of Encryption */
+
+		return encrypted;
 	}
 	rpc_cb(pkt,callBack){
 		var self = this;
@@ -347,7 +483,7 @@ class ArmRpcBase{
 			var size = 0;
 			var start_addr = 0;
 
-			console.log(res.length)
+			//console.log(res.length)
 			for(var i = 0; i < 1024; i = i+4){
 				console.log(i, res.readUInt32LE(i))
 				if(res.readUInt32LE(i) == vec_end_val){
@@ -478,18 +614,16 @@ class ArmRpc extends ArmRpcBase{
 			}
 
 			var sk = tmp.slice(2, tmp.length);
-
 			var aes = crypto.createDecipheriv('aes-128-ecb', new Buffer(self.KEY), "")
 			aes.setAutoPadding(false);
 			var k = aes.update((msg.slice(2,msg.byteLength)).toString('binary'),'binary');
-			console.log(k.length)
+
 			k = Buffer.concat([k,aes.final()]);
 		//	self.aesk = k;
 			
 			var aesEcb = new aesjs.ModeOfOperation.ecb(self.KEY);
 			var ke = aesEcb.decrypt(msg.slice(2,msg.byteLength));
 			
-
 			var ka = []
 			for(var ko = 0; ko < ke.length; ko++){
 				ka.push(ke.readUInt8(ko))
@@ -505,7 +639,6 @@ class ArmRpc extends ArmRpcBase{
 		}
 		
 	}
-
 	packet_for(data, callBack){
 		
 		var dat = super.packet_for(data);
