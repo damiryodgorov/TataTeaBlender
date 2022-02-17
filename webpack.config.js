@@ -76,11 +76,16 @@ var cw = {
 
 module.exports = {
   entry: {
-    md:'./public/index.js',
+    
     cw:'./public/cw.js',
+    combo:'./public/combo.js',
     if:'./public/iframe.js',
+    stealthMD:'./public/stealthMD.js'
+    /*
+    md:'./public/index.js',
     xray:'./public/xray.js',
-    dual:'./public/dual.js'
+    dual:'./public/dual.js',
+    */
   },
   output: { path: __dirname+ '/public/', filename: '[name].bundle.js' },
   module: {

@@ -1,0 +1,1262 @@
+/*Reset properties*/
+html, body {
+    width : 100%;
+    height: 100%;
+    padding:0;
+    overscroll-behavior: none;
+}
+*{
+    outline:none;
+}
+::-webkit-scrollbar{
+    display: none;
+}
+body{
+    user-select: none;
+    /*  max-width: 1028px;*/
+     /* max-height: 600px;*/
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #fff;
+      overflow: hidden;
+       -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/*Styling the Wrapper*/
+#container{
+    max-width:45%;
+    height: auto;
+    border-radius:10px;
+    margin:0 auto;
+}
+
+/*Styling navigation section*/
+#navigation{
+    width:100%;
+    border-radius:10px;
+    padding:10px;
+    height: 150px;
+    background-color: rgba(46,40,80,255);
+}
+.stealthImage{
+    position: relative;
+    left:40px;
+    height:55px;
+}
+h3{
+    position:relative;
+    color:#fff;
+    font-weight:bold;
+    font-size:28px;
+    left:440px;
+    top:-80px;
+}
+h4{
+    color:#fff;
+    font-weight:bold;
+    font-size:25px;
+}
+.signalScreen{
+    position: relative;
+    max-width:430px;
+    background-color: #000000;
+    height:30px;
+    border-radius:20px;
+    left:180px;
+    top:-90px;
+}
+ul{
+    list-style-type: none;
+    width:100%;
+    margin-left:-34px;
+    text-align: center;
+}
+li{
+    display:inline;
+    float: left;
+    margin:1px;
+}
+.dottedSignal{
+    border: 1px dotted;
+    width:34px;
+    height:20px;
+    border-radius:20px;
+    margin-top: 4px;
+}
+.whiteBar{
+    width:35px;
+    height: 6px;
+    background-color: #fff;
+    margin-right: 30px;
+    margin-top:7px;
+}
+.signalFault{
+    background-color:#000000;
+    width:35px;
+    height:25px;
+    border-radius:20px;
+}
+.signalDetect{
+    background-color:#000000;
+    width:35px;
+    height:25px;
+    border-radius:20px;
+}
+.detection{
+    position: relative;
+    top:-135px;
+    left:25px;
+    max-width: 100px;
+}
+.detectionItems{
+    position: relative;
+    top:-165px;
+    left:18px;
+    max-width: 150px;
+}
+.fault{
+    position: relative;
+    float: right;
+    top:-265px;
+    right:60px;
+    max-width: 100px;
+}
+.faultItems .signalFault{
+    position: relative;
+    float: right;
+    left:5px;
+}
+.faultItems li{
+    position: relative;
+    float: right;
+    width:10px;
+    top:-265px;
+    right: 50px;
+}
+.faultItems .whiteBarDot{
+    position: relative;
+    float: right;
+    width:6px;
+    height: 6px;
+    background-color: #fff;
+    left: 60px;
+    top:10px;
+}
+.faultItems{
+    position: relative;
+    float: right;
+    top:50px;
+    left:0px;
+    max-width: 150px;
+}
+.productScreen{
+    position: relative;
+    max-width:430px;
+    background-color:#fff;
+    height:35px;
+    border-radius:20px;
+    left:180px;
+    top: -170px;
+}
+.productText{
+    position: relative;
+    font-size:25px;
+    color:#151484;
+    left:-60px;
+}
+.signalNormal{
+    background-color:#000000;
+    max-width:35px;
+    height:25px;
+    border-radius:20px;
+    margin-left:170px;
+    margin-top:-48px;
+}
+.signalHigh{
+    background-color:#000000;
+    max-width:35px;
+    height:25px;
+    border-radius:20px;
+    margin-left:300px;
+    margin-top:-50px;
+}
+.normalText{
+    font-size:25px;
+    color:#151484;
+    margin-left:220px;
+    margin-top:-30px;
+}
+.highText{
+    font-size:25px;
+    color:#151484;
+    margin-left:345px;
+    margin-top:-29px;
+}
+.homeButton{
+    position: relative;
+    float:right;
+    top:-310px;
+    left:180px;
+    cursor: pointer;
+    max-width: 50px;
+    max-height: 50px;
+}
+/*Styling the Main Screen section*/
+#screenSection{
+    background-color: rgba(46,40,80,255);
+    width:100%;
+    max-height: 120px;
+    padding:50px 10px;
+    border-radius:10px;
+    margin-top:20px;
+}
+.mainScreen{
+    position: relative;
+    max-width:60%;
+    height:150px;
+    background-color: #83bb43;
+    margin:auto;
+    border-radius:10px;
+    margin-top: -30px;
+    text-align: center;
+    font-size: 28px;
+    font-family: 'Courier New', Courier, monospace;
+}
+table{
+    border-collapse: collapse;
+    width: 30%;
+    margin: 10px auto;
+}
+.row1{
+    position: relative;
+    top: 30px;
+}
+.row2{
+    position: relative;
+    top: 50px;
+}
+.f1Button{
+    position: absolute;
+    height: 70px;
+    margin-top:-170px;
+    margin-left:-10px;
+}
+.f2Button{
+    float: right;
+    height: 70px;
+    position: relative;
+    top: -170px;
+    left:215px;
+}
+.f3Button{
+    position: relative;
+    height: 70px;
+    top:-60px;
+    left:-10px;
+}
+.f4Button{
+    float: right;
+    position: relative;
+    height: 70px;
+    top:-60px;
+    left:330px;
+}
+/*Styling the scroll buttons*/
+#mainSection{
+    max-width:40%;
+    height: 300px;
+    margin:0 auto;
+    position: relative;
+}
+.curvedDiv{
+    position: absolute;
+    top:-38px;
+    left:-150px;
+    z-index: -1;
+    height: 350px;
+    width:600px;
+}
+.circleForButtons{
+ width: 160px;
+ height: 160px;
+ background-color: rgba(46,40,80,255);
+ border:10px solid #fff;
+ border-radius:100%;
+ position: absolute;
+ top:40px;
+ left:115px;
+}
+.plusButton{
+    background-color: rgba(46,40,80,255);
+    border:3px solid #fff;
+    border-radius: 100%;
+    width:70px;
+    height: 70px;
+    position:absolute;
+    top:-30px;
+    left:45px;
+}
+.cross{
+    border:2px solid #fff;
+    width:20px;
+    height: 20px;
+    position:absolute;
+    top:15px;
+    left:7.5px;
+}
+.arrowUp{   
+    width:40px;
+    height: 40px;
+    position:absolute;
+    top:7px;
+    left:12px;
+    background-color: #fff;
+    clip-path: polygon(50% 0%, 0 100%, 100% 100%);
+}
+.leftArrow{
+    background-color: rgba(46,40,80,255);
+    border:3px solid #fff;
+    border-radius: 100%;
+    width:70px;
+    height: 70px;
+    position:absolute;
+    top:40px;
+    left:-35px;
+}
+.arrowRight{   
+    width:40px;
+    height: 40px;
+    position:absolute;
+    top:12px;
+    left:7px;
+    background-color: #fff;
+    clip-path: polygon(100% 100%, 100% 0, 0 50%);
+}
+.minusButton{
+    background-color: rgba(46,40,80,255);
+    border:3px solid #fff;
+    border-radius: 100%;
+    width:70px;
+    height: 70px;
+    position:absolute;
+    top:120px;
+    left:45px;
+}
+.arrowDown{   
+    width:40px;
+    height: 40px;
+    position:absolute;
+    top:16px;
+    left:12px;
+    background-color: #fff;
+    clip-path: polygon(100% 0, 0 0, 50% 100%);
+}
+.minus{
+    border:2px solid #fff;
+    width:20px;
+    height: 20px;
+    position:absolute;
+    top:5px;
+    left:7.5px;
+}
+.rightArrow{
+    background-color: rgba(46,40,80,255);
+    border:3px solid #fff;
+    border-radius: 100%;
+    width:70px;
+    height: 70px;
+    position:absolute;
+    top:40px;
+    right:-35px;;
+}
+.arrowLeft{   
+    width:40px;
+    height: 40px;
+    position:absolute;
+    top:12px;
+    left:18px;
+    background-color: #fff;
+    clip-path: polygon(100% 50%, 0 0, 0 100%);
+}
+/*Right buttons section*/
+#rightSection{
+    max-width: 400px;
+    float: right;
+    margin-top:-290px;
+    margin-right:-198px;
+    position: relative;
+
+}
+.sensitivityBtn{
+    width:220px;
+    height: 60px;
+    background-color: rgba(46,40,80,255);
+    color:#fff;
+    font-size:1.5rem;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border:1px solid #fff;
+    margin-bottom: 5px;
+}
+.circleForButtonRight{
+    clip-path: circle(50% at 50% 50%);
+    background-color: #fff;
+    width:50px;
+    height: 50px;
+    display: inline;
+    position: absolute;
+    left:5px;
+    top:5px;
+}
+.btnText{
+    margin-left: 10px;
+}
+.selectProductBtn{
+    width:220px;
+    height: 60px;
+    background-color: rgba(46,40,80,255);
+    color:#fff;
+    font-size:1.5rem;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border:1px solid #fff;
+    margin-bottom: 5px;
+}
+.circleForButtonRight2{
+    clip-path: circle(50% at 50% 50%);
+    background-color: #fff;
+    width:50px;
+    height: 50px;
+    display: inline;
+    position: absolute;
+    left:5px;
+    top:70px;
+}
+.btnText2{
+    margin-left: 45px;
+}
+.calibrateBtn{
+    width:220px;
+    height: 60px;
+    background-color: rgba(46,40,80,255);
+    color:#fff;
+    font-size:1.5rem;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border:1px solid #fff;
+    margin-bottom: 5px;
+}
+.circleForButtonRight3{
+    clip-path: circle(50% at 50% 50%);
+    background-color: #fff;
+    width:50px;
+    height: 50px;
+    display: inline;
+    position: absolute;
+    left:5px;
+    top:135px;
+}
+.testBtn{
+    width:220px;
+    height: 60px;
+    background-color: rgba(46,40,80,255);
+    color:#fff;
+    font-size:1.5rem;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border:1px solid #fff;
+    margin-bottom: 5px;
+}
+.circleForButtonRight4{
+    clip-path: circle(50% at 50% 50%);
+    background-color: #fff;
+    width:50px;
+    height: 50px;
+    display: inline;
+    position: absolute;
+    left:5px;
+    top:200px;
+}
+.selectUnitBtn{
+    width:220px;
+    height: 60px;
+    background-color: rgba(46,40,80,255);
+    color:#fff;
+    font-size:1.5rem;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border:1px solid #fff;
+}
+.circleForButtonRight5{
+    clip-path: circle(50% at 50% 50%);
+    background-color: #fff;
+    width:50px;
+    height: 50px;
+    display: inline;
+    position: absolute;
+    left:5px;
+    top:265px;
+}
+/*Left buttons section*/
+#leftSection{
+    max-width: 250px;
+    float: left;
+    margin-top:-260px;
+    position: relative;
+}
+.enterBtn{
+    width:175px;
+    height: 60px;
+    background-color: rgba(46,40,80,255);
+    color:#fff;
+    font-size:1.5rem;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+    border:1px solid #fff;
+    margin-bottom: 5px;
+}
+.circleForButtonLeft{
+    clip-path: circle(50% at 50% 50%);
+    background-color: #fff;
+    width:50px;
+    height: 50px;
+    display: inline;
+    position: absolute;
+    left:120px;
+    top:5px;
+}
+.exitBtn{
+    width:220px;
+    height: 60px;
+    background-color: rgba(46,40,80,255);
+    color:#fff;
+    font-size:1.5rem;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+    border:1px solid #fff;
+    margin-bottom: 5px;
+}
+.btnTextLeft{
+    margin-right:30px;
+}
+.circleForButtonLeft2{
+    clip-path: circle(50% at 50% 50%);
+    background-color: #fff;
+    width:50px;
+    height: 50px;
+    display: inline;
+    position: absolute;
+    left:165px;
+    top:70px;
+}
+.menuBtn{
+    width:260px;
+    height: 60px;
+    background-color: rgba(46,40,80,255);
+    color:#fff;
+    font-size:1.5rem;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+    border:1px solid #fff;
+    margin-bottom: 5px;
+}
+.circleForButtonLeft3{
+    clip-path: circle(50% at 50% 50%);
+    background-color: #fff;
+    width:50px;
+    height: 50px;
+    display: inline;
+    position: absolute;
+    left:205px;
+    top:135px;
+}
+/*Styling the CompanyFooter section*/
+.fortressLogoImg{
+    position: relative;
+    top:-30px;
+}
+
+/*Blinking class to make divs blink*/
+@-webkit-keyframes blinker {
+    from {opacity: 1.0;}
+    to {opacity: 0.0;}
+  }
+  .blink{
+    text-decoration: blink;
+	-webkit-animation-name: blinker;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-timing-function:ease-in-out;
+	-webkit-animation-direction: alternate;
+    background-color: green;
+  }
+  .blinkDanger{
+    text-decoration: blink;
+	-webkit-animation-name: blinker;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-timing-function:ease-in-out;
+	-webkit-animation-direction: alternate;
+    background-color: red;
+  }
+  .blinkLetter{
+    text-decoration: blink;
+	-webkit-animation-name: blinker;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-timing-function:ease-in-out;
+	-webkit-animation-direction: alternate;
+    text-decoration: underline;
+  }
+  .LEDSignalGreen{
+      background-color: green;
+  }
+  .LEDSignalRed{
+    background-color: red;
+   }
+/*1366 x 768 px Screen Size*/
+@media only screen and (max-width: 1366px) {
+    /*Styling the Wrapper*/
+    #container{
+        max-width:65%;
+    }
+    .fault{
+        right:30px;
+    }
+    .faultItems li{
+        top:-265px;
+        right: 20px;
+    }
+    .signalHigh{
+        margin-top:-49px;
+    }
+    /*Styling the Main Screen section*/
+    #screenSection{
+        background-color: rgba(46,40,80,255);
+        width:100%;
+        max-height: 120px;
+        padding:30px 10px;
+        border-radius:10px;
+        margin-top:10px;
+        position:relative;
+    }
+    .mainScreen{
+        position: relative;
+        max-width:60%;
+        height:150px;
+        background-color: #83bb43;
+        margin:auto;
+        border-radius:10px;
+        margin-top: -30px;
+        text-align: right;
+        font-size: 28px;
+        font-family: 'Courier New', Courier, monospace;
+    }
+    table{
+        border-collapse: collapse;
+        width: 30%;
+        margin: 10px auto;
+    }
+    .row1{
+        position: absolute;
+        top: 30px;
+        left:25px;
+    }
+    .row2{
+        position: absolute;
+        top: 80px;
+        left:25px;
+    }
+    .f1Button{
+        cursor: pointer;
+        position: absolute;
+        height: 70px;
+        margin-top:-150px;
+        margin-left:-10px;
+    }
+    .f2Button{
+        cursor: pointer;
+        float: right;
+        height: 70px;
+        position: absolute;
+        top: 10px;
+        left:738px;
+    }
+    .f3Button{
+        cursor: pointer;
+        position: absolute;
+        height: 70px;
+        top:100px;
+        left:0px;
+    }
+    .f4Button{
+        cursor: pointer;
+        float: right;
+        position: absolute;
+        height: 70px;
+        top:100px;
+        left:738px;
+    }
+    td{
+        width: 15px;
+    }
+    /*Styling the CompanyFooter section*/
+    .fortressLogoImg{
+        margin-top:-10px;
+    }
+}
+/**under 1000px screen size (Perfect)*/
+@media only screen and (max-width: 900px) {
+    /*Styling the Wrapper*/
+    #container{
+        max-width:95%;
+        margin:0 auto;
+        margin-left: 5px;
+    }
+    /*Styling navigation section*/
+    #navigation{
+        width:100%;
+        height: 120px;
+        background-color: rgba(46,40,80,255);
+    }
+    .stealthImage{
+        position: relative;
+        left:40px;
+        height:35px;
+    }
+    h3{
+        font-size:20px;
+        left:290px;
+        top:-50px;
+    }
+    h4{
+        font-size:20px;
+    }
+    .signalScreen{
+        max-width:250px;
+        height:25px;
+        left:160px;
+        top:-60px;
+    }
+    .dottedSignal{
+        width:18px;
+        height:20px;
+        margin-top: 1.5px;
+    }
+    .whiteBar{
+        width:35px;
+        height: 3px;
+        margin-right: 30px;
+        margin-top:3px;
+    }
+    .signalFault{
+        width:35px;
+        height:18px;
+    }
+    .signalDetect{
+        width:35px;
+        height:18px;
+        margin-top:-5px;
+    }
+    .detection{
+        top:-105px;
+        left:25px;
+        max-width: 50px;
+    }
+    .detectionItems{
+        top:-125px;
+        left:8px;
+        max-width: 150px;
+    }
+    .fault{
+        top:-205px;
+        right:60px;
+        max-width: 100px;
+    }
+    .faultItems li{
+        position: relative;
+        float: right;
+        width:10px;
+        top:-220px;
+        right: 50px;
+    }
+    .faultItems .whiteBarDot{
+        top:5px;
+    }
+    .productScreen{
+        max-width:250px;
+        height:25px;
+        left:160px;
+        top: -125px;
+    }
+    .productText{
+        font-size:18px;
+        left:-100px;
+    }
+    .signalNormal{
+        max-width:35px;
+        height:18px;
+        margin-left:75px;
+        margin-top:-36px;
+    }
+    .signalHigh{
+        max-width:35px;
+        height:18px;
+        margin-left:170px;
+        margin-top:-35px;
+    }
+    .normalText{
+        font-size:18px;
+        margin-left:115px;
+        margin-top:-21px;
+    }
+    .highText{
+        font-size:18px;
+        margin-left:210px;
+        margin-top:-20px;
+    }
+    .homeButton{
+        top:-235px;
+        max-width: 45px;
+        max-height: 45px;
+    }
+    /*Styling the Main Screen section*/
+    #screenSection{
+        max-height: 100px;
+        padding:30px 10px;
+        position: relative;
+    }
+    .mainScreen{
+        max-width:60%;
+        height:100px;
+        margin-top: -20px;
+        font-size: 22px;
+        text-align: right;
+    }
+    table{
+        border-collapse: collapse;
+        width: 30%;
+        margin: 10px auto;
+    }
+    .row1{
+        position: absolute;
+        top: 20px;
+        left:15px;
+    }
+    .row2{
+        position: absolute;
+        top: 50px;
+        left:15px;
+    }
+    td{
+        width: 10px;
+    }
+    .f1Button{
+        position: absolute;
+        top:160px;
+        left:10px;
+        width:80px;
+        height: 45px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+        border:2px solid #fff;
+        border-left:none;
+    }
+    .f1ArrowLeft{
+        width:30px;
+        height: 30px;
+        position:absolute;
+        top:6px;
+        left:45px;
+        background-color: #fff;
+        clip-path: polygon(100% 50%, 0 0, 0 100%);
+    }
+    .f2Button{
+        position: absolute;
+        top: 10px;
+        left:510px;
+        width:80px;
+        height: 45px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+        border:2px solid #fff;
+        border-right:none;
+    }
+    .f2ArrowRight{
+        width:30px;
+        height: 30px;
+        position:absolute;
+        top:6px;
+        left:5px;
+        background-color: #fff;
+        clip-path: polygon(100% 100%, 100% 0, 0 50%);
+    }
+    .f3Button{
+        position: absolute;
+        top:80px;
+        width:80px;
+        height: 45px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+        border:2px solid #fff;
+        border-left:none;
+        outline: none;
+    }
+    .f3ArrowLeft{
+        width:30px;
+        height: 30px;
+        position:absolute;
+        top:6px;
+        left:45px;
+        background-color: #fff;
+        clip-path: polygon(100% 50%, 0 0, 0 100%);
+    }
+    .f4Button{
+        position: absolute;
+        top:80px;
+        left:510px;
+        width:80px;
+        height: 45px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+        border:2px solid #fff;
+        border-right:none;
+    }
+    .f4ArrowRight{
+        width:30px;
+        height: 30px;
+        position:absolute;
+        top:6px;
+        left:5px;
+        background-color: #fff;
+        clip-path: polygon(100% 100%, 100% 0, 0 50%);
+    }
+    /*Styling the scroll buttons*/
+    #mainSection{
+        max-width:40%;
+        height: 250px;
+    }
+    .curvedDiv{
+        top:-22px;
+        left:-130px;
+        z-index: -1;
+        height: 320px;
+        width:410px;
+    }
+    .circleForButtons{
+        width: 120px;
+        height: 120px;
+        background-color: rgba(46,40,80,255);
+        border:10px solid #fff;
+        border-radius:100%;
+        position: absolute;
+        top:50px;
+        left:40px;
+    }
+    .plusButton{
+        background-color: rgba(46,40,80,255);
+        border:3px solid #fff;
+        border-radius: 100%;
+        width:60px;
+        height: 60px;
+        position:absolute;
+        top:-30px;
+        left:30px;
+    }
+    .cross{
+        border:2px solid #fff;
+        width:20px;
+        height: 20px;
+        position:absolute;
+        top:12px;
+        left:6px;
+    }
+    .arrowUp{   
+        width:35px;
+        height: 35px;
+        position:absolute;
+        top:7px;
+        left:10px;
+        background-color: #fff;
+        clip-path: polygon(50% 0%, 0 100%, 100% 100%);
+    }
+    .leftArrow{
+        background-color: rgba(46,40,80,255);
+        border:3px solid #fff;
+        border-radius: 100%;
+        width:60px;
+        height: 60px;
+        position:absolute;
+        top:30px;
+        left:-35px;
+    }
+    .arrowRight{   
+        width:35px;
+        height: 35px;
+        position:absolute;
+        top:10px;
+        left:7px;
+        background-color: #fff;
+        clip-path: polygon(100% 100%, 100% 0, 0 50%);
+    }
+    .minusButton{
+        background-color: rgba(46,40,80,255);
+        border:3px solid #fff;
+        border-radius: 100%;
+        width:60px;
+        height: 60px;
+        position:absolute;
+        top:90px;
+        left:30px;
+    }
+    .arrowDown{   
+        width:35px;
+        height: 35px;
+        position:absolute;
+        top:14px;
+        left:10px;
+        background-color: #fff;
+        clip-path: polygon(100% 0, 0 0, 50% 100%);
+    }
+    .minus{
+        border:2px solid #fff;
+        width:15px;
+        height: 20px;
+        position:absolute;
+        top:2px;
+        left:8px;
+    }
+    .rightArrow{
+        background-color: rgba(46,40,80,255);
+        border:3px solid #fff;
+        border-radius: 100%;
+        width:60px;
+        height: 60px;
+        position:absolute;
+        top:30px;
+        right:-35px;
+    }
+    .arrowLeft{   
+        width:35px;
+        height: 35px;
+        position:absolute;
+        top:10px;
+        left:16px;
+        background-color: #fff;
+        clip-path: polygon(100% 50%, 0 0, 0 100%);
+    }
+    /*Right buttons section*/
+    #rightSection{
+        max-width: 250px;
+        margin-top:-230px;
+        margin-right:-90px;
+    }
+    .sensitivityBtn{
+        width:180px;
+        height: 50px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        font-size:1.3rem;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+        border:1px solid #fff;
+        margin-bottom: 5px;
+    }
+    .circleForButtonRight{
+        clip-path: circle(50% at 50% 50%);
+        background-color: #fff;
+        width:40px;
+        height: 40px;
+        display: inline;
+        position: absolute;
+        left:5px;
+        top:5px;
+    }
+    .btnText{
+        margin-left: 10px;
+    }
+    .selectProductBtn{
+        width:180px;
+        height: 50px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        font-size:1.2rem;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+        border:1px solid #fff;
+        margin-bottom: 5px;
+    }
+    .circleForButtonRight2{
+        clip-path: circle(50% at 50% 50%);
+        background-color: #fff;
+        width:40px;
+        height: 40px;
+        display: inline;
+        position: absolute;
+        left:5px;
+        top:60px;
+    }
+    .btnText2{
+        margin-left: 40px;
+    }
+    .calibrateBtn{
+        width:180px;
+        height: 50px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        font-size:1.3rem;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+        border:1px solid #fff;
+        margin-bottom: 5px;
+    }
+    .circleForButtonRight3{
+        clip-path: circle(50% at 50% 50%);
+        background-color: #fff;
+        width:40px;
+        height: 40px;
+        display: inline;
+        position: absolute;
+        left:5px;
+        top:115px;
+    }
+    .testBtn{
+        width:180px;
+        height: 50px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        font-size:1.3rem;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+        border:1px solid #fff;
+        margin-bottom: 5px;
+    }
+    .circleForButtonRight4{
+        clip-path: circle(50% at 50% 50%);
+        background-color: #fff;
+        width:40px;
+        height: 40px;
+        display: inline;
+        position: absolute;
+        left:5px;
+        top:170px;
+    }
+    .btnText4{
+        margin-left: -45px;
+    }
+    .selectUnitBtn{
+        width:180px;
+        height: 50px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        font-size:1.3rem;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+        border:1px solid #fff;
+    }
+    .circleForButtonRight5{
+        clip-path: circle(50% at 50% 50%);
+        background-color: #fff;
+        width:40px;
+        height: 40px;
+        display: inline;
+        position: absolute;
+        left:5px;
+        top:225px;
+    }
+    /*Left buttons section*/
+    #leftSection{
+        max-width: 180px;
+        float: left;
+        margin-top:-180px;
+        position: relative;
+    }
+    .enterBtn{
+        width:120px;
+        height: 50px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        font-size:1.3rem;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+        border:1px solid #fff;
+        margin-bottom: 5px;
+    }
+    .circleForButtonLeft{
+        clip-path: circle(50% at 50% 50%);
+        background-color: #fff;
+        width:40px;
+        height: 40px;
+        display: inline;
+        position: absolute;
+        left:75px;
+        top:5px;
+    }
+    .btnTextLeft{
+        margin-right:30px;
+    }
+    .exitBtn{
+        width:150px;
+        height: 50px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        font-size:1.3rem;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+        border:1px solid #fff;
+        margin-bottom: 5px;
+    }
+    .circleForButtonLeft2{
+        clip-path: circle(50% at 50% 50%);
+        background-color: #fff;
+        width:40px;
+        height: 40px;
+        display: inline;
+        position: absolute;
+        left:105px;
+        top:60px;
+    }
+    .btnTextLeft2{
+        margin-right:-15px;
+    }
+    .menuBtn{
+        width:180px;
+        height: 50px;
+        background-color: rgba(46,40,80,255);
+        color:#fff;
+        font-size:1.3rem;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+        border:1px solid #fff;
+        margin-bottom: 5px;
+    }
+    .circleForButtonLeft3{
+        clip-path: circle(50% at 50% 50%);
+        background-color: #fff;
+        width:40px;
+        height: 40px;
+        display: inline;
+        position: absolute;
+        left:135px;
+        top:115px;
+    }
+    .btnTextLeft3{
+        margin-right:-25px;
+    }
+    /*Styling the CompanyFooter section*/
+    .fortressLogoImg{
+        position: relative;
+        top:20px;
+        left:30px;
+        height: 45px;
+    }
+}
