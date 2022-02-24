@@ -323,7 +323,7 @@ class Modal extends React.Component{
 				}
 				else{
 					cont = (<ModalCont x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
-						{im}{this.props.childrens}
+						{im}{this.props.children}
 						<MessageModal ref={this.msgm}/>
 						</ModalCont>)
 				}
