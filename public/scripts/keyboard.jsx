@@ -223,7 +223,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		<div style={{minWidth:minW,fontSize:20}}>
 		<div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:'#a0a0a0',marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' >
 			{label}</span></div>{but2}</div>
-	<div style={{height:70, position:'relative'}}>		
+		<div style={{height:70, position:'relative'}}>		
 				<input id='inp' style={{background:'rgba(150,150,150,0.3)',display:'inline-block',fontSize:25,lineHeight:'65px',textDecoration:'underline',textUnderlinePosition:'under',textDecorationColor:'rgba(200,200,200,0.7)',height:65,color:'#eee', whiteSpace:'pre',width:width - 4, marginTop:5,marginLeft:'auto',marginRight:'auto'}} value={this.state.value} type={'text'} onChange={this.onChange}/>
 
 		</div>
@@ -360,17 +360,19 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		if(typeof this.props.min != 'undefined' ){
 			if(this.props.min[0]){
 				mmaxb = true
-				minStr = parseFloat(this.props.min[1])
-			
+					minStr = parseFloat(this.props.min[1])
 				if(this.props.floatDec){
 					minStr = minStr.toFixed(this.props.floatDec)
 				}else{
-					if(minStr.toString().length > minStr.toFixed(2).length){
-						minStr = minStr.toFixed(2)
+					if(minStr.toString().length > minStr.toFixed(1).length){
+						minStr = Math.round(minStr.toFixed(2));
 					}
 				}
 			}
-			
+			if(isNaN(minStr))
+			{
+				minStr = 0;
+			}
 		}
 		if(typeof this.props.max != 'undefined'){
 			if(this.props.max[0]){

@@ -323,7 +323,7 @@ class Modal extends React.Component{
 				}
 				else{
 					cont = (<ModalCont x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
-						{im}{this.props.children}
+						{im}{this.props.childrens}
 						<MessageModal ref={this.msgm}/>
 						</ModalCont>)
 				}
@@ -353,7 +353,8 @@ class ModalC extends React.Component{
 	}
 	endCalibration(){
 		this.props.toggle()
-		this.props.onCancel()
+		if(this.props.onCancel!='undefined')
+		{this.props.onCancel()}
 	}
 	handleClickOutside(e){
 		if(!this.state.keyboardVisible){
@@ -1049,14 +1050,10 @@ class MessageModal extends React.Component{
 	render () {
 		var	cont = ""
 		if(this.state.show){
+
 		cont =  <MModalCont vMap={this.props.vMap} accept={this.props.accept} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{color:'#e1e1e1'}}>{this.state.message}</div></MModalCont>
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
-	{/*	<div className='modal-x' onClick={this.close}>
-			 	 <svg viewbox="0 0 40 40">
-    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
-  				</svg>
-			</div>*/}
 			{cont}
 		</div>
 	}
