@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2022/01/27'
+const DISPLAYVERSION = '2022/01/28'
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
@@ -6210,7 +6210,10 @@ class SettingsPage extends React.Component{
     this.systemSettingsOverrides.current.show();
   }
   showFactoryResetMessage(){
-    this.factoryResetMessage.current.show();
+    var self=this;
+    setTimeout(()=>{
+      self.factoryResetMessage.current.show();
+    },150)
   }
   factoryReset(){
     this.props.sendPacket('factoryReset')
