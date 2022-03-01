@@ -220,6 +220,10 @@ class Modal extends React.Component{
 		this.setState({show:false})
 	}
 	close(){
+		if(this.props.calibWindow == 'calibWindow')
+		{
+			this.props.onCancel()
+		}
 		var self = this;
 		////console.log(4530, self.props.onClose)
 		if(this.props.closeOv != true){

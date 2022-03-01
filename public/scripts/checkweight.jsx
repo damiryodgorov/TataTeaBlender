@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2022/01/26'
+const DISPLAYVERSION = '2022/01/27'
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
@@ -148,10 +148,10 @@ function FormatWeight(wgt, unit){
     if(unit == 1){
       if(wgt>=10000000)
       {
-        return (wgt/1000000).toFixed(3)+' tonne'
+        return (wgt/1000000).toFixed(1)+' tonne'
       }
       else{
-        return (wgt/1000).toFixed(3) + ' kg'
+        return (wgt/1000).toFixed(1) + ' kg'
       }
     }else if(unit == 2){
       if(wgt>=10000000)
@@ -162,7 +162,7 @@ function FormatWeight(wgt, unit){
         return (wgt/453.59237).toFixed(1) + ' lbs'
       }
     }else if (unit == 3){
-      return (wgt/28.3495).toFixed(2) + ' oz'
+      return (wgt/28.3495).toFixed(1) + ' oz'
     }
     return wgt.toFixed(1) + ' g'
     //return wgt.toFixed(2) + ' g'
@@ -5588,7 +5588,7 @@ class SettingsPageWSB extends React.Component{
       <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
         <PackGraph packSamples={this.props.packSamples} onEdit={this.props.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={0} acc={(this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccAdvSys'])} language={this.props.language} crec={this.props.crec} prec={this.props.prodSettings} srec={this.props.sysSettings}/>
       </Modal>
-      <Modal x={true} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
+      <Modal x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
         <CalibrationControl resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationWindow} calibState={this.props.calibState} onCalib={this.onCalib} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
       </Modal>
       <MessageModal ref={this.msgm}/> 

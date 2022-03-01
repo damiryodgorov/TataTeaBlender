@@ -8220,6 +8220,58 @@
         "g"
       ]
     },
+    "LoadcellDeadtime": {
+      "@translations": {
+        "english": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        },
+        "korean": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        },
+        "french": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        },
+        "italian": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        },
+        "german": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        },
+        "russian": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        },
+        "polish": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Loadcell Deadtime",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
     "ADCTemp": {
       "@translations": {
         "english": {
@@ -56204,6 +56256,11 @@
                                 {
                                   "type": 0,
                                   "val": "LoadcellNoise",
+                                  "acc": 0
+                                },
+                                {
+                                  "type": 0,
+                                  "val": "LoadcellDeadtime",
                                   "acc": 0
                                 }
                               ]
