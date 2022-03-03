@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2022/01/31'
+const DISPLAYVERSION = '2022/02/01'
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
@@ -3068,7 +3068,7 @@ class LandingPage extends React.Component{
         <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
         <Modal ref={this.imgMD}>
             <div style={{height:400}}>
-              <h3 style={{color:"#fff"}}>You lost Connection with the server, please reconnect</h3><button onClick={()=>location.reload()}>Reconnect</button>
+              <h3 style={{color:"#fff"}}>You lost Connection with the unit, please reconnect</h3><button onClick={()=>location.reload()}>Reconnect</button>
             </div>
         </Modal>
           <PlanBatchStart sendPacket={this.sendPacket} pList={this.state.pList} pNames={this.state.prodNames} ref={this.planStart} plannedBatches={this.state.plannedBatches} startP={this.startSel}/>
@@ -6500,7 +6500,7 @@ class SettingsPage extends React.Component{
             {ph}
            {pathString=='System/Advanced' && <div style={{marginTop:-20}}>
              <button className="sItem" onClick={this.showFactoryResetMessage} style={{border:'5px solid red',width:200,height:60}}><p style={{marginTop:-8}}>Factory Reset</p></button>
-             <button className="sItem" onClick={()=>location.reload()} style={{border:'5px solid #818a90',width:200,height:60}}><p style={{marginTop:-8}}>Reconnect</p></button>
+             <button className="sItem" onClick={()=>location.reload()} style={{border:'5px solid #818a90',width:200,height:60,marginLeft:40}}><p style={{marginTop:-8}}>Reconnect</p></button>
            </div>
            } 
           </div>)
@@ -6745,7 +6745,10 @@ class SettingItem3 extends React.Component{
     var self = this
     if(this.props.dynSettings['BatchRunning'] != 0){
       if(n['@locked_by_batch']){
-        this.msgm.current.show('Changes will not take effect until batch is stopped.')
+        this.msgm.current.show('Can not change this setting while running the batch.')
+      }
+      if(n['@labels'] == 'WeighingMode'){
+        this.msgm.current.show('Can not change this setting while running the batch.')
       }
     }
 

@@ -1118,7 +1118,7 @@ class MModalC extends React.Component{
 				 return( <div className='alertmodal-outer'>
 	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Alert</div>
 	  			{this.props.children}
-				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{this.props.children.props.children == "Batch needs to be ended prior to calibration."? 'Dismiss' : 'Confirm'}</button></div>
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{this.props.children.props.children == "Batch needs to be ended prior to calibration." || this.props.children.props.children == "Can not change this setting while running the batch."? 'Dismiss' : 'Confirm'}</button></div>
 	  		
 		  </div>)
 			}
