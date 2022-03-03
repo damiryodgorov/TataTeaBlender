@@ -266,7 +266,17 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 				label = this.props.label;
 				helpText='Enter 0 to use default';
 			}else{
-				label = this.props.label;
+				if(this.props.label.toString().includes('grams/pulse') || this.props.label.toString().includes('grams/sec'))
+				{
+					var twoParts = this.props.label.split('-');
+					var numberPart = twoParts[1].split(' ');
+					var number = numberPart[1];
+					var unit = numberPart[2];
+					label = twoParts[0] + " - "+Number(number).toFixed(1) + " " + unit;
+				}
+				else{
+					label = this.props.label;
+				}
 			}			
 		}
 
@@ -360,15 +370,24 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		if(typeof this.props.min != 'undefined' ){
 			if(this.props.min[0]){
 				mmaxb = true
-					minStr = parseFloat(this.props.min[1])
-					minStr = minStr.toFixed(1)
-				/*if(this.props.floatDec){
-					minStr = minStr.toFixed(this.props.floatDec)
-				}else{
-					if(minStr.toString().length > minStr.toFixed(1).length){
+				minStr = parseFloat(this.props.min[1])
+				if(this.props.label.includes("."))
+				{
+					if(this.props.label.includes("oz"))
+					{
+						minStr = minStr.toFixed(2);
+					}else{
 						minStr = minStr.toFixed(1);
 					}
-				}*/
+				}else{
+					if(this.props.floatDec){
+						minStr = minStr.toFixed(this.props.floatDec)
+					}else{
+						if(minStr.toString().length > minStr.toFixed(1).length){
+							minStr = minStr.toFixed(1);
+						}
+					}
+				}
 			}
 			if(isNaN(minStr))
 			{
@@ -376,20 +395,26 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			}
 		}
 		if(typeof this.props.max != 'undefined'){
-
 			if(this.props.max[0]){
 				mmaxb = true;
 				maxStr = parseFloat(this.props.max[1])
-				maxStr = maxStr.toFixed(1)
-				/*if(this.props.floatDec){
-					maxStr = maxStr.toFixed(this.props.floatDec)
-					console.log("if statement ",maxStr)
-				}else{
-					if(maxStr.toString().length > maxStr.toFixed(1).length){
+				if(this.props.label.includes("."))
+				{
+					if(this.props.label.includes("oz"))
+					{
+						maxStr = maxStr.toFixed(2)
+					}else{
 						maxStr = maxStr.toFixed(1)
-						console.log("else statement ",maxStr)
+					}					
+				}else{
+					if(this.props.floatDec){
+						maxStr = maxStr.toFixed(this.props.floatDec)
+					}else{
+						if(maxStr.toString().length > maxStr.toFixed(1).length){
+							maxStr = maxStr.toFixed(1)
+						}
 					}
-				}*/
+				}
 			}
 		}
 

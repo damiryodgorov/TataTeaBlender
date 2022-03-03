@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2022/01/28'
+const DISPLAYVERSION = '2022/01/31'
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
@@ -61,7 +61,7 @@ var showRefreshButton = 0;
 var showAlertMessageInProductMenu = 0;
 var showAlertMessageInPackGraphMenu = 0;
 var alreadyDisplayedRejectSetupMessageInProductMenu=false;
-var packGraphOpen = false;
+var counterReject = 0;
 const FtiSockIo = require('./ftisockio.js')
 const Params = require('./params.js')
 const FastZoom = cssTransition({ 
@@ -130,13 +130,13 @@ function FormatWeightD(wgt, unit, d){
     wgt = 0;
   }
     if(unit == 1){
-      return (wgt/1000).toFixed(3) + ' kg'
+      return (wgt/1000).toFixed(2) + ' kg'
     }else if(unit == 2){
-      return (wgt/453.59237).toFixed(d+1) + ' lbs'
+      return (wgt/453.59237).toFixed(2) + ' lbs'
     }else if (unit == 3){
-      return (wgt/28.3495).toFixed(d+1) + ' oz'
+      return (wgt/28.3495).toFixed(3) + ' oz'
     }
-    return wgt.toFixed(d) + ' g'
+    return wgt.toFixed(2) + ' g'
 }
 
 function FormatWeight(wgt, unit){
@@ -162,10 +162,9 @@ function FormatWeight(wgt, unit){
         return (wgt/453.59237).toFixed(1) + ' lbs'
       }
     }else if (unit == 3){
-      return (wgt/28.3495).toFixed(1) + ' oz'
+      return (wgt/28.3495).toFixed(2) + ' oz'
     }
     return wgt.toFixed(1) + ' g'
-    //return wgt.toFixed(2) + ' g'
 }
 
 function FormatWeightS(wgt, unit){
@@ -181,7 +180,7 @@ function FormatWeightS(wgt, unit){
         return (wgt/1000000).toFixed(3)+' tonne'
       }
       else{
-        return (wgt/1000).toFixed(3) + ' kg'
+        return (wgt/1000).toFixed(1) + ' kg'
       }
     }else if(unit == 2){
       if(wgt>=10000000)
@@ -196,7 +195,7 @@ function FormatWeightS(wgt, unit){
       return (wgt/28.3495).toFixed(2) + ' oz'
     }
     if(wgt > 10000){
-      return (wgt/1000).toFixed(3) + ' kg'
+      return (wgt/1000).toFixed(1) + ' kg'
     }
     return wgt.toFixed(1) + ' g'
 }
@@ -1483,6 +1482,7 @@ class LandingPage extends React.Component{
           }
           else{
             this.pmodal.current.showMsg(msg)
+            this.setState({rejectAlertMessage:''})
           }
       }else if(this.settingModal.current.state.show){
         this.settingModal.current.showMsg(msg)
@@ -1646,10 +1646,10 @@ class LandingPage extends React.Component{
             if(e.rec['RejSetupInvalid'] == 1){
               //toast('Taring..')
               this.notify('Reject Setup is invalid!')
-              showAlertMessageInPackGraphMenu = 0;
               showAlertMessageInProductMenu = 0;
-              alreadyDisplayedRejectSetupMessageInProductMenu=false;
-              //this.setState({rejectAlertMessage:'Reject Setup is invalid!'})          
+              showAlertMessageInPackGraphMenu = 0;
+              alreadyDisplayedRejectSetupMessageInProductMenu=false;   
+              
             }
           }
           if(e.rec['DateTime'] != this.state.rec['DateTime']){
@@ -4097,7 +4097,6 @@ class ProductSettings extends React.Component{
   toggleGraph(){
     //Toggle Pack Graph
     this.pgm.current.toggle();
-    packGraphOpen = true;
   }
   getBuffer(){
 
@@ -4287,7 +4286,6 @@ class ProductSettings extends React.Component{
   }
   saveProduct(){
     // console.log('saving ', this.state.selProd)
-    
     this.props.sendPacket('saveProduct',this.state.selProd)
   }
   saveProductPassThrough(f){
@@ -4652,10 +4650,10 @@ class ProductSettings extends React.Component{
   showProdMgmtTooltip(){
     this.prodMgmtTooltip.current.show();
   }
-  showMessageAlert(){
-      if(this.props.rejectAlertMessage == 'Reject Setup is invalid!' && showAlertMessageInProductMenu == 0 && !this.pgm.current.state.show)
+  showMessageAlert(){ 
+      if(this.props.rejectAlertMessage == 'Reject Setup is invalid!' && showAlertMessageInProductMenu == 0 && !this.pgm.current.state.show && !alreadyDisplayedRejectSetupMessageInProductMenu)
       {
-        this.msgm.current.show(this.props.rejectAlertMessage)
+        this.msgm.current.show(this.props.rejectAlertMessage)        
         showAlertMessageInProductMenu = 1;
         alreadyDisplayedRejectSetupMessageInProductMenu=true;
       }else if(this.props.rejectAlertMessage == 'Reject Setup is invalid!' && showAlertMessageInPackGraphMenu == 0 && !alreadyDisplayedRejectSetupMessageInProductMenu && this.pgm.current.state.show){
@@ -4665,7 +4663,10 @@ class ProductSettings extends React.Component{
       }
   }
   render(){
-    this.showMessageAlert()
+    setTimeout(()=>{
+      this.showMessageAlert()
+    },2000)
+    
     var self = this;
     var list = [];
     var sp = null;
@@ -4749,12 +4750,20 @@ class ProductSettings extends React.Component{
       }
       
       if(typeof curProd['FeedbackCorRate']!='undefined' && typeof curProd['FeedbackCorRate']=='string'){
-        if(curProd['FeedbackCorRate'].includes('grams/pulse'))
-        {
-          newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/pulse","g/pls");
-        }else if(curProd['FeedbackCorRate'].includes('grams/sec')){
-          newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/sec","g/s");
-        }
+        if(curProd['FeedbackCorRate'].includes('grams/pulse') || curProd['FeedbackCorRate'].includes('grams/sec'))
+				{
+          if(curProd['FeedbackCorRate'].includes('grams/pulse'))
+          {
+            newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/pulse","g/pls");
+          }else if(curProd['FeedbackCorRate'].includes('grams/sec')){
+            newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/sec","g/s");
+          }
+          var twoParts = newFeedbackCorRate.split(' ');
+          var number = twoParts[0];
+          var unit = twoParts[1];
+          newFeedbackCorRate = Number(number).toFixed(1) + " " + unit;
+				}
+        
       }else{
         newFeedbackCorRate = curProd['FeedbackCorRate'];
       }
@@ -7673,16 +7682,28 @@ class MultiEditControl extends React.Component{
           units = 'g'
         }
       }
-      if(self.props.param[i]['@type'] == 'float' || self.props.param[i]['@type'] == 'weight'){
+      if(self.props.param[i]['@type'] == 'float' || self.props.param[i]['@type'] == 'weight' || self.props.param[i]['@type'] == 'fdbk_rate'){
         if(val == null){
           val = 0;
         }
-        if(typeof self.props.param[i]['@float_dec'] != 'undefined'){
-          val = val.toFixed(self.props.param[i]['@float_dec'])
-        }else if(val.toString().length > val.toFixed(5).length){
-          val = val.toFixed(5)
+        if(val.toString().includes('grams/pulse') || val.toString().includes('grams/sec'))
+        {
+          var twoParts = val.split(' ');
+          var number = twoParts[0];
+          var unit = twoParts[1];
+          val = Number(number).toFixed(self.props.param[i]['@float_dec']) + " " + unit;
+        }else{
+          if(typeof self.props.param[i]['@float_dec'] != 'undefined'){
+            if(self.props.weightUnits == 3)
+            {
+              val = val.toFixed(2)
+            }else{
+              val = val.toFixed(self.props.param[i]['@float_dec'])
+            }
+          }else if(val.toString().length > val.toFixed(5).length){
+            val = val.toFixed(5)
+          }
         }
-        
       }
       var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
       st.width = labWidth
@@ -9550,6 +9571,7 @@ class PackGraph extends React.Component{
   }
   onEdit(p, v){
     this.props.onEdit(p,v)
+    //counterReject = 1;
   }
   onEditPackageLength(p,v)
   {

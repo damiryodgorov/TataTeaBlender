@@ -70,7 +70,10 @@ class NavWrapper extends React.Component{
 //			socket.emit('getLink');
 //			this.locate();
 			//window.location.href = 'http://192.168.50.50/cw.html?lane2=192.168.50.51'
-			window.location.href = 'http://192.168.10.60/cw.html'
+			//socket.emit('setIp', '192.168.10.60')
+			window.location.href = 'http://192.168.10.60/combo.html'
+			//window.location.href = 'http://192.168.10.60/cw.html'
+			socket.emit('setIp', '192.168.10.60')
 		}
 	}
 	onLinkClick(l){

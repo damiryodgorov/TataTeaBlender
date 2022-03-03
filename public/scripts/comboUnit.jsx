@@ -39,11 +39,9 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2022/01/23'
-
+const DISPLAYVERSION = '2022/01/31'
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
-
 let vdefByMac = {};
 var _Vdef;
 var _pVdef;
@@ -58,7 +56,12 @@ var vMapLists = vdefMapV2['@lists']
 var categoriesV2 = [vdefMapV2["@pages"]['CWSys']]
 var catMapV2 = vdefMapV2["@catmap"]
 var labTransV2 = vdefMapV2['@labels']
-
+var counter = 5;
+var showRefreshButton = 0;
+var showAlertMessageInProductMenu = 0;
+var showAlertMessageInPackGraphMenu = 0;
+var alreadyDisplayedRejectSetupMessageInProductMenu=false;
+var counterReject = 0;
 const FtiSockIo = require('./ftisockio.js')
 const Params = require('./params.js')
 const FastZoom = cssTransition({ 
@@ -127,13 +130,13 @@ function FormatWeightD(wgt, unit, d){
     wgt = 0;
   }
     if(unit == 1){
-      return (wgt/1000).toFixed(3) + ' kg'
+      return (wgt/1000).toFixed(2) + ' kg'
     }else if(unit == 2){
-      return (wgt/453.59237).toFixed(d+1) + ' lbs'
+      return (wgt/453.59237).toFixed(2) + ' lbs'
     }else if (unit == 3){
-      return (wgt/28.3495).toFixed(d+1) + ' oz'
+      return (wgt/28.3495).toFixed(3) + ' oz'
     }
-    return wgt.toFixed(d) + ' g'
+    return wgt.toFixed(2) + ' g'
 }
 
 function FormatWeight(wgt, unit){
@@ -145,10 +148,10 @@ function FormatWeight(wgt, unit){
     if(unit == 1){
       if(wgt>=10000000)
       {
-        return (wgt/1000000).toFixed(3)+' tonne'
+        return (wgt/1000000).toFixed(1)+' tonne'
       }
       else{
-        return (wgt/1000).toFixed(3) + ' kg'
+        return (wgt/1000).toFixed(1) + ' kg'
       }
     }else if(unit == 2){
       if(wgt>=10000000)
@@ -162,7 +165,6 @@ function FormatWeight(wgt, unit){
       return (wgt/28.3495).toFixed(2) + ' oz'
     }
     return wgt.toFixed(1) + ' g'
-    //return wgt.toFixed(2) + ' g'
 }
 
 function FormatWeightS(wgt, unit){
@@ -178,7 +180,7 @@ function FormatWeightS(wgt, unit){
         return (wgt/1000000).toFixed(3)+' tonne'
       }
       else{
-        return (wgt/1000).toFixed(3) + ' kg'
+        return (wgt/1000).toFixed(1) + ' kg'
       }
     }else if(unit == 2){
       if(wgt>=10000000)
@@ -193,7 +195,7 @@ function FormatWeightS(wgt, unit){
       return (wgt/28.3495).toFixed(2) + ' oz'
     }
     if(wgt > 10000){
-      return (wgt/1000).toFixed(3) + ' kg'
+      return (wgt/1000).toFixed(1) + ' kg'
     }
     return wgt.toFixed(1) + ' g'
 }
@@ -832,7 +834,7 @@ class LandingPage extends React.Component{
       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
       detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false,
-      checkPrecInterval:null,liveWeight:0.0, packSamples:{},confirmPressed:0}
+      checkPrecInterval:null,liveWeight:0.0, packSamples:{},confirmPressed:0,rejectAlertMessage:''}
     this.exportVmap = this.exportVmap.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
@@ -910,6 +912,7 @@ class LandingPage extends React.Component{
     this.bhg = React.createRef();
     this.pmodal = React.createRef();
     this.settingModal = React.createRef();
+    this.settingModal2 = React.createRef();
     this.locateModal = React.createRef();
     this.batModal = React.createRef();
     this.pmd = React.createRef();
@@ -926,6 +929,7 @@ class LandingPage extends React.Component{
     this.planStart = React.createRef();
     this.manStart = React.createRef();
     this.prgmd = React.createRef();
+    this.pgm = React.createRef();
 //    if (ip2){
       this.ssDual = React.createRef();
       this.lgDual = React.createRef();
@@ -955,6 +959,7 @@ class LandingPage extends React.Component{
     setTimeout(function (argument) {
       self.loadPrefs();
     }, 100)
+ 
 //    let socket = this.props.soc;
 //    setTimeout(function (argument) {
 //      if (JSON.stringify(self.state.prec) === '{}'){
@@ -963,6 +968,16 @@ class LandingPage extends React.Component{
 //      }
 //    }, 100)   
    // socket.on('testusb')
+    setInterval(()=>{
+      if(counter>0){
+        counter--
+      }
+      else{
+        this.imgClick();
+      }
+    },500)
+
+
     this.props.soc.on('userNames', function(p){
        self.setState({usernames:p.det.data.array})
       
@@ -1202,6 +1217,8 @@ class LandingPage extends React.Component{
       })  
     
     this.props.soc.on('paramMsgCW', function(data) {
+      counter = 10;
+      showRefreshButton = 1;
       self.onParamMsg(data.data, data.det)
       data = null;
     })
@@ -1386,15 +1403,19 @@ class LandingPage extends React.Component{
       if(this.batModal.current.state.show){
         this.batModal.current.showMsg(msg)
       }else if(this.pmodal.current.state.show){
-       this.pmodal.current.showMsg(msg)
+          if(msg == 'Reject Setup is invalid!'){
+            this.setState({rejectAlertMessage:msg})
+          }
+          else{
+            this.pmodal.current.showMsg(msg)
+            this.setState({rejectAlertMessage:''})
+          }
       }else if(this.settingModal.current.state.show){
         this.settingModal.current.showMsg(msg)
       }else if(this.cwModal.current.state.show){
         this.cwModal.current.showMsg(msg)
-      }else{
+      }else if(msg!='Reject Setup is invalid!'){
         this.msgm.current.show(msg)
-      
-
       }
   }
   /******************Parse Packets start*******************/
@@ -1550,7 +1571,11 @@ class LandingPage extends React.Component{
            if((e.rec['RejSetupInvalid'] != this.state.rec['RejSetupInvalid'])){
             if(e.rec['RejSetupInvalid'] == 1){
               //toast('Taring..')
-              this.notify('Reject Setup is invalid!')          
+              this.notify('Reject Setup is invalid!')
+              showAlertMessageInProductMenu = 0;
+              showAlertMessageInPackGraphMenu = 0;
+              alreadyDisplayedRejectSetupMessageInProductMenu=false;   
+              
             }
           }
           if(e.rec['DateTime'] != this.state.rec['DateTime']){
@@ -2497,7 +2522,11 @@ class LandingPage extends React.Component{
   }
   imgClick(){
     // console.log('clicked')
-    this.imgMD.current.toggle();
+    if(showRefreshButton == 1)
+    {
+      this.imgMD.current.toggle();
+    }
+    showRefreshButton = 0
     //location.reload();
   }
   getBuffer(){
@@ -2720,7 +2749,6 @@ class LandingPage extends React.Component{
     var psbtcolor = 'black'
     var grbrdcolor = '#e1e1e1'
     var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'57px'}
-    
     var raptor = <div style={{textAlign:'center'}}><img style={{width:219, marginTop:5, marginBottom:-5}} src={'assets/RaptorLogo.svg'}/></div>;
     var language = this.state.language
     if(this.state.branding == 'FORTRESS'){
@@ -2895,7 +2923,7 @@ class LandingPage extends React.Component{
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
             <tbody>
               <tr>
-                <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} onClick={this.imgClick}  src={img}/></td>
+                <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} src={img}/></td>
                 <td style={{width:raptorLogoWidth}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
                 <ContextMenu id='raptorlogo'>
                   <MenuItem onClick={this.exportVmap}>Export Translations</MenuItem>
@@ -2915,6 +2943,7 @@ class LandingPage extends React.Component{
                   </td>
               </tr>
             </tbody>
+         
           </table>
           <table><tbody><tr style={{verticalAlign:'top'}}><td>
           <StatSummary language={language} unit={this.state.srec['WeightUnits']} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange} pkgWeight={pkgWeight}/>
@@ -2937,7 +2966,7 @@ class LandingPage extends React.Component{
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
         <Modal x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
-          <ProductSettings packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
+          <ProductSettings rejectAlertMessage={this.state.rejectAlertMessage} packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
           submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={this.closeProductMenu}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
           curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
@@ -2963,10 +2992,10 @@ class LandingPage extends React.Component{
         </Modal>
         <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
         <Modal ref={this.imgMD}>
-        <div style={{height:600}}>
-            <button onClick={()=>location.reload()}>Refresh Page</button>
-          </div>
-          </Modal>
+            <div style={{height:400}}>
+              <h3 style={{color:"#fff"}}>You lost Connection with the server, please reconnect</h3><button onClick={()=>location.reload()}>Reconnect</button>
+            </div>
+        </Modal>
           <PlanBatchStart sendPacket={this.sendPacket} pList={this.state.pList} pNames={this.state.prodNames} ref={this.planStart} plannedBatches={this.state.plannedBatches} startP={this.startSel}/>
           <ManBatchStart branding={this.state.branding} pList={this.state.pList} pNames={this.state.prodNames} ref={this.manStart} ip={this.state.curDet.ip} language={language} mac={this.state.curDet.mac} startNew={this.startBuf}/>
          
@@ -3923,6 +3952,7 @@ class ProductSettings extends React.Component{
     this.copyFromDef = this.copyFromDef.bind(this);
     this.showProdMgmtTooltip = this.showProdMgmtTooltip.bind(this);
     this.stopConfirmed = this.stopConfirmed.bind(this);
+    this.showMessageAlert = this.showMessageAlert.bind(this);
     this.msgm = React.createRef();
     this.stopConfirm = React.createRef();
     this.deleteAllProductsAlert = React.createRef();
@@ -3945,7 +3975,6 @@ class ProductSettings extends React.Component{
     if(this.state.selProd != newProps.editProd){
       this.setState({selProd:newProps.editProd})
     }
-    
   }
   componentDidMount(){
     var self = this;
@@ -3964,7 +3993,6 @@ class ProductSettings extends React.Component{
   }
   shouldComponentUpdate(newProps, newState){
     //console.log('Component Will Receive')
-
     if(newProps.needSave != this.props.needSave){
       if(newProps.needSave == 1){
        if(this.pgm.current.state.show){
@@ -4546,7 +4574,23 @@ class ProductSettings extends React.Component{
   showProdMgmtTooltip(){
     this.prodMgmtTooltip.current.show();
   }
+  showMessageAlert(){ 
+      if(this.props.rejectAlertMessage == 'Reject Setup is invalid!' && showAlertMessageInProductMenu == 0 && !this.pgm.current.state.show && !alreadyDisplayedRejectSetupMessageInProductMenu)
+      {
+        this.msgm.current.show(this.props.rejectAlertMessage)        
+        showAlertMessageInProductMenu = 1;
+        alreadyDisplayedRejectSetupMessageInProductMenu=true;
+      }else if(this.props.rejectAlertMessage == 'Reject Setup is invalid!' && showAlertMessageInPackGraphMenu == 0 && !alreadyDisplayedRejectSetupMessageInProductMenu && this.pgm.current.state.show){
+        this.pgm.current.showMsg(this.props.rejectAlertMessage)
+        showAlertMessageInPackGraphMenu = 1;
+        showAlertMessageInProductMenu = 1;
+      }
+  }
   render(){
+    setTimeout(()=>{
+      this.showMessageAlert()
+    },2000)
+    
     var self = this;
     var list = [];
     var sp = null;
@@ -4630,12 +4674,20 @@ class ProductSettings extends React.Component{
       }
       
       if(typeof curProd['FeedbackCorRate']!='undefined' && typeof curProd['FeedbackCorRate']=='string'){
-        if(curProd['FeedbackCorRate'].includes('grams/pulse'))
-        {
-          newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/pulse","g/pls");
-        }else if(curProd['FeedbackCorRate'].includes('grams/sec')){
-          newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/sec","g/s");
-        }
+        if(curProd['FeedbackCorRate'].includes('grams/pulse') || curProd['FeedbackCorRate'].includes('grams/sec'))
+				{
+          if(curProd['FeedbackCorRate'].includes('grams/pulse'))
+          {
+            newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/pulse","g/pls");
+          }else if(curProd['FeedbackCorRate'].includes('grams/sec')){
+            newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/sec","g/s");
+          }
+          var twoParts = newFeedbackCorRate.split(' ');
+          var number = twoParts[0];
+          var unit = twoParts[1];
+          newFeedbackCorRate = Number(number).toFixed(1) + " " + unit;
+				}
+        
       }else{
         newFeedbackCorRate = curProd['FeedbackCorRate'];
       }
@@ -4812,9 +4864,7 @@ class ProductSettings extends React.Component{
             <CircularButton onClick={this.showAlertMessageForProducts} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Delete All'}/>
           </div>
     </div>
-
     //   <div onClick={this.copyTo} style={{display:'table-cell',height:85, borderRight:'2px solid #ccc', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
-       
     return <div style={{width:1155}}>
       <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>Product</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:400}}>{'Current Product: '+spstr }</div></div>
       <table style={{borderCollapse:'collapse'}}><tbody>
@@ -4848,7 +4898,7 @@ class ProductSettings extends React.Component{
       <CopyModal ref={this.cfModal}  branding={this.props.branding}/>
       <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
       <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
-        <PackGraph packSamples={this.props.packSamples} onEdit={this.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={1} acc={advProdEditAcc} language={this.props.language} crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
+        <PackGraph rejectAlertMessage={this.props.rejectAlertMessage} packSamples={this.props.packSamples} onEdit={this.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={1} acc={advProdEditAcc} language={this.props.language} crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
         <PromptModal branding={this.props.branding} ref={this.pmd2} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
       
       </Modal>
@@ -5398,9 +5448,6 @@ class SettingsPageWSB extends React.Component{
           <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'RawWeight'} vMap={vMapV2['RawWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['RawWeight']['@translations'][this.props.language]['name']} value={this.props.dynSettings['RawWeight']} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['RawWeight']} num={true}/></div>
           <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTare'} vMap={vMapV2['LastCalTare']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['LastCalTare']['@translations'][this.props.language]['name']} value={this.props.sysSettings['LastCalTare'].toFixed(1)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTare']} num={true}/></div>
           </div>
-          {
-            console.log("props all", this.props)
-          }
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.props.sysSettings['CalWeight'], weightUnits)} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'ADCTemp'} vMap={vMapV2['ADCTemp']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ADCTemp']['@translations'][this.props.language]['name']} value={this.props.dynSettings['ADCTemp']+' C'} param={vdefByMac[this.props.mac][1][0]['ADCTemp']} editable={false} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['ADCTemp']['@translations'][this.props.language]['description']}/></div>
@@ -5474,7 +5521,7 @@ class SettingsPageWSB extends React.Component{
       <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
         <PackGraph packSamples={this.props.packSamples} onEdit={this.props.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={0} acc={(this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccAdvSys'])} language={this.props.language} crec={this.props.crec} prec={this.props.prodSettings} srec={this.props.sysSettings}/>
       </Modal>
-      <Modal x={true} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
+      <Modal x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
         <CalibrationControl resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationWindow} calibState={this.props.calibState} onCalib={this.onCalib} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
       </Modal>
       <MessageModal ref={this.msgm}/> 
@@ -6096,7 +6143,10 @@ class SettingsPage extends React.Component{
     this.systemSettingsOverrides.current.show();
   }
   showFactoryResetMessage(){
-    this.factoryResetMessage.current.show();
+    var self=this;
+    setTimeout(()=>{
+      self.factoryResetMessage.current.show();
+    },150)
   }
   factoryReset(){
     this.props.sendPacket('factoryReset')
@@ -7556,16 +7606,28 @@ class MultiEditControl extends React.Component{
           units = 'g'
         }
       }
-      if(self.props.param[i]['@type'] == 'float' || self.props.param[i]['@type'] == 'weight'){
+      if(self.props.param[i]['@type'] == 'float' || self.props.param[i]['@type'] == 'weight' || self.props.param[i]['@type'] == 'fdbk_rate'){
         if(val == null){
           val = 0;
         }
-        if(typeof self.props.param[i]['@float_dec'] != 'undefined'){
-          val = val.toFixed(self.props.param[i]['@float_dec'])
-        }else if(val.toString().length > val.toFixed(5).length){
-          val = val.toFixed(5)
+        if(val.toString().includes('grams/pulse') || val.toString().includes('grams/sec'))
+        {
+          var twoParts = val.split(' ');
+          var number = twoParts[0];
+          var unit = twoParts[1];
+          val = Number(number).toFixed(self.props.param[i]['@float_dec']) + " " + unit;
+        }else{
+          if(typeof self.props.param[i]['@float_dec'] != 'undefined'){
+            if(self.props.weightUnits == 3)
+            {
+              val = val.toFixed(2)
+            }else{
+              val = val.toFixed(self.props.param[i]['@float_dec'])
+            }
+          }else if(val.toString().length > val.toFixed(5).length){
+            val = val.toFixed(5)
+          }
         }
-        
       }
       var st = {textAlign:'center',lineHeight:'51px', verticalAlign:'middle', height:51}
       st.width = labWidth
@@ -9409,6 +9471,7 @@ class PackGraph extends React.Component{
     this.onEdit = this.onEdit.bind(this);
     this.onEditPackageLength = this.onEditPackageLength.bind(this);
     //this.state = {tare:this.props.srec['TareWeight']}
+
   }
   componentDidMount(){
     this.setState({zoom:false})
@@ -9420,7 +9483,6 @@ class PackGraph extends React.Component{
       timeFactor = newProps.prec['SettleDur']/settleWin
       this.setState({timeFactor:timeFactor})
      }
- 
 
     
   }
@@ -9433,6 +9495,7 @@ class PackGraph extends React.Component{
   }
   onEdit(p, v){
     this.props.onEdit(p,v)
+    //counterReject = 1;
   }
   onEditPackageLength(p,v)
   {
@@ -9537,43 +9600,45 @@ class PackGraph extends React.Component{
 
 
     return  (
-<div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Pack Graph</div></div>
+  <div>
+    <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Pack Graph</div></div>
       
       <div style={{display:'grid', gridTemplateColumns:'auto auto'}}>
       
+      
         <div style={{background:'#e1e1e1', paddingTop:5, marginRight:5}}>
       
-      <img onClick={this.toggleZoom} src={zoombut} style={{width:32, marginLeft:815}}/>
-    <XYPlot height={400} width={850} yDomain={ydm} xDomain={xdm} margin={{left:20,right:0,bottom:30,top:10}}>
-     <AreaSeries data={data.slice(this.props.packSamples['WindowStart'], this.props.packSamples['WindowEnd']).map(function (y,x) {
-      // body...
-      return {y:y, x:x}
-    })}/>
-     <Borders style={{all: {fill: '#e1e1e1'}}} />
-      <YAxis hideTicks/>
-    <XAxis tickFormat={val => val%10 == 0 ? val*timeFactor.toFixed(0) : ""} hideTicks={winL == 0} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
-  
-    <VerticalRectSeries curve='curveMonotoneX' strokeStyle='dashed' stack={true} opacity={0.8} stroke="#ffa500" fill='transparent' strokeWidth={3} data={[yellowBox]}/>
-    <VerticalRectSeries onSeriesClick={this.toggleZoom} curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:packRange[0],y:packRange[1],x0:settleWin[0] - this.props.packSamples['WindowStart'],x:settleWin[1] - this.props.packSamples['WindowStart']}]}/>
+            <img onClick={this.toggleZoom} src={zoombut} style={{width:32, marginLeft:815}}/>
+          <XYPlot height={400} width={850} yDomain={ydm} xDomain={xdm} margin={{left:20,right:0,bottom:30,top:10}}>
+            <AreaSeries data={data.slice(this.props.packSamples['WindowStart'], this.props.packSamples['WindowEnd']).map(function (y,x) {
+              // body...
+              return {y:y, x:x}
+            })}/>
+            <Borders style={{all: {fill: '#e1e1e1'}}} />
+              <YAxis hideTicks/>
+            <XAxis tickFormat={val => val%10 == 0 ? val*timeFactor.toFixed(0) : ""} hideTicks={winL == 0} style={{line:{stroke:'#e1e1e1'}, ticks:{stroke:"#888"}}}/>
+      
+            <VerticalRectSeries curve='curveMonotoneX' strokeStyle='dashed' stack={true} opacity={0.8} stroke="#ffa500" fill='transparent' strokeWidth={3} data={[yellowBox]}/>
+            <VerticalRectSeries onSeriesClick={this.toggleZoom} curve='curveMonotoneX' stack={true} opacity={0.8} stroke="#ff0000" fill='transparent' strokeWidth={3} data={[{y0:packRange[0],y:packRange[1],x0:settleWin[0] - this.props.packSamples['WindowStart'],x:settleWin[1] - this.props.packSamples['WindowStart']}]}/>
+            
+            <LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/>
+          </XYPlot>
+          <div style={{textAlign:'center'}}>ms</div>
+        </div>
     
-    <LabelSeries data={tickData} labelAnchorY='middle' labelAnchorX='start'/>
     
-
-    </XYPlot>
-    <div style={{textAlign:'center'}}>ms</div>
-    </div>
-    <div  style={{background:'#e1e1e1', paddingTop:5, marginLeft:5, overflowY:'scroll'}}>
-    <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['FilterFreq']} pram={'FilterFreq'} name={vMapV2['FilterFreq']['@translations'][this.props.language]['name']} value={this.props.prec['FilterFreq'].toFixed(1)+ ' Hz'} submitChange={this.props.submitChange}/>
-    <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['SettleDur']} pram={'SettleDur'} name={vMapV2['SettleDur']['@translations'][this.props.language]['name']} value={this.props.prec['SettleDur']+ ' ms'} submitChange={this.props.submitChange}/>
-    <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['VfdBeltSpeed1']} pram={'VfdBeltSpeed1'} name={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['name']} value={formatBeltSpeed(this.props.prec['VfdBeltSpeed1'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
-    <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['WeightAvgMode']} pram={'WeightAvgMode'} name={vMapV2['WeightAvgMode']['@translations'][this.props.language]['name']} rVal={this.props.prec['WeightAvgMode']} value={vMapLists['WeightAvgMode'][this.props.language][this.props.prec['WeightAvgMode']]} submitChange={this.props.submitChange}/>
-    <StatDisplay onEdit={this.onEditPackageLength} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['EyePkgLength']} pram={'EyePkgLength'} name={vMapV2['EyePkgLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.prec['EyePkgLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
-    <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 0} vMap={vMapV2['WeighLength']} pram={'WeighLength'} name={vMapV2['WeighLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.srec['WeighLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
-    <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 0} vMap={vMapV2['EyeDist']} pram={'EyeDist'} name={vMapV2['EyeDist']['@translations'][this.props.language]['name']} value={formatLength(this.props.srec['EyeDist'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
+        <div  style={{background:'#e1e1e1', paddingTop:5, marginLeft:5, overflowY:'scroll'}}>
+          <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['FilterFreq']} pram={'FilterFreq'} name={vMapV2['FilterFreq']['@translations'][this.props.language]['name']} value={this.props.prec['FilterFreq'].toFixed(1)+ ' Hz'} submitChange={this.props.submitChange}/>
+          <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['SettleDur']} pram={'SettleDur'} name={vMapV2['SettleDur']['@translations'][this.props.language]['name']} value={this.props.prec['SettleDur']+ ' ms'} submitChange={this.props.submitChange}/>
+          <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['VfdBeltSpeed1']} pram={'VfdBeltSpeed1'} name={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['name']} value={formatBeltSpeed(this.props.prec['VfdBeltSpeed1'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
+          <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['WeightAvgMode']} pram={'WeightAvgMode'} name={vMapV2['WeightAvgMode']['@translations'][this.props.language]['name']} rVal={this.props.prec['WeightAvgMode']} value={vMapLists['WeightAvgMode'][this.props.language][this.props.prec['WeightAvgMode']]} submitChange={this.props.submitChange}/>
+          <StatDisplay onEdit={this.onEditPackageLength} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 1} vMap={vMapV2['EyePkgLength']} pram={'EyePkgLength'} name={vMapV2['EyePkgLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.prec['EyePkgLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
+          <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 0} vMap={vMapV2['WeighLength']} pram={'WeighLength'} name={vMapV2['WeighLength']['@translations'][this.props.language]['name']} value={formatLength(this.props.srec['WeighLength'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
+          <StatDisplay onEdit={this.onEdit} branding={this.props.branding} getMMdep={this.getMMdep} language={this.props.language} pAcc={this.props.acc} acc={this.props.rec == 0} vMap={vMapV2['EyeDist']} pram={'EyeDist'} name={vMapV2['EyeDist']['@translations'][this.props.language]['name']} value={formatLength(this.props.srec['EyeDist'],this.props.srec['AppUnitDist'])} submitChange={this.props.submitChange}/>
+        </div>
+        
       </div>
-    </div>
     </div>)
-    
   }
 }
 class WeightHistogram extends React.Component{
@@ -12037,5 +12102,5 @@ class CustomLabel extends React.Component{
 		return <div onClick={this.onClick} style={style}>{this.props.children}</div>
 	}
 }
-ReactDOM.render(<Container page={'dual'}/>,document.getElementById('content'))
 
+ReactDOM.render(<Container page={'dual'}/>,document.getElementById('content'))
