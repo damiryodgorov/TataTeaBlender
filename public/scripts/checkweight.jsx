@@ -4038,7 +4038,6 @@ class ProductSettings extends React.Component{
     this.showProdMgmtTooltip = this.showProdMgmtTooltip.bind(this);
     this.stopConfirmed = this.stopConfirmed.bind(this);
     this.showMessageAlert = this.showMessageAlert.bind(this);
-    this.closeAllRejectSetupWindows = this.closeAllRejectSetupWindows.bind(this);
     this.msgm = React.createRef();
     this.stopConfirm = React.createRef();
     this.deleteAllProductsAlert = React.createRef();
