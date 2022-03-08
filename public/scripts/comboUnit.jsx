@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2022/02/01'
+const DISPLAYVERSION = '2022/02/02'
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
@@ -824,7 +824,6 @@ class Container extends React.Component {
     
   }
 }
-
 class LandingPage extends React.Component{
   constructor(props){
     super(props)
@@ -1280,6 +1279,14 @@ class LandingPage extends React.Component{
         return false;
       }
     }
+    if(this.state.rec['CheckingWeight']!= nextState.rec['CheckingWeight'])
+    {
+      if(nextState.rec['CheckingWeight']==0)
+      {
+        this.cwModal.current.close(); 
+      }
+    }
+    
     return true;
   }
   /*************Lifecycle functions end  ***************/
@@ -1421,6 +1428,7 @@ class LandingPage extends React.Component{
   /******************Parse Packets start*******************/
   onParamMsg(e,u){
      if(this.state.curDet.ip == u.ip){
+      
       var self = this;
       liveTimer[this.state.curDet.mac] = Date.now()
       if(typeof e != 'undefined'){
@@ -2508,7 +2516,6 @@ class LandingPage extends React.Component{
     }
 
   }
-
   pModalToggle(){
     var self = this;
     if(typeof this.state.curDet.ip != 'undefined'){
@@ -2730,6 +2737,9 @@ class LandingPage extends React.Component{
   }
   resetCalibration(){
     this.setState({confirmPressed:1})
+  }
+  closeAllOpenWindows(){
+    //this.pmodal.current.forceclose();
   }
   render(){
     //LandingPage.render
@@ -2966,7 +2976,7 @@ class LandingPage extends React.Component{
           <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
         <Modal x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
-          <ProductSettings rejectAlertMessage={this.state.rejectAlertMessage} packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
+          <ProductSettings RejSetupInvalid={this.state.rec.RejSetupInvalid} EditProdNeedToSave={this.state.rec.EditProdNeedToSave} rejectAlertMessage={this.state.rejectAlertMessage} packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
           submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={this.closeProductMenu}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
           curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
@@ -3003,8 +3013,8 @@ class LandingPage extends React.Component{
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
                 accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
         <AuthfailModal ref={this.am} forgot={this.forgotPassword} tryAgain={this.tryAgain}/>
-      <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
-            <ProgressModal ref={this.prgmd}/><MessageModal ref={this.msgm}/>
+        <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
+        <ProgressModal ref={this.prgmd}/><MessageModal ref={this.msgm}/>
         <LogoutModal ref={this.lgoModal} branding={this.state.branding}/>
         <LockModal ref={this.lockModal} branding={this.state.branding}/>
         </div>
@@ -3012,7 +3022,6 @@ class LandingPage extends React.Component{
   }
 
 }
-
 class DualPage extends React.Component{
   constructor(props){
     super(props)
@@ -4003,6 +4012,13 @@ class ProductSettings extends React.Component{
        }
        
       }
+      if(newProps.needSave == 0){
+          this.pmd.current.close()
+          if(this.msgm.current.state.show){
+            this.msgm.current.close();
+          }
+      }
+      //console.log("newProps ",newProps);
     }
     return true;
   }
@@ -4224,7 +4240,6 @@ class ProductSettings extends React.Component{
   }
   passThrough(f){
    this.props.sendPacket('getProdSettings', this.props.editProd);
-   this.pmd.current.close();
   }
 
   getValue(rval, pname){
@@ -4587,7 +4602,7 @@ class ProductSettings extends React.Component{
         showAlertMessageInProductMenu = 1;
       }
   }
-  render(){
+  render(){    
     setTimeout(()=>{
       this.showMessageAlert()
     },2000)
@@ -6670,7 +6685,7 @@ class SettingItem3 extends React.Component{
     var self = this
     if(this.props.dynSettings['BatchRunning'] != 0){
       if(n['@locked_by_batch']){
-        this.msgm.current.show('Can not change this setting while running the batch.')
+        this.msgm.current.show('Cannot change this setting while running the batch.')
       }
       if(n['@labels'] == 'WeighingMode'){
         this.msgm.current.show('Can not change this setting while running the batch.')
