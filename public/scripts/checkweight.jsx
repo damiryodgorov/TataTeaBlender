@@ -39,7 +39,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2022/02/02'
+const DISPLAYVERSION = '2022/02/03'
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
@@ -1359,8 +1359,7 @@ class LandingPage extends React.Component{
       {
         this.cwModal.current.close(); 
       }
-    }
-    
+    }    
     return true;
   }
   /*************Lifecycle functions end  ***************/
@@ -4089,11 +4088,15 @@ class ProductSettings extends React.Component{
       }
       if(newProps.needSave == 0){
           this.pmd.current.close()
-          if(this.msgm.current.state.show){
-            this.msgm.current.close();
-          }
       }
     }
+    if(newProps.needSave!=1){
+      if(newProps.RejSetupInvalid == 0)
+      {
+        this.msgm.current.close()
+      }
+    }
+    
     return true;
   }
   prodMgmt(){
@@ -7790,7 +7793,7 @@ class MultiEditControl extends React.Component{
       if(iod && i == 1){
         _st.width = 190
       }
-      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val == '0.00 seconds' ? 'Default' : val == '0 mm' || val == '0.0 in' ? 'Default' : val == '0.000 x Product Length' ? 'Default' : val}</CustomLabel>)
+      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val == '0.00 seconds' ? 'Default' : val == '0 mm' || val == '0.0 in' ? 'Default' : val == '0.00 x Product Length' ? 'Default' : val}</CustomLabel>)
     })
     
 
