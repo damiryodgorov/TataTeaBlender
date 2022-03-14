@@ -1418,6 +1418,7 @@ class LandingPage extends React.Component{
           }
       }else if(this.settingModal.current.state.show){
         this.settingModal.current.showMsg(msg)
+        this.setState({rejectAlertMessage:''})
       }else if(this.cwModal.current.state.show){
         this.cwModal.current.showMsg(msg)
       }else if(msg!='Reject Setup is invalid!'){

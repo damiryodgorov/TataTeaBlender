@@ -57,12 +57,22 @@ class CustomKeyboard extends React.Component{
 	}
 	render () {
 		var cont = "";
-
-		if(this.state.show){
-			cont = <CustomKeyboardCont sendAlert={this.props.sendAlert} min={this.props.min} max={this.props.max} preload={this.props.preload} branding={this.props.branding} 
-			ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} 
-			show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label} submitTooltip={this.props.submitTooltip}/>
+		if(this.props.weightUnits!='undefined')
+		{
+			if(this.state.show){
+				cont = <CustomKeyboardCont weightUnits={this.props.weightUnits} sendAlert={this.props.sendAlert} min={this.props.min} max={this.props.max} preload={this.props.preload} branding={this.props.branding} 
+				ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} 
+				show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label} submitTooltip={this.props.submitTooltip}/>
+			}
 		}
+		else{
+			if(this.state.show){
+				cont = <CustomKeyboardCont sendAlert={this.props.sendAlert} min={this.props.min} max={this.props.max} preload={this.props.preload} branding={this.props.branding} 
+				ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} 
+				show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label} submitTooltip={this.props.submitTooltip}/>
+			}
+		}
+		
 		return <div hidden={!this.state.show} className = 'pop-modal'>
 		{/*	<div className='modal-x' onClick={this.close}>
 			 	 <svg viewbox="0 0 40 40">
@@ -366,28 +376,49 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		if(this.props.pwd){
 			dispval = this.state.value.split('').map(function(c){return '*'}).join('');
 		}
-
+		if(this.props.label.includes(".")){
+			var displayValue = this.props.label.toString();
+			var splitValues = displayValue.split('.');
+			var splitDecimals = splitValues[1].toString();
+			var decimalsLength=[];
+			if(splitDecimals.length>2)
+			{
+				decimalsLength = splitDecimals.split(' ')
+			}else{
+				decimalsLength[0] = splitDecimals;
+			}
+		}
 		if(typeof this.props.min != 'undefined' ){
 			if(this.props.min[0]){
 				mmaxb = true
-				minStr = parseFloat(this.props.min[1])
+				minStr = parseFloat(this.props.min[1])				
 				if(this.props.label.includes("."))
 				{
-					if(this.props.label.includes("oz"))
+					if(displayValue != 'Default')
 					{
-						minStr = minStr.toFixed(2);
-					}else{
-						minStr = minStr.toFixed(1);
-					}
+						if(decimalsLength[0].length == 1)
+						{
+							minStr = minStr.toFixed(1)
+						}
+						if(decimalsLength[0].length == 2)
+						{
+							minStr = minStr.toFixed(2)
+						}
+						if(decimalsLength[0].length == 3)
+						{
+							minStr = minStr.toFixed(3)
+						}
+					}	
 				}else{
 					if(this.props.floatDec){
 						minStr = minStr.toFixed(this.props.floatDec)
 					}else{
 						if(minStr.toString().length > minStr.toFixed(1).length){
-							minStr = minStr.toFixed(1);
+							minStr = minStr.toFixed(1)
 						}
 					}
 				}
+				
 			}
 			if(isNaN(minStr))
 			{
@@ -400,12 +431,21 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 				maxStr = parseFloat(this.props.max[1])
 				if(this.props.label.includes("."))
 				{
-					if(this.props.label.includes("oz"))
+					if(displayValue != 'Default')
 					{
-						maxStr = maxStr.toFixed(2)
-					}else{
-						maxStr = maxStr.toFixed(1)
-					}					
+						if(decimalsLength[0].length == 1)
+						{
+							maxStr = maxStr.toFixed(1)
+						}
+						if(decimalsLength[0].length == 2)
+						{
+							maxStr = maxStr.toFixed(2)
+						}
+						if(decimalsLength[0].length == 3)
+						{
+							maxStr = maxStr.toFixed(3)
+						}
+					}			
 				}else{
 					if(this.props.floatDec){
 						maxStr = maxStr.toFixed(this.props.floatDec)
@@ -417,8 +457,6 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 				}
 			}
 		}
-
-		
 		if(mmaxb){
 			
 			mmaxdiv = <div style={{fontSize:18,color:dvclr, textAlign:'center' }}>Range: [{minStr+'~'+maxStr}]</div>
