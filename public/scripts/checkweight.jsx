@@ -861,13 +861,13 @@ class Container extends React.Component {
                 <tbody>
                 <tr style={{marginLeft:10,textAlign:'center'}}>
                 <td>
-                <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
+                <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>{labTransV2['Lane One'][language]['name']}</b></div>
                 </td>
                 <td>
                 <div onClick={this.gotoLane1}><DualPage lane={this.lane1} update={this.state.updateLane1} page={this.state.page}/></div>
                 </td>
                 <td>
-                <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
+                <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>{labTransV2['Lane Two'][language]['name']}</b></div>
                 </td>
                 <td>
                 <div onClick={this.gotoLane2}><DualPage lane={this.lane2} update={this.state.updateLane2} page={this.state.page}/></div>
@@ -2864,7 +2864,8 @@ class LandingPage extends React.Component{
 
     // New Changes to add with greyed out functionality on startup 
     var play, stop;
-    var sttxt = 'Start'
+    // var sttxt = 'Start'
+    var sttxt = labTransV2['Start Text'][language]['name']
     
     // if CanStartBelts == 0
     play = <div style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#a9a9a9', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
@@ -2875,13 +2876,13 @@ class LandingPage extends React.Component{
         }
     }
     else if(this.state.rec['BatchRunning'] == 1){
-      play = <div onClick={this.pause} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause/Stop</div></div>
+      play = <div onClick={this.pause} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Pause/Stop'][language]['name']}</div></div>
       stop = ''
     }
     else if(this.state.rec['BatchRunning'] == 2){
       sttxt = 'Resume'
       play = <div onClick={this.resume} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
-      stop = <div onClick={this.stop} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block',width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>End Batch</div></div> 
+      stop = <div onClick={this.stop} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block',width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>{labTransV2['End Batch'][language]['name']}</div></div> 
       if(this.state.rec['CanStartBelts'] == 0){
         play = <div  style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#a9a9a9', display:'inline-block',marginLeft:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
       }
@@ -2891,14 +2892,14 @@ class LandingPage extends React.Component{
 
     var cont = ''
     var sd = <div><DisplaySettings soc={this.props.soc} nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
-      <button onClick={this.reboot}>Reboot</button><button onClick={this.formatUSB}>Format USB and Reboot</button></div>
+      <button onClick={this.reboot}>{labTransV2['Reboot'][language]['name']}</button><button onClick={this.formatUSB}>{labTransV2['Format USB and Reboot'][language]['name']}</button></div>
     var unused = ''
     
     var cald = ''
     var dets = ''
 
     var lw = 0;
-    var statusStr = 'Good Weight'
+    var statusStr = labTransV2['Good Weight'][language]['name']
     if(typeof this.state.crec['PackWeight'] != 'undefined'){        
       if(this.state.crec['PackWeight']){
         lw = this.state.crec['PackWeight']
@@ -2915,12 +2916,12 @@ class LandingPage extends React.Component{
       statusLed = <img src="assets/led_circle_red.png"/>
     if(this.state.faultArray.length == 1){
       if(typeof vMapV2[this.state.faultArray[0]+'Mask'] != 'undefined'){
-        statusStr = vMapV2[this.state.faultArray[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+        statusStr = vMapV2[this.state.faultArray[0]+'Mask']['@translations']['english']['name'] + ' ' + labTransV2['Fault Active'][language]['name']
       }else{
-         statusStr = this.state.faultArray[0] + ' active'  
+         statusStr = this.state.faultArray[0] +  ' ' + labTransV2['Active'][language]['name']
       }
     }else{
-      statusStr = this.state.faultArray.length + ' faults active'
+      statusStr = this.state.faultArray.length + ' ' + labTransV2['Faults Active'][language]['name']
     }
     }else if(this.state.crec['WeightPassed']%2 == 1){
       statusLed = <img src="assets/led_circle_yellow.png"/>
@@ -2928,7 +2929,7 @@ class LandingPage extends React.Component{
 
 
     if(this.state.srec['SRecordDate']){
-        sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
+        sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['System Settings'][language]['name']}</div></div>
         <SettingsPageWSB  resetCalibration={this.resetCalibration} packSamples={this.state.packSamples} soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.confirmPressed == 1 ? 0 : this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
         <BatchWidget acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
@@ -2947,7 +2948,7 @@ class LandingPage extends React.Component{
     }else{
       dets = this.renderModal()
       cont = <div><div style={{display:'table-cell', width:330,backgroundColor:'#e1e1e1',textAlign:'center'}} >
-        <div style={{textAlign:'center', fontSize:25, marginTop:5, marginBottom:5}}>Located Units</div>{dets}</div><div style={{display:'table-cell', width:840, paddingLeft:5, paddingRight:5}}>{sd}</div></div>
+        <div style={{textAlign:'center', fontSize:25, marginTop:5, marginBottom:5}}>{labTransV2['Located Units'][language]['name']}</div>{dets}</div><div style={{display:'table-cell', width:840, paddingLeft:5, paddingRight:5}}>{sd}</div></div>
     } 
 
     var trendBar = [15,16.5,17.5,19,15.5,18.5]
@@ -2991,11 +2992,11 @@ class LandingPage extends React.Component{
 //    var laneNumber = new URLSearchParams(location.search).get('lane')
 //    var laneStr = 'LANE '+laneNumber
     if (this.props.lane){
-      var laneStr = 'LANE '+this.props.lane
+      var laneStr = labTransV2['Lane'][language]['name'] + ' ' +this.props.lane
       
       home = <td>
               <div style={{paddingLeft:3, borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}} onClick={this.goDual}><div style={{textAlign:'center'}}><img style={{width:60, marginTop:-15, marginBottom:-7}} src={'assets/home.png'}/></div>
-              <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Home'}</div></div>
+              <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{labTransV2['Home'][language]['name']}</div></div>
               </td>
 
       raptorLogoWidth = 300
@@ -3009,8 +3010,8 @@ class LandingPage extends React.Component{
                 <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} src={img}/></td>
                 <td style={{width:raptorLogoWidth}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
                 <ContextMenu id='raptorlogo'>
-                  <MenuItem onClick={this.exportVmap}>Export Translations</MenuItem>
-                  <MenuItem onClick={this.resetVmap}>Reset Translations</MenuItem>
+                  <MenuItem onClick={this.exportVmap}>{labTransV2['Export Translations'][language]['name']}</MenuItem>
+                  <MenuItem onClick={this.resetVmap}>{labTransV2['Reset Translations'][language]['name']}</MenuItem>
                 </ContextMenu>
                 </td>
                 {lane}
@@ -3020,10 +3021,10 @@ class LandingPage extends React.Component{
                   <td className="logbuttCell" style={{height:60}}  onClick={this.toggleLogin}>
                   <div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
                   <button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
-                  <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Level '+this.state.level}</div>
+                  <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{labTransV2['Level'][language]['name'] +' '+this.state.level}</div>
                   </div></td>
                   <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
-                  <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Settings'}</div>
+                  <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{labTransV2['Settings'][language]['name']}</div>
                   </td>
               </tr>
             </tbody>
@@ -3074,10 +3075,11 @@ class LandingPage extends React.Component{
         <Modal  x={true} ref={this.unuProductSettingssedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
         {unused}   
         </Modal>
-        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
+        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['This will end the current batch. Confirm?'][language]['name']}
+        </div></AlertModal>
         <Modal ref={this.imgMD}>
             <div style={{height:400}}>
-              <h3 style={{color:"#fff"}}>You lost Connection with the unit, please reconnect</h3><button onClick={()=>location.reload()}>Reconnect</button>
+              <h3 style={{color:"#fff"}}>{labTransV2['You lost Connection with the unit, please reconnect'][language]['name']}</h3><button onClick={()=>location.reload()}>{labTransV2['Reconnect'][language]['name']}</button>
             </div>
         </Modal>
           <PlanBatchStart sendPacket={this.sendPacket} pList={this.state.pList} pNames={this.state.prodNames} ref={this.planStart} plannedBatches={this.state.plannedBatches} startP={this.startSel}/>
