@@ -8784,6 +8784,356 @@
       "turkish": {
         "name": ""
       }
+    },
+    "Net Weight": {
+      "english": {
+        "name": "Net Weight"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Summary": {
+      "english": {
+        "name": "Summary"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Translate": {
+      "english": {
+        "name": "Translate"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Current Language": {
+      "english": {
+        "name": "Current Language"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Submit Change": {
+      "english": {
+        "name": "Submit Change"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Warnings Active": {
+      "english": {
+        "name": "warnings active"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Batch Started at": {
+      "english": {
+        "name": "Batch Started at"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Sample": {
+      "english": {
+        "name": "Sample"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Sample Started at": {
+      "english": {
+        "name": "Sample Started at"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Statistics": {
+      "english": {
+        "name": "Statistics"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
     }
   },
   "@acc": {
@@ -50985,7 +51335,7 @@
         }
       },
       "children": [],
-      "display":[
+      "display": [
         "(function(e){return e == 2})",
         "VfdType2"
       ],
@@ -51042,7 +51392,7 @@
         }
       },
       "children": [],
-      "display":[
+      "display": [
         "(function(e){return e == 2})",
         "VfdType3"
       ],
@@ -53762,15 +54112,15 @@
     },
     "SystemSettingsOverridesTooltip": {
       "english": "These menus provide per-product adjustments for Fault and Reject settings.",
-      "korean":  "These menus provide per-product adjustments for Fault and Reject settings.",
+      "korean": "These menus provide per-product adjustments for Fault and Reject settings.",
       "spanish": "These menus provide per-product adjustments for Fault and Reject settings.",
-      "french":  "These menus provide per-product adjustments for Fault and Reject settings.",
-      "portuguese":  "These menus provide per-product adjustments for Fault and Reject settings.",
-      "italian":  "These menus provide per-product adjustments for Fault and Reject settings.",
+      "french": "These menus provide per-product adjustments for Fault and Reject settings.",
+      "portuguese": "These menus provide per-product adjustments for Fault and Reject settings.",
+      "italian": "These menus provide per-product adjustments for Fault and Reject settings.",
       "german": "These menus provide per-product adjustments for Fault and Reject settings.",
       "turkish": "These menus provide per-product adjustments for Fault and Reject settings.",
       "russian": "These menus provide per-product adjustments for Fault and Reject settings.",
-      "polish":  "These menus provide per-product adjustments for Fault and Reject settings.",
+      "polish": "These menus provide per-product adjustments for Fault and Reject settings.",
       "chinese": "These menus provide per-product adjustments for Fault and Reject settings."
     },
     "MeasuredValue": {
@@ -64055,7 +64405,7 @@
       "english": [
         "None",
         "Md200",
-        "Pf4m"        
+        "Pf4m"
       ],
       "korean": [
         "None",

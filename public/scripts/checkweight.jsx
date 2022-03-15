@@ -3066,7 +3066,7 @@ class LandingPage extends React.Component{
          <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.cwc} cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
         </Modal>
         <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
-         <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Batch</div></div>
+         <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['Batch'][language]['name']}</div></div>
          <BatchControl soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
           liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
            startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
@@ -3184,10 +3184,10 @@ class DualPage extends React.Component{
               <tr>
               <td>
                 <div><StatusElemDual connected={laneState.connected} pAcc={(laneState.srec['PassOn'] == 0) || (laneState.level >= laneState.rec['PassAccClrFaultWarn'])} prodName={laneState.prec['ProdName']} warnings={laneState.warningArray} weightPassed={laneState.crec['WeightPassed']} faults={laneState.faultArray} 
-                ref={this.props.lane.current.steDual} branding={laneState.branding} value={'g'} name={'Status'} width={425} font={25} language={language} /></div>
+                ref={this.props.lane.current.steDual} branding={laneState.branding} value={'g'} name={labTransV2['Status'][language]['name']} width={425} font={25} language={language} /></div>
               </td>
               <td>
-                <div><SparcElemDual ref={this.props.lane.current.seDual} branding={laneState.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={163} font={25}/></div>
+                <div><SparcElemDual ref={this.props.lane.current.seDual} branding={laneState.branding} value={FormatWeight(lw, wu)} name={labTransV2['Net Weight'][language]['name']} width={163} font={25}/></div>
               </td>
               </tr>
               </tbody>
@@ -3209,7 +3209,7 @@ class DualPage extends React.Component{
               <table><tbody>
               <tr>
               <td>
-              <StatSummaryDual language={language} unit={laneState.srec['WeightUnits']} branding={laneState.branding} ref={this.props.lane.current.ssDual} pkgWeight={pkgWeight}/>
+              <StatSummaryDual language={language} unit={laneState.srec['WeightUnits']} branding={laneState.branding} ref={this.props.lane.current.ssDual} pkgWeight={pkgWeight} summary={labTransV2['Summary'][language]['name']}  translate={labTransV2['Translate'][language]['name']} current_language= {labTransV2['Current Language'][language]['name']} submit_change_text={labTransV2['Submit Change'][language]['name']}/>
               </td>
               <td>
               <BatchPackCountGraphDual language={language} branding={laneState.branding} ref={this.props.lane.current.hhDual} bCount={laneState.prec['BatchCount']} bRunning={laneState.rec['BatchRunning']}/>
@@ -3305,15 +3305,15 @@ class StatSummaryDual extends React.Component{
       
     }
   return  <div style={{width:295,background:outerbg, borderRadius:10, margin:1, marginBottom:0, border:'1px '+outerbg+' solid', borderTopLeftRadius:0, height:425}}>
-      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
-      <StatControlDual language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange}/>
-      <StatControlDual language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={'Gross Weight'}  submitChange={this.props.submitChange} value={grswt}/>
-      <StatControlDual language={this.props.language} vMap={vMapV2['PkgWeight']['@translations']} pram={'PkgWeight'} name={vMapV2['PkgWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value={pkgwgt}/>
-      <BatchStatControlDual name={labTransV2['@TotalWeightBS'][this.props.language]['name']} pram={'@TotalWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={tot} sample={stot}/>
-      <BatchStatControlDual name={labTransV2['@AvgWeightBS'][this.props.language]['name']} pram={'@AvgWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={avg} sample={savg}/>
-      <BatchStatControlDual name={labTransV2['@StdDevBS'][this.props.language]['name']} pram={'@StdDevBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={stdev} sample={sstdev}/>
-      <BatchStatControlDual name={labTransV2['@GiveAwayBS'][this.props.language]['name']} pram={'@GiveAwayBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={gvb} sample={gvs}/>
-      <BatchStatControlDual name={labTransV2['@ProductionRateBS'][this.props.language]['name']} pram={'@ProductionRateBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={ppm} sample={sppm}/>
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>{this.props.summary}</div></div>
+      <StatControlDual language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange} translate={this.props.translate} current_language= {this.props.current_language} submit_change_text={this.props.submit_change_text}  />
+      <StatControlDual language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={'Gross Weight'}  submitChange={this.props.submitChange} value={grswt} translate={this.props.translate} current_language= {this.props.current_language} submit_change_text={this.props.submit_change_text}/>
+      <StatControlDual language={this.props.language} vMap={vMapV2['PkgWeight']['@translations']} pram={'PkgWeight'} name={vMapV2['PkgWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value={pkgwgt} translate={this.props.translate} current_language= {this.props.current_language} submit_change_text={this.props.submit_change_text}/>
+      <BatchStatControlDual name={labTransV2['@TotalWeightBS'][this.props.language]['name']} pram={'@TotalWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={tot} sample={stot} translate={this.props.translate} submit_change_text={this.props.submit_change_text}/>
+      <BatchStatControlDual name={labTransV2['@AvgWeightBS'][this.props.language]['name']} pram={'@AvgWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={avg} sample={savg} translate={this.props.translate} submit_change_text={this.props.submit_change_text}/>
+      <BatchStatControlDual name={labTransV2['@StdDevBS'][this.props.language]['name']} pram={'@StdDevBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={stdev} sample={sstdev} translate={this.props.translate} submit_change_text={this.props.submit_change_text}/>
+      <BatchStatControlDual name={labTransV2['@GiveAwayBS'][this.props.language]['name']} pram={'@GiveAwayBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={gvb} sample={gvs} translate={this.props.translate} submit_change_text={this.props.submit_change_text}/>
+      <BatchStatControlDual name={labTransV2['@ProductionRateBS'][this.props.language]['name']} pram={'@ProductionRateBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={ppm} sample={sppm} translate={this.props.translate} submit_change_text={this.props.submit_change_text}/>
 
     </div>
   }
@@ -3340,16 +3340,16 @@ class StatControlDual extends React.Component{
     var uid = uuidv4()
     return <div style={{height:50}}>
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
-    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>{this.props.translate}</MenuItem></ContextMenu>
     </div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:0.8, fontSize:22}}>{this.props.value}</div>
     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
         <div>{this.props.vMap['english']['name']}</div>
         <div>
-          Current Language: {this.props.language}
+        {this.props.current_language + ': ' + this.props.language}
         </div>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
-         <button onClick={this.submit}>Submit Change</button>
+         <button onClick={this.submit}>{this.props.submit_change_text}</button>
         </Modal>
     </div>
   }
@@ -3390,11 +3390,11 @@ class BatchStatControlDual extends React.Component{
     }
     return <div style={{height:50}}>
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
-    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu></div>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>{this.props.translate} </MenuItem></ContextMenu></div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:0.8, fontSize:batchFont, whiteSpace:'nowrap'}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
      <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
-         <button onClick={this.submit}>Submit Change</button>
+         <button onClick={this.submit}>{this.props.submit_change_text}</button>
         </Modal>
     </div>
   }
@@ -3518,13 +3518,13 @@ if(prodName.length > 17){
   if(this.props.warnings.length != 0){
     if(this.props.warnings.length == 1){
       if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
-        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' '+ labTransV2['Active'][language]['name']
       }else{
-        str = this.props.warnings[0] + ' active'  
+        str = this.props.warnings[0] +  ' '+ labTransV2['Active'][language]['name']
       }
       
     }else{
-      str = this.props.warnings.length + ' warnings active'
+      str = this.props.warnings.length + ' '+ labTransV2['Warnings Active'][language]['name']
     }
     fault = true
     outerbg = 'orange'
@@ -3532,13 +3532,13 @@ if(prodName.length > 17){
   if(this.props.faults.length != 0){
      if(this.props.faults.length == 1){
       if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
-        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' '+ labTransV2['Fault Active'][language]['name']
       }else{
-        str = this.props.faults[0] + ' active'  
+        str = this.props.faults[0] + ' '+ labTransV2['Active'][language]['name']  
       }
       
     }else{
-      str = this.props.faults.length + ' faults active'
+      str = this.props.faults.length + ' '+ labTransV2['Faults Active'][language]['name']
     }
     fault = true
     outerbg = 'red'
@@ -3556,7 +3556,7 @@ if(prodName.length > 17){
       <div style={{display:'grid', gridTemplateColumns:'160px auto'}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div><div style={{display:'inline-block', fontSize:prodFont, textAlign:'center', lineHeight:'25px', verticalAlign:'top'}}>{prodName}</div></div>
        <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:20, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'middle'}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
           <Modal ref={this.fModal} innerStyle={{background:modBg}}>
-            <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>Faults</div></div>
+            <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][language]['name']}</div></div>
      
           <FaultDiv branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
@@ -3645,16 +3645,16 @@ class BatchPackCountGraphDual extends React.Component{
     var yDomin = [0, 5]
     var selData;
     var bText;
-    var bsttxt = 'Batch Started at: '+this.state.batchStartTime
+    var bsttxt = labTransV2['Batch Started at'][language]['name']+ ': ' +this.state.batchStartTime
     var max = 0;
     var showCount = false
     if(this.state.batch){
-      bText = 'Batch'
+      bText = labTransV2['Batch'][language]['name']
       showCount = ((this.props.bRunning != 0) && (this.props.bCount != 0) && (this.state.batchData[0] > 0))
       selData = this.state.batchData.slice(0)
     }else{
-      bText = 'Sample'
-      bsttxt = 'Sample Started at: '+this.state.sampleStartTime
+      bText = labTransV2['Sample'][language]['name']
+      bsttxt = labTransV2['Sample Started at'][language]['name'] +': '+this.state.sampleStartTime
       selData = this.state.sampleData.slice(0)
     }
     
@@ -3686,7 +3686,7 @@ class BatchPackCountGraphDual extends React.Component{
     //var hh = 
     return <div style={{position:'relative',width:295, height:425,background:outerbg, borderRadius:10, margin:1, marginBottom:0, border:'1px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
-      <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>Statistics</div></div>
+      <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>{labTransV2['Statistics'][language]['name']}</div></div>
       <div style={{position:'absolute', left:209, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
       <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
     <XYPlot height={370} width= {292} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal' xDomain={xDm}>    
@@ -3796,13 +3796,13 @@ class MainHistogramDual extends React.Component{
 
     if(this.props.faults.length == 1){
       if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
-        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' '+ labTransV2['Fault Active'][language]['name']
       }else{
-        str = this.props.faults[0] + ' active'  
+        str = this.props.faults[0] + ' '+ labTransV2['Active'][language]['name']  
       }
       
     }else{
-      str = this.props.faults.length + ' faults active'
+      str = this.props.faults.length + ' ' + labTransV2['Faults Active'][language]['name']  
     }
     fault == true
   }
@@ -3810,13 +3810,13 @@ class MainHistogramDual extends React.Component{
 
     if(this.props.warnings.length == 1){
       if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
-        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' '+ labTransV2['Active'][language]['name']  
       }else{
-        str = this.props.warnings[0] + ' active'  
+        str = this.props.warnings[0] + ' '+ labTransV2['Active'][language]['name']    
       }
       
     }else{
-      str = this.props.warnings.length + ' warnings active'
+      str = this.props.warnings.length + ' '+ labTransV2['Warnings Active'][language]['name']  
     }
     fault == true
   }
