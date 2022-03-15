@@ -8183,11 +8183,11 @@ class MultiEditControl extends React.Component{
               if(!isNaN(v)){
                 if(self.props.weightUnits == 3)
                 {
-                  if(float_dec && namestring!='Filter')
+                  if(float_dec && namestring!='Filter' && namestring!='Clear Time')
                   {
                     dispV = Number(dispV).toFixed(2)
                   }
-                  else{
+                  else if(float_dec && (namestring=='Filter' || namestring=='Clear Time')){
                     dispV = Number(dispV).toFixed(1)
                   }
                 }
