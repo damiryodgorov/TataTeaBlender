@@ -272,7 +272,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		var label = 'Enter'
 		var helpText = '';
 		if(this.props.label && this.props.label.length > 0){
-			if(this.props.label.includes('Clear Time -')||this.props.label.includes('Minimum Product Gap -')||this.props.label.includes('Eye Block Fault Distance -')){
+			if((this.props.label.includes('Clear Time -') && this.props.min[1] == 0)||(this.props.label.includes('Minimum Product Gap -') && this.props.min[1] == 0)||(this.props.label.includes('Eye Block Fault Distance -') && this.props.min[1] == 0)){
 				label = this.props.label;
 				helpText='Enter 0 to use default';
 			}else{
