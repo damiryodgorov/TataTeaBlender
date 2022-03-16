@@ -2,6 +2,7 @@ const React = require('react');
 const ReactDOM = require('react-dom')
 const ifvisible = require('ifvisible');
 const timezoneJSON = require('./timezones.json')
+import { contentSecurityPolicy } from 'helmet';
 //var SmoothieChart = require('./smoothie.js').SmoothieChart;
 //var TimeSeries = require('./smoothie.js').TimeSeries;
 import { Uint64LE } from 'int64-buffer';
@@ -39,7 +40,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2022/02/03'
+const DISPLAYVERSION = '2022/02/05'
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
@@ -204,7 +205,7 @@ function formatWeight(wgt, unit){
     wgt = 0;
    }
     if(unit == 1){
-      return (wgt/1000).toFixed(3) + ' kg'
+      return (wgt/1000).toFixed(1) + ' kg'
     }else if(unit == 2){
       return (wgt/453.59237).toFixed(1) + ' lbs'
     }else if (unit == 3){
@@ -4694,17 +4695,32 @@ class ProductSettings extends React.Component{
       
       if(typeof curProd['FeedbackCorRate']!='undefined' && typeof curProd['FeedbackCorRate']=='string'){
         if(curProd['FeedbackCorRate'].includes('grams/pulse') || curProd['FeedbackCorRate'].includes('grams/sec'))
-				{
-          if(curProd['FeedbackCorRate'].includes('grams/pulse'))
+				{ if(this.props.weightUnits == 2 || this.props.weightUnits == 3)
           {
-            newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/pulse","g/pls");
-          }else if(curProd['FeedbackCorRate'].includes('grams/sec')){
-            newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/sec","g/s");
+            if(curProd['FeedbackCorRate'].includes('grams/pulse'))
+            {
+              newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/pulse","oz/pls");
+            }else if(curProd['FeedbackCorRate'].includes('grams/sec')){
+              newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/sec","oz/s");
+            }
+            var twoParts = newFeedbackCorRate.split(' ');
+            var number = Number(twoParts[0]);
+            var unit = twoParts[1];
+            newFeedbackCorRate = (number/28.3495).toFixed(2) + " " + unit;
           }
-          var twoParts = newFeedbackCorRate.split(' ');
-          var number = twoParts[0];
-          var unit = twoParts[1];
-          newFeedbackCorRate = Number(number).toFixed(1) + " " + unit;
+          else{
+            if(curProd['FeedbackCorRate'].includes('grams/pulse'))
+            {
+              newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/pulse","g/pls");
+            }else if(curProd['FeedbackCorRate'].includes('grams/sec')){
+              newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/sec","g/s");
+            }
+            var twoParts = newFeedbackCorRate.split(' ');
+            var number = twoParts[0];
+            var unit = twoParts[1];
+            newFeedbackCorRate = Number(number).toFixed(1) + " " + unit;
+          }
+          
 				}
         
       }else{
@@ -4867,7 +4883,6 @@ class ProductSettings extends React.Component{
       usbMsg = <div style={{color:'#ff0000', textAlign:'center'}}>** Plug in USB Key for import and export! **</div>
       usbButStyle.color = '#aaa'
     }
-
     var advProdMgmt = <div>
        <div style={{color:'#e1e1e1', fontSize:25}}>Advanced Options</div>
        {usbMsg}
@@ -4912,7 +4927,7 @@ class ProductSettings extends React.Component{
         </tr>
       </tbody></table>
       <PromptModal branding={this.props.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
-      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
+      <CustomKeyboard weightUnits={this.props.weightUnits} branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
       
       <CopyModal ref={this.cfModal}  branding={this.props.branding}/>
       <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
@@ -5161,9 +5176,6 @@ class ProdSettingEdit extends React.Component{
     return this.props.getMMdep(d)
   }
   render(){
-
-
-
     var self = this;
     var ckb;
     var dispVal = this.props.value
@@ -5468,7 +5480,7 @@ class SettingsPageWSB extends React.Component{
           <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTare'} vMap={vMapV2['LastCalTare']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['LastCalTare']['@translations'][this.props.language]['name']} value={this.props.sysSettings['LastCalTare'].toFixed(1)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTare']} num={true}/></div>
           </div>
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.props.sysSettings['CalWeight'], weightUnits)} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
-          <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
+          <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+' ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'ADCTemp'} vMap={vMapV2['ADCTemp']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ADCTemp']['@translations'][this.props.language]['name']} value={this.props.dynSettings['ADCTemp']+' C'} param={vdefByMac[this.props.mac][1][0]['ADCTemp']} editable={false} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['ADCTemp']['@translations'][this.props.language]['description']}/></div>
           <div style={{marginTop:44, fontSize:24, textAlign:'center'}}></div>
           {calBut}
@@ -6294,7 +6306,6 @@ class SettingsPage extends React.Component{
       
       nodes = []
       data[lvl - 1 ][0].params.forEach(function (par,i) {
-        
         if(par.type == 0){
                 var p = par
                 var pname = par['@name']
@@ -7164,14 +7175,12 @@ class SettingItem3 extends React.Component{
           if(this.props.backdoor){
             im = ''
           }
-    
 
           var medctrl= (<MultiEditControl  timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst}  dt={this.props.dt} disabled={disable} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
                       mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
                     onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} pAcc={this.props.passAcc} ref='ed' vst={vst} 
                     lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
                     label={this.state.label} int={false} name={lkey}/>)
-
 
           if(this.props.mobile){
             sty.height = 51
@@ -7221,7 +7230,6 @@ class SettingItem3 extends React.Component{
        onRequestClose={this.onRequestClose} pAcc={this.props.passAcc} acc={this.props.acc} ref='ed' vst={vst} 
           lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
           label={this.state.label} int={false} name={this.props.lkey}/>)
-
           return (<div hidden={!display} className='sprc-prod' style={sty}> {medctrl}{accModal}
           </div>)
       
@@ -7632,19 +7640,54 @@ class MultiEditControl extends React.Component{
         if(val == null){
           val = 0;
         }
+        if(self.props.param[i]['@type'] == 'fdbk_rate' && Number(val)){
+          if(self.props.weightUnits == 2)
+          {
+            val = Number(val/28.3495);
+          }
+          if(self.props.weightUnits == 3)
+          {
+            val = Number(val/28.3495);
+          }
+        }
         if(val.toString().includes('grams/pulse') || val.toString().includes('grams/sec'))
         {
           var twoParts = val.split(' ');
           var number = twoParts[0];
           var unit = twoParts[1];
-          val = Number(number).toFixed(self.props.param[i]['@float_dec']) + " " + unit;
+          if(self.props.weightUnits == 1 || self.props.weightUnits == 0)
+          {
+            val = Number(number).toFixed(1) + " " + unit;
+          }
+          if(self.props.weightUnits == 2)
+          {
+            number = Number(number) / 28.3495;
+            unit = unit.replace("grams","oz");
+            val = Number(number).toFixed(2) + " " + unit;
+          }
+          if(self.props.weightUnits == 3)
+          {
+            number = Number(number) / 28.3495;
+            unit = unit.replace("grams","oz");
+            val = Number(number).toFixed(2) + " " + unit;
+          }
+          
         }else{
           if(typeof self.props.param[i]['@float_dec'] != 'undefined'){
-            if(self.props.weightUnits == 3)
+            if(self.props.weightUnits == 3 && namestring!='Filter' && namestring!='Clear Time')
             {
               val = val.toFixed(2)
-            }else{
-              val = val.toFixed(self.props.param[i]['@float_dec'])
+            }
+            else if((self.props.weightUnits == 1 || self.props.weightUnits == 2) && namestring == 'Settle Weight')
+            {
+              val = val.toFixed(3)
+            }
+            else{
+              if(self.props.param[i]['@type'] == 'fdbk_rate' && self.props.weightUnits == 2){
+                val = val.toFixed(2)
+              }else{
+                val = val.toFixed(self.props.param[i]['@float_dec'])
+              }
             }
           }else if(val.toString().length > val.toFixed(5).length){
             val = val.toFixed(5)
@@ -7719,7 +7762,7 @@ class MultiEditControl extends React.Component{
       if(iod && i == 1){
         _st.width = 190
       }
-      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val == '0.00 seconds' ? 'Default' : val == '0 mm' || val == '0.0 in' ? 'Default' : val == '0.00 x Product Length' ? 'Default' : val}</CustomLabel>)
+      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{(val == '0.0 seconds' && namestring == 'Clear Time')  ? 'Default' : (val == '0 mm' && namestring == 'Minimum Product Gap') || (val == '0.0 in' && namestring == 'Minimum Product Gap') ? 'Default' : val == '0.00 x Product Length' ? 'Default' : val}</CustomLabel>)
     })
     
 
@@ -8009,12 +8052,49 @@ class MultiEditControl extends React.Component{
               }
               else if(self.props.param[i]['@type'] == 'weight'){
                 var wunit = self.getMMdep('WeightUnits')
-                if(wunit == 1){
-                  max = max/1000
-                }else if(wunit == 2){
-                  max = max/453.592
-                }else if(wunit == 3){
-                  max = max/28.3495
+                if(!isNaN(v)){
+                  if(wunit == 1){
+                    max = max/1000
+                    v = Number(v/1000).toFixed(1);
+                  }else if(wunit == 2){
+                    max = max/453.592
+                    v = Number(v/453.592).toFixed(1);
+                  }else if(wunit == 3){
+                    max = max/28.3495
+                    v = Number(v/28.3495).toFixed(2);
+                  }
+                }else{
+                  if(wunit == 1){
+                    max = max/1000
+                  }else if(wunit == 2){
+                    max = max/453.592
+                  }else if(wunit == 3){
+                    max = max/28.3495
+                  }
+                }
+              }
+             else if(self.props.param[i]['@type'] == 'fdbk_rate'){
+                var wunit = self.getMMdep('WeightUnits')
+                if(!isNaN(v)){
+                 if(wunit == 2 || wunit == 3){
+                    max = max/28.3495
+                    min = min/28.3495
+                    v = Number(v/28.3495).toFixed(2);
+                  }
+                }else{
+                  if(wunit == 0 || wunit == 1)
+                  {
+                    var twoParts = v.split('grams');
+                    var number = twoParts[0];
+                    v = Number(number).toFixed(1);
+                  }
+                  if(wunit == 2 || wunit == 3){
+                    max = max/28.3495
+                    min = min/28.3495
+                    var twoParts = v.split('grams');
+                    var number = twoParts[0];
+                    v = Number(number/28.3495).toFixed(2);
+                  }
                 }
               }
             }
@@ -8025,11 +8105,42 @@ class MultiEditControl extends React.Component{
                 return <DateTimeModal language={self.props.language} branding={self.props.branding} value={v} ref={self['input'+i]} onEdit={self.changeDT}/>
               }
               var dispV = v
-              if(float_dec && !isNaN(dispV)){
-                dispV = dispV.toFixed(float_dec)
-              }
+              if(!isNaN(v)){
+                if(self.props.weightUnits == 3)
+                {
+                  if(float_dec && namestring!='Filter' && namestring!='Clear Time')
+                  {
+                    dispV = Number(dispV).toFixed(2)
+                  }
+                  else if(float_dec && (namestring=='Filter' || namestring=='Clear Time')){
+                    dispV = Number(dispV).toFixed(1)
+                  }
+                }
+                else if(self.props.weightUnits == 0 || self.props.weightUnits == 1 || self.props.weightUnits == 2){
 
-              return <CustomKeyboard floatDec={float_dec} sendAlert={msg => self.msgm.current.show(msg)} min={[minBool, min]} max={[maxBool, max]} submitTooltip={self.submitTooltip} branding={self.props.branding} mobile={self.props.mobile} 
+                  if(self.props.param[i]['@type'] == 'fdbk_rate' && (self.props.weightUnits == 2 || self.props.weightUnits == 3))
+                  {
+                    dispV = Number(dispV).toFixed(2)
+                  }
+                  else{
+                    dispV = Number(dispV).toFixed(float_dec)
+                  }
+                  
+                  if(lbl == 'Settle Weight'&& (self.props.weightUnits == 1 || self.props.weightUnits == 2 )){
+                    dispV = Number(dispV).toFixed(3)
+                  }
+
+                }
+              }
+              else{
+                if(float_dec && !isNaN(dispV)){
+                  dispV = dispV.toFixed(float_dec)
+                }
+              }
+              /*if(float_dec && !isNaN(dispV)){
+                dispV = dispV.toFixed(float_dec)
+              }*/
+              return <CustomKeyboard weightUnits={self.props.weightUnits} floatDec={float_dec} sendAlert={msg => self.msgm.current.show(msg)} min={[minBool, min]} max={[maxBool, max]} submitTooltip={self.submitTooltip} branding={self.props.branding} mobile={self.props.mobile} 
                datetime={self.props.dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={self['input'+i]} onRequestClose={self.onRequestClose}
                 onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + dispV}/>
             }
