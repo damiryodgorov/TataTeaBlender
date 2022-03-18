@@ -43,7 +43,8 @@ class PopoutWheel extends React.Component{
 		this.refs.md.toggle();
 	}
 	toggle () {
-		this.refs.md.toggle();
+		setTimeout(()=>{this.refs.md.toggle();},100)
+		
 	}
 	getToolTip(t){
 		if(this.props.getToolTip){
@@ -54,7 +55,7 @@ class PopoutWheel extends React.Component{
 	}
 	render () {
 		var value = "placeholder"
-		return	<PopoutWheelModal tooltipOv={this.props.tooltipOv} tooltip={this.props.tooltip} getToolTip={this.getToolTip} submitTooltip={this.props.submitTooltip} ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options} ref='md'/>
+		return	<PopoutWheelModal tooltipOv={this.props.tooltipOv} tooltip={this.props.tooltip} getToolTip={this.getToolTip} submitTooltip={this.props.submitTooltip} ovWidth={this.props.ovWidth} inputs={this.props.inputs} outputs={this.props.outputs} branding={this.props.branding} mobile={this.props.mobile} onCancel={this.onCancel} params={this.props.params} vMap={this.props.vMap} ioBits={this.props.ioBits} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} ref='md' onChange={this.onChange} value={this.props.val} options={this.props.options}/>
 	}
 }
 class PopoutWheelModal extends React.Component{

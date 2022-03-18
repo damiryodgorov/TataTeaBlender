@@ -758,7 +758,7 @@ class Container extends React.Component {
   }
   gotoMetalDetector(){
     //this.setState({metalDetectorActive:true});
-    window.location="http://"+location.host+"/stealthMD.html";
+    //window.location="http://"+location.host+"/stealthMD.html";
   }
   render(){
       var link = "http://"+location.host+"/stealthMD.html";
@@ -776,7 +776,7 @@ class Container extends React.Component {
                         <div onClick={this.gotoCheckweigher}><DualPage lane={this.lane1} update={this.state.updateLane1} page={this.state.page}/></div>
                     </td>
                     <td style={{width:'5%'}}>
-                        <div style={{width:'100%'}} onClick={this.gotoMetalDetector} style={{marginLeft:30,borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>METAL DETECTOR</b></div>
+                        <div style={{width:'100%', marginLeft:30, borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>METAL DETECTOR</b></div>
                     </td>
                     <td style={{width:'45%'}}>
                         <div>
