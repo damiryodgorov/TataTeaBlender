@@ -4110,7 +4110,7 @@ class ProductSettings extends React.Component{
     if(advProdEditAcc){
       this.pmgmt.current.toggle();  
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
     }
     
   }
@@ -4128,7 +4128,7 @@ class ProductSettings extends React.Component{
   sendPacket(n,v){
     if(this.props.drec['BatchRunning'] != 0){
       if(n['@locked_by_batch']){
-        this.msgm.current.show('Changes not permitted until batch is stopped.')
+        this.msgm.current.show(labTransV2['Changes not permitted until batch is stopped'][language]['name'] + '.')
       }
     }
     var self = this;
@@ -4139,7 +4139,7 @@ class ProductSettings extends React.Component{
     if(this.state.prodList.length > 0){
       this.setState({showAdvanceSettings:!this.state.showAdvanceSettings})
     }else{
-      toast('Products need to be fetched')
+      toast(labTransV2['Products need to be fetched'][language]['name'])
     }
   }
   getPCob (sys,prod,dyn, fram) {
@@ -4280,7 +4280,7 @@ class ProductSettings extends React.Component{
     if(prodEditAcc){
       this.props.sendPacket('switchProd',this.state.selProd);
     }else{
-      this.msgm.current.show('Access Denied');
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name']);
     }
   }
   selectRunningProd(){
@@ -4301,7 +4301,7 @@ class ProductSettings extends React.Component{
          // }
         }
       }else{
-        this.msgm.current.show('Access Denied');
+        this.msgm.current.show(labTransV2['Access Denied'][language]['name']);
       }  
   }
   saveProduct(){
@@ -4508,7 +4508,7 @@ class ProductSettings extends React.Component{
           this.cfTo.current.toggle();
           this.setState({copyMode:0})
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
     }
   }
   copyFromFt(){
@@ -4516,7 +4516,7 @@ class ProductSettings extends React.Component{
           this.cfTo.current.toggle();
           this.setState({copyMode:2})
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
     }
   }
   copyFromDef(){
@@ -4524,7 +4524,7 @@ class ProductSettings extends React.Component{
           this.cfTo.current.toggle();
           this.setState({copyMode:1})
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
     }
   }
   copyConfirm(target){
@@ -4532,7 +4532,7 @@ class ProductSettings extends React.Component{
     var prodNos = this.props.pList.slice(0)
     // console.log('copyConfirm', t, prodNos)
     if(t == this.props.srec['ProdNo']){
-      this.msgm.current.show('Cannot overwrite current running product.')
+      this.msgm.current.show(labTransV2['Cannot overwrite current running product'][language]['name'] +'.')
     }else{
       if(prodNos.indexOf(t) != -1){
         this.copyAlert(t)
@@ -4551,7 +4551,7 @@ class ProductSettings extends React.Component{
     
   }
   copyAlert(target){
-    var alertMessage = 'Product '+ target+' will be overwritten. Continue?'
+    var alertMessage = labTransV2['Product'][language]['name'] + ' '+ target+labTransV2['will be overwritten. Continue?'][language]['name']
 
     this.cfModal.current.show(this.copyCurrentProd, target, alertMessage)
   }
@@ -4559,7 +4559,7 @@ class ProductSettings extends React.Component{
     if((this.props.srec['PassOn'] == 0) || (this.props.level >= this.props.srec['PassAccAdvProdEdit'])){
       this.dltModal.current.show(p)
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
     }
 
   }
@@ -4661,7 +4661,7 @@ class ProductSettings extends React.Component{
       
       //this.props.onClose();
     }else{
-      this.msgm.current.show('Access Denied')}
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])}
   }
   advProdMgmt(){
     this.apmgmt.current.show();
@@ -4709,11 +4709,11 @@ class ProductSettings extends React.Component{
       })
       list = this.state.filterList.slice(0)
       content = <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6, height:480}}>
-      <EmbeddedKeyboard label={'Search Products'} liveUpdate={this.updateFilterString} language={this.props.language} onAccept={this.toggleSearch} onCancel={this.closeKeyboard}/></div>
+      <EmbeddedKeyboard label={labTransV2['Search Products'][language]['name']} liveUpdate={this.updateFilterString} language={this.props.language} onAccept={this.toggleSearch} onCancel={this.closeKeyboard}/></div>
     }else{
       var curProd = {}
       var pList = [];
-      var showText = 'Show All Products'
+      var showText = labTransV2['Show All Products'][language]['name']
       if(this.props.runningProd == this.props.editProd){
         curProd = this.props.curProd
       }
@@ -4729,7 +4729,7 @@ class ProductSettings extends React.Component{
       })
       if(this.state.showAllProd){
         list = pList.slice(0)
-        showText = 'Hide Inactive Products'
+        showText = labTransV2['Hide Inactive Products'][language]['name']
       }else{
         list = this.state.prodList.slice(0)
       }
@@ -4801,7 +4801,7 @@ class ProductSettings extends React.Component{
         <div>
         <div style={{display:'inline-block', verticalAlign:'top'}}>
         <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
-        <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={'Select Product'}/>
+        <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Select Product'][language]['name']}/>
         <img src='assets/graph.svg' style={{position:'absolute', width:40, left:770, marginTop:15}} onClick={this.toggleGraph}/>
         
         </div>
@@ -4809,7 +4809,7 @@ class ProductSettings extends React.Component{
           <div style={{display:'none', position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
             <div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
             <div style={{height:35, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-            <div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
+            <div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>{labTransV2['Search'][language]['name']}</div></div>
           </div>
         </div>
         </div>
@@ -4827,29 +4827,29 @@ class ProductSettings extends React.Component{
           
           <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
             <div style={{width:'90%',padding:'2.5%',margin:'2.5%',background:'linear-gradient(90deg,#919aa0, #e1e1e1)', height:285, overflowY:'scroll'}}>
-              <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>Overweight Accept</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['OverWeightAllowed'][this.props.language][curProd['OverWeightAllowed']]}</div></div>
-              <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>Product Speed</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}</div></div>
+              <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>{labTransV2['Overweight Accept'][language]['name']}</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['OverWeightAllowed'][this.props.language][curProd['OverWeightAllowed']]}</div></div>
+              <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>{labTransV2['Product Speed'][language]['name']}</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}</div></div>
               {
                 this.props.curProd['FeedbackMode'] != 0 && 
                 <React.Fragment>
-                  <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>Feedback Control</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['FeedbackMode'][this.props.language][curProd['FeedbackMode']]}</div></div>
+                  <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>{labTransV2['Feedback Control'][language]['name']}</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['FeedbackMode'][this.props.language][curProd['FeedbackMode']]}</div></div>
                     <div><div style={{width:'55%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
                       
-                      <div style={{width:'63%',display:'inline-block'}}>Correction Rate</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{newFeedbackCorRate}</div>
-                      <div style={{width:'63%',display:'inline-block'}}>Dead Zone</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>±{FormatWeight(curProd['FeedbackDeadZone'],weightUnits)}</div>
-                      <div style={{width:'63%',display:'inline-block'}}>Sample Count</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{curProd['FeedbackSampCnt']}</div>
+                      <div style={{width:'63%',display:'inline-block'}}>{vMapV2['FeedbackCorRate']['@translations'][language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{newFeedbackCorRate}</div>
+                      <div style={{width:'63%',display:'inline-block'}}>{labTransV2['Dead Zone'][language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>±{FormatWeight(curProd['FeedbackDeadZone'],weightUnits)}</div>
+                      <div style={{width:'63%',display:'inline-block'}}>{vMapV2['FeedbackSampCnt']['@translations'][language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{curProd['FeedbackSampCnt']}</div>
                   
                     </div>
                     <div style={{width:'45%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
-                      
-                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Wait Count</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}</div>
-                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Hi Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackHiLim'],weightUnits)}</div>
-                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Lo Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackLoLim'], weightUnits)}</div>
+
+                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>{vMapV2['FeedbackWaitCnt']['@translations'][language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}</div>
+                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>{labTransV2['Hi Limit'][language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackHiLim'],weightUnits)}</div>
+                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>{labTransV2['Lo Limit'][language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackLoLim'], weightUnits)}</div>
                   
                     </div></div>
                 </React.Fragment>
               }
-              <div><div style={{width:'53%',display:'inline-block', fontSize:17}}>Weighing Mode</div><div style={{width:'47%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
+              <div><div style={{width:'53%',display:'inline-block', fontSize:17}}>{vMapV2['WeighingMode']['@translations'][language]['name']}</div><div style={{width:'47%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
               <div><div style={{width: this.props.curProd['WeighingMode'] == 1 ? '60%' : '50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
                 {/*<div style={{width:'63%',display:'inline-block'}}>Number of Packs</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>10</div>*/}
               </div>
@@ -4857,18 +4857,18 @@ class ProductSettings extends React.Component{
                 {
                  this.props.curProd['WeighingMode'] == 1 ?
                   <React.Fragment>
-                    <div style={{width:'63%',display:'inline-block'}}>T1 Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['T1Lim'], weightUnits)}</div> 
-                    <div style={{width:'63%',display:'inline-block'}}>T2 Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['TolNegErrorX2'], weightUnits)}</div> 
+                    <div style={{width:'63%',display:'inline-block'}}>{vMapV2['T1Lim']['@translations'][language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['T1Lim'], weightUnits)}</div> 
+                    <div style={{width:'63%',display:'inline-block'}}>{vMapV2['TolNegErrorX2']['@translations'][language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['TolNegErrorX2'], weightUnits)}</div> 
                   </React.Fragment>
                   :
                   <React.Fragment>
-                    <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Overweight Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['OverWeightLim'], weightUnits)}</div>
-                    <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Underweight Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['UnderWeightLim'], weightUnits)}</div>
+                    <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>{labTransV2['Overweight Limit'][language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['OverWeightLim'], weightUnits)}</div>
+                    <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>{labTransV2['Underweight Limit'][language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['UnderWeightLim'], weightUnits)}</div>
                   </React.Fragment>
                 } 
               </div></div>
             </div>
-            <CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Advanced'}/>
+            <CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Advanced'][language]['name']}/>
          
           </div>
 
@@ -4902,7 +4902,7 @@ class ProductSettings extends React.Component{
     })
 
     if(list.length == 0){
-      prods = <div style={{textAlign:'center', width:297,padding:5}}>No Matching Products</div>
+      prods = <div style={{textAlign:'center', width:297,padding:5}}>{labTransV2['No Matching Products'][language]['name']}</div>
     }
     var spstr = ''
     if(this.props.runningProd){
@@ -4919,14 +4919,14 @@ class ProductSettings extends React.Component{
     var SA = (list.length > 8)
 
     var createNew = <div>
-       <div style={{color:'#e1e1e1', fontSize:25}}><div style={{display:'inline-block'}}>Create New Product:</div>  <div  style={{float:'right', display:'inline-block',marginRight:20}}><img src='assets/help.svg' onClick={this.showProdMgmtTooltip} width={30}/></div>
+       <div style={{color:'#e1e1e1', fontSize:25}}><div style={{display:'inline-block'}}>{labTransV2['Create New Product'][language]['name']+':'}</div>  <div  style={{float:'right', display:'inline-block',marginRight:20}}><img src='assets/help.svg' onClick={this.showProdMgmtTooltip} width={30}/></div>
       </div>
        <div style={{textAlign:'center'}}>
-            <CircularButton onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From Selected Product'}/>
-            <CircularButton onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From Base Product'}/>
+            <CircularButton onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Selected Product'][language]['name']}/>
+            <CircularButton onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Base Product'][language]['name']}/>
          
-            <CircularButton onClick={this.copyFromFt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From Factory Product'}/>
-            <CircularButton onClick={this.advProdMgmt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Product Records Management'}/>
+            <CircularButton onClick={this.copyFromFt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Factory Product'][language]['name']}/>
+            <CircularButton onClick={this.advProdMgmt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Product Records Management'][language]['name']}/>
          
          
           </div>
@@ -4940,23 +4940,23 @@ class ProductSettings extends React.Component{
     var usbMsg = ''
     var usbButStyle = innerStyle;
     if(!this.props.usb){
-      usbMsg = <div style={{color:'#ff0000', textAlign:'center'}}>** Plug in USB Key for import and export! **</div>
+      usbMsg = <div style={{color:'#ff0000', textAlign:'center'}}>{labTransV2['** Plug in USB Key for import and export! **'][language]['name']}</div>
       usbButStyle.color = '#aaa'
     }
 
     var advProdMgmt = <div>
-       <div style={{color:'#e1e1e1', fontSize:25}}>Advanced Options</div>
+       <div style={{color:'#e1e1e1', fontSize:25}}>{labTransV2['Advanced Options'][language]['name']}</div>
        {usbMsg}
           <div>
-            <CircularButton onClick={this.onImport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Import'}/>
-            <CircularButton onClick={this.onExport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Export'}/>
+            <CircularButton onClick={this.onImport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Import'][language]['name']}/>
+            <CircularButton onClick={this.onExport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Export'][language]['name']}/>
           </div>
           <div>
-            <CircularButton onClick={this.onRestore} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Restore'}/>
-            <CircularButton onClick={this.onBackup} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Backup'}/>
+            <CircularButton onClick={this.onRestore} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Restore'][language]['name']}/>
+            <CircularButton onClick={this.onBackup} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Backup'][language]['name']}/>
           </div>
           <div>
-            <CircularButton onClick={this.showAlertMessageForProducts} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Delete All'}/>
+            <CircularButton onClick={this.showAlertMessageForProducts} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Delete All'][language]['name']}/>
           </div>
     </div>
     //   <div onClick={this.copyTo} style={{display:'table-cell',height:85, borderRight:'2px solid #ccc', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
