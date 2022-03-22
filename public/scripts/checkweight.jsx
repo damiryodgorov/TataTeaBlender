@@ -4961,7 +4961,7 @@ class ProductSettings extends React.Component{
     </div>
     //   <div onClick={this.copyTo} style={{display:'table-cell',height:85, borderRight:'2px solid #ccc', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
     return <div style={{width:1155}}>
-      <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>Product</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:400}}>{'Current Product: '+spstr }</div></div>
+      <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>{labTransV2['Product'][language]['name']}</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:400}}>{labTransV2['Current Product'][language]['name']+': '+spstr }</div></div>
       <table style={{borderCollapse:'collapse'}}><tbody>
         <tr>
           <td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:819, paddingTop:0}}>  
@@ -4972,15 +4972,15 @@ class ProductSettings extends React.Component{
              <div style={{position:'relative', verticalAlign:'top', marginLeft:180}} onClick={this.toggleSearch}>
             <div style={{height:25, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
             <div style={{height:25, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-            <div style={{position:'absolute',float:'right', marginTop:-53, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:40}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
+            <div style={{position:'absolute',float:'right', marginTop:-53, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:40}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>{labTransV2['Search'][language]['name']}</div></div>
           </div>
           </div>
           <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:490, background:'#e1e1e1',overflowY:'scroll'}}>{prods}
           </div>
           <div style={{height:85,lineHeight:'85px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
-          <div onClick={this.prodMgmt} style={{display:'table-cell',height:85, borderRight:'1px solid #362c66', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>Product Management</div>
+          <div onClick={this.prodMgmt} style={{display:'table-cell',height:85, borderRight:'1px solid #362c66', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>{labTransV2['Product Management'][language]['name']}</div>
           
-          <div onClick={this.toggleSearch} style={{display:'table-cell',height:85, borderLeft:'1px solid #362c66',width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}><img src='assets/search.svg' style={{width:40}}/><div style={{marginTop:-10, fontSize:16}}>Search</div></div>
+          <div onClick={this.toggleSearch} style={{display:'table-cell',height:85, borderLeft:'1px solid #362c66',width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}><img src='assets/search.svg' style={{width:40}}/><div style={{marginTop:-10, fontSize:16}}>{labTransV2['Search'][language]['name']}</div></div>
           </div>
           <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
       
@@ -4988,7 +4988,7 @@ class ProductSettings extends React.Component{
         </tr>
       </tbody></table>
       <PromptModal branding={this.props.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
-      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
+      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={labTransV2['Target Product'][language]['name']}/>
       
       <CopyModal ref={this.cfModal}  branding={this.props.branding}/>
       <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
@@ -5001,8 +5001,8 @@ class ProductSettings extends React.Component{
         {createNew}
         <Modal x={true} Style={{width:870, marginTop:50}} ref={this.apmgmt} branding={this.props.branding}>{advProdMgmt}</Modal>
       </Modal>
-      <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
-      <AlertModal ref={this.deleteAllProductsAlert} accept={this.deleteAllProducts}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to delete all product records?"}</div></AlertModal>
+      <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['This will end the current batch. Confirm?'][language]['name']}</div></AlertModal>
+      <AlertModal ref={this.deleteAllProductsAlert} accept={this.deleteAllProducts}><div style={{color:"#e1e1e1"}}>{labTransV2['Are you sure you want to delete all product records?'][language]['name']}</div></AlertModal>
       <MessageModal ref={this.msgm}/>
     </div>
     //<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'} onClick={this.selectRunningProd}/>
@@ -5053,7 +5053,7 @@ class ProductSelectItem extends React.Component{
              self.confModal.current.toggle()
         
       }else{
-        self.msgm.current.show('Access Denied')
+        self.msgm.current.show(labTransV2['Access Denied'][language]['name'])
       }
     },100)
     
@@ -5123,7 +5123,7 @@ class ProductSelectItem extends React.Component{
       check =  <img style={{height:22}} src="assets/Check_mark.svg"/>
       del = ""
     }
-    var name = 'Product '+this.props.p
+    var name = labTransV2['Product'][language]['name']+ ' '+this.props.p
     if(this.props.name.length > 0){
       name = this.props.name
     }
@@ -5137,15 +5137,15 @@ class ProductSelectItem extends React.Component{
     return (<div style={{background:"transparent", color:color, position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-flex', alignItems:'center', width:22}}>{check}</div><div style={{fontSize:22, verticalAlign:'top',display:'inline-block', width:40, paddingRight:3, height:65, lineHeight:'65px', textAlign:'right'}}>{this.props.p + '.  '}</div><div onClick={this.switchProd} style={st}><div style={{display:'block', width:'inherit'}}>{name}</div></div> <div style={{display:'inline-flex', width:22}}>{del}{config}</div></div>
         <Modal ref={this.confModal} Style={{color:'#e1e1e1',width:800, maxWidth:800}}>
                <div style={{textAlign:'center'}}>
-               <div style={{fontSize:25, padding:10}}>Save and Restore</div>
-               <CircularButton onClick={this.restoreDefaultMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to factory settings'}/>
-               <CircularButton onClick={this.restoreBackupMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to base product'}/>
-               <CircularButton onClick={this.backupProductMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Save selected product to base product'}/>
+               <div style={{fontSize:25, padding:10}}>{labTransV2['Save and Restore'][language]['name']}</div>
+               <CircularButton onClick={this.restoreDefaultMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Restore selected product to factory settings'][language]['name']}/>
+               <CircularButton onClick={this.restoreBackupMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Restore selected product to base product'][language]['name']}/>
+               <CircularButton onClick={this.backupProductMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Save selected product to base product'][language]['name']}/>
         </div>
           </Modal>
-        <AlertModal ref={this.restoreFactorySettings} accept={this.restoreDefault}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to restore selected product?"}</div></AlertModal>
-        <AlertModal ref={this.restoreBaseProduct} accept={this.restoreBackup}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to restore selected product?"}</div></AlertModal>
-        <AlertModal ref={this.saveSelectedProduct} accept={this.backupProduct}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to save selected product?"}</div></AlertModal>
+        <AlertModal ref={this.restoreFactorySettings} accept={this.restoreDefault}><div style={{color:"#e1e1e1"}}>{labTransV2['Are you sure you want to restore selected product?'][language]['name']}</div></AlertModal>
+        <AlertModal ref={this.restoreBaseProduct} accept={this.restoreBackup}><div style={{color:"#e1e1e1"}}>{labTransV2['Are you sure you want to restore selected product?'][language]['name']}</div></AlertModal>
+        <AlertModal ref={this.saveSelectedProduct} accept={this.backupProduct}><div style={{color:"#e1e1e1"}}>{labTransV2['Are you sure you want to save selected product?'][language]['name']}</div></AlertModal>
         <MessageModal ref={this.msgm}/>
       </div>)
   }
@@ -5180,7 +5180,7 @@ class ProdSettingEdit extends React.Component{
   }
   onClick(){
     if(this.props.acc === false){
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
       //toast('Access Denied')
     }else if(typeof this.props.shortcut != 'undefined'){
       this.props.onShortcut(this.props.shortcut)
@@ -5346,10 +5346,10 @@ class ProdSettingEdit extends React.Component{
       var trnsmdl =   ''
       if(this.props.trans){
         trnsmdl = <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>Parameter Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+              <div style={{color:txtClr}}>{labTransV2['Parameter Name'][language]['name']+': '+ this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>{labTransV2['Current Language'][language]['name']+': '+ this.props.language}</div>
               <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
-              <button onClick={this.submitChange}>Submit Translation</button>
+              <button onClick={this.submitChange}>{labTransV2['Submit Translation'][language]['name']}</button>
         </Modal>
       }
        
@@ -5369,7 +5369,7 @@ class ProdSettingEdit extends React.Component{
       {ckb}
        <ContextMenu id={this.props.name + '_ctmid'}>
         <MenuItem onClick={this.translatePopup}>
-          Translate Setting
+          {labTransV2['Translate Setting'][language]['name']}
         </MenuItem>
       </ContextMenu>
        {trnsmdl}
@@ -5437,7 +5437,7 @@ class SettingsPageWSB extends React.Component{
     if(dat[0] == 'get_accounts'){
       this.setState({showAccounts:true, cal:false, update:true,mot:false})
     }else if(dat[0] == 'reboot_display'){
-      toast('Restarting Display')
+      toast(labTransV2['Restarting Display'][language]['name'])
       this.props.soc.emit('reboot')
     }else if(dat[0] == 'format_usb'){
       //toast('Restarting Display')
@@ -5489,10 +5489,10 @@ class SettingsPageWSB extends React.Component{
       {
         this.calibrationModal.current.show();      
       }else{
-        this.msgm.current.show('Batch needs to be ended prior to calibration.');
+        this.msgm.current.show(labTransV2['Batch needs to be ended prior to calibration'][language]['name']+ '.');
       }
     }else{
-      this.msgm.current.show('Access Denied');
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name']);
     }
   }
   closeCalibrationWindow(){
@@ -5528,11 +5528,11 @@ class SettingsPageWSB extends React.Component{
       <div> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
     }else if(this.state.cal){
-      var calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.startCalibration} lab={'Calibrate'}/>
+      var calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.startCalibration} lab={labTransV2['Calibrate'][language]['name']}/>
           </div>
           
     var calStuff = (  <div style={{background:'#e1e1e1', padding:10}}>
-       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Calibrate'][language]['name']}</div></h2></span>
           
           <div style={{marginTop:5}}>
           <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200}  label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.state.liveWeight, weightUnits)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
@@ -5599,10 +5599,10 @@ class SettingsPageWSB extends React.Component{
 
       <div>
         <div style={{background:'#e1e1e1', padding:10}}>
-       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Motor Control'}</div></h2></span>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Motor Control'][language]['name']}</div></h2></span>
           
         <div style={{marginTop:5}}>
-          <MotorControl motors={[{name:'Infeed Belt'},{name:'Weigh Table Belt'},{name:'Reject Belt'},{name:'Exit Belt'}]}/>
+          <MotorControl motors={[{name: labTransV2['Infeed Belt'][language]['name']},{name: labTransV2['Weigh Table Belt'][language]['name']},{name: labTransV2['Reject Belt'][language]['name']},{name: labTransV2['Exit Belt'][language]['name']}]}/>
         </div>
 
          </div>
@@ -5667,7 +5667,7 @@ class SettingsPage extends React.Component{
     super(props)
 
     this.state = ({
-     sysRec:this.props.sysSettings,curtrn:'Settings', prodRec:this.props.prodSettings, dynRec:this.props.dynSettings,font:2, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec,path:[]
+     sysRec:this.props.sysSettings,curtrn: labTransV2['Settings'][language]['name'], prodRec:this.props.prodSettings, dynRec:this.props.dynSettings,font:2, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec,path:[]
     });
     this.handleItemclick = this.handleItemclick.bind(this);
     this.scrollUp = this.scrollUp.bind(this);
@@ -6487,11 +6487,11 @@ class SettingsPage extends React.Component{
           }
           var sc = par['@data']
           if(par['@data'] == 'format_usb'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.formatUSB} lab={"Format USB"}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.formatUSB} lab={labTransV2['Format USB'][language]['name']}/></div>)
           }else if(par['@data'] == 'reboot_display'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.reboot} lab={"Reboot"}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.reboot} lab={labTransV2['Reboot'][language]['name']}/></div>)
           }else if(par['@data'] == 'update'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.update} lab={"Update"}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.update} lab={labTransV2['Update'][language]['name']}/></div>)
           }
 
          
@@ -6518,8 +6518,8 @@ class SettingsPage extends React.Component{
             {nodes}
             {ph}
            {pathString=='System/Advanced' && <div style={{marginTop:-20}}>
-             <button className="sItem" onClick={this.showFactoryResetMessage} style={{border:'5px solid red',width:200,height:60}}><p style={{marginTop:-8}}>Factory Reset</p></button>
-             <button className="sItem" onClick={()=>location.reload()} style={{border:'5px solid #818a90',width:200,height:60,marginLeft:40}}><p style={{marginTop:-8}}>Reconnect</p></button>
+             <button className="sItem" onClick={this.showFactoryResetMessage} style={{border:'5px solid red',width:200,height:60}}><p style={{marginTop:-8}}>{labTransV2['Factory Reset'][language]['name']}</p></button>
+             <button className="sItem" onClick={()=>location.reload()} style={{border:'5px solid #818a90',width:200,height:60,marginLeft:40}}><p style={{marginTop:-8}}>{labTransV2['Reconnect'][language]['name']}</p></button>
            </div>
            } 
           </div>)
@@ -6543,15 +6543,15 @@ class SettingsPage extends React.Component{
       catname = catMapV2[pathString]['@translations'][this.props.language]
     }
     var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>Parameter Name: { catname}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+              <div style={{color:txtClr}}>{labTransV2['Parameter Name'][language]['name']+': '+ catname}</div> 
+              <div style={{color:txtClr}}>{labTransV2['Current Language'][language]['name']+': '+ this.props.language}</div>
               <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
-              <button onClick={this.submitCatChange}>Submit Translation</button>
+              <button onClick={this.submitCatChange}>{labTransV2['Submit Translation'][language]['name']}</button>
         </Modal>
 
     var className = "menuCategory expanded";
     var tstl = {display:'inline-block', textAlign:'center'}
-    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}{label == 'System Setting Overrides' && <img src='assets/help.svg' onClick={this.showSystemSettingOverridesTooltip} style={{position:'absolute', width:30, left:780, backgroundColor:"black", borderRadius:'100%'}}/>}</div></h2></span>)
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}{label == labTransV2['System Setting Overrides'][language]['name'] && <img src='assets/help.svg' onClick={this.showSystemSettingOverridesTooltip} style={{position:'absolute', width:30, left:780, backgroundColor:"black", borderRadius:'100%'}}/>}</div></h2></span>)
     if (this.state.font == 1){
         titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
     }else if (this.state.font == 0){
@@ -6569,7 +6569,7 @@ class SettingsPage extends React.Component{
         </ContextMenuTrigger>
         <ContextMenu id={pathString+'_titleCTMID'}>
         <MenuItem onClick={this.translatePopup}>
-          Translate Setting
+          {labTransV2['Translate Setting'][language]['name']}
         </MenuItem>
         </ContextMenu>
 
@@ -6579,11 +6579,11 @@ class SettingsPage extends React.Component{
       <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
       <Modal ref={this.systemSettingsOverrides} systemSettingTooltip={'yes'}>
         <div style={{color:'#e1e1e1', whiteSpace:'break-spaces'}}>
-            <h2 style={{fontSize:20}}>System Settings Overrides</h2>
+            <h2 style={{fontSize:20}}>{labTransV2['System Settings Overrides'][language]['name']}</h2>
             {vdefMapV2['@tooltips']['SystemSettingsOverridesTooltip'][this.props.language]}
         </div>
       </Modal>
-      <AlertModal ref={this.factoryResetMessage} accept={this.factoryReset}><div style={{color:"#e1e1e1"}}>{"Are you sure?"}</div></AlertModal>
+      <AlertModal ref={this.factoryResetMessage} accept={this.factoryReset}><div style={{color:"#e1e1e1"}}>{labTransV2['Are you sure?'][language]['name']}</div></AlertModal>
       </div>
     );
   }
@@ -7830,10 +7830,10 @@ class MultiEditControl extends React.Component{
         }
 
        var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>Parameter Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+              <div style={{color:txtClr}}>{labTransV2['Parameter Name'][language]['name']+': '+  this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>{labTransV2['Current Language'][language]['name']+': '+this.props.language}</div>
               <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
-              <button onClick={this.submitChange}>Submit Translation</button>
+              <button onClick={this.submitChange}>{labTransV2['Submit Translation'][language]['name']}</button>
         </Modal>
         var lsedit = this.state.tlist.map(function (l,i) {
           return <tr><td style={{color:"#e1e1e1"}}>{self.state.elist[i]}</td><td><input type='text' value={l} onChange={(e) => self.lChange(e,i)}/></td></tr>
@@ -7841,9 +7841,9 @@ class MultiEditControl extends React.Component{
         })
         var listmdl = <Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
               <div style={{color:txtClr}}>List Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+              <div style={{color:txtClr}}>{labTransV2['Current Language'][language]['name']+': '+this.props.language}</div>
         <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
-              <button onClick={this.submitList}>Submit Translation</button>
+              <button onClick={this.submitList}>{labTransV2['Submit Translation'][language]['name']}</button>
         </Modal>
   if(iod){
       if(iogreen){
@@ -7892,7 +7892,7 @@ class MultiEditControl extends React.Component{
       <div style={{zIndex:3}}>
        <ContextMenu id={this.props.name + 'ctmid'}>
         <MenuItem onClick={this.translatePopup}>
-          Translate Setting
+        {labTransV2['Translate Setting'][language]['name']}
         </MenuItem>
        </ContextMenu>
       </div>
@@ -7958,9 +7958,9 @@ class MultiEditControl extends React.Component{
         })
       listmdl =  (<Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
               <div style={{color:txtClr}}>List Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+              <div style={{color:txtClr}}>{labTransV2['Current Language'][language]['name']+': '+this.props.language}</div>
         <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
-              <button onClick={this.submitList}>Submit Translation</button>
+              <button onClick={this.submitList}>{labTransV2['Submit Translation'][language]['name']}</button>
         </Modal>)
         options = <PopoutWheel getToolTip={this.getToolTip} submitTooltip={this.submitTooltip} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref={this.pw} val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
@@ -7989,7 +7989,7 @@ class MultiEditControl extends React.Component{
       <div style={{zIndex:3}}>
        <ContextMenu id={this.props.name + 'ctmid'}>
         <MenuItem onClick={this.translatePopup}>
-          Translate Setting
+        {labTransV2['Translate Setting'][language]['name']}
         </MenuItem>
         {popupmenu}
       </ContextMenu>
@@ -8138,7 +8138,7 @@ class MultiEditControl extends React.Component{
       <div style={{zIndex:3}}>
        <ContextMenu id={this.props.name + 'ctmid'}>
         <MenuItem onClick={this.translatePopup}>
-          Translate Setting
+        {labTransV2['Translate Setting'][language]['name']}
         </MenuItem>
         {popupmenu}
       </ContextMenu>
@@ -8777,7 +8777,7 @@ class StatControl extends React.Component{
     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
         <div>{this.props.vMap['english']['name']}</div>
         <div>
-          Current Language: {this.props.language}
+        {labTransV2['Current Language'][language]['name']+': '+ this.props.language}
         </div>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
          <button onClick={this.submit}>Submit Change</button>
