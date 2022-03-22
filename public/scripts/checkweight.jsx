@@ -8253,15 +8253,15 @@ class AccountControl extends React.Component{
   }
   render(){
     var self = this;
-    var levels = ['none','operator','technician','engineer']
-    var pw     =  <PopoutWheel inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref={this.pw} val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
-    var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-    var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
+    var levels = [labTransV2['none'][language]['name'],labTransV2['operator'][language]['name'],labTransV2['technician'][language]['name'],labTransV2['engineer'][language]['name']]
+    var pw     =  <PopoutWheel inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={labTransV2['Filter Events'][language]['name']} ref={this.pw} val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
+    var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={labTransV2['Username'][language]['name']}/>
+    var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={labTransV2['Password'][language]['name']}/>
     var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
     var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
     var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 
-    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Accounts'][language]['name']}</div></h2></span>)
     var st = {padding:7,display:'inline-block', width:180}
     
     var accTableRows = [];
@@ -8271,14 +8271,14 @@ class AccountControl extends React.Component{
     })
     
     var backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
-            <label style={{color:'#000', fontSize:24}}>{'Back'}</label></div>)
+            <label style={{color:'#000', fontSize:24}}>{labTransV2['Back'][language]['name']}</label></div>)
     var tstl = {display:'inline-block', textAlign:'center'}
-      var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+      var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>{labTransV2['Accounts'][language]['name']}</div></h2></span>)
       
       if (this.state.font == 1){
-        titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+        titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>{labTransV2['Accounts'][language]['name']}</div></h2></span>)
       }else if (this.state.font == 0){
-        titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+        titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>{labTransV2['Accounts'][language]['name']}</div></h2></span>)
       }
 
     return <div>
@@ -8327,7 +8327,7 @@ class AccountRow extends React.Component{
       this.setState({changed:false})
       this.ed.current.toggle();
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
     }
    
   }
@@ -8391,7 +8391,7 @@ class AccountRow extends React.Component{
     //////console.log(3243, this.props.mobile)
     var levels = ['0','1','2','3','4']
     
-    var namestring = 'User'+ this.props.uid
+    var namestring = labTransV2['User'][language]['name']+ this.props.uid
     //////////console.log(['2692',namestring])
       
     var dt = false;
@@ -8459,18 +8459,18 @@ class AccountRow extends React.Component{
           txtClr = '#000'
         }
       
-      var pw = this.state.username!='ADMIN' && <PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
-    var userkb = this.state.username!='ADMIN' && <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-    var pswdkb = <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
+      var pw = this.state.username!='ADMIN' && <PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={labTransV2['Set Level'][language]['name']}ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+    var userkb = this.state.username!='ADMIN' && <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={labTransV2['Username'][language]['name']}/>
+    var pswdkb = <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={labTransV2['Password'][language]['name']}/>
       
       var edit = <Modal mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
       <div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
 
-        <div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Username: '}
+        <div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{labTransV2['Username'][language]['name'] + ': '}
         </div>    <div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.username}</label></div></div>
-        <div style={{marginTop:5}} onClick={() => this.pswd.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Password: '}
+        <div style={{marginTop:5}} onClick={() => this.pswd.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{labTransV2['Password'][language]['name'] + ': '}
         </div>    <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div>
-        <div style={{marginTop:5}} onClick={() => this.pw.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Level: '}
+        <div style={{marginTop:5}} onClick={() => this.pw.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{labTransV2['Level'][language]['name'] + ': '}
         </div>    <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.acc}</label></div></div>
       </div>
         {pw}{userkb}{pswdkb}
@@ -8504,7 +8504,7 @@ class LogInControl2 extends React.Component{
     this.props.accounts.forEach(function(ac){
       list.push(ac.username + ' (level ' + ac.acc+')')
     })
-    list.unshift('Not Logged In')
+    list.unshift(labTransV2['Not Logged In'][language]['name'])
     this.state = {val:0, list:list, showAcccountControl:false, open:false}
     this.enterPIN = this.enterPIN.bind(this);
     this.valChanged = this.valChanged.bind(this);
@@ -8521,7 +8521,7 @@ class LogInControl2 extends React.Component{
     props.accounts.forEach(function(ac){
       list.push(ac.username +' (level ' + ac.acc+')')
     })
-    list.unshift('Not Logged In')
+    list.unshift(labTransV2['Not Logged In'][language]['name'])
     if(!this.props.isOpen){
 
       //this.setState({val:props.val, list:list})
@@ -8581,13 +8581,13 @@ class LogInControl2 extends React.Component{
       if(v.length == 6){
         this.props.authenticate(this.state.val,v)
       }else{
-        this.msgm.current.show('Password should be 6 characters')
+        this.msgm.current.show(labTransV2['Password should be 6 characters'][language]['name'])
       }
     }else{
       if(v.length == 4){
         this.props.authenticate(this.state.val,v)
       }else{
-        this.msgm.current.show('Password should be 4 characters')
+        this.msgm.current.show(labTransV2['Password should be 4 characters'][language]['name'])
       }
     }
     
@@ -8596,7 +8596,7 @@ class LogInControl2 extends React.Component{
     if(this.props.level > 2){
       this.setState({showAcccountControl:!this.state.showAcccountControl})
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
     }
     
   }
@@ -8612,11 +8612,11 @@ class LogInControl2 extends React.Component{
 
   render(){
     var list = this.state.list
-    var namestring = 'Select User'
+    var namestring = labTransV2['Select User'][language]['name']
     var pw = <PopoutWheel inputs={inputSrcArr} tooltipOv={true} tooltip={vdefMapV2['@tooltips']['Select User'][this.props.language]} outputs={outputSrcArr} ovWidth={290} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
 
     return <React.Fragment>{pw}
-      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
+      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={labTransV2['Password'][language]['name']}/>
     <MessageModal ref={this.msgm}/>
     </React.Fragment> 
   }
@@ -8648,18 +8648,18 @@ class UserPassReset extends React.Component{
       if(v.length == 6){
         this.props.resetPassword(this.state.pack,v)
       }else{
-        this.msgm.current.show('Password should be 6 characters')
+        this.msgm.current.show(labTransV2['Password should be 6 characters'][language]['name'])
       }
     }else{
       if(v.length == 4){
         this.props.resetPassword(this.state.pack,v)
       }else{
-        this.msgm.current.show('Password should be 4 characters')
+        this.msgm.current.show(labTransV2['Password should be 4 characters'][language]['name'])
       }
     }
   }
   render(){
-    return <React.Fragment><CustomKeyboard mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Reset Password'}/>
+    return <React.Fragment><CustomKeyboard mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={labTransV2['Reset Password'][language]['name']}/>
     <MessageModal ref={this.msgm} />
     </React.Fragment>
   }
@@ -8736,7 +8736,7 @@ class StatSummary extends React.Component{
       
     }
   return  <div style={{width:260,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
-      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Reset PasswordSummary</div></div>
       <StatControl language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange}/>
       <StatControl language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={'Gross Weight'}  submitChange={this.props.submitChange} value={grswt}/>
       <StatControl language={this.props.language} vMap={vMapV2['PkgWeight']['@translations']} pram={'PkgWeight'} name={vMapV2['PkgWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value={pkgwgt}/>
