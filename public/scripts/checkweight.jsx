@@ -6764,10 +6764,10 @@ class SettingItem3 extends React.Component{
     var self = this
     if(this.props.dynSettings['BatchRunning'] != 0){
       if(n['@locked_by_batch']){
-        this.msgm.current.show('Cannot change this setting while running the batch.')
+        this.msgm.current.show(labTransV2['Cannot change this setting while running the batch'][language]['name']+ '.')
       }
       if(n['@labels'] == 'WeighingMode'){
-        this.msgm.current.show('Can not change this setting while running the batch.')
+        this.msgm.current.show(labTransV2['Cannot change this setting while running the batch'][language]['name']+ '.')
       }
     }
 
@@ -6803,7 +6803,7 @@ class SettingItem3 extends React.Component{
   }
   onItemClick(v){
     if(v == true){
-      toast('Not Configurable')
+      toast(labTransV2['Not Configurable'][language]['name'])
     }else{
 
 
@@ -6816,7 +6816,7 @@ class SettingItem3 extends React.Component{
           if(this.props.backdoor == true ){
 
           }else{
-            this.msgm.current.show('Access Denied')
+            this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
           }
           //toast('Access Denied')  
         }   
@@ -7522,11 +7522,11 @@ class MultiEditControl extends React.Component{
       }
     
     if(this.props.disabled){
-      this.msgm.current.show('This setting is currently disabled')
+      this.msgm.current.show(labTransV2['This setting is currently disabled'][language]['name'])
     }else if(this.props.pAcc === false){
       //toast('Access Denied')
       if(acc){
-        this.msgm.current.show('Access Denied')
+        this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
       }
       
     }else if(!this.props.ov){
@@ -7840,7 +7840,7 @@ class MultiEditControl extends React.Component{
           // body...
         })
         var listmdl = <Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>List Name: { this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>{labTransV2['List Name'][language]['name'] +': ' + this.props.vMap['@translations']['english']['name']}</div> 
               <div style={{color:txtClr}}>{labTransV2['Current Language'][language]['name']+': '+this.props.language}</div>
         <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
               <button onClick={this.submitList}>{labTransV2['Submit Translation'][language]['name']}</button>
@@ -7857,9 +7857,9 @@ class MultiEditControl extends React.Component{
         vfdsetupbutt =<Modal ref={this.vfdSModal} mobile={this.props.mobile} innerStyle={{background:modBG}}>
 
         <div>
-          <div style={{color:txtClr}}>To set up this VFD unit, make sure all other VFD units are disconnected first. Press confirm to carry on with the setup.</div>
-        <div onPointerUp={this.vfdSetup} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}> <div style={{display:'inline-block'}}>Confirm</div></div>
-        <div onPointerUp={()=>this.vfdSModal.current.toggle()} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}><div style={{display:'inline-block'}}>Cancel</div></div> 
+          <div style={{color:txtClr}}>{labTransV2['To set up this VFD unit...'][language]['name'] + '.'}</div>
+        <div onPointerUp={this.vfdSetup} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}> <div style={{display:'inline-block'}}>{labTransV2['Confirm'][language]['name']}</div></div>
+        <div onPointerUp={()=>this.vfdSModal.current.toggle()} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}><div style={{display:'inline-block'}}>{labTransV2['Cancel'][language]['name']}</div></div> 
     </div></Modal>
       }
     if(!acc){
@@ -7868,9 +7868,9 @@ class MultiEditControl extends React.Component{
         vfdbutts = <Modal ref={this.vfdModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
 
         <div>
-          <div style={{color:txtClr}}>VFD Test</div>
-        <div onPointerUp={this.vfdStart} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plArr} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
-        <div onPointerUp={this.vfdStop} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plStop} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+          <div style={{color:txtClr}}>{labTransV2['VFD Test'][language]['name']}</div>
+        <div onPointerUp={this.vfdStart} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plArr} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Text'][language]['name']}</div></div>
+        <div onPointerUp={this.vfdStop} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plStop} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Stop'][language]['name']}</div></div> 
       </div></Modal>
        } 
 
@@ -7913,7 +7913,7 @@ class MultiEditControl extends React.Component{
       var options;
       //TODO - TRANSLATE LISTS
       if(multiDropdown){
-         popupmenu = <MenuItem onClick={this.translateLists}>Translate List</MenuItem>
+         popupmenu = <MenuItem onClick={this.translateLists}>{labTransV2['Translate List'][language]['name']}</MenuItem>
         var lists = this.props.param.map(function (p) {
           if(p['@name'].indexOf('TestConfigCount') != -1){
             return [0,1,2,3,4,5,6,7,8,9]
@@ -7957,7 +7957,7 @@ class MultiEditControl extends React.Component{
           // body...
         })
       listmdl =  (<Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>List Name: { this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>{labTransV2['List Name'][language]['name'] +': ' + this.props.vMap['@translations']['english']['name']}</div> 
               <div style={{color:txtClr}}>{labTransV2['Current Language'][language]['name']+': '+this.props.language}</div>
         <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
               <button onClick={this.submitList}>{labTransV2['Submit Translation'][language]['name']}</button>
@@ -8002,7 +8002,7 @@ class MultiEditControl extends React.Component{
       }else{
         options = this.state.val.map(function(v, i){
           if(typeof self.props.param[i]['@labels'] != 'undefined'){
-            popupmenu = <MenuItem onClick={this.translateLists}>Translate List</MenuItem>
+            popupmenu = <MenuItem onClick={this.translateLists}>{labTransV2['Translate List'][language]['name']}</MenuItem>
 
             var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
             
