@@ -4815,14 +4815,14 @@ class ProductSettings extends React.Component{
         </div>
         <div style={{height:339}}>
           <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={nwgt} param={vdefByMac[this.props.mac][1][1]['NominalWgt']} tooltip={vMapV2['NominalWgt']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Over Weight Limit'} value={ovwgt} param={vdefByMac[this.props.mac][1][1]['OverWeightLim']} tooltip={vMapV2['OverWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Nominal Weight'][language]['name']} value={nwgt} param={vdefByMac[this.props.mac][1][1]['NominalWgt']} tooltip={vMapV2['NominalWgt']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Over Weight Limit'][language]['name']} value={ovwgt} param={vdefByMac[this.props.mac][1][1]['OverWeightLim']} tooltip={vMapV2['OverWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             {this.props.curProd['WeighingMode'] != 1 &&
-              <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Under Weight Limit'} value={udwgt} param={vdefByMac[this.props.mac][1][1]['UnderWeightLim']} tooltip={vMapV2['UnderWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+              <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Under Weight Limit'][language]['name']} value={udwgt} param={vdefByMac[this.props.mac][1][1]['UnderWeightLim']} tooltip={vMapV2['UnderWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             }
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Packaging Weight'} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} tooltip={vMapV2['EyePkgLength']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}  tooltip={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true} shortcut={[4]} onShortcut={this.onShortcut} /></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Packaging Weight'][language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Product Length'][language]['name']} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} tooltip={vMapV2['EyePkgLength']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Belt Speed'][language]['name']} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}  tooltip={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true} shortcut={[4]} onShortcut={this.onShortcut} /></div>
           </div>
           
           <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
@@ -9995,10 +9995,10 @@ class PlanBatchStart extends React.Component{
     return (
     <Modal x ref={this.md}>
     <div>
-    <div style={{font:25, color:'#e1e1e1'}}>Select Batch</div>
+    <div style={{font:25, color:'#e1e1e1'}}>{labTransV2['Select Batch'][language]['name']}</div>
     <div style={{overflowY:'scroll', maxHeight:396}}>{plannedBatchesStart}</div></div>
     <div style={{mmarginLeft:340}}>
-     <div onClick={this.onConfirm} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Start Batch'}</div></div></div>
+     <div onClick={this.onConfirm} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Batch'][language]['name']}</div></div></div>
     </Modal>)
   }
 }
@@ -10056,13 +10056,13 @@ class ManBatchStart extends React.Component{
     if(vdefByMac[this.props.mac]){
       return <Modal x ref={this.md}>
     <div style={{background:'#e1e1e1',padding:10}}>
-      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Start New Batch'}</div></h2></span>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Start New Batch'][language]['name']}</div></h2></span>
      
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
     <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.state.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>      
     <div style={{marginTop:140,marginLeft:340}}>
-    <div onClick={this.addBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Start Batch'}</div></div>  
+    <div onClick={this.addBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Batch'][language]['name']}</div></div>  
     </div>
     </div>
     </Modal>
@@ -10217,7 +10217,7 @@ class BatchControl extends React.Component{
     
       this.addModal.current.toggle();
      }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
     }
   }
   addnewBatch(bat){
@@ -10321,9 +10321,9 @@ class BatchControl extends React.Component{
         bgc = '#7ccc7c'
       } 
       return <div  style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
-        <div>Batch Id: {bat['PlanBatchId']}</div>
-        <div>Batch Ref: {bat['PlanBatchRef']}</div>
-       <div>Product: {prMap[bat['PlanProdNum']]}</div>
+        <div>{labTransV2['Batch Id'][language]['name']+ ': '+ bat['PlanBatchId']}</div>
+        <div>{labTransV2['Batch Ref'][language]['name']+ ': ' + bat['PlanBatchRef']}</div>
+       <div>{labTransV2['Product'][language]['name']+': '+ prMap[bat['PlanProdNum']]}</div>
         </div>
       // body...
     })
@@ -10331,19 +10331,19 @@ class BatchControl extends React.Component{
     var pl = 'assets/play-arrow-fti.svg'
     var stp = 'assets/stop-fti.svg'
     var batchInfo = <div style={{height:315}}>
-      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
-      <div style={{padding:5}}>Batch stopped</div></div>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Batch'][language]['name']}</div></h2></span>
+      <div style={{padding:5}}>{labTransV2['Batch Stopped'][language]['name']}</div></div>
     var play, stop;
 
     if(this.props.start){
-      var sttxt = 'Start'
+      var sttxt = labTransV2['Start Text'][language]['name']
         
       play = <div onClick={this.onStartClick} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
-      stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FA2222', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+      stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FA2222', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Stop'][language]['name']}</div></div> 
 
     }else{
-      play = <div onClick={this.props.pause} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={'assets/pause.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause</div></div>
-      stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#F04040', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+      play = <div onClick={this.props.pause} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={'assets/pause.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Pause'][language]['name']}</div></div>
+      stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#F04040', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Stop'][language]['name']}</div></div> 
       batchInfo = <div style={{height:315}}>
          <span><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
          <div style={{padding:5}}>
@@ -10375,7 +10375,7 @@ class BatchControl extends React.Component{
     var valSt = {display:'table-cell', paddingLeft:5}
     var midSt = {display:'table-cell', width:'100%'}
     var dots = {borderBottom:'1px dotted', marginBottom:3}
-    var bmodes = ['Auto','Planned Batch', 'Manual Entry']
+    var bmodes = [labTransV2['Auto'][language]['name'],labTransV2['Planned Batch'][language]['name'], labTransV2['Manual Entry'][language]['name']]
     // console.log('vMapLists', vMapLists)
     var passPer = 0;
     if(typeof this.props.crec['PassWeightPer'] != 'undefined'){
@@ -10399,32 +10399,32 @@ class BatchControl extends React.Component{
     }
 
     if (weighingMode == 1) {   
-      var lowPass = "Between T1/T2"
+      var lowPass = vMapV2['BetweenT1T2']['@translations'][language]['name']
       }
       else {
-        var lowPass = "Low Pass"
+        var lowPass = vMapV2['LowPassCnt']['@translations'][language]['name'] 
       }
 
     var batchSummary = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ? 
         <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
-          <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch ID'].value}</div></div>
-          <div><div style={titleSt}>Batch Ref</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Ref'].value}</div></div>
-          <div><div style={titleSt}>Product</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fontSize}}>{this.state.bRec['Product Name'].value.trim()}</div></div></div>
-          <div><div style={titleSt}>Start Time</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Start Time'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch ID'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch Ref'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Ref'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Product'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fontSize}}>{this.state.bRec['Product Name'].value.trim()}</div></div></div>
+          <div><div style={titleSt}>{labTransV2['Start Time'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Start Time'].value}</div></div>
         </div>
         :
         <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
-          <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batNum}</div></div>
-          <div><div style={titleSt}>Batch Ref</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batRef}</div></div>
-          <div><div style={titleSt}>Product</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fSize}}>{prodName}</div></div></div>
-          <div><div style={titleSt}>Start Time</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{bstartTime}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batNum}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch Ref'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batRef}</div></div>
+          <div><div style={titleSt}>{labTransV2['Product'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fSize}}>{prodName}</div></div></div>
+          <div><div style={titleSt}>{labTransV2['Start Time'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{bstartTime}</div></div>
         </div>
 
     var batchInfo = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ? 
         <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5, whiteSpace:'nowrap'}}>
-          <div style={{textAlign:'center'}}>Batch Information</div>
+          <div style={{textAlign:'center'}}>{labTransV2['Batch Information'][language]['name']}</div>
           <div style={{fontSize:15}}>
-          <div><div style={titleSt}>Total Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Total Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Weight'].value), this.props.srec['WeightUnits'])}</div></div>
           <div><div style={titleSt}>Passed Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
           <div><div style={titleSt}>Passed Weight Percentage</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Percentage weight passed'].value}</div></div>
           <div><div style={titleSt}>Lowest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Lowest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
