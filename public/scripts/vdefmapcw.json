@@ -12669,6 +12669,671 @@
       "turkish": {
         "name": ""
       }
+    },
+    "Passed Weight": {
+      "english": {
+        "name": "Passed Weight"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Passed Weight Percentage": {
+      "english": {
+        "name": "Passed Weight Percentage"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Lowest Weight": {
+      "english": {
+        "name": "Lowest Weight"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Highest Weight": {
+      "english": {
+        "name": "Highest Weight"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Average Weight": {
+      "english": {
+        "name": "Average Weight"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Standard Deviation": {
+      "english": {
+        "name": "Standard Deviation"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Total Giveaway": {
+      "english": {
+        "name": "Total Giveaway"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Packs Per Minute": {
+      "english": {
+        "name": "Packs Per Minute"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Batch Weights": {
+      "english": {
+        "name": "Batch Weights"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Good": {
+      "english": {
+        "name": "Good"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Low Reject": {
+      "english": {
+        "name": "Low Reject"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "High": {
+      "english": {
+        "name": "High"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Unsettled": {
+      "english": {
+        "name": "Unsettled"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Check Weight": {
+      "english": {
+        "name": "Check Weight"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Metal Reject": {
+      "english": {
+        "name": "Metal Reject"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Total": {
+      "english": {
+        "name": "Total"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Batch Settings": {
+      "english": {
+        "name": "Batch Settings"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Past Batches": {
+      "english": {
+        "name": "Past Batches"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Download CSV": {
+      "english": {
+        "name": "Download CSV"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
     }
   },
   "@acc": {

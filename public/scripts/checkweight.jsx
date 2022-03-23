@@ -10425,62 +10425,62 @@ class BatchControl extends React.Component{
           <div style={{textAlign:'center'}}>{labTransV2['Batch Information'][language]['name']}</div>
           <div style={{fontSize:15}}>
           <div><div style={titleSt}>{labTransV2['Total Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Weight'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Passed Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Passed Weight Percentage</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Percentage weight passed'].value}</div></div>
-          <div><div style={titleSt}>Lowest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Lowest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Highest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Highest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Nominal Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.prod['NominalWgt'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Average Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Avg Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Standard Deviation</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Std Dev Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Total Giveaway</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Giveaway'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Packs Per Minute</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.state.bRec['Packs Per Minute'].value,1)}</div></div>
+          <div><div style={titleSt}>{labTransV2['Passed Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Passed Weight Percentage'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Percentage weight passed'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Lowest Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Lowest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Highest Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Highest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Nominal Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.prod['NominalWgt'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Average Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Avg Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Standard Deviation'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Std Dev Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Total Giveaway'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Giveaway'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Packs Per Minute'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.state.bRec['Packs Per Minute'].value,1)}</div></div>
         </div></div>
         :
         <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5, whiteSpace:'nowrap'}}>
-          <div style={{textAlign:'center'}}>Batch Information</div>
+          <div style={{textAlign:'center'}}>{labTransV2['Batch Information'][language]['name']}</div>
           <div style={{fontSize:15}}>
-          <div><div style={titleSt}>Total Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['TotalWeight'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Passed Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['PassedWeight'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Passed Weight Percentage</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{passPer.toFixed(1)+ '%'}</div></div>
-          <div><div style={titleSt}>Lowest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['LowestWeight'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Highest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['HighestWeight'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Nominal Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.prod['NominalWgt'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Average Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['AvgWeight'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Standard Deviation</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['StdDev'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Total Giveaway</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['GiveawayBatch'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Packs Per Minute</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.props.crec['Batch_PPM'],1)}</div></div>
+          <div><div style={titleSt}>{labTransV2['Total Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['TotalWeight'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Passed Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['PassedWeight'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Passed Weight Percentage'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{passPer.toFixed(1)+ '%'}</div></div>
+          <div><div style={titleSt}>{labTransV2['Lowest Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['LowestWeight'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Highest Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['HighestWeight'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Nominal Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.prod['NominalWgt'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Average Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['AvgWeight'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Standard Deviation'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['StdDev'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Total Giveaway'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['GiveawayBatch'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Packs Per Minute'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.props.crec['Batch_PPM'],1)}</div></div>
         </div></div>
 
       var batchWeights = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ?
-        <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>Batch Weights</div>
+        <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>{labTransV2['Batch Weights'][language]['name']}</div>
           <div>
           <div style={{fontSize:17, whiteSpace:'nowrap'}}>
-          <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Good Weights'].value}</div></div>
-          <div><div style={titleSt}>Low Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Under Weights'].value}</div></div>
-          <div><div style={titleSt}>High</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Over Weights'].value}</div></div>
-          <div><div style={titleSt}>Unsettled</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Unsettled Weights'].value}</div></div>
-          <div><div style={titleSt}>Check Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Check Weights'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Good'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Good Weights'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Low Reject'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Under Weights'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['High'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Over Weights'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Unsettled'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Unsettled Weights'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Check Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Check Weights'].value}</div></div>
           </div> 
           </div>
         </div>
         :
-        <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>Batch Weights</div>
+        <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>{labTransV2['Batch Weights'][language]['name']}</div>
           <div>
            <div style={{fontSize:17, whiteSpace:'nowrap'}}>
-          <div><div style={titleSt}>Check Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['CheckWeightCnt']}</div></div>
-          <div><div style={titleSt}>Metal Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['MetalRejectCnt']}</div></div>
-          <div><div style={titleSt}>Unsettled</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['UnsettledCnt']}</div></div>
-          <div><div style={titleSt}>High</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['HighCnt']}</div></div>
-          <div><div style={titleSt}>Low Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowRejCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['Check Weight'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['CheckWeightCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['Metal Reject'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['MetalRejectCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['Unsettled'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['UnsettledCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['High'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['HighCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['Low Reject'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowRejCnt']}</div></div>
           <div><div style={titleSt}>{lowPass}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowPassCnt']}</div></div>
-          <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
-          <div><div style={titleSt}>Total</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['TotalCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['Good'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
+          <div><div style={titleSt}>{labTransV2['Total'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['TotalCnt']}</div></div>
           </div> 
           </div>
         </div>
          
     var bmodeSelect =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[vdefByMac[this.props.mac][1][0]['BatchMode']]} ioBits={this.props.ioBits} vMap={vMapV2['BatchMode']} language={this.props.language}  interceptor={false} name={'Batch Mode'} ref={this.ed} val={[this.state.startMode]} options={[bmodes]} onChange={this.selectChanged}/>
-    var changeModeBut = <div onClick={this.batchSettings} style={{display:'table-cell',height:80, borderRight:'2px solid #362c66', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}>Batch Settings</div>
+    var changeModeBut = <div onClick={this.batchSettings} style={{display:'table-cell',height:80, borderRight:'2px solid #362c66', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}>{labTransV2['Batch Settings'][language]['name']}</div>
     var bHisto = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ? 
         <BatchHistogram unit={this.props.weightUnits} ref={this.bhg} ovHisto={true} histo={this.state.bRec['Histogram Buckets']} refreshHisto={this.refreshHisto}/>
         :
@@ -10515,9 +10515,9 @@ class BatchControl extends React.Component{
           }
           //bat.stats.birthtime.slice(0,-1).split('T').join(' ')
           return <div onClick={() => self.onPastBatchClick(bat.id)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
-            <div>Batch Id: {info[0]}</div>
-            <div>Batch Ref: {info[1]}</div>
-            <div>Product: {info[2].replace('.json','')}</div>
+            <div>{labTransV2['Batch Id'][language]['name']+': '+ info[0]}</div>
+            <div>{labTransV2['Batch Ref'][language]['name']+ ': ' + info[1]}</div>
+            <div>{labTransV2['Product'][language]['name']+': '+ info[2].replace('.json','')}</div>
             </div>
      
         }) 
@@ -10525,9 +10525,9 @@ class BatchControl extends React.Component{
 
    
         batchList = <div style={{width:300, background:'#e1e1e1', border:'2px solid #e1e1e1', height:515, marginLeft:5, marginRight:5, marginBottom:0}}>
-          <div style={{height:450}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>Past Batches</div><div style={{height:388, overflowY:'scroll'}}>{pastBatches}</div></div>
+          <div style={{height:450}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>{labTransV2['Past Batches'][language]['name']}</div><div style={{height:388, overflowY:'scroll'}}>{pastBatches}</div></div>
           <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
-          <div onClick={this.downloadBatch} style={{display:'table-cell',color:(this.props.usb ? '#000': '#888'),height:66, width:300, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>Download CSV</div>
+          <div onClick={this.downloadBatch} style={{display:'table-cell',color:(this.props.usb ? '#000': '#888'),height:66, width:300, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>{labTransV2['Download CSV'][language]['name']}</div>
           </div></div>
           if(this.state.selID.length > 0){
             if(typeof this.state.bRec['Batch ID']!='undefined')
@@ -10698,9 +10698,9 @@ class PlannedBatches extends React.Component{
         del =  <img src='assets/trash.svg' style={{width:30}} onClick={()=>self.deleteBatch(bat['PlanBatchId'])}/>
       
       return  <div style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc, display:'grid', gridTemplateColumns:'260px 40px'}}>
-        <div  onClick={() => self.onBatchClick(i)}><div>Batch Id: {bat['PlanBatchId']}</div>
-        <div>Batch Ref: {bat['PlanBatchRef']}</div>
-        <div>Product: {self.props.prMap[bat['PlanProdNum']]}</div>
+        <div  onClick={() => self.onBatchClick(i)}><div>{labTransV2['Batch Id'][language]['name']+': '+ bat['PlanBatchId']}</div>
+        <div>{labTransV2['Batch Ref'][language]['name']+ ': ' + bat['PlanBatchRef']}</div>
+        <div>{labTransV2['Product'][language]['name']+ ': '+ self.props.prMap[bat['PlanProdNum']]}</div>
         </div><div style={{display:'flex', textAlign:'center'}}>
          {del}
         </div>
