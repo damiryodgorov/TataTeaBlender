@@ -8736,7 +8736,7 @@ class StatSummary extends React.Component{
       
     }
   return  <div style={{width:260,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
-      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Reset PasswordSummary</div></div>
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>{labTransV2['Summary'][language]['name']}</div></div>
       <StatControl language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange}/>
       <StatControl language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={'Gross Weight'}  submitChange={this.props.submitChange} value={grswt}/>
       <StatControl language={this.props.language} vMap={vMapV2['PkgWeight']['@translations']} pram={'PkgWeight'} name={vMapV2['PkgWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value={pkgwgt}/>
@@ -8771,7 +8771,7 @@ class StatControl extends React.Component{
     var uid = uuidv4()
     return <div style={{height:61}}>
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
-    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>{labTransV2['Translate'][language]['name']}</MenuItem></ContextMenu>
     </div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:25}}>{this.props.value}</div>
     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
@@ -8780,7 +8780,7 @@ class StatControl extends React.Component{
         {labTransV2['Current Language'][language]['name']+': '+ this.props.language}
         </div>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
-         <button onClick={this.submit}>Submit Change</button>
+         <button onClick={this.submit}>{labTransV2['Submit Change'][language]['name']}</button>
         </Modal>
     </div>
   }
@@ -8854,7 +8854,7 @@ class StatDisplay extends React.Component{
           },100)
      
           }else{
-            this.msgm.current.show('Access Denied')
+            this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
           }      
     }
   }
@@ -8984,11 +8984,11 @@ class BatchStatControl extends React.Component{
     }
     return <div style={{height:61}}>
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
-    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu></div>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>{labTransV2['Translate'][language]['name']}</MenuItem></ContextMenu></div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:batchFont, whiteSpace:'nowrap'}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
      <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
-         <button onClick={this.submit}>Submit Change</button>
+         <button onClick={this.submit}>{labTransV2['Submit Change'][language]['name']}</button>
         </Modal>
     </div>
   }
@@ -9078,7 +9078,7 @@ class StatusElem extends React.Component{
     var innerWidth = Math.min((this.props.width*0.55),160);
     var innerFont = Math.min(Math.floor(this.props.font/2), 16);
       var bg = 'transparent';
-  var str = 'Connecting...'
+  var str = labTransV2['Connecting...'][language]['name']
   var fault = false
 
 var prodFont = 25;
@@ -9111,13 +9111,13 @@ if(prodName.length > 17){
   if(this.props.warnings.length != 0){
     if(this.props.warnings.length == 1){
       if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
-        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' '+ labTransV2['Active'][language]['name']
       }else{
-        str = this.props.warnings[0] + ' active'  
+        str = this.props.warnings[0] + ' '+ labTransV2['Active'][language]['name']  
       }
       
     }else{
-      str = this.props.warnings.length + ' warnings active'
+      str = this.props.warnings.length + ' '+ labTransV2['Warnings Active'][language]['name']
     }
     fault = true
     outerbg = 'orange'
@@ -9125,13 +9125,13 @@ if(prodName.length > 17){
   if(this.props.faults.length != 0){
      if(this.props.faults.length == 1){
       if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
-        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' '+ labTransV2['Fault Active'][language]['name']
       }else{
-        str = this.props.faults[0] + ' active'  
+        str = this.props.faults[0] + ' '+ labTransV2['Active'][language]['name'] 
       }
       
     }else{
-      str = this.props.faults.length + ' faults active'
+      str = this.props.faults.length + ' '+ labTransV2['Faults Active'][language]['name']
     }
     fault = true
     outerbg = 'red'
@@ -9149,7 +9149,7 @@ if(prodName.length > 17){
       <div style={{display:'grid', gridTemplateColumns:'160px auto'}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div><div style={{display:'inline-block', fontSize:prodFont, textAlign:'center', lineHeight:'25px', verticalAlign:'top'}}>{this.props.prodName}</div></div>
        <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:25, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'middle'}} onClick={()=>this.toggleFault(fault)}>{this.props.weighingMode==1 && str==='Low Pass' ? 'between T1/T2':str}</div></div>
           <Modal ref={this.fModal} innerStyle={{background:modBg}}>
-            <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>Faults</div></div>
+            <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][language]['name']}</div></div>
      
           <FaultDiv branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
@@ -9242,16 +9242,16 @@ class BatchPackCountGraph extends React.Component{
 		var yDomin = [0, 5]
     var selData;
     var bText;
-    var bsttxt = 'Batch Started at: '+this.state.batchStartTime
+    var bsttxt = labTransV2['Batch Started at'][language]['name'] +': '+this.state.batchStartTime
     var max = 0;
     var showCount = false
     if(this.state.batch){
-      bText = 'Batch'
+      bText = labTransV2['Batch'][language]['name']
       showCount = ((this.props.bRunning != 0) && (this.props.bCount != 0) && (this.state.batchData[0] > 0))
       selData = this.state.batchData.slice(0)
     }else{
-      bText = 'Sample'
-      bsttxt = 'Sample Started at: '+this.state.sampleStartTime
+      bText = labTransV2['Sample'][language]['name']
+      bsttxt = labTransV2['Sample Started at'][language]['name'] +': '+this.state.sampleStartTime
       selData = this.state.sampleData.slice(0)
     }
     
@@ -9289,7 +9289,7 @@ class BatchPackCountGraph extends React.Component{
 		//var hh = 
 		return <div style={{position:'relative',width:380, height:515,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
-			<div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>Statistics</div></div>
+			<div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>{labTransV2['Statistics'][language]['name']}</div></div>
       <div style={{position:'absolute', left:295, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
       <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
 		<XYPlot	height={430} width= {380} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal' xDomain={xDm}>		
@@ -9376,14 +9376,14 @@ class BatchBarGraph extends React.Component{
     var yDomin = [0, 5]
     var selData;
     var bText;
-    var bsttxt = 'Batch Started at: '+this.state.batchStartTime
+    var bsttxt = labTransV2['Batch Started at'][language]['name']+ ': '+this.state.batchStartTime
     if(this.state.batch){
-      bText = 'Batch'
+      bText = labTransV2['Batch'][language]['name']
 
       selData = this.state.batchData.slice(0)
     }else{
-      bText = 'Sample'
-      bsttxt = 'Sample Started at: '+this.state.sampleStartTime
+      bText = labTransV2['Sample'][language]['name']
+      bsttxt = labTransV2['Sample Started at'][language]['name'] +': '+this.state.sampleStartTime
       selData = this.state.sampleData.slice(0)
     }
     var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
@@ -9400,7 +9400,7 @@ class BatchBarGraph extends React.Component{
     //var hh = 
     return <div style={{position:'relative',width:380, height:515,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
-      <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>Statistics</div></div>
+      <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>{labTransV2['Statistics'][language]['name']}</div></div>
       <div style={{position:'absolute', left:295, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
       <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
     <XYPlot height={430} width= {380} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal'>    
@@ -9509,13 +9509,13 @@ class MainHistogram extends React.Component{
 
 		if(this.props.faults.length == 1){
 			if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
-        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' '+labTransV2['Fault Active'][language]['name']
       }else{
-        str = this.props.faults[0] + ' active'  
+        str = this.props.faults[0] + ' '+labTransV2['Active'][language]['name']  
       }
       
 		}else{
-			str = this.props.faults.length + ' faults active'
+			str = this.props.faults.length + ' '+labTransV2['Faults Active'][language]['name']  
 		}
 		fault == true
 	}
@@ -9523,20 +9523,20 @@ class MainHistogram extends React.Component{
 
     if(this.props.warnings.length == 1){
       if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
-        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' '+labTransV2['Active'][language]['name']
       }else{
-        str = this.props.warnings[0] + ' active'  
+        str = this.props.warnings[0] + ' '+labTransV2['Active'][language]['name']  
       }
       
     }else{
-      str = this.props.warnings.length + ' warnings active'
+      str = this.props.warnings.length + ' '+labTransV2['Warnings Active'][language]['name']
     }
     fault == true
   }
 
 
   if(this.props.connected == false){
-    str = 'Not Connected'
+    str = labTransV2['Not Connected'][language]['name']
   }
   var  xyplot = <WeightHistogram sendPacket={this.props.sendPacket} buckMin={this.props.buckMin} buckMax={this.props.buckMax} buckets={this.props.buckets} bucketSize={this.props.bucketSize} unit={this.props.weightUnits} ref={this.histo} nom={this.props.nominalWeight} stdev={this.props.stdev}/>
   
@@ -9699,7 +9699,7 @@ class PackGraph extends React.Component{
 
     return  (
   <div>
-    <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Pack Graph</div></div>
+    <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['Pack Graph'][language]['name']}</div></div>
       
       <div style={{display:'grid', gridTemplateColumns:'auto auto'}}>
       
@@ -9923,7 +9923,7 @@ class BatchHistogram extends React.Component{
      
 
     return <div>
-    <div style={{marginBottom:10, textAlign:'center'}}>{'Batch Histogram'}
+    <div style={{marginBottom:10, textAlign:'center'}}>{labTransV2['Batch Histogram'][language]['name']}
     </div>
     <XYPlot xDomain={[0,this.state.bucketNum]} height={180} width={width} margin={{left:50,right:20,bottom:50,top:50}}>
       <XAxis tickFormat={val => ToFixed(val*factors[u],sigfigs[u])} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
@@ -9981,15 +9981,15 @@ class PlanBatchStart extends React.Component{
         bgc = '#7ccc7c'
       }
       return  <div onClick={() => self.onStartBatchClick(i)} style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
-        <div>Batch Id: {bat['PlanBatchId']}</div>
-        <div>Batch Ref: {bat['PlanBatchRef']}</div>
-       <div>Product: {prMap[bat['PlanProdNum']]}</div>
+        <div>{labTransV2['Batch Id'][language]['name']+': '+bat['PlanBatchId']}</div>
+        <div>{labTransV2['Batch Ref'][language]['name']+': '+ bat['PlanBatchRef']}</div>
+       <div>{labTransV2['Product'][language]['name']+': '+ prMap[bat['PlanProdNum']]}</div>
         </div>
       // body...
     })
     if(this.props.plannedBatches.length == 0){
       plannedBatchesStart = <div style={{color:'#e1e1e1'}}>
-        No Planned Batches found
+        {labTransV2['No Planned Batches found'][language]['name']}
       </div>
     }
     return (
