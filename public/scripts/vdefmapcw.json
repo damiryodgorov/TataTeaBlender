@@ -13334,6 +13334,881 @@
       "turkish": {
         "name": ""
       }
+    },
+    "Batch Mode": {
+      "english": {
+        "name": "Batch Mode"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Current Batch": {
+      "english": {
+        "name": "Current Batch"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Show Planned Batches": {
+      "english": {
+        "name": "Show Planned Batches"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Number of Packs": {
+      "english": {
+        "name": "Number of Packs"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "No Planned Batches": {
+      "english": {
+        "name": "No Planned Batches"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Planned Batches": {
+      "english": {
+        "name": "Planned Batches"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Add New Batch": {
+      "english": {
+        "name": "Add New Batch"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Edit Batch": {
+      "english": {
+        "name": "Add New Batch"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Resume": {
+      "english": {
+        "name": "Resume"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Live Weight": {
+      "english": {
+        "name": "Live Weight"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Add": {
+      "english": {
+        "name": "Add"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Start/Stop": {
+      "english": {
+        "name": "Start/Stop"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Device Time": {
+      "english": {
+        "name": "Device Time"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Date": {
+      "english": {
+        "name": "Date"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "DateTime_Word": {
+      "english": {
+        "name": "DateTime"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Daylight Savings": {
+      "english": {
+        "name": "Daylight Savings"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Set DateTime": {
+      "english": {
+        "name": "Set DateTime"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Time Zone": {
+      "english": {
+        "name": "Time Zone"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Confirm Action": {
+      "english": {
+        "name": "Confirm Action"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Delete Selected Product?": {
+      "english": {
+        "name": "Delete Selected Product? This will also delete all associated planned batches"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Delete Product": {
+      "english": {
+        "name": "Delete Product"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "This will make changes to current batch": {
+      "english": {
+        "name": "This will make changes to current batch"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Discard Changes": {
+      "english": {
+        "name": "Discard Changes"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "No Faults or Warnings": {
+      "english": {
+        "name": "No Faults or Warnings"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Fault type": {
+      "english": {
+        "name": "Fault type"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
     }
   },
   "@acc": {

@@ -10570,12 +10570,12 @@ class BatchControl extends React.Component{
           <div><div style={{display:'inline-block'}}><BatchWidget acc={this.props.startStopAcc} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.batchRunning} canStartBelts={this.props.canStartBelts} onStart={this.onStartClick} onResume={this.props.onResume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/></div>
             <div style={{display:'inline-block', float:'right'}}>
               <div style={{display:'none'}}>    
-              <CircularButton2  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.changeMode}><div style={{fontSize:20, lineHeight:'25px'}}><div>Batch Mode</div><div>{bmodes[this.state.startMode]}</div></div></CircularButton2>
-                  <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.pastBatches} lab={'Past Batches'}/>
+              <CircularButton2  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.changeMode}><div style={{fontSize:20, lineHeight:'25px'}}><div>{labTransV2['Batch Mode'][language]['name']}</div><div>{bmodes[this.state.startMode]}</div></div></CircularButton2>
+                  <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.pastBatches} lab={labTransV2['Past Batches'][language]['name']}/>
               </div>
                <div style={{height:80,lineHeight:'80px', background:'#e1e1e1', borderTop:'1px solid #ccc', marginTop:5, textAlign:'center'}}>
           {changeModeBut}
-         <div onClick={this.getPastBatches} style={{display:'table-cell',height:80, borderLeft:'2px solid #362c66',width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}><div style={{fontSize:18}}>{this.state.showMode == 0 ? 'Past Batches' : 'Current Batch'}</div></div>
+         <div onClick={this.getPastBatches} style={{display:'table-cell',height:80, borderLeft:'2px solid #362c66',width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}><div style={{fontSize:18}}>{this.state.showMode == 0 ? labTransV2['Past Batches'][language]['name'] : labTransV2['Current Batch'][language]['name']}</div></div>
           </div>
             </div>
 
@@ -10586,13 +10586,13 @@ class BatchControl extends React.Component{
               <ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'BatchMode'} vMap={vMapV2['BatchMode']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} 
               label={vMapV2['BatchMode']['@translations'][this.props.language]['name']} value={this.props.batchMode} param={vdefByMac[this.props.mac][1][0]['BatchMode']}
                editable={true} onEdit={this.selectChanged} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['BatchMode']['@translations'][this.props.language]['description']} listOverride={true} ovList={bmodes}/></div>
-              <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:400, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.showPlannedBatches} lab={'Show Planned Batches'}/>
+              <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:400, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.showPlannedBatches} lab={labTransV2['Show Planned Batches'][language]['name']}/>
             </div>
             </Modal>
             
             <Modal x={true} ref={this.startModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
             <div style={{height:400, overflowY:'scroll'}}>{plannedBatchesStart}</div>
-            <div> <div onClick={this.startPlannedBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Start Batch'}</div></div></div>
+            <div> <div onClick={this.startPlannedBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Batch'][language]['name']}</div></div></div>
     
             </Modal>
             <Modal x={true} ref={this.manModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
@@ -10716,10 +10716,10 @@ class PlannedBatches extends React.Component{
         packNum = batch['PlanNumPacks']
 
         batchInfo = <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
-          <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batNum}</div></div>
-          <div><div style={titleSt}>Batch Ref</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batRef}</div></div>
-          <div><div style={titleSt}>Product</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fSize}}>{prodName}</div></div></div>
-          <div><div style={titleSt}>Number of Packs</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batNum}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch Ref'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batRef}</div></div>
+          <div><div style={titleSt}>{labTransV2['Product'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fSize}}>{prodName}</div></div></div>
+          <div><div style={titleSt}>{labTransV2['Number of Packs'][language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
           
          </div>
         
@@ -10727,7 +10727,7 @@ class PlannedBatches extends React.Component{
 
     }else{
       if(this.props.plannedBatches.length == 0){
-        plannedBatches = <div>No Planned Batches</div>
+        plannedBatches = <div>{labTransV2['No Planned Batches'][language]['name']}</div>
       }
     }
 
@@ -10736,11 +10736,11 @@ class PlannedBatches extends React.Component{
       return <Modal x ref={this.md}>
       <div style={{display:'grid', gridTemplateColumns:'315px auto'}}>
         <div style={{margin:1, background:"#e1e1e1"}}>
-        <div style={{height:426}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>Planned Batches</div><div style={{height:362, overflowY:'scroll'}}>{plannedBatches}</div>
+        <div style={{height:426}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>{labTransV2['Planned Batches'][language]['name']}</div><div style={{height:362, overflowY:'scroll'}}>{plannedBatches}</div>
         </div>
           <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
-          <div onClick={this.addBatch} style={{display:'table-cell',height:66, borderRight:'2px solid #362c66', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>+ Add New Batch</div>
-          <div onClick={this.editBatch} style={{display:'table-cell',height:66, borderLeft:'2px solid #362c66',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>Edit Batch</div>
+          <div onClick={this.addBatch} style={{display:'table-cell',height:66, borderRight:'2px solid #362c66', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>{'+ ' + labTransV2['Add New Batch'][language]['name']}</div>
+          <div onClick={this.editBatch} style={{display:'table-cell',height:66, borderLeft:'2px solid #362c66',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>{labTransV2['Edit Batch'][language]['name']}</div>
            </div>          
         </div>
         <div style={{margin:1, background:"#e1e1e1"}}>
@@ -10790,7 +10790,7 @@ class BatchWidget extends React.Component{
     if(this.props.acc){
       this.props.onStart()
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
       //this.setState({start:true, pause:false})
     }
   }
@@ -10817,7 +10817,7 @@ class BatchWidget extends React.Component{
     if(this.props.acc){
       this.props.sendPacket('BatchEnd')
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
       //this.setState({start:true, pause:false})
     }
   }
@@ -10850,7 +10850,7 @@ class BatchWidget extends React.Component{
     // }
   
     // if CanStartBelts == 0
-    var sttxt = 'Start'
+    var sttxt = labTransV2['Start Text'][language]['name']
     play = <div  style={{width:250, borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#a9a9a9', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>{sttxt}</div></div>
     stop = ''
     if(this.props.batchRunning == 0){
@@ -10859,9 +10859,9 @@ class BatchWidget extends React.Component{
       }
     }
     else if(this.props.batchRunning == 2){
-        sttxt = 'Resume'
+        sttxt = labTransV2['Resume'][language]['name']
         play = <div onClick={this.onResumeClick} style={{width:114,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#11DD11', display:'inline-block',marginLeft:5, borderWidth:5,height:45}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>{sttxt}</div></div>
-        stop = <div onClick={this.stop} style={{width:114,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18, width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>End Batch</div></div> 
+        stop = <div onClick={this.stop} style={{width:114,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18, width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>{labTransV2['End Batch'][language]['name']}</div></div> 
         if(this.props.canStartBelts == 0){
           play = <div style={{width:114,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#a9a9a9', display:'inline-block',marginLeft:5, borderWidth:5,height:45}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>{sttxt}</div></div>
         }
@@ -10869,7 +10869,7 @@ class BatchWidget extends React.Component{
     }
     
     else if(this.props.batchRunning == 1){
-      play = <div onClick={this.pause} style={{width:250,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>Pause/Stop</div></div>
+      play = <div onClick={this.pause} style={{width:250,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>{labTransV2['Pause/Stop'][language]['name']}</div></div>
       stop = ''//<div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
     }
@@ -10885,8 +10885,8 @@ class BatchWidget extends React.Component{
     var innerWidth = 100;
     var innerFont = 14;
     var status = (<div style={{width:500}}>
-    <div style={{textAlign:'center', marginTop:5, fontSize:20}}><div><div style={{display:'inline-block', width:250}}>Net Weight: {this.props.netWeight}</div>
-    <div style={{display:'inline-block', width:250}}>Live Weight: {this.props.liveWeight}</div>
+    <div style={{textAlign:'center', marginTop:5, fontSize:20}}><div><div style={{display:'inline-block', width:250}}>{labTransV2['Net Weight'][language]['name']+': '+this.props.netWeight}</div>
+    <div style={{display:'inline-block', width:250}}>{labTransV2['Live Weight'][language]['name']+': '+this.props.liveWeight}</div>
     </div>
     <div>{this.props.status}</div></div>
     </div>)
@@ -10895,7 +10895,7 @@ class BatchWidget extends React.Component{
 
     return <div style={{display:'grid', gridTemplateColumns:"285px auto", background:'#e1e1e1', borderRadius:20,paddingLeft:5, marginTop:5, width:819}}>
       <div>{play}{stop} </div><div> {status}</div>
-        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
+        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['This will end the current batch. Confirm?'][language]['name']}</div></AlertModal>
         <MessageModal ref={this.msgm}/>
     </div>
   }
@@ -10936,14 +10936,14 @@ class AddBatch extends React.Component{
     })
    // console.log(6992, prodnames)
     return <div style={{background:'#e1e1e1',padding:10}}>
-      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Add New Batch'}</div></h2></span>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Add New Batch'][language]['name']}</div></h2></span>
      
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.props.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>   
         <div style={{marginTop:140,marginLeft:340}}>
 
-        <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={'Add'}/></div>
+        <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={labTransV2['Add'][language]['name']}/></div>
       
     </div>
   }
@@ -10977,12 +10977,12 @@ class EditBatch extends React.Component{
     })
    // console.log(6992, prodnames)
     return <div style={{background:'#e1e1e1',padding:10}}>
-      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Edit Batch'}</div></h2></span>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Edit Batch'][language]['name']}</div></h2></span>
      
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.props.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>   
-        <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={'Confirm'}/></div>
+        <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={labTransV2['Confirm'][language]['name']}/></div>
       
     </div>
   }
@@ -11017,13 +11017,13 @@ class ManBatch extends React.Component{
    // console.log(this.props.mac)
     if(vdefByMac[this.props.mac]){
       return <div style={{background:'#e1e1e1',padding:10}}>
-      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Start New Batch'}</div></h2></span>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Start New Batch'][language]['name']}</div></h2></span>
      
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
     <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.props.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>      
     <div style={{marginTop:140,marginLeft:340}}>
-     <div onClick={this.addBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Start Batch'}</div></div>
+     <div onClick={this.addBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Batch'][language]['name']}</div></div>
     </div>
       
     </div>
@@ -11064,7 +11064,7 @@ class MotorItem extends React.Component{
   }
   render(){
     var motorIcon = <img src='assets/motor.svg' width={40} style={{verticalAlign:'bottom'}}/>
-    return <div><div style={{display:'inline-block', width:50}}>{motorIcon}</div><div style={{display:'inline-block', width:200}}>{this.props.name}</div><div style={{display:'inline-block', width:200}}>Start/Stop</div> </div>
+    return <div><div style={{display:'inline-block', width:50}}>{motorIcon}</div><div style={{display:'inline-block', width:200}}>{this.props.name}</div><div style={{display:'inline-block', width:200}}>{labTransV2['Start/Stop'][language]['name']}</div> </div>
 
   }
 }
@@ -11246,12 +11246,12 @@ class DateTimeSelector extends React.Component{
 
         
     var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#000"}} >
-      <div style={{display:'inline-block', textAlign:'center'}}>Device Time</div></h2></span>)
+      <div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Device Time'][language]['name']}</div></h2></span>)
     var clr = "#e1e1e1"
  
     var dateItem = (<div style={{margin:2}} onClick={()=>this.dpw.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Date'}
+        {labTransV2['Date'][language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{this.state.year +'/'+this.state.month+'/'+this.state.day}</div>
@@ -11260,7 +11260,7 @@ class DateTimeSelector extends React.Component{
 
     var timeItem = (<div style={{margin:2}} onClick={()=>this.tpw.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Time'}
+        {labTransV2['Time'][language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{this.state.hour +':'+this.state.minute+':'+this.state.sec}</div>
@@ -11274,8 +11274,8 @@ class DateTimeSelector extends React.Component{
     </div>
       {dateItem}
       {timeItem}
-             <CircularButton onClick={this.setDT} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+             <CircularButton onClick={this.setDT} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][language]['name']}/>
+                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][language]['name']}/>
    
       </div> 
   }
@@ -11416,12 +11416,12 @@ class DateTimeSelect extends React.Component{
 
         
     var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#000"}} >
-      <div style={{display:'inline-block', textAlign:'center'}}>DateTime</div></h2></span>)
+      <div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['DateTime_Word'][language]['name']}</div></h2></span>)
     var clr = "#e1e1e1"
  
     var dateItem = (<div style={{margin:2}} onClick={()=>this.dpw.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Date'}
+      {labTransV2['Date'][language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{this.state.year +'/'+this.state.month+'/'+this.state.day}</div>
@@ -11430,7 +11430,7 @@ class DateTimeSelect extends React.Component{
 
     var timeItem = (<div style={{margin:2}} onClick={()=>this.tpw.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Time'}
+      {labTransV2['Time'][language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{this.state.hour +':'+this.state.minute+':'+this.state.sec}</div>
@@ -11438,7 +11438,7 @@ class DateTimeSelect extends React.Component{
       </div>)
     var dstItem =  (<div style={{margin:2}} onClick={()=>this.dstpw.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Daylight Savings'}
+        {labTransV2['Daylight Savings'][language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{tg[this.props.dst]}</div>
@@ -11454,7 +11454,7 @@ class DateTimeSelect extends React.Component{
       {timeItem}
       {dstItem}
       <TimezoneControl timezones={this.props.timezones} timeZone={this.props.timeZone} onTzChange={this.onTzChange} language={this.props.language} branding={this.props.branding}/>
-      <button className='customAlertButton' onClick={this.setDT}>Set DateTime</button>
+      <button className='customAlertButton' onClick={this.setDT}>{labTransV2['Set DateTime'][language]['name']}</button>
     </div> 
   }
 }
@@ -11498,7 +11498,7 @@ class TimezoneControl extends React.Component{
     }
     var tzItem = (<div style={{margin:2}} onClick={()=>this.tz.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}}>
-        {'Time Zone'}
+      {labTransV2['Time Zone'][language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{tzTxt}</div>
@@ -11604,11 +11604,11 @@ class LogoutModalC extends React.Component{
     
     return( <div className={klass}>
           <div style={{padding:10}}>
-          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][language]['name']}</div>
           <div style={{color:clr}}> {this.props.children}</div>
         <div>
-          <CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+          <CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][language]['name']}/>
+                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][language]['name']}/>
           
   </div>
         </div>
@@ -11708,11 +11708,11 @@ class CopyModalC extends React.Component{
     
     return( <div className={klass}>
           <div style={{padding:10}}>
-          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][language]['name']}</div>
           <div style={{color:clr}}> {this.props.children}</div>
         <div>
-          <CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+          <CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][language]['name']}/>
+                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][language]['name']}/>
           
   </div>
         </div>
@@ -11750,7 +11750,7 @@ class DeleteModal extends React.Component{
   render () {
     var cont = ""
     if(this.state.show){
-    cont =  <DeleteModalCont branding={this.props.branding} vMap={this.props.vMap} delete={this.delete} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{width:400}}>Delete Selected Product? This will also delete all associated planned batches.</div></DeleteModalCont>
+    cont =  <DeleteModalCont branding={this.props.branding} vMap={this.props.vMap} delete={this.delete} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{width:400}}>{labTransV2['Delete Selected Product?'][language]['name']+'.'}</div></DeleteModalCont>
     }
     return <div hidden={!this.state.show} className= 'pop-modal'>
       {cont}
@@ -11811,13 +11811,13 @@ class DeleteModalC extends React.Component{
     
     return( <div className={klass}>
           <div style={{padding:10}}>
-          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][language]['name']}</div>
           <div style={{color:clr}}>
           {this.props.children}
           </div>
         <div>
-                <CircularButton onClick={this.delete} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Delete Product'}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+                <CircularButton onClick={this.delete} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Delete Product'][language]['name']}/>
+                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][language]['name']}/>
           
   </div>
         </div>
@@ -11937,12 +11937,12 @@ class PromptModalC extends React.Component{
     
     return( <div className={klass}>
           <div style={{padding:10}}>
-          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}><div>Warning</div><div style={{fontSize:24}}>This will make changes to current batch</div></div>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}><div>{labTransV2['Warning'][language]['name']}</div><div style={{fontSize:24}}>{labTransV2['This will make changes to current batch'][language]['name']}</div></div>
           {this.props.children}
         <div>
-          <CircularButton onClick={this.discard} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Discard Changes'}/>
-                <CircularButton onClick={this.save} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Changes'}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+          <CircularButton onClick={this.discard} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Discard Changes'][language]['name']}/>
+                <CircularButton onClick={this.save} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Save Changes'][language]['name']}/>
+                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][language]['name']}/>
           
   </div>
         </div>
@@ -11969,7 +11969,7 @@ class FaultDiv extends React.Component{
     if(this.props.pAcc){
       this.props.clearFaults()
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
     }
     
   }
@@ -11977,7 +11977,7 @@ class FaultDiv extends React.Component{
     if(this.props.pAcc){
     this.props.clearWarnings()
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name'])
     }
   }
   maskFault (f) {
@@ -11990,17 +11990,17 @@ class FaultDiv extends React.Component{
     var clButton;
     var wclButton;
     if((this.props.faults.length == 0) && (this.props.warnings.length == 0)){
-      cont = (<div ><label>No Faults or Warnings</label></div>)
+      cont = (<div ><label>{labTransV2['No Faults or Warnings'][language]['name']}</label></div>)
     }else{
             var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
     if(this.props.faults.length != 0){
-      clButton =<div> <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Clear Faults'} onClick={this.clearFaults}/></div>
+      clButton =<div> <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Faults'][language]['name']} onClick={this.clearFaults}/></div>
       cont = this.props.faults.map(function(f){
         return <FaultItem maskFault={self.maskFault} fault={f}/>
       })
     }
     if(this.props.warnings.length != 0){
-      wclButton =<div> <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Clear Warnings'} onClick={this.clearWarnings}/></div>
+      wclButton =<div> <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Warnings'][language]['name']} onClick={this.clearWarnings}/></div>
       wcont = this.props.warnings.map(function(f){
         return <FaultItem maskFault={self.maskFault} fault={f}/>
       })
@@ -12027,7 +12027,7 @@ class FaultItem extends React.Component{
         type = vMapV2[this.props.fault+'Mask']['@translations']['english']['name'];
       }
 
-    return <div><label>{"Fault type: " + type}</label>
+    return <div><label>{labTransV2['Fault type'][language]['name']+ ": " + type}</label>
     </div>
   }
 }
