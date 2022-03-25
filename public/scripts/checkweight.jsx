@@ -3075,7 +3075,7 @@ class LandingPage extends React.Component{
         <Modal  x={true} ref={this.unuProductSettingssedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
         {unused}   
         </Modal>
-        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['This will end the current batch. Confirm?'][language]['name']}
+        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][language]['name']}
         </div></AlertModal>
         <Modal ref={this.imgMD}>
             <div style={{height:400}}>
@@ -10895,7 +10895,7 @@ class BatchWidget extends React.Component{
 
     return <div style={{display:'grid', gridTemplateColumns:"285px auto", background:'#e1e1e1', borderRadius:20,paddingLeft:5, marginTop:5, width:819}}>
       <div>{play}{stop} </div><div> {status}</div>
-        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['This will end the current batch. Confirm?'][language]['name']}</div></AlertModal>
+        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][language]['name']}</div></AlertModal>
         <MessageModal ref={this.msgm}/>
     </div>
   }
