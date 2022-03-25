@@ -4,6 +4,7 @@ var onClickOutside = require('react-onclickoutside');
 var createReactClass = require('create-react-class');
 
 const vdefMapV2 = require('./vdefmap.json')
+var labTransV2 = vdefMapV2['@labels']
 import {Modal, ScrollArrow} from './components.jsx'
 import {CircularButton} from './buttons.jsx'
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
@@ -386,7 +387,7 @@ class PopoutWheelModalC extends React.Component{
 			<div style={{textAlign:'center', borderBottom:'1px solid #e1e1e1'}}><label>{this.props.name}</label></div>
 			<div  style={{whiteSpace:'pre-wrap', textAlign:'left'}}><ContextMenuTrigger id={cmenuid}>{tooltiptext}</ContextMenuTrigger></div>
 			<ContextMenu id={cmenuid}>
-				<MenuItem onClick={this.translateTooltip}>Translate Tooltip</MenuItem>
+				<MenuItem onClick={this.translateTooltip}>{labTransV2['Translate Tooltip'][language]['name']}</MenuItem>
 			</ContextMenu>
 			</React.Fragment>
 		}
@@ -406,7 +407,7 @@ class PopoutWheelModalC extends React.Component{
 	  		</Modal>
 	  		<Modal ref='transModal' Style={{color:'#e1e1e1',width:600}}>
 	  		 <textarea type='text' style={{fontSize:20, width:400, height:100}} value={this.state.curtrans} onChange={this.curtrnChange}/>
-	  		 <button onClick={this.submitTooltip}>Submit Change</button>
+	  		 <button onClick={this.submitTooltip}>{labTransV2['Submit Change'][language]['name']}</button>
 	  		</Modal>
 	  </div>)
 
