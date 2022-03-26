@@ -79,6 +79,7 @@ module.exports = {
     
     cw:'./public/cw.js',
     combo:'./public/combo.js',
+    tata:'./public/tata.js',
     if:'./public/iframe.js',
     stealthMD:'./public/stealthMD.js'
     /*
