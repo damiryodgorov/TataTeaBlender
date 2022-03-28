@@ -4,6 +4,7 @@ const ifvisible = require('ifvisible');
 const timezoneJSON = require('./timezones.json');
 const { padding } = require('aes-js');
 import { CircularButton } from './buttons.jsx';
+import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu";
 import { AlertModal, AuthfailModal, LockModal, MessageModal, Modal, ProgressModal, ScrollArrow, TrendBar } from './components.jsx';
 import { YAxis, XAxis, HorizontalGridLines, VerticalGridLines, XYPlot, AreaSeries, Crosshair } from "react-vis";
 import "react-vis/dist/style.css";
@@ -11,6 +12,7 @@ import { Line } from 'react-chartjs-2'
 import Chart from 'chart.js/auto'
 /** Global variable declarations **/
 const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
+const FORTRESSPURPLE2 = '#5d5480'
 var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',fontSize:26,lineHeight:'57px'}
 var innerStyle2 = {display:'inline-block', position:'relative', verticalAlign:'middle',fontSize:22,lineHeight:'57px'}
 var backgroundColor = FORTRESSPURPLE1;
@@ -378,43 +380,39 @@ class ProductSettings extends React.Component{
     constructor(props){
       super(props)
     }
-    render(){    
+    render(){  
+        var searchColor = FORTRESSPURPLE1;      
+        var selStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:25,lineHeight:'47px'}
       var content =(
-        <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
-        <div>
-        <div style={{display:'inline-block', verticalAlign:'top'}}>
-        <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
-        <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={'Select Product'}/>
-        <img src='assets/graph.svg' style={{position:'absolute', width:40, left:770, marginTop:15}} onClick={this.toggleGraph}/>
-        
-        </div>
-        <div style={{display:'none', marginBottom:-10}}>
-          <div style={{display:'none', position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
-            <div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-            <div style={{height:35, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-            <div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
-          </div>
-        </div>
-        </div>
-        <div style={{height:339}}>
-          <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={nwgt} param={vdefByMac[this.props.mac][1][1]['NominalWgt']} tooltip={vMapV2['NominalWgt']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Over Weight Limit'} value={ovwgt} param={vdefByMac[this.props.mac][1][1]['OverWeightLim']} tooltip={vMapV2['OverWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            {this.props.curProd['WeighingMode'] != 1 &&
-              <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Under Weight Limit'} value={udwgt} param={vdefByMac[this.props.mac][1][1]['UnderWeightLim']} tooltip={vMapV2['UnderWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            }
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Packaging Weight'} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} tooltip={vMapV2['EyePkgLength']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}  tooltip={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true} shortcut={[4]} onShortcut={this.onShortcut} /></div>
-          </div>
-          
-
-        </div>
+        <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:567}}>
+            <div>
+                <div style={{display:'inline-block', verticalAlign:'top'}}>
+                    <ProdSettingEdit  prodNameComponent={true} afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'ProdName'} vMap={'Product Name'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Product Name'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
+                </div>
+                <div style={{display:'inline-block', marginLeft:8, marginTop:3}}>
+                    <CircularButton onClick={'this.selectRunningProd'} branding={'FORTRESS'} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none', backgroundColor:'white'}} lab={'Select Product'}/>       
+                </div>
+                <div style={{display:'none', marginBottom:-10}}>
+                <div style={{display:'none', position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
+                    <div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
+                    <div style={{height:35, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
+                    <div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
+                </div>
+                </div>
+            </div>
+            <div style={{height:339}}>
+                <div style={{display:'inline-block',width:'100%', verticalAlign:'top', marginTop:-5}}>
+                    <ProdSettingEdit afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'FeedRate'} vMap={'Feed Rate'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Feed Rate'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
+                    <ProdSettingEdit afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'InfeedRunTime'} vMap={'Infeed Run Time'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Infeed Run Time'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
+                    <ProdSettingEdit afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'LowerWeightLimit'} vMap={'Lower Weight Limit'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Lower Weight Limit'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
+                    <ProdSettingEdit afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'UpperWeightLimit'} vMap={'Upper Weight Limit'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Upper Weight Limit'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
+                    <ProdSettingEdit afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'EmptyWeightLimit'} vMap={'Empty Weight Limit'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Empty Weight Limit'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
+                </div>
+            </div>
         
       </div>
       )
  
-      var searchColor = FORTRESSPURPLE1;
       
       /*if(this.props.branding == 'FORTRESS'){
         searchColor = FORTRESSPURPLE2
@@ -425,7 +423,7 @@ class ProductSettings extends React.Component{
         <table style={{borderCollapse:'collapse'}}>
             <tbody>
                 <tr>
-                    <td style={{verticalAlign:'top', width:830}}>{"DY TEST content"}
+                    <td style={{verticalAlign:'top', width:830}}>{content}
                         <div style={{width:819, paddingTop:0}}> </div>
                     </td>
                     <td style={{verticalAlign:'top',textAlign:'center'}}>
@@ -453,6 +451,133 @@ class ProductSettings extends React.Component{
       
       </div>
             
+    }
+}
+/**ProdSettingEdit Component **/
+class ProdSettingEdit extends React.Component{
+    constructor(props){
+      super(props);
+    }
+ 
+    render(){
+      var self = this;
+      var ckb;
+      var dispVal = this.props.value
+      var txtClr = '#e1e1e1';
+      var titleFont = 20;
+      var bgClr = FORTRESSPURPLE2
+      /*if(this.props.editable){
+        if(this.props.param['@labels']){
+          //vmapLists
+  
+          var list 
+          if(vMapLists[this.props.param['@labels']]){
+  
+            list = vMapLists[this.props.param['@labels']]['english'].slice(0);
+          }else{
+            list = []
+          }
+          var lists = [list]
+          ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref={this.ed} val={[this.state.value]} options={lists} onChange={this.onInput}/>
+          dispVal = list[dispVal]
+        }else if(this.props.listOverride){
+          var lists = [this.props.ovList]
+          ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref={this.ed} val={[this.state.value]} options={lists} onChange={this.onInput}/>
+  
+        }else{
+          var minBool = false; 
+          var min = 0;
+          var maxBool = false;
+          var max = 0;
+          if(typeof self.props.param['@min'] != 'undefined'){
+                if(!isNaN(self.props.param['@min'])){
+                  minBool = true;
+                  min = self.props.param['@min'];
+                }else if(Array.isArray(self.props.param['@min'])){
+                 //var dep = 
+                  var dep = self.getMMdep(self.props.param['@min'][1])
+                  min = eval(self.props.param['@min'][0])(dep)
+                  minBool = true;
+                }else{
+                  min = self.getMMdep(self.props.param['@min'])
+                  minBool = true;
+                }
+                if(self.props.param['@type'] == 'mm' || self.props.param['@type'] == 'float_dist'){
+                  if(self.getMMdep('AppUnitDist') == 0){
+                    min = min/25.4
+                  }
+                }else if(self.props.param['@type'] == 'weight'){
+                  var wunit = self.getMMdep('WeightUnits')
+                  if(wunit == 1){
+                    min = min/1000
+                  }else if(wunit == 2){
+                    min = min/453.592
+                  }else if(wunit == 3){
+                    min = min/28.3495
+                  }
+                }
+              }
+              if(typeof self.props.param['@max'] != 'undefined'){
+                if(!isNaN(self.props.param['@max'])){
+                  maxBool = true;
+                  max = self.props.param['@max'];
+                }else if(Array.isArray(self.props.param['@max'])){
+                 //var dep = 
+                  var dep = self.getMMdep(self.props.param['@max'][1])
+                  max = eval(self.props.param['@max'][0])(dep)
+                  maxBool = true;
+                }else{
+                  max = self.getMMdep(self.props.param['@max'])
+                  maxBool = true;
+                }
+                if(self.props.param['@type'] == 'mm'  || self.props.param['@type'] == 'float_dist'){
+                  if(self.getMMdep('AppUnitDist') == 0){
+                    max = max/25.4
+                  }
+                }else if(self.props.param['@type'] == 'weight'){
+                  var wunit = self.getMMdep('WeightUnits')
+                  if(wunit == 1){
+                    max = max/1000
+                  }else if(wunit == 2){
+                    max = max/453.592
+                  }else if(wunit == 3){
+                    max = max/28.3495
+                  }
+                }
+              }
+              //var labVal = this.props.value
+              var fDec = 0;
+              if(self.props.param['@float_dec']){
+                fDec = self.props.param['@float_dec']
+              }
+          ckb = <CustomKeyboard floatDec={fDec} sendAlert={msg => this.msgm.current.show(msg)} min={[minBool,min]} max={[maxBool,max]} preload={this.props.param['@name'] == 'ProdName'} 
+                      branding={this.props.branding} ref={this.ed} language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} 
+                      num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value} submitTooltip={this.submitTooltip}/>
+  
+        }
+      
+      }*/
+
+      return <div style={{marginTop:10}}>
+        <div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:titleFont,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:this.props.w1,textAlign:'center'}}>
+           <ContextMenuTrigger id={this.props.name + '_ctmid'}>
+          {this.props.label}   </ContextMenuTrigger>
+        
+        </div>
+        <div onClick={'this.onClick'} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:this.props.w2}}>
+          {dispVal}
+        </div>
+        {
+            !this.props.prodNameComponent && 
+            <div onClick={'this.onClick'} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:15,textAlign:'center', width:this.props.w2}}>
+                {dispVal}
+            </div>
+        }
+        
+       
+        {ckb}
+
+      </div>
     }
   }
 
