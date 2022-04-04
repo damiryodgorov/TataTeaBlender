@@ -1697,9 +1697,9 @@ class LandingPage extends React.Component{
             if(typeof this.state.rec['BatchRunning'] != 'undefined'){
               if(e.rec['BatchRunning'] == 1){
                 //toast('Batch Started');
-                this.ste.current.showMsg('Batch Started')
+                this.ste.current.showMsg(labTransV2['Batch Started'][language]['name'])
                 if (this.steDual && this.steDual.current){
-                  this.steDual.current.showMsg('Batch Started')
+                  this.steDual.current.showMsg(labTransV2['Batch Started'][language]['name'])
                 }
                 //this.lg.current.clearHisto();
                 setTimeout(function () {
