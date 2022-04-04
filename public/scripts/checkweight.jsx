@@ -1709,15 +1709,15 @@ class LandingPage extends React.Component{
                 },100)
               }else if(e.rec['BatchRunning'] == 2){
                // toast('Batch Paused')
-                this.ste.current.showMsg('Batch Paused')
+                this.ste.current.showMsg(labTransV2['Batch Paused'][language]['name'])
                 if (this.steDual && this.steDual.current){
-                  this.steDual.current.showMsg('Batch Paused')
+                  this.steDual.current.showMsg(labTransV2['Batch Paused'][language]['name'])
                 }
               }else{
                 //this.msgm.current.show('Batch Stopped')
-                this.ste.current.showMsg('Batch Stopped')
+                this.ste.current.showMsg(labTransV2['Batch Stopped'][language]['name'])
                 if (this.steDual && this.steDual.current){
-                  this.steDual.current.showMsg('Batch Stopped')
+                  this.steDual.current.showMsg(labTransV2['Batch Stopped'][language]['name'])
                 }
                //  toast('Batch Stopped')
               }
@@ -1729,10 +1729,10 @@ class LandingPage extends React.Component{
             if(e.rec['BatchRunComplete'] != this.state.rec['BatchRunComplete']){
               if(typeof this.state.rec['BatchRunComplete'] != 'undefined'){
                 if(e.rec['BatchRunComplete'] == 1){
-                  this.msgm.current.show('Batch Completed')
-                  this.ste.current.showMsg('Batch Completed')
+                  this.msgm.current.show(labTransV2['Batch Completed'][language]['name'])
+                  this.ste.current.showMsg(labTransV2['Batch Completed'][language]['name'])
                   if (this.steDual && this.steDual.current){
-                    this.steDual.current.showMsg('Batch Completed')
+                    this.steDual.current.showMsg(labTransV2['Batch Completed'][language]['name'])
                   }
                   if (this.props.lane){
                     this.props.update(this.props.lane)
@@ -1753,7 +1753,7 @@ class LandingPage extends React.Component{
           if(this.state.srec['RemoteDisplayLock'] == 1){
             if(typeof e.rec['InternalIP'] != 'undefined'){
               if(window.location.host != e.rec['InternalIP']){
-                this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
+                this.lockModal.current.show(labTransV2['This display has been locked for remote use'][language]['name'])
               }
             }
             
@@ -2653,7 +2653,7 @@ class LandingPage extends React.Component{
     if((this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccCheckWeight'])){
       this.sendPacket('checkWeight')
     }else{
-      this.msgm.current.show('Access Denied');
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name']);
       this.chBut.current.tEnd();
     }
   }
@@ -2941,7 +2941,7 @@ class LandingPage extends React.Component{
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['CalWeight']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.srec['CalWeight'], this.state.srec['WeightUnits'])} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['OverWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['OverWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['UnderWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['UnderWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
-          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={'Calibrate'}/>
+          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={labTransV2['Calibrate'][language]['name']}/>
           </div>)
 
         unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
@@ -3049,9 +3049,9 @@ class LandingPage extends React.Component{
           </td></tr></tbody></table>
           <div style={{display:'inline-block',paddingTop:5, paddingBottom:5, width:275}} >{play}{stop}</div>
           <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
-          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Tare'} onClick={this.tareWeight}/>
+          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Tare'][language]['name']} onClick={this.tareWeight}/>
           <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
-          <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
+          <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Check Weight'][language]['name']} onClick={this.checkweight}/>
         <Modal x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
           <ProductSettings RejSetupInvalid={this.state.rec.RejSetupInvalid} EditProdNeedToSave={this.state.rec.EditProdNeedToSave} rejectAlertMessage={this.state.rejectAlertMessage} packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 

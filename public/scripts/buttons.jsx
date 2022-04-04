@@ -3,7 +3,8 @@ var ReactDom = require('react-dom')
 import {AlertModal, Modal} from './components.jsx'
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 import { v4 as uuidv4 } from 'uuid';
-
+const vdefMapV2 = require('./vdefmapcw.json')
+var labTransV2 = vdefMapV2['@labels']
 const SPARCBLUE2 = '#30A8E2'
 const SPARCBLUE1 = '#1C3746'
 const FORTRESSPURPLE1 = '#362c66'
@@ -64,7 +65,7 @@ class CircularButton extends React.Component{
 		}else if(!this.props.disabled){
 			this.props.onClick();
 		}else{
-			toast('Test is not configured')
+			toast(labTransV2['Test is not configured'][this.props.language]['name'])
 		}
 	}
 	simTouch(ms=1000){
@@ -194,10 +195,10 @@ class CircularButton extends React.Component{
 				<React.Fragment><div  className={klass} onClick={this.onClick} style={bstyle}>
 				<div style={innerStyle}>{lab}</div>
 			</div>
-			<ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
+			<ContextMenu id={uid}><MenuItem onClick={this.translate}>{labTransV2['Translate'][this.props.language]['name']}</MenuItem></ContextMenu>
 				<Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
 	  		 <input type='text' style={{fontSize:20}} value={this.state.curtrns} onChange={this.onChange}/>
-	  		 <button onClick={this.submit}>Submit Change</button>
+	  		 <button onClick={this.submit}>{labTransV2['Submit Change'][this.props.language]['name']}</button>
 	  		</Modal>
 			</React.Fragment>)
 		}	
@@ -207,10 +208,10 @@ class CircularButton extends React.Component{
 				<div  className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} onPointerOut={this.pOut} style={bstyle}>
 				<div style={innerStyle}>{lab}</div>
 			</div>
-			<ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
+			<ContextMenu id={uid}><MenuItem onClick={this.translate}>{labTransV2['Translate'][this.props.language]['name']}</MenuItem></ContextMenu>
 			<Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
 	  		 <input type='text' style={{fontSize:20}} value={this.state.curtrns} onChange={this.onChange}/>
-	  		 <button onClick={this.submit}>Submit Change</button>
+	  		 <button onClick={this.submit}>{labTransV2['Submit Change'][this.props.language]['name']}</button>
 	  		</Modal>
 			</React.Fragment>)
 		//}else{
@@ -260,7 +261,7 @@ class CircularButton2 extends React.Component{
 		}else if(!this.props.disabled){
 			this.props.onClick();
 		}else{
-			toast('Test is not configured')
+			toast(labTransV2['Test is not configured'][this.props.language]['name'])
 		}
 	}
 	simTouch(ms=1000){
@@ -369,10 +370,10 @@ class CircularButton2 extends React.Component{
 				<React.Fragment><div  className={klass} onClick={this.onClick} style={bstyle}>
 				<div style={innerStyle}>{lab}</div>
 			</div>
-			<ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
+			<ContextMenu id={uid}><MenuItem onClick={this.translate}>{labTransV2['Translate'][this.props.language]['name']}</MenuItem></ContextMenu>
 				<Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
 	  		 <input type='text' style={{fontSize:20}} value={this.state.curtrns} onChange={this.onChange}/>
-	  		 <button onClick={this.submit}>Submit Change</button>
+	  		 <button onClick={this.submit}>{labTransV2['Submit Change'][this.props.language]['name']}</button>
 	  		</Modal>
 			</React.Fragment>)
 		}	
@@ -382,10 +383,10 @@ class CircularButton2 extends React.Component{
 				<div  className={klass} onPointerDown={this.onTouchStart} onPointerUp={this.onTouchEnd} style={bstyle}>
 				<div style={innerStyle}>{lab}</div>
 			</div>
-			<ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
+			<ContextMenu id={uid}><MenuItem onClick={this.translate}>{labTransV2['Translate'][this.props.language]['name']}</MenuItem></ContextMenu>
 			<Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
 	  		 <input type='text' style={{fontSize:20}} value={this.state.curtrns} onChange={this.onChange}/>
-	  		 <button onClick={this.submit}>Submit Change</button>
+	  		 <button onClick={this.submit}>{labTransV2['Submit Change'][this.props.language]['name']}</button>
 	  		</Modal>
 			</React.Fragment>)
 		//}else{
