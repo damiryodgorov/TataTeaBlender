@@ -154,7 +154,7 @@
         "name": "Tare"
       },
       "portuguese": {
-        "name": "Tare"
+        "name": "Tara"
       },
       "italian": {
         "name": "Tare"
@@ -714,7 +714,7 @@
         "name": " Paramètres"
       },
       "portuguese": {
-        "name": "Parâmetros"
+        "name": "Configurações "
       },
       "italian": {
         "name": "Impostazioni"
@@ -1379,7 +1379,7 @@
         "name": "Total Weight (Batch/Sample)"
       },
       "portuguese": {
-        "name": "Total Weight (Batch/Sample)"
+        "name": "Peso Total (Lote/Amostra)"
       },
       "italian": {
         "name": "Total Weight (Batch/Sample)"
@@ -1414,7 +1414,7 @@
         "name": "Avg Weight (Batch/Sample)"
       },
       "portuguese": {
-        "name": "Avg Weight (Batch/Sample)"
+        "name": "Peso Médio (Lote/Amostra)"
       },
       "italian": {
         "name": "Avg Weight (Batch/Sample)"
@@ -1449,7 +1449,7 @@
         "name": "Standard Deviation (Batch/Sample)"
       },
       "portuguese": {
-        "name": "Standard Deviation (Batch/Sample)"
+        "name": "Desvio Padrão (Lote/Amostra)"
       },
       "italian": {
         "name": "Standard Deviation (Batch/Sample)"
@@ -1484,7 +1484,7 @@
         "name": "Giveaway (Batch/Sample)"
       },
       "portuguese": {
-        "name": "Giveaway (Batch/Sample)"
+        "name": "Giveaway (Lote/Amostra)"
       },
       "italian": {
         "name": "Giveaway (Batch/Sample)"
@@ -1519,7 +1519,7 @@
         "name": "Production Rate (Batch/Sample)"
       },
       "portuguese": {
-        "name": "Production Rate (Batch/Sample)"
+        "name": "Taxa de Produção (Lote/Amostra)"
       },
       "italian": {
         "name": "Production Rate (Batch/Sample)"
@@ -3829,7 +3829,7 @@
         "name": "Off"
       },
       "portuguese": {
-        "name": "Off"
+        "name": "Desligado"
       },
       "italian": {
         "name": "Off"
@@ -7539,7 +7539,7 @@
         "name": "Access Denied"
       },
       "portuguese": {
-        "name": "Access Denied"
+        "name": "Acesso Negado"
       },
       "italian": {
         "name": "Access Denied"
@@ -8029,7 +8029,7 @@
         "name": "Batch"
       },
       "portuguese": {
-        "name": "Batch"
+        "name": "Lote"
       },
       "italian": {
         "name": "Batch"
@@ -8204,7 +8204,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Lote Final "
       },
       "italian": {
         "name": ""
@@ -8484,7 +8484,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Bom Peso"
       },
       "italian": {
         "name": ""
@@ -8694,7 +8694,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Isso encerrará o lote atual. Confirmar?"
       },
       "italian": {
         "name": ""
@@ -8799,7 +8799,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Peso Líquido"
       },
       "italian": {
         "name": ""
@@ -8834,7 +8834,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Resumo"
       },
       "italian": {
         "name": ""
@@ -9044,7 +9044,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Amostra"
       },
       "italian": {
         "name": ""
@@ -9184,7 +9184,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Os produtos precisam ser buscados"
       },
       "italian": {
         "name": ""
@@ -9499,7 +9499,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Velocidade do Produto"
       },
       "italian": {
         "name": ""
@@ -9534,7 +9534,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Controle de Feedback"
       },
       "italian": {
         "name": ""
@@ -9569,7 +9569,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Dead Zone"
       },
       "italian": {
         "name": ""
@@ -9604,7 +9604,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Limite Alto"
       },
       "italian": {
         "name": ""
@@ -9674,7 +9674,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Limite de Sobrepeso"
       },
       "italian": {
         "name": ""
@@ -9744,7 +9744,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Avançado"
       },
       "italian": {
         "name": ""
@@ -9779,7 +9779,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Nenhum Produto Correspondente"
       },
       "italian": {
         "name": ""
@@ -9954,7 +9954,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Gerenciamento de Registros de Produtos"
       },
       "italian": {
         "name": ""
@@ -9989,7 +9989,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "** Conecte o Pen Drive USB para importar e exportar! **"
       },
       "italian": {
         "name": ""
@@ -10059,7 +10059,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Importar"
       },
       "italian": {
         "name": ""
@@ -10094,7 +10094,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Exportar"
       },
       "italian": {
         "name": ""
@@ -10164,7 +10164,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Backup"
       },
       "italian": {
         "name": ""
@@ -10199,7 +10199,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Excluir Tudo"
       },
       "italian": {
         "name": ""
@@ -10374,7 +10374,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Salvar e Restaurar"
       },
       "italian": {
         "name": ""
@@ -10409,7 +10409,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Restaurar o Produto Selecionado para as Configurações de Fábrica"
       },
       "italian": {
         "name": ""
@@ -10444,7 +10444,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Restaurar o Produto Selecionado para Produto Base"
       },
       "italian": {
         "name": ""
@@ -11039,7 +11039,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Substituíções de Configuração do Sistema"
       },
       "italian": {
         "name": ""
@@ -11214,7 +11214,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Esta configuração está desativada no momento."
       },
       "italian": {
         "name": ""
@@ -11284,7 +11284,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Confirmar"
       },
       "italian": {
         "name": ""
@@ -11669,7 +11669,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Não Conectado"
       },
       "italian": {
         "name": ""
@@ -11914,7 +11914,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Gráfico de Pacotes"
       },
       "italian": {
         "name": ""
@@ -12124,7 +12124,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Começar Lote"
       },
       "italian": {
         "name": ""
@@ -12194,7 +12194,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Peso Nominal "
       },
       "italian": {
         "name": ""
@@ -12264,7 +12264,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Limite de Peso Baixo "
       },
       "italian": {
         "name": ""
@@ -12299,7 +12299,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Peso da Embalagem"
       },
       "italian": {
         "name": ""
@@ -12369,7 +12369,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Velocidade da Esteira "
       },
       "italian": {
         "name": ""
@@ -12999,7 +12999,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Bom"
       },
       "italian": {
         "name": ""
@@ -13034,7 +13034,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Baixa Rejeição"
       },
       "italian": {
         "name": ""
@@ -13139,7 +13139,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Verificar Peso"
       },
       "italian": {
         "name": ""
@@ -13174,7 +13174,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Rejeição de Metal"
       },
       "italian": {
         "name": ""
@@ -13209,7 +13209,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Total"
       },
       "italian": {
         "name": ""
@@ -13349,7 +13349,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Modo de Lote"
       },
       "italian": {
         "name": ""
@@ -13629,7 +13629,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Retomar"
       },
       "italian": {
         "name": ""
@@ -13664,7 +13664,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Peso ao Vivo "
       },
       "italian": {
         "name": ""
@@ -13979,7 +13979,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Confirmar Ação"
       },
       "italian": {
         "name": ""
@@ -15029,7 +15029,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Alcance"
       },
       "italian": {
         "name": ""
@@ -15344,7 +15344,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Alerta"
       },
       "italian": {
         "name": ""
@@ -15625,7 +15625,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "peso nominal",
+          "name": "Peso Nominal ",
           "description": ""
         },
         "italian": {
@@ -15833,7 +15833,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Remote Display Lock",
+          "name": "Bloqueio do Display Remoto",
           "description": ""
         },
         "italian": {
@@ -15885,7 +15885,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Auto Logout Timer",
+          "name": "Temporizador de Logout Automático",
           "description": ""
         },
         "italian": {
@@ -16041,7 +16041,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Last Tare",
+          "name": "Última Tara",
           "description": ""
         },
         "italian": {
@@ -16093,7 +16093,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Calibration Due",
+          "name": "Calibração Vencida",
           "description": ""
         },
         "italian": {
@@ -16145,7 +16145,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Metal Detector",
+          "name": "Detector de Metais ",
           "description": ""
         },
         "italian": {
@@ -16301,7 +16301,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Last Cal Time",
+          "name": "Data da Última Calibração",
           "description": ""
         },
         "italian": {
@@ -16353,7 +16353,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Same Belt Speeds",
+          "name": "Mesma Velocidade de Correias",
           "description": ""
         },
         "italian": {
@@ -16405,7 +16405,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Raw Weight",
+          "name": "Peso Bruto",
           "description": ""
         },
         "italian": {
@@ -17877,7 +17877,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "External Ethernet Ports",
+          "name": "Porta Ethernet Externa ",
           "description": ""
         },
         "italian": {
@@ -21493,7 +21493,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Batch Mode",
+          "name": "Modo de Lote",
           "description": ""
         },
         "italian": {
@@ -21753,7 +21753,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Feedback Correction Rate",
+          "name": "Taxa de Correção",
           "description": ""
         },
         "italian": {
@@ -21805,7 +21805,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Feedback Sample Count",
+          "name": "Contagem de Amostra",
           "description": ""
         },
         "italian": {
@@ -21857,7 +21857,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Feedback Wait Count",
+          "name": "Contagem de Espera ",
           "description": ""
         },
         "italian": {
@@ -22013,7 +22013,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Live Weight",
+          "name": "Peso ao Vivo ",
           "description": ""
         },
         "italian": {
@@ -22221,7 +22221,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Tare Fault Time",
+          "name": "Falha no Tempo da Tara",
           "description": ""
         },
         "italian": {
@@ -22325,7 +22325,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Net Weight",
+          "name": "Peso Líquido",
           "description": ""
         },
         "italian": {
@@ -22645,7 +22645,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Abaixo do limite de peso",
+          "name": "Limite de Peso Baixo ",
           "description": ""
         },
         "italian": {
@@ -23699,7 +23699,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Continuous Tare Delay",
+          "name": "Delay de Tara Contínua",
           "description": ""
         },
         "italian": {
@@ -23755,7 +23755,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Continuous Tare Delay",
+          "name": "Delay de Tara Contínua",
           "description": ""
         },
         "italian": {
@@ -23807,7 +23807,7 @@
           "description": "This is the weight of the packaging material"
         },
         "portuguese": {
-          "name": "Package Weight",
+          "name": "Peso da Embalagem",
           "description": "This is the weight of the packaging material"
         },
         "italian": {
@@ -23859,7 +23859,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Max Tare Change",
+          "name": "Mudança de Tara Máxima",
           "description": ""
         },
         "italian": {
@@ -25496,7 +25496,7 @@
           "description": "Vitesse du produit circulant dans le détecteur; elle devrait être réglée même sur des applications sans convoyeur"
         },
         "portuguese": {
-          "name": "Velocidade da Esteira",
+          "name": "Velocidade da Esteira ",
           "description": ""
         },
         "italian": {
@@ -25756,7 +25756,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Manual Reject",
+          "name": "Rejeição Manual",
           "description": ""
         },
         "italian": {
@@ -28869,7 +28869,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Position 1",
+          "name": "Posição de Rejeito 1",
           "description": ""
         },
         "italian": {
@@ -28926,7 +28926,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Position 2",
+          "name": "Posição de Rejeito 2",
           "description": ""
         },
         "italian": {
@@ -28983,7 +28983,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Confirm 1",
+          "name": "Confirmação de Rejeito 1",
           "description": ""
         },
         "italian": {
@@ -30453,7 +30453,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Product Backup",
+          "name": "Backup do Produto",
           "description": ""
         },
         "italian": {
@@ -30737,7 +30737,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Start Batch",
+          "name": "Começar Lote",
           "description": ""
         },
         "italian": {
@@ -30794,7 +30794,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Pause Batch",
+          "name": "Pausar Lote",
           "description": ""
         },
         "italian": {
@@ -30851,7 +30851,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "End Batch",
+          "name": "Lote Final ",
           "description": ""
         },
         "italian": {
@@ -30965,7 +30965,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Metal Detector Reject",
+          "name": "Rejeição do Detector de Metais",
           "description": ""
         },
         "italian": {
@@ -33534,7 +33534,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Belt Speed",
+          "name": "Velocidade da Esteira ",
           "description": ""
         },
         "italian": {
@@ -33586,7 +33586,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Belt Speed Fault Tolerance",
+          "name": "Tolerância de Falha da Velocidade da Esteira",
           "description": ""
         },
         "italian": {
@@ -33638,7 +33638,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Belt Speed Fault Time",
+          "name": "Tempo de Falha de Velocidade da Esteira",
           "description": ""
         },
         "italian": {
@@ -33690,7 +33690,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Belt Speed",
+          "name": "Velocidade da Esteira ",
           "description": ""
         },
         "italian": {
@@ -33898,7 +33898,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Setup",
+          "name": "Configurações de Rejeito",
           "description": ""
         },
         "italian": {
@@ -33950,7 +33950,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Alternate Reject Setup",
+          "name": "Configurações de Rejeição Alternativa",
           "description": ""
         },
         "italian": {
@@ -34210,7 +34210,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Falha Comfirmação de Rejeção",
+          "name": "Posição de Rejeito 1",
           "description": ""
         },
         "italian": {
@@ -34262,7 +34262,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Falha Comfirmação de Rejeção",
+          "name": "Posição de Rejeito 2",
           "description": ""
         },
         "italian": {
@@ -36706,7 +36706,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "E-Stop Fault",
+          "name": "E-Stop",
           "description": ""
         },
         "italian": {
@@ -36758,7 +36758,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "E-Stop Fault",
+          "name": "E-Stop",
           "description": ""
         },
         "italian": {
@@ -36810,7 +36810,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Product Backup fault",
+          "name": "Backup do Produto",
           "description": ""
         },
         "italian": {
@@ -36862,7 +36862,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Product Backup",
+          "name": "Backup do Produto",
           "description": ""
         },
         "italian": {
@@ -36914,7 +36914,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Calibrate Fault",
+          "name": "Calibrar",
           "description": ""
         },
         "italian": {
@@ -36966,7 +36966,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Calibrate Fault",
+          "name": "Falha de Calibração",
           "description": ""
         },
         "italian": {
@@ -37226,7 +37226,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Conveyor Fault 2",
+          "name": "Falha do Transportador 2",
           "description": ""
         },
         "italian": {
@@ -37330,7 +37330,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Conveyor Fault 3",
+          "name": "Falha do Transportador 3 ",
           "description": ""
         },
         "italian": {
@@ -37382,7 +37382,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Conveyor Fault 3",
+          "name": "Falha do Transportador 3 ",
           "description": ""
         },
         "italian": {
@@ -37642,7 +37642,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Check Weight",
+          "name": "Verificar Peso",
           "description": ""
         },
         "italian": {
@@ -37694,7 +37694,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Check Weight",
+          "name": "Verificar Peso",
           "description": ""
         },
         "italian": {
@@ -37746,7 +37746,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Tare Fault",
+          "name": "Tara",
           "description": ""
         },
         "italian": {
@@ -37798,7 +37798,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Tare",
+          "name": "Tara",
           "description": ""
         },
         "italian": {
@@ -37956,7 +37956,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Internal Netmask",
+          "name": "Máscara de Rede Interna",
           "description": ""
         },
         "italian": {
@@ -38167,7 +38167,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "IO Board IP",
+          "name": "Placa I/O IP",
           "description": ""
         },
         "italian": {
@@ -38324,7 +38324,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "External IP",
+          "name": "IP Externo",
           "description": ""
         },
         "italian": {
@@ -38377,7 +38377,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Display IP",
+          "name": "IP do Display",
           "description": ""
         },
         "italian": {
@@ -38430,7 +38430,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Display Netmask",
+          "name": "Netmask do Display",
           "description": ""
         },
         "italian": {
@@ -38483,7 +38483,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Display Gateway",
+          "name": "Gateway do Display",
           "description": ""
         },
         "italian": {
@@ -38589,7 +38589,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "External Netmask",
+          "name": "Máscara de Rede Externo",
           "description": ""
         },
         "italian": {
@@ -38642,7 +38642,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "External Gateway",
+          "name": "Gateway Externo",
           "description": ""
         },
         "italian": {
@@ -38850,7 +38850,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Minimum Product Gap",
+          "name": "Vão Mínimo do Produto",
           "description": ""
         },
         "italian": {
@@ -38902,7 +38902,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Minimum Product Gap",
+          "name": "Vão Mínimo do Produto",
           "description": ""
         },
         "italian": {
@@ -39388,7 +39388,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Manual Reject",
+          "name": "Rejeição Manual",
           "description": ""
         },
         "italian": {
@@ -39494,7 +39494,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Loadcell IP",
+          "name": "IP da Célula de Carga ",
           "description": ""
         },
         "italian": {
@@ -39598,7 +39598,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "External Ethernet Ports",
+          "name": "Porta Ethernet Externa ",
           "description": ""
         },
         "italian": {
@@ -40130,7 +40130,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Excess Rejects Packs",
+          "name": "Pacotes de Rejeição em Excesso",
           "description": ""
         },
         "italian": {
@@ -41368,7 +41368,7 @@
           "description": "This is the name of the product. Maximum 20 characters."
         },
         "portuguese": {
-          "name": "Product Name",
+          "name": "Nome do Produto",
           "description": "This is the name of the product. Maximum 20 characters."
         },
         "italian": {
@@ -43965,7 +43965,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Confirm Source",
+          "name": "Rejeitar Fonte de Confirmação",
           "description": ""
         },
         "italian": {
@@ -46668,7 +46668,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Fault",
+          "name": "Falha",
           "description": ""
         },
         "italian": {
@@ -47145,7 +47145,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Door Lock",
+          "name": "Fechadura da Porta ",
           "description": ""
         },
         "italian": {
@@ -47251,7 +47251,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Warning",
+          "name": "Aviso",
           "description": ""
         },
         "italian": {
@@ -56872,7 +56872,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Weigh Conveyor Length",
+          "name": "Comprimento do Transportador de Pesagem",
           "description": ""
         },
         "italian": {
@@ -58037,7 +58037,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "High Weight",
+          "name": "Peso Alto",
           "description": ""
         },
         "italian": {
@@ -58090,7 +58090,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Low Reject",
+          "name": "Baixa Rejeição",
           "description": ""
         },
         "italian": {
@@ -58143,7 +58143,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Low Pass",
+          "name": "Passagem Baixa",
           "description": ""
         },
         "italian": {
@@ -58306,7 +58306,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Good",
+          "name": "Bom",
           "description": ""
         },
         "italian": {
@@ -58412,7 +58412,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Check Weight",
+          "name": "Verificar Peso",
           "description": ""
         },
         "italian": {
@@ -58465,7 +58465,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Metal Reject",
+          "name": "Rejeição de Metal",
           "description": ""
         },
         "italian": {
@@ -58571,7 +58571,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Display Version",
+          "name": "Versão do Display",
           "description": ""
         },
         "italian": {
@@ -60494,7 +60494,7 @@
       "korean": "Select username to login with.",
       "spanish": "Select username to login with.",
       "french": "Select username to login with.",
-      "portuguese": "Select username to login with.",
+      "portuguese": "Selecione o usuário para fazer login.",
       "italian": "Select username to login with.",
       "german": "Select username to login with.",
       "turkish": "Select username to login with.",
@@ -60817,7 +60817,7 @@
           "name": "Défaillance/Erreur"
         },
         "portuguese": {
-          "name": ""
+          "name": "Falha"
         },
         "italian": {
           "name": "Errore"
@@ -61853,7 +61853,7 @@
           "name": "Rejet Manuel"
         },
         "portuguese": {
-          "name": ""
+          "name": "Rejeição Manual"
         },
         "italian": {
           "name": "Manual Reject"
@@ -62112,7 +62112,7 @@
           "name": "Défaillance/Erreur"
         },
         "portuguese": {
-          "name": "Fault"
+          "name": "Falha"
         },
         "italian": {
           "name": "Fault"
@@ -62371,7 +62371,7 @@
           "name": "Warning"
         },
         "portuguese": {
-          "name": "Warning"
+          "name": "Aviso"
         },
         "italian": {
           "name": "Warning"
@@ -62557,7 +62557,7 @@
           "name": "Manual Reject"
         },
         "portuguese": {
-          "name": "Manual Reject"
+          "name": "Rejeição Manual"
         },
         "italian": {
           "name": "Manual Reject"
@@ -62805,7 +62805,7 @@
           "name": "Product Backup"
         },
         "portuguese": {
-          "name": "Product Backup"
+          "name": "Backup do Produto"
         },
         "italian": {
           "name": "Product Backup"
@@ -65047,7 +65047,7 @@
         "korean": "System Setting Overrides",
         "spanish": "System Setting Overrides",
         "french": "System Setting Overrides",
-        "portuguese": "System Setting Overrides",
+        "portuguese": "Substituíções de Configuração do Sistema",
         "italian": "System Setting Overrides",
         "german": "System Setting Overrides",
         "turkish": "System Setting Overrides",
@@ -65197,7 +65197,7 @@
         "korean": "Belt Speed",
         "spanish": "Belt Speed",
         "french": "Belt Speed",
-        "portuguese": "Belt Speed",
+        "portuguese": "Velocidade da Esteira ",
         "italian": "Belt Speed",
         "german": "Belt Speed",
         "turkish": "Belt Speed",
@@ -65242,7 +65242,7 @@
         "korean": "시스템",
         "spanish": "Sistema",
         "french": "Système",
-        "portuguese": "System",
+        "portuguese": "Sistema",
         "italian": "Sistema",
         "german": "System",
         "turkish": "System",
@@ -65257,7 +65257,7 @@
         "korean": "오류",
         "spanish": "Fallos",
         "french": "Défaillances/Erreurs",
-        "portuguese": "Faults",
+        "portuguese": "Falhas",
         "italian": "Errori",
         "german": "Fehler",
         "turkish": "Faults",
@@ -65272,7 +65272,7 @@
         "korean": "Belt Speed",
         "spanish": "Belt Speed",
         "french": "Belt Speed",
-        "portuguese": "Belt Speed",
+        "portuguese": "Velocidade da Esteira ",
         "italian": "Belt Speed",
         "german": "Belt Speed",
         "turkish": "Belt Speed",
@@ -65287,7 +65287,7 @@
         "korean": "Tare",
         "spanish": "Tare",
         "french": "Tare",
-        "portuguese": "Tare",
+        "portuguese": "Tara",
         "italian": "Tare",
         "german": "Tare",
         "turkish": "Tare",
@@ -65302,7 +65302,7 @@
         "korean": "Bin Door",
         "spanish": "Bin Door",
         "french": "Bin Door",
-        "portuguese": "Bin Door",
+        "portuguese": "Porta da Caixa",
         "italian": "Bin Door",
         "german": "Bin Door",
         "turkish": "Bin Door",
@@ -65332,7 +65332,7 @@
         "korean": "오류",
         "spanish": "Fallos",
         "french": "Défaillances/Erreurs",
-        "portuguese": "Faults",
+        "portuguese": "Falhas",
         "italian": "Errori",
         "german": "Fehler",
         "turkish": "Faults",
@@ -65347,7 +65347,7 @@
         "korean": "오류",
         "spanish": "Fallos",
         "french": "Défaillances/Erreurs",
-        "portuguese": "Faults",
+        "portuguese": "Falhas",
         "italian": "Errori",
         "german": "Fehler",
         "turkish": "Faults",
@@ -65362,7 +65362,7 @@
         "korean": "Belt Speed",
         "spanish": "Belt Speed",
         "french": "Belt Speed",
-        "portuguese": "Belt Speed",
+        "portuguese": "Velocidade da Esteira ",
         "italian": "Belt Speed",
         "german": "Belt Speed",
         "turkish": "Belt Speed",
@@ -65377,7 +65377,7 @@
         "korean": "네트워크 설정",
         "spanish": "Communication Settings",
         "french": "Paramètres Réseau",
-        "portuguese": "Communication Settings",
+        "portuguese": "Configurações de Comunicação",
         "italian": "Impostazioni Rete",
         "german": "Netzwerkeinstellungen",
         "turkish": "Communication Settings",
@@ -65392,7 +65392,7 @@
         "korean": "Advanced Settings",
         "spanish": "Advanced Settings",
         "french": "Advanced Settings",
-        "portuguese": "Advanced Settings",
+        "portuguese": "Configurações Avançadas",
         "italian": "Advanced Settings",
         "german": "Advanced Settings",
         "turkish": "Advanced Settings",
@@ -65467,7 +65467,7 @@
         "korean": "System Record Date",
         "spanish": "System Record Date",
         "french": "SYstème Enregistrement Date",
-        "portuguese": "System Record Date",
+        "portuguese": "Data de Registro do Sistema",
         "italian": "System Record Date",
         "german": "Systemaufzeichnungsdatum",
         "turkish": "System Record Date",
@@ -65482,7 +65482,7 @@
         "korean": "System Record Date",
         "spanish": "System Record Date",
         "french": "SYstème Enregistrement Date",
-        "portuguese": "System Record Date",
+        "portuguese": "Data de Registro do Sistema",
         "italian": "System Record Date",
         "german": "Systemaufzeichnungsdatum",
         "turkish": "System Record Date",
@@ -65587,7 +65587,7 @@
         "korean": "Date and Time",
         "spanish": "Date and Time",
         "french": "Date and Time",
-        "portuguese": "Date and Time",
+        "portuguese": "Data e Hora",
         "italian": "Date and Time",
         "german": "Date and Time",
         "turkish": "Date and Time",
@@ -65662,7 +65662,7 @@
         "korean": "Users",
         "spanish": "Users",
         "french": "Users",
-        "portuguese": "Users",
+        "portuguese": "Usuários",
         "italian": "Users",
         "german": "Users",
         "turkish": "Users",
@@ -65677,7 +65677,7 @@
         "korean": "Access Levels",
         "spanish": "Access Levels",
         "french": "Access Levels",
-        "portuguese": "Access Levels",
+        "portuguese": "Níveis de Acesso",
         "italian": "Access Levels",
         "german": "Access Levels",
         "turkish": "Access Levels",
@@ -65722,7 +65722,7 @@
         "korean": "Internal Addresses",
         "spanish": "Internal Addresses",
         "french": "Internal Addresses",
-        "portuguese": "Internal Addresses",
+        "portuguese": "Endereços Internos",
         "italian": "Internal Addresses",
         "german": "Internal Addresses",
         "turkish": "Internal Addresses",
@@ -65782,7 +65782,7 @@
         "korean": "Display 설정",
         "spanish": "Display Settings",
         "french": "Affichage Paramètres",
-        "portuguese": "Display Settings",
+        "portuguese": "Configurações do Display",
         "italian": "Impostazioni Schermo",
         "german": "Display Einstellungen",
         "turkish": "Display Settings",
@@ -65891,7 +65891,7 @@
         "korean": "피드백 제어",
         "spanish": "Feedback Control",
         "french": "Feedback Control",
-        "portuguese": "Feedback Control",
+        "portuguese": "Controle de Feedback",
         "italian": "Feedback Control",
         "german": "Feedback Control",
         "turkish": "Feedback Control",
@@ -66011,7 +66011,7 @@
         "korean": "벨트 속도",
         "spanish": "Velocidad de Cinta",
         "french": "Vitesse Courroie",
-        "portuguese": "Belt Speed",
+        "portuguese": "Velocidade da Esteira ",
         "italian": "Velocità Nastro Trasportatore",
         "german": "Bandgeschwindigkeit",
         "turkish": "Belt Speed",
@@ -66026,7 +66026,7 @@
         "korean": "벨트 속도",
         "spanish": "Velocidad de Cinta",
         "french": "Vitesse Courroie",
-        "portuguese": "Belt Speed",
+        "portuguese": "Velocidade da Esteira ",
         "italian": "Velocità Nastro Trasportatore",
         "german": "Bandgeschwindigkeit",
         "turkish": "Belt Speed",
@@ -66116,7 +66116,7 @@
         "korean": "출력",
         "spanish": "Salidas",
         "french": "Sorties",
-        "portuguese": "Outputs",
+        "portuguese": "Saídas",
         "italian": "Uscite",
         "german": "Ausgänge",
         "turkish": "Outputs",
@@ -66582,7 +66582,7 @@
         "Locked"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "Locked"
       ],
       "italian": [
@@ -66902,17 +66902,17 @@
         "Can Start Belts"
       ],
       "portuguese": [
-        "none",
-        "reject-main",
-        "reject-alt",
-        "fault",
-        "light-red",
-        "light-yellow",
-        "light-green",
-        "buzzer",
-        "door-lock",
-        "warning",
-        "feedback-up",
+        "Nenhuma Fonte",
+        "Rejeição Principal",
+        "Rejeição Alternativa ",
+        "Falha",
+        "Beacon - Vermelho",
+        "Beacon - Amarelo ",
+        "Beacon - Verde",
+        "Beacon - Sonoro",
+        "Fechadura da Porta ",
+        "Aviso",
+        "Feedback Up",
         "feedback-down",
         "batch-running",
         "Safety Circuit",
@@ -67084,7 +67084,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Desligado",
         ""
       ],
       "italian": [
@@ -67130,7 +67130,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "italian": [
@@ -67188,7 +67188,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Desligado",
         ""
       ],
       "polish": [
@@ -67306,7 +67306,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "russian": [
@@ -67444,7 +67444,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "german": [
@@ -67478,7 +67478,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "italian": [
@@ -67608,8 +67608,8 @@
     "FaultMaskBit": {
       "portuguese": [
         "Desativado",
-        "Ativado",
-        ""
+        "Falha",
+        "Aviso"
       ],
       "turkish": [
         "Pasif",
@@ -67823,7 +67823,7 @@
         "N11"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "Fast",
         "Med",
         "Slow",
@@ -68184,7 +68184,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Desligado",
         ""
       ],
       "russian": [
@@ -68359,7 +68359,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Desligado",
         ""
       ],
       "italian": [
@@ -68409,7 +68409,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Desligado",
         ""
       ],
       "italian": [
@@ -68451,7 +68451,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Média",
         ""
       ],
       "italian": [
@@ -68481,7 +68481,7 @@
     },
     "RejLatchMode": {
       "portuguese": [
-        null,
+        "Desligado",
         null,
         "Alternar"
       ],
@@ -68612,7 +68612,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "german": [
@@ -68662,7 +68662,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "german": [
@@ -68807,7 +68807,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Desligado",
         ""
       ],
       "german": [
@@ -68853,7 +68853,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Desligado",
         ""
       ],
       "german": [
@@ -69066,7 +69066,7 @@
     },
     "EyeReject": {
       "portuguese": [
-        "Medio",
+        "Média",
         "Frente",
         "Largura",
         "Desligado"
@@ -69174,7 +69174,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Desligado",
         "",
         ""
       ],
@@ -69227,7 +69227,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "russian": [
@@ -69370,7 +69370,7 @@
         "Pressao do ar",
         "Excesso Rejeita",
         "Rede tampao",
-        "Rejeitar Memoria",
+        "Porta da Caixa",
         "",
         "",
         "",
@@ -69380,10 +69380,10 @@
         "Bateria fraca",
         "Data e hora",
         "",
-        "",
-        "",
-        "",
-        "",
+        "E-Stop",
+        "Backup do Produto",
+        "Falha de Calibração",
+        "Falha de Tara",
         "",
         "",
         ""
@@ -69667,7 +69667,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "italian": [
@@ -69759,7 +69759,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Não",
         ""
       ],
       "italian": [
@@ -69805,7 +69805,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Não",
         ""
       ],
       "italian": [
@@ -69847,7 +69847,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "turkish": [
@@ -69922,7 +69922,7 @@
       ],
       "portuguese": [
         "Default",
-        "Off",
+        "Desligado",
         "On"
       ],
       "russian": [
@@ -69979,7 +69979,7 @@
       ],
       "portuguese": [
         "Default",
-        "Off",
+        "Desligado",
         "On"
       ],
       "russian": [
@@ -70036,7 +70036,7 @@
       ],
       "portuguese": [
         "Default",
-        "Off",
+        "Desligado",
         "On"
       ],
       "russian": [
@@ -70084,7 +70084,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "russian": [
@@ -70130,7 +70130,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "russian": [
@@ -70165,7 +70165,7 @@
       ],
       "portuguese": [
         "Default",
-        "Off",
+        "Desligado",
         "On"
       ],
       "italian": [
@@ -70222,7 +70222,7 @@
       ],
       "portuguese": [
         "Default",
-        "Off",
+        "Desligado",
         "On"
       ],
       "italian": [
@@ -70299,7 +70299,7 @@
       ],
       "portuguese": [
         "Default",
-        "Off",
+        "Desligado",
         "On"
       ],
       "russian": [
@@ -70331,7 +70331,7 @@
         ""
       ],
       "portuguese": [
-        "",
+        "Desligado",
         ""
       ],
       "italian": [
@@ -70423,7 +70423,7 @@
         "On"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "On"
       ],
       "italian": [
@@ -70469,7 +70469,7 @@
         "Enabled"
       ],
       "portuguese": [
-        "Disabled",
+        "Desativado",
         "Enabled"
       ],
       "italian": [
@@ -70524,7 +70524,7 @@
       ],
       "portuguese": [
         "None",
-        "Faults",
+        "Falhas",
         "Reports",
         "Faults & Reports"
       ],
@@ -70778,7 +70778,7 @@
         "Enabled"
       ],
       "portuguese": [
-        "Disabled",
+        "Desativado",
         "Enabled"
       ],
       "italian": [
@@ -71091,7 +71091,7 @@
         "Continuous"
       ],
       "portuguese": [
-        "Off",
+        "Desligado",
         "After pack",
         "Continuous"
       ],
@@ -71205,9 +71205,9 @@
         "Pulse"
       ],
       "portuguese": [
-        "Off",
-        "Width",
-        "Pulse"
+        "Desligado",
+        "Largura",
+        "Pulso"
       ],
       "italian": [
         "Off",
@@ -71258,7 +71258,7 @@
         "Yes"
       ],
       "portuguese": [
-        "No",
+        "Não",
         "Yes"
       ],
       "italian": [
@@ -71336,16 +71336,16 @@
         "Check Weight"
       ],
       "portuguese": [
-        "Good",
-        "Low Reject",
-        "Low Pass",
+        "Bom",
+        "Baixa Rejeição",
+        "Passagem Baixa",
         "High Reject",
         "High Pass",
         "Unsettled",
         "Unused",
-        "Metal Reject",
+        "Rejeição de Metal",
         "Unused",
-        "Check Weight"
+        "Verificar Peso"
       ],
       "italian": [
         "Good",
@@ -71450,7 +71450,7 @@
         "1"
       ],
       "portuguese": [
-        "Disabled",
+        "Desativado",
         "+",
         "-",
         "0",
@@ -71503,8 +71503,8 @@
       "portuguese": [
         "",
         "Desativado",
-        "Ativado",
-        ""
+        "Falha",
+        "Aviso"
       ],
       "turkish": [
         "",
@@ -71635,9 +71635,9 @@
         "Double"
       ],
       "portuguese": [
-        "Off",
-        "Single",
-        "Double"
+        "Desligado",
+        "Único",
+        "Duplo"
       ],
       "italian": [
         "Off",
@@ -71694,7 +71694,7 @@
       "portuguese": [
         "Length",
         "Lead",
-        "Mid"
+        "Média"
       ],
       "italian": [
         "Length",
@@ -71859,7 +71859,7 @@
         "Default",
         "Length",
         "Lead",
-        "Mid"
+        "Média"
       ],
       "italian": [
         "Default",
@@ -71916,7 +71916,7 @@
         "Yes"
       ],
       "portuguese": [
-        "No",
+        "Não",
         "Yes"
       ],
       "italian": [
