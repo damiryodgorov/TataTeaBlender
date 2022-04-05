@@ -1125,14 +1125,12 @@ class LandingPage extends React.Component{
     })
     this.props.soc.on('custJSON',function (json) {
       if(self.state.customMap){
-        console.log("First IF")
         vMapV2 = json['@vMap']
         vMapLists = json['@lists']
         catMapV2 = json['@catmap']
         labTransV2 = json['@labels']
         self.setState({custMap:json,vMap:json, noupdate:false})
       }else{
-          console.log("ELSE IF")
           self.setState({custMap:json, noupdate:false})
       }
       
@@ -2800,7 +2798,7 @@ class LandingPage extends React.Component{
 
     var detectors = this.state.dets.map(function (det, i) {
       // body...
-      return   <div> <CircularButton branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
+      return   <div> <CircularButton language={self.state.english} branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
        
     })
       return (<div>
@@ -2941,7 +2939,7 @@ class LandingPage extends React.Component{
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['CalWeight']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.srec['CalWeight'], this.state.srec['WeightUnits'])} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['OverWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['OverWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['UnderWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['UnderWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
-          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={labTransV2['Calibrate'][language]['name']}/>
+          <CircularButton language={language} branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={labTransV2['Calibrate'][language]['name']}/>
           </div>)
 
         unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
@@ -3048,10 +3046,10 @@ class LandingPage extends React.Component{
             <BatchPackCountGraph language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',paddingTop:5, paddingBottom:5, width:275}} >{play}{stop}</div>
-          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
-          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Tare'][language]['name']} onClick={this.tareWeight}/>
-          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
-          <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Check Weight'][language]['name']} onClick={this.checkweight}/>
+          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
+          <CircularButton language={language} override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Tare'][language]['name']} onClick={this.tareWeight}/>
+          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
+          <CircularButton language={language} override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Check Weight'][language]['name']} onClick={this.checkweight}/>
         <Modal x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
           <ProductSettings RejSetupInvalid={this.state.rec.RejSetupInvalid} EditProdNeedToSave={this.state.rec.EditProdNeedToSave} rejectAlertMessage={this.state.rejectAlertMessage} packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
@@ -3561,7 +3559,7 @@ if(prodName.length > 17){
           <Modal ref={this.fModal} innerStyle={{background:modBg}}>
             <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.props.language]['name']}</div></div>
      
-          <FaultDiv branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
+          <FaultDiv language={this.props.language} branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
 
     </div>)
@@ -4804,7 +4802,7 @@ class ProductSettings extends React.Component{
         <div>
         <div style={{display:'inline-block', verticalAlign:'top'}}>
         <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
-        <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Select Product'][this.props.language]['name']}/>
+        <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton language={this.props.language} onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Select Product'][this.props.language]['name']}/>
         <img src='assets/graph.svg' style={{position:'absolute', width:40, left:770, marginTop:15}} onClick={this.toggleGraph}/>
         
         </div>
@@ -4871,7 +4869,7 @@ class ProductSettings extends React.Component{
                 } 
               </div></div>
             </div>
-            <CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Advanced'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Advanced'][this.props.language]['name']}/>
          
           </div>
 
@@ -4925,11 +4923,11 @@ class ProductSettings extends React.Component{
        <div style={{color:'#e1e1e1', fontSize:25}}><div style={{display:'inline-block'}}>{labTransV2['Create New Product'][this.props.language]['name']+':'}</div>  <div  style={{float:'right', display:'inline-block',marginRight:20}}><img src='assets/help.svg' onClick={this.showProdMgmtTooltip} width={30}/></div>
       </div>
        <div style={{textAlign:'center'}}>
-            <CircularButton onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Selected Product'][this.props.language]['name']}/>
-            <CircularButton onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Base Product'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Selected Product'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Base Product'][this.props.language]['name']}/>
          
-            <CircularButton onClick={this.copyFromFt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Factory Product'][this.props.language]['name']}/>
-            <CircularButton onClick={this.advProdMgmt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Product Records Management'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.copyFromFt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Factory Product'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.advProdMgmt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Product Records Management'][this.props.language]['name']}/>
          
          
           </div>
@@ -4950,15 +4948,15 @@ class ProductSettings extends React.Component{
        <div style={{color:'#e1e1e1', fontSize:25}}>{labTransV2['Advanced Options'][this.props.language]['name']}</div>
        {usbMsg}
           <div>
-            <CircularButton onClick={this.onImport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Import'][this.props.language]['name']}/>
-            <CircularButton onClick={this.onExport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Export'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.onImport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Import'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.onExport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Export'][this.props.language]['name']}/>
           </div>
           <div>
-            <CircularButton onClick={this.onRestore} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Restore'][this.props.language]['name']}/>
-            <CircularButton onClick={this.onBackup} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Backup'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.onRestore} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Restore'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.onBackup} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Backup'][this.props.language]['name']}/>
           </div>
           <div>
-            <CircularButton onClick={this.showAlertMessageForProducts} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Delete All'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.showAlertMessageForProducts} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Delete All'][this.props.language]['name']}/>
           </div>
     </div>
     //   <div onClick={this.copyTo} style={{display:'table-cell',height:85, borderRight:'2px solid #ccc', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
@@ -5140,9 +5138,9 @@ class ProductSelectItem extends React.Component{
         <Modal ref={this.confModal} Style={{color:'#e1e1e1',width:800, maxWidth:800}}>
                <div style={{textAlign:'center'}}>
                <div style={{fontSize:25, padding:10}}>{labTransV2['Save and Restore'][this.props.language]['name']}</div>
-               <CircularButton onClick={this.restoreDefaultMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Restore selected product to factory settings'][this.props.language]['name']}/>
-               <CircularButton onClick={this.restoreBackupMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Restore selected product to base product'][this.props.language]['name']}/>
-               <CircularButton onClick={this.backupProductMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Save selected product to base product'][this.props.language]['name']}/>
+               <CircularButton language={this.props.language} onClick={this.restoreDefaultMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Restore selected product to factory settings'][this.props.language]['name']}/>
+               <CircularButton language={this.props.language} onClick={this.restoreBackupMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Restore selected product to base product'][this.props.language]['name']}/>
+               <CircularButton language={this.props.language} onClick={this.backupProductMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Save selected product to base product'][this.props.language]['name']}/>
         </div>
           </Modal>
         <AlertModal ref={this.restoreFactorySettings} accept={this.restoreDefault}><div style={{color:"#e1e1e1"}}>{labTransV2['restore selected product?'][this.props.language]['name']}</div></AlertModal>
@@ -5530,7 +5528,7 @@ class SettingsPageWSB extends React.Component{
       <div> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
     }else if(this.state.cal){
-      var calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.startCalibration} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
+      var calBut = <div style={{textAlign:'center'}}><CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.startCalibration} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
           </div>
           
     var calStuff = (  <div style={{background:'#e1e1e1', padding:10}}>
@@ -6489,11 +6487,11 @@ class SettingsPage extends React.Component{
           }
           var sc = par['@data']
           if(par['@data'] == 'format_usb'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.formatUSB} lab={labTransV2['Format USB'][this.props.language]['name']}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={this.props.language} branding={self.props.branding} onClick={self.formatUSB} lab={labTransV2['Format USB'][this.props.language]['name']}/></div>)
           }else if(par['@data'] == 'reboot_display'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.reboot} lab={labTransV2['Reboot'][this.props.language]['name']}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={this.props.language} branding={self.props.branding} onClick={self.reboot} lab={labTransV2['Reboot'][this.props.language]['name']}/></div>)
           }else if(par['@data'] == 'update'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.update} lab={labTransV2['Update'][this.props.language]['name']}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={this.props.language} branding={self.props.branding} onClick={self.update} lab={labTransV2['Update'][this.props.language]['name']}/></div>)
           }
 
          
@@ -9153,7 +9151,7 @@ if(prodName.length > 17){
           <Modal ref={this.fModal} innerStyle={{background:modBg}}>
             <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.props.language]['name']}</div></div>
      
-          <FaultDiv branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
+          <FaultDiv langauge={this.props.language} branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
 
     </div>)
@@ -9551,7 +9549,7 @@ class MainHistogram extends React.Component{
         </div>
         </div>
             <Modal ref={this.fModal} innerStyle={{background:modBg}}>
-                    <FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
+                    <FaultDiv language={this.props.language} maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
                 </Modal>
         </div>
     }
@@ -10572,8 +10570,8 @@ class BatchControl extends React.Component{
           <div><div style={{display:'inline-block'}}><BatchWidget language={this.props.language} acc={this.props.startStopAcc} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.batchRunning} canStartBelts={this.props.canStartBelts} onStart={this.onStartClick} onResume={this.props.onResume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/></div>
             <div style={{display:'inline-block', float:'right'}}>
               <div style={{display:'none'}}>    
-              <CircularButton2  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.changeMode}><div style={{fontSize:20, lineHeight:'25px'}}><div>{labTransV2['Batch Mode'][this.props.language]['name']}</div><div>{bmodes[this.state.startMode]}</div></div></CircularButton2>
-                  <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.pastBatches} lab={labTransV2['Past Batches'][this.props.language]['name']}/>
+              <CircularButton2 language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.changeMode}><div style={{fontSize:20, lineHeight:'25px'}}><div>{labTransV2['Batch Mode'][this.props.language]['name']}</div><div>{bmodes[this.state.startMode]}</div></div></CircularButton2>
+                  <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.pastBatches} lab={labTransV2['Past Batches'][this.props.language]['name']}/>
               </div>
                <div style={{height:80,lineHeight:'80px', background:'#e1e1e1', borderTop:'1px solid #ccc', marginTop:5, textAlign:'center'}}>
           {changeModeBut}
@@ -10588,7 +10586,7 @@ class BatchControl extends React.Component{
               <ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'BatchMode'} vMap={vMapV2['BatchMode']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} 
               label={vMapV2['BatchMode']['@translations'][this.props.language]['name']} value={this.props.batchMode} param={vdefByMac[this.props.mac][1][0]['BatchMode']}
                editable={true} onEdit={this.selectChanged} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['BatchMode']['@translations'][this.props.language]['description']} listOverride={true} ovList={bmodes}/></div>
-              <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:400, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.showPlannedBatches} lab={labTransV2['Show Planned Batches'][this.props.language]['name']}/>
+              <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:400, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.showPlannedBatches} lab={labTransV2['Show Planned Batches'][this.props.language]['name']}/>
             </div>
             </Modal>
             
@@ -10945,7 +10943,7 @@ class AddBatch extends React.Component{
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.props.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>   
         <div style={{marginTop:140,marginLeft:340}}>
 
-        <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={labTransV2['Add'][this.props.language]['name']}/></div>
+        <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={labTransV2['Add'][this.props.language]['name']}/></div>
       
     </div>
   }
@@ -10984,7 +10982,7 @@ class EditBatch extends React.Component{
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.props.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>   
-        <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={labTransV2['Confirm'][this.props.language]['name']}/></div>
+        <div style={{marginTop:140,marginLeft:340}}><CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={labTransV2['Confirm'][this.props.language]['name']}/></div>
       
     </div>
   }
@@ -11276,8 +11274,8 @@ class DateTimeSelector extends React.Component{
     </div>
       {dateItem}
       {timeItem}
-             <CircularButton onClick={this.setDT} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
+             <CircularButton language={this.props.language} onClick={this.setDT} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
    
       </div> 
   }
@@ -11609,8 +11607,8 @@ class LogoutModalC extends React.Component{
           <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][this.props.language]['name']}</div>
           <div style={{color:clr}}> {this.props.children}</div>
         <div>
-          <CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
+          <CircularButton language={this.props.language} onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
           
   </div>
         </div>
@@ -11713,8 +11711,8 @@ class CopyModalC extends React.Component{
           <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][this.props.language]['name']}</div>
           <div style={{color:clr}}> {this.props.children}</div>
         <div>
-          <CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
+          <CircularButton language={this.props.language} onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
           
   </div>
         </div>
@@ -11818,8 +11816,8 @@ class DeleteModalC extends React.Component{
           {this.props.children}
           </div>
         <div>
-                <CircularButton onClick={this.delete} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Delete Product'][this.props.language]['name']}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.delete} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Delete Product'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
           
   </div>
         </div>
@@ -11942,9 +11940,9 @@ class PromptModalC extends React.Component{
           <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}><div>{labTransV2['Warning'][this.props.language]['name']}</div><div style={{fontSize:24}}>{labTransV2['This will make changes to current batch'][this.props.language]['name']}</div></div>
           {this.props.children}
         <div>
-          <CircularButton onClick={this.discard} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Discard Changes'][this.props.language]['name']}/>
-                <CircularButton onClick={this.save} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Save Changes'][this.props.language]['name']}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
+          <CircularButton language={this.props.language} onClick={this.discard} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Discard Changes'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.save} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Save Changes'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
           
   </div>
         </div>
@@ -11996,13 +11994,13 @@ class FaultDiv extends React.Component{
     }else{
             var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
     if(this.props.faults.length != 0){
-      clButton =<div> <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Faults'][this.props.language]['name']} onClick={this.clearFaults}/></div>
+      clButton =<div> <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Faults'][this.props.language]['name']} onClick={this.clearFaults}/></div>
       cont = this.props.faults.map(function(f){
         return <FaultItem maskFault={self.maskFault} fault={f}/>
       })
     }
     if(this.props.warnings.length != 0){
-      wclButton =<div> <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Warnings'][this.props.language]['name']} onClick={this.clearWarnings}/></div>
+      wclButton =<div> <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Warnings'][this.props.language]['name']} onClick={this.clearWarnings}/></div>
       wcont = this.props.warnings.map(function(f){
         return <FaultItem maskFault={self.maskFault} fault={f}/>
       })
@@ -12097,12 +12095,12 @@ class CheckWeightControl extends React.Component{
        <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={labTransV2['Check Weight'][this.props.language]['name']} value={cw} editable={false} onEdit={this.sendPacket} num={true}/></div>
        <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={labTransV2['Measured Value'][this.props.language]['name']} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={{'@name':'checkweightmeasure'}} tooltip={vdefMapV2['@tooltips']['MeasuredValue'][this.props.language]} num={true}/></div>
         <div style={{marginTop:140}}>
-        <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.cancelCW} lab={labTransV2['Cancel'][this.props.language]['name']}/>
+        <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.cancelCW} lab={labTransV2['Cancel'][this.props.language]['name']}/>
         {
           cw!='Waiting for Weight' && this.state.cwset != 0 ?
-          <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+          <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={labTransV2['Confirm'][this.props.language]['name']}/>
           :
-          <CircularButton disabled={true} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+          <CircularButton language={this.props.language} disabled={true} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
         }
         
         </div>
@@ -12156,18 +12154,18 @@ class CalibrationControl extends React.Component{
       calStr = labTransV2['Calibration cancelled'][this.props.language]['name']+'.'
     }
     var calBut = <div style={{textAlign:'center'}}>
-          <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalib} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
+          <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalib} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
           </div>
           
     if((this.props.calibState != 0) && (this.props.calibState != 7) && (this.props.dynSettings == 0)&&(this.props.calibState != 6)){
       calBut = <div style={{textAlign:'center'}}>
-            <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalib} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
-            <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalCancel}lab={labTransV2['Cancel'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalib} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalCancel}lab={labTransV2['Cancel'][this.props.language]['name']}/>
           </div>        
     }
     if(this.props.calibState == 6){
       calBut = <div style={{textAlign:'center'}}>
-          <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.endProcess} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+          <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.endProcess} lab={labTransV2['Confirm'][this.props.language]['name']}/>
         </div>      
     }
     return <div>
