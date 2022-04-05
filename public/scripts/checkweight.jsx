@@ -3090,7 +3090,7 @@ class LandingPage extends React.Component{
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
                 accounts={this.state.usernames} authenticate={this.authenticate} login={this.login} val={this.state.userid}/>
         <AuthfailModal language={language} ref={this.am} forgot={this.forgotPassword} tryAgain={this.tryAgain}/>
-        <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
+        <UserPassReset language={language} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
         <ProgressModal language={language} ref={this.prgmd}/><MessageModal language={language} ref={this.msgm}/>
         <LogoutModal language={language} ref={this.lgoModal} branding={this.state.branding}/>
         <LockModal language={language} ref={this.lockModal} branding={this.state.branding}/>
