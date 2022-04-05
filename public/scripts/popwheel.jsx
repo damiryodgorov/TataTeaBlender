@@ -3,7 +3,8 @@ const ReactDOM = require('react-dom')
 var onClickOutside = require('react-onclickoutside');
 var createReactClass = require('create-react-class');
 
-const vdefMapV2 = require('./vdefmap.json')
+const vdefMapV2 = require('./vdefmapcw.json')
+var labTransV2 = vdefMapV2['@labels']
 import {Modal, ScrollArrow} from './components.jsx'
 import {CircularButton} from './buttons.jsx'
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
@@ -387,7 +388,7 @@ class PopoutWheelModalC extends React.Component{
 			<div style={{textAlign:'center', borderBottom:'1px solid #e1e1e1'}}><label>{this.props.name}</label></div>
 			<div  style={{whiteSpace:'pre-wrap', textAlign:'left'}}><ContextMenuTrigger id={cmenuid}>{tooltiptext}</ContextMenuTrigger></div>
 			<ContextMenu id={cmenuid}>
-				<MenuItem onClick={this.translateTooltip}>Translate Tooltip</MenuItem>
+				<MenuItem onClick={this.translateTooltip}>{labTransV2['Translate Tooltip'][this.props.language]['name']}</MenuItem>
 			</ContextMenu>
 			</React.Fragment>
 		}
@@ -400,14 +401,14 @@ class PopoutWheelModalC extends React.Component{
 	  		{wheels}
 	  		</div>
 	  		<div>
-	  		<CircularButton branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
-		<CircularButton branding={this.props.branding} style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={()=> this.close(0)} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/>
+	  		<CircularButton language={this.props.language} branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
+		<CircularButton language={this.props.language} branding={this.props.branding} style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={()=> this.close(0)} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/>
 	  	</div>	<Modal ref='helpModal' Style={{color:'#e1e1e1',width:600}}>
 	  		{tttxt}
 	  		</Modal>
 	  		<Modal ref='transModal' Style={{color:'#e1e1e1',width:600}}>
 	  		 <textarea type='text' style={{fontSize:20, width:400, height:100}} value={this.state.curtrans} onChange={this.curtrnChange}/>
-	  		 <button onClick={this.submitTooltip}>Submit Change</button>
+	  		 <button onClick={this.submitTooltip}>{labTransV2['Submit Change'][this.props.language]['name']}</button>
 	  		</Modal>
 	  </div>)
 

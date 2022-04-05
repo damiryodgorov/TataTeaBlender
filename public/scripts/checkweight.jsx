@@ -51,7 +51,6 @@ var _nVdf;
 
 var categories;
 var netMap = vdefMapV2['@netpollsmap']
-
 var vMapV2 = vdefMapV2["@vMap"]
 var vMapLists = vdefMapV2['@lists']
 var categoriesV2 = [vdefMapV2["@pages"]['CWSys']]
@@ -862,13 +861,13 @@ class Container extends React.Component {
                 <tbody>
                 <tr style={{marginLeft:10,textAlign:'center'}}>
                 <td>
-                <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE ONE</b></div>
+                <div onClick={this.gotoLane1} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>{labTransV2['Lane One'][language]['name']}</b></div>
                 </td>
                 <td>
                 <div onClick={this.gotoLane1}><DualPage lane={this.lane1} update={this.state.updateLane1} page={this.state.page}/></div>
                 </td>
                 <td>
-                <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>LANE TWO</b></div>
+                <div onClick={this.gotoLane2} style={{borderBottomRightRadius:15, height:700, width:20,fontSize:20, color:'white', lineHeight:'10px', writingMode:'vertical-rl',textOrientation:'upright',textAlign: 'center'}}><b>{labTransV2['Lane Two'][language]['name']}</b></div>
                 </td>
                 <td>
                 <div onClick={this.gotoLane2}><DualPage lane={this.lane2} update={this.state.updateLane2} page={this.state.page}/></div>
@@ -1553,7 +1552,7 @@ class LandingPage extends React.Component{
               self.getRefBuffer(7)
             }
           },200)
-          this.setState({noupdate:false,prec:e.rec, cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), unusedList:this.getUCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
+          this.setState({noupdate:false,prec:e.rec,cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), unusedList:this.getUCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
           if (this.props.lane){
             this.props.update(this.props.lane)
           }
@@ -1699,9 +1698,9 @@ class LandingPage extends React.Component{
             if(typeof this.state.rec['BatchRunning'] != 'undefined'){
               if(e.rec['BatchRunning'] == 1){
                 //toast('Batch Started');
-                this.ste.current.showMsg('Batch Started')
+                this.ste.current.showMsg(labTransV2['Batch Started'][language]['name'])
                 if (this.steDual && this.steDual.current){
-                  this.steDual.current.showMsg('Batch Started')
+                  this.steDual.current.showMsg(labTransV2['Batch Started'][language]['name'])
                 }
                 //this.lg.current.clearHisto();
                 setTimeout(function () {
@@ -1710,15 +1709,15 @@ class LandingPage extends React.Component{
                 },100)
               }else if(e.rec['BatchRunning'] == 2){
                // toast('Batch Paused')
-                this.ste.current.showMsg('Batch Paused')
+                this.ste.current.showMsg(labTransV2['Batch Paused'][language]['name'])
                 if (this.steDual && this.steDual.current){
-                  this.steDual.current.showMsg('Batch Paused')
+                  this.steDual.current.showMsg(labTransV2['Batch Paused'][language]['name'])
                 }
               }else{
                 //this.msgm.current.show('Batch Stopped')
-                this.ste.current.showMsg('Batch Stopped')
+                this.ste.current.showMsg(labTransV2['Batch Stopped'][language]['name'])
                 if (this.steDual && this.steDual.current){
-                  this.steDual.current.showMsg('Batch Stopped')
+                  this.steDual.current.showMsg(labTransV2['Batch Stopped'][language]['name'])
                 }
                //  toast('Batch Stopped')
               }
@@ -1730,10 +1729,10 @@ class LandingPage extends React.Component{
             if(e.rec['BatchRunComplete'] != this.state.rec['BatchRunComplete']){
               if(typeof this.state.rec['BatchRunComplete'] != 'undefined'){
                 if(e.rec['BatchRunComplete'] == 1){
-                  this.msgm.current.show('Batch Completed')
-                  this.ste.current.showMsg('Batch Completed')
+                  this.msgm.current.show(labTransV2['Batch Completed'][language]['name'])
+                  this.ste.current.showMsg(labTransV2['Batch Completed'][language]['name'])
                   if (this.steDual && this.steDual.current){
-                    this.steDual.current.showMsg('Batch Completed')
+                    this.steDual.current.showMsg(labTransV2['Batch Completed'][language]['name'])
                   }
                   if (this.props.lane){
                     this.props.update(this.props.lane)
@@ -1754,7 +1753,7 @@ class LandingPage extends React.Component{
           if(this.state.srec['RemoteDisplayLock'] == 1){
             if(typeof e.rec['InternalIP'] != 'undefined'){
               if(window.location.host != e.rec['InternalIP']){
-                this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
+                this.lockModal.current.show(labTransV2['This display has been locked for remote use'][language]['name'])
               }
             }
             
@@ -2654,7 +2653,7 @@ class LandingPage extends React.Component{
     if((this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccCheckWeight'])){
       this.sendPacket('checkWeight')
     }else{
-      this.msgm.current.show('Access Denied');
+      this.msgm.current.show(labTransV2['Access Denied'][language]['name']);
       this.chBut.current.tEnd();
     }
   }
@@ -2668,13 +2667,14 @@ class LandingPage extends React.Component{
     var srec = this.state.srec
     srec['@customstrn'] = v
     if(v == 0){
+      console.log("V is 0")
       vMapV2 = vdefMapV2['@vMap']
       vMapLists = vdefMapV2['@lists']
       catMapV2 = vdefMapV2['@catmap']
       labTransV2 = vdefMapV2['@labels']
       this.setState({customMap:false, vmap:vdefMapV2,noupdate:false, srec:srec,cob:this.getCob(srec, this.state.prec, this.state.rec,this.state.fram)})
     }else if(v == 1){
-
+      console.log("V is 1")
       vMapV2 = this.state.custMap['@vMap']
       vMapLists = this.state.custMap['@lists']
       catMapV2 = this.state.custMap['@catmap']
@@ -2800,7 +2800,7 @@ class LandingPage extends React.Component{
 
     var detectors = this.state.dets.map(function (det, i) {
       // body...
-      return   <div> <CircularButton branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
+      return   <div> <CircularButton language={self.state.english} branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
        
     })
       return (<div>
@@ -2866,8 +2866,8 @@ class LandingPage extends React.Component{
 
     // New Changes to add with greyed out functionality on startup 
     var play, stop;
-    var sttxt = 'Start'
-    
+    // var sttxt = 'Start'
+    var sttxt = labTransV2['Start Text'][language]['name']
     // if CanStartBelts == 0
     play = <div style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#a9a9a9', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
     stop = ''
@@ -2877,13 +2877,13 @@ class LandingPage extends React.Component{
         }
     }
     else if(this.state.rec['BatchRunning'] == 1){
-      play = <div onClick={this.pause} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause/Stop</div></div>
+      play = <div onClick={this.pause} style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Pause/Stop'][language]['name']}</div></div>
       stop = ''
     }
     else if(this.state.rec['BatchRunning'] == 2){
       sttxt = 'Resume'
       play = <div onClick={this.resume} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
-      stop = <div onClick={this.stop} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block',width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>End Batch</div></div> 
+      stop = <div onClick={this.stop} style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block',width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>{labTransV2['End Batch'][language]['name']}</div></div> 
       if(this.state.rec['CanStartBelts'] == 0){
         play = <div  style={{width:114, lineHeight:'60px',color:psbtcolor,font:30, background:'#a9a9a9', display:'inline-block',marginLeft:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
       }
@@ -2893,14 +2893,14 @@ class LandingPage extends React.Component{
 
     var cont = ''
     var sd = <div><DisplaySettings soc={this.props.soc} nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
-      <button onClick={this.reboot}>Reboot</button><button onClick={this.formatUSB}>Format USB and Reboot</button></div>
+      <button onClick={this.reboot}>{labTransV2['Reboot'][language]['name']}</button><button onClick={this.formatUSB}>{labTransV2['Format USB and Reboot'][language]['name']}</button></div>
     var unused = ''
     
     var cald = ''
     var dets = ''
 
     var lw = 0;
-    var statusStr = 'Good Weight'
+    var statusStr = labTransV2['Good Weight'][language]['name']
     if(typeof this.state.crec['PackWeight'] != 'undefined'){        
       if(this.state.crec['PackWeight']){
         lw = this.state.crec['PackWeight']
@@ -2917,12 +2917,12 @@ class LandingPage extends React.Component{
       statusLed = <img src="assets/led_circle_red.png"/>
     if(this.state.faultArray.length == 1){
       if(typeof vMapV2[this.state.faultArray[0]+'Mask'] != 'undefined'){
-        statusStr = vMapV2[this.state.faultArray[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+        statusStr = vMapV2[this.state.faultArray[0]+'Mask']['@translations']['english']['name'] + ' ' + labTransV2['Fault Active'][language]['name']
       }else{
-         statusStr = this.state.faultArray[0] + ' active'  
+         statusStr = this.state.faultArray[0] +  ' ' + labTransV2['Active'][language]['name']
       }
     }else{
-      statusStr = this.state.faultArray.length + ' faults active'
+      statusStr = this.state.faultArray.length + ' ' + labTransV2['Faults Active'][language]['name']
     }
     }else if(this.state.crec['WeightPassed']%2 == 1){
       statusLed = <img src="assets/led_circle_yellow.png"/>
@@ -2930,10 +2930,10 @@ class LandingPage extends React.Component{
 
 
     if(this.state.srec['SRecordDate']){
-        sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>System Settings</div></div>
+        sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['System Settings'][language]['name']}</div></div>
         <SettingsPageWSB  resetCalibration={this.resetCalibration} packSamples={this.state.packSamples} soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.confirmPressed == 1 ? 0 : this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
-        <BatchWidget acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
+        <BatchWidget language={language} acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
         </div>
 
         cont = sd;
@@ -2941,7 +2941,7 @@ class LandingPage extends React.Component{
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['CalWeight']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.srec['CalWeight'], this.state.srec['WeightUnits'])} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['OverWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['OverWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['UnderWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['UnderWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
-          <CircularButton branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={'Calibrate'}/>
+          <CircularButton language={language} branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={labTransV2['Calibrate'][language]['name']}/>
           </div>)
 
         unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
@@ -2949,7 +2949,7 @@ class LandingPage extends React.Component{
     }else{
       dets = this.renderModal()
       cont = <div><div style={{display:'table-cell', width:330,backgroundColor:'#e1e1e1',textAlign:'center'}} >
-        <div style={{textAlign:'center', fontSize:25, marginTop:5, marginBottom:5}}>Located Units</div>{dets}</div><div style={{display:'table-cell', width:840, paddingLeft:5, paddingRight:5}}>{sd}</div></div>
+        <div style={{textAlign:'center', fontSize:25, marginTop:5, marginBottom:5}}>{labTransV2['Located Units'][language]['name']}</div>{dets}</div><div style={{display:'table-cell', width:840, paddingLeft:5, paddingRight:5}}>{sd}</div></div>
     } 
 
     var trendBar = [15,16.5,17.5,19,15.5,18.5]
@@ -2993,16 +2993,18 @@ class LandingPage extends React.Component{
 //    var laneNumber = new URLSearchParams(location.search).get('lane')
 //    var laneStr = 'LANE '+laneNumber
     if (this.props.lane){
-      var laneStr = 'LANE '+this.props.lane
+      var laneStr = labTransV2['Lane'][language]['name'] + ' ' +this.props.lane
       
       home = <td>
               <div style={{paddingLeft:3, borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}} onClick={this.goDual}><div style={{textAlign:'center'}}><img style={{width:60, marginTop:-15, marginBottom:-7}} src={'assets/home.png'}/></div>
-              <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Home'}</div></div>
+              <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{labTransV2['Home'][language]['name']}</div></div>
               </td>
 
       raptorLogoWidth = 300
       lane = <td style={{color:'white',fontSize:30}}>{laneStr}</td>
     }
+
+
     return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
          <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
          <table className='landingMenuTable' style={{marginBottom:-4, marginTop:-7}}>
@@ -3011,8 +3013,8 @@ class LandingPage extends React.Component{
                 <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} src={img}/></td>
                 <td style={{width:raptorLogoWidth}}><ContextMenuTrigger id='raptorlogo'>{raptor}</ContextMenuTrigger>
                 <ContextMenu id='raptorlogo'>
-                  <MenuItem onClick={this.exportVmap}>Export Translations</MenuItem>
-                  <MenuItem onClick={this.resetVmap}>Reset Translations</MenuItem>
+                  <MenuItem onClick={this.exportVmap}>{labTransV2['Export Translations'][language]['name']}</MenuItem>
+                  <MenuItem onClick={this.resetVmap}>{labTransV2['Reset Translations'][language]['name']}</MenuItem>
                 </ContextMenu>
                 </td>
                 {lane}
@@ -3022,10 +3024,10 @@ class LandingPage extends React.Component{
                   <td className="logbuttCell" style={{height:60}}  onClick={this.toggleLogin}>
                   <div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
                   <button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
-                  <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Level '+this.state.level}</div>
+                  <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{labTransV2['Level'][language]['name'] +' '+this.state.level}</div>
                   </div></td>
                   <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
-                  <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Settings'}</div>
+                  <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{labTransV2['Settings'][language]['name']}</div>
                   </td>
               </tr>
             </tbody>
@@ -3041,58 +3043,59 @@ class LandingPage extends React.Component{
           <MainHistogram sendPacket={this.sendPacket} weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
                     winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.state.buckMin} buckMax={this.state.buckMax}>
-          <TrendBar weightPassed={this.state.crec['WeightPassed']} weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} nominal={trendBar[6]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
+          <TrendBar language={language} weightPassed={this.state.crec['WeightPassed']} weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} nominal={trendBar[6]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
           </td><td>
             <BatchPackCountGraph language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',paddingTop:5, paddingBottom:5, width:275}} >{play}{stop}</div>
-          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
-          <CircularButton override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Tare'} onClick={this.tareWeight}/>
-          <CircularButton ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
-          <CircularButton override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={'Check Weight'} onClick={this.checkweight}/>
-        <Modal x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
+          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
+          <CircularButton language={language} override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Tare'][language]['name']} onClick={this.tareWeight}/>
+          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
+          <CircularButton language={language} override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Check Weight'][language]['name']} onClick={this.checkweight}/>
+        <Modal language={language} x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
           <ProductSettings RejSetupInvalid={this.state.rec.RejSetupInvalid} EditProdNeedToSave={this.state.rec.EditProdNeedToSave} rejectAlertMessage={this.state.rejectAlertMessage} packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
           submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={this.closeProductMenu}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
           curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
-         <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
+         <Modal language={language} x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
           {cont}
           <div>{this.state.connectedClients}</div>
         </Modal>
-        <Modal  x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:620}}>
+        <Modal  language={language} x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:620}}>
           {this.renderModal()}
         </Modal> 
-        <Modal  x={true} ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:410}}>
+        <Modal  language={language} x={true} ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:410}}>
          <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.cwc} cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
         </Modal>
-        <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
-         <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Batch</div></div>
-         <BatchControl soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
+        <Modal  language={language} x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
+         <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['Batch'][language]['name']}</div></div>
+         <BatchControl language={language} soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
           liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
            startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
                    weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
         </Modal>
-        <Modal  x={true} ref={this.unuProductSettingssedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
+        <Modal  language={language} x={true} ref={this.unuProductSettingssedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
         {unused}   
         </Modal>
-        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
-        <Modal ref={this.imgMD}>
+        <AlertModal language={language} ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][language]['name']}
+        </div></AlertModal>
+        <Modal language={language} ref={this.imgMD}>
             <div style={{height:400}}>
-              <h3 style={{color:"#fff"}}>You lost Connection with the unit, please reconnect</h3><button onClick={()=>location.reload()}>Reconnect</button>
+              <h3 style={{color:"#fff"}}>{labTransV2['You lost Connection'][language]['name']}</h3><button onClick={()=>location.reload()}>{labTransV2['Reconnect'][language]['name']}</button>
             </div>
         </Modal>
-          <PlanBatchStart sendPacket={this.sendPacket} pList={this.state.pList} pNames={this.state.prodNames} ref={this.planStart} plannedBatches={this.state.plannedBatches} startP={this.startSel}/>
-          <ManBatchStart branding={this.state.branding} pList={this.state.pList} pNames={this.state.prodNames} ref={this.manStart} ip={this.state.curDet.ip} language={language} mac={this.state.curDet.mac} startNew={this.startBuf}/>
+          <PlanBatchStart language={language} sendPacket={this.sendPacket} pList={this.state.pList} pNames={this.state.prodNames} ref={this.planStart} plannedBatches={this.state.plannedBatches} startP={this.startSel}/>
+          <ManBatchStart language={language} branding={this.state.branding} pList={this.state.pList} pNames={this.state.prodNames} ref={this.manStart} ip={this.state.curDet.ip} language={language} mac={this.state.curDet.mac} startNew={this.startBuf}/>
          
         <LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
                 accounts={this.state.usernames} authenticate={this.authenticate} login={this.login} val={this.state.userid}/>
-        <AuthfailModal ref={this.am} forgot={this.forgotPassword} tryAgain={this.tryAgain}/>
-        <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
-        <ProgressModal ref={this.prgmd}/><MessageModal ref={this.msgm}/>
-        <LogoutModal ref={this.lgoModal} branding={this.state.branding}/>
-        <LockModal ref={this.lockModal} branding={this.state.branding}/>
+        <AuthfailModal language={language} ref={this.am} forgot={this.forgotPassword} tryAgain={this.tryAgain}/>
+        <UserPassReset language={language} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
+        <ProgressModal language={language} ref={this.prgmd}/><MessageModal language={language} ref={this.msgm}/>
+        <LogoutModal language={language} ref={this.lgoModal} branding={this.state.branding}/>
+        <LockModal language={language} ref={this.lockModal} branding={this.state.branding}/>
         </div>
       </div>) 
   }
@@ -3184,10 +3187,10 @@ class DualPage extends React.Component{
               <tr>
               <td>
                 <div><StatusElemDual connected={laneState.connected} pAcc={(laneState.srec['PassOn'] == 0) || (laneState.level >= laneState.rec['PassAccClrFaultWarn'])} prodName={laneState.prec['ProdName']} warnings={laneState.warningArray} weightPassed={laneState.crec['WeightPassed']} faults={laneState.faultArray} 
-                ref={this.props.lane.current.steDual} branding={laneState.branding} value={'g'} name={'Status'} width={425} font={25} language={language} /></div>
+                ref={this.props.lane.current.steDual} branding={laneState.branding} value={'g'} name={labTransV2['Status'][language]['name']} width={425} font={25} language={language} /></div>
               </td>
               <td>
-                <div><SparcElemDual ref={this.props.lane.current.seDual} branding={laneState.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={163} font={25}/></div>
+                <div><SparcElemDual ref={this.props.lane.current.seDual} branding={laneState.branding} value={FormatWeight(lw, wu)} name={labTransV2['Net Weight'][language]['name']} width={163} font={25}/></div>
               </td>
               </tr>
               </tbody>
@@ -3209,7 +3212,7 @@ class DualPage extends React.Component{
               <table><tbody>
               <tr>
               <td>
-              <StatSummaryDual language={language} unit={laneState.srec['WeightUnits']} branding={laneState.branding} ref={this.props.lane.current.ssDual} pkgWeight={pkgWeight}/>
+              <StatSummaryDual language={language} unit={laneState.srec['WeightUnits']} branding={laneState.branding} ref={this.props.lane.current.ssDual} pkgWeight={pkgWeight} summary={labTransV2['Summary'][language]['name']}  translate={labTransV2['Translate'][language]['name']} current_language= {labTransV2['Current Language'][language]['name']} submit_change_text={labTransV2['Submit Change'][language]['name']}/>
               </td>
               <td>
               <BatchPackCountGraphDual language={language} branding={laneState.branding} ref={this.props.lane.current.hhDual} bCount={laneState.prec['BatchCount']} bRunning={laneState.rec['BatchRunning']}/>
@@ -3305,15 +3308,15 @@ class StatSummaryDual extends React.Component{
       
     }
   return  <div style={{width:295,background:outerbg, borderRadius:10, margin:1, marginBottom:0, border:'1px '+outerbg+' solid', borderTopLeftRadius:0, height:425}}>
-      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
-      <StatControlDual language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange}/>
-      <StatControlDual language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={'Gross Weight'}  submitChange={this.props.submitChange} value={grswt}/>
-      <StatControlDual language={this.props.language} vMap={vMapV2['PkgWeight']['@translations']} pram={'PkgWeight'} name={vMapV2['PkgWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value={pkgwgt}/>
-      <BatchStatControlDual name={labTransV2['@TotalWeightBS'][this.props.language]['name']} pram={'@TotalWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={tot} sample={stot}/>
-      <BatchStatControlDual name={labTransV2['@AvgWeightBS'][this.props.language]['name']} pram={'@AvgWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={avg} sample={savg}/>
-      <BatchStatControlDual name={labTransV2['@StdDevBS'][this.props.language]['name']} pram={'@StdDevBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={stdev} sample={sstdev}/>
-      <BatchStatControlDual name={labTransV2['@GiveAwayBS'][this.props.language]['name']} pram={'@GiveAwayBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={gvb} sample={gvs}/>
-      <BatchStatControlDual name={labTransV2['@ProductionRateBS'][this.props.language]['name']} pram={'@ProductionRateBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={ppm} sample={sppm}/>
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>{this.props.summary}</div></div>
+      <StatControlDual language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange} translate={this.props.translate} current_language= {this.props.current_language} submit_change_text={this.props.submit_change_text}  />
+      <StatControlDual language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={'Gross Weight'}  submitChange={this.props.submitChange} value={grswt} translate={this.props.translate} current_language= {this.props.current_language} submit_change_text={this.props.submit_change_text}/>
+      <StatControlDual language={this.props.language} vMap={vMapV2['PkgWeight']['@translations']} pram={'PkgWeight'} name={vMapV2['PkgWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value={pkgwgt} translate={this.props.translate} current_language= {this.props.current_language} submit_change_text={this.props.submit_change_text}/>
+      <BatchStatControlDual name={labTransV2['@TotalWeightBS'][this.props.language]['name']} pram={'@TotalWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={tot} sample={stot} translate={this.props.translate} submit_change_text={this.props.submit_change_text}/>
+      <BatchStatControlDual name={labTransV2['@AvgWeightBS'][this.props.language]['name']} pram={'@AvgWeightBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={avg} sample={savg} translate={this.props.translate} submit_change_text={this.props.submit_change_text}/>
+      <BatchStatControlDual name={labTransV2['@StdDevBS'][this.props.language]['name']} pram={'@StdDevBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={stdev} sample={sstdev} translate={this.props.translate} submit_change_text={this.props.submit_change_text}/>
+      <BatchStatControlDual name={labTransV2['@GiveAwayBS'][this.props.language]['name']} pram={'@GiveAwayBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={gvb} sample={gvs} translate={this.props.translate} submit_change_text={this.props.submit_change_text}/>
+      <BatchStatControlDual name={labTransV2['@ProductionRateBS'][this.props.language]['name']} pram={'@ProductionRateBS'} submitChange={this.props.submitLabChange} language={this.props.language} batch={ppm} sample={sppm} translate={this.props.translate} submit_change_text={this.props.submit_change_text}/>
 
     </div>
   }
@@ -3340,16 +3343,16 @@ class StatControlDual extends React.Component{
     var uid = uuidv4()
     return <div style={{height:50}}>
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
-    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>{this.props.translate}</MenuItem></ContextMenu>
     </div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:0.8, fontSize:22}}>{this.props.value}</div>
-    <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+    <Modal language={this.props.language} ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
         <div>{this.props.vMap['english']['name']}</div>
         <div>
-          Current Language: {this.props.language}
+        {this.props.current_language + ': ' + this.props.language}
         </div>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
-         <button onClick={this.submit}>Submit Change</button>
+         <button onClick={this.submit}>{this.props.submit_change_text}</button>
         </Modal>
     </div>
   }
@@ -3390,11 +3393,11 @@ class BatchStatControlDual extends React.Component{
     }
     return <div style={{height:50}}>
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
-    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu></div>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>{this.props.translate} </MenuItem></ContextMenu></div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:0.8, fontSize:batchFont, whiteSpace:'nowrap'}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
-     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+     <Modal language={this.props.language} ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
-         <button onClick={this.submit}>Submit Change</button>
+         <button onClick={this.submit}>{this.props.submit_change_text}</button>
         </Modal>
     </div>
   }
@@ -3518,13 +3521,13 @@ if(prodName.length > 17){
   if(this.props.warnings.length != 0){
     if(this.props.warnings.length == 1){
       if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
-        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' '+ labTransV2['Active'][this.props.language]['name']
       }else{
-        str = this.props.warnings[0] + ' active'  
+        str = this.props.warnings[0] +  ' '+ labTransV2['Active'][this.props.language]['name']
       }
       
     }else{
-      str = this.props.warnings.length + ' warnings active'
+      str = this.props.warnings.length + ' '+ labTransV2['Warnings Active'][this.props.language]['name']
     }
     fault = true
     outerbg = 'orange'
@@ -3532,13 +3535,13 @@ if(prodName.length > 17){
   if(this.props.faults.length != 0){
      if(this.props.faults.length == 1){
       if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
-        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' '+ labTransV2['Fault Active'][this.props.language]['name']
       }else{
-        str = this.props.faults[0] + ' active'  
+        str = this.props.faults[0] + ' '+ labTransV2['Active'][this.props.language]['name']  
       }
       
     }else{
-      str = this.props.faults.length + ' faults active'
+      str = this.props.faults.length + ' '+ labTransV2['Faults Active'][this.props.language]['name']
     }
     fault = true
     outerbg = 'red'
@@ -3555,10 +3558,10 @@ if(prodName.length > 17){
 
       <div style={{display:'grid', gridTemplateColumns:'160px auto'}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div><div style={{display:'inline-block', fontSize:prodFont, textAlign:'center', lineHeight:'25px', verticalAlign:'top'}}>{prodName}</div></div>
        <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:20, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'middle'}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
-          <Modal ref={this.fModal} innerStyle={{background:modBg}}>
-            <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>Faults</div></div>
+          <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
+            <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.props.language]['name']}</div></div>
      
-          <FaultDiv branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
+          <FaultDiv language={this.props.language} branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
 
     </div>)
@@ -3645,16 +3648,16 @@ class BatchPackCountGraphDual extends React.Component{
     var yDomin = [0, 5]
     var selData;
     var bText;
-    var bsttxt = 'Batch Started at: '+this.state.batchStartTime
+    var bsttxt = labTransV2['Batch Started at'][this.props.language]['name']+ ': ' +this.state.batchStartTime
     var max = 0;
     var showCount = false
     if(this.state.batch){
-      bText = 'Batch'
+      bText = labTransV2['Batch'][this.props.language]['name']
       showCount = ((this.props.bRunning != 0) && (this.props.bCount != 0) && (this.state.batchData[0] > 0))
       selData = this.state.batchData.slice(0)
     }else{
-      bText = 'Sample'
-      bsttxt = 'Sample Started at: '+this.state.sampleStartTime
+      bText = labTransV2['Sample'][this.props.language]['name']
+      bsttxt = labTransV2['Sample Started at'][this.props.language]['name'] +': '+this.state.sampleStartTime
       selData = this.state.sampleData.slice(0)
     }
     
@@ -3686,7 +3689,7 @@ class BatchPackCountGraphDual extends React.Component{
     //var hh = 
     return <div style={{position:'relative',width:295, height:425,background:outerbg, borderRadius:10, margin:1, marginBottom:0, border:'1px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
-      <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>Statistics</div></div>
+      <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>{labTransV2['Statistics'][this.props.language]['name']}</div></div>
       <div style={{position:'absolute', left:209, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
       <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
     <XYPlot height={370} width= {292} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal' xDomain={xDm}>    
@@ -3796,13 +3799,13 @@ class MainHistogramDual extends React.Component{
 
     if(this.props.faults.length == 1){
       if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
-        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' '+ labTransV2['Fault Active'][this.props.language]['name']
       }else{
-        str = this.props.faults[0] + ' active'  
+        str = this.props.faults[0] + ' '+ labTransV2['Active'][this.props.language]['name']  
       }
       
     }else{
-      str = this.props.faults.length + ' faults active'
+      str = this.props.faults.length + ' ' + labTransV2['Faults Active'][this.props.language]['name']  
     }
     fault == true
   }
@@ -3810,13 +3813,13 @@ class MainHistogramDual extends React.Component{
 
     if(this.props.warnings.length == 1){
       if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
-        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' '+ labTransV2['Active'][this.props.language]['name']  
       }else{
-        str = this.props.warnings[0] + ' active'  
+        str = this.props.warnings[0] + ' '+ labTransV2['Active'][this.props.language]['name']    
       }
       
     }else{
-      str = this.props.warnings.length + ' warnings active'
+      str = this.props.warnings.length + ' '+ labTransV2['Warnings Active'][this.props.language]['name']  
     }
     fault == true
   }
@@ -3831,8 +3834,8 @@ class MainHistogramDual extends React.Component{
     <div style={{width:550,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 
  {xyplot}
-      <Modal ref={this.fModal} innerStyle={{background:modBg}}>
-          <FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
+      <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
+          <FaultDiv language={this.props.language} maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
     </div>
   }
@@ -4110,7 +4113,7 @@ class ProductSettings extends React.Component{
     if(advProdEditAcc){
       this.pmgmt.current.toggle();  
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
     
   }
@@ -4128,7 +4131,7 @@ class ProductSettings extends React.Component{
   sendPacket(n,v){
     if(this.props.drec['BatchRunning'] != 0){
       if(n['@locked_by_batch']){
-        this.msgm.current.show('Changes not permitted until batch is stopped.')
+        this.msgm.current.show(labTransV2['Changes not permitted'][this.props.language]['name'] + '.')
       }
     }
     var self = this;
@@ -4139,7 +4142,7 @@ class ProductSettings extends React.Component{
     if(this.state.prodList.length > 0){
       this.setState({showAdvanceSettings:!this.state.showAdvanceSettings})
     }else{
-      toast('Products need to be fetched')
+      toast(labTransV2['Products need to be fetched'][this.props.language]['name'])
     }
   }
   getPCob (sys,prod,dyn, fram) {
@@ -4280,7 +4283,7 @@ class ProductSettings extends React.Component{
     if(prodEditAcc){
       this.props.sendPacket('switchProd',this.state.selProd);
     }else{
-      this.msgm.current.show('Access Denied');
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name']);
     }
   }
   selectRunningProd(){
@@ -4301,7 +4304,7 @@ class ProductSettings extends React.Component{
          // }
         }
       }else{
-        this.msgm.current.show('Access Denied');
+        this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name']);
       }  
   }
   saveProduct(){
@@ -4508,7 +4511,7 @@ class ProductSettings extends React.Component{
           this.cfTo.current.toggle();
           this.setState({copyMode:0})
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
   }
   copyFromFt(){
@@ -4516,7 +4519,7 @@ class ProductSettings extends React.Component{
           this.cfTo.current.toggle();
           this.setState({copyMode:2})
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
   }
   copyFromDef(){
@@ -4524,7 +4527,7 @@ class ProductSettings extends React.Component{
           this.cfTo.current.toggle();
           this.setState({copyMode:1})
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
   }
   copyConfirm(target){
@@ -4532,7 +4535,7 @@ class ProductSettings extends React.Component{
     var prodNos = this.props.pList.slice(0)
     // console.log('copyConfirm', t, prodNos)
     if(t == this.props.srec['ProdNo']){
-      this.msgm.current.show('Cannot overwrite current running product.')
+      this.msgm.current.show(labTransV2['Cannot overwrite current running product'][this.props.language]['name'] +'.')
     }else{
       if(prodNos.indexOf(t) != -1){
         this.copyAlert(t)
@@ -4551,7 +4554,7 @@ class ProductSettings extends React.Component{
     
   }
   copyAlert(target){
-    var alertMessage = 'Product '+ target+' will be overwritten. Continue?'
+    var alertMessage = labTransV2['Product'][this.props.language]['name'] + ' '+ target+labTransV2['will be overwritten. Continue?'][this.props.language]['name']
 
     this.cfModal.current.show(this.copyCurrentProd, target, alertMessage)
   }
@@ -4559,7 +4562,7 @@ class ProductSettings extends React.Component{
     if((this.props.srec['PassOn'] == 0) || (this.props.level >= this.props.srec['PassAccAdvProdEdit'])){
       this.dltModal.current.show(p)
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
 
   }
@@ -4661,7 +4664,7 @@ class ProductSettings extends React.Component{
       
       //this.props.onClose();
     }else{
-      this.msgm.current.show('Access Denied')}
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])}
   }
   advProdMgmt(){
     this.apmgmt.current.show();
@@ -4709,11 +4712,11 @@ class ProductSettings extends React.Component{
       })
       list = this.state.filterList.slice(0)
       content = <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6, height:480}}>
-      <EmbeddedKeyboard label={'Search Products'} liveUpdate={this.updateFilterString} language={this.props.language} onAccept={this.toggleSearch} onCancel={this.closeKeyboard}/></div>
+      <EmbeddedKeyboard label={labTransV2['Search Products'][this.props.language]['name']} liveUpdate={this.updateFilterString} language={this.props.language} onAccept={this.toggleSearch} onCancel={this.closeKeyboard}/></div>
     }else{
       var curProd = {}
       var pList = [];
-      var showText = 'Show All Products'
+      var showText = labTransV2['Show All Products'][this.props.language]['name']
       if(this.props.runningProd == this.props.editProd){
         curProd = this.props.curProd
       }
@@ -4729,7 +4732,7 @@ class ProductSettings extends React.Component{
       })
       if(this.state.showAllProd){
         list = pList.slice(0)
-        showText = 'Hide Inactive Products'
+        showText = labTransV2['Hide Inactive Products'][this.props.language]['name']
       }else{
         list = this.state.prodList.slice(0)
       }
@@ -4816,7 +4819,7 @@ class ProductSettings extends React.Component{
         <div>
         <div style={{display:'inline-block', verticalAlign:'top'}}>
         <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={'Product Name'} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
-        <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={'Select Product'}/>
+        <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton language={this.props.language} onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Select Product'][this.props.language]['name']}/>
         <img src='assets/graph.svg' style={{position:'absolute', width:40, left:770, marginTop:15}} onClick={this.toggleGraph}/>
         
         </div>
@@ -4824,47 +4827,47 @@ class ProductSettings extends React.Component{
           <div style={{display:'none', position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
             <div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
             <div style={{height:35, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-            <div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
+            <div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>{labTransV2['Search'][this.props.language]['name']}</div></div>
           </div>
         </div>
         </div>
         <div style={{height:339}}>
           <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Nominal Weight'} value={nwgt} param={vdefByMac[this.props.mac][1][1]['NominalWgt']} tooltip={vMapV2['NominalWgt']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Over Weight Limit'} value={ovwgt} param={vdefByMac[this.props.mac][1][1]['OverWeightLim']} tooltip={vMapV2['OverWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'NominalWgt'} vMap={vMapV2['NominalWgt']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Nominal Weight'][this.props.language]['name']} value={nwgt} param={vdefByMac[this.props.mac][1][1]['NominalWgt']} tooltip={vMapV2['NominalWgt']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Over Weight Limit'][this.props.language]['name']} value={ovwgt} param={vdefByMac[this.props.mac][1][1]['OverWeightLim']} tooltip={vMapV2['OverWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             {this.props.curProd['WeighingMode'] != 1 &&
-              <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Under Weight Limit'} value={udwgt} param={vdefByMac[this.props.mac][1][1]['UnderWeightLim']} tooltip={vMapV2['UnderWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+              <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Under Weight Limit'][this.props.language]['name']} value={udwgt} param={vdefByMac[this.props.mac][1][1]['UnderWeightLim']} tooltip={vMapV2['UnderWeightLim']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             }
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Packaging Weight'} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Product Length'} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} tooltip={vMapV2['EyePkgLength']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={'Belt Speed'} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}  tooltip={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true} shortcut={[4]} onShortcut={this.onShortcut} /></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Packaging Weight'][this.props.language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['PkgWeight']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Product Length'][this.props.language]['name']} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} tooltip={vMapV2['EyePkgLength']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Belt Speed'][this.props.language]['name']} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}  tooltip={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true} shortcut={[4]} onShortcut={this.onShortcut} /></div>
           </div>
           
           <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
             <div style={{width:'90%',padding:'2.5%',margin:'2.5%',background:'linear-gradient(90deg,#919aa0, #e1e1e1)', height:285, overflowY:'scroll'}}>
-              <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>Overweight Accept</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['OverWeightAllowed'][this.props.language][curProd['OverWeightAllowed']]}</div></div>
-              <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>Product Speed</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}</div></div>
+              <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>{labTransV2['Overweight Accept'][this.props.language]['name']}</div><div style={{width:'40%',display:'inline-block', textAlign:'right'}}>{vMapLists['OverWeightAllowed'][this.props.language][curProd['OverWeightAllowed']]}</div></div>
+              <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>{labTransV2['Product Speed'][this.props.language]['name']}</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}</div></div>
               {
                 this.props.curProd['FeedbackMode'] != 0 && 
                 <React.Fragment>
-                  <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>Feedback Control</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['FeedbackMode'][this.props.language][curProd['FeedbackMode']]}</div></div>
+                  <div><div style={{width:'60%',display:'inline-block',fontSize:17}}>{labTransV2['Feedback Control'][this.props.language]['name']}</div><div style={{width:'40%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['FeedbackMode'][this.props.language][curProd['FeedbackMode']]}</div></div>
                     <div><div style={{width:'55%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
                       
-                      <div style={{width:'63%',display:'inline-block'}}>Correction Rate</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{newFeedbackCorRate}</div>
-                      <div style={{width:'63%',display:'inline-block'}}>Dead Zone</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>±{FormatWeight(curProd['FeedbackDeadZone'],weightUnits)}</div>
-                      <div style={{width:'63%',display:'inline-block'}}>Sample Count</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{curProd['FeedbackSampCnt']}</div>
+                      <div style={{width:'63%',display:'inline-block'}}>{vMapV2['FeedbackCorRate']['@translations'][this.props.language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{newFeedbackCorRate}</div>
+                      <div style={{width:'63%',display:'inline-block'}}>{labTransV2['Dead Zone'][this.props.language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>±{FormatWeight(curProd['FeedbackDeadZone'],weightUnits)}</div>
+                      <div style={{width:'63%',display:'inline-block'}}>{vMapV2['FeedbackSampCnt']['@translations'][this.props.language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{curProd['FeedbackSampCnt']}</div>
                   
                     </div>
                     <div style={{width:'45%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
-                      
-                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Wait Count</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}</div>
-                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Hi Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackHiLim'],weightUnits)}</div>
-                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Lo Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackLoLim'], weightUnits)}</div>
+
+                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>{vMapV2['FeedbackWaitCnt']['@translations'][this.props.language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{curProd['FeedbackWaitCnt']}</div>
+                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>{labTransV2['Hi Limit'][this.props.language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackHiLim'],weightUnits)}</div>
+                      <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>{labTransV2['Lo Limit'][this.props.language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['FeedbackLoLim'], weightUnits)}</div>
                   
                     </div></div>
                 </React.Fragment>
               }
-              <div><div style={{width:'53%',display:'inline-block', fontSize:17}}>Weighing Mode</div><div style={{width:'47%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
+              <div><div style={{width:'53%',display:'inline-block', fontSize:17}}>{vMapV2['WeighingMode']['@translations'][this.props.language]['name']}</div><div style={{width:'47%',display:'inline-block', textAlign:'right',fontSize:17}}>{vMapLists['WeighingMode'][this.props.language][curProd['WeighingMode']]}</div></div>
               <div><div style={{width: this.props.curProd['WeighingMode'] == 1 ? '60%' : '50%',display:'inline-block', fontSize:14, verticalAlign:'top'}}>
                 {/*<div style={{width:'63%',display:'inline-block'}}>Number of Packs</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>10</div>*/}
               </div>
@@ -4872,18 +4875,18 @@ class ProductSettings extends React.Component{
                 {
                  this.props.curProd['WeighingMode'] == 1 ?
                   <React.Fragment>
-                    <div style={{width:'63%',display:'inline-block'}}>T1 Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['T1Lim'], weightUnits)}</div> 
-                    <div style={{width:'63%',display:'inline-block'}}>T2 Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['TolNegErrorX2'], weightUnits)}</div> 
+                    <div style={{width:'63%',display:'inline-block'}}>{vMapV2['T1Lim']['@translations'][this.props.language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['T1Lim'], weightUnits)}</div> 
+                    <div style={{width:'63%',display:'inline-block'}}>{vMapV2['TolNegErrorX2']['@translations'][this.props.language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right', marginRight:'2%'}}>{FormatWeight(curProd['TolNegErrorX2'], weightUnits)}</div> 
                   </React.Fragment>
                   :
                   <React.Fragment>
-                    <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Overweight Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['OverWeightLim'], weightUnits)}</div>
-                    <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>Underweight Limit</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['UnderWeightLim'], weightUnits)}</div>
+                    <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>{labTransV2['Overweight Limit'][this.props.language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['OverWeightLim'], weightUnits)}</div>
+                    <div style={{width:'63%',display:'inline-block', marginLeft:'2%'}}>{labTransV2['Underweight Limit'][this.props.language]['name']}</div><div style={{width:'35%',display:'inline-block', textAlign:'right'}}>{FormatWeight(curProd['UnderWeightLim'], weightUnits)}</div>
                   </React.Fragment>
                 } 
               </div></div>
             </div>
-            <CircularButton onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Advanced'}/>
+            <CircularButton language={this.props.language} onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Advanced'][this.props.language]['name']}/>
          
           </div>
 
@@ -4912,12 +4915,12 @@ class ProductSettings extends React.Component{
         scrollInd = i;
       }
       
-      return <div> <ProductSelectItem advAcc={advProdEditAcc} sendPacket={self.props.sendPacket} branding={self.props.branding} name={prd.name} p={prd.no} isNull={prd.null} deleteProd={self.deleteProd} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
+      return <div> <ProductSelectItem language={self.props.language} advAcc={advProdEditAcc} sendPacket={self.props.sendPacket} branding={self.props.branding} name={prd.name} p={prd.no} isNull={prd.null} deleteProd={self.deleteProd} selectProd={self.selectProd} selected={(self.state.selProd == prd.no)} running={(self.props.runningProd == prd.no)}/>
          </div>
     })
 
     if(list.length == 0){
-      prods = <div style={{textAlign:'center', width:297,padding:5}}>No Matching Products</div>
+      prods = <div style={{textAlign:'center', width:297,padding:5}}>{labTransV2['No Matching Products'][this.props.language]['name']}</div>
     }
     var spstr = ''
     if(this.props.runningProd){
@@ -4934,18 +4937,18 @@ class ProductSettings extends React.Component{
     var SA = (list.length > 8)
 
     var createNew = <div>
-       <div style={{color:'#e1e1e1', fontSize:25}}><div style={{display:'inline-block'}}>Create New Product:</div>  <div  style={{float:'right', display:'inline-block',marginRight:20}}><img src='assets/help.svg' onClick={this.showProdMgmtTooltip} width={30}/></div>
+       <div style={{color:'#e1e1e1', fontSize:25}}><div style={{display:'inline-block'}}>{labTransV2['Create New Product'][this.props.language]['name']+':'}</div>  <div  style={{float:'right', display:'inline-block',marginRight:20}}><img src='assets/help.svg' onClick={this.showProdMgmtTooltip} width={30}/></div>
       </div>
        <div style={{textAlign:'center'}}>
-            <CircularButton onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From Selected Product'}/>
-            <CircularButton onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From Base Product'}/>
+            <CircularButton language={this.props.language} onClick={this.copyTo} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Selected Product'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.copyFromDef} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Base Product'][this.props.language]['name']}/>
          
-            <CircularButton onClick={this.copyFromFt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'From Factory Product'}/>
-            <CircularButton onClick={this.advProdMgmt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Product Records Management'}/>
+            <CircularButton language={this.props.language} onClick={this.copyFromFt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['From Factory Product'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.advProdMgmt} branding={this.props.branding} innerStyle={innerStyle} style={{width:550, display:'block',marginLeft:'auto', marginRight:'auto', borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Product Records Management'][this.props.language]['name']}/>
          
          
           </div>
-          <Modal ref={this.prodMgmtTooltip}>
+          <Modal language={this.props.language} ref={this.prodMgmtTooltip}>
             <div style={{color:'#e1e1e1', whiteSpace:'break-spaces'}}>
               {vdefMapV2['@tooltips']['ProductManagement'][this.props.language]}
             </div>
@@ -4955,69 +4958,69 @@ class ProductSettings extends React.Component{
     var usbMsg = ''
     var usbButStyle = innerStyle;
     if(!this.props.usb){
-      usbMsg = <div style={{color:'#ff0000', textAlign:'center'}}>** Plug in USB Key for import and export! **</div>
+      usbMsg = <div style={{color:'#ff0000', textAlign:'center'}}>{labTransV2['Plug in USB Key'][this.props.language]['name']}</div>
       usbButStyle.color = '#aaa'
     }
     var advProdMgmt = <div>
-       <div style={{color:'#e1e1e1', fontSize:25}}>Advanced Options</div>
+       <div style={{color:'#e1e1e1', fontSize:25}}>{labTransV2['Advanced Options'][this.props.language]['name']}</div>
        {usbMsg}
           <div>
-            <CircularButton onClick={this.onImport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Import'}/>
-            <CircularButton onClick={this.onExport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Export'}/>
+            <CircularButton language={this.props.language} onClick={this.onImport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Import'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.onExport} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Export'][this.props.language]['name']}/>
           </div>
           <div>
-            <CircularButton onClick={this.onRestore} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Restore'}/>
-            <CircularButton onClick={this.onBackup} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Backup'}/>
+            <CircularButton language={this.props.language} onClick={this.onRestore} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Restore'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} onClick={this.onBackup} disabled={!this.props.usb} branding={this.props.branding} innerStyle={usbButStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Backup'][this.props.language]['name']}/>
           </div>
           <div>
-            <CircularButton onClick={this.showAlertMessageForProducts} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={'Delete All'}/>
+            <CircularButton language={this.props.language} onClick={this.showAlertMessageForProducts} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Delete All'][this.props.language]['name']}/>
           </div>
     </div>
     //   <div onClick={this.copyTo} style={{display:'table-cell',height:85, borderRight:'2px solid #ccc', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>+ Copy Current Product</div>
     return <div style={{width:1155}}>
-      <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>Product</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:400}}>{'Current Product: '+spstr }</div></div>
+      <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>{labTransV2['Product'][this.props.language]['name']}</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:400}}>{labTransV2['Current Product'][this.props.language]['name']+': '+spstr }</div></div>
       <table style={{borderCollapse:'collapse'}}><tbody>
         <tr>
           <td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:819, paddingTop:0}}>  
-          <BatchWidget acc={(this.props.srec['PassOn'] == 0) || (this.props.level >= this.props.srec['PassAccStartStopBatch'])} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.drec['BatchRunning']} canStartBelts={this.props.drec['CanStartBelts']} onStart={this.props.startB} onResume={this.props.resume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/>
+          <BatchWidget language={this.props.language} acc={(this.props.srec['PassOn'] == 0) || (this.props.level >= this.props.srec['PassAccStartStopBatch'])} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.drec['BatchRunning']} canStartBelts={this.props.drec['CanStartBelts']} onStart={this.props.startB} onResume={this.props.resume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/>
           </div></td><td style={{verticalAlign:'top',textAlign:'center'}}>
-          <ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
+          <ScrollArrow language={this.props.language} ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
           <div style={{display:'none', background:'#e1e1e1', padding:2}}>
              <div style={{position:'relative', verticalAlign:'top', marginLeft:180}} onClick={this.toggleSearch}>
             <div style={{height:25, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
             <div style={{height:25, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-            <div style={{position:'absolute',float:'right', marginTop:-53, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:40}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
+            <div style={{position:'absolute',float:'right', marginTop:-53, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:40}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>{labTransV2['Search'][this.props.language]['name']}</div></div>
           </div>
           </div>
           <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:490, background:'#e1e1e1',overflowY:'scroll'}}>{prods}
           </div>
           <div style={{height:85,lineHeight:'85px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
-          <div onClick={this.prodMgmt} style={{display:'table-cell',height:85, borderRight:'1px solid #362c66', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>Product Management</div>
+          <div onClick={this.prodMgmt} style={{display:'table-cell',height:85, borderRight:'1px solid #362c66', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>{labTransV2['Product Management'][this.props.language]['name']}</div>
           
-          <div onClick={this.toggleSearch} style={{display:'table-cell',height:85, borderLeft:'1px solid #362c66',width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}><img src='assets/search.svg' style={{width:40}}/><div style={{marginTop:-10, fontSize:16}}>Search</div></div>
+          <div onClick={this.toggleSearch} style={{display:'table-cell',height:85, borderLeft:'1px solid #362c66',width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}><img src='assets/search.svg' style={{width:40}}/><div style={{marginTop:-10, fontSize:16}}>{labTransV2['Search'][this.props.language]['name']}</div></div>
           </div>
-          <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+          <ScrollArrow language={this.props.language} ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
       
           </td>
         </tr>
       </tbody></table>
-      <PromptModal branding={this.props.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
-      <CustomKeyboard weightUnits={this.props.weightUnits} branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={'Target Product'}/>
+      <PromptModal language={this.props.language} branding={this.props.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
+      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={labTransV2['Target Product'][this.props.language]['name']}/>
       
-      <CopyModal ref={this.cfModal}  branding={this.props.branding}/>
-      <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
-      <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
+      <CopyModal language={this.props.language} ref={this.cfModal}  branding={this.props.branding}/>
+      <DeleteModal language={this.props.language} ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
+      <Modal language={this.props.language} x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
         <PackGraph rejectAlertMessage={this.props.rejectAlertMessage} packSamples={this.props.packSamples} onEdit={this.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={1} acc={advProdEditAcc} language={this.props.language} crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
-        <PromptModal branding={this.props.branding} ref={this.pmd2} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
+        <PromptModal language={this.props.language} branding={this.props.branding} ref={this.pmd2} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
       
       </Modal>
-      <Modal x={true} Style={{width:870, marginTop:50}} ref={this.pmgmt} branding={this.props.branding}>
+      <Modal language={this.props.language} x={true} Style={{width:870, marginTop:50}} ref={this.pmgmt} branding={this.props.branding}>
         {createNew}
-        <Modal x={true} Style={{width:870, marginTop:50}} ref={this.apmgmt} branding={this.props.branding}>{advProdMgmt}</Modal>
+        <Modal language={this.props.language} x={true} Style={{width:870, marginTop:50}} ref={this.apmgmt} branding={this.props.branding}>{advProdMgmt}</Modal>
       </Modal>
-      <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
-      <AlertModal ref={this.deleteAllProductsAlert} accept={this.deleteAllProducts}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to delete all product records?"}</div></AlertModal>
-      <MessageModal ref={this.msgm}/>
+      <AlertModal language={this.props.language} ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][this.props.language]['name']}</div></AlertModal>
+      <AlertModal language={this.props.language} ref={this.deleteAllProductsAlert} accept={this.deleteAllProducts}><div style={{color:"#e1e1e1"}}>{labTransV2['delete all product records?'][this.props.language]['name']}</div></AlertModal>
+      <MessageModal language={this.props.language} ref={this.msgm}/>
     </div>
     //<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'} onClick={this.selectRunningProd}/>
           
@@ -5067,7 +5070,7 @@ class ProductSelectItem extends React.Component{
              self.confModal.current.toggle()
         
       }else{
-        self.msgm.current.show('Access Denied')
+        self.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
       }
     },100)
     
@@ -5137,7 +5140,7 @@ class ProductSelectItem extends React.Component{
       check =  <img style={{height:22}} src="assets/Check_mark.svg"/>
       del = ""
     }
-    var name = 'Product '+this.props.p
+    var name = labTransV2['Product'][this.props.language]['name']+ ' '+this.props.p
     if(this.props.name.length > 0){
       name = this.props.name
     }
@@ -5149,18 +5152,18 @@ class ProductSelectItem extends React.Component{
       //st.fontSize = 18
     }
     return (<div style={{background:"transparent", color:color, position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-flex', alignItems:'center', width:22}}>{check}</div><div style={{fontSize:22, verticalAlign:'top',display:'inline-block', width:40, paddingRight:3, height:65, lineHeight:'65px', textAlign:'right'}}>{this.props.p + '.  '}</div><div onClick={this.switchProd} style={st}><div style={{display:'block', width:'inherit'}}>{name}</div></div> <div style={{display:'inline-flex', width:22}}>{del}{config}</div></div>
-        <Modal ref={this.confModal} Style={{color:'#e1e1e1',width:800, maxWidth:800}}>
+        <Modal language={this.props.language} ref={this.confModal} Style={{color:'#e1e1e1',width:800, maxWidth:800}}>
                <div style={{textAlign:'center'}}>
-               <div style={{fontSize:25, padding:10}}>Save and Restore</div>
-               <CircularButton onClick={this.restoreDefaultMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to factory settings'}/>
-               <CircularButton onClick={this.restoreBackupMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Restore selected product to base product'}/>
-               <CircularButton onClick={this.backupProductMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={'Save selected product to base product'}/>
+               <div style={{fontSize:25, padding:10}}>{labTransV2['Save and Restore'][this.props.language]['name']}</div>
+               <CircularButton language={this.props.language} onClick={this.restoreDefaultMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Restore selected product to factory settings'][this.props.language]['name']}/>
+               <CircularButton language={this.props.language} onClick={this.restoreBackupMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Restore selected product to base product'][this.props.language]['name']}/>
+               <CircularButton language={this.props.language} onClick={this.backupProductMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Save selected product to base product'][this.props.language]['name']}/>
         </div>
           </Modal>
-        <AlertModal ref={this.restoreFactorySettings} accept={this.restoreDefault}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to restore selected product?"}</div></AlertModal>
-        <AlertModal ref={this.restoreBaseProduct} accept={this.restoreBackup}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to restore selected product?"}</div></AlertModal>
-        <AlertModal ref={this.saveSelectedProduct} accept={this.backupProduct}><div style={{color:"#e1e1e1"}}>{"Are you sure you want to save selected product?"}</div></AlertModal>
-        <MessageModal ref={this.msgm}/>
+        <AlertModal language={this.props.language} ref={this.restoreFactorySettings} accept={this.restoreDefault}><div style={{color:"#e1e1e1"}}>{labTransV2['restore selected product?'][this.props.language]['name']}</div></AlertModal>
+        <AlertModal language={this.props.language} ref={this.restoreBaseProduct} accept={this.restoreBackup}><div style={{color:"#e1e1e1"}}>{labTransV2['restore selected product?'][this.props.language]['name']}</div></AlertModal>
+        <AlertModal language={this.props.language} ref={this.saveSelectedProduct} accept={this.backupProduct}><div style={{color:"#e1e1e1"}}>{labTransV2['save selected product?'][this.props.language]['name']}</div></AlertModal>
+        <MessageModal language={this.props.language} ref={this.msgm}/>
       </div>)
   }
 }
@@ -5194,7 +5197,7 @@ class ProdSettingEdit extends React.Component{
   }
   onClick(){
     if(this.props.acc === false){
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
       //toast('Access Denied')
     }else if(typeof this.props.shortcut != 'undefined'){
       this.props.onShortcut(this.props.shortcut)
@@ -5356,11 +5359,11 @@ class ProdSettingEdit extends React.Component{
 
       var trnsmdl =   ''
       if(this.props.trans){
-        trnsmdl = <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>Parameter Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+        trnsmdl = <Modal language={this.props.language} ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>{labTransV2['Parameter Name'][this.props.language]['name']+': '+ this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+ this.props.language}</div>
               <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
-              <button onClick={this.submitChange}>Submit Translation</button>
+              <button onClick={this.submitChange}>{labTransV2['Submit Translation'][this.props.language]['name']}</button>
         </Modal>
       }
        
@@ -5380,11 +5383,11 @@ class ProdSettingEdit extends React.Component{
       {ckb}
        <ContextMenu id={this.props.name + '_ctmid'}>
         <MenuItem onClick={this.translatePopup}>
-          Translate Setting
+          {labTransV2['Translate Setting'][this.props.language]['name']}
         </MenuItem>
       </ContextMenu>
        {trnsmdl}
-       <MessageModal ref={this.msgm}/>
+       <MessageModal language={this.props.language} ref={this.msgm}/>
     </div>
   }
 }
@@ -5448,7 +5451,7 @@ class SettingsPageWSB extends React.Component{
     if(dat[0] == 'get_accounts'){
       this.setState({showAccounts:true, cal:false, update:true,mot:false})
     }else if(dat[0] == 'reboot_display'){
-      toast('Restarting Display')
+      toast(labTransV2['Restarting Display'][this.props.language]['name'])
       this.props.soc.emit('reboot')
     }else if(dat[0] == 'format_usb'){
       //toast('Restarting Display')
@@ -5500,10 +5503,10 @@ class SettingsPageWSB extends React.Component{
       {
         this.calibrationModal.current.show();      
       }else{
-        this.msgm.current.show('Batch needs to be ended prior to calibration.');
+        this.msgm.current.show(labTransV2['Batch needs to be ended'][this.props.language]['name']+ '.');
       }
     }else{
-      this.msgm.current.show('Access Denied');
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name']);
     }
   }
   closeCalibrationWindow(){
@@ -5539,11 +5542,11 @@ class SettingsPageWSB extends React.Component{
       <div> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
     }else if(this.state.cal){
-      var calBut = <div style={{textAlign:'center'}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.startCalibration} lab={'Calibrate'}/>
+      var calBut = <div style={{textAlign:'center'}}><CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.startCalibration} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
           </div>
           
     var calStuff = (  <div style={{background:'#e1e1e1', padding:10}}>
-       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Calibrate'][this.props.language]['name']}</div></h2></span>
           
           <div style={{marginTop:5}}>
           <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200}  label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.state.liveWeight, weightUnits)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
@@ -5610,10 +5613,10 @@ class SettingsPageWSB extends React.Component{
 
       <div>
         <div style={{background:'#e1e1e1', padding:10}}>
-       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Motor Control'}</div></h2></span>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Motor Control'][this.props.language]['name']}</div></h2></span>
           
         <div style={{marginTop:5}}>
-          <MotorControl motors={[{name:'Infeed Belt'},{name:'Weigh Table Belt'},{name:'Reject Belt'},{name:'Exit Belt'}]}/>
+          <MotorControl language={this.props.language} motors={[{name: labTransV2['Infeed Belt'][this.props.language]['name']},{name: labTransV2['Weigh Table Belt'][this.props.language]['name']},{name: labTransV2['Reject Belt'][this.props.language]['name']},{name: labTransV2['Exit Belt'][this.props.language]['name']}]}/>
         </div>
 
          </div>
@@ -5624,13 +5627,13 @@ class SettingsPageWSB extends React.Component{
     var backgroundColor = FORTRESSPURPLE1;
     return <div>
       <table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{ height:525, background:'#e1e1e1', paddingBottom:10}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
-      <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
+      <Modal language={this.props.language} x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
         <PackGraph packSamples={this.props.packSamples} onEdit={this.props.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={0} acc={(this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccAdvSys'])} language={this.props.language} crec={this.props.crec} prec={this.props.prodSettings} srec={this.props.sysSettings}/>
       </Modal>
-      <Modal x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
-        <CalibrationControl resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationWindow} calibState={this.props.calibState} onCalib={this.onCalib} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
+      <Modal language={this.props.language} x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
+        <CalibrationControl language={this.props.language} resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationWindow} calibState={this.props.calibState} onCalib={this.onCalib} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
       </Modal>
-      <MessageModal ref={this.msgm}/> 
+      <MessageModal language={this.props.language} ref={this.msgm}/> 
     </div>
   }
 }
@@ -5678,7 +5681,7 @@ class SettingsPage extends React.Component{
     super(props)
 
     this.state = ({
-     sysRec:this.props.sysSettings,curtrn:'Settings', prodRec:this.props.prodSettings, dynRec:this.props.dynSettings,font:2, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec,path:[]
+     sysRec:this.props.sysSettings,curtrn: labTransV2['Settings'][this.props.language]['name'], prodRec:this.props.prodSettings, dynRec:this.props.dynSettings,font:2, data:this.props.data, cob2:this.props.cob2, framRec:this.props.framRec,path:[]
     });
     this.handleItemclick = this.handleItemclick.bind(this);
     this.scrollUp = this.scrollUp.bind(this);
@@ -6318,7 +6321,7 @@ class SettingsPage extends React.Component{
       for(var i = 0; i < catList.length; i++){
         var ct = catList[i]
         nodes.push(<SettingItem3 soc={this.props.soc} submitList={this.submitList} submitTooltip={this.submitTooltip} submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
-          language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} ioBits={this.props.ioBits} path={'path'} ip={self.props.dsp} 
+          language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} path={'path'} ip={self.props.dsp} 
           font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} 
           sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
         
@@ -6474,12 +6477,12 @@ class SettingsPage extends React.Component{
                   
                   nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
                     font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} backdoor={true}
-                   data={[sc,i]} backdoor={true} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+                   data={[sc,i]} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
         
           }else{
             nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
               font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false}  backdoor={true}
-              data={[sc,i]} backdoor={true} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
+              data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
           }
         }else if(par.type == 3){
           var acc = true;
@@ -6497,11 +6500,11 @@ class SettingsPage extends React.Component{
           }
           var sc = par['@data']
           if(par['@data'] == 'format_usb'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.formatUSB} lab={"Format USB"}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.formatUSB} lab={labTransV2['Format USB'][self.props.language]['name']}/></div>)
           }else if(par['@data'] == 'reboot_display'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.reboot} lab={"Reboot"}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.reboot} lab={labTransV2['Reboot'][self.props.language]['name']}/></div>)
           }else if(par['@data'] == 'update'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton branding={self.props.branding} onClick={self.update} lab={"Update"}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.update} lab={labTransV2['Update'][self.props.language]['name']}/></div>)
           }
 
          
@@ -6528,8 +6531,8 @@ class SettingsPage extends React.Component{
             {nodes}
             {ph}
            {pathString=='System/Advanced' && <div style={{marginTop:-20}}>
-             <button className="sItem" onClick={this.showFactoryResetMessage} style={{border:'5px solid red',width:200,height:60}}><p style={{marginTop:-8}}>Factory Reset</p></button>
-             <button className="sItem" onClick={()=>location.reload()} style={{border:'5px solid #818a90',width:200,height:60,marginLeft:40}}><p style={{marginTop:-8}}>Reconnect</p></button>
+             <button className="sItem" onClick={this.showFactoryResetMessage} style={{border:'5px solid red',width:200,height:60}}><p style={{marginTop:-8}}>{labTransV2['Factory Reset'][this.props.language]['name']}</p></button>
+             <button className="sItem" onClick={()=>location.reload()} style={{border:'5px solid #818a90',width:200,height:60,marginLeft:40}}><p style={{marginTop:-8}}>{labTransV2['Reconnect'][this.props.language]['name']}</p></button>
            </div>
            } 
           </div>)
@@ -6552,16 +6555,16 @@ class SettingsPage extends React.Component{
     if(pathString != ''){
       catname = catMapV2[pathString]['@translations'][this.props.language]
     }
-    var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>Parameter Name: { catname}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+    var trnsmdl =    <Modal language={this.props.language} ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>{labTransV2['Parameter Name'][this.props.language]['name']+': '+ catname}</div> 
+              <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+ this.props.language}</div>
               <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
-              <button onClick={this.submitCatChange}>Submit Translation</button>
+              <button onClick={this.submitCatChange}>{labTransV2['Submit Translation'][this.props.language]['name']}</button>
         </Modal>
 
     var className = "menuCategory expanded";
     var tstl = {display:'inline-block', textAlign:'center'}
-    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}{label == 'System Setting Overrides' && <img src='assets/help.svg' onClick={this.showSystemSettingOverridesTooltip} style={{position:'absolute', width:30, left:780, backgroundColor:"black", borderRadius:'100%'}}/>}</div></h2></span>)
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}{label == labTransV2['System Setting Overrides'][this.props.language]['name'] && <img src='assets/help.svg' onClick={this.showSystemSettingOverridesTooltip} style={{position:'absolute', width:30, left:780, backgroundColor:"black", borderRadius:'100%'}}/>}</div></h2></span>)
     if (this.state.font == 1){
         titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
     }else if (this.state.font == 0){
@@ -6571,7 +6574,7 @@ class SettingsPage extends React.Component{
     //console.log(4713,SA)
     return(
       <div className='settingsDiv'>
-      <ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
+      <ScrollArrow language={this.props.language} ref={this.arrowTop} offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
     
       <div className={className}>
         <ContextMenuTrigger id={pathString+'_titleCTMID'}>
@@ -6579,21 +6582,21 @@ class SettingsPage extends React.Component{
         </ContextMenuTrigger>
         <ContextMenu id={pathString+'_titleCTMID'}>
         <MenuItem onClick={this.translatePopup}>
-          Translate Setting
+          {labTransV2['Translate Setting'][this.props.language]['name']}
         </MenuItem>
         </ContextMenu>
 
       {trnsmdl}{nav}
      
       </div>
-      <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+      <ScrollArrow language={this.props.language} ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
       <Modal ref={this.systemSettingsOverrides} systemSettingTooltip={'yes'}>
         <div style={{color:'#e1e1e1', whiteSpace:'break-spaces'}}>
-            <h2 style={{fontSize:20}}>System Settings Overrides</h2>
+            <h2 style={{fontSize:20}}>{labTransV2['System Settings Overrides'][this.props.language]['name']}</h2>
             {vdefMapV2['@tooltips']['SystemSettingsOverridesTooltip'][this.props.language]}
         </div>
       </Modal>
-      <AlertModal ref={this.factoryResetMessage} accept={this.factoryReset}><div style={{color:"#e1e1e1"}}>{"Are you sure?"}</div></AlertModal>
+      <AlertModal language={this.props.language} ref={this.factoryResetMessage} accept={this.factoryReset}><div style={{color:"#e1e1e1"}}>{labTransV2['Are you sure?'][this.props.language]['name']}</div></AlertModal>
       </div>
     );
   }
@@ -6774,10 +6777,10 @@ class SettingItem3 extends React.Component{
     var self = this
     if(this.props.dynSettings['BatchRunning'] != 0){
       if(n['@locked_by_batch']){
-        this.msgm.current.show('Cannot change this setting while running the batch.')
+        this.msgm.current.show(labTransV2['Cannot change this setting'][this.props.language]['name']+ '.')
       }
       if(n['@labels'] == 'WeighingMode'){
-        this.msgm.current.show('Can not change this setting while running the batch.')
+        this.msgm.current.show(labTransV2['Cannot change this setting'][this.props.language]['name']+ '.')
       }
     }
 
@@ -6813,7 +6816,7 @@ class SettingItem3 extends React.Component{
   }
   onItemClick(v){
     if(v == true){
-      toast('Not Configurable')
+      toast(labTransV2['Not Configurable'][this.props.language]['name'])
     }else{
 
 
@@ -6826,7 +6829,7 @@ class SettingItem3 extends React.Component{
           if(this.props.backdoor == true ){
 
           }else{
-            this.msgm.current.show('Access Denied')
+            this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
           }
           //toast('Access Denied')  
         }   
@@ -7106,7 +7109,7 @@ class SettingItem3 extends React.Component{
     var display = true;
     var disable = false;
 
-    var accModal = <MessageModal ref={this.msgm}/>
+    var accModal = <MessageModal language={this.props.language} ref={this.msgm}/>
     if(vMapV2[this.props.lkey]){
       if(vMapV2[this.props.lkey]['display']){
         var dispRef = this.getMMdep(vMapV2[this.props.lkey]['display'][1]);
@@ -7529,11 +7532,11 @@ class MultiEditControl extends React.Component{
       }
     
     if(this.props.disabled){
-      this.msgm.current.show('This setting is currently disabled')
+      this.msgm.current.show(labTransV2['This setting is currently disabled'][this.props.language]['name'])
     }else if(this.props.pAcc === false){
       //toast('Access Denied')
       if(acc){
-        this.msgm.current.show('Access Denied')
+        this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
       }
       
     }else if(!this.props.ov){
@@ -7871,21 +7874,21 @@ class MultiEditControl extends React.Component{
           plStop = 'assets/stop-sp.svg'
         }
 
-       var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>Parameter Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+       var trnsmdl =    <Modal language={this.props.language} ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>{labTransV2['Parameter Name'][this.props.language]['name']+': '+  this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+this.props.language}</div>
               <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
-              <button onClick={this.submitChange}>Submit Translation</button>
+              <button onClick={this.submitChange}>{labTransV2['Submit Translation'][this.props.language]['name']}</button>
         </Modal>
         var lsedit = this.state.tlist.map(function (l,i) {
           return <tr><td style={{color:"#e1e1e1"}}>{self.state.elist[i]}</td><td><input type='text' value={l} onChange={(e) => self.lChange(e,i)}/></td></tr>
           // body...
         })
-        var listmdl = <Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>List Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+        var listmdl = <Modal language={this.props.language} ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>{labTransV2['List Name'][this.props.language]['name'] +': ' + this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+this.props.language}</div>
         <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
-              <button onClick={this.submitList}>Submit Translation</button>
+              <button onClick={this.submitList}>{labTransV2['Submit Translation'][this.props.language]['name']}</button>
         </Modal>
   if(iod){
       if(iogreen){
@@ -7896,23 +7899,23 @@ class MultiEditControl extends React.Component{
       }
       if(vfdsetup){
         ioindicator = <img onClick={()=>this.vfdSModal.current.toggle()} src='assets/config.svg' style={{position:'absolute', width:30, height:30, left:15, top:10}}/>
-        vfdsetupbutt =<Modal ref={this.vfdSModal} mobile={this.props.mobile} innerStyle={{background:modBG}}>
+        vfdsetupbutt =<Modal language={this.props.language} ref={this.vfdSModal} mobile={this.props.mobile} innerStyle={{background:modBG}}>
 
         <div>
-          <div style={{color:txtClr}}>To set up this VFD unit, make sure all other VFD units are disconnected first. Press confirm to carry on with the setup.</div>
-        <div onPointerUp={this.vfdSetup} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}> <div style={{display:'inline-block'}}>Confirm</div></div>
-        <div onPointerUp={()=>this.vfdSModal.current.toggle()} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}><div style={{display:'inline-block'}}>Cancel</div></div> 
+          <div style={{color:txtClr}}>{labTransV2['To set up this VFD unit...'][this.props.language]['name'] + '.'}</div>
+        <div onPointerUp={this.vfdSetup} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}> <div style={{display:'inline-block'}}>{labTransV2['Confirm'][this.props.language]['name']}</div></div>
+        <div onPointerUp={()=>this.vfdSModal.current.toggle()} style={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',margin:10,color:'#1C3746',fontSize:30,lineHeight:'40px'}} className={'circularButton_sp'}><div style={{display:'inline-block'}}>{labTransV2['Cancel'][this.props.language]['name']}</div></div> 
     </div></Modal>
       }
     if(!acc){
       
        if(vfdcont){
-        vfdbutts = <Modal ref={this.vfdModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+        vfdbutts = <Modal language={this.props.language} ref={this.vfdModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
 
         <div>
-          <div style={{color:txtClr}}>VFD Test</div>
-        <div onPointerUp={this.vfdStart} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plArr} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Start</div></div>
-        <div onPointerUp={this.vfdStop} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plStop} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+          <div style={{color:txtClr}}>{labTransV2['VFD Test'][this.props.language]['name']}</div>
+        <div onPointerUp={this.vfdStart} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plArr} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Text'][this.props.language]['name']}</div></div>
+        <div onPointerUp={this.vfdStop} style={{width:120, lineHeight:'60px',color:txtClr,font:30, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={'circularButton_sp'}> <img src={plStop} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Stop'][this.props.language]['name']}</div></div> 
       </div></Modal>
        } 
 
@@ -7934,13 +7937,13 @@ class MultiEditControl extends React.Component{
       <div style={{zIndex:3}}>
        <ContextMenu id={this.props.name + 'ctmid'}>
         <MenuItem onClick={this.translatePopup}>
-          Translate Setting
+        {labTransV2['Translate Setting'][this.props.language]['name']}
         </MenuItem>
        </ContextMenu>
       </div>
       {trnsmdl}
       {listmdl}
-       <MessageModal ref={this.msgm}/>
+       <MessageModal language={this.props.language} ref={this.msgm}/>
 
       </div>
     }else{
@@ -7955,7 +7958,7 @@ class MultiEditControl extends React.Component{
       var options;
       //TODO - TRANSLATE LISTS
       if(multiDropdown){
-         popupmenu = <MenuItem onClick={this.translateLists}>Translate List</MenuItem>
+         popupmenu = <MenuItem onClick={this.translateLists}>{labTransV2['Translate List'][this.props.language]['name']}</MenuItem>
         var lists = this.props.param.map(function (p) {
           if(p['@name'].indexOf('TestConfigCount') != -1){
             return [0,1,2,3,4,5,6,7,8,9]
@@ -7998,11 +8001,11 @@ class MultiEditControl extends React.Component{
           return <tr><td  style={{color:"#e1e1e1"}}>{self.state.elist[i]}</td><td><input type='text' value={l} onChange={(e) => self.lChange(e,i)}/></td></tr>
           // body...
         })
-      listmdl =  (<Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>List Name: { this.props.vMap['@translations']['english']['name']}</div> 
-              <div style={{color:txtClr}}>Current Language: {this.props.language}</div>
+      listmdl =  (<Modal language={this.props.language} ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+              <div style={{color:txtClr}}>{labTransV2['List Name'][this.props.language]['name'] +': ' + this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+this.props.language}</div>
         <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
-              <button onClick={this.submitList}>Submit Translation</button>
+              <button onClick={this.submitList}>{labTransV2['Submit Translation'][this.props.language]['name']}</button>
         </Modal>)
         options = <PopoutWheel getToolTip={this.getToolTip} submitTooltip={this.submitTooltip} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} mobile={this.props.mobile} params={this.props.param} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={namestring} ref={this.pw} val={this.state.val} options={lists} onChange={this.selectChanged}/>
 
@@ -8031,7 +8034,7 @@ class MultiEditControl extends React.Component{
       <div style={{zIndex:3}}>
        <ContextMenu id={this.props.name + 'ctmid'}>
         <MenuItem onClick={this.translatePopup}>
-          Translate Setting
+        {labTransV2['Translate Setting'][this.props.language]['name']}
         </MenuItem>
         {popupmenu}
       </ContextMenu>
@@ -8039,12 +8042,12 @@ class MultiEditControl extends React.Component{
 
       {trnsmdl}
       {listmdl}
-       <MessageModal ref={this.msgm}/>
+       <MessageModal  language={this.props.language} ref={this.msgm}/>
       </div>
       }else{
         options = this.state.val.map(function(v, i){
           if(typeof self.props.param[i]['@labels'] != 'undefined'){
-            popupmenu = <MenuItem onClick={this.translateLists}>Translate List</MenuItem>
+            popupmenu = <MenuItem onClick={this.translateLists}>{labTransV2['Translate List'][this.props.language]['name']}</MenuItem>
 
             var labs = _pVdef[7][self.props.param[i]["@labels"]]['english']
             
@@ -8248,7 +8251,7 @@ class MultiEditControl extends React.Component{
       <div style={{zIndex:3}}>
        <ContextMenu id={this.props.name + 'ctmid'}>
         <MenuItem onClick={this.translatePopup}>
-          Translate Setting
+        {labTransV2['Translate Setting'][this.props.language]['name']}
         </MenuItem>
         {popupmenu}
       </ContextMenu>
@@ -8256,7 +8259,7 @@ class MultiEditControl extends React.Component{
 
       {trnsmdl}
       {listmdl}
-      <MessageModal ref={this.msgm}/>
+      <MessageModal language={this.props.language} ref={this.msgm}/>
       </div>
     
       }
@@ -8363,15 +8366,15 @@ class AccountControl extends React.Component{
   }
   render(){
     var self = this;
-    var levels = ['none','operator','technician','engineer']
-    var pw     =  <PopoutWheel inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Filter Events'} ref={this.pw} val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
-    var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-    var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
+    var levels = [labTransV2['none'][this.props.language]['name'],labTransV2['operator'][this.props.language]['name'],labTransV2['technician'][this.props.language]['name'],labTransV2['engineer'][this.props.language]['name']]
+    var pw     =  <PopoutWheel inputs={inputSrcArr} ovWidth={290} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={labTransV2['Filter Events'][this.props.language]['name']} ref={this.pw} val={[this.state.curlevel]} options={[levels]} onChange={this.selectChanged}/>
+    var userkb =  <CustomKeyboard language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={labTransV2['Username'][this.props.language]['name']}/>
+    var pswdkb =  <CustomKeyboard language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={labTransV2['Password'][this.props.language]['name']}/>
     var vlabelStyle = {display:'block', borderRadius:20, boxShadow:' -50px 0px 0 0 #5d5480'}
     var vlabelswrapperStyle = {width:536, overflow:'hidden', display:'table-cell'}
     var _st = {textAlign:'center',lineHeight:'60px', height:60, width:536, display:'table-cell', position:'relative'}
 
-    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} ><div style={{display:'inline-block', textAlign:'center'}}>Accounts</div></h2></span>)
+    var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Accounts'][this.props.language]['name']}</div></h2></span>)
     var st = {padding:7,display:'inline-block', width:180}
     
     var accTableRows = [];
@@ -8381,14 +8384,14 @@ class AccountControl extends React.Component{
     })
     
     var backBut = (<div className='bbut' onClick={this.goBack}><img style={{marginBottom:-5, width:32}} src='assets/return_blk.svg'/>
-            <label style={{color:'#000', fontSize:24}}>{'Back'}</label></div>)
+            <label style={{color:'#000', fontSize:24}}>{labTransV2['Back'][this.props.language]['name']}</label></div>)
     var tstl = {display:'inline-block', textAlign:'center'}
-      var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+      var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>{labTransV2['Accounts'][this.props.language]['name']}</div></h2></span>)
       
       if (this.state.font == 1){
-        titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+        titlediv = (<span><h2 style={{textAlign:'center', fontSize:26, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>{labTransV2['Accounts'][this.props.language]['name']}</div></h2></span>)
       }else if (this.state.font == 0){
-        titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>Accounts</div></h2></span>)
+        titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:"#000"}} >{backBut}<div style={tstl}>{labTransV2['Accounts'][this.props.language]['name']}</div></h2></span>)
       }
 
     return <div>
@@ -8437,7 +8440,7 @@ class AccountRow extends React.Component{
       this.setState({changed:false})
       this.ed.current.toggle();
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
    
   }
@@ -8501,7 +8504,7 @@ class AccountRow extends React.Component{
     //////console.log(3243, this.props.mobile)
     var levels = ['0','1','2','3','4']
     
-    var namestring = 'User'+ this.props.uid
+    var namestring = labTransV2['User'][this.props.language]['name']+ this.props.uid
     //////////console.log(['2692',namestring])
       
     var dt = false;
@@ -8569,18 +8572,18 @@ class AccountRow extends React.Component{
           txtClr = '#000'
         }
       
-      var pw = this.state.username!='ADMIN' && <PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={'Set Level'} ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
-    var userkb = this.state.username!='ADMIN' && <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={'Username'}/>
-    var pswdkb = <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={'Password'}/>
+      var pw = this.state.username!='ADMIN' && <PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={labTransV2['Set Level'][this.props.language]['name']}ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+    var userkb = this.state.username!='ADMIN' && <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={labTransV2['Username'][this.props.language]['name']}/>
+    var pswdkb = <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={labTransV2['Password'][this.props.language]['name']}/>
       
-      var edit = <Modal mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
+      var edit = <Modal language={this.props.language} mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
       <div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
 
-        <div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Username: '}
+        <div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{labTransV2['Username'][this.props.language]['name'] + ': '}
         </div>    <div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.username}</label></div></div>
-        <div style={{marginTop:5}} onClick={() => this.pswd.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Password: '}
+        <div style={{marginTop:5}} onClick={() => this.pswd.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{labTransV2['Password'][this.props.language]['name'] + ': '}
         </div>    <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.password.split("").map(function(c){return '*'}).join('')}</label></div></div>
-        <div style={{marginTop:5}} onClick={() => this.pw.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{'Level: '}
+        <div style={{marginTop:5}} onClick={() => this.pw.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{labTransV2['Level'][this.props.language]['name'] + ': '}
         </div>    <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}><label style={st}>{this.state.acc}</label></div></div>
       </div>
         {pw}{userkb}{pswdkb}
@@ -8599,7 +8602,7 @@ class AccountRow extends React.Component{
       </div>
       {edit}
 
-      <MessageModal ref={this.msgm}/>
+      <MessageModal language={this.props.language} ref={this.msgm}/>
       </div>)
       //return(<div className={'sItem noChild'}><div><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>{edit}</div>)
   }
@@ -8614,7 +8617,7 @@ class LogInControl2 extends React.Component{
     this.props.accounts.forEach(function(ac){
       list.push(ac.username + ' (level ' + ac.acc+')')
     })
-    list.unshift('Not Logged In')
+    list.unshift(labTransV2['Not Logged In'][this.props.language]['name'])
     this.state = {val:0, list:list, showAcccountControl:false, open:false}
     this.enterPIN = this.enterPIN.bind(this);
     this.valChanged = this.valChanged.bind(this);
@@ -8631,7 +8634,7 @@ class LogInControl2 extends React.Component{
     props.accounts.forEach(function(ac){
       list.push(ac.username +' (level ' + ac.acc+')')
     })
-    list.unshift('Not Logged In')
+    list.unshift(labTransV2['Not Logged In'][this.props.language]['name'])
     if(!this.props.isOpen){
 
       //this.setState({val:props.val, list:list})
@@ -8691,13 +8694,13 @@ class LogInControl2 extends React.Component{
       if(v.length == 6){
         this.props.authenticate(this.state.val,v)
       }else{
-        this.msgm.current.show('Password should be 6 characters')
+        this.msgm.current.show(labTransV2['Password should be 6 characters'][this.props.language]['name'])
       }
     }else{
       if(v.length == 4){
         this.props.authenticate(this.state.val,v)
       }else{
-        this.msgm.current.show('Password should be 4 characters')
+        this.msgm.current.show(labTransV2['Password should be 4 characters'][this.props.language]['name'])
       }
     }
     
@@ -8706,7 +8709,7 @@ class LogInControl2 extends React.Component{
     if(this.props.level > 2){
       this.setState({showAcccountControl:!this.state.showAcccountControl})
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
     
   }
@@ -8722,12 +8725,12 @@ class LogInControl2 extends React.Component{
 
   render(){
     var list = this.state.list
-    var namestring = 'Select User'
+    var namestring = labTransV2['Select User'][this.props.language]['name']
     var pw = <PopoutWheel inputs={inputSrcArr} tooltipOv={true} tooltip={vdefMapV2['@tooltips']['Select User'][this.props.language]} outputs={outputSrcArr} ovWidth={290} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
 
     return <React.Fragment>{pw}
-      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
-    <MessageModal ref={this.msgm}/>
+      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={labTransV2['Password'][this.props.language]['name']}/>
+    <MessageModal language={this.props.language} ref={this.msgm}/>
     </React.Fragment> 
   }
 }
@@ -8758,19 +8761,19 @@ class UserPassReset extends React.Component{
       if(v.length == 6){
         this.props.resetPassword(this.state.pack,v)
       }else{
-        this.msgm.current.show('Password should be 6 characters')
+        this.msgm.current.show(labTransV2['Password should be 6 characters'][this.props.language]['name'])
       }
     }else{
       if(v.length == 4){
         this.props.resetPassword(this.state.pack,v)
       }else{
-        this.msgm.current.show('Password should be 4 characters')
+        this.msgm.current.show(labTransV2['Password should be 4 characters'][this.props.language]['name'])
       }
     }
   }
   render(){
-    return <React.Fragment><CustomKeyboard mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Reset Password'}/>
-    <MessageModal ref={this.msgm} />
+    return <React.Fragment><CustomKeyboard mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={labTransV2['Reset Password'][this.props.language]['name']}/>
+    <MessageModal  language={this.props.language} ref={this.msgm} />
     </React.Fragment>
   }
 }
@@ -8846,7 +8849,7 @@ class StatSummary extends React.Component{
       
     }
   return  <div style={{width:260,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0, height:515}}>
-      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>Summary</div></div>
+      <div><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:140,paddingLeft:2, fontSize:16,lineHeight:'24px', color:fontColor}}>{labTransV2['Summary'][this.props.language]['name']}</div></div>
       <StatControl language={this.props.language} vMap={vMapV2['LiveWeight']['@translations']} pram={'LiveWeight'} name={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={this.state.lw} submitChange={this.props.submitChange}/>
       <StatControl language={this.props.language} vMap={vMapV2['NetWeight']['@translations']} pram={'NetWeight'} name={'Gross Weight'}  submitChange={this.props.submitChange} value={grswt}/>
       <StatControl language={this.props.language} vMap={vMapV2['PkgWeight']['@translations']} pram={'PkgWeight'} name={vMapV2['PkgWeight']['@translations'][this.props.language]['name']}  submitChange={this.props.submitChange} value={pkgwgt}/>
@@ -8881,16 +8884,16 @@ class StatControl extends React.Component{
     var uid = uuidv4()
     return <div style={{height:61}}>
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
-    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>{labTransV2['Translate'][this.props.language]['name']}</MenuItem></ContextMenu>
     </div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:25}}>{this.props.value}</div>
-    <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+    <Modal language={this.props.language} ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
         <div>{this.props.vMap['english']['name']}</div>
         <div>
-          Current Language: {this.props.language}
+        {labTransV2['Current Language'][this.props.language]['name']+': '+ this.props.language}
         </div>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
-         <button onClick={this.submit}>Submit Change</button>
+         <button onClick={this.submit}>{labTransV2['Submit Change'][this.props.language]['name']}</button>
         </Modal>
     </div>
   }
@@ -8964,7 +8967,7 @@ class StatDisplay extends React.Component{
           },100)
      
           }else{
-            this.msgm.current.show('Access Denied')
+            this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
           }      
     }
   }
@@ -9054,7 +9057,7 @@ class StatDisplay extends React.Component{
     <div onClick={this.editSetting}><div style={{textAlign:'center',fontSize:14}}>{this.props.name}</div>
     <div style={{textAlign:'center',lineHeight:1.4, fontSize:14}} >{this.props.value}</div></div>
       {ckb}
-      <MessageModal ref={this.msgm}/>
+      <MessageModal language={this.props.language} ref={this.msgm}/>
     </div>
   }
 }
@@ -9094,11 +9097,11 @@ class BatchStatControl extends React.Component{
     }
     return <div style={{height:61}}>
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
-    <ContextMenu id={uid}><MenuItem onClick={this.translate}>Translate</MenuItem></ContextMenu></div>
+    <ContextMenu id={uid}><MenuItem onClick={this.translate}>{labTransV2['Translate'][this.props.language]['name']}</MenuItem></ContextMenu></div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:batchFont, whiteSpace:'nowrap'}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
-     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+     <Modal language={this.props.language} ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
-         <button onClick={this.submit}>Submit Change</button>
+         <button onClick={this.submit}>{labTransV2['Submit Change'][this.props.language]['name']}</button>
         </Modal>
     </div>
   }
@@ -9188,7 +9191,7 @@ class StatusElem extends React.Component{
     var innerWidth = Math.min((this.props.width*0.55),160);
     var innerFont = Math.min(Math.floor(this.props.font/2), 16);
       var bg = 'transparent';
-  var str = 'Connecting...'
+  var str = labTransV2['Connecting...'][this.props.language]['name']
   var fault = false
 
 var prodFont = 25;
@@ -9221,13 +9224,13 @@ if(prodName.length > 17){
   if(this.props.warnings.length != 0){
     if(this.props.warnings.length == 1){
       if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
-        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' '+ labTransV2['Active'][this.props.language]['name']
       }else{
-        str = this.props.warnings[0] + ' active'  
+        str = this.props.warnings[0] + ' '+ labTransV2['Active'][this.props.language]['name']  
       }
       
     }else{
-      str = this.props.warnings.length + ' warnings active'
+      str = this.props.warnings.length + ' '+ labTransV2['Warnings Active'][this.props.language]['name']
     }
     fault = true
     outerbg = 'orange'
@@ -9235,13 +9238,13 @@ if(prodName.length > 17){
   if(this.props.faults.length != 0){
      if(this.props.faults.length == 1){
       if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
-        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' '+ labTransV2['Fault Active'][this.props.language]['name']
       }else{
-        str = this.props.faults[0] + ' active'  
+        str = this.props.faults[0] + ' '+ labTransV2['Active'][this.props.language]['name'] 
       }
       
     }else{
-      str = this.props.faults.length + ' faults active'
+      str = this.props.faults.length + ' '+ labTransV2['Faults Active'][this.props.language]['name']
     }
     fault = true
     outerbg = 'red'
@@ -9258,10 +9261,10 @@ if(prodName.length > 17){
 
       <div style={{display:'grid', gridTemplateColumns:'160px auto'}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div><div style={{display:'inline-block', fontSize:prodFont, textAlign:'center', lineHeight:'25px', verticalAlign:'top'}}>{this.props.prodName}</div></div>
        <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:25, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'middle'}} onClick={()=>this.toggleFault(fault)}>{this.props.weighingMode==1 && str==='Low Pass' ? 'between T1/T2':str}</div></div>
-          <Modal ref={this.fModal} innerStyle={{background:modBg}}>
-            <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>Faults</div></div>
+          <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
+            <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.props.language]['name']}</div></div>
      
-          <FaultDiv branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
+          <FaultDiv langauge={this.props.language} branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
 
     </div>)
@@ -9272,21 +9275,21 @@ if(prodName.length > 17){
 
 /********************Graphs Start********************/
 class BatchPackCountGraph extends React.Component{
-	constructor(props){
-		super(props)
+    constructor(props){
+        super(props)
     this.toggle = this.toggle.bind(this);
-		this.state = {batchData:[0, 0, 0, 0, 0, 0, 0, 0], sampleData:[0, 0, 0, 0, 0, 0, 0, 0],batch:true, batchStartTime:'', sampleStartTime:''}
-	}
-	parseCrec(crec){
-		var data = this.state.batchData.slice(0);
+        this.state = {batchData:[0, 0, 0, 0, 0, 0, 0, 0], sampleData:[0, 0, 0, 0, 0, 0, 0, 0],batch:true, batchStartTime:'', sampleStartTime:''}
+    }
+    parseCrec(crec){
+        var data = this.state.batchData.slice(0);
     var sampleData = this.state.sampleData.slice(0);
-		data[0] = crec['TotalCnt']
-		data[1] = crec['PassWeightCnt'];
-		data[2] = crec['LowPassCnt'];
-		data[3] = crec['LowRejCnt']; 
-		data[4] = crec['HighCnt'];
-		data[5] = crec['UnsettledCnt']
-		//data[6] = crec['ImprobableCnt']
+        data[0] = crec['TotalCnt']
+        data[1] = crec['PassWeightCnt'];
+        data[2] = crec['LowPassCnt'];
+        data[3] = crec['LowRejCnt']; 
+        data[4] = crec['HighCnt'];
+        data[5] = crec['UnsettledCnt']
+        //data[6] = crec['ImprobableCnt']
     data[6] = crec['MetalRejectCnt']
     data[7] = crec['CheckWeightCnt']
     
@@ -9312,56 +9315,56 @@ class BatchPackCountGraph extends React.Component{
     // this.setState({batchData:data, sampleData:sampleData, batchStartTime:bst,sampleStartTime:sst})
     this.setState({batchData:data, sampleData:sampleData, batchStartTime:bst,sampleStartTime:sst, weighingMode2:crec["WeighingMode2"]})
 
-	}
-	parsePack(pack){
-		var data = [0,0,0,0,0,0,0,0]//this.state.data.slice(0)
-		data[0]++;
-		if(pack<85){
-			data[1]++;
-		}else if(pack<88){
-			data[2]++
-		}else if(pack<92){
-			data[3]++
-		}else if(pack<94){
-			data[4]++
-		}else if(pack<96){
-			data[5]++
-		}else if(pack<100){
-			data[6]++
-		}
-		//this.setState({data:data})
-	}	
+    }
+    parsePack(pack){
+        var data = [0,0,0,0,0,0,0,0]//this.state.data.slice(0)
+        data[0]++;
+        if(pack<85){
+            data[1]++;
+        }else if(pack<88){
+            data[2]++
+        }else if(pack<92){
+            data[3]++
+        }else if(pack<94){
+            data[4]++
+        }else if(pack<96){
+            data[5]++
+        }else if(pack<100){
+            data[6]++
+        }
+        //this.setState({data:data})
+    }	
   toggle(){
     this.setState({batch:!this.state.batch})
   }
   translateCounts(){
 
   }
-	render(){
-		var outerbg = '#e1e1e1'
-		var self = this;
-		var innerbg = '#5d5480'
-		var fontColor = '#e1e1e1'
-		var graphColor = FORTRESSPURPLE2
-		if(this.props.branding == 'SPARC'){
-			innerbg = SPARCBLUE2
-			fontColor = 'black'
-			graphColor = SPARCBLUE2;
-		}
-		var xDomain = [0,15]
-		var yDomin = [0, 5]
+    render(){
+        var outerbg = '#e1e1e1'
+        var self = this;
+        var innerbg = '#5d5480'
+        var fontColor = '#e1e1e1'
+        var graphColor = FORTRESSPURPLE2
+        if(this.props.branding == 'SPARC'){
+            innerbg = SPARCBLUE2
+            fontColor = 'black'
+            graphColor = SPARCBLUE2;
+        }
+        var xDomain = [0,15]
+        var yDomin = [0, 5]
     var selData;
     var bText;
-    var bsttxt = 'Batch Started at: '+this.state.batchStartTime
+    var bsttxt = labTransV2['Batch Started at'][this.props.language]['name'] +': '+this.state.batchStartTime
     var max = 0;
     var showCount = false
     if(this.state.batch){
-      bText = 'Batch'
+      bText = labTransV2['Batch'][this.props.language]['name']
       showCount = ((this.props.bRunning != 0) && (this.props.bCount != 0) && (this.state.batchData[0] > 0))
       selData = this.state.batchData.slice(0)
     }else{
-      bText = 'Sample'
-      bsttxt = 'Sample Started at: '+this.state.sampleStartTime
+      bText = labTransV2['Sample'][this.props.language]['name']
+      bsttxt = labTransV2['Sample Started at'][this.props.language]['name'] +': '+this.state.sampleStartTime
       selData = this.state.sampleData.slice(0)
     }
     
@@ -9371,15 +9374,15 @@ class BatchPackCountGraph extends React.Component{
       xDm = [0,1]
     }
     
-		var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
+        var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
      {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['MetalRejectCnt']['@translations'][this.props.language]['name']},{x:selData[7], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
-		
+        
     if (this.state.weighingMode2 == 1){
     var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['BetweenT1T2']['@translations'][this.props.language]['name']},
     {x: selData[3], y:vMapV2['LowRejCnt']['@translations'][this.props.language]['name']}, {x:selData[4], y:vMapV2['HighCnt']['@translations'][this.props.language]['name']}, {x:selData[5], y:vMapV2['UnsettledCnt']['@translations'][this.props.language]['name']}, {x:selData[6], y:vMapV2['MetalRejectCnt']['@translations'][this.props.language]['name']},{x:selData[7], y:vMapV2['CheckWeightCnt']['@translations'][this.props.language]['name']}]//[{x0:2, x:3, y:5},{x0:3, x:4, y:2},{x0:4, x:6, y:5}]
     }
     var labelData = data.map(function(d, i){
-			var lax = 'start'
+            var lax = 'start'
       var label = d.x
       var ofs = 0
       if(showCount && i == 1){
@@ -9389,28 +9392,28 @@ class BatchPackCountGraph extends React.Component{
        // lax = 'end'
        // ofs = -20
       }
-			if(d.x > (data[0].x*0.66)){
-				lax = 'end'
-				return {x:d.x,y:d.y,label:label, xOffset:-10, yOffset:0, size:0, style:{fill:'#e1e1e1',textAnchor:lax}}
-			}
-			return	{x:d.x,y:d.y,label:label, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
-		})
+            if(d.x > (data[0].x*0.66)){
+                lax = 'end'
+                return {x:d.x,y:d.y,label:label, xOffset:-10, yOffset:0, size:0, style:{fill:'#e1e1e1',textAnchor:lax}}
+            }
+            return	{x:d.x,y:d.y,label:label, xOffset:10, yOffset:0, size:0, labelAnchorX:lax}
+        })
     var butt = <div onClick={this.toggle} style={{width:77, fontSize:18, textAlign:'center'}}>{bText}</div>
-		//var hh = 
-		return <div style={{position:'relative',width:380, height:515,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
+        //var hh = 
+        return <div style={{position:'relative',width:380, height:515,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
-			<div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>Statistics</div></div>
+            <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>{labTransV2['Statistics'][this.props.language]['name']}</div></div>
       <div style={{position:'absolute', left:295, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
       <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
-		<XYPlot	height={430} width= {380} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal' xDomain={xDm}>		
+        <XYPlot	height={430} width= {380} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal' xDomain={xDm}>		
   
     <HorizontalBarSeries data={data} color={graphColor} />
     <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
   <XAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} hideTicks={max<1} orientation="bottom" tickSizeOuter={0} tickFormat={val => Math.round(val) === val ? val : ""}/>
   <YAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} orientation="left" tickSizeOuter={0} tickFormat={tickFormatter}/>
-		</XYPlot>
-		</div>
-	}
+        </XYPlot>
+        </div>
+    }
 }
 class BatchBarGraph extends React.Component{
   constructor(props){
@@ -9486,14 +9489,14 @@ class BatchBarGraph extends React.Component{
     var yDomin = [0, 5]
     var selData;
     var bText;
-    var bsttxt = 'Batch Started at: '+this.state.batchStartTime
+    var bsttxt = labTransV2['Batch Started at'][this.props.language]['name']+ ': '+this.state.batchStartTime
     if(this.state.batch){
-      bText = 'Batch'
+      bText = labTransV2['Batch'][this.props.language]['name']
 
       selData = this.state.batchData.slice(0)
     }else{
-      bText = 'Sample'
-      bsttxt = 'Sample Started at: '+this.state.sampleStartTime
+      bText = labTransV2['Sample'][this.props.language]['name']
+      bsttxt = labTransV2['Sample Started at'][this.props.language]['name'] +': '+this.state.sampleStartTime
       selData = this.state.sampleData.slice(0)
     }
     var data = [{x: selData[0], y:vMapV2['TotalCnt']['@translations'][this.props.language]['name']}, {x: selData[1], y:vMapV2['PassWeightCnt']['@translations'][this.props.language]['name']}, {x: selData[2], y:vMapV2['LowPassCnt']['@translations'][this.props.language]['name']},
@@ -9510,7 +9513,7 @@ class BatchBarGraph extends React.Component{
     //var hh = 
     return <div style={{position:'relative',width:380, height:515,background:outerbg, borderRadius:10, margin:5, marginBottom:0, border:'2px '+outerbg+' solid', borderTopLeftRadius:0}}>
 
-      <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>Statistics</div></div>
+      <div style={{marginBottom:30}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24,lineHeight:'24px', width:150,paddingLeft:2, fontSize:16, color:fontColor}}>{labTransV2['Statistics'][this.props.language]['name']}</div></div>
       <div style={{position:'absolute', left:295, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
       <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
     <XYPlot height={430} width= {380} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal'>    
@@ -9524,12 +9527,12 @@ class BatchBarGraph extends React.Component{
   }
 }
 class MainHistogram extends React.Component{
-	constructor(props){
-		super(props)
-		this.parseDataset = this.parseDataset.bind(this);
-		this.clearFaults = this.clearFaults.bind(this);
-		this.maskFault = this.maskFault.bind(this);
-		this.statusClick = this.statusClick.bind(this);
+    constructor(props){
+        super(props)
+        this.parseDataset = this.parseDataset.bind(this);
+        this.clearFaults = this.clearFaults.bind(this);
+        this.maskFault = this.maskFault.bind(this);
+        this.statusClick = this.statusClick.bind(this);
     this.pushWeight = this.pushWeight.bind(this);
     this.pushBin  = this.pushBin.bind(this);
     this.clearHisto = this.clearHisto.bind(this);
@@ -9539,8 +9542,8 @@ class MainHistogram extends React.Component{
     for(var i = 0; i < 300; i++){
       dtst.push(0)
     }
-		this.state = {pTime:0,weightPassed:0,pmax:2000, pstrt:0,pend:299, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[dtst,dtst.slice(0), dtst.slice(0)],reject:false,over:false,under:false}
-	}
+        this.state = {pTime:0,weightPassed:0,pmax:2000, pstrt:0,pend:299, pmin:0,calFactor:0.05, tareWeight:0,decisionRange:[12,18],max:20, min:0,dataSets:[dtst,dtst.slice(0), dtst.slice(0)],reject:false,over:false,under:false}
+    }
   pushBin(x,y){
     this.histo.current.pushBin(x,y);
   }
@@ -9548,121 +9551,121 @@ class MainHistogram extends React.Component{
     // console.log('clear Histo')
     this.histo.current.clearHisto();
   }
-	parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend,pTime){
-		var dataSets = this.state.dataSets;
-		if(dataSets.length > 5){
-			dataSets = dataSets.slice(-5)
-		}
+    parseDataset(data, strt, stend, pmax,pmin, calFactor, tareWeight, pweight, weightPassed, pstrt, pend,pTime){
+        var dataSets = this.state.dataSets;
+        if(dataSets.length > 5){
+            dataSets = dataSets.slice(-5)
+        }
 
-		dataSets.push(data)
-		var setMax = []
-		dataSets.forEach(function (d) {
-			// body...
-			setMax.push(Math.max(...d))
-		})
+        dataSets.push(data)
+        var setMax = []
+        dataSets.forEach(function (d) {
+            // body...
+            setMax.push(Math.max(...d))
+        })
 
-		var max = Math.max(...data)
-		var reject = false;
-		if((pweight > this.props.max) || (pweight < this.props.min)){
-			reject = true;
-	
-		}
+        var max = Math.max(...data)
+        var reject = false;
+        if((pweight > this.props.max) || (pweight < this.props.min)){
+            reject = true;
+    
+        }
     if(this.props.histo && this.state.pTime != pTime){
       this.histo.current.pushWeight(pweight)
     }
     //this.histo.current
-		this.setState({dataSets:dataSets,pmax:(pmax/calFactor)+tareWeight, pmin:(pmin/calFactor)+tareWeight, pstrt:pstrt, pend:pend, decisionRange:[strt, stend], reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(pweight>this.props.max), under:(pweight<this.props.min), calFactor:calFactor, tareWeight:tareWeight, weightPassed:weightPassed,pTime:pTime})
-	}
+        this.setState({dataSets:dataSets,pmax:(pmax/calFactor)+tareWeight, pmin:(pmin/calFactor)+tareWeight, pstrt:pstrt, pend:pend, decisionRange:[strt, stend], reject:reject,max:(Math.max(...setMax) + (max*5))/6, min:Math.min(...data), over:(pweight>this.props.max), under:(pweight<this.props.min), calFactor:calFactor, tareWeight:tareWeight, weightPassed:weightPassed,pTime:pTime})
+    }
   pushWeight(e){
     this.histo.current.pushWeight(e)
   }
-	clearFaults(){
-		this.props.clearFaults();
+    clearFaults(){
+        this.props.clearFaults();
         this.fModal.current.toggle();
-	}
-	maskFault(){
-		this.props.maskFault();
-	}
-	statusClick(){
-		if(this.props.faults.length != 0){
-			this.fModal.current.toggle();
-		}else if(this.state.weightPassed == 9){
+    }
+    maskFault(){
+        this.props.maskFault();
+    }
+    statusClick(){
+        if(this.props.faults.length != 0){
+            this.fModal.current.toggle();
+        }else if(this.state.weightPassed == 9){
       this.props.cwShow()
     }
-	}
-	render(){
-		var outerbg = '#818a90'
-		var innerbg = '#5d5480'
-		var fontColor = '#e1e1e1'
-		var graphColor = 'darkturquoise'//FORTRESSGRAPH
-		var bg2 = 'rgba(150,150,150,0.5)'
-	 var modBg = FORTRESSPURPLE1
-		if(this.props.branding == 'SPARC'){
-			outerbg = '#e1e1e1'
-			innerbg = SPARCBLUE2
+    }
+    render(){
+        var outerbg = '#818a90'
+        var innerbg = '#5d5480'
+        var fontColor = '#e1e1e1'
+        var graphColor = 'darkturquoise'//FORTRESSGRAPH
+        var bg2 = 'rgba(150,150,150,0.5)'
+     var modBg = FORTRESSPURPLE1
+        if(this.props.branding == 'SPARC'){
+            outerbg = '#e1e1e1'
+            innerbg = SPARCBLUE2
       modBg = SPARCBLUE2
-			fontColor = 'black'
-			graphColor = SPARCBLUE2;
-			bg2 = 'rgba(150,150,150,0.5)'
-		}
+            fontColor = 'black'
+            graphColor = SPARCBLUE2;
+            bg2 = 'rgba(150,150,150,0.5)'
+        }
 
 
 
-	var bg = 'transparent';
-	var str = 'Good Weight'
-	var fault = false
+    var bg = 'transparent';
+    var str = 'Good Weight'
+    var fault = false
 
-	if(vdefByMac[this.props.det.mac]){
-		str = vdefByMac[this.props.det.mac][0]['@labels']['WeightPassed']['english'][this.state.weightPassed]
-	}
-	if(this.props.faults.length != 0){
+    if(vdefByMac[this.props.det.mac]){
+        str = vdefByMac[this.props.det.mac][0]['@labels']['WeightPassed']['english'][this.state.weightPassed]
+    }
+    if(this.props.faults.length != 0){
 
-		if(this.props.faults.length == 1){
-			if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
-        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' fault active'
+        if(this.props.faults.length == 1){
+            if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' '+labTransV2['Fault Active'][this.props.language]['name']
       }else{
-        str = this.props.faults[0] + ' active'  
+        str = this.props.faults[0] + ' '+labTransV2['Active'][this.props.language]['name']  
       }
       
-		}else{
-			str = this.props.faults.length + ' faults active'
-		}
-		fault == true
-	}
+        }else{
+            str = this.props.faults.length + ' '+labTransV2['Faults Active'][this.props.language]['name']  
+        }
+        fault == true
+    }
   if(this.props.warnings.length != 0){
 
     if(this.props.warnings.length == 1){
       if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
-        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' active'
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' '+labTransV2['Active'][this.props.language]['name']
       }else{
-        str = this.props.warnings[0] + ' active'  
+        str = this.props.warnings[0] + ' '+labTransV2['Active'][this.props.language]['name']  
       }
       
     }else{
-      str = this.props.warnings.length + ' warnings active'
+      str = this.props.warnings.length + ' '+labTransV2['Warnings Active'][this.props.language]['name']
     }
     fault == true
   }
 
 
   if(this.props.connected == false){
-    str = 'Not Connected'
+    str = labTransV2['Not Connected'][this.props.language]['name']
   }
-  var  xyplot = <WeightHistogram sendPacket={this.props.sendPacket} buckMin={this.props.buckMin} buckMax={this.props.buckMax} buckets={this.props.buckets} bucketSize={this.props.bucketSize} unit={this.props.weightUnits} ref={this.histo} nom={this.props.nominalWeight} stdev={this.props.stdev}/>
+  var  xyplot = <WeightHistogram language={this.props.language}  sendPacket={this.props.sendPacket} buckMin={this.props.buckMin} buckMax={this.props.buckMax} buckets={this.props.buckets} bucketSize={this.props.bucketSize} unit={this.props.weightUnits} ref={this.histo} nom={this.props.nominalWeight} stdev={this.props.stdev}/>
   
-	return	<div style={{background:bg, textAlign:'center', position:'relative'}}>
- 		<div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
+    return	<div style={{background:bg, textAlign:'center', position:'relative'}}>
+         <div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 
-		<div style={{overflow:'hidden', marginTop:14}}>
-		<div style={{marginTop:-48}}>
+        <div style={{overflow:'hidden', marginTop:14}}>
+        <div style={{marginTop:-48}}>
  {xyplot}
-		</div>
-		</div>
-			<Modal ref={this.fModal} innerStyle={{background:modBg}}>
-					<FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
-				</Modal>
-		</div>
-	}
+        </div>
+        </div>
+            <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
+                    <FaultDiv language={this.props.language} maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
+                </Modal>
+        </div>
+    }
 }
 class PackGraph extends React.Component{
   constructor(props){
@@ -9809,7 +9812,7 @@ class PackGraph extends React.Component{
 
     return  (
   <div>
-    <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>Pack Graph</div></div>
+    <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['Pack Graph'][this.props.language]['name']}</div></div>
       
       <div style={{display:'grid', gridTemplateColumns:'auto auto'}}>
       
@@ -10033,7 +10036,7 @@ class BatchHistogram extends React.Component{
      
 
     return <div>
-    <div style={{marginBottom:10, textAlign:'center'}}>{'Batch Histogram'}
+    <div style={{marginBottom:10, textAlign:'center'}}>{labTransV2['Batch Histogram'][this.props.language]['name']}
     </div>
     <XYPlot xDomain={[0,this.state.bucketNum]} height={180} width={width} margin={{left:50,right:20,bottom:50,top:50}}>
       <XAxis tickFormat={val => ToFixed(val*factors[u],sigfigs[u])} style={{line:{stroke:'#888'}, ticks:{stroke:"#888"}}}/>
@@ -10091,24 +10094,24 @@ class PlanBatchStart extends React.Component{
         bgc = '#7ccc7c'
       }
       return  <div onClick={() => self.onStartBatchClick(i)} style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
-        <div>Batch Id: {bat['PlanBatchId']}</div>
-        <div>Batch Ref: {bat['PlanBatchRef']}</div>
-       <div>Product: {prMap[bat['PlanProdNum']]}</div>
+        <div>{labTransV2['Batch Id'][this.props.language]['name']+': '+bat['PlanBatchId']}</div>
+        <div>{labTransV2['Batch Ref'][this.props.language]['name']+': '+ bat['PlanBatchRef']}</div>
+       <div>{labTransV2['Product'][this.props.language]['name']+': '+ prMap[bat['PlanProdNum']]}</div>
         </div>
       // body...
     })
     if(this.props.plannedBatches.length == 0){
       plannedBatchesStart = <div style={{color:'#e1e1e1'}}>
-        No Planned Batches found
+        {labTransV2['No Planned Batches found'][this.props.language]['name']}
       </div>
     }
     return (
-    <Modal x ref={this.md}>
+    <Modal language={this.props.language} x ref={this.md}>
     <div>
-    <div style={{font:25, color:'#e1e1e1'}}>Select Batch</div>
+    <div style={{font:25, color:'#e1e1e1'}}>{labTransV2['Select Batch'][this.props.language]['name']}</div>
     <div style={{overflowY:'scroll', maxHeight:396}}>{plannedBatchesStart}</div></div>
     <div style={{mmarginLeft:340}}>
-     <div onClick={this.onConfirm} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Start Batch'}</div></div></div>
+     <div onClick={this.onConfirm} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Batch'][this.props.language]['name']}</div></div></div>
     </Modal>)
   }
 }
@@ -10164,15 +10167,15 @@ class ManBatchStart extends React.Component{
     })
   //  console.log(this.props.mac)
     if(vdefByMac[this.props.mac]){
-      return <Modal x ref={this.md}>
+      return <Modal language={this.props.language} x={true} ref={this.md}>
     <div style={{background:'#e1e1e1',padding:10}}>
-      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Start New Batch'}</div></h2></span>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Start New Batch'][this.props.language]['name']}</div></h2></span>
      
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
     <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.state.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>      
     <div style={{marginTop:140,marginLeft:340}}>
-    <div onClick={this.addBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Start Batch'}</div></div>  
+    <div onClick={this.addBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Batch'][this.props.language]['name']}</div></div>  
     </div>
     </div>
     </Modal>
@@ -10327,7 +10330,7 @@ class BatchControl extends React.Component{
     
       this.addModal.current.toggle();
      }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
   }
   addnewBatch(bat){
@@ -10431,9 +10434,9 @@ class BatchControl extends React.Component{
         bgc = '#7ccc7c'
       } 
       return <div  style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
-        <div>Batch Id: {bat['PlanBatchId']}</div>
-        <div>Batch Ref: {bat['PlanBatchRef']}</div>
-       <div>Product: {prMap[bat['PlanProdNum']]}</div>
+        <div>{labTransV2['Batch Id'][this.props.language]['name']+ ': '+ bat['PlanBatchId']}</div>
+        <div>{labTransV2['Batch Ref'][this.props.language]['name']+ ': ' + bat['PlanBatchRef']}</div>
+       <div>{labTransV2['Product'][this.props.language]['name']+': '+ prMap[bat['PlanProdNum']]}</div>
         </div>
       // body...
     })
@@ -10441,19 +10444,19 @@ class BatchControl extends React.Component{
     var pl = 'assets/play-arrow-fti.svg'
     var stp = 'assets/stop-fti.svg'
     var batchInfo = <div style={{height:315}}>
-      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
-      <div style={{padding:5}}>Batch stopped</div></div>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Batch'][this.props.language]['name']}</div></h2></span>
+      <div style={{padding:5}}>{labTransV2['Batch Stopped'][this.props.language]['name']}</div></div>
     var play, stop;
 
     if(this.props.start){
-      var sttxt = 'Start'
+      var sttxt = labTransV2['Start Text'][this.props.language]['name']
         
       play = <div onClick={this.onStartClick} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
-      stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FA2222', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+      stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FA2222', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Stop'][this.props.language]['name']}</div></div> 
 
     }else{
-      play = <div onClick={this.props.pause} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={'assets/pause.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Pause</div></div>
-      stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#F04040', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
+      play = <div onClick={this.props.pause} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className='circularButton_sp'> <img src={'assets/pause.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Pause'][this.props.language]['name']}</div></div>
+      stop = <div onClick={this.props.stopB} style={{width:120, lineHeight:'53px',color:'black',font:30, background:'#F04040', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Stop'][this.props.language]['name']}</div></div> 
       batchInfo = <div style={{height:315}}>
          <span><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Batch'}</div></h2></span>
          <div style={{padding:5}}>
@@ -10485,7 +10488,7 @@ class BatchControl extends React.Component{
     var valSt = {display:'table-cell', paddingLeft:5}
     var midSt = {display:'table-cell', width:'100%'}
     var dots = {borderBottom:'1px dotted', marginBottom:3}
-    var bmodes = ['Auto','Planned Batch', 'Manual Entry']
+    var bmodes = [labTransV2['Auto'][this.props.language]['name'],labTransV2['Planned Batch'][this.props.language]['name'], labTransV2['Manual Entry'][this.props.language]['name']]
     // console.log('vMapLists', vMapLists)
     var passPer = 0;
     if(typeof this.props.crec['PassWeightPer'] != 'undefined'){
@@ -10509,92 +10512,92 @@ class BatchControl extends React.Component{
     }
 
     if (weighingMode == 1) {   
-      var lowPass = "Between T1/T2"
+      var lowPass = vMapV2['BetweenT1T2']['@translations'][this.props.language]['name']
       }
       else {
-        var lowPass = "Low Pass"
+        var lowPass = vMapV2['LowPassCnt']['@translations'][this.props.language]['name'] 
       }
 
     var batchSummary = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ? 
         <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
-          <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch ID'].value}</div></div>
-          <div><div style={titleSt}>Batch Ref</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Ref'].value}</div></div>
-          <div><div style={titleSt}>Product</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fontSize}}>{this.state.bRec['Product Name'].value.trim()}</div></div></div>
-          <div><div style={titleSt}>Start Time</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Start Time'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch ID'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch Ref'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Ref'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Product'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fontSize}}>{this.state.bRec['Product Name'].value.trim()}</div></div></div>
+          <div><div style={titleSt}>{labTransV2['Start Time'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch Start Time'].value}</div></div>
         </div>
         :
         <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
-          <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batNum}</div></div>
-          <div><div style={titleSt}>Batch Ref</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batRef}</div></div>
-          <div><div style={titleSt}>Product</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fSize}}>{prodName}</div></div></div>
-          <div><div style={titleSt}>Start Time</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{bstartTime}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batNum}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch Ref'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batRef}</div></div>
+          <div><div style={titleSt}>{labTransV2['Product'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fSize}}>{prodName}</div></div></div>
+          <div><div style={titleSt}>{labTransV2['Start Time'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{bstartTime}</div></div>
         </div>
 
     var batchInfo = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ? 
         <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5, whiteSpace:'nowrap'}}>
-          <div style={{textAlign:'center'}}>Batch Information</div>
+          <div style={{textAlign:'center'}}>{labTransV2['Batch Information'][this.props.language]['name']}</div>
           <div style={{fontSize:15}}>
-          <div><div style={titleSt}>Total Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Weight'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Passed Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Passed Weight Percentage</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Percentage weight passed'].value}</div></div>
-          <div><div style={titleSt}>Lowest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Lowest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Highest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Highest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Nominal Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.prod['NominalWgt'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Average Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Avg Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Standard Deviation</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Std Dev Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Total Giveaway</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Giveaway'].value), this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Packs Per Minute</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.state.bRec['Packs Per Minute'].value,1)}</div></div>
+          <div><div style={titleSt}>{labTransV2['Total Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Passed Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Passed Weight Percentage'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Percentage weight passed'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Lowest Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Lowest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Highest Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Highest Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Nominal Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.prod['NominalWgt'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Average Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Avg Good Weight'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Standard Deviation'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Std Dev Good Weights'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Total Giveaway'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(parseFloat(this.state.bRec['Total Giveaway'].value), this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Packs Per Minute'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.state.bRec['Packs Per Minute'].value,1)}</div></div>
         </div></div>
         :
         <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5, whiteSpace:'nowrap'}}>
-          <div style={{textAlign:'center'}}>Batch Information</div>
+          <div style={{textAlign:'center'}}>{labTransV2['Batch Information'][this.props.language]['name']}</div>
           <div style={{fontSize:15}}>
-          <div><div style={titleSt}>Total Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['TotalWeight'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Passed Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['PassedWeight'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Passed Weight Percentage</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{passPer.toFixed(1)+ '%'}</div></div>
-          <div><div style={titleSt}>Lowest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['LowestWeight'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Highest Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['HighestWeight'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Nominal Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.prod['NominalWgt'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Average Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['AvgWeight'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Standard Deviation</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['StdDev'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Total Giveaway</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['GiveawayBatch'], this.props.srec['WeightUnits'])}</div></div>
-          <div><div style={titleSt}>Packs Per Minute</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.props.crec['Batch_PPM'],1)}</div></div>
+          <div><div style={titleSt}>{labTransV2['Total Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['TotalWeight'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Passed Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['PassedWeight'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Passed Weight Percentage'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{passPer.toFixed(1)+ '%'}</div></div>
+          <div><div style={titleSt}>{labTransV2['Lowest Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['LowestWeight'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Highest Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['HighestWeight'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Nominal Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.prod['NominalWgt'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Average Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['AvgWeight'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Standard Deviation'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['StdDev'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Total Giveaway'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{FormatWeight(this.props.crec['GiveawayBatch'], this.props.srec['WeightUnits'])}</div></div>
+          <div><div style={titleSt}>{labTransV2['Packs Per Minute'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{ToFixed(this.props.crec['Batch_PPM'],1)}</div></div>
         </div></div>
 
       var batchWeights = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ?
-        <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>Batch Weights</div>
+        <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>{labTransV2['Batch Weights'][this.props.language]['name']}</div>
           <div>
           <div style={{fontSize:17, whiteSpace:'nowrap'}}>
-          <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Good Weights'].value}</div></div>
-          <div><div style={titleSt}>Low Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Under Weights'].value}</div></div>
-          <div><div style={titleSt}>High</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Over Weights'].value}</div></div>
-          <div><div style={titleSt}>Unsettled</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Unsettled Weights'].value}</div></div>
-          <div><div style={titleSt}>Check Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Check Weights'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Good'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Good Weights'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Low Reject'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Under Weights'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['High'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Over Weights'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Unsettled'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Unsettled Weights'].value}</div></div>
+          <div><div style={titleSt}>{labTransV2['Check Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Check Weights'].value}</div></div>
           </div> 
           </div>
         </div>
         :
-        <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>Batch Weights</div>
+        <div style={{display:'inline-block',verticalAlign:'top', margin:5, padding:5}}><div>{labTransV2['Batch Weights'][this.props.language]['name']}</div>
           <div>
            <div style={{fontSize:17, whiteSpace:'nowrap'}}>
-          <div><div style={titleSt}>Check Weight</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['CheckWeightCnt']}</div></div>
-          <div><div style={titleSt}>Metal Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['MetalRejectCnt']}</div></div>
-          <div><div style={titleSt}>Unsettled</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['UnsettledCnt']}</div></div>
-          <div><div style={titleSt}>High</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['HighCnt']}</div></div>
-          <div><div style={titleSt}>Low Reject</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowRejCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['Check Weight'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['CheckWeightCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['Metal Reject'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['MetalRejectCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['Unsettled'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['UnsettledCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['High'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['HighCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['Low Reject'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowRejCnt']}</div></div>
           <div><div style={titleSt}>{lowPass}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['LowPassCnt']}</div></div>
-          <div><div style={titleSt}>Good</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
-          <div><div style={titleSt}>Total</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['TotalCnt']}</div></div>
+          <div><div style={titleSt}>{labTransV2['Good'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
+          <div><div style={titleSt}>{labTransV2['Total'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.props.crec['TotalCnt']}</div></div>
           </div> 
           </div>
         </div>
          
     var bmodeSelect =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[vdefByMac[this.props.mac][1][0]['BatchMode']]} ioBits={this.props.ioBits} vMap={vMapV2['BatchMode']} language={this.props.language}  interceptor={false} name={'Batch Mode'} ref={this.ed} val={[this.state.startMode]} options={[bmodes]} onChange={this.selectChanged}/>
-    var changeModeBut = <div onClick={this.batchSettings} style={{display:'table-cell',height:80, borderRight:'2px solid #362c66', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}>Batch Settings</div>
+    var changeModeBut = <div onClick={this.batchSettings} style={{display:'table-cell',height:80, borderRight:'2px solid #362c66', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}>{labTransV2['Batch Settings'][this.props.language]['name']}</div>
     var bHisto = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ? 
-        <BatchHistogram unit={this.props.weightUnits} ref={this.bhg} ovHisto={true} histo={this.state.bRec['Histogram Buckets']} refreshHisto={this.refreshHisto}/>
+        <BatchHistogram language={this.props.language} unit={this.props.weightUnits} ref={this.bhg} ovHisto={true} histo={this.state.bRec['Histogram Buckets']} refreshHisto={this.refreshHisto}/>
         :
-        <BatchHistogram unit={this.props.weightUnits} ref={this.bhg} refreshHisto={this.refreshHisto} width={620}/>
+        <BatchHistogram language={this.props.language} unit={this.props.weightUnits} ref={this.bhg} refreshHisto={this.refreshHisto} width={620}/>
     var batchDetails =           <div >
           <div style={{display:'grid',verticalAlign:'top', gridTemplateRows:'200px 2px auto', backgroundColor:'#e1e1e1'}}>
             <div style={{display:'grid', gridTemplateColumns:'500px 2px auto'}}>
@@ -10625,9 +10628,9 @@ class BatchControl extends React.Component{
           }
           //bat.stats.birthtime.slice(0,-1).split('T').join(' ')
           return <div onClick={() => self.onPastBatchClick(bat.id)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
-            <div>Batch Id: {info[0]}</div>
-            <div>Batch Ref: {info[1]}</div>
-            <div>Product: {info[2].replace('.json','')}</div>
+            <div>{labTransV2['Batch Id'][this.props.language]['name']+': '+ info[0]}</div>
+            <div>{labTransV2['Batch Ref'][this.props.language]['name']+ ': ' + info[1]}</div>
+            <div>{labTransV2['Product'][this.props.language]['name']+': '+ info[2].replace('.json','')}</div>
             </div>
      
         }) 
@@ -10635,9 +10638,9 @@ class BatchControl extends React.Component{
 
    
         batchList = <div style={{width:300, background:'#e1e1e1', border:'2px solid #e1e1e1', height:515, marginLeft:5, marginRight:5, marginBottom:0}}>
-          <div style={{height:450}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>Past Batches</div><div style={{height:388, overflowY:'scroll'}}>{pastBatches}</div></div>
+          <div style={{height:450}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>{labTransV2['Past Batches'][this.props.language]['name']}</div><div style={{height:388, overflowY:'scroll'}}>{pastBatches}</div></div>
           <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
-          <div onClick={this.downloadBatch} style={{display:'table-cell',color:(this.props.usb ? '#000': '#888'),height:66, width:300, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>Download CSV</div>
+          <div onClick={this.downloadBatch} style={{display:'table-cell',color:(this.props.usb ? '#000': '#888'),height:66, width:300, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>{labTransV2['Download CSV'][this.props.language]['name']}</div>
           </div></div>
           if(this.state.selID.length > 0){
             if(typeof this.state.bRec['Batch ID']!='undefined')
@@ -10677,44 +10680,44 @@ class BatchControl extends React.Component{
     
     return <div style={{minHeight:400, padding:5}}>
           {batchDetails}
-          <div><div style={{display:'inline-block'}}><BatchWidget acc={this.props.startStopAcc} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.batchRunning} canStartBelts={this.props.canStartBelts} onStart={this.onStartClick} onResume={this.props.onResume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/></div>
+          <div><div style={{display:'inline-block'}}><BatchWidget language={this.props.language} acc={this.props.startStopAcc} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.batchRunning} canStartBelts={this.props.canStartBelts} onStart={this.onStartClick} onResume={this.props.onResume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/></div>
             <div style={{display:'inline-block', float:'right'}}>
               <div style={{display:'none'}}>    
-              <CircularButton2  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.changeMode}><div style={{fontSize:20, lineHeight:'25px'}}><div>Batch Mode</div><div>{bmodes[this.state.startMode]}</div></div></CircularButton2>
-                  <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.pastBatches} lab={'Past Batches'}/>
+              <CircularButton2 language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.changeMode}><div style={{fontSize:20, lineHeight:'25px'}}><div>{labTransV2['Batch Mode'][this.props.language]['name']}</div><div>{bmodes[this.state.startMode]}</div></div></CircularButton2>
+                  <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.pastBatches} lab={labTransV2['Past Batches'][this.props.language]['name']}/>
               </div>
                <div style={{height:80,lineHeight:'80px', background:'#e1e1e1', borderTop:'1px solid #ccc', marginTop:5, textAlign:'center'}}>
           {changeModeBut}
-         <div onClick={this.getPastBatches} style={{display:'table-cell',height:80, borderLeft:'2px solid #362c66',width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}><div style={{fontSize:18}}>{this.state.showMode == 0 ? 'Past Batches' : 'Current Batch'}</div></div>
+         <div onClick={this.getPastBatches} style={{display:'table-cell',height:80, borderLeft:'2px solid #362c66',width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}><div style={{fontSize:18}}>{this.state.showMode == 0 ? labTransV2['Past Batches'][this.props.language]['name'] : labTransV2['Current Batch'][this.props.language]['name']}</div></div>
           </div>
             </div>
 
           </div>
-          <Modal x ref={this.bSettings}>
+          <Modal language={this.props.language} x={true} ref={this.bSettings}>
               <div style={{background:'#e1e1e1', padding:5}}>
               <div style={{marginTop:5}}>
               <ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'BatchMode'} vMap={vMapV2['BatchMode']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} 
               label={vMapV2['BatchMode']['@translations'][this.props.language]['name']} value={this.props.batchMode} param={vdefByMac[this.props.mac][1][0]['BatchMode']}
                editable={true} onEdit={this.selectChanged} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['BatchMode']['@translations'][this.props.language]['description']} listOverride={true} ovList={bmodes}/></div>
-              <CircularButton  branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:400, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.showPlannedBatches} lab={'Show Planned Batches'}/>
+              <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:400, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.showPlannedBatches} lab={labTransV2['Show Planned Batches'][this.props.language]['name']}/>
             </div>
             </Modal>
             
-            <Modal x={true} ref={this.startModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+            <Modal language={this.props.language} x={true} ref={this.startModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
             <div style={{height:400, overflowY:'scroll'}}>{plannedBatchesStart}</div>
-            <div> <div onClick={this.startPlannedBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Start Batch'}</div></div></div>
+            <div> <div onClick={this.startPlannedBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Batch'][this.props.language]['name']}</div></div></div>
     
             </Modal>
-            <Modal x={true} ref={this.manModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+            <Modal language={this.props.language} x={true} ref={this.manModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
             <ManBatch branding={this.props.branding} language={this.props.language} mac={this.props.mac} addBatch={this.runnewBatch} prodList={this.state.prodList}/>
             </Modal>
-            <Modal x={true} ref={this.pastBatches} Style={{width:900, marginTop:40}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+            <Modal language={this.props.language} x={true} ref={this.pastBatches} Style={{width:900, marginTop:40}} innerStyle={{background:backgroundColor, maxHeight:650}}>
               <PastBatches soc={this.props.soc} branding={this.props.branding} language={this.props.language} mac={this.props.mac} batches={this.props.pBatches}/>
             </Modal>
             <PlannedBatches soc={this.props.soc} deleteBatch={this.deleteBatch} getBatchList={this.props.getBatchList} branding={this.props.branding} language={this.props.language} ip={this.props.ip} mac={this.props.mac} ref={this.plannedBatches} plannedBatches={this.state.plannedBatches} prMap={prMap} prodList={this.state.prodList}/>
             
             {bmodeSelect}
-            <MessageModal ref={this.msgm}/>
+            <MessageModal language={this.props.language} ref={this.msgm}/>
             
       </div>
   }
@@ -10808,9 +10811,9 @@ class PlannedBatches extends React.Component{
         del =  <img src='assets/trash.svg' style={{width:30}} onClick={()=>self.deleteBatch(bat['PlanBatchId'])}/>
       
       return  <div style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc, display:'grid', gridTemplateColumns:'260px 40px'}}>
-        <div  onClick={() => self.onBatchClick(i)}><div>Batch Id: {bat['PlanBatchId']}</div>
-        <div>Batch Ref: {bat['PlanBatchRef']}</div>
-        <div>Product: {self.props.prMap[bat['PlanProdNum']]}</div>
+        <div  onClick={() => self.onBatchClick(i)}><div>{labTransV2['Batch Id'][this.props.language]['name']+': '+ bat['PlanBatchId']}</div>
+        <div>{labTransV2['Batch Ref'][this.props.language]['name']+ ': ' + bat['PlanBatchRef']}</div>
+        <div>{labTransV2['Product'][this.props.language]['name']+ ': '+ self.props.prMap[bat['PlanProdNum']]}</div>
         </div><div style={{display:'flex', textAlign:'center'}}>
          {del}
         </div>
@@ -10826,10 +10829,10 @@ class PlannedBatches extends React.Component{
         packNum = batch['PlanNumPacks']
 
         batchInfo = <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
-          <div><div style={titleSt}>Batch</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batNum}</div></div>
-          <div><div style={titleSt}>Batch Ref</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batRef}</div></div>
-          <div><div style={titleSt}>Product</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fSize}}>{prodName}</div></div></div>
-          <div><div style={titleSt}>Number of Packs</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batNum}</div></div>
+          <div><div style={titleSt}>{labTransV2['Batch Ref'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{batRef}</div></div>
+          <div><div style={titleSt}>{labTransV2['Product'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}><div style={{fontSize:fSize}}>{prodName}</div></div></div>
+          <div><div style={titleSt}>{labTransV2['Number of Packs'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{packNum}</div></div>
           
          </div>
         
@@ -10837,30 +10840,30 @@ class PlannedBatches extends React.Component{
 
     }else{
       if(this.props.plannedBatches.length == 0){
-        plannedBatches = <div>No Planned Batches</div>
+        plannedBatches = <div>{labTransV2['No Planned Batches'][this.props.language]['name']}</div>
       }
     }
 
 
    // if(this.props.plannedBatches.length > 0){
-      return <Modal x ref={this.md}>
+      return <Modal language={this.props.language} x={true} ref={this.md}>
       <div style={{display:'grid', gridTemplateColumns:'315px auto'}}>
         <div style={{margin:1, background:"#e1e1e1"}}>
-        <div style={{height:426}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>Planned Batches</div><div style={{height:362, overflowY:'scroll'}}>{plannedBatches}</div>
+        <div style={{height:426}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>{labTransV2['Planned Batches'][this.props.language]['name']}</div><div style={{height:362, overflowY:'scroll'}}>{plannedBatches}</div>
         </div>
           <div style={{height:66,lineHeight:'66px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
-          <div onClick={this.addBatch} style={{display:'table-cell',height:66, borderRight:'2px solid #362c66', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>+ Add New Batch</div>
-          <div onClick={this.editBatch} style={{display:'table-cell',height:66, borderLeft:'2px solid #362c66',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>Edit Batch</div>
+          <div onClick={this.addBatch} style={{display:'table-cell',height:66, borderRight:'2px solid #362c66', width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>{'+ ' + labTransV2['Add New Batch'][this.props.language]['name']}</div>
+          <div onClick={this.editBatch} style={{display:'table-cell',height:66, borderLeft:'2px solid #362c66',width:150, fontSize:15, lineHeight:'20px', verticalAlign:'middle', textAlign:'center'}}>{labTransV2['Edit Batch'][this.props.language]['name']}</div>
            </div>          
         </div>
         <div style={{margin:1, background:"#e1e1e1"}}>
           {batchInfo}
         </div>
       </div>
-        <Modal x ref={this.editMD}>
+        <Modal language={this.props.language} x={true} ref={this.editMD}>
           {editCont}
         </Modal>
-         <Modal x={true} ref={this.addModal} Style={{width:900}} innerStyle={{maxHeight:650}}>
+         <Modal language={this.props.language} x={true} ref={this.addModal} Style={{width:900}} innerStyle={{maxHeight:650}}>
               <AddBatch branding={this.props.branding} language={this.props.language} mac={this.props.mac} addBatch={this.addnewBatch} prodList={this.props.prodList}/>
             </Modal>
       </Modal>
@@ -10900,7 +10903,7 @@ class BatchWidget extends React.Component{
     if(this.props.acc){
       this.props.onStart()
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
       //this.setState({start:true, pause:false})
     }
   }
@@ -10927,7 +10930,7 @@ class BatchWidget extends React.Component{
     if(this.props.acc){
       this.props.sendPacket('BatchEnd')
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
       //this.setState({start:true, pause:false})
     }
   }
@@ -10960,7 +10963,7 @@ class BatchWidget extends React.Component{
     // }
   
     // if CanStartBelts == 0
-    var sttxt = 'Start'
+    var sttxt = labTransV2['Start Text'][this.props.language]['name']
     play = <div  style={{width:250, borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#a9a9a9', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>{sttxt}</div></div>
     stop = ''
     if(this.props.batchRunning == 0){
@@ -10969,9 +10972,9 @@ class BatchWidget extends React.Component{
       }
     }
     else if(this.props.batchRunning == 2){
-        sttxt = 'Resume'
+        sttxt = labTransV2['Resume'][this.props.language]['name']
         play = <div onClick={this.onResumeClick} style={{width:114,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#11DD11', display:'inline-block',marginLeft:5, borderWidth:5,height:45}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>{sttxt}</div></div>
-        stop = <div onClick={this.stop} style={{width:114,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18, width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>End Batch</div></div> 
+        stop = <div onClick={this.stop} style={{width:114,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#FF0101', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18, width:50, alignItems:'center', verticalAlign:'middle', lineHeight:'25px', height:50}}>{labTransV2['End Batch'][this.props.language]['name']}</div></div> 
         if(this.props.canStartBelts == 0){
           play = <div style={{width:114,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#a9a9a9', display:'inline-block',marginLeft:5, borderWidth:5,height:45}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>{sttxt}</div></div>
         }
@@ -10979,7 +10982,7 @@ class BatchWidget extends React.Component{
     }
     
     else if(this.props.batchRunning == 1){
-      play = <div onClick={this.pause} style={{width:250,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>Pause/Stop</div></div>
+      play = <div onClick={this.pause} style={{width:250,borderRadius:25, lineHeight:'45px',color:psbtcolor,font:28, background:'#FFFF00', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:45, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}} className={psbtklass}> <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:25, verticalAlign:'middle'}}/><div style={{display:'inline-block', font:18}}>{labTransV2['Pause/Stop'][this.props.language]['name']}</div></div>
       stop = ''//<div onClick={this.stop} style={{width:120, lineHeight:'53px',color:psbtcolor,font:30, background:'#8B0000', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={stp} style={{display:'inline-block', marginLeft:-15,width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>Stop</div></div> 
 
     }
@@ -10995,8 +10998,8 @@ class BatchWidget extends React.Component{
     var innerWidth = 100;
     var innerFont = 14;
     var status = (<div style={{width:500}}>
-    <div style={{textAlign:'center', marginTop:5, fontSize:20}}><div><div style={{display:'inline-block', width:250}}>Net Weight: {this.props.netWeight}</div>
-    <div style={{display:'inline-block', width:250}}>Live Weight: {this.props.liveWeight}</div>
+    <div style={{textAlign:'center', marginTop:5, fontSize:20}}><div><div style={{display:'inline-block', width:250}}>{labTransV2['Net Weight'][this.props.language]['name']+': '+this.props.netWeight}</div>
+    <div style={{display:'inline-block', width:250}}>{labTransV2['Live Weight'][this.props.language]['name']+': '+this.props.liveWeight}</div>
     </div>
     <div>{this.props.status}</div></div>
     </div>)
@@ -11005,8 +11008,8 @@ class BatchWidget extends React.Component{
 
     return <div style={{display:'grid', gridTemplateColumns:"285px auto", background:'#e1e1e1', borderRadius:20,paddingLeft:5, marginTop:5, width:819}}>
       <div>{play}{stop} </div><div> {status}</div>
-        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{"This will end the current batch. Confirm?"}</div></AlertModal>
-        <MessageModal ref={this.msgm}/>
+        <AlertModal language={this.props.language} ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][this.props.language]['name']}</div></AlertModal>
+        <MessageModal  language={this.props.language} ref={this.msgm}/>
     </div>
   }
 }
@@ -11046,14 +11049,14 @@ class AddBatch extends React.Component{
     })
    // console.log(6992, prodnames)
     return <div style={{background:'#e1e1e1',padding:10}}>
-      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Add New Batch'}</div></h2></span>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Add New Batch'][this.props.language]['name']}</div></h2></span>
      
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.props.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>   
         <div style={{marginTop:140,marginLeft:340}}>
 
-        <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={'Add'}/></div>
+        <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={labTransV2['Add'][this.props.language]['name']}/></div>
       
     </div>
   }
@@ -11087,12 +11090,12 @@ class EditBatch extends React.Component{
     })
    // console.log(6992, prodnames)
     return <div style={{background:'#e1e1e1',padding:10}}>
-      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Edit Batch'}</div></h2></span>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Edit Batch'][this.props.language]['name']}</div></h2></span>
      
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.props.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>   
-        <div style={{marginTop:140,marginLeft:340}}><CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={'Confirm'}/></div>
+        <div style={{marginTop:140,marginLeft:340}}><CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.addBatch} lab={labTransV2['Confirm'][this.props.language]['name']}/></div>
       
     </div>
   }
@@ -11127,13 +11130,13 @@ class ManBatch extends React.Component{
    // console.log(this.props.mac)
     if(vdefByMac[this.props.mac]){
       return <div style={{background:'#e1e1e1',padding:10}}>
-      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Start New Batch'}</div></h2></span>
+      <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Start New Batch'][this.props.language]['name']}</div></h2></span>
      
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchRef'} vMap={vMapV2['PlanBatchRef']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchRef']['@translations'][this.props.language]['name']} value={this.state.PlanBatchRef} param={vdefByMac[this.props.mac][1][12]['PlanBatchRef']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchRef:v})} num={false} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchRef']['@translations'][this.props.language]['description']}/></div>
       <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchNumPacks'} vMap={vMapV2['PlanBatchNumPacks']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['name']} value={this.state.PlanBatchNumPacks} param={vdefByMac[this.props.mac][1][12]['PlanNumPacks']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchNumPacks:parseInt(v)})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchNumPacks']['@translations'][this.props.language]['description']}/></div>
     <div style={{marginTop:5}}><ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'PlanBatchProdNum'} vMap={vMapV2['PlanBatchProdNum']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ProdName']['@translations'][this.props.language]['name']} value={selProdName} param={vdefByMac[this.props.mac][1][12]['PlanProdNum']} editable={true} onEdit={(p,v)=>this.setState({PlanBatchProdNum:this.props.prodList[v].no})} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['PlanBatchProdNum']['@translations'][this.props.language]['description']} listOverride={true} ovList={prodnames}/></div>      
     <div style={{marginTop:140,marginLeft:340}}>
-     <div onClick={this.addBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Start Batch'}</div></div>
+     <div onClick={this.addBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Batch'][this.props.language]['name']}</div></div>
     </div>
       
     </div>
@@ -11158,7 +11161,7 @@ class MotorControl extends React.Component{
     var self = this;
     var motors = this.props.motors.map(function (m,i) {
       // body...
-      return <MotorItem testMotor={self.testMotor} name={m.name} index={i} />
+      return <MotorItem language={this.props.language} testMotor={self.testMotor} name={m.name} index={i} />
     })
     return <div>
       {motors}  
@@ -11174,7 +11177,7 @@ class MotorItem extends React.Component{
   }
   render(){
     var motorIcon = <img src='assets/motor.svg' width={40} style={{verticalAlign:'bottom'}}/>
-    return <div><div style={{display:'inline-block', width:50}}>{motorIcon}</div><div style={{display:'inline-block', width:200}}>{this.props.name}</div><div style={{display:'inline-block', width:200}}>Start/Stop</div> </div>
+    return <div><div style={{display:'inline-block', width:50}}>{motorIcon}</div><div style={{display:'inline-block', width:200}}>{this.props.name}</div><div style={{display:'inline-block', width:200}}>{labTransV2['Start/Stop'][this.props.language]['name']}</div> </div>
 
   }
 }
@@ -11248,7 +11251,7 @@ class FatClock extends React.Component{
 
     return <React.Fragment>
     <div style={style} onClick={this.toggleCK}>{this.state.date}</div>
-      <Modal ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
+      <Modal language={this.props.language} ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
         <DateTimeSelect setTz={this.setTz} timezones={this.props.timezones} timeZone={this.props.timeZone} branding={this.props.branding} setDST={this.setDST} dst={this.props.dst} language={this.props.language} setDT={this.changeDT} ref={this.dts}/>
       </Modal>
       </React.Fragment>
@@ -11356,12 +11359,12 @@ class DateTimeSelector extends React.Component{
 
         
     var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#000"}} >
-      <div style={{display:'inline-block', textAlign:'center'}}>Device Time</div></h2></span>)
+      <div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Device Time'][this.props.language]['name']}</div></h2></span>)
     var clr = "#e1e1e1"
  
     var dateItem = (<div style={{margin:2}} onClick={()=>this.dpw.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Date'}
+        {labTransV2['Date'][this.props.language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{this.state.year +'/'+this.state.month+'/'+this.state.day}</div>
@@ -11370,7 +11373,7 @@ class DateTimeSelector extends React.Component{
 
     var timeItem = (<div style={{margin:2}} onClick={()=>this.tpw.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Time'}
+        {labTransV2['Time'][this.props.language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{this.state.hour +':'+this.state.minute+':'+this.state.sec}</div>
@@ -11384,8 +11387,8 @@ class DateTimeSelector extends React.Component{
     </div>
       {dateItem}
       {timeItem}
-             <CircularButton onClick={this.setDT} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+             <CircularButton language={this.props.language} onClick={this.setDT} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:280, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
    
       </div> 
   }
@@ -11416,7 +11419,7 @@ class DateTimeModal extends React.Component{
     },100)
   }
   render(){
-    return <Modal ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
+    return <Modal language={this.props.language} ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
         <DateTimeSelector cancel={() => this.dtsModal.current.close()} branding={this.props.branding} language={this.props.language} setDT={this.changeDT} ref={this.dts}/>
       </Modal>
   }
@@ -11526,12 +11529,12 @@ class DateTimeSelect extends React.Component{
 
         
     var titlediv = (<span ><h2 style={{textAlign:'center', fontSize:26,fontWeight:500, color:"#000"}} >
-      <div style={{display:'inline-block', textAlign:'center'}}>DateTime</div></h2></span>)
+      <div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['DateTime_Word'][this.props.language]['name']}</div></h2></span>)
     var clr = "#e1e1e1"
  
     var dateItem = (<div style={{margin:2}} onClick={()=>this.dpw.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Date'}
+      {labTransV2['Date'][this.props.language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{this.state.year +'/'+this.state.month+'/'+this.state.day}</div>
@@ -11540,7 +11543,7 @@ class DateTimeSelect extends React.Component{
 
     var timeItem = (<div style={{margin:2}} onClick={()=>this.tpw.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Time'}
+      {labTransV2['Time'][this.props.language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{this.state.hour +':'+this.state.minute+':'+this.state.sec}</div>
@@ -11548,7 +11551,7 @@ class DateTimeSelect extends React.Component{
       </div>)
     var dstItem =  (<div style={{margin:2}} onClick={()=>this.dstpw.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, color:txtClr, width:300,textAlign:'center'}}>
-        {'Daylight Savings'}
+        {labTransV2['Daylight Savings'][this.props.language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{tg[this.props.dst]}</div>
@@ -11564,7 +11567,7 @@ class DateTimeSelect extends React.Component{
       {timeItem}
       {dstItem}
       <TimezoneControl timezones={this.props.timezones} timeZone={this.props.timeZone} onTzChange={this.onTzChange} language={this.props.language} branding={this.props.branding}/>
-      <button className='customAlertButton' onClick={this.setDT}>Set DateTime</button>
+      <button className='customAlertButton' onClick={this.setDT}>{labTransV2['Set DateTime'][this.props.language]['name']}</button>
     </div> 
   }
 }
@@ -11608,7 +11611,7 @@ class TimezoneControl extends React.Component{
     }
     var tzItem = (<div style={{margin:2}} onClick={()=>this.tz.current.toggle()}>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:20,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}}>
-        {'Time Zone'}
+      {labTransV2['Time Zone'][this.props.language]['name']}
       </div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
         <div style={st}>{tzTxt}</div>
@@ -11714,11 +11717,11 @@ class LogoutModalC extends React.Component{
     
     return( <div className={klass}>
           <div style={{padding:10}}>
-          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][this.props.language]['name']}</div>
           <div style={{color:clr}}> {this.props.children}</div>
         <div>
-          <CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+          <CircularButton language={this.props.language} onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
           
   </div>
         </div>
@@ -11818,11 +11821,11 @@ class CopyModalC extends React.Component{
     
     return( <div className={klass}>
           <div style={{padding:10}}>
-          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][this.props.language]['name']}</div>
           <div style={{color:clr}}> {this.props.children}</div>
         <div>
-          <CircularButton onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+          <CircularButton language={this.props.language} onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
           
   </div>
         </div>
@@ -11860,7 +11863,7 @@ class DeleteModal extends React.Component{
   render () {
     var cont = ""
     if(this.state.show){
-    cont =  <DeleteModalCont branding={this.props.branding} vMap={this.props.vMap} delete={this.delete} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{width:400}}>Delete Selected Product? This will also delete all associated planned batches.</div></DeleteModalCont>
+    cont =  <DeleteModalCont branding={this.props.branding} vMap={this.props.vMap} delete={this.delete} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{width:400}}>{labTransV2['Delete Selected Product?'][this.props.language]['name']+'.'}</div></DeleteModalCont>
     }
     return <div hidden={!this.state.show} className= 'pop-modal'>
       {cont}
@@ -11921,13 +11924,13 @@ class DeleteModalC extends React.Component{
     
     return( <div className={klass}>
           <div style={{padding:10}}>
-          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>Confirm Action</div>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][this.props.language]['name']}</div>
           <div style={{color:clr}}>
           {this.props.children}
           </div>
         <div>
-                <CircularButton onClick={this.delete} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Delete Product'}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+                <CircularButton language={this.props.language} onClick={this.delete} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Delete Product'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
           
   </div>
         </div>
@@ -12047,12 +12050,12 @@ class PromptModalC extends React.Component{
     
     return( <div className={klass}>
           <div style={{padding:10}}>
-          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}><div>Warning</div><div style={{fontSize:24}}>This will make changes to current batch</div></div>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}><div>{labTransV2['Warning'][this.props.language]['name']}</div><div style={{fontSize:24}}>{labTransV2['This will make changes to current batch'][this.props.language]['name']}</div></div>
           {this.props.children}
         <div>
-          <CircularButton onClick={this.discard} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Discard Changes'}/>
-                <CircularButton onClick={this.save} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Save Changes'}/>
-                <CircularButton onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Cancel'}/>
+          <CircularButton language={this.props.language} onClick={this.discard} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Discard Changes'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.save} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Save Changes'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
           
   </div>
         </div>
@@ -12079,7 +12082,7 @@ class FaultDiv extends React.Component{
     if(this.props.pAcc){
       this.props.clearFaults()
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
     
   }
@@ -12087,7 +12090,7 @@ class FaultDiv extends React.Component{
     if(this.props.pAcc){
     this.props.clearWarnings()
     }else{
-      this.msgm.current.show('Access Denied')
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
   }
   maskFault (f) {
@@ -12100,19 +12103,19 @@ class FaultDiv extends React.Component{
     var clButton;
     var wclButton;
     if((this.props.faults.length == 0) && (this.props.warnings.length == 0)){
-      cont = (<div ><label>No Faults or Warnings</label></div>)
+      cont = (<div ><label>{labTransV2['No Faults or Warnings'][this.props.language]['name']}</label></div>)
     }else{
             var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
     if(this.props.faults.length != 0){
-      clButton =<div> <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Clear Faults'} onClick={this.clearFaults}/></div>
+      clButton =<div> <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Faults'][this.props.language]['name']} onClick={this.clearFaults}/></div>
       cont = this.props.faults.map(function(f){
-        return <FaultItem maskFault={self.maskFault} fault={f}/>
+        return <FaultItem language={this.props.language} maskFault={self.maskFault} fault={f}/>
       })
     }
     if(this.props.warnings.length != 0){
-      wclButton =<div> <CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={'Clear Warnings'} onClick={this.clearWarnings}/></div>
+      wclButton =<div> <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Warnings'][this.props.language]['name']} onClick={this.clearWarnings}/></div>
       wcont = this.props.warnings.map(function(f){
-        return <FaultItem maskFault={self.maskFault} fault={f}/>
+        return <FaultItem language={this.props.language} maskFault={self.maskFault} fault={f}/>
       })
     }
        
@@ -12123,7 +12126,7 @@ class FaultDiv extends React.Component{
       {wcont}
       {clButton}
       {wclButton}
-      <MessageModal ref={this.msgm} />
+      <MessageModal language={this.props.language} ref={this.msgm} />
     </div>)
   }
 }
@@ -12137,7 +12140,7 @@ class FaultItem extends React.Component{
         type = vMapV2[this.props.fault+'Mask']['@translations']['english']['name'];
       }
 
-    return <div><label>{"Fault type: " + type}</label>
+    return <div><label>{labTransV2['Fault type'][this.props.language]['name']+ ": " + type}</label>
     </div>
   }
 }
@@ -12201,16 +12204,16 @@ class CheckWeightControl extends React.Component{
 
     return <div>
         <div style={{background:'#e1e1e1', padding:5, height:400}}>
-       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Check Weight'}</div></h2></span>
-       <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Check Weight'} value={cw} editable={false} onEdit={this.sendPacket} num={true}/></div>
-       <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={'Measured Value'} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={{'@name':'checkweightmeasure'}} tooltip={vdefMapV2['@tooltips']['MeasuredValue'][this.props.language]} num={true}/></div>
+       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Check Weight'][this.props.language]['name']}</div></h2></span>
+       <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={labTransV2['Check Weight'][this.props.language]['name']} value={cw} editable={false} onEdit={this.sendPacket} num={true}/></div>
+       <div style={{marginTop:5}}><ProdSettingEdit trans={false} language={this.props.language} branding={this.props.branding} h1={40} w1={240} h2={51} w2={500} label={labTransV2['Measured Value'][this.props.language]['name']} value={this.state.cwset.toFixed(1)+'g'} editable={true} onEdit={this.setCW} param={{'@name':'checkweightmeasure'}} tooltip={vdefMapV2['@tooltips']['MeasuredValue'][this.props.language]} num={true}/></div>
         <div style={{marginTop:140}}>
-        <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.cancelCW} lab={'Cancel'}/>
+        <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.cancelCW} lab={labTransV2['Cancel'][this.props.language]['name']}/>
         {
           cw!='Waiting for Weight' && this.state.cwset != 0 ?
-          <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={'Confirm'}/>
+          <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={labTransV2['Confirm'][this.props.language]['name']}/>
           :
-          <CircularButton disabled={true} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Confirm'}/>
+          <CircularButton language={this.props.language} disabled={true} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
         }
         
         </div>
@@ -12229,58 +12232,58 @@ class CalibrationControl extends React.Component{
     this.props.closeCalibrationWindow();
   }
   render(){
-    var calStr = 'Press calibrate to start calibration. \n Ensure weight conveyor is empty before starting.'
+    var calStr = labTransV2['Press calibrate to start calibration'][this.props.language]['name']+'. '+ '\n' +labTransV2['Ensure weight conveyor is empty'][this.props.language]['name']+'.'
     var calibPicture;
     if(this.props.calibState == 1){
-      calStr = 'Taring..'
+      calStr = labTransV2['Taring'][this.props.language]['name']+'..'
     }else if(this.props.calibState == 2){
-      calStr = 'Place calibration weight on weight conveyor and press Calibrate.'
+      calStr = labTransV2['Place calibration weight on weight conv..'][this.props.language]['name']+'.'
     }else if(this.props.calibState == 3){
-      calStr = 'Calibrating..'
+      calStr = labTransV2['Calibrating'][this.props.language]['name']+'..'
     }else if(this.props.calibState == 4){
-      calStr = 'Remove weight and press Calibrate to tare.'
+      calStr = labTransV2['Remove weight and press Calibrate to tare'][this.props.language]['name']+ '.'
     }else if(this.props.calibState == 5){
-      calStr = 'Taring..'
+      calStr = labTransV2['Taring'][this.props.language]['name']+'..'
     }else if(this.props.calibState == 6){
-      calStr = 'Calibration Successful.'
+      calStr = labTransV2['Calibration Successful'][this.props.language]['name']+'.'
     }else if(this.props.calibState == 7){
-      calStr = 'Calibration Failed.'
+      calStr = labTransV2['Calibration Failed'][this.props.language]['name']+'.'
     }else if(this.props.calibState == 8){
-      calStr = 'Place calibration weight on position 1 and press Calibrate.'
+      calStr = labTransV2['Place calibration weight on position 1'][this.props.language]['name']+'.'
       calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
     }else if(this.props.calibState == 9){
-      calStr = 'Calibrating loadcell 1..'
+      calStr = labTransV2['Calibrating loadcell 1'][this.props.language]['name']+'..'
     }else if(this.props.calibState == 10){
-      calStr = 'Place calibration weight on position 2 and press Calibrate.'
+      calStr = labTransV2['Place calibration weight on position 2'][this.props.language]['name']+'.'
       calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
     }else if(this.props.calibState == 11){
-      calStr = 'Calibrating loadcell 2..'
+      calStr = labTransV2['Calibrating loadcell 2'][this.props.language]['name']+'..'
     }else if(this.props.calibState == 12){
-      calStr = 'Place calibration weight on position 3 and press Calibrate.'
+      calStr = labTransV2['Place calibration weight on position 3'][this.props.language]['name']+'.'
       calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
     }else if(this.props.calibState == 13){
-      calStr = 'Calibrating loadcell 3..'
+      calStr = labTransV2['Calibrating loadcell 3'][this.props.language]['name']+'..'
     }else if(this.props.calibState == 14){
-      calStr = 'Calibration cancelled.'
+      calStr = labTransV2['Calibration cancelled'][this.props.language]['name']+'.'
     }
     var calBut = <div style={{textAlign:'center'}}>
-          <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalib} lab={'Calibrate'}/>
+          <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalib} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
           </div>
           
     if((this.props.calibState != 0) && (this.props.calibState != 7) && (this.props.dynSettings == 0)&&(this.props.calibState != 6)){
       calBut = <div style={{textAlign:'center'}}>
-            <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalib} lab={'Calibrate'}/>
-            <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalCancel}lab={'Cancel'}/>
+            <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalib} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.props.onCalCancel}lab={labTransV2['Cancel'][this.props.language]['name']}/>
           </div>        
     }
     if(this.props.calibState == 6){
       calBut = <div style={{textAlign:'center'}}>
-          <CircularButton branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.endProcess} lab={'Confirm'}/>
+          <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.endProcess} lab={labTransV2['Confirm'][this.props.language]['name']}/>
         </div>      
     }
     return <div>
         <div style={{background:'#e1e1e1', padding:5, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 430 : 250}}>
-          <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibration Process'}</div></h2></span>
+          <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Calibration Process'][this.props.language]['name']}</div></h2></span>
 
           <div style={{marginTop: this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 20 : 50}}>
               <div style={{fontSize:24, textAlign:'center'}}>
@@ -12294,21 +12297,21 @@ class CalibrationControl extends React.Component{
   }
 }
 class CustomLabel extends React.Component{
-	constructor(props) {
-		super(props)
-		this.onClick = this.onClick.bind(this);
-	}
-	onClick () {
-		// body...
-		if(this.props.onClick){
-			this.props.onClick(this.props.index)
-		}
-		
-	}
-	render () {
-		var style = this.props.style || {}
-		return <div onClick={this.onClick} style={style}>{this.props.children}</div>
-	}
+    constructor(props) {
+        super(props)
+        this.onClick = this.onClick.bind(this);
+    }
+    onClick () {
+        // body...
+        if(this.props.onClick){
+            this.props.onClick(this.props.index)
+        }
+        
+    }
+    render () {
+        var style = this.props.style || {}
+        return <div onClick={this.onClick} style={style}>{this.props.children}</div>
+    }
 }
 
 if (ip2){

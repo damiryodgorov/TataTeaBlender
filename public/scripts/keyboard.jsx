@@ -5,7 +5,9 @@ var createReactClass = require('create-react-class');
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 import { v4 as uuidv4 } from 'uuid';
 
-const vdefMapV2 = require('./vdefmap.json')
+const vdefMapV2 = require('./vdefmapcw.json')
+var labTransV2 = vdefMapV2['@labels']
+
 import {Modal} from './components.jsx'
 import {CircularButton} from './buttons.jsx'
 
@@ -87,6 +89,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 	getInitialState:function () {
 		// body...
 		var value = "";
+
 		if(this.props.preload){
 			value = this.props.value
 		}
@@ -144,7 +147,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		if(typeof this.props.min != 'undefined'){
 			if(this.props.min[0]){
 				if(parseFloat(this.props.min[1]) > this.state.value){
-					this.props.sendAlert('Minimum Value is '+this.props.min[1])
+					this.props.sendAlert(labTransV2['Minimum Value is'][this.props.language]['name']+' '+this.props.min[1])
 					return;
 				}
 			}
@@ -153,7 +156,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		if(typeof this.props.max != 'undefined'){
 			if(this.props.max[0]){
 				if(parseFloat(this.props.max[1]) < this.state.value){
-					this.props.sendAlert('Maximum Value is '+this.props.max[1])
+					this.props.sendAlert(labTransV2['Maximum Value is'][this.props.language]['name']+' '+this.props.max[1])
 					return;
 				}
 			}
@@ -220,7 +223,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		}
 		//var tooltiptext = 'This is a tooltip'
 		////console.log(this.props.vMap)
-		var label = 'Enter'
+		var label = labTransV2['Enter'][this.props.language]['name']
 		if(this.props.label && this.props.label.length > 0){
 			label = this.props.label;
 		}
@@ -269,12 +272,12 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			vclr = '#1e1e1e'
 			dvclr = '#111'
 		}
-		var label = 'Enter'
+		var label = labTransV2['Enter'][this.props.language]['name']
 		var helpText = '';
 		if(this.props.label && this.props.label.length > 0){
 			if((this.props.label.includes('Clear Time -') && this.props.min[1] == 0)||(this.props.label.includes('Minimum Product Gap -') && this.props.min[1] == 0)||(this.props.label.includes('Eye Block Fault Distance -') && this.props.min[1] == 0)){
 				label = this.props.label;
-				helpText='Enter 0 to use default';
+				helpText=labTransV2['Enter 0 to use default'][this.props.language]['name'];
 			}else{
 				if(this.props.label.toString().includes('grams/pulse') || this.props.label.toString().includes('grams/sec'))
 				{
@@ -307,12 +310,12 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 	  		<div style={{textAlign:'center', borderBottom:'1px solid #e1e1e1'}}>{label.split('-')[0]}</div>
 	  		<div style={{whiteSpace:'pre-wrap', textAlign:'left'}}><ContextMenuTrigger id={uid}>{tooltip}</ContextMenuTrigger></div>
 	  		<ContextMenu id={uid}>
-	  			<MenuItem onClick={this.translateTooltip}>Translate Tooltip</MenuItem>
+	  			<MenuItem onClick={this.translateTooltip}>{labTransV2['Translate Tooltip'][this.props.language]['name']}</MenuItem>
 	  		</ContextMenu>
 	  		</Modal>
 	  			transModal = <Modal mobile={self.props.mobile} ref='transModal' Style={{color:'#e1e1e1',width:600}}>
 	  		 <textarea type='text' style={{fontSize:20, width:400, height:100}} value={this.state.curtrans} onChange={this.curtrnChange}/>
-	  		 <button onClick={this.submitTooltip}>Submit Change</button>
+	  		 <button onClick={this.submitTooltip}>{labTransV2['Submit Change'][this.props.language]['name']}</button>
 	  		</Modal>
 		}
 		var but1 = ''//helpButton;
@@ -324,7 +327,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			rows = TimeKeySet.map(function (row) {
 				var tds = row.map(function(k){
 					//////console.log(k)
-					return <CustomKey  klass='customKey_sp' branding={self.props.branding} Key={k} mobile={self.props.mobile}  caps={false} onPress={self.onKeyPress}/>
+					return <CustomKey  klass='customKey_sp' language={self.props.language} branding={self.props.branding} Key={k} mobile={self.props.mobile}  caps={false} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -335,7 +338,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 			rows = NumericKeyset.map(function (row) {
 				var tds = row.map(function(k){
 					//////console.log(k)
-					return <CustomKey  klass='customKey_sp' branding={self.props.branding} Key={k} mobile={self.props.mobile} caps={false} onPress={self.onKeyPress}/>
+					return <CustomKey klass='customKey_sp' language={self.props.language} branding={self.props.branding} Key={k} mobile={self.props.mobile} caps={false} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -356,7 +359,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 							key = '_';
 						}
 					}
-					return <CustomKey  klass='customKey_sp' branding={self.props.branding} Key={key} caps={caps} onPress={self.onKeyPress}/>
+					return <CustomKey klass='customKey_sp' language={self.props.language} branding={self.props.branding} Key={key} caps={caps} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -459,7 +462,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		}
 		if(mmaxb){
 			
-			mmaxdiv = <div style={{fontSize:18,color:dvclr, textAlign:'center' }}>Range: [{minStr+'~'+maxStr}]</div>
+			mmaxdiv = <div style={{fontSize:18,color:dvclr, textAlign:'center' }}>{labTransV2['Range'][this.props.language]['name']+': '+'['+minStr+'~'+maxStr+']'}</div>
 		}
 		//var tooltiptext = 'This is a tooltip'
 		////console.log(this.props.vMap)
@@ -490,14 +493,14 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		<div hidden={hidden}>
 			{
 				label != 'Password' ? 
-				<CircularButton branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
+				<CircularButton language={this.props.language} branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
 				:
 				dispval.length == 4 ?
-				<CircularButton branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
+				<CircularButton language={this.props.language} branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
 				:
-				<CircularButton disabled={true} branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
+				<CircularButton language={this.props.language} disabled={true} branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
 			}
-			<CircularButton branding={this.props.branding} style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.close} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/></div>
+			<CircularButton language={this.props.language} branding={this.props.branding} style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.close} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/></div>
 		</div>
 	  	
 	}
@@ -539,7 +542,7 @@ class CustomKey extends React.Component{
 		}else if(this.props.Key == 'del'){
 			return	<td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg></div></td>
 		}else if(this.props.Key == 'enter'){
-			return  <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Accept</div></td>
+			return  <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>{labTransV2['Accept'][this.props.language]['name']}</div></td>
 		
 		}else if(this.props.Key == 'shift'){
 			var fill = "#000000"
@@ -550,7 +553,7 @@ class CustomKey extends React.Component{
 			}
 			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} style={st} onClick={this.onPress} className={klass}><div style={{marginBottom:-15}}><svg fill={fill} xmlns="http://www.w3.org/2000/svg" width="55" height="48" viewBox="0 0 24 24"><path d="M12 8.41L16.59 13 18 11.59l-6-6-6 6L7.41 13 12 8.41zM6 18h12v-2H6v2z"/></svg></div></td>
 		}else if(this.props.Key == 'cancel'){
-			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>Cancel</div></td>
+			return <td onPointerDown={this.onPointerDown} onPointerUp={this.onPointerUp} onPointerOut={this.onPointerUp} onClick={this.onPress} className={klass} colSpan={2}><div style={{marginBottom:0, fontSize:30}}>{labTransV2['Cancel'][this.props.language]['name']}</div></td>
 			
 	
 		}else{
@@ -697,7 +700,7 @@ class EmbeddedKeyboard extends React.Component{
 			rows = TimeKeySet.map(function (row) {
 				var tds = row.map(function(k){
 					//////console.log(k)
-					return <CustomKey klass='customKey_sp' Key={k} mobile={self.props.mobile}  caps={false} onPress={self.onKeyPress}/>
+					return <CustomKey  klass='customKey_sp' language={self.props.language} Key={k} mobile={self.props.mobile}  caps={false} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -708,7 +711,7 @@ class EmbeddedKeyboard extends React.Component{
 			rows = NumericKeyset.map(function (row) {
 				var tds = row.map(function(k){
 					//////console.log(k)
-					return <CustomKey klass='customKey_sp' Key={k} mobile={self.props.mobile} caps={false} onPress={self.onKeyPress}/>
+					return <CustomKey klass='customKey_sp' language={self.props.language} Key={k} mobile={self.props.mobile} caps={false} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -727,7 +730,7 @@ class EmbeddedKeyboard extends React.Component{
 							key = '_';
 						}
 					}
-					return <CustomKey klass='customKey_sp' Key={key} caps={caps} onPress={self.onKeyPress}/>
+					return <CustomKey klass='customKey_sp' language={self.props.language} Key={key} caps={caps} onPress={self.onKeyPress}/>
 				})
 				return <tr>{tds}</tr>
 			})
@@ -762,8 +765,8 @@ class EmbeddedKeyboard extends React.Component{
 	  	
 		</div>
 		{helpModal}
-		<div hidden={hidden}><CircularButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
-		<CircularButton style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.close} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/></div>
+		<div hidden={hidden}><CircularButton language={this.props.language} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
+		<CircularButton language={this.props.language} style={{height:45, display:'inline-block', marginLeft:2, marginRight:2, border:'5px solid #808a90',color:'#e1e1e1', width:156, borderRadius:25,fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.close} lab={vdefMapV2['@labels']['Cancel'][this.props.language].name}/></div>
 		</div>
 	}
 }

@@ -75,6 +75,7 @@ var cw = {
 }
 
 module.exports = {
+  mode: 'development',
   entry: {
     
     cw:'./public/cw.js',

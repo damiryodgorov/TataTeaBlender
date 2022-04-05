@@ -4,7 +4,8 @@ var SmoothieChart = require('./smoothie.js').SmoothieChart;
 var TimeSeries = require('./smoothie.js').TimeSeries;
 var createReactClass = require('create-react-class');
 var onClickOutside = require('react-onclickoutside');
-const vdefMapV2 = require('./vdefmap.json')
+const vdefMapV2 = require('./vdefmapcw.json')
+var labTransV2 = vdefMapV2['@labels']
 
 const SPARCBLUE1 = '#30A8E2'
 const FORTRESSPURPLE1 = '#362c66'
@@ -609,7 +610,7 @@ class TrendBar extends React.Component{
 				+avwpctgs[3].toFixed(0) + '%, #aa0000a0 ' +avwpctgs[3].toFixed(0) + '%, #aa0000a0)';
 				// console.log("bgstr av", bgstr)
 
-				label_names_array = ['T2', 'T1' , 'Nominal' , 'Over']
+				label_names_array = ['T2', 'T1' , labTransV2['Nominal'][this.props.language]['name'], labTransV2['Over'][this.props.language]['name']]
 				label_names = av_ranges.map(function(r,i) {
 					// body...
 					return <div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{label_names_array[i]}</div>
@@ -929,10 +930,10 @@ class AFModalC extends React.Component{
 		var self = this;
 		
 	  return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Authentication Failed</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Authentication Failed'][this.props.language]['name']}</div>
 	  			{this.props.children}
-				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Try Again</button>
-				<button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>Forgot</button></div>
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{labTransV2['Try Again'][this.props.language]['name']}</button>
+				<button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>{labTransV2['Forgot'][this.props.language]['name']}</button></div>
 	  		
 		  </div>)
 
@@ -1019,7 +1020,7 @@ class PrModalC extends React.Component{
 		
 		
 				 return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Progress</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Progress'][this.props.language]['name']}</div>
 	  			{this.props.children}
 				
 		  </div>)
@@ -1109,16 +1110,16 @@ class MModalC extends React.Component{
 		
 		if(typeof this.props.accept != 'undefined'){
 			 return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Attention</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Attention'][this.props.language]['name']}</div>
 	  			{this.props.children}
-				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Cancel</button><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>Confirm</button></div>
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{labTransV2['Cancel'][this.props.language]['name']}</button><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>{labTransV2['Confirm'][this.props.language]['name']}</button></div>
 	  		
 		  </div>)
 			}else{
 				 return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Alert</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Alert'][this.props.language]['name']}</div>
 	  			{this.props.children}
-				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{this.props.children.props.children == "Batch needs to be ended prior to calibration." || this.props.children.props.children == "Can not change this setting while running the batch."? 'Dismiss' : 'Confirm'}</button></div>
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{this.props.children.props.children == labTransV2['Batch needs to be ended'][this.props.language]['name']+'.' || this.props.children.props.children == labTransV2['Can not change this setting'][this.props.language]['name']+'.'? labTransV2['Dismiss'][this.props.language]['name'] : labTransV2['Confirm'][this.props.language]['name']}</button></div>
 	  		
 		  </div>)
 			}
@@ -1213,11 +1214,11 @@ class LockModalC extends React.Component{
 		
 
 				 return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:1000, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Alert</div>
+	  			<div style={{display:'inline-block', width:1000, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Alert'][this.props.language]['name']}</div>
 	  			<div style={{height:500}}>
 	  			{this.props.children}
 	  			</div>
-	  			<div style={{display:'none'}}><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Confirm</button></div>
+	  			<div style={{display:'none'}}><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{labTransV2['Confirm'][this.props.language]['name']}</button></div>
 	  		
 		  </div>)
 	 
@@ -1312,7 +1313,7 @@ class AlertModalC extends React.Component{
 		var self = this;
 		
 	  return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Confirm Action</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Confirm Action'][this.props.language]['name']}</div>
 	  			{this.props.children}
 				<div>
 	  		<CircButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept']['english'].name}/>
@@ -1411,7 +1412,7 @@ class AccModalC extends React.Component{
 		var self = this;
 		
 	  return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Access Denied</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Access Denied'][this.props.language]['name']}</div>
 	  			{this.props.children}
 				<div>
 	  		<CircButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept']['english'].name}/>
@@ -1469,14 +1470,14 @@ class MessageConsole extends React.Component{
 		var wrapper = {width:'100%', height:88, marginLeft:'auto', marginRight:'auto', marginTop:10}
 		var rptxt = vdefMapV2['@labels']['Running Product'][this.props.language]['name'];
 		if(!this.props.live){
-			rptxt = 'Not Connected'
+			rptxt = labTransV2['Not Connected'][this.props.language]['name']
 		}
 		var line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{rptxt}</div>
 		var line2 = 	<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{this.props.prodName}</div>
 		var textColor = '#eee'
 		if(fActive){
-			var fref = 'Faults'
-			var wref = 'Warnings'
+			var fref = labTransV2['Faults'][this.props.language]['name']
+			var wref = labTransV2['Warnings'][this.props.language]['name']
 			var fstr = this.props.faultArray.length + " " +vdefMapV2['@labels'][fref][this.props.language].name
 			var wstr = ''
 			if(this.props.warningArray.length > 0){
@@ -1486,10 +1487,10 @@ class MessageConsole extends React.Component{
 				}else{
 
 					if(faultCount == 1){
-						fref = 'Fault'
+						fref = labTransV2['Fault'][this.props.language]['name']
 					}
 					if(this.props.warningArray.length == 1){
-						wref = 'Warning'
+						wref = labTransV2['Warning'][this.props.language]['name']
 					}
 					fstr = faultCount + " " + vdefMapV2['@labels'][fref][this.props.language].name; 
 					wstr =  this.props.warningArray.length + " " +vdefMapV2['@labels'][wref][this.props.language].name
@@ -1611,7 +1612,7 @@ class CircButton extends React.Component{
 		if(!this.props.disabled){
 			this.props.onClick();
 		}else{
-			toast('Test is not configured')
+			toast(labTransV2['Test is not configured'][this.props.language]['name'])
 		}
 	}
 	onTouchStart (){
