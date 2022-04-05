@@ -424,7 +424,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		
 		if(mmaxb){
 			
-			mmaxdiv = <div style={{fontSize:18,color:dvclr, textAlign:'center' }}>{labTransV2['Range'][this.props.language]['name']}+': '[{minStr+'~'+maxStr}]</div>
+			mmaxdiv = <div style={{fontSize:18,color:dvclr, textAlign:'center' }}>{labTransV2['Range'][this.props.language]['name']+': '+'['+minStr+'~'+maxStr+']'}</div>
 		}
 		//var tooltiptext = 'This is a tooltip'
 		////console.log(this.props.vMap)
