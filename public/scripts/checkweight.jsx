@@ -9538,7 +9538,7 @@ class MainHistogram extends React.Component{
   if(this.props.connected == false){
     str = labTransV2['Not Connected'][this.props.language]['name']
   }
-  var  xyplot = <WeightHistogram sendPacket={this.props.sendPacket} buckMin={this.props.buckMin} buckMax={this.props.buckMax} buckets={this.props.buckets} bucketSize={this.props.bucketSize} unit={this.props.weightUnits} ref={this.histo} nom={this.props.nominalWeight} stdev={this.props.stdev}/>
+  var  xyplot = <WeightHistogram language={this.props.language}  sendPacket={this.props.sendPacket} buckMin={this.props.buckMin} buckMax={this.props.buckMax} buckets={this.props.buckets} bucketSize={this.props.bucketSize} unit={this.props.weightUnits} ref={this.histo} nom={this.props.nominalWeight} stdev={this.props.stdev}/>
   
     return	<div style={{background:bg, textAlign:'center', position:'relative'}}>
          <div style={{width:560,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
