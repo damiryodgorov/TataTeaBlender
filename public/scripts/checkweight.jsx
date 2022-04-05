@@ -3068,7 +3068,7 @@ class LandingPage extends React.Component{
         </Modal>
         <Modal  language={language} x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
          <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['Batch'][language]['name']}</div></div>
-         <BatchControl soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
+         <BatchControl language={language} soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
           liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
            startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
                    weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
@@ -3084,7 +3084,7 @@ class LandingPage extends React.Component{
             </div>
         </Modal>
           <PlanBatchStart language={language} sendPacket={this.sendPacket} pList={this.state.pList} pNames={this.state.prodNames} ref={this.planStart} plannedBatches={this.state.plannedBatches} startP={this.startSel}/>
-          <ManBatchStart branding={this.state.branding} pList={this.state.pList} pNames={this.state.prodNames} ref={this.manStart} ip={this.state.curDet.ip} language={language} mac={this.state.curDet.mac} startNew={this.startBuf}/>
+          <ManBatchStart language={language} branding={this.state.branding} pList={this.state.pList} pNames={this.state.prodNames} ref={this.manStart} ip={this.state.curDet.ip} language={language} mac={this.state.curDet.mac} startNew={this.startBuf}/>
          
         <LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
@@ -5602,7 +5602,7 @@ class SettingsPageWSB extends React.Component{
        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Motor Control'][this.props.language]['name']}</div></h2></span>
           
         <div style={{marginTop:5}}>
-          <MotorControl motors={[{name: labTransV2['Infeed Belt'][this.props.language]['name']},{name: labTransV2['Weigh Table Belt'][this.props.language]['name']},{name: labTransV2['Reject Belt'][this.props.language]['name']},{name: labTransV2['Exit Belt'][this.props.language]['name']}]}/>
+          <MotorControl language={this.props.language} motors={[{name: labTransV2['Infeed Belt'][this.props.language]['name']},{name: labTransV2['Weigh Table Belt'][this.props.language]['name']},{name: labTransV2['Reject Belt'][this.props.language]['name']},{name: labTransV2['Exit Belt'][this.props.language]['name']}]}/>
         </div>
 
          </div>
@@ -11048,7 +11048,7 @@ class MotorControl extends React.Component{
     var self = this;
     var motors = this.props.motors.map(function (m,i) {
       // body...
-      return <MotorItem testMotor={self.testMotor} name={m.name} index={i} />
+      return <MotorItem language={this.props.language} testMotor={self.testMotor} name={m.name} index={i} />
     })
     return <div>
       {motors}  
