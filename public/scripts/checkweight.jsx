@@ -5617,7 +5617,7 @@ class SettingsPageWSB extends React.Component{
         <PackGraph packSamples={this.props.packSamples} onEdit={this.props.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={0} acc={(this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccAdvSys'])} language={this.props.language} crec={this.props.crec} prec={this.props.prodSettings} srec={this.props.sysSettings}/>
       </Modal>
       <Modal language={this.props.language} x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
-        <CalibrationControl resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationWindow} calibState={this.props.calibState} onCalib={this.onCalib} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
+        <CalibrationControl language={this.props.language} resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationWindow} calibState={this.props.calibState} onCalib={this.onCalib} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
       </Modal>
       <MessageModal language={this.props.language} ref={this.msgm}/> 
     </div>
@@ -6487,11 +6487,11 @@ class SettingsPage extends React.Component{
           }
           var sc = par['@data']
           if(par['@data'] == 'format_usb'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={this.props.language} branding={self.props.branding} onClick={self.formatUSB} lab={labTransV2['Format USB'][this.props.language]['name']}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.formatUSB} lab={labTransV2['Format USB'][self.props.language]['name']}/></div>)
           }else if(par['@data'] == 'reboot_display'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={this.props.language} branding={self.props.branding} onClick={self.reboot} lab={labTransV2['Reboot'][this.props.language]['name']}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.reboot} lab={labTransV2['Reboot'][self.props.language]['name']}/></div>)
           }else if(par['@data'] == 'update'){
-             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={this.props.language} branding={self.props.branding} onClick={self.update} lab={labTransV2['Update'][this.props.language]['name']}/></div>)
+             nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.update} lab={labTransV2['Update'][self.props.language]['name']}/></div>)
           }
 
          
@@ -10482,9 +10482,9 @@ class BatchControl extends React.Component{
     var bmodeSelect =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[vdefByMac[this.props.mac][1][0]['BatchMode']]} ioBits={this.props.ioBits} vMap={vMapV2['BatchMode']} language={this.props.language}  interceptor={false} name={'Batch Mode'} ref={this.ed} val={[this.state.startMode]} options={[bmodes]} onChange={this.selectChanged}/>
     var changeModeBut = <div onClick={this.batchSettings} style={{display:'table-cell',height:80, borderRight:'2px solid #362c66', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}>{labTransV2['Batch Settings'][this.props.language]['name']}</div>
     var bHisto = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ? 
-        <BatchHistogram unit={this.props.weightUnits} ref={this.bhg} ovHisto={true} histo={this.state.bRec['Histogram Buckets']} refreshHisto={this.refreshHisto}/>
+        <BatchHistogram language={this.props.language} unit={this.props.weightUnits} ref={this.bhg} ovHisto={true} histo={this.state.bRec['Histogram Buckets']} refreshHisto={this.refreshHisto}/>
         :
-        <BatchHistogram unit={this.props.weightUnits} ref={this.bhg} refreshHisto={this.refreshHisto} width={620}/>
+        <BatchHistogram language={this.props.language} unit={this.props.weightUnits} ref={this.bhg} refreshHisto={this.refreshHisto} width={620}/>
     var batchDetails =           <div >
           <div style={{display:'grid',verticalAlign:'top', gridTemplateRows:'200px 2px auto', backgroundColor:'#e1e1e1'}}>
             <div style={{display:'grid', gridTemplateColumns:'500px 2px auto'}}>
