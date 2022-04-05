@@ -3041,7 +3041,7 @@ class LandingPage extends React.Component{
           <MainHistogram sendPacket={this.sendPacket} weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
                     winMode={this.state.prec['WindowMode']} winMax={this.state.prec['WindowMax']} winMin={this.state.prec['WindowMin']} winStart={winStart} winEnd={winEnd} stdev={1} max={this.state.prec['NominalWgt']+this.state.prec['OverWeightLim']} min={this.state.prec['NominalWgt']-this.state.prec['UnderWeightLim']} 
                     branding={this.state.branding} ref={this.lg} prodName={this.state.prec['ProdName']} nominalWeight={this.state.prec['NominalWgt']} bucketSize={bucketSize} buckets={buckets} buckMin={this.state.buckMin} buckMax={this.state.buckMax}>
-          <TrendBar weightPassed={this.state.crec['WeightPassed']} weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} nominal={trendBar[6]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
+          <TrendBar language={language} weightPassed={this.state.crec['WeightPassed']} weightUnits={this.state.srec['WeightUnits']} live={this.state.live} prodSettings={this.state.prec} branding={this.state.branding} lowerbound={trendBar[0]} upperbound={trendBar[3]} t1={trendBar[4]} t2={trendBar[5]} low={trendBar[1]} high={trendBar[2]} nominal={trendBar[6]} yellow={false} ref={this.tb} allowOverweight={this.state.prec['OverWeightAllowed']}/></MainHistogram></div>
           </td><td>
             <BatchPackCountGraph language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
           </td></tr></tbody></table>
@@ -3089,11 +3089,11 @@ class LandingPage extends React.Component{
         <LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
                 accounts={this.state.usernames} authenticate={this.authenticate} login={this.login} val={this.state.userid}/>
-        <AuthfailModal ref={this.am} forgot={this.forgotPassword} tryAgain={this.tryAgain}/>
+        <AuthfailModal language={language} ref={this.am} forgot={this.forgotPassword} tryAgain={this.tryAgain}/>
         <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
-        <ProgressModal ref={this.prgmd}/><MessageModal ref={this.msgm}/>
+        <ProgressModal language={language} ref={this.prgmd}/><MessageModal language={language} ref={this.msgm}/>
         <LogoutModal ref={this.lgoModal} branding={this.state.branding}/>
-        <LockModal ref={this.lockModal} branding={this.state.branding}/>
+        <LockModal language={language} ref={this.lockModal} branding={this.state.branding}/>
         </div>
       </div>) 
   }
@@ -4967,7 +4967,7 @@ class ProductSettings extends React.Component{
           <td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:819, paddingTop:0}}>  
           <BatchWidget language={this.props.language} acc={(this.props.srec['PassOn'] == 0) || (this.props.level >= this.props.srec['PassAccStartStopBatch'])} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.drec['BatchRunning']} canStartBelts={this.props.drec['CanStartBelts']} onStart={this.props.startB} onResume={this.props.resume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/>
           </div></td><td style={{verticalAlign:'top',textAlign:'center'}}>
-          <ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
+          <ScrollArrow language={this.props.language} ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
           <div style={{display:'none', background:'#e1e1e1', padding:2}}>
              <div style={{position:'relative', verticalAlign:'top', marginLeft:180}} onClick={this.toggleSearch}>
             <div style={{height:25, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
@@ -4982,7 +4982,7 @@ class ProductSettings extends React.Component{
           
           <div onClick={this.toggleSearch} style={{display:'table-cell',height:85, borderLeft:'1px solid #362c66',width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}><img src='assets/search.svg' style={{width:40}}/><div style={{marginTop:-10, fontSize:16}}>{labTransV2['Search'][this.props.language]['name']}</div></div>
           </div>
-          <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+          <ScrollArrow language={this.props.language} ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
       
           </td>
         </tr>
@@ -5001,9 +5001,9 @@ class ProductSettings extends React.Component{
         {createNew}
         <Modal language={this.props.language} x={true} Style={{width:870, marginTop:50}} ref={this.apmgmt} branding={this.props.branding}>{advProdMgmt}</Modal>
       </Modal>
-      <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][this.props.language]['name']}</div></AlertModal>
-      <AlertModal ref={this.deleteAllProductsAlert} accept={this.deleteAllProducts}><div style={{color:"#e1e1e1"}}>{labTransV2['delete all product records?'][this.props.language]['name']}</div></AlertModal>
-      <MessageModal ref={this.msgm}/>
+      <AlertModal language={this.props.language} ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][this.props.language]['name']}</div></AlertModal>
+      <AlertModal language={this.props.language} ref={this.deleteAllProductsAlert} accept={this.deleteAllProducts}><div style={{color:"#e1e1e1"}}>{labTransV2['delete all product records?'][this.props.language]['name']}</div></AlertModal>
+      <MessageModal language={this.props.language} ref={this.msgm}/>
     </div>
     //<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'} onClick={this.selectRunningProd}/>
           
@@ -5143,10 +5143,10 @@ class ProductSelectItem extends React.Component{
                <CircularButton language={this.props.language} onClick={this.backupProductMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Save selected product to base product'][this.props.language]['name']}/>
         </div>
           </Modal>
-        <AlertModal ref={this.restoreFactorySettings} accept={this.restoreDefault}><div style={{color:"#e1e1e1"}}>{labTransV2['restore selected product?'][this.props.language]['name']}</div></AlertModal>
-        <AlertModal ref={this.restoreBaseProduct} accept={this.restoreBackup}><div style={{color:"#e1e1e1"}}>{labTransV2['restore selected product?'][this.props.language]['name']}</div></AlertModal>
-        <AlertModal ref={this.saveSelectedProduct} accept={this.backupProduct}><div style={{color:"#e1e1e1"}}>{labTransV2['save selected product?'][this.props.language]['name']}</div></AlertModal>
-        <MessageModal ref={this.msgm}/>
+        <AlertModal language={this.props.language} ref={this.restoreFactorySettings} accept={this.restoreDefault}><div style={{color:"#e1e1e1"}}>{labTransV2['restore selected product?'][this.props.language]['name']}</div></AlertModal>
+        <AlertModal language={this.props.language} ref={this.restoreBaseProduct} accept={this.restoreBackup}><div style={{color:"#e1e1e1"}}>{labTransV2['restore selected product?'][this.props.language]['name']}</div></AlertModal>
+        <AlertModal language={this.props.language} ref={this.saveSelectedProduct} accept={this.backupProduct}><div style={{color:"#e1e1e1"}}>{labTransV2['save selected product?'][this.props.language]['name']}</div></AlertModal>
+        <MessageModal language={this.props.language} ref={this.msgm}/>
       </div>)
   }
 }
@@ -5373,7 +5373,7 @@ class ProdSettingEdit extends React.Component{
         </MenuItem>
       </ContextMenu>
        {trnsmdl}
-       <MessageModal ref={this.msgm}/>
+       <MessageModal language={this.props.language} ref={this.msgm}/>
     </div>
   }
 }
@@ -5619,7 +5619,7 @@ class SettingsPageWSB extends React.Component{
       <Modal language={this.props.language} x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
         <CalibrationControl resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationWindow} calibState={this.props.calibState} onCalib={this.onCalib} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
       </Modal>
-      <MessageModal ref={this.msgm}/> 
+      <MessageModal language={this.props.language} ref={this.msgm}/> 
     </div>
   }
 }
@@ -6561,7 +6561,7 @@ class SettingsPage extends React.Component{
     //console.log(4713,SA)
     return(
       <div className='settingsDiv'>
-      <ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
+      <ScrollArrow language={this.props.language} ref={this.arrowTop} offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
     
       <div className={className}>
         <ContextMenuTrigger id={pathString+'_titleCTMID'}>
@@ -6576,14 +6576,14 @@ class SettingsPage extends React.Component{
       {trnsmdl}{nav}
      
       </div>
-      <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
-      <Modal language={this.props.language} ref={this.systemSettingsOverrides} systemSettingTooltip={'yes'}>
+      <ScrollArrow language={this.props.language} ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+      <Modal ref={this.systemSettingsOverrides} systemSettingTooltip={'yes'}>
         <div style={{color:'#e1e1e1', whiteSpace:'break-spaces'}}>
             <h2 style={{fontSize:20}}>{labTransV2['System Settings Overrides'][this.props.language]['name']}</h2>
             {vdefMapV2['@tooltips']['SystemSettingsOverridesTooltip'][this.props.language]}
         </div>
       </Modal>
-      <AlertModal ref={this.factoryResetMessage} accept={this.factoryReset}><div style={{color:"#e1e1e1"}}>{labTransV2['Are you sure?'][this.props.language]['name']}</div></AlertModal>
+      <AlertModal language={this.props.language} ref={this.factoryResetMessage} accept={this.factoryReset}><div style={{color:"#e1e1e1"}}>{labTransV2['Are you sure?'][this.props.language]['name']}</div></AlertModal>
       </div>
     );
   }
@@ -7096,7 +7096,7 @@ class SettingItem3 extends React.Component{
     var display = true;
     var disable = false;
 
-    var accModal = <MessageModal ref={this.msgm}/>
+    var accModal = <MessageModal language={this.props.language} ref={this.msgm}/>
     if(vMapV2[this.props.lkey]){
       if(vMapV2[this.props.lkey]['display']){
         var dispRef = this.getMMdep(vMapV2[this.props.lkey]['display'][1]);
@@ -7898,7 +7898,7 @@ class MultiEditControl extends React.Component{
       </div>
       {trnsmdl}
       {listmdl}
-       <MessageModal ref={this.msgm}/>
+       <MessageModal language={this.props.language} ref={this.msgm}/>
 
       </div>
     }else{
@@ -7997,7 +7997,7 @@ class MultiEditControl extends React.Component{
 
       {trnsmdl}
       {listmdl}
-       <MessageModal ref={this.msgm}/>
+       <MessageModal  language={this.props.language} ref={this.msgm}/>
       </div>
       }else{
         options = this.state.val.map(function(v, i){
@@ -8146,7 +8146,7 @@ class MultiEditControl extends React.Component{
 
       {trnsmdl}
       {listmdl}
-      <MessageModal ref={this.msgm}/>
+      <MessageModal language={this.props.language} ref={this.msgm}/>
       </div>
     
       }
@@ -8489,7 +8489,7 @@ class AccountRow extends React.Component{
       </div>
       {edit}
 
-      <MessageModal ref={this.msgm}/>
+      <MessageModal language={this.props.language} ref={this.msgm}/>
       </div>)
       //return(<div className={'sItem noChild'}><div><label style={lvst}>{namestring + ': '}</label><div style={vlabelswrapperStyle}><div style={vlabelStyle}>{vLabels}</div></div></div>{edit}</div>)
   }
@@ -8617,7 +8617,7 @@ class LogInControl2 extends React.Component{
 
     return <React.Fragment>{pw}
       <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={labTransV2['Password'][this.props.language]['name']}/>
-    <MessageModal ref={this.msgm}/>
+    <MessageModal language={this.props.language} ref={this.msgm}/>
     </React.Fragment> 
   }
 }
@@ -8660,7 +8660,7 @@ class UserPassReset extends React.Component{
   }
   render(){
     return <React.Fragment><CustomKeyboard mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={labTransV2['Reset Password'][this.props.language]['name']}/>
-    <MessageModal ref={this.msgm} />
+    <MessageModal  language={this.props.language} ref={this.msgm} />
     </React.Fragment>
   }
 }
@@ -8944,7 +8944,7 @@ class StatDisplay extends React.Component{
     <div onClick={this.editSetting}><div style={{textAlign:'center',fontSize:14}}>{this.props.name}</div>
     <div style={{textAlign:'center',lineHeight:1.4, fontSize:14}} >{this.props.value}</div></div>
       {ckb}
-      <MessageModal ref={this.msgm}/>
+      <MessageModal language={this.props.language} ref={this.msgm}/>
     </div>
   }
 }
@@ -10604,7 +10604,7 @@ class BatchControl extends React.Component{
             <PlannedBatches soc={this.props.soc} deleteBatch={this.deleteBatch} getBatchList={this.props.getBatchList} branding={this.props.branding} language={this.props.language} ip={this.props.ip} mac={this.props.mac} ref={this.plannedBatches} plannedBatches={this.state.plannedBatches} prMap={prMap} prodList={this.state.prodList}/>
             
             {bmodeSelect}
-            <MessageModal ref={this.msgm}/>
+            <MessageModal language={this.props.language} ref={this.msgm}/>
             
       </div>
   }
@@ -10895,8 +10895,8 @@ class BatchWidget extends React.Component{
 
     return <div style={{display:'grid', gridTemplateColumns:"285px auto", background:'#e1e1e1', borderRadius:20,paddingLeft:5, marginTop:5, width:819}}>
       <div>{play}{stop} </div><div> {status}</div>
-        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][this.props.language]['name']}</div></AlertModal>
-        <MessageModal ref={this.msgm}/>
+        <AlertModal language={this.props.language} ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][this.props.language]['name']}</div></AlertModal>
+        <MessageModal  language={this.props.language} ref={this.msgm}/>
     </div>
   }
 }
@@ -12013,7 +12013,7 @@ class FaultDiv extends React.Component{
       {wcont}
       {clButton}
       {wclButton}
-      <MessageModal ref={this.msgm} />
+      <MessageModal language={this.props.language} ref={this.msgm} />
     </div>)
   }
 }
