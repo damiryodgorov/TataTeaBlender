@@ -3092,7 +3092,7 @@ class LandingPage extends React.Component{
         <AuthfailModal language={language} ref={this.am} forgot={this.forgotPassword} tryAgain={this.tryAgain}/>
         <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
         <ProgressModal language={language} ref={this.prgmd}/><MessageModal language={language} ref={this.msgm}/>
-        <LogoutModal ref={this.lgoModal} branding={this.state.branding}/>
+        <LogoutModal language={language} ref={this.lgoModal} branding={this.state.branding}/>
         <LockModal language={language} ref={this.lockModal} branding={this.state.branding}/>
         </div>
       </div>) 
@@ -3833,7 +3833,7 @@ class MainHistogramDual extends React.Component{
 
  {xyplot}
       <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
-          <FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
+          <FaultDiv language={this.props.language} maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
     </div>
   }
@@ -4987,14 +4987,14 @@ class ProductSettings extends React.Component{
           </td>
         </tr>
       </tbody></table>
-      <PromptModal branding={this.props.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
+      <PromptModal language={this.props.language} branding={this.props.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
       <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={false} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.cfTo} onRequestClose={this.onRequestClose} onChange={this.copyConfirm} index={0} value={''} num={true} label={labTransV2['Target Product'][this.props.language]['name']}/>
       
-      <CopyModal ref={this.cfModal}  branding={this.props.branding}/>
-      <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
+      <CopyModal language={this.props.language} ref={this.cfModal}  branding={this.props.branding}/>
+      <DeleteModal language={this.props.language} ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
       <Modal language={this.props.language} x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
         <PackGraph rejectAlertMessage={this.props.rejectAlertMessage} packSamples={this.props.packSamples} onEdit={this.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={1} acc={advProdEditAcc} language={this.props.language} crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
-        <PromptModal branding={this.props.branding} ref={this.pmd2} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
+        <PromptModal language={this.props.language} branding={this.props.branding} ref={this.pmd2} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
       
       </Modal>
       <Modal language={this.props.language} x={true} Style={{width:870, marginTop:50}} ref={this.pmgmt} branding={this.props.branding}>
@@ -11996,13 +11996,13 @@ class FaultDiv extends React.Component{
     if(this.props.faults.length != 0){
       clButton =<div> <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Faults'][this.props.language]['name']} onClick={this.clearFaults}/></div>
       cont = this.props.faults.map(function(f){
-        return <FaultItem maskFault={self.maskFault} fault={f}/>
+        return <FaultItem language={this.props.language} maskFault={self.maskFault} fault={f}/>
       })
     }
     if(this.props.warnings.length != 0){
       wclButton =<div> <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Warnings'][this.props.language]['name']} onClick={this.clearWarnings}/></div>
       wcont = this.props.warnings.map(function(f){
-        return <FaultItem maskFault={self.maskFault} fault={f}/>
+        return <FaultItem language={this.props.language} maskFault={self.maskFault} fault={f}/>
       })
     }
        
