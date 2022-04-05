@@ -3050,35 +3050,35 @@ class LandingPage extends React.Component{
           <CircularButton language={language} override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Tare'][language]['name']} onClick={this.tareWeight}/>
           <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
           <CircularButton language={language} override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Check Weight'][language]['name']} onClick={this.checkweight}/>
-        <Modal x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
+        <Modal language={language} x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
           <ProductSettings RejSetupInvalid={this.state.rec.RejSetupInvalid} EditProdNeedToSave={this.state.rec.EditProdNeedToSave} rejectAlertMessage={this.state.rejectAlertMessage} packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
           submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={this.closeProductMenu}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
           curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
-         <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
+         <Modal language={language} x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
           {cont}
           <div>{this.state.connectedClients}</div>
         </Modal>
-        <Modal  x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:620}}>
+        <Modal  language={language} x={true} ref={this.locateModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:620}}>
           {this.renderModal()}
         </Modal> 
-        <Modal  x={true} ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:410}}>
+        <Modal  language={language} x={true} ref={this.cwModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660, height:410}}>
          <CheckWeightControl close={this.closeCWModal} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.cwc} cw={this.state.cwgt} waiting={this.state.waitCwgt}/>
         </Modal>
-        <Modal  x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
+        <Modal  language={language} x={true} ref={this.batModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
          <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['Batch'][language]['name']}</div></div>
          <BatchControl soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
           liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
            startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
                    weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
         </Modal>
-        <Modal  x={true} ref={this.unuProductSettingssedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
+        <Modal  language={language} x={true} ref={this.unuProductSettingssedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
         {unused}   
         </Modal>
-        <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][language]['name']}
+        <AlertModal language={language} ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][language]['name']}
         </div></AlertModal>
-        <Modal ref={this.imgMD}>
+        <Modal language={language} ref={this.imgMD}>
             <div style={{height:400}}>
               <h3 style={{color:"#fff"}}>{labTransV2['You lost Connection'][language]['name']}</h3><button onClick={()=>location.reload()}>{labTransV2['Reconnect'][language]['name']}</button>
             </div>
@@ -3344,7 +3344,7 @@ class StatControlDual extends React.Component{
     <ContextMenu id={uid}><MenuItem onClick={this.translate}>{this.props.translate}</MenuItem></ContextMenu>
     </div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:0.8, fontSize:22}}>{this.props.value}</div>
-    <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+    <Modal language={this.props.language} ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
         <div>{this.props.vMap['english']['name']}</div>
         <div>
         {this.props.current_language + ': ' + this.props.language}
@@ -3393,7 +3393,7 @@ class BatchStatControlDual extends React.Component{
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
     <ContextMenu id={uid}><MenuItem onClick={this.translate}>{this.props.translate} </MenuItem></ContextMenu></div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:0.8, fontSize:batchFont, whiteSpace:'nowrap'}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
-     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+     <Modal language={this.props.language} ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
          <button onClick={this.submit}>{this.props.submit_change_text}</button>
         </Modal>
@@ -3556,7 +3556,7 @@ if(prodName.length > 17){
 
       <div style={{display:'grid', gridTemplateColumns:'160px auto'}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div><div style={{display:'inline-block', fontSize:prodFont, textAlign:'center', lineHeight:'25px', verticalAlign:'top'}}>{prodName}</div></div>
        <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:20, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'middle'}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
-          <Modal ref={this.fModal} innerStyle={{background:modBg}}>
+          <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
             <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.props.language]['name']}</div></div>
      
           <FaultDiv language={this.props.language} branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
@@ -3832,7 +3832,7 @@ class MainHistogramDual extends React.Component{
     <div style={{width:550,marginLeft:'auto',marginRight:'auto'}}>{this.props.children}</div>
 
  {xyplot}
-      <Modal ref={this.fModal} innerStyle={{background:modBg}}>
+      <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
           <FaultDiv maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
     </div>
@@ -4931,7 +4931,7 @@ class ProductSettings extends React.Component{
          
          
           </div>
-          <Modal ref={this.prodMgmtTooltip}>
+          <Modal language={this.props.language} ref={this.prodMgmtTooltip}>
             <div style={{color:'#e1e1e1', whiteSpace:'break-spaces'}}>
               {vdefMapV2['@tooltips']['ProductManagement'][this.props.language]}
             </div>
@@ -4992,14 +4992,14 @@ class ProductSettings extends React.Component{
       
       <CopyModal ref={this.cfModal}  branding={this.props.branding}/>
       <DeleteModal ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
-      <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
+      <Modal language={this.props.language} x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
         <PackGraph rejectAlertMessage={this.props.rejectAlertMessage} packSamples={this.props.packSamples} onEdit={this.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={1} acc={advProdEditAcc} language={this.props.language} crec={this.props.crec} prec={this.props.curProd} srec={this.props.srec}/>
         <PromptModal branding={this.props.branding} ref={this.pmd2} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
       
       </Modal>
-      <Modal x={true} Style={{width:870, marginTop:50}} ref={this.pmgmt} branding={this.props.branding}>
+      <Modal language={this.props.language} x={true} Style={{width:870, marginTop:50}} ref={this.pmgmt} branding={this.props.branding}>
         {createNew}
-        <Modal x={true} Style={{width:870, marginTop:50}} ref={this.apmgmt} branding={this.props.branding}>{advProdMgmt}</Modal>
+        <Modal language={this.props.language} x={true} Style={{width:870, marginTop:50}} ref={this.apmgmt} branding={this.props.branding}>{advProdMgmt}</Modal>
       </Modal>
       <AlertModal ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][this.props.language]['name']}</div></AlertModal>
       <AlertModal ref={this.deleteAllProductsAlert} accept={this.deleteAllProducts}><div style={{color:"#e1e1e1"}}>{labTransV2['delete all product records?'][this.props.language]['name']}</div></AlertModal>
@@ -5135,7 +5135,7 @@ class ProductSelectItem extends React.Component{
       //st.fontSize = 18
     }
     return (<div style={{background:"transparent", color:color, position:'relative', textAlign:'left'}}><div style={ds} ><div style={{display:'inline-flex', alignItems:'center', width:22}}>{check}</div><div style={{fontSize:22, verticalAlign:'top',display:'inline-block', width:40, paddingRight:3, height:65, lineHeight:'65px', textAlign:'right'}}>{this.props.p + '.  '}</div><div onClick={this.switchProd} style={st}><div style={{display:'block', width:'inherit'}}>{name}</div></div> <div style={{display:'inline-flex', width:22}}>{del}{config}</div></div>
-        <Modal ref={this.confModal} Style={{color:'#e1e1e1',width:800, maxWidth:800}}>
+        <Modal language={this.props.language} ref={this.confModal} Style={{color:'#e1e1e1',width:800, maxWidth:800}}>
                <div style={{textAlign:'center'}}>
                <div style={{fontSize:25, padding:10}}>{labTransV2['Save and Restore'][this.props.language]['name']}</div>
                <CircularButton language={this.props.language} onClick={this.restoreDefaultMessage} branding={this.props.branding} innerStyle={innerStyle} style={{width:600, display:'block', borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Restore selected product to factory settings'][this.props.language]['name']}/>
@@ -5345,7 +5345,7 @@ class ProdSettingEdit extends React.Component{
 
       var trnsmdl =   ''
       if(this.props.trans){
-        trnsmdl = <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+        trnsmdl = <Modal language={this.props.language} ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
               <div style={{color:txtClr}}>{labTransV2['Parameter Name'][this.props.language]['name']+': '+ this.props.vMap['@translations']['english']['name']}</div> 
               <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+ this.props.language}</div>
               <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
@@ -5613,10 +5613,10 @@ class SettingsPageWSB extends React.Component{
     var backgroundColor = FORTRESSPURPLE1;
     return <div>
       <table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{ height:525, background:'#e1e1e1', paddingBottom:10}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
-      <Modal x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
+      <Modal language={this.props.language} x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
         <PackGraph packSamples={this.props.packSamples} onEdit={this.props.sendPacket} branding={this.props.branding} getMMdep={this.getMMdep} rec={0} acc={(this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccAdvSys'])} language={this.props.language} crec={this.props.crec} prec={this.props.prodSettings} srec={this.props.sysSettings}/>
       </Modal>
-      <Modal x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
+      <Modal language={this.props.language} x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 440 : 260}}>
         <CalibrationControl resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationWindow} calibState={this.props.calibState} onCalib={this.onCalib} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
       </Modal>
       <MessageModal ref={this.msgm}/> 
@@ -6542,7 +6542,7 @@ class SettingsPage extends React.Component{
     if(pathString != ''){
       catname = catMapV2[pathString]['@translations'][this.props.language]
     }
-    var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+    var trnsmdl =    <Modal language={this.props.language} ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
               <div style={{color:txtClr}}>{labTransV2['Parameter Name'][this.props.language]['name']+': '+ catname}</div> 
               <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+ this.props.language}</div>
               <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
@@ -6577,7 +6577,7 @@ class SettingsPage extends React.Component{
      
       </div>
       <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
-      <Modal ref={this.systemSettingsOverrides} systemSettingTooltip={'yes'}>
+      <Modal language={this.props.language} ref={this.systemSettingsOverrides} systemSettingTooltip={'yes'}>
         <div style={{color:'#e1e1e1', whiteSpace:'break-spaces'}}>
             <h2 style={{fontSize:20}}>{labTransV2['System Settings Overrides'][this.props.language]['name']}</h2>
             {vdefMapV2['@tooltips']['SystemSettingsOverridesTooltip'][this.props.language]}
@@ -7829,7 +7829,7 @@ class MultiEditControl extends React.Component{
           plStop = 'assets/stop-sp.svg'
         }
 
-       var trnsmdl =    <Modal ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+       var trnsmdl =    <Modal language={this.props.language} ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
               <div style={{color:txtClr}}>{labTransV2['Parameter Name'][this.props.language]['name']+': '+  this.props.vMap['@translations']['english']['name']}</div> 
               <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+this.props.language}</div>
               <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
@@ -7839,7 +7839,7 @@ class MultiEditControl extends React.Component{
           return <tr><td style={{color:"#e1e1e1"}}>{self.state.elist[i]}</td><td><input type='text' value={l} onChange={(e) => self.lChange(e,i)}/></td></tr>
           // body...
         })
-        var listmdl = <Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+        var listmdl = <Modal language={this.props.language} ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
               <div style={{color:txtClr}}>{labTransV2['List Name'][this.props.language]['name'] +': ' + this.props.vMap['@translations']['english']['name']}</div> 
               <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+this.props.language}</div>
         <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
@@ -7854,7 +7854,7 @@ class MultiEditControl extends React.Component{
       }
       if(vfdsetup){
         ioindicator = <img onClick={()=>this.vfdSModal.current.toggle()} src='assets/config.svg' style={{position:'absolute', width:30, height:30, left:15, top:10}}/>
-        vfdsetupbutt =<Modal ref={this.vfdSModal} mobile={this.props.mobile} innerStyle={{background:modBG}}>
+        vfdsetupbutt =<Modal language={this.props.language} ref={this.vfdSModal} mobile={this.props.mobile} innerStyle={{background:modBG}}>
 
         <div>
           <div style={{color:txtClr}}>{labTransV2['To set up this VFD unit...'][this.props.language]['name'] + '.'}</div>
@@ -7865,7 +7865,7 @@ class MultiEditControl extends React.Component{
     if(!acc){
       
        if(vfdcont){
-        vfdbutts = <Modal ref={this.vfdModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+        vfdbutts = <Modal language={this.props.language} ref={this.vfdModal}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
 
         <div>
           <div style={{color:txtClr}}>{labTransV2['VFD Test'][this.props.language]['name']}</div>
@@ -7956,7 +7956,7 @@ class MultiEditControl extends React.Component{
           return <tr><td  style={{color:"#e1e1e1"}}>{self.state.elist[i]}</td><td><input type='text' value={l} onChange={(e) => self.lChange(e,i)}/></td></tr>
           // body...
         })
-      listmdl =  (<Modal ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
+      listmdl =  (<Modal language={this.props.language} ref={this.listmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
               <div style={{color:txtClr}}>{labTransV2['List Name'][this.props.language]['name'] +': ' + this.props.vMap['@translations']['english']['name']}</div> 
               <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+this.props.language}</div>
         <table><tbody style={{maxHeight:400, overflow:'scroll', display:'block'}}>{lsedit}</tbody></table>
@@ -8463,7 +8463,7 @@ class AccountRow extends React.Component{
     var userkb = this.state.username!='ADMIN' && <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={labTransV2['Username'][this.props.language]['name']}/>
     var pswdkb = <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={labTransV2['Password'][this.props.language]['name']}/>
       
-      var edit = <Modal mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
+      var edit = <Modal language={this.props.language} mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
       <div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
 
         <div style={{marginTop:5}} onClick={() => this.username.current.toggle()}><div  style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr,color:txtClr, width:300,textAlign:'center'}} >{labTransV2['Username'][this.props.language]['name'] + ': '}
@@ -8774,7 +8774,7 @@ class StatControl extends React.Component{
     <ContextMenu id={uid}><MenuItem onClick={this.translate}>{labTransV2['Translate'][this.props.language]['name']}</MenuItem></ContextMenu>
     </div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:25}}>{this.props.value}</div>
-    <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+    <Modal language={this.props.language} ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
         <div>{this.props.vMap['english']['name']}</div>
         <div>
         {labTransV2['Current Language'][this.props.language]['name']+': '+ this.props.language}
@@ -8986,7 +8986,7 @@ class BatchStatControl extends React.Component{
     <div style={{textAlign:'left', paddingLeft:2, fontSize:16}}><ContextMenuTrigger id={uid}>{this.props.name}</ContextMenuTrigger>
     <ContextMenu id={uid}><MenuItem onClick={this.translate}>{labTransV2['Translate'][this.props.language]['name']}</MenuItem></ContextMenu></div>
     <div style={{textAlign:'center', marginTop:-4,lineHeight:1.4, fontSize:batchFont, whiteSpace:'nowrap'}}><div style={{display:'inline-block', width:'50%'}}>{this.props.batch}</div><div style={{display:'inline-block', width:'50%'}}>{this.props.sample}</div></div>
-     <Modal ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
+     <Modal language={this.props.language} ref={this.translateModal} Style={{color:'#e1e1e1',width:400, maxWidth:400}}>
          <input type='text' style={{fontSize:20, width:300}} value={this.state.curtrns} onChange={this.onChange}/>
          <button onClick={this.submit}>{labTransV2['Submit Change'][this.props.language]['name']}</button>
         </Modal>
@@ -9148,7 +9148,7 @@ if(prodName.length > 17){
 
       <div style={{display:'grid', gridTemplateColumns:'160px auto'}}><div style={{background:innerbg, borderBottomRightRadius:15, height:24, width:innerWidth,paddingLeft:4, fontSize:innerFont, color:fontColor, lineHeight:'24px'}}>{this.props.name}</div><div style={{display:'inline-block', fontSize:prodFont, textAlign:'center', lineHeight:'25px', verticalAlign:'top'}}>{this.props.prodName}</div></div>
        <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:39, fontSize:25, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'middle'}} onClick={()=>this.toggleFault(fault)}>{this.props.weighingMode==1 && str==='Low Pass' ? 'between T1/T2':str}</div></div>
-          <Modal ref={this.fModal} innerStyle={{background:modBg}}>
+          <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
             <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.props.language]['name']}</div></div>
      
           <FaultDiv langauge={this.props.language} branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
@@ -9548,7 +9548,7 @@ class MainHistogram extends React.Component{
  {xyplot}
         </div>
         </div>
-            <Modal ref={this.fModal} innerStyle={{background:modBg}}>
+            <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
                     <FaultDiv language={this.props.language} maskFault={this.maskFault} clearFaults={this.clearFaults} faults={this.props.faults} warnings={this.props.warnings}/>
                 </Modal>
         </div>
@@ -9993,7 +9993,7 @@ class PlanBatchStart extends React.Component{
       </div>
     }
     return (
-    <Modal x ref={this.md}>
+    <Modal language={this.props.language} x ref={this.md}>
     <div>
     <div style={{font:25, color:'#e1e1e1'}}>{labTransV2['Select Batch'][this.props.language]['name']}</div>
     <div style={{overflowY:'scroll', maxHeight:396}}>{plannedBatchesStart}</div></div>
@@ -10054,7 +10054,7 @@ class ManBatchStart extends React.Component{
     })
   //  console.log(this.props.mac)
     if(vdefByMac[this.props.mac]){
-      return <Modal x ref={this.md}>
+      return <Modal language={this.props.language} x={true} ref={this.md}>
     <div style={{background:'#e1e1e1',padding:10}}>
       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Start New Batch'][this.props.language]['name']}</div></h2></span>
      
@@ -10580,7 +10580,7 @@ class BatchControl extends React.Component{
             </div>
 
           </div>
-          <Modal x ref={this.bSettings}>
+          <Modal language={this.props.language} x={true} ref={this.bSettings}>
               <div style={{background:'#e1e1e1', padding:5}}>
               <div style={{marginTop:5}}>
               <ProdSettingEdit submitChange={this.props.submitChange} trans={true} name={'BatchMode'} vMap={vMapV2['BatchMode']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} 
@@ -10590,15 +10590,15 @@ class BatchControl extends React.Component{
             </div>
             </Modal>
             
-            <Modal x={true} ref={this.startModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+            <Modal language={this.props.language} x={true} ref={this.startModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
             <div style={{height:400, overflowY:'scroll'}}>{plannedBatchesStart}</div>
             <div> <div onClick={this.startPlannedBatch} style={{width:250, lineHeight:'53px',color:'black',font:30, background:'#11DD11', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} className='circularButton_sp'> <img src={'assets/play-arrow-fti.svg'} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Start Batch'][this.props.language]['name']}</div></div></div>
     
             </Modal>
-            <Modal x={true} ref={this.manModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+            <Modal language={this.props.language} x={true} ref={this.manModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
             <ManBatch branding={this.props.branding} language={this.props.language} mac={this.props.mac} addBatch={this.runnewBatch} prodList={this.state.prodList}/>
             </Modal>
-            <Modal x={true} ref={this.pastBatches} Style={{width:900, marginTop:40}} innerStyle={{background:backgroundColor, maxHeight:650}}>
+            <Modal language={this.props.language} x={true} ref={this.pastBatches} Style={{width:900, marginTop:40}} innerStyle={{background:backgroundColor, maxHeight:650}}>
               <PastBatches soc={this.props.soc} branding={this.props.branding} language={this.props.language} mac={this.props.mac} batches={this.props.pBatches}/>
             </Modal>
             <PlannedBatches soc={this.props.soc} deleteBatch={this.deleteBatch} getBatchList={this.props.getBatchList} branding={this.props.branding} language={this.props.language} ip={this.props.ip} mac={this.props.mac} ref={this.plannedBatches} plannedBatches={this.state.plannedBatches} prMap={prMap} prodList={this.state.prodList}/>
@@ -10733,7 +10733,7 @@ class PlannedBatches extends React.Component{
 
 
    // if(this.props.plannedBatches.length > 0){
-      return <Modal x ref={this.md}>
+      return <Modal language={this.props.language} x={true} ref={this.md}>
       <div style={{display:'grid', gridTemplateColumns:'315px auto'}}>
         <div style={{margin:1, background:"#e1e1e1"}}>
         <div style={{height:426}}><div style={{borderBottom:'2px solid #362c66', lineHeight:'60px', height:60, textAlign:'center'}}>{labTransV2['Planned Batches'][this.props.language]['name']}</div><div style={{height:362, overflowY:'scroll'}}>{plannedBatches}</div>
@@ -10747,10 +10747,10 @@ class PlannedBatches extends React.Component{
           {batchInfo}
         </div>
       </div>
-        <Modal x ref={this.editMD}>
+        <Modal language={this.props.language} x={true} ref={this.editMD}>
           {editCont}
         </Modal>
-         <Modal x={true} ref={this.addModal} Style={{width:900}} innerStyle={{maxHeight:650}}>
+         <Modal language={this.props.language} x={true} ref={this.addModal} Style={{width:900}} innerStyle={{maxHeight:650}}>
               <AddBatch branding={this.props.branding} language={this.props.language} mac={this.props.mac} addBatch={this.addnewBatch} prodList={this.props.prodList}/>
             </Modal>
       </Modal>
@@ -11138,7 +11138,7 @@ class FatClock extends React.Component{
 
     return <React.Fragment>
     <div style={style} onClick={this.toggleCK}>{this.state.date}</div>
-      <Modal ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
+      <Modal language={this.props.language} ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
         <DateTimeSelect setTz={this.setTz} timezones={this.props.timezones} timeZone={this.props.timeZone} branding={this.props.branding} setDST={this.setDST} dst={this.props.dst} language={this.props.language} setDT={this.changeDT} ref={this.dts}/>
       </Modal>
       </React.Fragment>
@@ -11306,7 +11306,7 @@ class DateTimeModal extends React.Component{
     },100)
   }
   render(){
-    return <Modal ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
+    return <Modal language={this.props.language} ref={this.dtsModal} innerStyle={{background:'#e1e1e1'}}>
         <DateTimeSelector cancel={() => this.dtsModal.current.close()} branding={this.props.branding} language={this.props.language} setDT={this.changeDT} ref={this.dts}/>
       </Modal>
   }
