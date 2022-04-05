@@ -129,10 +129,10 @@ class CircularButton extends React.Component{
 			klass = 'circularButton touchActive'
 		}
 		if(this.props.branding == 'TATA'){
-			klass = 'circularButton_FT'
+			klass = 'circularButton_TATA'
 			fontColor = 'black'
 			if(this.state.touchActive){
-				klass = 'circularButton_FT touchActive_FT'
+				klass = 'circularButton_TATA touchActive_TATA'
 				fontColor = '#e1e1e1'
 			}	
 		}

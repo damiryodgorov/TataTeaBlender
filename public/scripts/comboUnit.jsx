@@ -40,7 +40,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2022/02/05'
+const DISPLAYVERSION = '2022/02/07'
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
@@ -1221,6 +1221,7 @@ class LandingPage extends React.Component{
       showRefreshButton = 1;
       self.onParamMsg(data.data, data.det)
       data = null;
+      console.log("Received Data is ", data);
     })
     this.props.soc.on('rpcMsg', function (data) {
       self.onRMsg(data.data, data.det)
@@ -2960,7 +2961,7 @@ class LandingPage extends React.Component{
           <StatSummary language={language} unit={this.state.srec['WeightUnits']} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange} pkgWeight={pkgWeight}/>
           </td><td><div><SparcElem ref={this.se} branding={this.state.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={596} font={72}/></div>
           <div><StatusElem connected={this.state.connected} pAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccClrFaultWarn'])} clearWarnings={this.clearWarnings} clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} weighingMode={this.state.prec['WeighingMode']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} 
-              ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language} clearFaults={this.clearFaults} /></div>
+              ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language}/></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
           <MainHistogram sendPacket={this.sendPacket} weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
@@ -2979,7 +2980,7 @@ class LandingPage extends React.Component{
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
           <ProductSettings RejSetupInvalid={this.state.rec.RejSetupInvalid} EditProdNeedToSave={this.state.rec.EditProdNeedToSave} rejectAlertMessage={this.state.rejectAlertMessage} packSamples={this.state.packSamples} soc={this.props.soc} usb={this.state.rec['ExtUsbConnected'] == true} sendPacket={this.sendPacket} getProdList={this.getProdList} level={this.state.level} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} startB={this.start} resume={this.resume} statusStr={statusStr} weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} stopB={this.stop} pause={this.pause} submitList={this.listChange} 
           submitChange={this.transChange} submitTooltip={this.submitTooltip} vdefMap={this.state.vmap} onClose={this.closeProductMenu}  editProd={this.state.srec['EditProdNo']} needSave={this.state.rec['EditProdNeedToSave']} language={language} ip={this.state.curDet.ip} mac={this.state.curDet.mac} 
-          curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} sendPacket={this.sendPacket} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
+          curProd={this.state.prec} runningProd={this.state.srec['ProdNo']} srec={this.state.srec} drec={this.state.rec} crec={this.state.crec} fram={this.state.fram} branding={this.state.branding} prods={this.state.prodList} pList={this.state.pList} pNames={this.state.prodNames}/>
         </Modal>
          <Modal x={true} ref={this.settingModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
           {cont}
@@ -2996,7 +2997,7 @@ class LandingPage extends React.Component{
          <BatchControl soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
           liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
            startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
-                   weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} sendPacket={this.sendPacket} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
+                   weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
         </Modal>
         <Modal  x={true} ref={this.unuProductSettingssedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
         {unused}   
@@ -3012,7 +3013,7 @@ class LandingPage extends React.Component{
          
         <LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
-                accounts={this.state.usernames} authenticate={this.authenticate} language={'english'} login={this.login} val={this.state.userid}/>
+                accounts={this.state.usernames} authenticate={this.authenticate} login={this.login} val={this.state.userid}/>
         <AuthfailModal ref={this.am} forgot={this.forgotPassword} tryAgain={this.tryAgain}/>
         <UserPassReset language={'english'} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
         <ProgressModal ref={this.prgmd}/><MessageModal ref={this.msgm}/>
@@ -12235,5 +12236,4 @@ class CustomLabel extends React.Component{
 		return <div onClick={this.onClick} style={style}>{this.props.children}</div>
 	}
 }
-
 ReactDOM.render(<Container page={'dual'}/>,document.getElementById('content'))

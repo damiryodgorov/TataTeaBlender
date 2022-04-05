@@ -2,9 +2,12 @@ const React = require('react');
 const ReactDOM = require('react-dom')
 const ifvisible = require('ifvisible');
 const timezoneJSON = require('./timezones.json');
-const { padding } = require('aes-js');
+const FtiSockIo = require('./ftisockio.js')
 import { CircularButton } from './buttons.jsx';
+import { CustomKeyboard, EmbeddedKeyboard } from './keyboard.jsx';
+import { PopoutWheel } from './popwheel.jsx';
 import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu";
+import { cssTransition, toast, ToastContainer } from 'react-toastify';
 import { AlertModal, AuthfailModal, LockModal, MessageModal, Modal, ProgressModal, ScrollArrow, TrendBar } from './components.jsx';
 import { YAxis, XAxis, HorizontalGridLines, VerticalGridLines, XYPlot, AreaSeries, Crosshair } from "react-vis";
 import "react-vis/dist/style.css";
@@ -16,17 +19,160 @@ const FORTRESSPURPLE2 = '#5d5480'
 var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',fontSize:26,lineHeight:'57px'}
 var innerStyle2 = {display:'inline-block', position:'relative', verticalAlign:'middle',fontSize:22,lineHeight:'57px'}
 var backgroundColor = FORTRESSPURPLE1;
+var inputSrcArr = ["NONE","TACH","EYE","RC1","RC2","ISO_1","IO_PL8_01","IO_PL8_02","IO_PL8_03","IO_PL8_04","IO_PL8_05","IO_PL8_06","IO_PL8_07","IO_PL8_08","IO_PL8_09","IO_PL6_01","IO_PL6_02","IO_PL6_03"];
+var outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
+
+const vdefMapV2 = require('./vdefmapTata.json')
+let vdefByMac = {};
+var _Vdef;
+var _pVdef;
+var _nVdf;
+
+var categories;
+var netMap = vdefMapV2['@netpollsmap']
+
+var vMapV2 = vdefMapV2["@vMap"]
+var vMapLists = vdefMapV2['@lists']
+var categoriesV2 = [vdefMapV2["@pages"]['CWSys']]
+var catMapV2 = vdefMapV2["@catmap"]
+var labTransV2 = vdefMapV2['@labels']
+
+/*************Helper functions start**************/
+function dsp_rpc_paylod_for (n_func, i16_args, byte_data) {
+  var rpc = [];
+  var n_args = i16_args.length;
+  var bytes = [];
+  if (n_args > 3) n_args = 3;
+  if (typeof byte_data == "string") {
+    for(var i=0; i<byte_data.length; i++) {
+        bytes.push(byte_data.charCodeAt(i));
+    }         
+  } else if (byte_data instanceof Array) {
+    bytes = byte_data;
+   }else if (byte_data instanceof Buffer) {
+    for(var i=0; i<byte_data.length; i++) {
+        bytes.push(byte_data.readUInt8(i));
+    }
+   }
+  rpc[0] = n_func;
+  rpc[1] = n_args;
+  if (bytes.length > 0) rpc[1] += 4;
+  var j=2;
+  for(var i=0; i<n_args; i++) {
+    var i16arg = i16_args[i] 
+    if(i16arg > 0xffff){
+      i16arg = 0xffff
+    }
+    rpc[j] = i16arg & 0xff; j+= 1;
+    rpc[j] = (i16arg >> 8) & 0xff; j+= 1;
+  }
+  if (bytes.length > 0) rpc = rpc.concat(bytes);
+  
+  var cs = fletcherCheckBytes(rpc);
+  var cs1=255-((cs[0]+cs[1])%255); 
+  var cs2=255-((cs[0]+cs1)%255);
+  rpc.push(cs1);
+  rpc.push(cs2);
+  return rpc;
+}
+function fletcherCheckBytes (data) {
+  var c1=0, c2=0;
+  for(var i=0; i<data.length; i++) {
+      c1 += data[i]; if (c1 >=255) c1 -= 255;
+      c2 += c1;      if (c2 >=255) c2 -= 255;
+  }
+  return [c1,c2];
+}
+/*************Helper functions end**************/
+/********************************************************** */
+/*Opening a websocket connection between the client and server */
+
+var serverURL = 'ws://'+location.host+':3000';
+var socket = new FtiSockIo(serverURL,true);
+
+socket.on('getPackets', (packets)=>{
+  console.log("Received packets are ",packets);
+})
+socket.on('vdef', function(vdf){
+    console.log('on vdef tata')
+    var json = vdf[0];
+    _Vdef = json
+    var res = [];
+    res[0] = {};
+    res[1] = {};
+    res[2] = {};
+    res[3] = {};
+    res[4] = {};
+    res[5] = {}
+    res[9] = {};
+    res[10] = {};
+    res[11] = {};
+    res[12] = {};
+    var nVdf = [[],[],[],[],[],[],[],[],[]];
+    json["@params"].forEach(function(p ){
+          var rec = p['@rec']
+          if(p['@rec'] > 5){
+            rec = rec + 4
+          }
+          res[rec][p["@name"]] = p;
+          res[9][p["@name"]] = p;
+          nVdf[p["@rec"]].push(p['@name'])
+        }
+    );
+    var bob = {}
+    var rob = {}
+    var dob = {}
+    dob['@name'] = '@dispversion'
+    dob['@rpcs'] = {'dispversion':[0]}
+    rob['@name'] = '@customstrn'
+    rob['@labels'] = 'usecustom'
+    rob['@rpcs'] = {'customstrn':[0]}
+    bob['@name'] = '@branding'
+    bob['@labels'] = 'theme'
+    bob['@rpcs'] = {'theme':[0]}
+    res[0]['@branding'] =  bob
+    res[9]['@branding'] =  bob
+    res[0]['@customstrn'] =  rob
+    res[0]['@dispversion'] = dob
+    res[9]['@customstrn'] =  rob
+    res[6] = json["@deps"];
+    res[7] = json["@labels"]
+    res[7]['theme'] = {'english':['SPARC','FORTRESS']}
+    res[7]['usecustom'] =  {'english':['disabled','enabled']}
+    res[8] = [];
+    res[9] = [];
+    for(var par in res[2]){  
+          if(par.indexOf('Fault') != -1){
+            res[8].push(par)
+          }
+    }
+    for(var par in res[2]){  
+          if(par.indexOf('Warn') != -1){
+            res[9].push(par)
+          }
+    }
+    _pVdef = res;
+    if(json['@defines']['LOGICAL_OUTPUT_NAMES']){
+      outputSrcArr = json['@defines']['LOGICAL_OUTPUT_NAMES'].slice(0)
+      inputSrcArr = json['@defines']['PHYSICAL_INPUT_NAMES'].slice(0)
+    }
+    vdefByMac[vdf[1].mac] = [json, res, nVdf, categories, [vdefMapV2["@pages"]['CWSys']], vdefMapV2['@vMap'], vdefMapV2['@pages'], vdefMapV2['@acc']]
+})
+/********************************************************** */
 /******************Main Components start********************/
 class Container extends React.Component {
 	render(){
-    <ErrorBoundary autoReload={false}>
-        <LandingPage/>
-    </ErrorBoundary>
+        return(
+            <ErrorBoundary autoReload={false}>
+                <LandingPage/>
+            </ErrorBoundary>
+        )
     }
 }
 class LandingPage extends React.Component{
     constructor(props){
         super(props);
+        this.state = {prec:{},checkPrecInterval:null,version:'2018/07/30',connected:false,currentPage:'landing',timezones:[],curDet:'',mbunits:[],dets:[], detL:{}, macList:[],nifip:'', nifnm:'',nifgw:''}
         this.onSettingsMenuOpen = this.onSettingsMenuOpen.bind(this);
         this.onMixtureMenuOpen = this.onMixtureMenuOpen.bind(this);
         this.onPrimeMenuOpen = this.onPrimeMenuOpen.bind(this);
@@ -38,6 +184,7 @@ class LandingPage extends React.Component{
         this.onPurgeCOpen = this.onPurgeCOpen.bind(this);
         this.onSilenceAlarmOpen = this.onSilenceAlarmOpen.bind(this);
         this.onStatisticsOpen = this.onStatisticsOpen.bind(this);
+        this.loadPrefs = this.loadPrefs.bind(this);
         this.settingsModal = React.createRef();
         this.mixtureModal = React.createRef();
         this.primeModal = React.createRef();
@@ -49,6 +196,679 @@ class LandingPage extends React.Component{
         this.purgeCModal = React.createRef();
         this.silenceAlarmModal = React.createRef();
         this.statisticsModal = React.createRef();
+    }
+    /** Life Cycle Method **/
+    componentDidMount(){
+        /** Establishing the connection **/
+        var self = this;
+        setTimeout(function (argument) {
+            self.loadPrefs();
+        }, 100)
+
+        socket.on('locatedResp', function (e) {
+            try{
+                if(typeof e[0] != 'undefined'){
+                var dets = self.state.detL;
+                var macs = self.state.macList.slice(0);               
+                var detectors = [];
+                e.forEach(function(d){
+                  macs.push(d.mac)
+                  dets[d.mac] = d;
+                  if(macs.indexOf(d.mac) == -1){
+                    macs.push(d.mac)
+                    dets[d.mac] = d
+                  }          
+                  socket.emit('vdefReq', d);
+                })
+                var mbunits = self.state.mbunits;
+                var cnt = 0;
+                var curbnk 
+                mbunits.forEach(function(u){
+                  var banks = u.banks.map(function(b){
+                    cnt++;
+                    if(dets[b.mac]){
+                      var _bank = dets[b.mac]
+                      _bank.interceptor = false;
+                      curbnk = _bank
+                      return _bank
+                    }else{
+                      return b
+                    }
+                  })
+                  u.banks = banks;
+                })
+                var curDet = self.state.curDet;
+      
+                if(self.state.currentPage != 'landing'){
+                  if(dets[curDet.mac]){
+                    curDet = dets[curDet.mac];
+                  }
+                  else{
+                  }
+            }
+        
+            var nfip = self.state.nifip;
+            if(e.length > 1){
+              nfip = e[0].nif_ip
+            }
+            self.setState({dets:e, detL:dets, mbunits:mbunits,curDet:curDet, macList:macs, nifip:nfip})
+                }   
+            }catch(er){
+            }
+            socket.emit('getTimezones')
+        });
+        socket.on('timezones',function (e) {
+            // body...
+            self.setState({timezones:e})
+        })
+        socket.on('gw', function(gw){
+            self.setState({nifgw:gw})
+        })
+        socket.on('nif', function(iface){
+          self.setState({nifip:iface.address, nifnm:iface.netmask})
+        })
+        socket.on('notvisible', function(e){
+            toast('Detectors located, but network does not match')
+        })
+        socket.on('version',function (version) {
+            self.setState({version:version})
+        })
+        socket.on('prefs', function(f) {
+            var detL = self.state.detL
+            var cnt = 0;
+            var _ip = ''
+            f.forEach(function (u) {
+              u.banks.forEach(function(b){
+                detL[b.mac] = null
+                cnt++;
+                _ip = b.ip
+              })
+            })
+            if(cnt == 1){
+              socket.emit('locateUnicast', _ip, true)
+            }else{
+              socket.emit('locateReq',true)
+            }
+            setTimeout(function (argument) {
+            // body...
+            if(f.length == 1){
+              console.log(2048)
+              if(!self.state.connected){
+                console.log(2050)
+                if(f[0].banks.length == 1){
+                  if(vdefByMac[f[0].banks[0].mac]){
+                     self.connectToUnit(f[0].banks[0])
+                  }else{
+                    setTimeout(function () {
+                      if(!self.state.connected){
+                        if(vdefByMac[f[0].banks[0].mac]){
+                          self.connectToUnit(f[0].banks[0])
+                        }else{
+                          console.log('no vdef', vdefByMac)
+                        }
+                      }
+                    },4000)
+                  }
+                }
+                
+              } 
+            }
+          },800)
+          self.setState({mbunits:f, detL:detL})
+        })
+        socket.on('paramMsgCW', function(data) {
+          //self.onParamMsg(data.data, data.det)
+          self.onParamMsg(data.data, data.det)
+          data = null;
+          console.log("Received Tata Data is ", data);
+        })
+    }
+    /**sendPacket function used to send rpc requests to the server */
+    sendPacket(n,v){
+      var self = this;
+      var vdef = vdefByMac[this.state.curDet.mac]
+      if(typeof n == 'string'){
+        if(n == 'switchProd'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NO_APIWRITE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n== 'getProdList'){
+          socket.emit('getProdList', this.state.curDet.ip)
+        }else if(n=='deleteProd'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEL_NO_WRITE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'copyCurrentProd'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'copyDefProd'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_DEFAULT']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'copyFacProd'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_FACTORY']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'deleteAll'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_DELETEALL']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'deleteBatch'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PLANBATCHDELETE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              return 0;
+            }
+          })
+          var buf = Buffer.alloc(4)
+          buf.writeUInt32LE(parseInt(v),0)
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt, buf);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'clearFaults'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARFAULTS']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'clearWarnings'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARWARNINGS']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'checkWeight'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'checkWeightSend'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              return 0
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'cancelCW'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHTCANCEL']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              return 0
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'updateSystem'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_UPDATESYSTEM']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'importRestore'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_IMPORTRESTORE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'restoreDefault'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_RESTORE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        
+        }else if(n == 'factoryReset'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_RESET']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'restoreBackup'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_RESTORE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'backupProduct'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_SAVE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'getProdSettings'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n == 'saveProduct'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDWRITE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+          var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          setTimeout(function (argument) {
+            socket.emit('getProdList', self.state.curDet.ip)
+          },150)
+        }else if( n == 'refresh'){
+          var rec = 0;
+          if(v){
+            rec = v
+          }
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
+          var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],rec,0])
+          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        }else if( n == 'refresh_buffer'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
+          var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],v,0])
+          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        }else if( n == 'BatchStart'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
+          var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        }else if( n == 'BatchStartSel'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
+          var buf = Buffer.alloc(4)
+          buf.writeUInt32LE(v,0)
+          var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], buf)
+          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        }else if( n == 'BatchStartNew'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
+          var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], v)
+          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        }else if( n == 'BatchPause'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PAUSEBATCH']
+          var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        }else if( n == 'BatchEnd'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STOPBATCH']
+          var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
+          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        }else if(n=='DateTime'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_DATETIMEWRITE']
+          var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
+          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        }else if(n=='DaylightSavings'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+          })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        }else if(n=='Timezone'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_TIMEZONE_WRITE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        }
+      }else{
+        // console.log('here')
+        if(n['@rpcs']['toggle']){
+  
+          var arg1 = n['@rpcs']['toggle'][0];
+          var arg2 = [];
+          for(var i = 0; i<n['@rpcs']['toggle'][1].length;i++){
+            if(!isNaN(n['@rpcs']['toggle'][1][i])){
+              arg2.push(n['@rpcs']['toggle'][1][i])
+            }else{
+              arg2.push(v)
+            }
+          }
+          var packet = dsp_rpc_paylod_for(arg1, arg2);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n['@rpcs']['write']){
+          // console.log('should be here')
+          var arg1 = n['@rpcs']['write'][0];
+          var arg2 = [];
+          var strArg = null;
+          var flag = false
+          for(var i = 0; i<n['@rpcs']['write'][1].length;i++){
+            if(!isNaN(n['@rpcs']['write'][1][i])){
+              ////console.log('where')
+              arg2.push(n['@rpcs']['write'][1][i])
+            }else if(n['@rpcs']['write'][1][i] == n['@name']){
+              ////console.log('the')
+              if(!isNaN(v) && (n['@type'] != 'int32')){
+                arg2.push(v)
+              }
+              else{
+                arg2.push(0)
+                strArg=v
+              }
+              flag = true;
+            }else{
+              ////console.log('fuck')
+              var dep = n['@rpcs']['write'][1][i]
+              if(dep.charAt(0) == '%'){
+              }
+            }
+          }
+          if(n['@rpcs']['write'][2]){
+            if(Array.isArray(n['@rpcs']['write'][2])){
+              strArg = n['@rpcs']['write'][2]
+            }
+            else if(typeof n['@rpcs']['write'][2] == 'string'){
+              strArg = v
+            }
+            flag = true;
+          }
+          if(!flag){
+            strArg = v;
+          }
+          if(n['@type'] == 'int32'){
+            var buf = Buffer.alloc(4)
+            buf.writeUInt32LE(parseInt(v),0)
+            strArg = buf;
+          }else if(n['@type'] == 'float'){
+            var buf = Buffer.alloc(4)
+            buf.writeFloatLE(parseFloat(v),0)
+            strArg = buf;
+          }else if(n['@type'] == 'weight'){
+            var buf = Buffer.alloc(4)
+            buf.writeFloatLE(parseFloat(v),0)
+            strArg = buf;
+          }else if(n['@type'] == 'float_dist'){
+            var buf = Buffer.alloc(4)
+            buf.writeFloatLE(parseFloat(v),0)
+            strArg = buf;
+          }else if(n['@type'] == 'belt_speed'){
+            var buf = Buffer.alloc(4)
+            buf.writeFloatLE(parseFloat(v),0)
+            strArg = buf;
+          }
+          var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);            
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n['@rpcs']['vfdwrite']){
+          var arg1 = n['@rpcs']['vfdwrite'][0];
+          var arg2 = [];
+          var ind = n['@rpcs']['vfdwrite'][2][0];
+          var strArg = null;
+          
+          for(var i = 0; i<n['@rpcs']['vfdwrite'][1].length;i++){
+            if(!isNaN(n['@rpcs']['vfdwrite'][1][i])){
+              arg2.push(n['@rpcs']['vfdwrite'][1][i])
+            }else if(n['@rpcs']['vfdwrite'][1][i] == n['@name']){
+              if(!isNaN(v)){
+                arg2.push(v)
+              }else{
+                strArg=v
+              }
+            }
+          }
+        var buf = Buffer.alloc(5)
+            buf.writeUInt8(ind,0)
+            if((n['@type'] == 'float')||(n['@type'] == 'weight')||(n['@type'] == 'float_dist')||(n['@type'] == 'belt_speed')||(n['@type'] == 'fdbk_rate')){
+              buf.writeFloatLE(parseFloat(v),1)
+            }else{
+              buf.writeUInt32LE(parseInt(v),1);
+            }
+            var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
+            socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n['@rpcs']['apiwrite']){
+          var arg1 = n['@rpcs']['apiwrite'][0];
+          var arg2 = [];
+          var strArg = null;
+          for(var i = 0; i<n['@rpcs']['apiwrite'][1].length;i++){
+            if(!isNaN(n['@rpcs']['apiwrite'][1][i])){
+              arg2.push(n['@rpcs']['apiwrite'][1][i])
+            }else if(n['@rpcs']['apiwrite'][1][i] == n['@name']){
+              if(!isNaN(v)){
+                arg2.push(v)
+              }else{
+                strArg=v
+              }
+            }
+          }
+          if(n['@type'] == 'int32'){
+            var buf = Buffer.alloc(4)
+            buf.writeUInt32LE(parseInt(v),0)
+            strArg = buf;
+          }else if(n['@type'] == 'float'){
+            var buf = Buffer.alloc(4)
+            buf.writeFloatLE(parseFloat(v),0)
+            strArg = buf;
+          }else if(n['@type'] == 'weight'){
+            var buf = Buffer.alloc(4)
+            buf.writeFloatLE(parseFloat(v),0)
+            strArg = buf;
+          }else if(n['@type'] == 'float_dist'){
+            var buf = Buffer.alloc(4)
+            buf.writeFloatLE(parseFloat(v),0)
+            strArg = buf;
+          }
+          var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }else if(n['@rpcs']['clear']){
+          var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
+          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        }
+      }
+    }
+    /**Connecting with the server **/
+    loadPrefs(){
+      if(socket.sock.readyState  == 1){
+       socket.emit('getVersion',true);
+      }
+    }
+    /**Connect To the Unit (Registration Process with the board) */
+    connectToUnit(det){
+      console.log('connect To Unit')
+      var self = this;
+      socket.emit('connectToUnit',{ip:det.ip, app:'FTI_CW', app_name:'FTI_CW'})
+      var unit = {name:det.name, type:'single', banks:[det]}
+      setTimeout(function (argument) {
+        // body...
+        // console.log(1308, unit)
+        socket.emit('savePrefsCW', [unit])
+      },150)
+      setTimeout(function (argument) {
+        // body...
+        self.sendPacket('refresh')
+      },300)
+      if (this.state.checkPrecInterval == null){
+        var interval = setInterval(function(){
+          if (JSON.stringify(self.state.prec) === '{}'){
+            self.sendPacket('refresh',1)
+          }else{
+            clearInterval(self.state.checkPrecInterval)
+          }
+        },500)
+        this.setState({checkPrecInterval:interval})
+      }
+    //  setTimeout(function(){socket.emit('getProdList',det.ip)},150)
+      this.setState({curDet:det, connected:true})  
     }
     /**Function used to open the Settings Menu**/
     onSettingsMenuOpen(){
@@ -135,7 +955,6 @@ class LandingPage extends React.Component{
                         </tbody>
                     </table>
                     <table>
-
                         <tbody>
                             <tr style={{verticalAlign:'top'}}>
                                 <td>
@@ -356,9 +1175,6 @@ class LineGraph extends React.Component{
     }
 }
 class SideButtonsMenu extends React.Component{
-    onButtonClick(){
-        console.log("Button is clicked")
-    }
     render(){
         return(
             <div className='sideButtonsSection'>
@@ -381,8 +1197,9 @@ class ProductSettings extends React.Component{
       super(props)
     }
     render(){  
-        var searchColor = FORTRESSPURPLE1;      
-        var selStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:25,lineHeight:'47px'}
+    /**Declaration of Theme and Button variables**/
+      var searchColor = FORTRESSPURPLE1;      
+      var selStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:25,lineHeight:'47px'}
       var content =(
         <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:567}}>
             <div>
@@ -390,7 +1207,7 @@ class ProductSettings extends React.Component{
                     <ProdSettingEdit  prodNameComponent={true} afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'ProdName'} vMap={'Product Name'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Product Name'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
                 </div>
                 <div style={{display:'inline-block', marginLeft:8, marginTop:3}}>
-                    <CircularButton onClick={'this.selectRunningProd'} branding={'FORTRESS'} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none', backgroundColor:'white'}} lab={'Select Product'}/>       
+                    <CircularButton onClick={'this.selectRunningProd'} branding={'FORTRESS'} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={'Select Product'}/>       
                 </div>
                 <div style={{display:'none', marginBottom:-10}}>
                 <div style={{display:'none', position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
@@ -412,12 +1229,7 @@ class ProductSettings extends React.Component{
         
       </div>
       )
- 
-      
-      /*if(this.props.branding == 'FORTRESS'){
-        searchColor = FORTRESSPURPLE2
-      }*/
-  
+    /**End of Theme and Button variables declarations**/  
         return <div style={{width:1155}}>
         <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>Product</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:400}}>{'Current Product: '+"DY TEST spstr" }</div></div>
         <table style={{borderCollapse:'collapse'}}>
@@ -457,8 +1269,14 @@ class ProductSettings extends React.Component{
 class ProdSettingEdit extends React.Component{
     constructor(props){
       super(props);
+      this.onClick = this.onClick.bind(this);
+      this.ed = React.createRef();
     }
- 
+    onClick()
+    {
+      this.ed.current.toggle()
+        console.log
+    }
     render(){
       var self = this;
       var ckb;
@@ -557,6 +1375,8 @@ class ProdSettingEdit extends React.Component{
         }
       
       }*/
+      ckb = <CustomKeyboard floatDec={2} sendAlert={msg => 'this.msgm.current.show(msg)'} min={[true,0]} max={[true,100]} preload={'ProdName'} branding={'FORTRESS'}
+            ref={this.ed} language={'english'} tooltip={'Test DY'} num={2} onChange={1} value={''} label={'Label Test'+': ' + 'Value'} submitTooltip={'this.submitTooltip'}/>
 
       return <div style={{marginTop:10}}>
         <div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:titleFont,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:this.props.w1,textAlign:'center'}}>
@@ -564,19 +1384,16 @@ class ProdSettingEdit extends React.Component{
           {this.props.label}   </ContextMenuTrigger>
         
         </div>
-        <div onClick={'this.onClick'} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:this.props.w2}}>
+        <div onClick={this.onClick} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:this.props.w2}}>
           {dispVal}
         </div>
         {
             !this.props.prodNameComponent && 
-            <div onClick={'this.onClick'} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:15,textAlign:'center', width:this.props.w2}}>
+            <div onClick={this.onClick} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:15,textAlign:'center', width:this.props.w2}}>
                 {dispVal}
             </div>
         }
-        
-       
         {ckb}
-
       </div>
     }
   }

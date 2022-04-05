@@ -44,7 +44,7 @@ button{
     border: 1px solid rgb(129,138,144);
     box-shadow: 0 0 6px black;
 }
-.circularButton_FT{
+.circularButton_TATA{
     text-align: center;
     width:191px;
     background-color: #a9a9a9;
@@ -60,7 +60,7 @@ button{
     border: 8px solid rgb(129,138,144);
     box-shadow: 0 0 6px black;
 }
-.touchActive_FT{
+.touchActive_TATA{
     background-color: #5d5480;
     color:#e1e1e1;
 }
@@ -253,10 +253,1897 @@ button{
 
 
 
+.react-contextmenu {
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+    color: #373a3c;
+    font-size: 16px;
+    margin: 2px 0 0;
+    min-width: 160px;
+    outline: none;
+    opacity: 0;
+    padding: 5px 0;
+    pointer-events: none;
+    text-align: left;
+    transition: opacity 250ms ease !important;
+}
 
+.react-contextmenu.react-contextmenu--visible {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 9999;
+}
 
+.notifications-class{
+    color: #555;
+    text-align: center;
+    font-size: 20px;
+}
+.interceptorMainPageUI{
+    box-shadow: 0px 19px #362c66;
+}
+.interceptorDynamicView{
+    border:7px solid black;
+}
+.interceptorDynamicView_f{
+    border: 7px solid black;
+    animation: blink_border;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.interceptorDynamicView_r{
+    border: 7px solid yellow;
+    /*animation: blink_border_r;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;*/
+}
+.interceptorDynamicView_t{
+    border: 7px solid rgb(0,80,200);
+    /*animation: blink_border_r;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;*/
+}
+.interceptorDynamicView_tf{
+    border: 7px solid black;
+    animation: blink_border_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.compassButton{
+    height: 40px;
+    border: none;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.compassButton::before{
+    height: 32px;
+    width: 32px;
+    content: " ";
+    background: url(../assets/compass.png);
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
+.expandButton{
+    height: 32px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.expandButton::before{
+    height: 32px;
+    width: 32px;
+    content: " ";
+    background: url(../assets/angle-down.svg);
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
+.collapseButton{
+    height: 32px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-left: -110px;
+    color: #ccc
+}
+.collapseButton::before{
+    height: 32px;
+    width: 32px;
+    content: " ";
+    background: url(../assets/angle-up.svg);
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
+.copyButton{
+    height: 38px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.copyButton::after{
+    height: 38px;
+    width: 38px;
+    content: " ";
+    background: url(../assets/copy.svg);
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
+.deleteButton{
+    height: 38px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+}
+.deleteButton::after{
+    height: 38px;
+    width: 38px;
+    content: " ";
+    background: url(../assets/trash.svg);
+     display: inline-block;
+     background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
+.editButton{
+    height: 38px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 
+}
+.editButton::after{
+    height: 38px;
+    width: 38px;
+    content: " ";
+    background: url(../assets/edit.svg);
+     display: inline-block;
+     background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
+.copyButton_m{
+    height: 35px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.copyButton_m::after{
+    height: 30px;
+    width: 30px;
+    content: " ";
+    background: url(../assets/copy.svg);
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
+.deleteButton_m{
+    height: 30px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+}
+.deleteButton_m::after{
+    height: 30px;
+    width: 30px;
+    content: " ";
+    background: url(../assets/trash.svg);
+     display: inline-block;
+     background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
+.editButton_m{
+    height: 30px;
+    border: none;
+    background: transparent;
+        margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 
+}
+.editButton_m::after{
+    height: 30px;
+    width: 30px;
+    content: " ";
+    background: url(../assets/edit.svg);
+     display: inline-block;
+     background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    margin-bottom: -7px;
+}
 
+ul {
+  list-style: none;
+  margin:0;
+  padding:0
+}
+li {
+  padding: 5px;
+  background:#eee;
+}
+#dummyCanvas{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+@keyframes flash{
+    0% {background-color: rgba(125,125,125,0.6);}
+    50% {background-color: yellow;}
+    100% {background-color: rgba(125,125,125,0.6)}
+}
+.faultSnackbar{
+    position: relative;
+    bottom:40px;
+    height: 40px;
+    width: 800px;
+    margin-left: 100px;
+    z-index: 2;
+    background: url('../assets/blinkbg.gif');
+
+}
+.testDiv{
+    height: 40px;
+    width: 800px;
+     background: grey;
+    animation-name: flash;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+.faultSnackbar button{
+    float: right;
+}
+.npTable{
+    font-size:16px;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-top: 10px;
+
+}
+.npTable thead tr {
+        display: block;
+        position: relative;
+        
+}
+.npTable tr:nth-child(odd)       { background-color:rgba(200,200,200,0.5); }
+.npTable tr:nth-child(even)      { background-color:transparent; }
+.npTable td{
+    padding-left: 7px;
+    padding-right: 7px;
+}
+.npTable tbody {
+        display: block;
+        overflow: auto;
+        width: 100%;
+        height: 330px;
+}
+.mtab{
+
+}
+.mtab td{
+    /*width:200px;*/
+    white-space: nowrap;
+}
+.logo{
+    height: 72px;
+    margin-right: 20px;
+}
+.mbGroupCont{
+    border:1px solid black;
+}
+.buttCell button{
+   height: 60px;
+}
+.buttCell button::after{
+    background-size: contain;
+    height: 50px;
+    width: 50px;
+    margin-top: -10px;
+    background-repeat: no-repeat;
+
+    display: inline-block;
+}
+.confbuttCell button{
+   height: 60px;
+}
+.confbuttCell button::after{
+    background-size: contain;
+    height: 48px;
+    width: 50px;
+    margin-top: -10px;
+    background-repeat: no-repeat;
+
+    display: inline-block;
+}
+.logbuttCell button{
+   height: 50px;
+}
+.logbuttCell button::after{
+    background-size: contain;
+    height: 40px;
+    width: 40px;
+    margin-top: -10px;
+    background-repeat: no-repeat;
+
+    display: inline-block;
+}
+.pbDiv{
+    display: inline-block;
+}
+.tbDiv{
+    display: table-cell;
+    height: 75px;
+    
+    background: rgb(72, 64, 116);
+    border-radius: 25px;
+    width: 140px;
+    color: #eee;
+    position: relative;
+    margin-bottom: -4px;
+    line-height: 25px;
+    font-size: 25px;
+    vertical-align: middle;
+}
+.tbDiv_m{
+    display: inline-block;
+    height: 50px;
+    vertical-align: top;
+    background: rgb(72, 64, 116);
+    border-radius: 25px;
+    width: 40%;
+    color: #eee;
+    position: relative;
+    margin-bottom: -4px;
+    line-height: 50px;
+    font-size: 20px;
+}
+.pbDiv button{
+    height: 60px;
+    background: transparent;
+    border: none;
+    padding: 0px 0px;
+    top: 4px;
+    margin: 1px;
+    position: relative;
+    border-radius: 25px;
+ }
+.pbDiv button::after{
+    background-size: contain;
+    height: 60px;
+    width: 60px;
+    display: inline-block;
+    padding: 0px 0px;
+    margin: -4px;
+}
+.cbDiv{
+    display: inline-block;
+}
+.cbDiv button{
+    height: 50px;
+    background: transparent;
+    border: none;
+    padding: 0px 0px;
+    top: 4px;
+    margin: 1px;
+    position: relative;
+
+ }
+.cbDiv button::after{
+    background-size: contain;
+    height: 60px;
+    width: 60px;
+    display: inline-block;
+    padding: 0px 0px;
+
+}
+.pbCont{
+    display: inline-block;
+    width: 104px;
+    background-color: grey;
+    float: right;
+    position: relative;
+}
+/*.pbCont::after{
+    position: absolute;
+    content: ' ';
+    height: 100%;
+    z-index: -1;
+    display: inline-block;
+    top: 0px;
+    width: 44px;
+    left: 83px;
+    background: wheat;
+    border-radius: 24px;
+
+}
+.pbCont::before{
+    position: absolute;
+    display: inline-block;
+    content: ' ';
+    height: 100%;
+    width: 44px;
+    top: 0px;
+    left: -20px;
+    background-color: wheat;
+    z-index: -1;
+    border-radius: 24px;
+}*/
+.pbContain{
+    width: 138px;
+    overflow: hidden;
+    position: relative;
+    height: 75px;
+    display: inline-block;
+    margin-bottom: -4px;
+    
+}
+.pbContain_m{
+    width: 60%;
+    overflow: hidden;
+    position: relative;
+    height: 50px;
+    display: inline-block;
+    margin-bottom: -4px;
+    
+}
+.playButton::after{
+    content: " ";
+    background: url('../assets/fti-play-button-wht.png');
+    background-repeat: no-repeat;
+}
+.circleButton::after{
+    content: " ";
+    background: url('../assets/circle.svg');
+    background-repeat: no-repeat;
+}
+.circularButton_FT{
+    text-align: center;
+    width:191px;
+    background-color: #e1e1e1;
+    position: relative;
+    margin-top: 8px;
+    margin-right: auto;
+    margin-left: auto;
+    height:50px;
+    overflow: hidden;
+    border-radius: 32px;
+    padding: 3px;
+    border: 8px solid rgb(129,138,144);
+    box-shadow: 0 0 6px black;
+}
+.touchActive_FT{
+    background-color: #5d5480;
+    color:#e1e1e1;
+}
+/*.circularButton:hover{
+    background-color: #383064;
+}*/
+.playButtonInv::after{
+    content: " ";
+    background: url('../assets/fti-play-button-wht.png');
+    transform: scaleX(-1);
+    background-repeat: no-repeat;
+}
+.keyboardInputButton{
+    display: inline-block;
+  width: 210px;   
+}
+.keyboardInputTextButton{
+    display: inline-block;
+  width: 270px;   
+}
+.round-bg{
+    background: rgb(225,225,225);
+     border: 1px black solid;
+    border-radius: 32px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.login::after{
+     height: 40px;
+    width: 40px;
+    float: right;
+    content:" ";
+    background:url('../assets/locked.svg');
+    
+
+}
+.logout::after{
+     height: 40px;
+    width: 40px;
+    float: right;
+    content:" ";
+    background:url('../assets/unlocked.svg');
+    
+
+}
+.find::after{
+    float: right;
+    content:" ";
+    background:url('../assets/search.svg');
+}
+.find_w::after{
+    float: right;
+    content:" ";
+    background:url('../assets/search_w.svg');
+}
+.home::after{
+    height: 50px;
+    width: 50px;
+    float: right;
+    content:" ";
+    background:url('../assets/home.svg');
+}
+.prefInterface{
+    min-height: 200px;
+    padding: 10px;
+    border: 0px solid gray;
+    box-shadow: inset 0 0 25px 11px rgba(128, 128, 128, 0.3);
+}
+.multiBankUnit{
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    margin-top: 30px;
+}
+.customSelect{
+    height:44px;
+    width: 130px;
+    margin-bottom: 8px;
+   display: inline-block;
+}
+.popoutCustomSelect{
+    display: inline-block;
+     font-size: 18px;
+    height: 30px;
+    width: 125px;
+  
+}
+
+.customSelect select{
+    font-size: 18px;
+    height: 30px;
+    width: 130px;
+    padding: 5px;
+    background: white;
+}
+.pop-modal{
+    /*display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 6; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+   /* max-width: 1028px;*/
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%; /* Full height */
+    overflow-x: hidden;
+    overflow-y:  auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.modal-x{
+    float: right;
+    display: block;
+    width: 45px;
+    margin-top: 5px
+}
+.modal-x svg{
+    display: block;
+   
+}
+.close-x {
+    stroke: white;
+    fill: transparent;
+     stroke-linecap: round;
+  stroke-width: 4;
+}
+
+@keyframes blink_left{
+    0% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));}
+    49% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));}
+    50% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(255, 0,0,0.7) 51%, rgba(255, 0,0,0.7));}
+    100% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(255, 0,0,0.7) 51%, rgba(255, 0,0,0.7));}
+}
+
+@keyframes blink_right{
+    0% {background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);}
+    49% {background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);}
+    50% {background: linear-gradient(100deg, rgba(255, 0,0,0.7), rgba(255, 0,0,0.7) 49%, transparent 53%, transparent);}
+    100% {background: linear-gradient(100deg, rgba(255, 0,0,0.7), rgba(255, 0,0,0.7) 49%, transparent 53%, transparent);}
+}
+@keyframes blink_center{
+    0% {background-color : rgba(150, 150, 150, 0.3);}
+    49% {background-color : rgba(150, 150, 150, 0.3);}
+    50% {background-color : rgba(255, 0,0,0.7);}
+    100% {background-color: rgba(255, 0,0,0.7);}
+}
+@keyframes blink_wr{
+    0% {background-color : linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);}
+    49% {background-color : linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);}
+    50% {background-color : linear-gradient(90deg, transparent, transparent 5%, rgba(200,0,0,0.4) 5%, rgba(200,0,0,0.4) 95%, transparent 95%);}
+    100% {background-color : linear-gradient(90deg, transparent, transparent 5%, rgba(200,0,0,0.4) 5%, rgba(200,0,0,0.4) 95%, transparent 95%);}
+
+}
+@keyframes blink_left_r{
+    0% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));}
+    49% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));}
+    50% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(255, 255,0,0.7) 51%, rgba(255, 255,0,0.7));}
+    100% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(255, 255,0,0.7) 51%, rgba(255, 255,0,0.7));}
+}
+
+@keyframes blink_right_r{
+    0% {background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);}
+    49% {background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);}
+    50% {background: linear-gradient(100deg, rgba(255, 255,0,0.7), rgba(255, 255,0,0.7) 49%, transparent 53%, transparent);}
+    100% {background: linear-gradient(100deg, rgba(255, 255,0,0.7), rgba(255, 255,0,0.7) 49%, transparent 53%, transparent);}
+}
+@keyframes blink_center_r{
+    0% {background-color : rgba(150, 150, 150, 0.3);}
+    49% {background-color : rgba(150, 150, 150, 0.3);}
+    50% {background-color : rgba(255, 255,0,0.7);}
+    100% {background-color: rgba(255, 255,0,0.7);}
+}
+@keyframes blink_wr_r{
+    0% {background-color : black;}
+    49% {background-color : black;}
+    50% {background-color : rgba(200,200,0,0.4);}
+    100% {background-color: rgba(200,200,0,0.4);}
+
+}
+@keyframes blink_left_tf{
+    0% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));}
+    49% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));}
+    50% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(0, 80,200,0.7) 51%, rgba(0, 80,200,0.7));}
+    100% {background: linear-gradient(80deg, transparent, transparent 47%, rgba(0, 80,200,0.7) 51%, rgba(0, 80,200,0.7));}
+}
+
+@keyframes blink_right_tf{
+    0% {background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);}
+    49% {background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);}
+    50% {background: linear-gradient(100deg, rgba(0, 80,200,0.7), rgba(0, 80,200,0.7) 49%, transparent 53%, transparent);}
+    100% {background: linear-gradient(100deg, rgba(0, 80,200,0.7), rgba(0, 80,200,0.7) 49%, transparent 53%, transparent);}
+}
+@keyframes blink_center_tf{
+    0% {background-color : rgba(150, 150, 150, 0.3);}
+    49% {background-color : rgba(150, 150, 150, 0.3);}
+    50% {background-color : rgba(0, 80,200,0.7);}
+    100% {background-color: rgba(0, 80,200,0.7);}
+}
+@keyframes blink_wr_tf{
+     0% {background-color : linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);}
+    49% {background-color : linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);}
+    50% {background-color : linear-gradient(90deg, transparent, transparent 5%, rgba(0,80,200,0.4) 5%, rgba(0,80,200,0.4) 95%, transparent 95%);}
+    100% {background-color : linear-gradient(90deg, transparent, transparent 5%, rgba(0,80,200,0.4) 5%, rgba(0,80,200,0.4) 95%, transparent 95%);}
+}
+@keyframes blink_border{
+    0% {border : 7px solid black;}
+    49% {border : 7px solid black;}
+    50% {border : 7px solid red;}
+    100% {border : 7px solid red;}
+
+}
+@keyframes blink_border_r{
+    0% {border : 7px solid black;}
+    49% {border : 7px solid black;}
+    50% {border : 7px solid yellow;}
+    100% {border : 7px solid yellow;}
+
+}
+@keyframes blink_border_tf{
+    0% {border : 7px solid black;}
+    49% {border : 7px solid black;}
+    50% {border : 7px solid rgb(0,80,200);}
+    100% {border : 7px solid rgb(0,80,200);}
+
+}
+@keyframes dfblink_left{
+
+    0% {background: linear-gradient(109deg, transparent, transparent 45%,black 50%,black 59%, #3d3d3d 64%, #3d3d3d);}
+    49% {background: linear-gradient(109deg, transparent, transparent 45%,black 50%,black 59%, #3d3d3d 64%, #3d3d3d);}
+    50% {background: linear-gradient(109deg, transparent, transparent 45%,red 50%,red 59%, rgba(255, 100, 100, 1) 64%, rgba(255, 100, 100, 1));}
+    100% {background: linear-gradient(109deg, transparent, transparent 45%,red 50%,red 59%, rgba(255, 100, 100, 1) 64%, rgba(255, 100, 100, 1));}
+}
+
+@keyframes dfblink_right{
+    0% {background: linear-gradient(71deg, #3d3d3d, #3d3d3d 36%,black 40%, black 52%, transparent 55%, transparent);}
+    49% {background: linear-gradient(71deg,#3d3d3d, #3d3d3d 36%,black 40%, black 52%, transparent 55%, transparent);}
+    50% {background: linear-gradient(71deg, rgba(255, 100, 100, 1), rgba(255, 100, 100, 1) 36%,red 40%, red 52%, transparent 55%, transparent);}
+    100% {background: linear-gradient(71deg, rgba(255, 100, 100, 1), rgba(255, 100, 100, 1) 36%,red 40%, red 52%, transparent 55%, transparent);}
+}
+@keyframes dfblink_center{
+    0% {background: #3d3d3d; box-shadow: 0px 0px 1px 10px black;}
+    49% {background: #3d3d3d; box-shadow: 0px 0px 1px 10px black;}
+    50% {background: rgba(255, 100,100,1); box-shadow: 0px 0px 1px 10px red;}
+    100% {background: rgba(255, 100,100,1); box-shadow: 0px 0px 1px 10px red;}
+}
+@keyframes dfblink_wr{
+    0% {background-color : black;}
+    49% {background-color : black;}
+    50% {background-color : rgba(200,0,0,0.4);}
+    100% {background-color: rgba(200,0,0,0.4);}
+
+}
+@keyframes dfblink_left_r{
+    0% {background: linear-gradient(109deg, transparent, transparent 45%,black 50%,black 59%, #3d3d3d 64%, #3d3d3d);}
+    49% {background: linear-gradient(109deg, transparent, transparent 45%,black 50%,black 59%, #3d3d3d 64%, #3d3d3d);}
+    50% {background: linear-gradient(109deg, transparent, transparent 45%,yellow 50%,yellow 59%, rgba(255, 255, 100, 1) 64%, rgba(255, 255, 100, 1));}
+    100% {background: linear-gradient(109deg, transparent, transparent 45%,yellow 50%,yellow 59%, rgba(255, 255, 100, 1) 64%, rgba(255, 255, 100, 1));}
+}
+
+@keyframes dfblink_right_r{
+    0% {background: linear-gradient(71deg, #3d3d3d, #3d3d3d 36%,black 40%, black 52%, transparent 55%, transparent);}
+    49% {background: linear-gradient(71deg,#3d3d3d, #3d3d3d 36%,black 40%, black 52%, transparent 55%, transparent);}
+    50% {background: linear-gradient(71deg, rgba(255, 255, 100, 1), rgba(255, 255, 100, 1) 36%,yellow 40%, yellow 52%, transparent 55%, transparent);}
+    100% {background: linear-gradient(71deg, rgba(255, 255, 100, 1), rgba(255, 255, 100, 1) 36%,yellow 40%, yellow 52%, transparent 55%, transparent);}
+}
+@keyframes dfblink_center_r{
+    0% {background: #3d3d3d; box-shadow: 0px 0px 1px 10px black;}
+    49% {background: #3d3d3d; box-shadow: 0px 0px 1px 10px black;}
+    50% {background: rgba(255, 255,100,1); box-shadow: 0px 0px 1px 10px yellow;}
+    100% {background: rgba(255, 255,100,1); box-shadow: 0px 0px 1px 10px yellow;}
+}
+@keyframes dfblink_wr_r{
+    0% {background-color : black;}
+    49% {background-color : black;}
+    50% {background-color : rgba(200,200,0,0.4);}
+    100% {background-color: rgba(200,200,0,0.4);}
+
+}
+@keyframes dfblink_left_tf{
+    0% {background: linear-gradient(109deg, transparent, transparent 45%,black 50%,black 59%, #3d3d3d 64%, #3d3d3d);}
+    49% {background: linear-gradient(109deg, transparent, transparent 45%,black 50%,black 59%, #3d3d3d 64%, #3d3d3d);}
+    50% {background: linear-gradient(109deg, transparent, transparent 45%,rgb(0,80,200) 50%,rgb(0,80,200) 59%, rgb(55, 135, 255) 64%, rgb(55, 135, 255));}
+    100% {background: linear-gradient(109deg, transparent, transparent 45%,rgb(0,80,200) 50%,rgb(0,80,200) 59%, rgb(55,135,255) 64%, rgb(55, 135, 255));}
+}
+
+@keyframes dfblink_right_tf{
+    0% {background: linear-gradient(71deg, #3d3d3d, #3d3d3d 36%,black 40%, black 52%, transparent 55%, transparent);}
+    49% {background: linear-gradient(71deg,#3d3d3d, #3d3d3d 36%,black 40%, black 52%, transparent 55%, transparent);}
+    50% {background: linear-gradient(71deg, rgba(55,135,255, 1), rgba(55, 135, 255, 1) 36%,rgb(0,80,200) 40%,rgb(0,80,200) 52%, transparent 55%, transparent);}
+    100% {background: linear-gradient(71deg, rgba(55, 135, 255, 1), rgba(55, 135, 255, 1) 36%,rgb(0,80,200) 40%,rgb(0,80,200) 52%, transparent 55%, transparent);}
+}
+@keyframes dfblink_center_tf{
+    0% {background: #3d3d3d; box-shadow: 0px 0px 1px 10px black;}
+    49% {background: #3d3d3d; box-shadow: 0px 0px 1px 10px black;}
+    50% {background: rgba(55, 135,255,1); box-shadow: 0px 0px 1px 10px rgb(0,80,200);}
+    100% {background: rgba(55, 135,255,1); box-shadow: 0px 0px 1px 10px rgb(0,80,200);}
+}
+@keyframes dfblink_wr_tf{
+    0% {background-color : black;}
+    49% {background-color : black;}
+    50% {background-color : rgba(0,80,200,0.4);}
+    100% {background-color: rgba(0,80,200,0.4);}
+
+}
+@keyframes dfblink_border{
+    0% {border : 7px solid black;}
+    49% {border : 7px solid black;}
+    50% {border : 7px solid red;}
+    100% {border : 7px solid red;}
+
+}
+@keyframes dfblink_border_r{
+    0% {border : 7px solid black;}
+    49% {border : 7px solid black;}
+    50% {border : 7px solid yellow;}
+    100% {border : 7px solid yellow;}
+
+}
+@keyframes dfblink_border_tf{
+    0% {border : 7px solid black;}
+    49% {border : 7px solid black;}
+    50% {border : 7px solid rgb(0,80,200);}
+    100% {border : 7px solid rgb(0,80,200);}
+
+}
+.navTabLeft{
+    width: 40px;
+    background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));
+}
+.navTabRight{
+    width: 40px;
+    background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);
+}
+.navTabCent{
+    height: 75px;
+    background: rgba(150, 150, 150, 0.3);
+    width: 330px;
+}
+.navWrapper{
+    background: linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);
+}
+.navWrapper_f{
+    background: linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);
+    animation-name: blink_wr;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+
+.navTabLeft_f{
+    width: 40px;
+    background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));
+    animation-name: blink_left;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.navTabRight_f{
+    width: 40px;
+    background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);
+    animation-name: blink_right;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.navTabCent_f{
+    height: 75px;
+    background: rgba(150, 150, 150, 0.3);
+    width: 330px;
+    animation-name: blink_center;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+    color: #e1e1e1
+}
+.navWrapper_tf{
+    background: linear-gradient(90deg, transparent, transparent 5%, black 5%, black 95%, transparent 95%);
+     animation-name: blink_wr_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+
+.navTabLeft_tf{
+    width: 40px;
+    background: linear-gradient(80deg, transparent, transparent 47%, rgba(150, 150, 150, 0.3) 51%, rgba(150, 150, 150, 0.3));
+    animation-name: blink_left_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.navTabRight_tf{
+    width: 40px;
+    background: linear-gradient(100deg, rgba(150, 150, 150, 0.3), rgba(150, 150, 150, 0.3) 49%, transparent 53%, transparent);
+    animation-name: blink_right_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.navTabCent_tf{
+    height: 75px;
+    background: rgba(150, 150, 150, 0.3);
+    width: 330px;
+    animation-name: blink_center_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+    color: #e1e1e1
+}
+.navWrapper_r{
+
+    background-color :    linear-gradient(90deg, transparent, transparent 5%, rgba(200,0,0,0.4) 5%, rgba(200,0,0,0.4) 95%, transparent 95%);
+
+}
+
+.navTabLeft_r{
+    width: 40px;
+    background: linear-gradient(80deg, transparent, transparent 47%, rgba(255, 255,0,0.7) 51%, rgba(255, 255,0,0.7));
+}
+.navTabRight_r{
+    width: 40px;
+    background: linear-gradient(100deg, rgba(255, 255,0,0.7), rgba(255, 255,0,0.7) 49%, transparent 53%, transparent);
+}
+.navTabCent_r{
+    height: 75px;
+    width: 330px;
+    background-color : rgba(255, 255,0,0.7);
+}
+.navWrapper_t{
+    background-color :    linear-gradient(90deg, transparent, transparent 5%, rgba(0,80,200,0.4) 5%, rgba(0,80,200,0.4) 95%, transparent 95%);
+
+}
+
+.navTabLeft_t{
+    width: 40px;
+    background: linear-gradient(80deg, transparent, transparent 47%, rgba(0, 80,200,0.7) 51%, rgba(0, 80,200,0.7));
+}
+.navTabRight_t{
+    width: 40px;
+    background: linear-gradient(100deg, rgba(0, 80,200,0.7), rgba(0, 80,200,0.7) 49%, transparent 53%, transparent);
+}
+.navTabCent_t{
+    height: 75px;
+    width: 330px;
+    background-color : rgba(0, 80,200,0.7);
+}
+
+.dfnavTabLeft{
+    width: 36px;
+    height: 84px;
+    display: inline-block;
+    background: linear-gradient(109deg, transparent, transparent 45%,black 50%,black 59%, #3d3d3d 64%, #3d3d3d);
+    z-index: 2;
+    position: relative;
+}
+.dfnavTabRight{
+ width: 36px;
+    height: 84px;
+    display: inline-block;
+    background: linear-gradient(71deg, #3d3d3d, #3d3d3d 36%,black 40%, black 52%, transparent 55%, transparent);
+    z-index: 2;
+    position: relative;
+}
+.dfnavTabCent{
+    height: 74px;
+    display: inline-block;
+    background: #3d3d3d;
+    width: 100%;
+    vertical-align: top;
+    margin-left: 0px;
+    margin-right: 0px;
+    /* border-top: 10px solid black; */
+    /* border-left: 10px solid transparent; */
+    box-shadow: 0px 0px 1px 10px black;
+    z-index: 1;
+    position: relative;
+}
+.dfnavWrapper{
+    background: black;
+}
+.dfnavWrapper_f{
+    background: black;
+    animation-name: blink_wr;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+
+.dfnavTabLeft_f{
+    width: 36px;
+    height: 84px;
+    display: inline-block;
+    background: linear-gradient(109deg, transparent, transparent 45%,black 50%,black 59%, #3d3d3d 64%, #3d3d3d);
+    z-index: 2;
+    position: relative;
+    animation-name: dfblink_left;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.dfnavTabRight_f{
+    width: 36px;
+    height: 84px;
+    display: inline-block;
+    background: linear-gradient(71deg, #3d3d3d, #3d3d3d 36%,black 40%, black 52%, transparent 55%, transparent);
+    z-index: 2;
+    position: relative;
+    animation-name: dfblink_right;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.dfnavTabCent_f{
+    height: 74px;
+    display: inline-block;
+    background: #3d3d3d;
+    width: 100%;
+    vertical-align: top;
+    margin-left: 0px;
+    margin-right: 0px;
+    /* border-top: 10px solid black; */
+    /* border-left: 10px solid transparent; */
+    box-shadow: 0px 0px 1px 10px black;
+    z-index: 1;
+    position: relative;
+    animation-name: dfblink_center;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+    color: #e1e1e1
+}
+.dfnavWrapper_tf{
+    background: black;
+    animation-name: blink_wr_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+
+.dfnavTabLeft_tf{
+    width: 36px;
+    height: 84px;
+    display: inline-block;
+    background: linear-gradient(109deg, transparent, transparent 45%,black 50%,black 59%, #3d3d3d 64%, #3d3d3d);
+    z-index: 2;
+    position: relative;
+    animation-name: dfblink_left_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.dfnavTabRight_tf{
+    width: 36px;
+    height: 84px;
+    display: inline-block;
+    background: linear-gradient(71deg, #3d3d3d, #3d3d3d 36%,black 40%, black 52%, transparent 55%, transparent);
+    z-index: 2;
+    position: relative;    
+    animation-name: dfblink_right_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+}
+.dfnavTabCent_tf{
+    height: 74px;
+    display: inline-block;
+    background: #3d3d3d;
+    width: 100%;
+    vertical-align: top;
+    margin-left: 0px;
+    margin-right: 0px;
+    /* border-top: 10px solid black; */
+    /* border-left: 10px solid transparent; */
+    box-shadow: 0px 0px 1px 10px black;
+    z-index: 1;
+    position: relative;
+    animation-name: dfblink_center_tf;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+    color: #e1e1e1
+}
+.dfnavWrapper_r{
+
+    background-color : rgba(200,200,0,0.4);
+}
+
+.dfnavTabLeft_r{
+    width: 36px;
+    height: 84px;
+    display: inline-block;
+    background: linear-gradient(109deg, transparent, transparent 45%,yellow 50%,yellow 59%, #ffff64 64%, #ffff64);
+    z-index: 2;
+    position: relative;
+}
+.dfnavTabRight_r{
+    width: 36px;
+    height: 84px;
+    display: inline-block;
+    background: linear-gradient(71deg, #ffff64, #ffff64 36%,yellow 40%, yellow 52%, transparent 55%, transparent);
+    z-index: 2;
+    position: relative;    
+}
+.dfnavTabCent_r{
+    height: 74px;
+    display: inline-block;
+    background: #ffff64;
+    width: 100%;
+    vertical-align: top;
+    margin-left: 0px;
+    margin-right: 0px;
+    /* border-top: 10px solid black; */
+    /* border-left: 10px solid transparent; */
+    box-shadow: 0px 0px 1px 10px yellow;
+    z-index: 1;
+    position: relative;
+}
+.dfnavWrapper_t{
+
+    background-color : rgba(0,80,200,0.4);
+}
+
+.dfnavTabLeft_t{
+    width: 36px;
+    height: 84px;
+    display: inline-block;
+    background: linear-gradient(109deg, transparent, transparent 45%,rgb(0,80,200) 50%,rgb(0,80,200) 59%, rgb(55,135,255) 64%, rgb(55,135,255));
+    z-index: 2;
+    position: relative;
+}
+.dfnavTabRight_t{
+    width: 36px;
+    height: 84px;
+    display: inline-block;
+    background: linear-gradient(71deg, rgb(55,135,255), rgb(55,135,255) 36%,rgb(0,80,200) 40%, rgb(0,80,200) 52%, transparent 55%, transparent);
+    z-index: 2;
+    position: relative;   
+}
+.dfnavTabCent_t{
+    height: 74px;
+    display: inline-block;
+    background: rgb(55,135,255);
+    width: 100%;
+    vertical-align: top;
+    margin-left: 0px;
+    margin-right: 0px;
+    box-shadow: 0px 0px 1px 10px rgb(0,80,200);
+    z-index: 1;
+    position: relative;
+}
+.selectmodal-content{
+    /* margin: 15% auto; */
+    /* margin-top: -30px;*/
+    padding: 20px;
+    border: 1px solid #888;
+    /* width: 80%; */
+    border-radius: 10px;
+    top: 0px;
+    position: relative;
+    border: 0px solid gray;
+    max-height: 440px;
+    overflow-y: scroll;
+
+    /* z-index: -1;/* Could be more or less, depending on screen size */
+}
+.innerDiv{
+    background: #c1c1c1;
+}
+.selectmodal-outer{
+    position: relative;
+    margin-top: 75px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    background:#362c66;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    text-align: center
+}
+.selectmodalo-sp{
+    position: relative;
+    margin-top: 75px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    background:#e1e1e1;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    text-align: center
+}
+.sprc-prod{
+    display:block;
+    position: relative;
+    margin-top: 3px;
+    margin-bottom: 2px; 
+}
+.alertmodal-outer{
+    position: relative;
+    margin-top: 85px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    background:#362c66;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    text-align: center
+}
+
+.alertmodal-outer-sp{
+    position: relative;
+    margin-top: 85px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    background:#e1e1e1;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    text-align: center
+}
+.customKey{
+   /* padding: 5px;*/
+   /* width: 80px;*/
+     padding: 0px;
+    background:#ccc;
+    height: 67px;
+    border: 2px solid grey;
+    font-size: 40px;
+}
+.customKey_sp{
+   /* padding: 5px;*/
+   /* width: 80px;*/
+     padding: 0px;
+    background:#e1e1e1;
+    height: 73px;
+    border: 2px solid grey;
+    font-size: 40px;
+}
+.customKey_m{
+   /* padding: 5px;*/
+   /* width: 80px;*/
+     padding: 0px;
+    background:#ccc;
+    height: 67px;
+    border: 2px solid grey;
+    font-size: 40px;
+}
+.customKey_e{
+         padding: 0px;
+    background:#ccc;
+    height: 67px;
+    border: 2px solid grey;
+    font-size: 40px;
+}
+.keyDown{
+    background: #aaa;
+}
+.tickerBox{
+   /* margin-right: 6px;*/
+    
+}
+.detTd{
+  height: 20px;
+  width: 140px;
+    margin: 0px;
+    padding: 4px;
+    font-size:14px;
+    font-family:arial;
+}
+
+.detTdId{
+  height: 20px;
+  width: 64px;
+    margin: 0px;
+    padding: 4px;
+    font-size:14px;
+    font-family:arial;
+}
+
+.detTdType{
+  height: 20px;
+  width: 100px;
+    margin: 0px;
+    padding: 4px;
+    font-size:14px;
+    font-family:arial;
+}
+
+.detTdDescription{
+  height: 20px;
+  width: 180px;
+    margin: 0px;
+    padding: 4px;
+    font-size:14px;
+    font-family:arial;
+}
+
+.locatedDet{
+    background-color:white;
+  height: 20px;
+  width: 130px;
+    margin: 0px;
+    padding: 3px;
+    font-size:14px;
+    font-family:arial;
+    color: grey;
+    border: 1px solid grey;
+}
+
+.detTh{
+    background-color:rgb(93, 84, 128);
+    color: #e1e1e1;  
+    height: 20px;
+    width: 140px;
+    margin: 0px;
+    padding: 4px;
+    font-size:14px;
+    font-family:arial;
+}
+
+.detThId{
+    background-color:rgb(93, 84, 128);
+    color: #e1e1e1;
+  height: 20px;
+  width: 64px;
+    margin: 0px;
+    padding: 4px;
+    font-size:14px;
+    font-family:arial;
+}
+
+.detThType{
+    background-color:rgb(93, 84, 128);
+    color: #e1e1e1;  
+    height: 20px;
+  width: 100px;
+    margin: 0px;
+    padding: 4px;
+    font-size:14px;
+    font-family:arial;
+}
+
+.detThDescription{
+    background-color:rgb(93, 84, 128);
+    color: #e1e1e1;    
+    width: 180px;
+    margin: 0px;
+    padding: 4px;
+    font-size:14px;
+    font-family:arial;
+}
+.smCell{
+   /* width: 130px;*/
+}
+.statCell{
+    display: inline-block;
+    width: 85px;
+}
+.liveView{
+    height: 90px;
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    line-height: 1.5;
+}
+.multiScanUnit .liveView{
+    height: 180px;
+}
+.inactive .liveView {
+    background: grey;
+}
+.faultactive .liveView{
+    background: rgba(255, 118, 0, 0.5);
+}
+.detInfo{
+    line-height: 1.3;
+}
+.calib{
+    font-size: 25px;
+}
+.calib td{
+    padding: 5px;
+    
+}
+.slantedRight{
+    border-top-right-radius: 50px 65px;
+    height: 357px;
+    width: 250px;
+    background: #362c66;
+    /* border-radius: 0px 68px 0px 0px; */
+    position: relative;
+    display: inline-block;
+    z-index: 2;
+    box-shadow: 20px -20px 0px -10px #818a90;
+}
+.slantedRight::after{
+  background: #362c66;
+    content: "";
+    position: absolute;
+    top: 28px;
+    left: -76px;
+    height: 0px;
+    width: 0px;
+    /* border-radius: 11px 0px; */
+    border-top-left-radius: 41px 11px;
+    border: 171px solid #362c66;
+    transform: rotate(84deg);
+    z-index: -1;
+    box-shadow: 0px 9px 0px 21px #818a90;
+}
+.slantedLeft{
+    height: 357px;
+    width: 257px;
+    background: #362c66;
+    border-top-left-radius: 50px 65px;
+    position: relative;
+    display: inline-block;
+    z-index: 2;
+    box-shadow: -19px -20px 0px -10px #818a90;
+}
+.slantedLeft::before{
+   background: #362c66;
+    content: "";
+    position: absolute;
+    top: 33px;
+    left: -17px;
+    height: 0px;
+    width: 0px;
+    border-top-right-radius: 41px 11px;
+    border: 171px solid #362c66;
+    transform: rotate(276deg);
+    z-index: -1;
+    box-shadow: 0px 10px 0px 21px #818a90;
+}
+
+.mainView{
+    height: 200px;
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+.settingsDiv{
+   padding-top: 10px;
+   padding-bottom: 0px;
+   text-align: center;
+   border: none;
+   position: relative;
+
+}
+.settingsDiv table{
+    border-collapse: collapse;
+}
+.defCont{
+    padding: 10px;
+    border: 0px solid gray;
+    margin: 5px;
+    min-width: 380px;
+    box-shadow: inset 0 0 25px 11px rgba(128, 128, 128, 0.3);
+}
+.setNav{
+    padding-top: 4px;
+    padding-bottom: 4px;
+    max-height: 410px;
+    overflow-y: scroll;
+}
+.scrollTransition{
+    transition-delay:.2s;
+}
+.hiddenScroll{
+        position: absolute;
+    display: block;
+    width: 845px;
+    height: 50px;
+    background: #362c66;
+    box-shadow: 0 0 15px 8px #362c66;
+    top: 523px;
+}
+.landingMenuTable{
+    width: 100%;
+}
+
+.statBar table{
+    width: 100%
+
+}
+.statBarMB{
+        border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    padding-left: 10px;
+    
+   
+    
+}
+.statBarMB table{
+    width: 100%;
+    line-height: 20px;
+}
+.statBarMB .namelabel{
+    border: 1px solid grey;
+    padding: 1px;
+    padding-left: 4px;
+    border-radius: 10px;
+    margin-top: -10px;
+    margin-left: -16px;
+    background: #f1e8e8;
+    width: 10px;
+    margin-bottom: 4px;
+    font-size: 10px;
+}
+.intNavTable{
+    border-spacing: 0px;
+    border-collapse: collapse;
+    border-color: transparent;
+    /* margin-left: -1px; */
+    /* margin-right: auto; */
+    position: relative;
+    text-align: center;
+    margin-top: 10px;
+}
+.intNavTable td{
+    padding: 0px;
+}
+.inactive .statBarMB{
+    background: grey;
+}
+.faultactive .statBarMB{
+    background: rgba(255, 118, 0, 0.5);
+}
+.mobCell{
+    width: 100%
+}
+.closeIcon{
+    width: 50px;
+}
+
+.ledClass{
+    width: 130px;
+}
+.ledCell{
+    align-content: right;
+}
+.ledClass label{
+    width: 111px;
+    display: inline-block;
+}  
+.example_path {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 20px;
+    background: #c1c1c1;
+    /*border: 3px solid #000;*/
+}
+.noPadding{
+    border-spacing:0;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+.noPadding td{
+    padding: 0px;
+}
+.intmetSig{
+    width:70px;
+    padding: 1px;
+    text-align: center;
+}
+.example_path .example_block {
+    position: absolute;
+    width: 30px;
+    height: 10px;
+    padding-top: 10px;
+    text-align: center;
+    color: #fff;
+    font-size: 10px;
+    white-space: nowrap;
+    margin-left: -15px;
+}
+.example_path_i {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 16px;
+    background: #c1c1c1;
+    margin-bottom: 1px;
+    /*border: 3px solid #000;*/
+}
+.example_path_i .example_block_i {
+    position: absolute;
+    width: 30px;
+    height: 16px;
+    padding-top: 10px;
+    text-align: center;
+    color: #fff;
+    font-size: 10px;
+    white-space: nowrap;
+    margin-left: -15px;
+}
+.panelControls{
+    width: 100%;
+}
+.panelControls-mobile table{
+    table-layout: fixed;
+    margin-left: auto;
+    margin-right: auto;
+}
+.panelControls-mobile td{
+    vertical-align: top;
+
+}
+.panelControls table { table-layout: fixed; 
+    margin-left: auto;
+    margin-right: auto;
+    }
+.panelControls td { width: 100px; 
+    vertical-align: top;
+}
+.sItem{
+    padding-left: 5px;
+    border: solid rgba(0, 0, 0, 0.5) 1px;
+    border-radius: 25px;
+    margin-bottom: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 24px;
+    line-height: 55px;
+    position: relative;
+}
+.sItem label{
+  width: 310px;
+}
+.noChild{
+    background: #808a90;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    padding-left: 6px;
+    line-height: 57px;
+}
+.hasChild{
+    border: 5px solid #818a90;
+    background: rgba(240, 240, 240, 0.2);
+    color: #eee;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-align: center;
+}
+.hasChild label{
+    margin-left: 2px
+}
+.hasChildSparc{
+    border: 5px solid #818a90;
+    background: #475C67;
+    color: #eee;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-align: center;
+}
+.hasChildSparc label{
+    margin-left: 2px
+}
+.touchDown{
+    background: rgba(100,100,100, 0.5)
+}
+.txtLeft{
+    text-align: -webkit-right;
+}
+.panelButton{
+    cursor:pointer;
+    background-color:#eee;
+    color:#7B8585;
+    height: 40px;
+    width: 125px;
+    font-size: 18px;
+}
+.ledBar{
+    font-size:16px;
+}
+.ledBar td{
+   vertical-align: top;
+
+}
+.mbTable{
+    width: 100%;
+}
+.mbTable td{
+    border: black 1px solid;
+}
+.panelTitle{
+   
+    white-space: pre;
+    text-align: center;
+}
+.panelTitle b{
+    color: orange;
+}
+.led{
+    width:14px;
+    height:14px;
+    display: inline-block;
+}
+.ledi{
+    width:7px;
+    height:14px;
+    display: inline-block;
+}
+.pButton::after{
+    content: url('../assets/angle-up.svg');
+    width: 10px;
+}
+
+.mButton::after{
+    content: url('../assets/angle-down.svg');
+}
+
+.lButton::after{
+    content: url('../assets/angle-left.svg');
+}
+
+.rButton::after{
+    content: url('../assets/angle-right.svg');
+}
+.dtmiTab{
+    font-size:26px;
+}
+.dtmiTab td{
+   line-height: 45px;
+   padding-right: 5px;
+   text-align: center;
+}
+.panelDisplay table{
+    margin-left: auto;
+    margin-right: auto;
+}
+.treeNode .innerDiv{
+    margin-left: 5px;
+}
+.navItem{
+    display: inline-block;
+    text-align: center;
+    width: 100px;
+    padding: 1px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+.internalContainer{
+  border: 1px solid black;
+}
+.settingDisplay{
+    margin-left: auto;
+    margin-right: auto;
+    width: 610px;
+
+}
+.bbut{
+    float: left;
+    display: inline-block;
+    margin-right: -300px;
+    width: 300px;
+    text-align: left;
+}
+.tabNav{
+    margin-left: auto;
+    margin-right: auto;
+    width: 650px;
+
+}
+.volatileDisplay{
+    margin-left: auto;
+    margin-right: auto;
+    width: 610px;
+}
+.buttCell button{
+    border: none;
+    background: transparent;
+    
+}
+.confbuttCell button{
+    border: none;
+    background: transparent;
+    
+}
+.logbuttCell button{
+    border: none;
+    background: transparent;
+    
+}
+.menuTable h1::after{
+    width: 100%;
+    border-bottom: none;
+}
+.menuTable h1{
+    margin: 0px;
+}
+.menuTable{
+    width: 100%;
+    background-color: #E6E6E6;
+    border-bottom: 2px solid #CCC;
+}
+.tickerCell{
+    width: 200px;
+}
+.buttCell{
+    width: 46px;
+    height: 100px;
+}
+.confbuttCell{
+    width: 46px;
+    height: 100px;
+}
+.logbuttCell{
+    width: 46px;
+    height: 100px;
+}
+.flRight{
+    float: right;
+    margin-right: 5px;
+}
+
+.backButton::before{
+    /*float: left;*/
+    content:url('../assets/angle-left.svg');
+}
+.config::after{
+    float: right;
+    content: " ";
+    background: url('../assets/config.svg');
+}
+.config_w::after{
+    float: right;
+    content: " ";
+    background: url('../assets/config_w.svg');
+}
+
+.config_active::after{
+    float: right;
+     content: " ";
+   
+    background:url('../assets/config_active.svg');
+}
+.burger::after{
+    float: right;
+    content:url('../assets/burger.png');
+}
+.burger_active::after{
+    float: right;
+    content:url('../assets/burger.png');
+
+}
+.attention::after{
+    float: right;
+     content: " ";
+    background:url('../assets/attention.svg');
+}
+.attention_clear::after{
+    float: right;
+     content: " ";
+    background:url('../assets/attention_h.svg');
+}
+.menuItem h3{
+    padding-left: 10px;
+    display: inline-block;
+    width: 80%;
+}
+.titleSpan_wc::after{
+    float: right;
+    content:url('../assets/angle-right.svg');
+    margin-top: 5px;
+}
+
+.multiBankUnit .nameLabel{
+    border: 1px solid grey;
+    padding: 8px;
+    border-radius: 10px;
+    margin-top: -32px;
+    margin-left: -16px;
+    background: #f1e8e8;
+    width: 136px;
+    margin-bottom: 15px;
+    height: 30px;
+}
+.selectNode{
+    padding-left: 15px;
+    border-top-style: groove;
+}
+.menuItem{
+    border: solid rgba(0, 0, 0, 0.49) 1px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    padding-left: 5px;
+}
+.productEditor{
+
+    min-height: 200px;
+}
+.checkmark{
+    height: 20px;
+}
+.mainContTable{
+    width: 100%;
+    border-spacing: 0px;
+}
 
 
