@@ -222,6 +222,7 @@ button{
     margin-top: -270px;
     float: right;
     padding: 10px;
+    font-size: 18px;
     
 }
 .sideButtonsSection{
@@ -242,10 +243,12 @@ button{
 /**Styling tables **/
 .categoryTable{
     width:100%;
+    height: 100%;
     text-align: center;
     font-size: 18px;
 }
 .addBackTable{
+    margin-top: 5px;
     width:100%;
     height: 100%;
     text-align: center;

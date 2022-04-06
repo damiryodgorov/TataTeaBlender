@@ -551,31 +551,31 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
   var rec = {};
   var userrec = {};
   if(rec_type == 0){
-  console.log('SYS REC CW')
-  console.log("nVdf ",nVdf)
-  nVdf[0].forEach(function (p) {
-    rec[p] = getVal(buf, 0, p, pVdef,_deps[ip])
-  })
-  for(var p in _Vdef["@deps"]){
-    if(_Vdef["@deps"][p]["@rec"] == 0){
-      _deps[ip][p] = rec[p]
+    console.log('SYS REC CW')
+    nVdf[0].forEach(function (p) {
+      rec[p] = getVal(buf, 0, p, pVdef,_deps[ip])
+    })
+    for(var p in _Vdef["@deps"]){
+      if(_Vdef["@deps"][p]["@rec"] == 0){
+        _deps[ip][p] = rec[p]
+      }
     }
-  }
-  pack = {type:0, rec:rec}
+    pack = {type:0, rec:rec}
 
   //system
   }else if(rec_type == 1){
-  console.log('PROD REC CW')
-  nVdf[1].forEach(function (p) {
-    rec[p] = getVal(buf, 1, p, pVdef,_deps[ip])
-    // body...
-  })
-  for(var p in _Vdef["@deps"]){
-    if(_Vdef["@deps"][p]["@rec"] == 1){
-      _deps[ip][p] = rec[p]
+    console.log('PROD REC CW')
+    console.log("nVdf ",nVdf)
+    nVdf[1].forEach(function (p) {
+      rec[p] = getVal(buf, 1, p, pVdef,_deps[ip])
+      // body...
+    })
+    for(var p in _Vdef["@deps"]){
+      if(_Vdef["@deps"][p]["@rec"] == 1){
+        _deps[ip][p] = rec[p]
+      }
     }
-  }
-  pack = {type:1, rec:rec}
+    pack = {type:1, rec:rec}
   }else if(rec_type == 2){
   nVdf[2].forEach(function (p) {
     rec[p] = getVal(buf, 2, p, pVdef,_deps[ip])
