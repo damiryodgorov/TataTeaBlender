@@ -13760,34 +13760,34 @@
         "name": "Device Time"
       },
       "korean": {
-        "name": ""
+        "name": "Device Time"
       },
       "spanish": {
-        "name": ""
+        "name": "Device Time"
       },
       "french": {
-        "name": ""
+        "name": "Device Time"
       },
       "portuguese": {
-        "name": ""
+        "name": "Device Time"
       },
       "italian": {
-        "name": ""
+        "name": "Device Time"
       },
       "russian": {
-        "name": ""
+        "name": "Device Time"
       },
       "polish": {
-        "name": ""
+        "name": "Device Time"
       },
       "chinese": {
-        "name": ""
+        "name": "Device Time"
       },
       "german": {
-        "name": ""
+        "name": "Device Time"
       },
       "turkish": {
-        "name": ""
+        "name": "Device Time"
       }
     },
     "Date": {
@@ -13795,34 +13795,34 @@
         "name": "Date"
       },
       "korean": {
-        "name": ""
+        "name": "Date"
       },
       "spanish": {
-        "name": ""
+        "name": "Date"
       },
       "french": {
-        "name": ""
+        "name": "Date"
       },
       "portuguese": {
-        "name": ""
+        "name": "Date"
       },
       "italian": {
-        "name": ""
+        "name": "Date"
       },
       "russian": {
-        "name": ""
+        "name": "Date"
       },
       "polish": {
-        "name": ""
+        "name": "Date"
       },
       "chinese": {
-        "name": ""
+        "name": "Date"
       },
       "german": {
-        "name": ""
+        "name": "Date"
       },
       "turkish": {
-        "name": ""
+        "name": "Date"
       }
     },
     "DateTime_Word": {
@@ -13830,34 +13830,34 @@
         "name": "DateTime"
       },
       "korean": {
-        "name": ""
+        "name": "DateTime"
       },
       "spanish": {
-        "name": ""
+        "name": "DateTime"
       },
       "french": {
-        "name": ""
+        "name": "DateTime"
       },
       "portuguese": {
-        "name": ""
+        "name": "DateTime"
       },
       "italian": {
-        "name": ""
+        "name": "DateTime"
       },
       "russian": {
-        "name": ""
+        "name": "DateTime"
       },
       "polish": {
-        "name": ""
+        "name": "DateTime"
       },
       "chinese": {
-        "name": ""
+        "name": "DateTime"
       },
       "german": {
-        "name": ""
+        "name": "DateTime"
       },
       "turkish": {
-        "name": ""
+        "name": "DateTime"
       }
     },
     "Daylight Savings": {
@@ -13935,34 +13935,34 @@
         "name": "Time Zone"
       },
       "korean": {
-        "name": ""
+        "name": "Time Zone"
       },
       "spanish": {
-        "name": ""
+        "name": "Time Zone"
       },
       "french": {
-        "name": ""
+        "name": "Time Zone"
       },
       "portuguese": {
-        "name": ""
+        "name": "Time Zone"
       },
       "italian": {
-        "name": ""
+        "name": "Time Zone"
       },
       "russian": {
-        "name": ""
+        "name": "Time Zone"
       },
       "polish": {
-        "name": ""
+        "name": "Time Zone"
       },
       "chinese": {
-        "name": ""
+        "name": "Time Zone"
       },
       "german": {
-        "name": ""
+        "name": "Time Zone"
       },
       "turkish": {
-        "name": ""
+        "name": "Time Zone"
       }
     },
     "Confirm Action": {
@@ -39546,8 +39546,8 @@
           "description": ""
         },
         "portuguese": {
-          "name": "NTP Server",
-          "description": ""
+          "name": "NTP Server portuguese test",
+          "description": "test data"
         },
         "italian": {
           "name": "NTP Server",
@@ -63255,7 +63255,7 @@
                                   "type": 0,
                                   "val": "VfdType0",
                                   "acc": 0
-                                },
+                                },                                
                                 {
                                   "type": 0,
                                   "val": "VfdConversion0",
@@ -63305,7 +63305,7 @@
                                   "type": 0,
                                   "val": "VfdStatus0",
                                   "acc": 0
-                                },
+                                },                                
                                 {
                                   "type": 0,
                                   "val": "RealBeltSpeed0",
@@ -63349,7 +63349,7 @@
                                   "type": 0,
                                   "val": "VfdType1",
                                   "acc": 0
-                                },
+                                },  
                                 {
                                   "type": 0,
                                   "val": "VfdConversion1",
@@ -63374,7 +63374,7 @@
                                   "type": 0,
                                   "val": "VfdDir1",
                                   "acc": 0
-                                },
+                                },            
                                 {
                                   "type": 0,
                                   "val": "VfdGearRatio1",
@@ -63443,7 +63443,7 @@
                                   "type": 0,
                                   "val": "VfdType2",
                                   "acc": 0
-                                },
+                                },  
                                 {
                                   "type": 0,
                                   "val": "VfdConversion2",
@@ -63537,7 +63537,7 @@
                                   "type": 0,
                                   "val": "VfdType3",
                                   "acc": 0
-                                },
+                                },  
                                 {
                                   "type": 0,
                                   "val": "VfdConversion3",
@@ -64224,6 +64224,7 @@
                       "val": "PassAccClrFaultWarn",
                       "acc": 0
                     }
+                    
                   ]
                 },
                 "type": 1,
@@ -70760,7 +70761,145 @@
         "After"
       ]
     },
-    "VfdState": {
+    "VfdState0": {
+      "english": [
+        "Disabled",
+        "Enabled"
+      ],
+      "korean": [
+        "Disabled",
+        "Enabled"
+      ],
+      "spanish": [
+        "Disabled",
+        "Enabled"
+      ],
+      "french": [
+        "Disabled",
+        "Enabled"
+      ],
+      "portuguese": [
+        "Desativado",
+        "Enabled"
+      ],
+      "italian": [
+        "Disabled",
+        "Enabled"
+      ],
+      "german": [
+        "Disabled",
+        "Enabled"
+      ],
+      "polish": [
+        "Disabled",
+        "Enabled"
+      ],
+      "turkish": [
+        "Disabled",
+        "Enabled"
+      ],
+      "russian": [
+        "Disabled",
+        "Enabled"
+      ],
+      "chinese": [
+        "Disabled",
+        "Enabled"
+      ]
+    },
+    "VfdState1": {
+      "english": [
+        "Disabled",
+        "Enabled"
+      ],
+      "korean": [
+        "Disabled",
+        "Enabled"
+      ],
+      "spanish": [
+        "Disabled",
+        "Enabled"
+      ],
+      "french": [
+        "Disabled",
+        "Enabled"
+      ],
+      "portuguese": [
+        "Desativado",
+        "Enabled"
+      ],
+      "italian": [
+        "Disabled",
+        "Enabled"
+      ],
+      "german": [
+        "Disabled",
+        "Enabled"
+      ],
+      "polish": [
+        "Disabled",
+        "Enabled"
+      ],
+      "turkish": [
+        "Disabled",
+        "Enabled"
+      ],
+      "russian": [
+        "Disabled",
+        "Enabled"
+      ],
+      "chinese": [
+        "Disabled",
+        "Enabled"
+      ]
+    },
+    "VfdState2": {
+      "english": [
+        "Disabled",
+        "Enabled"
+      ],
+      "korean": [
+        "Disabled",
+        "Enabled"
+      ],
+      "spanish": [
+        "Disabled",
+        "Enabled"
+      ],
+      "french": [
+        "Disabled",
+        "Enabled"
+      ],
+      "portuguese": [
+        "Desativado",
+        "Enabled"
+      ],
+      "italian": [
+        "Disabled",
+        "Enabled"
+      ],
+      "german": [
+        "Disabled",
+        "Enabled"
+      ],
+      "polish": [
+        "Disabled",
+        "Enabled"
+      ],
+      "turkish": [
+        "Disabled",
+        "Enabled"
+      ],
+      "russian": [
+        "Disabled",
+        "Enabled"
+      ],
+      "chinese": [
+        "Disabled",
+        "Enabled"
+      ]
+    },
+    "VfdState3": {
       "english": [
         "Disabled",
         "Enabled"
@@ -70869,44 +71008,44 @@
         "Inverted"
       ],
       "korean": [
-        "Forward",
-        "Backward"
+        "Normal",
+        "Inverted"
       ],
       "spanish": [
-        "Forward",
-        "Backward"
+        "Normal",
+        "Inverted"
       ],
       "french": [
-        "Forward",
-        "Backward"
+        "Normal",
+        "Inverted"
       ],
       "portuguese": [
-        "Forward",
-        "Backward"
+        "Normal",
+        "Inverted"
       ],
       "italian": [
-        "Forward",
-        "Backward"
+        "Normal",
+        "Inverted"
       ],
       "german": [
-        "Forward",
-        "Backward"
+        "Normal",
+        "Inverted"
       ],
       "polish": [
-        "Forward",
-        "Backward"
+        "Normal",
+        "Inverted"
       ],
       "turkish": [
-        "Forward",
-        "Backward"
+        "Normal",
+        "Inverted"
       ],
       "russian": [
-        "Forward",
-        "Backward"
+        "Normal",
+        "Inverted"
       ],
       "chinese": [
-        "Forward",
-        "Backward"
+        "Normal",
+        "Inverted"
       ]
     },
     "WeighingMode": {
@@ -71181,6 +71320,1090 @@
         "Off",
         "After pack",
         "Continuous"
+      ]
+    },
+    "NTPServer": {
+      "english": [
+        "off",
+        "internet",
+        "local"
+      ],
+      "korean": [
+        "off",
+        "internet",
+        "local"
+      ],
+      "spanish": [
+        "off",
+        "internet",
+        "local"
+      ],
+      "french": [
+        "off",
+        "internet",
+        "local"
+      ],
+      "portuguese": [
+        "off",
+        "internet",
+        "local"
+      ],
+      "italian": [
+        "off",
+        "internet",
+        "local"
+      ],
+      "german": [
+        "off",
+        "internet",
+        "local"
+      ],
+      "polish": [
+        "off",
+        "internet",
+        "local"
+      ],
+      "turkish": [
+        "off",
+        "internet",
+        "local"
+      ],
+      "russian": [
+        "off",
+        "internet",
+        "local"
+      ],
+      "chinese": [
+        "off",
+        "internet",
+        "local"
+      ]
+    },
+    "PassAccSelectProduct": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccProdEdit": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccAdvProdEdit": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccCalMenu": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccEditIO": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccEditComm": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PwdAccFaultWarnClr": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccEditFaults": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccTime": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccUpdate": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccSync": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccAdvSys": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "PassAccClrFaultWarn": {
+      "english": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "korean": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "spanish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "french": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "portuguese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "italian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "german": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "polish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "turkish": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "russian": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "chinese": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
       ]
     },
     "FeedbackMode": {

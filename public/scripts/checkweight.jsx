@@ -2800,7 +2800,7 @@ class LandingPage extends React.Component{
 
     var detectors = this.state.dets.map(function (det, i) {
       // body...
-      return   <div> <CircularButton language={self.state.english} branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
+      return   <div> <CircularButton language={self.state.language} branding={self.state.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={det.ip} onClick={()=> self.connectToUnit(det)}/></div>
        
     })
       return (<div>
@@ -2867,6 +2867,7 @@ class LandingPage extends React.Component{
     // New Changes to add with greyed out functionality on startup 
     var play, stop;
     // var sttxt = 'Start'
+
     var sttxt = labTransV2['Start Text'][language]['name']
     // if CanStartBelts == 0
     play = <div style={{width:250, lineHeight:'60px',color:psbtcolor,font:30, background:'#a9a9a9', display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} className={psbtklass}> <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div></div>
@@ -2931,7 +2932,7 @@ class LandingPage extends React.Component{
 
     if(this.state.srec['SRecordDate']){
         sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['System Settings'][language]['name']}</div></div>
-        <SettingsPageWSB  resetCalibration={this.resetCalibration} packSamples={this.state.packSamples} soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.confirmPressed == 1 ? 0 : this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+        <SettingsPageWSB  resetCalibration={this.resetCalibration} packSamples={this.state.packSamples} soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.confirmPressed == 1 ? 0 : this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={this.state.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
           onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vmap}/>
         <BatchWidget language={language} acc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket} liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} batchRunning={this.state.rec['BatchRunning']} canStartBelts={this.state.rec['CanStartBelts']} onStart={this.start} onResume={this.resume} pause={this.pause} start={this.state.start} stopB={this.stop} status={statusStr} netWeight={formatWeight(this.state.crec['PackWeight'], this.state.srec['WeightUnits'])}/>  
         </div>
@@ -2941,7 +2942,7 @@ class LandingPage extends React.Component{
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['CalWeight']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.srec['CalWeight'], this.state.srec['WeightUnits'])} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.state.curDet.mac][1][0]['CalWeight']} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'OverWeightLim'} vMap={vMapV2['OverWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['OverWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['OverWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['OverWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit getMMdep={this.getMMdep} trans={true} name={'UnderWeightLim'} vMap={vMapV2['UnderWeightLim']}  language={this.state.language} branding={this.state.branding} h1={40} w1={200} h2={51} w2={200} label={vMapV2['UnderWeightLim']['@translations'][this.state.language]['name']} value={FormatWeight(this.state.prec['UnderWeightLim'], this.state.srec['WeightUnits'])} param={vdefByMac[this.state.curDet.mac][1][1]['UnderWeightLim']} editable={true} onEdit={this.sendPacket} num={true}/></div>
-          <CircularButton language={language} branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={labTransV2['Calibrate'][language]['name']}/>
+          <CircularButton language={this.state.language} branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={labTransV2['Calibrate'][language]['name']}/>
           </div>)
 
         unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
@@ -6320,7 +6321,7 @@ class SettingsPage extends React.Component{
       nodes = [];
       for(var i = 0; i < catList.length; i++){
         var ct = catList[i]
-        nodes.push(<SettingItem3 soc={this.props.soc} submitList={this.submitList} submitTooltip={this.submitTooltip} submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
+        nodes.push(<SettingItem3 language={self.props.language} soc={this.props.soc} submitList={this.submitList} submitTooltip={this.submitTooltip} submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
           language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} path={'path'} ip={self.props.dsp} 
           font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} 
           sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
@@ -6417,13 +6418,13 @@ class SettingsPage extends React.Component{
           }
           if(par.dt){
             
-            nodes.push(<SettingItem3 soc={self.props.soc} timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+            nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
               children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} passAcc={passAcc} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
        
            }else{
           //console.log(2158, isInt)
-          nodes.push(<SettingItem3 soc={self.props.soc} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+          nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
               children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} passAcc={passAcc} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
          }
@@ -6448,7 +6449,7 @@ class SettingsPage extends React.Component{
                         spname = spname.slice(0,-4)
                     }
                   }
-              nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language}
+              nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language}
                onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
                 data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
       
@@ -6456,7 +6457,7 @@ class SettingsPage extends React.Component{
                 if(self.props.wsb && lvl == 1){
                   lenOffset++;
                 }else{
-                  nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+                  nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
               data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
             
                 }
@@ -6475,12 +6476,12 @@ class SettingsPage extends React.Component{
                     ch.unshift(spar['@data'])
                   }
                   
-                  nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
+                  nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
                     font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} backdoor={true}
                    data={[sc,i]} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
         
           }else{
-            nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+            nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
               font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false}  backdoor={true}
               data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
           }
@@ -6489,7 +6490,7 @@ class SettingsPage extends React.Component{
          
           var sc = par['@data']
             
-          nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+          nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
             font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
             data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
     
@@ -6509,7 +6510,7 @@ class SettingsPage extends React.Component{
 
          
         }else if(par.type == 5){
-          nodes.push(<SettingItem3 soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Unused'} name={'Unused'} hasChild={true} 
+          nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Unused'} name={'Unused'} hasChild={true} 
               data={{}} onItemClick={self.openUnused} hasContent={true} acc={true} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
       
           //nodes.push(<CircularButton branding={self.props.branding} onClick={self.openUnused} lab={"Get Unused Settings"}/>)
@@ -7253,7 +7254,6 @@ class SettingItem3 extends React.Component{
           if(this.props.backdoor){
             im = ''
           }
-
           var medctrl= (<MultiEditControl  timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst}  dt={this.props.dt} disabled={disable} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitList={this.submitList} submitChange={this.submitChange} submitTooltip={this.props.submitTooltip} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} 
                       mac={this.props.mac} ov={true} vMap={vMapV2[lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits}
                     onFocus={this.onFocus} onRequestClose={this.onRequestClose} acc={this.props.acc} pAcc={this.props.passAcc} ref='ed' vst={vst} 
@@ -7320,6 +7320,7 @@ class MultiEditControl extends React.Component{
     var tlist = []
     var elist = []
     var liststring = ''
+    
     // console.log('constructing MEC')
     if(typeof this.props.param[0]['@labels'] != 'undefined'){
       var labname = this.props.param[0]['@labels'] 
@@ -7330,6 +7331,7 @@ class MultiEditControl extends React.Component{
         elist = vMapLists[this.props.param[0]['@labels']]['english'].slice(0);
       }else{
       //  console.log('WOW', this.props.param)
+      console.log("vdefByMac[this.props.mac][0] ",vdefByMac[this.props.mac][0])
         liststring = vdefByMac[this.props.mac][0]['@labels'][this.props.param[0]['@labels']][this.props.language].join(',');
         vMapLists[this.props.param[0]['@labels']] = JSON.parse(JSON.stringify(vdefByMac[this.props.mac][0]['@labels'][this.props.param[0]['@labels']]))
         vdefMapV2['@languages'].forEach(function (l) {
@@ -7643,6 +7645,7 @@ class MultiEditControl extends React.Component{
     
     render(){
       var self = this;
+
     var popupmenu = ''
     var namestring = this.props.name
     
@@ -9264,7 +9267,7 @@ if(prodName.length > 17){
           <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
             <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.props.language]['name']}</div></div>
      
-          <FaultDiv langauge={this.props.language} branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
+          <FaultDiv language={this.props.language} branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
         </Modal>
 
     </div>)
@@ -10094,9 +10097,9 @@ class PlanBatchStart extends React.Component{
         bgc = '#7ccc7c'
       }
       return  <div onClick={() => self.onStartBatchClick(i)} style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
-        <div>{labTransV2['Batch Id'][this.props.language]['name']+': '+bat['PlanBatchId']}</div>
-        <div>{labTransV2['Batch Ref'][this.props.language]['name']+': '+ bat['PlanBatchRef']}</div>
-       <div>{labTransV2['Product'][this.props.language]['name']+': '+ prMap[bat['PlanProdNum']]}</div>
+        <div>{labTransV2['Batch Id'][self.props.language]['name']+': '+bat['PlanBatchId']}</div>
+        <div>{labTransV2['Batch Ref'][self.props.language]['name']+': '+ bat['PlanBatchRef']}</div>
+       <div>{labTransV2['Product'][self.props.language]['name']+': '+ prMap[bat['PlanProdNum']]}</div>
         </div>
       // body...
     })
@@ -10434,9 +10437,9 @@ class BatchControl extends React.Component{
         bgc = '#7ccc7c'
       } 
       return <div  style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc}}>
-        <div>{labTransV2['Batch Id'][this.props.language]['name']+ ': '+ bat['PlanBatchId']}</div>
-        <div>{labTransV2['Batch Ref'][this.props.language]['name']+ ': ' + bat['PlanBatchRef']}</div>
-       <div>{labTransV2['Product'][this.props.language]['name']+': '+ prMap[bat['PlanProdNum']]}</div>
+        <div>{labTransV2['Batch Id'][self.props.language]['name']+ ': '+ bat['PlanBatchId']}</div>
+        <div>{labTransV2['Batch Ref'][self.props.language]['name']+ ': ' + bat['PlanBatchRef']}</div>
+       <div>{labTransV2['Product'][self.props.language]['name']+': '+ prMap[bat['PlanProdNum']]}</div>
         </div>
       // body...
     })
@@ -10517,7 +10520,6 @@ class BatchControl extends React.Component{
       else {
         var lowPass = vMapV2['LowPassCnt']['@translations'][this.props.language]['name'] 
       }
-
     var batchSummary = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ? 
         <div style={{whiteSpace:'nowrap', margin:5, padding:5}}>
           <div><div style={titleSt}>{labTransV2['Batch'][this.props.language]['name']}</div><div style={midSt}><div style={dots}/></div><div style={valSt}>{this.state.bRec['Batch ID'].value}</div></div>
@@ -10628,9 +10630,9 @@ class BatchControl extends React.Component{
           }
           //bat.stats.birthtime.slice(0,-1).split('T').join(' ')
           return <div onClick={() => self.onPastBatchClick(bat.id)} style={{fontSize:18, borderBottom:'2px solid #ccc', background:bgc}}>
-            <div>{labTransV2['Batch Id'][this.props.language]['name']+': '+ info[0]}</div>
-            <div>{labTransV2['Batch Ref'][this.props.language]['name']+ ': ' + info[1]}</div>
-            <div>{labTransV2['Product'][this.props.language]['name']+': '+ info[2].replace('.json','')}</div>
+            <div>{labTransV2['Batch Id'][self.props.language]['name']+': '+ info[0]}</div>
+            <div>{labTransV2['Batch Ref'][self.props.language]['name']+ ': ' + info[1]}</div>
+            <div>{labTransV2['Product'][self.props.language]['name']+': '+ info[2].replace('.json','')}</div>
             </div>
      
         }) 
@@ -10811,9 +10813,9 @@ class PlannedBatches extends React.Component{
         del =  <img src='assets/trash.svg' style={{width:30}} onClick={()=>self.deleteBatch(bat['PlanBatchId'])}/>
       
       return  <div style={{fontSize:18, borderBottom:'2px solid #362c66', background:bgc, display:'grid', gridTemplateColumns:'260px 40px'}}>
-        <div  onClick={() => self.onBatchClick(i)}><div>{labTransV2['Batch Id'][this.props.language]['name']+': '+ bat['PlanBatchId']}</div>
-        <div>{labTransV2['Batch Ref'][this.props.language]['name']+ ': ' + bat['PlanBatchRef']}</div>
-        <div>{labTransV2['Product'][this.props.language]['name']+ ': '+ self.props.prMap[bat['PlanProdNum']]}</div>
+        <div  onClick={() => self.onBatchClick(i)}><div>{labTransV2['Batch Id'][self.props.language]['name']+': '+ bat['PlanBatchId']}</div>
+        <div>{labTransV2['Batch Ref'][self.props.language]['name']+ ': ' + bat['PlanBatchRef']}</div>
+        <div>{labTransV2['Product'][self.props.language]['name']+ ': '+ self.props.prMap[bat['PlanProdNum']]}</div>
         </div><div style={{display:'flex', textAlign:'center'}}>
          {del}
         </div>
@@ -12109,13 +12111,13 @@ class FaultDiv extends React.Component{
     if(this.props.faults.length != 0){
       clButton =<div> <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Faults'][this.props.language]['name']} onClick={this.clearFaults}/></div>
       cont = this.props.faults.map(function(f){
-        return <FaultItem language={this.props.language} maskFault={self.maskFault} fault={f}/>
+        return <FaultItem language={self.props.language} maskFault={self.maskFault} fault={f}/>
       })
     }
     if(this.props.warnings.length != 0){
       wclButton =<div> <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Warnings'][this.props.language]['name']} onClick={this.clearWarnings}/></div>
       wcont = this.props.warnings.map(function(f){
-        return <FaultItem language={this.props.language} maskFault={self.maskFault} fault={f}/>
+        return <FaultItem language={self.props.language} maskFault={self.maskFault} fault={f}/>
       })
     }
        
