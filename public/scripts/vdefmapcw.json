@@ -63802,9 +63802,9 @@
                             "acc": 3
                           },
                           {
-                            "type": 0,
-                            "val": "@customstrn",
-                            "acc": 3
+                          "type": 0,
+                          "val": "@customstrn",
+                          "acc": 3
                           },
                           {
                             "type": 0,
@@ -73211,6 +73211,372 @@
       "chinese": [
         "No",
         "Yes"
+      ]
+    },
+    "MeanWeightMode": {
+      "english": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ],
+      "korean": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ],
+      "spanish": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ],
+      "french": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ],
+      "portuguese": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ],
+      "italian": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ],
+      "german": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ],
+      "polish": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ],
+      "turkish": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ],
+      "russian": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ],
+      "chinese": [
+        "Passed Weights",
+        "Good Weights",
+        "All Weights"
+      ]
+    },
+    "LoggerState": {
+      "english": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ],
+      "korean": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ],
+      "spanish": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ],
+      "french": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ],
+      "portuguese": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ],
+      "italian": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ],
+      "german": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ],
+      "polish": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ],
+      "turkish": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ],
+      "russian": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ],
+      "chinese": [
+        "off",
+        "running",
+        "start",
+        "on reboot"
+      ]
+    },
+    "InputSupplyVoltage": {
+      "english": [
+        "None",
+        "24V",
+        "Ground"
+      ],
+      "korean": [
+        "None",
+        "24V",
+        "Ground"
+      ],
+      "spanish": [
+        "None",
+        "24V",
+        "Ground"
+      ],
+      "french": [
+        "None",
+        "24V",
+        "Ground"
+      ],
+      "portuguese": [
+        "None",
+        "24V",
+        "Ground"
+      ],
+      "italian": [
+        "None",
+        "24V",
+        "Ground"
+      ],
+      "german": [
+        "None",
+        "24V",
+        "Ground"
+      ],
+      "polish": [
+        "None",
+        "24V",
+        "Ground"
+      ],
+      "turkish": [
+        "None",
+        "24V",
+        "Ground"
+      ],
+      "russian": [
+        "None",
+        "24V",
+        "Ground"
+      ],
+      "chinese": [
+        "None",
+        "24V",
+        "Ground"
+      ]
+    },
+    "BannerSupplyVoltage": {
+      "english": [
+        "24V",
+        "Ground"
+      ],
+      "korean": [
+        "24V",
+        "Ground"
+      ],
+      "spanish": [
+        "24V",
+        "Ground"
+      ],
+      "french": [
+        "24V",
+        "Ground"
+      ],
+      "portuguese": [
+        "24V",
+        "Ground"
+      ],
+      "italian": [
+        "24V",
+        "Ground"
+      ],
+      "german": [
+        "24V",
+        "Ground"
+      ],
+      "polish": [
+        "24V",
+        "Ground"
+      ],
+      "turkish": [
+        "24V",
+        "Ground"
+      ],
+      "russian": [
+        "24V",
+        "Ground"
+      ],
+      "chinese": [
+        "24V",
+        "Ground"
+      ]
+    },
+    "HideEmarkMav": {
+      "english": [
+        "no",
+        "yes"
+      ],
+      "korean": [
+        "no",
+        "yes"
+      ],
+      "spanish": [
+        "no",
+        "yes"
+      ],
+      "french": [
+        "no",
+        "yes"
+      ],
+      "portuguese": [
+        "no",
+        "yes"
+      ],
+      "italian": [
+        "no",
+        "yes"
+      ],
+      "german": [
+        "no",
+        "yes"
+      ],
+      "polish": [
+        "no",
+        "yes"
+      ],
+      "turkish": [
+        "no",
+        "yes"
+      ],
+      "russian": [
+        "no",
+        "yes"
+      ],
+      "chinese": [
+        "no",
+        "yes"
+      ]
+    },
+    "usecustom": {
+      "english": [
+        "disabled",
+        "enabled"
+      ],
+      "korean": [
+        "disabled",
+        "enabled"
+      ],
+      "spanish": [
+        "disabled",
+        "enabled"
+      ],
+      "french": [
+        "disabled",
+        "enabled"
+      ],
+      "portuguese": [
+        "disabled",
+        "enabled"
+      ],
+      "italian": [
+        "disabled",
+        "enabled"
+      ],
+      "german": [
+        "disabled",
+        "enabled"
+      ],
+      "polish": [
+        "disabled",
+        "enabled"
+      ],
+      "turkish": [
+        "disabled",
+        "enabled"
+      ],
+      "russian": [
+        "disabled",
+        "enabled"
+      ],
+      "chinese": [
+        "disabled",
+        "enabled"
+      ]
+    },
+    "theme": {
+      "english": [
+        "SPARC",
+        "FORTRESS"
+      ],
+      "korean": [
+        "SPARC",
+        "FORTRESS"
+      ],
+      "spanish": [
+        "SPARC",
+        "FORTRESS"
+      ],
+      "french": [
+        "SPARC",
+        "FORTRESS"
+      ],
+      "portuguese": [
+        "SPARC",
+        "FORTRESS"
+      ],
+      "italian": [
+        "SPARC",
+        "FORTRESS"
+      ],
+      "german": [
+        "SPARC",
+        "FORTRESS"
+      ],
+      "polish": [
+        "SPARC",
+        "FORTRESS"
+      ],
+      "turkish": [
+        "SPARC",
+        "FORTRESS"
+      ],
+      "russian": [
+        "SPARC",
+        "FORTRESS"
+      ],
+      "chinese": [
+        "SPARC",
+        "FORTRESS"
       ]
     }
   }
