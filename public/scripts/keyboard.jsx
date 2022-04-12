@@ -62,7 +62,7 @@ class CustomKeyboard extends React.Component{
 		if(this.props.weightUnits!='undefined')
 		{
 			if(this.state.show){
-				cont = <CustomKeyboardCont weightUnits={this.props.weightUnits} sendAlert={this.props.sendAlert} min={this.props.min} max={this.props.max} preload={this.props.preload} branding={this.props.branding} 
+				cont = <CustomKeyboardCont passwordKeyboard={this.props.passwordKeyboard} parameter={this.props.parameter} weightUnits={this.props.weightUnits} sendAlert={this.props.sendAlert} min={this.props.min} max={this.props.max} preload={this.props.preload} branding={this.props.branding} 
 				ref='cnt' mobile={this.props.mobile} datetime={this.props.datetime} language={this.props.language} tooltip={this.props.tooltip} pwd={this.props.pwd} onChange={this.onChange} 
 				show={this.state.show} close={this.close} value={this.props.value} num={this.props.num} label={this.props.label} submitTooltip={this.props.submitTooltip}/>
 			}
@@ -274,8 +274,9 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		}
 		var label = labTransV2['Enter'][this.props.language]['name']
 		var helpText = '';
+		console.log("this.props", this.props);
 		if(this.props.label && this.props.label.length > 0){
-			if((this.props.label.includes('Clear Time -') && this.props.min[1] == 0)||(this.props.label.includes('Minimum Product Gap -') && this.props.min[1] == 0)||(this.props.label.includes('Eye Block Fault Distance -') && this.props.min[1] == 0)){
+			if((this.props.parameter =='FaultClearTimeOverride')||(this.props.parameter =='EyeBlockTimeOverride' && this.props.min[1] == 0)||(this.props.parameter =='EyeMinGapDistOverride' && this.props.min[1] == 0)){
 				label = this.props.label;
 				helpText=labTransV2['Enter 0 to use default'][this.props.language]['name'];
 			}else{
@@ -471,6 +472,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		if(this.props.mobile){
 			minW = 300
 		}
+		
 		return <div style={{paddingLeft:7,paddingRight:7}} className = {klass}>
 		<div style={{minWidth:minW,fontSize:20}}><div className='flexCont' style={{display:'inline-block',width:fbwidth,height:45,color:vclr,marginRight:'auto',marginLeft:'auto',display:'inline-block'}}> <span className='flexBox' >
 			{label}</span> 
@@ -492,7 +494,7 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		{transModal}
 		<div hidden={hidden}>
 			{
-				label != 'Password' ? 
+				!this.props.passwordKeyboard ? 
 				<CircularButton language={this.props.language} branding={this.props.branding} style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.onEnter} lab={vdefMapV2['@labels']['Accept'][this.props.language].name}/>
 				:
 				dispval.length == 4 ?

@@ -3074,7 +3074,7 @@ class LandingPage extends React.Component{
          <BatchControl language={language} soc={this.props.soc} bstartTime={this.state.crec['BatchStartDate']} plannedBatches={this.state.plannedBatches} pBatches={this.state.batchList} batchPerm={batchPerm} usb={this.state.rec['ExtUsbConnected'] == true} onResume={this.resume} startStopAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])} sendPacket={this.sendPacket}
           liveWeight={FormatWeight(this.state.liveWeight,this.state.srec['WeightUnits'])} statusStr={statusStr} getBatchList={this.getBatchList} batchMode={this.state.srec['BatchMode']} selfProd={this.state.srec['EditProdNo']} drec={this.state.rec} prod={this.state.prec} crec={this.state.crec} srec={this.state.srec} startNew={this.startBuf}
            startP={this.startSel} startB={this.start} mac={this.state.curDet.mac} stopB={this.stop} pause={this.pause} 
-                   weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} language={language} branding={this.state.branding} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
+                   weightUnits={this.state.srec['WeightUnits']}  start={this.state.start} stop={this.state.stop} branding={this.state.branding} ref={this.btc} ip={this.state.curDet.ip}  pList={this.state.pList} pNames={this.state.prodNames} batchRunning={this.state.rec["BatchRunning"]} canStartBelts={this.state.rec['CanStartBelts']}/>
         </Modal>
         <Modal  language={language} x={true} ref={this.unuProductSettingssedModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:660}}>
         {unused}   
@@ -4698,7 +4698,6 @@ class ProductSettings extends React.Component{
     var selStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:25,lineHeight:'47px'}
     var searchColor = SPARCBLUE1;
     var newFeedbackCorRate="";
-    
     if(this.props.branding == 'FORTRESS'){
       searchColor = FORTRESSPURPLE2
     }
@@ -5369,8 +5368,13 @@ class ProdSettingEdit extends React.Component{
       }
        
     var titleFont = 20;
+    
     if(this.props.w1/this.props.label.length < 10){
       titleFont = 20*this.props.w1/(10*this.props.label.length) 
+    }
+    if (this.props.label.length >= 20)
+    {
+      titleFont = 16;
     }
     return <div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:titleFont,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:this.props.w1,textAlign:'center'}}>
@@ -6322,7 +6326,7 @@ class SettingsPage extends React.Component{
       for(var i = 0; i < catList.length; i++){
         var ct = catList[i]
         nodes.push(<SettingItem3 language={self.props.language} soc={this.props.soc} submitList={this.submitList} submitTooltip={this.submitTooltip} submitChange={this.submitChange} vMap={vMapV2} branding={this.props.branding} ioBits={this.props.ioBits} int={isInt} mobile={this.props.mobile} mac={this.props.mac} 
-          language={self.props.language}  onFocus={this.onFocus} onRequestClose={this.onRequestClose} path={'path'} ip={self.props.dsp} 
+          onFocus={this.onFocus} onRequestClose={this.onRequestClose} path={'path'} ip={self.props.dsp} 
           font={self.state.font} sendPacket={self.sendPacket} lkey={ct} name={ct} hasChild={true} data={[this.props.cob2[i],i]} onItemClick={handler} hasContent={true} 
           sysSettings={this.state.sysRec} prodSettings={this.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
         
@@ -6418,13 +6422,13 @@ class SettingsPage extends React.Component{
           }
           if(par.dt){
             
-            nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+            nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} timezones={self.props.timezones} timeZone={self.props.timeZone} dst={self.props.dst} dt={true} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
               children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} passAcc={passAcc} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
        
            }else{
           //console.log(2158, isInt)
-          nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
+          nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitList={self.submitList} submitTooltip={self.submitTooltip} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} onFocus={self.onFocus} onRequestClose={self.onRequestClose} 
             ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={p['@name']} name={p['@name']} 
               children={[vdefByMac[self.props.mac][5][pname].children,ch]} hasChild={false} data={d} onItemClick={handler} passAcc={passAcc} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec}/>)
          }
@@ -6449,7 +6453,7 @@ class SettingsPage extends React.Component{
                         spname = spname.slice(0,-4)
                     }
                   }
-              nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language}
+              nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}
                onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
                 data={[sc,i]} children={[vdefByMac[self.props.mac][5][spname].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
       
@@ -6457,7 +6461,7 @@ class SettingsPage extends React.Component{
                 if(self.props.wsb && lvl == 1){
                   lenOffset++;
                 }else{
-                  nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
+                  nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} 
               data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
             
                 }
@@ -6476,12 +6480,12 @@ class SettingsPage extends React.Component{
                     ch.unshift(spar['@data'])
                   }
                   
-                  nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
+                  nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp}
                     font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false} backdoor={true}
                    data={[sc,i]} children={[vdefByMac[self.props.mac][5][spar['@name']].children,ch]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
         
           }else{
-            nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+            nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}   vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
               font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={sc.cat} name={sc.cat} hasChild={false}  backdoor={true}
               data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
           }
@@ -6490,7 +6494,7 @@ class SettingsPage extends React.Component{
          
           var sc = par['@data']
             
-          nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
+          nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange} vMap={vMapV2} branding={self.props.branding} int={isInt} usernames={self.props.usernames} mobile={self.props.mobile} mac={self.props.mac} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} 
             font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Accounts'} name={'Accounts'} hasChild={false} 
             data={[sc,i]} onItemClick={handler} hasContent={true} acc={acc} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
     
@@ -6510,7 +6514,7 @@ class SettingsPage extends React.Component{
 
          
         }else if(par.type == 5){
-          nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac}  language={self.props.language} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Unused'} name={'Unused'} hasChild={true} 
+          nodes.push(<SettingItem3 language={self.props.language} soc={self.props.soc} submitTooltip={self.submitTooltip} submitList={self.submitList} submitChange={self.submitChange}  vMap={vMapV2} branding={self.props.branding} int={isInt} mobile={self.props.mobile} mac={self.props.mac} onFocus={self.onFocus} onRequestClose={self.onRequestClose} ioBits={self.props.ioBits} path={pathString} ip={self.props.dsp} font={self.state.font} sendPacket={self.sendPacket} dsp={self.props.dsp} lkey={'Unused'} name={'Unused'} hasChild={true} 
               data={{}} onItemClick={self.openUnused} hasContent={true} acc={true} sysSettings={self.state.sysRec} prodSettings={self.state.prodRec} dynSettings={self.state.dynRec} framSettings={self.state.framRec}/>)
       
           //nodes.push(<CircularButton branding={self.props.branding} onClick={self.openUnused} lab={"Get Unused Settings"}/>)
@@ -6527,13 +6531,18 @@ class SettingsPage extends React.Component{
         ph = <div style={{display:'block', width:'100%', height:20}}></div>
         SA = true;
       }
+      var fSize = 20;
+      if(labTransV2['Factory Reset'][this.props.language]['name'].length > 25)
+      {
+        fSize = 16
+      }
       nav = (
           <div className='setNav' style={{maxHeight:maxHeight}} onScroll={this.handleScroll} id={this.props.Id}>
             {nodes}
             {ph}
            {pathString=='System/Advanced' && <div style={{marginTop:-20}}>
-             <button className="sItem" onClick={this.showFactoryResetMessage} style={{border:'5px solid red',width:200,height:60}}><p style={{marginTop:-8}}>{labTransV2['Factory Reset'][this.props.language]['name']}</p></button>
-             <button className="sItem" onClick={()=>location.reload()} style={{border:'5px solid #818a90',width:200,height:60,marginLeft:40}}><p style={{marginTop:-8}}>{labTransV2['Reconnect'][this.props.language]['name']}</p></button>
+             <button className="sItem" onClick={this.showFactoryResetMessage} style={{border:'5px solid red',width:200,height:60}}><p style={{marginTop:-8, fontSize:fSize}}>{labTransV2['Factory Reset'][this.props.language]['name']}</p></button>
+             <button className="sItem" onClick={()=>location.reload()} style={{border:'5px solid #818a90',width:200,height:60,marginLeft:40}}><p style={{marginTop:-8, fontSize:fSize}}>{labTransV2['Reconnect'][this.props.language]['name']}</p></button>
            </div>
            } 
           </div>)
@@ -7659,7 +7668,7 @@ class MultiEditControl extends React.Component{
     var dt = false;
     var fSize = 20;
     if(namestring.length > 30){
-      fSize = 14
+      fSize = 12.5
     }
     else if(namestring.length > 24){
       fSize= 16
@@ -7755,11 +7764,11 @@ class MultiEditControl extends React.Component{
           
         }else{
           if(typeof self.props.param[i]['@float_dec'] != 'undefined'){
-            if(self.props.weightUnits == 3 && namestring!='Filter' && namestring!='Clear Time')
+            if(self.props.weightUnits == 3 && self.props.param[i]['@name']!='FilterFreq' && self.props.param[i]['@name']!='FaultClearTimeOverride')
             {
               val = val.toFixed(2)
             }
-            else if((self.props.weightUnits == 1 || self.props.weightUnits == 2) && namestring == 'Settle Weight')
+            else if((self.props.weightUnits == 1 || self.props.weightUnits == 2) && self.props.param[i]['@name'] == 'SettleWeight')
             {
               val = val.toFixed(3)
             }
@@ -7843,7 +7852,8 @@ class MultiEditControl extends React.Component{
       if(iod && i == 1){
         _st.width = 190
       }
-      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{(val == '0.0 seconds' && namestring == 'Clear Time')  ? 'Default' : (val == '0 mm' && namestring == 'Minimum Product Gap') || (val == '0.0 in' && namestring == 'Minimum Product Gap') ? 'Default' : val == '0.00 x Product Length' ? 'Default' : val}</CustomLabel>)
+
+      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{(val == '0.0 seconds' && self.props.param[i]['@name']=='FaultClearTimeOverride')  ? 'Default' : (val == '0 mm' && self.props.param[i]['@name']=='EyeMinGapDistOverride') || (val == '0.0 in' && self.props.param[i]['@name']=='EyeMinGapDistOverride') ? 'Default' : val == '0.00 x Product Length' ? 'Default' : val}</CustomLabel>)
     })
     
 
@@ -8189,11 +8199,11 @@ class MultiEditControl extends React.Component{
               if(!isNaN(v)){
                 if(self.props.weightUnits == 3)
                 {
-                  if(float_dec && namestring!='Filter' && namestring!='Clear Time')
+                  if(float_dec && self.props.param[i]['@name']!='FilterFreq' && self.props.param[i]['@name']!='FaultClearTimeOverride')
                   {
                     dispV = Number(dispV).toFixed(2)
                   }
-                  else if(float_dec && (namestring=='Filter' || namestring=='Clear Time')){
+                  else if(float_dec && (self.props.param[i]['@name']=='FilterFreq' || self.props.param[i]['@name']=='FaultClearTimeOverride')){
                     dispV = Number(dispV).toFixed(1)
                   }
                 }
@@ -8207,7 +8217,7 @@ class MultiEditControl extends React.Component{
                     dispV = Number(dispV).toFixed(float_dec)
                   }
                   
-                  if(lbl == 'Settle Weight'&& (self.props.weightUnits == 1 || self.props.weightUnits == 2 )){
+                  if(self.props.param[i]['@name'] == 'SettleWeight'&& (self.props.weightUnits == 1 || self.props.weightUnits == 2 )){
                     dispV = Number(dispV).toFixed(3)
                   }
 
@@ -8221,7 +8231,7 @@ class MultiEditControl extends React.Component{
               /*if(float_dec && !isNaN(dispV)){
                 dispV = dispV.toFixed(float_dec)
               }*/
-              return <CustomKeyboard weightUnits={self.props.weightUnits} floatDec={float_dec} sendAlert={msg => self.msgm.current.show(msg)} min={[minBool, min]} max={[maxBool, max]} submitTooltip={self.submitTooltip} branding={self.props.branding} mobile={self.props.mobile} 
+              return <CustomKeyboard parameter={self.props.param[i]['@name']} weightUnits={self.props.weightUnits} floatDec={float_dec} sendAlert={msg => self.msgm.current.show(msg)} min={[minBool, min]} max={[maxBool, max]} submitTooltip={self.submitTooltip} branding={self.props.branding} mobile={self.props.mobile} 
                datetime={self.props.dt} language={self.props.language} tooltip={self.props.vMap['@translations'][self.props.language]['description']} vMap={self.props.vMap}  onFocus={self.onFocus} ref={self['input'+i]} onRequestClose={self.onRequestClose}
                 onChange={self.valChanged} index={i} value={v} num={num} label={lbl + ' - ' + dispV}/>
             }
@@ -8732,7 +8742,7 @@ class LogInControl2 extends React.Component{
     var pw = <PopoutWheel inputs={inputSrcArr} tooltipOv={true} tooltip={vdefMapV2['@tooltips']['Select User'][this.props.language]} outputs={outputSrcArr} ovWidth={290} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
 
     return <React.Fragment>{pw}
-      <CustomKeyboard branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={labTransV2['Password'][this.props.language]['name']}/>
+      <CustomKeyboard passwordKeyboard={true} branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={labTransV2['Password'][this.props.language]['name']}/>
     <MessageModal language={this.props.language} ref={this.msgm}/>
     </React.Fragment> 
   }
@@ -9055,10 +9065,16 @@ class StatDisplay extends React.Component{
       }
     
     }
-    var unEditableContent = this.props.name=='Weigh Conveyor Length' || this.props.name=='Weight Photoeye Distance';
+    var fSize = 14;
+    if(this.props.name.length>25)
+    {
+      fSize = 12;
+    }
+   
+    var unEditableContent = this.props.pram =='WeighLength' || this.props.pram == 'EyeDist';
     return <div style={{height:55, paddingTop:10, width:'100%', borderBottom:"2px solid #888", backgroundColor: unEditableContent && "#ccc"}} >
-    <div onClick={this.editSetting}><div style={{textAlign:'center',fontSize:14}}>{this.props.name}</div>
-    <div style={{textAlign:'center',lineHeight:1.4, fontSize:14}} >{this.props.value}</div></div>
+    <div onClick={this.editSetting}><div style={{textAlign:'center',fontSize:fSize}}>{this.props.name}</div>
+    <div style={{textAlign:'center',lineHeight:1.4, fontSize:fSize}} >{this.props.value}</div></div>
       {ckb}
       <MessageModal language={this.props.language} ref={this.msgm}/>
     </div>
