@@ -15539,6 +15539,41 @@
       "turkish": {
         "name": ""
       }
+    },
+    "Product Name": {
+      "english": {
+        "name": "Product Name"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
     }
   },
   "@acc": {
