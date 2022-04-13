@@ -15574,6 +15574,76 @@
       "turkish": {
         "name": ""
       }
+    },
+    "Product Name": {
+      "english": {
+        "name": "Product Name"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "No User": {
+      "english": {
+        "name": "No User"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
     }
   },
   "@acc": {
@@ -66572,7 +66642,7 @@
       ],
       "portuguese": [
         "Normal",
-        "Case Weigher"
+        "Case da Balança"
       ],
       "italian": [
         "Normal",
@@ -66947,8 +67017,8 @@
         "Beacon - Sonoro",
         "Fechadura da Porta ",
         "Aviso",
-        "Feedback Up",
-        "Feedback-Down",
+        "Feedback Ativo",
+        "Feedback Inativo",
         "Execução de Lote",
         "Circuito de Segurança",
         "Saudável"
@@ -67286,7 +67356,7 @@
         "Gramas",
         "Quilogramas",
         "Libras",
-        "Oz"
+        "Onças"
       ],
       "polish": [
         "Grams",
@@ -67387,7 +67457,7 @@
         "Mm"
       ],
       "portuguese": [
-        "In",
+        "Imperial",
         "Métrico"
       ],
       "german": [
@@ -68016,7 +68086,7 @@
         "Fixo",
         "Automático",
         "Rápido",
-        "Learn"
+        "Aprender"
       ],
       "turkish": [
         "Sabit",
@@ -68257,7 +68327,7 @@
         ""
       ],
       "portuguese": [
-        "Peak",
+        "Pico",
         "FM"
       ],
       "german": [
@@ -68985,7 +69055,7 @@
       ],
       "portuguese": [
         "Rápido ",
-        "Learn"
+        "Aprender"
       ],
       "german": [
         "Fast",
@@ -69263,7 +69333,7 @@
       ],
       "portuguese": [
         "Desligado",
-        "On"
+        "Ligado"
       ],
       "russian": [
         "Off",
@@ -69372,7 +69442,7 @@
       ],
       "portuguese": [
         "",
-        ""
+        "*"
       ],
       "italian": [
         "",
@@ -70504,7 +70574,7 @@
         "Enabled"
       ],
       "portuguese": [
-        "Desativado",
+        "Desabilitado",
         "Habilitado "
       ],
       "italian": [
@@ -70669,8 +70739,8 @@
       ],
       "portuguese": [
         "Dupla Frequência",
-        "Single (A)",
-        "Single (B)"
+        "Única (A)",
+        "Única (B)"
       ],
       "italian": [
         "",
@@ -70813,8 +70883,8 @@
         "Enabled"
       ],
       "portuguese": [
-        "Desativado",
-        "Enabled"
+        "Desabilitado",
+        "Habilitado "
       ],
       "italian": [
         "Disabled",
@@ -70859,8 +70929,8 @@
         "Enabled"
       ],
       "portuguese": [
-        "Desativado",
-        "Enabled"
+        "Desabilitado",
+        "Habilitado "
       ],
       "italian": [
         "Disabled",
@@ -70905,8 +70975,8 @@
         "Enabled"
       ],
       "portuguese": [
-        "Desativado",
-        "Enabled"
+        "Desabilitado",
+        "Habilitado "
       ],
       "italian": [
         "Disabled",
@@ -70951,8 +71021,8 @@
         "Enabled"
       ],
       "portuguese": [
-        "Desativado",
-        "Enabled"
+        "Desabilitado",
+        "Habilitado "
       ],
       "italian": [
         "Disabled",
@@ -71321,7 +71391,7 @@
         "Continuous"
       ],
       "portuguese": [
-        "Auto",
+        "Automático",
         "Lote Planejado",
         "Entrada Manual"
       ],
@@ -71378,7 +71448,7 @@
         "local"
       ],
       "portuguese": [
-        "off",
+        "desligado",
         "internet",
         "local"
       ],
@@ -72516,7 +72586,7 @@
       ],
       "portuguese": [
         "Não",
-        "Yes"
+        "Sim"
       ],
       "italian": [
         "No",
@@ -72758,7 +72828,7 @@
     },
     "FaultMaskOverride": {
       "portuguese": [
-        "Depla Frequência",
+        "Padrão",
         "Desativado",
         "Falha",
         "Aviso"
@@ -72842,7 +72912,7 @@
         "Manual"
       ],
       "portuguese": [
-        "Auto",
+        "Automático",
         "Manual"
       ],
       "italian": [
@@ -72950,7 +73020,7 @@
       ],
       "portuguese": [
         "Comprimento",
-        "Lead",
+        "Frente",
         "Média"
       ],
       "italian": [
@@ -73113,9 +73183,9 @@
         "Mid"
       ],
       "portuguese": [
-        "Default",
+        "Padrão",
         "Comprimento",
-        "Lead",
+        "Frente",
         "Média"
       ],
       "italian": [
@@ -73269,9 +73339,9 @@
         "All Weights"
       ],
       "portuguese": [
-        "Passed Weights",
-        "Good Weights",
-        "All Weights"
+        "Pesos Aprovados",
+        "Peso Bom",
+        "Todos os Pesos"
       ],
       "italian": [
         "Passed Weights",
@@ -73330,10 +73400,10 @@
         "on reboot"
       ],
       "portuguese": [
-        "off",
-        "running",
-        "start",
-        "on reboot"
+        "desligado",
+        "em funcionamento",
+        "iniciar",
+        "na reinicialização"
       ],
       "italian": [
         "off",
@@ -73394,9 +73464,9 @@
         "Ground"
       ],
       "portuguese": [
-        "None",
+        "Nenhum",
         "24V",
-        "Ground"
+        "Terra"
       ],
       "italian": [
         "None",
@@ -73448,7 +73518,7 @@
       ],
       "portuguese": [
         "24V",
-        "Ground"
+        "Terra"
       ],
       "italian": [
         "24V",
@@ -73493,8 +73563,8 @@
         "yes"
       ],
       "portuguese": [
-        "no",
-        "yes"
+        "não",
+        "sim"
       ],
       "italian": [
         "no",
@@ -73539,8 +73609,8 @@
         "enabled"
       ],
       "portuguese": [
-        "disabled",
-        "enabled"
+        "desabilitado",
+        "habilitado "
       ],
       "italian": [
         "disabled",
