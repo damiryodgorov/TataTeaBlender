@@ -14385,6 +14385,41 @@
         "name": ""
       }
     },
+    "Tared": {
+      "english": {
+        "name": "Tared"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
     "Place calibration weight on weight conv..": {
       "english": {
         "name": "Place calibration weight on weight conveyor and press Calibrate"

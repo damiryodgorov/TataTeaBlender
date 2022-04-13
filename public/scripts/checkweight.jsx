@@ -1540,6 +1540,7 @@ class LandingPage extends React.Component{
             ifvisible.setIdleDuration(e.rec['AutoLogoutMinutes']*60)
           }
           this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), unusedList:this.getUCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
+          this.setState({username:labTransV2['No User'][this.state.language]['name']})
           if (this.props.lane){
             this.props.update(this.props.lane)
           }
@@ -1620,9 +1621,9 @@ class LandingPage extends React.Component{
           if(e.rec['Taring'] != this.state.rec['Taring']){
             if(e.rec['Taring'] == 1){
               //toast('Taring..')
-              this.tBut.current.tStart('Taring');
+              this.tBut.current.tStart(labTransV2['Taring'][this.state.language]['name']);
             }else if(e.rec['Taring'] == 2){
-              this.tBut.current.tDone('Tared')
+              this.tBut.current.tDone(labTransV2['Tared'][this.state.language]['name'])
             }else{
               this.tBut.current.tEnd();
             }
@@ -1634,7 +1635,7 @@ class LandingPage extends React.Component{
            if((e.rec['CheckingWeight'] != this.state.rec['CheckingWeight']) && (typeof this.state.rec['CheckingWeight'] != 'undefined')){
             if(e.rec['CheckingWeight'] == 1){
               //toast('Taring..')
-              this.chBut.current.tStart('Check Weight');
+              this.chBut.current.tStart(labTransV2['Check Weight'][this.state.language]['name']);
               this.cwModal.current.show();
            //  setTimeout(function (argument) {
                // body...
@@ -2653,7 +2654,7 @@ class LandingPage extends React.Component{
     if((this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccCheckWeight'])){
       this.sendPacket('checkWeight')
     }else{
-      this.msgm.current.show(labTransV2['Access Denied'][language]['name']);
+      this.msgm.current.show(labTransV2['Access Denied'][this.state.language]['name']);
       this.chBut.current.tEnd();
     }
   }
@@ -3049,9 +3050,9 @@ class LandingPage extends React.Component{
             <BatchPackCountGraph language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',paddingTop:5, paddingBottom:5, width:275}} >{play}{stop}</div>
-          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
+          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} vMap={labTransV2['Batch']} submit={this.labChange}/>
           <CircularButton language={language} override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Tare'][language]['name']} onClick={this.tareWeight}/>
-          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
+          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} vMap={labTransV2['Product']} submit={this.labChange}/>
           <CircularButton language={language} override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Check Weight'][language]['name']} onClick={this.checkweight}/>
         <Modal language={language} x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
@@ -12217,7 +12218,7 @@ class CheckWeightControl extends React.Component{
   render(){
     var cw = this.props.cw.toFixed(1)+'g'
     if(this.props.waiting){
-      cw = 'Waiting for Weight'
+      cw = labTransV2['Waiting for Weight'][this.props.language]['name']
     }
 
     return <div>
@@ -12228,7 +12229,7 @@ class CheckWeightControl extends React.Component{
         <div style={{marginTop:140}}>
         <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.cancelCW} lab={labTransV2['Cancel'][this.props.language]['name']}/>
         {
-          cw!='Waiting for Weight' && this.state.cwset != 0 ?
+          cw != labTransV2['Waiting for Weight'][this.props.language]['name'] && this.state.cwset != 0 ?
           <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={labTransV2['Confirm'][this.props.language]['name']}/>
           :
           <CircularButton language={this.props.language} disabled={true} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
