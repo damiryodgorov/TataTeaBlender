@@ -1539,7 +1539,7 @@ class LandingPage extends React.Component{
           if(e.rec['AutoLogoutMinutes'] != this.state.srec['AutoLogoutMinutes']){
             ifvisible.setIdleDuration(e.rec['AutoLogoutMinutes']*60)
           }
-          this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), unusedList:this.getUCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
+          this.setState({noupdate:false,srec:e.rec,language:language, username:labTransV2['No User'][language]['name'], cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), unusedList:this.getUCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
           if (this.props.lane){
             this.props.update(this.props.lane)
           }
