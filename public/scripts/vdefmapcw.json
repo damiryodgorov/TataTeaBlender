@@ -2730,6 +2730,76 @@
         "name": "Status Lights"
       }
     },
+    "StatusBar": {
+      "english": {
+        "name": "Status"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      }
+    },
+    "NetWeight": {
+      "english": {
+        "name": "Net Weight"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      }
+    },
     "DateTime": {
       "english": {
         "name": "Timestamp"
@@ -15644,6 +15714,146 @@
       "turkish": {
         "name": ""
       }
+    },
+    "DefaultClearTime": {
+      "english": {
+        "name": "Default"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": "Padrão"
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "minutes": {
+      "english": {
+        "name": "minutes"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Batch running for": {
+      "english": {
+        "name": "Batch running for"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Sample running for": {
+      "english": {
+        "name": "Sample running for"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
     }
   },
   "@acc": {
@@ -21599,7 +21809,7 @@
         },
         "portuguese": {
           "name": "Modo de Lote",
-          "description": "Auto - Lote será gerado automaticamente no início. Planejado - Um Lote Planejado deve ser criado antes de iniciar. Manual - As informações do lote devem ser inseridas manualmente no início."
+          "description": "Auto - Lote será gerado automaticamente no início.\n\n Planejado - Um Lote Planejado deve ser criado antes de iniciar.\n\n Manual - As informações do lote devem ser inseridas manualmente no início."
         },
         "italian": {
           "name": "Batch Mode",
@@ -58452,43 +58662,43 @@
           "description": ""
         },
         "korean": {
-          "name": "Total",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "Total",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "Total",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "Total",
+          "name": "",
           "description": ""
         },
         "italian": {
-          "name": "Total",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "Total",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "Total",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "Total",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "Total",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "Total",
+          "name": "",
           "description": ""
         }
       },

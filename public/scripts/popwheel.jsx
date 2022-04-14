@@ -107,7 +107,7 @@ class PopoutWheelModalC extends React.Component{
 		////console.log(this.props.vMap)
 		if(typeof this.props.vMap != 'undefined'){
 			if(this.props.vMap['@translations'][this.props.language]['description'].length >0){
-				tooltiptext = this.props.vMap['@translations']['english']['description'];
+				tooltiptext = this.props.vMap['@translations'][this.props.language]['description'];
 			}
 		}
 		if(this.props.params){
@@ -343,7 +343,7 @@ class PopoutWheelModalC extends React.Component{
 		////console.log(this.props.vMap)
 		if(typeof this.props.vMap != 'undefined'){
 			if(this.props.vMap['@translations'][self.props.language]['description'].length >0){
-				tooltiptext = this.props.vMap['@translations']['english']['description'];
+				tooltiptext = this.props.vMap['@translations'][this.props.language]['description'];
 			}
 		}
 		if(tooltipSymlink.length > 0){
