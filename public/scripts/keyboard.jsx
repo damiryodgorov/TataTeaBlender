@@ -274,7 +274,6 @@ var CustomKeyboardCont = onClickOutside(createReactClass({
 		}
 		var label = labTransV2['Enter'][this.props.language]['name']
 		var helpText = '';
-		console.log("this.props", this.props);
 		if(this.props.label && this.props.label.length > 0){
 			if((this.props.parameter =='FaultClearTimeOverride')||(this.props.parameter =='EyeBlockTimeOverride' && this.props.min[1] == 0)||(this.props.parameter =='EyeMinGapDistOverride' && this.props.min[1] == 0)){
 				label = this.props.label;

@@ -608,6 +608,10 @@ function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc)
 }
 function tickFormatter(t,i) {
   var text = t.split(' ').map(function(v,j){
+    if(j==2)
+    {
+      j=1;
+    }
     return <tspan x="0" dy={j+'em'}>{v}</tspan>
   })
   return (<text x="0"  transform='translate(-5,-5)' style={{textAnchor:"end", fontSize:14}}>
@@ -1322,7 +1326,7 @@ class LandingPage extends React.Component{
     })
     this.props.soc.on('authFail', function(pack){
       self.am.current.show(pack.user, pack.ip)
-      self.setAuthAccount({username:'Not Logged In', level:0, user:-1})
+      self.setAuthAccount({username:labTransV2['Not Logged In'][this.state.language]['name'], level:0, user:-1})
     })
     this.props.soc.on('passwordNotify',function(e){
       var message = 'Call Fortress with ' + e.join(', ');
@@ -1385,7 +1389,7 @@ class LandingPage extends React.Component{
       var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGOUT']
       var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
       this.props.soc.emit('rpc', {ip:this.state.curDet.ip, data:packet})
-      this.setState({level:0, userid:0,user:-1, username:'Not Logged In',noupdate:false})
+      this.setState({level:0, userid:0,user:-1, username:labTransV2['Not Logged In'][this.state.language]['name'],noupdate:false})
 
     }
   }
@@ -1626,9 +1630,9 @@ class LandingPage extends React.Component{
           if(e.rec['Taring'] != this.state.rec['Taring']){
             if(e.rec['Taring'] == 1){
               //toast('Taring..')
-              this.tBut.current.tStart('Taring');
+              this.tBut.current.tStart(labTransV2['Taring'][this.state.language]['name']);
             }else if(e.rec['Taring'] == 2){
-              this.tBut.current.tDone('Tared')
+              this.tBut.current.tDone(labTransV2['Tared'][this.state.language]['name'])
             }else{
               this.tBut.current.tEnd();
             }
@@ -1640,7 +1644,7 @@ class LandingPage extends React.Component{
            if((e.rec['CheckingWeight'] != this.state.rec['CheckingWeight']) && (typeof this.state.rec['CheckingWeight'] != 'undefined')){
             if(e.rec['CheckingWeight'] == 1){
               //toast('Taring..')
-              this.chBut.current.tStart('Check Weight');
+              this.chBut.current.tStart(labTransV2['Check Weight'][this.state.language]['name']);
               this.cwModal.current.show();
            //  setTimeout(function (argument) {
                // body...
@@ -2659,7 +2663,7 @@ class LandingPage extends React.Component{
     if((this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccCheckWeight'])){
       this.sendPacket('checkWeight')
     }else{
-      this.msgm.current.show(labTransV2['Access Denied'][language]['name']);
+      this.msgm.current.show(labTransV2['Access Denied'][this.state.language]['name']);
       this.chBut.current.tEnd();
     }
   }
@@ -3010,7 +3014,11 @@ class LandingPage extends React.Component{
       raptorLogoWidth = 300
       lane = <td style={{color:'white',fontSize:30}}>{laneStr}</td>
     }
-
+    var fSize = 28;
+    if(this.state.username.length>10)
+    {
+      fSize = 26;
+    }
 
     return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
          <div style={{marginLeft:'auto',marginRight:'auto',maxWidth:1280, width:'100%',textAlign:'left'}}>
@@ -3026,7 +3034,7 @@ class LandingPage extends React.Component{
                 </td>
                 {lane}
                 {home}
-                  <td style={{height:60, width:190, color:'#eee', textAlign:'right'}}><div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
+                  <td style={{height:60, width:190, color:'#eee', textAlign:'right'}}><div style={{fontSize:fSize,paddingRight:6}}>{this.state.username}</div>
                   <FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={language} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/></td>
                   <td className="logbuttCell" style={{height:60}}  onClick={this.toggleLogin}>
                   <div style={{paddingLeft:3, borderLeft:'2px solid #56697e', borderRight:'2px solid #56697e',height:55, marginTop:16, paddingRight:3}}>
@@ -3042,9 +3050,9 @@ class LandingPage extends React.Component{
           </table>
           <table><tbody><tr style={{verticalAlign:'top'}}><td>
           <StatSummary language={language} unit={this.state.srec['WeightUnits']} branding={this.state.branding} ref={this.ss} submitChange={this.transChange} submitLabChange={this.labChange} pkgWeight={pkgWeight}/>
-          </td><td><div><SparcElem ref={this.se} branding={this.state.branding} value={FormatWeight(lw, wu)} name={'Net Weight'} width={596} font={72}/></div>
+          </td><td><div><SparcElem ref={this.se} branding={this.state.branding} value={FormatWeight(lw, wu)} name={labTransV2['NetWeight'][this.state.language]['name']} width={596} font={72}/></div>
           <div><StatusElem connected={this.state.connected} pAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccClrFaultWarn'])} clearWarnings={this.clearWarnings} clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} weighingMode={this.state.prec['WeighingMode']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} 
-              ref={this.ste} branding={this.state.branding} value={'g'} name={'Status'} width={596} font={36} language={language}/></div>
+              ref={this.ste} branding={this.state.branding} value={'g'} name={labTransV2['StatusBar'][this.state.language]['name']} width={596} font={36} language={language}/></div>
           <div>
           </div><div style={{background:grbg,border:'5px solid '+grbrdcolor, borderRadius:20,overflow:'hidden'}}>
           <MainHistogram sendPacket={this.sendPacket} weightUnits={this.state.srec['WeightUnits']} getBuffer={this.getBuffer} histo={true} connected={this.state.connected} cwShow={() => this.cwModal.current.show()} language={language} clearFaults={this.clearFaults} det={this.state.curDet} faults={this.state.faultArray} warnings={this.state.warningArray} 
@@ -3055,9 +3063,9 @@ class LandingPage extends React.Component{
             <BatchPackCountGraph language={language} branding={this.state.branding} ref={this.hh} bCount={this.state.prec['BatchCount']} bRunning={this.state.rec['BatchRunning']}/>
           </td></tr></tbody></table>
           <div style={{display:'inline-block',paddingTop:5, paddingBottom:5, width:275}} >{play}{stop}</div>
-          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} language={language} vMap={labTransV2['Batch']} submit={this.labChange}/>
+          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.openBatch} lab={labTransV2['Batch'][language]['name']} pram={'Batch'} vMap={labTransV2['Batch']} submit={this.labChange}/>
           <CircularButton language={language} override={true} ref={this.tBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Tare'][language]['name']} onClick={this.tareWeight}/>
-          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} language={language} vMap={labTransV2['Product']} submit={this.labChange}/>
+          <CircularButton language={language} ctm={true} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} onClick={this.pModalToggle} lab={labTransV2['Product'][language]['name']} pram={'Product'} vMap={labTransV2['Product']} submit={this.labChange}/>
           <CircularButton language={language} override={true} onAltClick={() => this.cwModal.current.toggle()} ref={this.chBut} branding={this.state.branding} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:60}} lab={labTransV2['Check Weight'][language]['name']} onClick={this.checkweight}/>
         <Modal language={language} x={true} ref={this.pmodal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPmdClose} closeOv={this.state.rec['EditProdNeedToSave'] == 1}>
           <PromptModal language={language} branding={this.state.branding} ref={this.pmd} save={this.saveProductPassThrough} discard={this.passThrough}/>
@@ -3093,7 +3101,7 @@ class LandingPage extends React.Component{
             </div>
         </Modal>
           <PlanBatchStart language={language} sendPacket={this.sendPacket} pList={this.state.pList} pNames={this.state.prodNames} ref={this.planStart} plannedBatches={this.state.plannedBatches} startP={this.startSel}/>
-          <ManBatchStart language={language} branding={this.state.branding} pList={this.state.pList} pNames={this.state.prodNames} ref={this.manStart} ip={this.state.curDet.ip} language={language} mac={this.state.curDet.mac} startNew={this.startBuf}/>
+          <ManBatchStart language={language} branding={this.state.branding} pList={this.state.pList} pNames={this.state.prodNames} ref={this.manStart} ip={this.state.curDet.ip} mac={this.state.curDet.mac} startNew={this.startBuf}/>
          
         <LogInControl2 language={language} branding={this.state.branding} ref={this.lgctl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
                 pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
@@ -5270,7 +5278,7 @@ class ProdSettingEdit extends React.Component{
         var list 
         if(vMapLists[this.props.param['@labels']]){
 
-          list = vMapLists[this.props.param['@labels']]['english'].slice(0);
+          list = vMapLists[this.props.param['@labels']][this.props.language].slice(0);
         }else{
           list = []
         }
@@ -5366,7 +5374,7 @@ class ProdSettingEdit extends React.Component{
       var trnsmdl =   ''
       if(this.props.trans){
         trnsmdl = <Modal language={this.props.language} ref={this.trnsmdl}  mobile={this.props.mobile} innerStyle={{background:modBG}}>
-              <div style={{color:txtClr}}>{labTransV2['Parameter Name'][this.props.language]['name']+': '+ this.props.vMap['@translations']['english']['name']}</div> 
+              <div style={{color:txtClr}}>{labTransV2['Parameter Name'][this.props.language]['name']+': '+ this.props.vMap['@translations'][this.props.language]['name']}</div> 
               <div style={{color:txtClr}}>{labTransV2['Current Language'][this.props.language]['name']+': '+ this.props.language}</div>
               <input type='text' style={{fontSize:20}} value={this.state.curtrn} onChange={this.curtrnChange}/>
               <button onClick={this.submitChange}>{labTransV2['Submit Translation'][this.props.language]['name']}</button>
@@ -6538,7 +6546,7 @@ class SettingsPage extends React.Component{
         SA = true;
       }
       var fSize = 20;
-      if(labTransV2['Factory Reset'][this.props.language]['name'].length > 25)
+      if(labTransV2['Factory Reset'][this.props.language]['name'].length > 21)
       {
         fSize = 16
       }
@@ -7859,7 +7867,7 @@ class MultiEditControl extends React.Component{
         _st.width = 190
       }
 
-      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{(val == '0.0 seconds' && self.props.param[i]['@name']=='FaultClearTimeOverride')  ? 'Default' : (val == '0 mm' && self.props.param[i]['@name']=='EyeMinGapDistOverride') || (val == '0.0 in' && self.props.param[i]['@name']=='EyeMinGapDistOverride') ? 'Default' : val == '0.00 x Product Length' ? 'Default' : val}</CustomLabel>)
+      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{(val == '0.0 seconds' && self.props.param[i]['@name']=='FaultClearTimeOverride')  ? labTransV2['DefaultClearTime'][self.props.language]['name'] : (val == '0 mm' && self.props.param[i]['@name']=='EyeMinGapDistOverride') || (val == '0.0 in' && self.props.param[i]['@name']=='EyeMinGapDistOverride') ? labTransV2['DefaultClearTime'][self.props.language]['name'] : val == '0.00 x Product Length' ? labTransV2['DefaultClearTime'][self.props.language]['name'] : val}</CustomLabel>)
     })
     
 
@@ -9431,11 +9439,10 @@ class BatchPackCountGraph extends React.Component{
       <div style={{position:'absolute', left:295, top:0, marginTop:-2,borderTopRightRadius:10, borderBottomLeftRadius:10, border:'5px solid rgb(129, 138, 144)'}}>{butt}</div>
       <div style={{fontSize:16, marginLeft:10, marginTop:-10, height:30}}>{bsttxt}</div>
         <XYPlot	height={430} width= {380} margin={{left: 80, right: 30, top: 10, bottom: 40}} yType='ordinal' xDomain={xDm}>		
-  
-    <HorizontalBarSeries data={data} color={graphColor} />
-    <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
-  <XAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} hideTicks={max<1} orientation="bottom" tickSizeOuter={0} tickFormat={val => Math.round(val) === val ? val : ""}/>
-  <YAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} orientation="left" tickSizeOuter={0} tickFormat={tickFormatter}/>
+          <HorizontalBarSeries data={data} color={graphColor} />
+          <LabelSeries data={labelData} labelAnchorY='middle' labelAnchorX='start'/>
+          <XAxis style={{line:{stroke:'transparent'}, ticks:{stroke:'transparent'}}} hideTicks={max<1} orientation="bottom" tickSizeOuter={0} tickFormat={val => Math.round(val) === val ? val : ""}/>
+          <YAxis style={{line:{stroke:'transparent'}, text:{fontSize:60}, ticks:{stroke:'transparent'}}} orientation="left" tickSizeOuter={0} tickFormat={tickFormatter}/>
         </XYPlot>
         </div>
     }
@@ -10487,8 +10494,8 @@ class BatchControl extends React.Component{
          <div style={{padding:5}}>
           <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'BatchNumber'} vMap={vMapV2['BatchNumber']} language={this.props.language} branding={this.props.branding} h1={40} w1={250} h2={51} w2={400} label={vMapV2['BatchNumber']['@translations'][this.props.language]['name']} value={this.props.prod['BatchNumber']} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.props.mac][1][1]['BatchNumber']} num={true}/></div>
           <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'BatchRef'} vMap={vMapV2['BatchRef']} language={this.props.language} branding={this.props.branding} h1={40} w1={250} h2={51} w2={400} label={vMapV2['BatchRef']['@translations'][this.props.language]['name']} value={this.props.prod['BatchRef']} editable={true} onEdit={this.sendPacket} param={vdefByMac[this.props.mac][1][1]['BatchRef']} num={true}/></div>
-              <div>{'Batch running for '+ this.state.batchMin.toFixed(1) + ' minutes'}</div>
-              <div>{'Sample running for '+ this.state.sampleMin.toFixed(1) + ' minutes'}</div><div></div></div></div>
+              <div>{labTransV2['Batch running for'][this.props.language]['name']+' '+ this.state.batchMin.toFixed(1) + ' '+labTransV2['minutes'][this.props.language]['name']}</div>
+              <div>{labTransV2['Sample running for'][this.props.language]['name']+' '+ this.state.sampleMin.toFixed(1) + ' '+labTransV2['minutes'][this.props.language]['name']}</div><div></div></div></div>
       }
       var batback = '#e1e1e1' 
       var batNum = this.props.prod['BatchNumber']
@@ -10616,7 +10623,7 @@ class BatchControl extends React.Component{
           </div>
         </div>
          
-    var bmodeSelect =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[vdefByMac[this.props.mac][1][0]['BatchMode']]} ioBits={this.props.ioBits} vMap={vMapV2['BatchMode']} language={this.props.language}  interceptor={false} name={'Batch Mode'} ref={this.ed} val={[this.state.startMode]} options={[bmodes]} onChange={this.selectChanged}/>
+    var bmodeSelect =  <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[vdefByMac[this.props.mac][1][0]['BatchMode']]} ioBits={this.props.ioBits} vMap={vMapV2['BatchMode']} language={this.props.language}  interceptor={false} name={labTransV2['Batch Mode'][this.props.language]['name']} ref={this.ed} val={[this.state.startMode]} options={[bmodes]} onChange={this.selectChanged}/>
     var changeModeBut = <div onClick={this.batchSettings} style={{display:'table-cell',height:80, borderRight:'2px solid #362c66', width:156, fontSize:18, lineHeight:'20px', verticalAlign:'middle'}}>{labTransV2['Batch Settings'][this.props.language]['name']}</div>
     var bHisto = this.state.showMode == 1 && typeof this.state.bRec['Batch ID']!='undefined' ? 
         <BatchHistogram language={this.props.language} unit={this.props.weightUnits} ref={this.bhg} ovHisto={true} histo={this.state.bRec['Histogram Buckets']} refreshHisto={this.refreshHisto}/>
@@ -10725,7 +10732,7 @@ class BatchControl extends React.Component{
                editable={true} onEdit={this.selectChanged} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['BatchMode']['@translations'][this.props.language]['description']} listOverride={true} ovList={bmodes}/></div>
               <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:400, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.showPlannedBatches} lab={labTransV2['Show Planned Batches'][this.props.language]['name']}/>
             </div>
-            </Modal>
+          </Modal>
             
             <Modal language={this.props.language} x={true} ref={this.startModal} Style={{width:900}} innerStyle={{background:backgroundColor, maxHeight:650}}>
             <div style={{height:400, overflowY:'scroll'}}>{plannedBatchesStart}</div>
@@ -12161,7 +12168,7 @@ class FaultItem extends React.Component{
   render(){
     var type = this.props.fault
     if(typeof vMapV2[this.props.fault+'Mask'] != 'undefined'){
-        type = vMapV2[this.props.fault+'Mask']['@translations']['english']['name'];
+        type = vMapV2[this.props.fault+'Mask']['@translations'][this.props.language]['name'];
       }
 
     return <div><label>{labTransV2['Fault type'][this.props.language]['name']+ ": " + type}</label>
@@ -12223,7 +12230,7 @@ class CheckWeightControl extends React.Component{
   render(){
     var cw = this.props.cw.toFixed(1)+'g'
     if(this.props.waiting){
-      cw = 'Waiting for Weight'
+      cw = labTransV2['Waiting for Weight'][this.props.language]['name']
     }
 
     return <div>
@@ -12234,7 +12241,7 @@ class CheckWeightControl extends React.Component{
         <div style={{marginTop:140}}>
         <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.cancelCW} lab={labTransV2['Cancel'][this.props.language]['name']}/>
         {
-          cw!='Waiting for Weight' && this.state.cwset != 0 ?
+          cw != labTransV2['Waiting for Weight'][this.props.language]['name'] && this.state.cwset != 0 ?
           <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.sendCW} lab={labTransV2['Confirm'][this.props.language]['name']}/>
           :
           <CircularButton language={this.props.language} disabled={true} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',fontSize:30,lineHeight:'50px'}} style={{width:340, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
