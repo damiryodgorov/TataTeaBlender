@@ -162,20 +162,6 @@ button{
     background-repeat: no-repeat;
     display: inline-block;
 }
-.login::after{
-    height: 40px;
-    width: 40px;
-    float: right;
-    content:" ";
-    background:url('../assets/locked.svg');
-}
-.logout::after{
-    height: 40px;
-    width: 40px;
-    float: right;
-    content:" ";
-    background:url('../assets/unlocked.svg');
-}
 .confbuttCell{
     width: 46px;
     height: 100px;
@@ -785,7 +771,7 @@ li {
 }
 
 .login::after{
-     height: 40px;
+    height: 40px;
     width: 40px;
     float: right;
     content:" ";
@@ -794,7 +780,7 @@ li {
 
 }
 .logout::after{
-     height: 40px;
+    height: 40px;
     width: 40px;
     float: right;
     content:" ";

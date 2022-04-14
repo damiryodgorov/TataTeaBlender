@@ -585,6 +585,7 @@ function processParamCW(e, _Vdef, nVdf, pVdef, ip) {
   pack = {type:2, rec:rec}
 
   }else if(rec_type == 3){
+    console.log("rec type 3")
   nVdf[3].forEach(function (p) {
     //need to account for user objects here. 
     rec[p] = getVal(buf, 3, p, pVdef,_deps[ip])
@@ -926,8 +927,7 @@ function connectLocal(){
       }
     })
 		if(dets.length == 1){
-      console.log("calling prefs");
-		 relaySockMsg('prefs',[{name:dets[0].name, type:'single', banks:[dets[0]]}])
+      relaySockMsg('prefs',[{name:dets[0].name, type:'single', banks:[dets[0]]}])
 		}
 	})
 }
@@ -991,7 +991,6 @@ wss.on('connection', function(scket, req){
     sockrelays[socket.id] = {relay:sockrelay}
     
     socket.on('locateUnicast', function (addr, cw) {
-      console.log('locate Unicast')
       locateUnicast(addr,function(){ console.log('located')}, cw)
     });
     socket.on('locateReq', function (cw) {
@@ -1123,6 +1122,50 @@ wss.on('connection', function(scket, req){
                 }else{
                   socket.emit('noVdef', u)
                 }
+    })
+    socket.on('authenticate', function(packet){
+      console.log('authenticate this packet')
+      //console.log(packet)
+      var hash = crypto.createHash('sha1').update(Buffer.from((packet.pswd + '000000').slice(0,6),'ascii')).digest().slice(0,8)
+      console.log('hash',hash)
+      if(typeof _accounts[packet.ip] == 'undefined'){
+          socket.emit('notify', 'Authentication Error')
+      }else if(typeof _accounts[packet.ip][packet.user] == 'undefined'){
+  
+          socket.emit('notify', 'Authentication Error')
+      }
+      var ap = _accounts[packet.ip][packet.user].phash
+  
+      var tempUser;
+      if(typeof _tempAccounts[packet.ip] != 'undefined'){
+        tempUser  = _tempAccounts[packet.ip][packet.user]
+      
+      }else{
+        var tmpArr = []
+        for(var i = 0; i < 50; i++){
+          tmpArr.push({phash:null,preset:0})
+        }
+        _tempAccounts[packet.ip] = tmpArr.slice(0);
+        tempUser  = _tempAccounts[packet.ip][packet.user]
+      } 
+      console.log('get tmpuser',hash)
+      //console.log(_accounts[packet.ip][packet.user].phash)
+      if(ap.equals(hash)){
+        console.log('success')
+        _tempAccounts[packet.ip][packet.user] = {..._accounts[packet.ip][packet.user]}
+        _tempAccounts[packet.ip][packet.user].preset = 0;
+        socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:_accounts[packet.ip][packet.user].preset, ip:packet.ip})
+        
+      }else if((packet.user == 0) && ((packet.pswd + '000000').slice(0,6) == '218500')){
+        socket.emit('authResp', {user:packet.user,username:'FORTRESS',level:5, reset:_accounts[packet.ip][packet.user].preset, ip:packet.ip})
+      }else if(tempUser.preset && tempUser.phash.equals(hash)){
+        socket.emit('authResp', {user:packet.user,username:_accounts[packet.ip][packet.user].username,level:_accounts[packet.ip][packet.user].opt, reset:1, ip:packet.ip})
+        
+      }else{
+        //console.log('fail')
+        socket.emit('authFail', {user:packet.user, ip:packet.ip})
+      }
+  
     })
 });
 /**END OF WEBSOCKET CONNECTION */

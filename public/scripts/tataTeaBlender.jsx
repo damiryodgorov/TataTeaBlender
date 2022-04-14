@@ -14,6 +14,7 @@ import { YAxis, XAxis, HorizontalGridLines, VerticalGridLines, XYPlot, AreaSerie
 import "react-vis/dist/style.css";
 import { Line } from 'react-chartjs-2'
 import Chart from 'chart.js/auto'
+var onClickOutside = require('react-onclickoutside');
 /** Global variable declarations **/
 const DISPLAYVERSION = '2022/03/01'
 const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
@@ -377,7 +378,6 @@ socket.on('getPackets', (packets)=>{
   console.log("Received packets are ",packets);
 })
 socket.on('vdef', function(vdf){
-    console.log('on vdef tata')
     var json = vdf[0];
     _Vdef = json
     var res = [];
@@ -455,7 +455,10 @@ class Container extends React.Component {
 class LandingPage extends React.Component{
     constructor(props){
         super(props);
-        this.state = {liveWeight:0.0,updateCount:0,faultArray:[],language:'english',branding:'FORTRESS',fram:{},srec:{},prec:{},rec:{},cob:{},pcob:{},unusedList:{},checkPrecInterval:null,version:'2018/07/30',connected:false,init:false,currentPage:'landing',timezones:[],curDet:'',ioBITs:{},mbunits:[],dets:[], detL:{}, macList:[],nifip:'', nifnm:'',nifgw:''}
+        this.state = {level:0,username:'No User',userid:0,user:-1,accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''],
+                      liveWeight:0.0,updateCount:0,faultArray:[],language:'english',branding:'FORTRESS',fram:{},srec:{},prec:{},rec:{},cob:{},pcob:{},unusedList:{},
+                      checkPrecInterval:null,version:'2018/07/30',connected:false,init:false,currentPage:'landing',noupdate:'',
+                      timezones:[],curDet:'',ioBITs:{},mbunits:[],dets:[], detL:{}, macList:[],nifip:'', nifnm:'',nifgw:''}
         this.onSettingsMenuOpen = this.onSettingsMenuOpen.bind(this);
         this.onMixtureMenuOpen = this.onMixtureMenuOpen.bind(this);
         this.onPrimeMenuOpen = this.onPrimeMenuOpen.bind(this);
@@ -472,6 +475,19 @@ class LandingPage extends React.Component{
         this.getUCob = this.getUCob.bind(this);
         this.onRMsg = this.onRMsg.bind(this);
         this.loadPrefs = this.loadPrefs.bind(this);
+        this.loginClosed = this.loginClosed.bind(this);
+        this.authenticate = this.authenticate.bind(this);
+        this.logout = this.logout.bind(this);
+        this.login = this.login.bind(this);
+        this.forgotPassword = this.forgotPassword.bind(this);
+        this.tryAgain = this.tryAgain.bind(this);
+        this.resetPassword = this.resetPassword.bind(this);
+        this.toggleLogin = this.toggleLogin.bind(this);
+        this.setAuthAccount = this.setAuthAccount.bind(this);
+        this.am = React.createRef();
+        this.lgoModal = React.createRef();
+        this.resetPass = React.createRef();
+        this.loginControl = React.createRef();
         this.fclck = React.createRef();
         this.lockModal = React.createRef();
         this.settingsModal = React.createRef();
@@ -493,7 +509,13 @@ class LandingPage extends React.Component{
         setTimeout(function (argument) {
             self.loadPrefs();
         }, 100)
-
+        ifvisible.setIdleDuration(300);
+        ifvisible.on("idle", function(){
+          self.logout()
+        });
+        socket.on('userNames', function(p){
+          self.setState({usernames:p.det.data.array})
+        })
         socket.on('locatedResp', function (e) {
             try{
                 if(typeof e[0] != 'undefined'){
@@ -610,6 +632,22 @@ class LandingPage extends React.Component{
           self.onParamMsg(data.data, data.det)
           data = null;
           
+        })
+        socket.on('authResp', function(pack){
+          if(pack.reset){
+             self.resetPass.current.show(pack)
+            self.setAuthAccount(pack)
+          }else{
+            self.setAuthAccount(pack)
+      
+          }
+        })
+        socket.on('authFail', function(pack){
+          self.am.current.show(pack.user, pack.ip)
+          self.setAuthAccount({username:labTransV2['Not Logged In'][this.state.language]['name'], level:0, user:-1})
+        })
+        socket.on('notify',function(msg){
+          self.notify(msg)
         })
     }
     /**sendPacket function used to send rpc requests to the server */
@@ -1472,6 +1510,83 @@ class LandingPage extends React.Component{
       _cvdf = null;
       return cob
     }
+    /******************Authentication Function Controls************ */
+    setAuthAccount(pack){
+      var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGIN']
+      var pkt = rpc[1].map(function (r) {
+        if(!isNaN(r)){
+          return r
+        }else{
+          return pack.user
+        }
+      });
+      var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+      socket.emit('rpc', {ip:this.props.ip, data:packet})
+      // console.log(pack,668)
+      this.setState({level:pack.level, username:pack.username,noupdate:false, update:true, userid:pack.user+1, user:pack.user}) 
+    }
+    authenticate(user,pswd){
+      socket.emit('authenticate',{user:parseInt(user) - 1,pswd:pswd, ip:this.state.curDet.ip})
+    }
+    logout(){
+      if(this.state.level != 0){
+        var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_RPC_USERLOGOUT']
+        var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+        this.setState({level:0, userid:0,user:-1, username:'Not Logged In',noupdate:false})
+      }
+    }
+    loginClosed(){
+      this.setState({loginOpen:false});
+    }
+    login(v){
+      this.setState({level:v,noupdate:false})
+    }
+    forgotPassword(id,ip){
+      socket.emit('passReset',{ip:ip,data:{user:id}})
+    }
+    resetPassword(pack,v){
+      var packet = {ip:pack.ip, data:{user:pack.user, password:v}}
+      socket.emit('writePass', packet)
+    }
+    tryAgain(){
+      this.loginControl.current.login();
+    }
+    toggleLogin(){
+      var self = this;
+      if(this.state.user == -1){
+        this.loginControl.current.login();
+        this.setState({loginOpen:true})
+      }else{
+        setTimeout(function (argument) {
+          // body...
+           self.lgoModal.current.show(self.logout, 0, "You will be logged out")
+        },100)
+      }
+    }
+    /**************************************************************** */
+    /**Response message */
+    notify(msg){
+      console.log("Received message ", msg)
+        /*if(this.batModal.current.state.show){
+          this.batModal.current.showMsg(msg)
+        }else if(this.pmodal.current.state.show){
+            if(msg == 'Reject Setup is invalid!'){
+              this.setState({rejectAlertMessage:msg})
+            }
+            else{
+              this.pmodal.current.showMsg(msg)
+              this.setState({rejectAlertMessage:''})
+            }
+        }else if(this.settingModal.current.state.show){
+          this.settingModal.current.showMsg(msg)
+          this.setState({rejectAlertMessage:''})
+        }else if(this.cwModal.current.state.show){
+          this.cwModal.current.showMsg(msg)
+        }else if(msg!='Reject Setup is invalid!'){
+          this.msgm.current.show(msg)
+        }*/
+    }
     /**Connecting with the server **/
     loadPrefs(){
       if(socket.sock.readyState  == 1){
@@ -1561,7 +1676,10 @@ class LandingPage extends React.Component{
                       </div>
     var silenceAlarmButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:310, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Silence Alarm'} onClick={this.onSilenceAlarmOpen}/> 
     var statisticsButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Statistics'} onClick={this.onStatisticsOpen}/> 
-
+    var logklass = 'logout'
+    if(this.state.user == -1){
+      logklass = 'login'
+    }
     /**End of Theme and Button variables declarations**/
 
     return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
@@ -1574,15 +1692,15 @@ class LandingPage extends React.Component{
                                     <Mixture onMixtureMenuOpen={this.onMixtureMenuOpen} productName={this.state.prec['ProdName']}/>
                                 </td>
                                 <td style={{height:60, width:190, color:'#eee', textAlign:'right'}}>
-                                    <div style={{fontSize:28,paddingRight:6}}>{"No User"}</div>
+                                    <div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
                                     <div>
                                       <FatClock timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} branding={this.state.branding} dst={this.state.srec['DaylightSavings']} sendPacket={this.sendPacket} language={this.state.srec['Language']} ref={this.fclck} style={{fontSize:16, color:'#e1e1e1', paddingRight:6, marginBottom:-17}}/>
                                     </div>
                                 </td>
-                                <td className="logbuttCell" style={{height:60}}  onClick={'function to create'}>
+                                <td className="logbuttCell" style={{height:60}} onClick={this.toggleLogin}>
                                     <div style={{paddingLeft:3, borderLeft:'2px solid #fff', borderRight:'2px solid #fff',height:55, marginTop:16, paddingLeft:10, paddingRight:10}}>
-                                    <button className={'login'} style={{height:50, marginTop:-7}} onClick={'function to create'} />
-                                    <div style={{color:'#e1e1e1', marginTop:-15, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{'Login'}</div>
+                                    <button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
+                                    <div style={{color:'#e1e1e1', marginTop:-15, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{labTransV2['Level'][this.state.language]['name'] +' '+this.state.level}</div>
                                     </div>
                                 </td>
                                 <td className="confbuttCell" style={{paddingRight:5}} onClick={this.onSettingsMenuOpen}>
@@ -1643,6 +1761,12 @@ class LandingPage extends React.Component{
                     <Modal x={true} ref={this.statisticsModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPrimeClose}>
                         <h1 style={{color:'white'}}>Statistics Menu</h1>
                     </Modal>
+                    <LogInControl2 language={this.state.language} branding={this.state.branding} ref={this.loginControl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
+                          pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
+                          accounts={this.state.usernames} authenticate={this.authenticate} login={this.login} val={this.state.userid}/>
+                      <AuthfailModal language={this.state.language} ref={this.am} forgot={this.forgotPassword} tryAgain={this.tryAgain}/>
+                      <UserPassReset language={this.state.language} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
+                      <LogoutModal language={this.state.language} ref={this.lgoModal} branding={this.state.branding}/>
                     <LockModal ref={this.lockModal} branding={this.state.branding}/>
                 </div>
             </div>
@@ -1677,9 +1801,9 @@ class TeaAndFlavour extends React.Component{
       super(props);
     }
     render(){
-      console.log("live records", this.props.liveRecord);
+      /*console.log("live records", this.props.liveRecord);
       console.log("system records ", this.props.systemRecord);
-      console.log("product records ", this.props.productRecord);
+      console.log("product records ", this.props.productRecord);*/
         return(
             <div className='teaAndFlavourSection'>
                 <table className='categoryTable'>
@@ -1780,7 +1904,7 @@ class LineGraph extends React.Component{
                 <LineSeries data={topLineData} color="red"/>
                 <LineSeries data={middleLineData} color="green"/>
                 <LineSeries data={bottomLineData} color="red"/>
-                <LineSeries data={data} color="black" />
+                <LineSeries data={data} curve={'curveMonotoneX'} color="black" />
               </XYPlot>
                 {/*<Line
                     data={{
@@ -2125,6 +2249,622 @@ class TimezoneControl extends React.Component{
     return <React.Fragment>{tzItem}{tz}</React.Fragment>
   }
 }
+/*******************Authentication Components*************** */
+class LogInControl2 extends React.Component{
+  constructor(props){
+    super(props)
+    this.login = this.login.bind(this)
+    this.logout = this.logout.bind(this);
+    this.selectChanged = this.selectChanged.bind(this);
+    var list = []
+    this.props.accounts.forEach(function(ac){
+      list.push(ac.username + ' (level ' + ac.acc+')')
+    })
+    list.unshift('Not Logged In')
+    this.state = {val:0, list:list, showAcccountControl:false, open:false}
+    this.enterPIN = this.enterPIN.bind(this);
+    this.valChanged = this.valChanged.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onRequestClose = this.onRequestClose.bind(this);
+    this.toggleAccountControl = this.toggleAccountControl.bind(this);
+    this.onCancel = this.onCancel.bind(this);
+    this.pw = React.createRef();
+    this.psw = React.createRef();
+    this.msgm = React.createRef();
+  }
+  componentWillReceiveProps(props){
+    var list = []
+    props.accounts.forEach(function(ac){
+      list.push(ac.username +' (level ' + ac.acc+')')
+    })
+    list.unshift('Not Logged In')
+    if(!this.props.isOpen){
+
+      //this.setState({val:props.val, list:list})
+    }else{
+      ////console.log('this was the issue... why Though?')
+      this.setState({list:list})
+    }
+    
+  }
+  componentDidMount(){
+    this.setState({showAcccountControl:false})
+  }
+  login(){
+    var self = this;
+    setTimeout(function(){
+      self.pw.current.toggleCont();
+      self.setState({open:true})
+    },100)
+    
+  }
+  logout(){
+    this.props.logout();
+  }
+  selectChanged(v,i){
+    ////console.log(['1531',v])
+    var self = this;
+    setTimeout(function(){
+      if(v != 0){
+      self.psw.current.toggle();      
+    }
+
+    }, 100)
+    self.setState({val:v})
+    
+
+    //this.props.login(v)
+  }
+  enterPIN(){
+    this.psw.current.toggle();
+  }
+  onFocus(){
+    this.setState({open:true})
+  }
+  onRequestClose(){
+    var self = this;
+    this.setState({open:false})
+    setTimeout(function(){
+      self.props.onRequestClose();
+    },100)
+      
+  }
+  valChanged(v){
+    //////console.log(v)
+    //this.props.authenticate(this.state.list[this.state.val], v)
+    ////console.log(this.state.val)
+    if(this.props.pass6 == 0){
+      if(v.length == 6){
+        this.props.authenticate(this.state.val,v)
+      }else{
+        this.msgm.current.show(labTransV2['Password should be 6 characters'][this.props.language]['name'])
+      }
+    }else{
+      if(v.length == 4){
+        this.props.authenticate(this.state.val,v)
+      }else{
+        this.msgm.current.show(labTransV2['Password should be 4 characters'][this.props.language]['name'])
+      }
+    }
+    
+  }
+  toggleAccountControl(){
+    if(this.props.level > 2){
+      this.setState({showAcccountControl:!this.state.showAcccountControl})
+    }else{
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
+    }
+    
+  }
+  onCancel(){
+    ////console.log('on cancel')
+    var self = this;
+    this.setState({open:false})
+    setTimeout(function(){
+      self.props.onRequestClose();
+    },100)
+      
+  }
+
+  render(){
+    var list = this.state.list
+    var namestring = labTransV2['Select User'][this.props.language]['name']
+    var pw = <PopoutWheel inputs={inputSrcArr} tooltipOv={true} tooltip={vdefMapV2['@tooltips']['Select User'][this.props.language]} outputs={outputSrcArr} ovWidth={290} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
+
+    return <React.Fragment>{pw}
+      <CustomKeyboard passwordKeyboard={true} branding={this.props.branding} mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Password'}/>
+    <MessageModal language={this.props.language} ref={this.msgm}/>
+    </React.Fragment> 
+  }
+}
+class UserPassReset extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {pack:{}}
+    this.show = this.show.bind(this);
+    this.psw = React.createRef();     
+    this.msgm = React.createRef();
+    this.valChanged = this.valChanged.bind(this);
+  }
+  show(pack){
+    var self = this;
+    this.setState({pack:pack})
+    setTimeout(function(){
+      self.psw.current.toggle()
+    },150)
+  }
+  onFocus(){
+
+  }
+  onRequestClose(){
+
+  }
+  valChanged(v){
+    if(this.props.pass6 == 0){
+      if(v.length == 6){
+        this.props.resetPassword(this.state.pack,v)
+      }else{
+        this.msgm.current.show(labTransV2['Password should be 6 characters'][this.props.language]['name'])
+      }
+    }else{
+      if(v.length == 4){
+        this.props.resetPassword(this.state.pack,v)
+      }else{
+        this.msgm.current.show(labTransV2['Password should be 4 characters'][this.props.language]['name'])
+      }
+    }
+  }
+  render(){
+    return <React.Fragment>
+        <CustomKeyboard mobile={this.props.mobile} language={this.props.language} pwd={true} vMap={this.props.vMap}  onFocus={this.onFocus} ref={this.psw} onRequestClose={this.onRequestClose} onChange={this.valChanged} index={0} value={''} num={true} label={'Reset Password'}/>
+        <MessageModal  language={this.props.language} ref={this.msgm} />
+    </React.Fragment>
+  }
+}
+/******************Modals start **********************/
+class LogoutModal extends React.Component{
+  constructor(props){
+    super(props)
+    var klass = 'custom-modal'
+    if(this.props.className){
+      klass = this.props.className
+    }
+    this.state = ({className:klass, show:false, override:false ,keyboardVisible:false, func: (function () {}),arg:-1, alertMessage:''});
+    this.show = this.show.bind(this);
+    this.close = this.close.bind(this);
+    this.do = this.do.bind(this);
+  }
+  show(func, arg, alertMessage){
+    // console.log('show copy modal')
+    this.setState({show:true,func:func, arg:arg, alertMessage:alertMessage})
+  }
+  close () {
+    var self = this;
+    setTimeout(function () {
+      self.setState({show:false})
+    },100)
+    
+  }
+  do(){
+    // console.log('THis SHould DO')
+    this.state.func(this.state.arg)
+  }
+  render () {
+    var cont = ""
+    if(this.state.show){
+    cont =  <LogoutModalCont branding={this.props.branding} vMap={this.props.vMap} do={this.do} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.state.alertMessage}</LogoutModalCont>
+    }
+    return <div hidden={!this.state.show} className= 'pop-modal'>
+      {cont}
+    </div>
+  }
+}
+class LogoutModalC extends React.Component{
+  constructor(props){
+    super(props);
+    this.handleClickOutside = this.handleClickOutside.bind(this)
+    this.close = this.close.bind(this);
+    this.do = this.do.bind(this);
+  //  this.discard = this.discard.bind(this);
+    this.cancel = this.cancel.bind(this);
+  }
+  componentDidMount() {
+    // body...
+  }
+  handleClickOutside(e) {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+    
+  }
+  close() {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+  }
+  do(){
+    var self = this;
+    this.props.do();
+    setTimeout(function(){
+      if(self.props.show){
+      self.props.close();
+      }
+    }, 100)
+    
+  }
+  cancel(){
+    var self = this;
+    setTimeout(function(){
+      self.close();
+      
+    }, 100)
+  }
+  render () {
+    // body...
+    var self = this;
+        var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
+    var klass = 'alertmodal-outer'
+    var clr = '#fefefe'
+    if(this.props.branding == 'SPARC'){
+      klass = 'alertmodal-outer-sp'
+      clr = '#a1a1a1'
+    }
+    
+    return( <div className={klass}>
+          <div style={{padding:10}}>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][this.props.language]['name']}</div>
+          <div style={{color:clr}}> {this.props.children}</div>
+        <div>
+          <CircularButton language={this.props.language} onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
+          
+  </div>
+        </div>
+      </div>)
+
+  }
+}
+class CopyModal extends React.Component{
+  constructor(props){
+    super(props)
+    var klass = 'custom-modal'
+    if(this.props.className){
+      klass = this.props.className
+    }
+    this.state = ({className:klass, show:false, override:false ,keyboardVisible:false, func: (function () {}),arg:-1, alertMessage:''});
+    this.show = this.show.bind(this);
+    this.close = this.close.bind(this);
+    this.do = this.do.bind(this);
+  }
+  show(func, arg, alertMessage){
+    // console.log('show copy modal')
+    this.setState({show:true,func:func, arg:arg, alertMessage:alertMessage})
+  }
+  close () {
+    var self = this;
+    setTimeout(function () {
+      self.setState({show:false})
+    },100)
+    
+  }
+  do(){
+    // console.log('THis SHould DO')
+    this.state.func(this.state.arg)
+  }
+  render () {
+    var cont = ""
+    if(this.state.show){
+    cont =  <CopyModalCont branding={this.props.branding} vMap={this.props.vMap} do={this.do} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.state.alertMessage}</CopyModalCont>
+    }
+    return <div hidden={!this.state.show} className= 'pop-modal'>
+      {cont}
+    </div>
+  }
+}
+class CopyModalC extends React.Component{
+  constructor(props){
+    super(props);
+    this.handleClickOutside = this.handleClickOutside.bind(this)
+    this.close = this.close.bind(this);
+    this.do = this.do.bind(this);
+  //  this.discard = this.discard.bind(this);
+    this.cancel = this.cancel.bind(this);
+  }
+  componentDidMount() {
+    // body...
+  }
+  handleClickOutside(e) {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+    
+  }
+  close() {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+  }
+  do(){
+    var self = this;
+    this.props.do();
+    setTimeout(function(){
+      if(self.props.show){
+      self.props.close();
+      }
+    }, 100)
+    
+  }
+  cancel(){
+    var self = this;
+    setTimeout(function(){
+      self.close();
+      
+    }, 100)
+  }
+  render () {
+    // body... getfromhere
+    var self = this;
+        var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
+    var klass = 'alertmodal-outer'
+    var clr = '#fefefe'
+    if(this.props.branding == 'SPARC'){
+      klass = 'alertmodal-outer-sp'
+      clr = '#a1a1a1'
+    }
+    
+    return( <div className={klass}>
+          <div style={{padding:10}}>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][this.props.language]['name']}</div>
+          <div style={{color:clr}}> {this.props.children}</div>
+        <div>
+          <CircularButton language={this.props.language} onClick={this.do} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
+          
+  </div>
+        </div>
+      </div>)
+
+  }
+}
+class DeleteModal extends React.Component{
+  constructor(props){
+    super(props)
+    var klass = 'custom-modal'
+    if(this.props.className){
+      klass = this.props.className
+    }
+    this.state = ({className:klass, show:false, override:false ,keyboardVisible:false, p:-1});
+    this.show = this.show.bind(this);
+    this.close = this.close.bind(this);
+    this.delete = this.delete.bind(this);
+    //this.discard = this.discard.bind(this);
+  }
+  show (p) {
+    // console.log(p)
+    this.setState({show:true, p:p})
+  }
+  close () {
+    var self = this;
+    setTimeout(function () {
+      self.setState({show:false})
+    },100)
+    
+  }
+  delete(){
+    this.props.deleteProd(this.state.p);
+  }
+  render () {
+    var cont = ""
+    if(this.state.show){
+    cont =  <DeleteModalCont branding={this.props.branding} vMap={this.props.vMap} delete={this.delete} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{width:400}}>{labTransV2['Delete Selected Product?'][this.props.language]['name']+'.'}</div></DeleteModalCont>
+    }
+    return <div hidden={!this.state.show} className= 'pop-modal'>
+      {cont}
+    </div>
+  }
+}
+class DeleteModalC extends React.Component{
+  constructor(props){
+    super(props);
+    this.handleClickOutside = this.handleClickOutside.bind(this)
+    this.close = this.close.bind(this);
+    this.delete = this.delete.bind(this);
+    this.cancel = this.cancel.bind(this);
+  }
+  componentDidMount() {
+    // body...
+  }
+  handleClickOutside(e) {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+    
+  }
+  close() {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+  }
+  delete(){
+    var self = this;
+    this.props.delete();
+    setTimeout(function(){
+      if(self.props.show){
+      self.props.close();
+      }
+    }, 100)
+    
+  }
+  cancel(){
+    var self = this;
+    setTimeout(function(){
+      self.close();
+      
+    }, 100)
+  }
+  render () {
+    // body...
+    var self = this;
+        var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
+    var klass = 'alertmodal-outer'
+    var clr = '#fefefe'
+    if(this.props.branding == 'SPARC'){
+      klass = 'alertmodal-outer-sp'
+      clr = '#a1a1a1'
+    }
+    
+    return( <div className={klass}>
+          <div style={{padding:10}}>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}>{labTransV2['Confirm Action'][this.props.language]['name']}</div>
+          <div style={{color:clr}}>
+          {this.props.children}
+          </div>
+        <div>
+                <CircularButton language={this.props.language} onClick={this.delete} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Delete Product'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
+          
+  </div>
+        </div>
+      </div>)
+
+  }
+}
+class PromptModal extends React.Component{
+  constructor(props){
+    super(props)
+    var klass = 'custom-modal'
+    if(this.props.className){
+      klass = this.props.className
+    }
+    this.state = ({className:klass, show:false, override:false ,keyboardVisible:false, func: (function () {})});
+    this.show = this.show.bind(this);
+    this.close = this.close.bind(this);
+    this.save = this.save.bind(this);
+    this.discard = this.discard.bind(this);
+  }
+  discard(){
+    this.props.discard(this.state.func);
+
+  }
+  show (func) {
+    // console.log(func)
+    this.setState({show:true, func:func})
+  }
+  close () {
+    var self = this;
+    setTimeout(function () {
+      setTimeout(function () {
+        // body...
+        if(self.props.onClose){
+          self.props.onClose();
+        }
+      },200)
+      self.setState({show:false})
+    },100)
+    
+  }
+  save(){
+    this.props.save(this.state.func);
+  }
+  render () {
+    var cont = ""
+    if(this.state.show){
+    cont =  <PromptModalCont branding={this.props.branding} vMap={this.props.vMap} discard={this.discard} save={this.save} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</PromptModalCont>
+    }
+    return <div hidden={!this.state.show} className= 'pop-modal'>
+      {cont}
+    </div>
+  }
+}
+class PromptModalC extends React.Component{
+  constructor(props){
+    super(props);
+    this.handleClickOutside = this.handleClickOutside.bind(this)
+    this.close = this.close.bind(this);
+    this.save = this.save.bind(this);
+    this.discard = this.discard.bind(this);
+    this.cancel = this.cancel.bind(this);
+  }
+  componentDidMount() {
+    // body...
+  }
+  handleClickOutside(e) {
+    // body...
+    if(this.props.show){
+     // this.props.close();
+    }
+    
+  }
+  close() {
+    // body...
+    if(this.props.show){
+      this.props.close();
+    }
+  }
+  discard(){
+    var self = this;
+    this.props.discard();
+    setTimeout(function(){
+      if(self.props.show){
+      self.props.close();
+      }
+    }, 100)
+    
+  }
+  save(){
+    var self = this;
+    this.props.save();
+    setTimeout(function(){
+      if(self.props.show){
+      self.props.close();
+      }
+    }, 100)
+    
+  }
+  cancel(){
+    var self = this;
+    setTimeout(function(){
+      self.close();
+      
+    }, 100)
+  }
+  render () {
+    // body...
+    var self = this;
+        var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
+    var klass = 'alertmodal-outer'
+    var clr = '#fefefe'
+    if(this.props.branding == 'SPARC'){
+      klass = 'alertmodal-outer-sp'
+      clr = '#a1a1a1'
+    }
+    
+    return( <div className={klass}>
+          <div style={{padding:10}}>
+          <div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:clr, fontSize:30}}><div>{labTransV2['Warning'][this.props.language]['name']}</div><div style={{fontSize:24}}>{labTransV2['This will make changes to current batch'][this.props.language]['name']}</div></div>
+          {this.props.children}
+        <div>
+          <CircularButton language={this.props.language} onClick={this.discard} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Discard Changes'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.save} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Save Changes'][this.props.language]['name']}/>
+                <CircularButton language={this.props.language} onClick={this.cancel} branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={labTransV2['Cancel'][this.props.language]['name']}/>
+          
+  </div>
+        </div>
+      </div>)
+
+  }
+}
+var PromptModalCont =  onClickOutside(PromptModalC);
+var DeleteModalCont =  onClickOutside(DeleteModalC);
+var CopyModalCont =  onClickOutside(CopyModalC);
+var LogoutModalCont =  onClickOutside(LogoutModalC);
+/******************Modals end   **********************/
 /**Mixture Menu Component **/
 class ProductSettings extends React.Component{
     constructor(props){
