@@ -1239,7 +1239,7 @@
         "name": "Registre"
       },
       "portuguese": {
-        "name": "Log"
+        "name": "Registro"
       },
       "italian": {
         "name": "Log"
@@ -2639,7 +2639,7 @@
         "name": "Rapports"
       },
       "portuguese": {
-        "name": "Reports"
+        "name": "Relatórios"
       },
       "italian": {
         "name": "Reports"
@@ -2744,7 +2744,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Status"
       },
       "italian": {
         "name": ""
@@ -2779,7 +2779,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Peso Líquido"
       },
       "italian": {
         "name": ""
@@ -2814,7 +2814,7 @@
         "name": "Horodatage"
       },
       "portuguese": {
-        "name": "Timestamp"
+        "name": "Carimbo da Hora"
       },
       "italian": {
         "name": "Timestamp"
@@ -3934,7 +3934,7 @@
         "name": "On"
       },
       "portuguese": {
-        "name": "On"
+        "name": "Ligado"
       },
       "italian": {
         "name": "On"
@@ -4039,7 +4039,7 @@
         "name": "Port"
       },
       "portuguese": {
-        "name": "Port"
+        "name": "Portão"
       },
       "italian": {
         "name": "Port"
@@ -4844,7 +4844,7 @@
         "name": "Latch"
       },
       "portuguese": {
-        "name": "Latch"
+        "name": "Trinco"
       },
       "italian": {
         "name": "Latch"
@@ -5089,7 +5089,7 @@
         "name": "Shift"
       },
       "portuguese": {
-        "name": "Shift"
+        "name": "Turno"
       },
       "italian": {
         "name": "Shift"
@@ -5824,7 +5824,7 @@
         "name": "Gateway"
       },
       "portuguese": {
-        "name": "Gateway"
+        "name": "Porta de Entrada"
       },
       "italian": {
         "name": "Gateway"
@@ -5894,7 +5894,7 @@
         "name": "Add Shift"
       },
       "portuguese": {
-        "name": "Add Shift"
+        "name": "Adicionar Turno"
       },
       "italian": {
         "name": "Add Shift"
@@ -6139,7 +6139,7 @@
         "name": "of"
       },
       "portuguese": {
-        "name": "of"
+        "name": "desligado"
       },
       "italian": {
         "name": "of"
@@ -6909,7 +6909,7 @@
         "name": "Host"
       },
       "portuguese": {
-        "name": "Host"
+        "name": "Hospedeiro"
       },
       "italian": {
         "name": "Host"
@@ -8694,7 +8694,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Home"
+        "name": "Início"
       },
       "italian": {
         "name": ""
@@ -9639,7 +9639,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Dead Zone"
+        "name": "Zona Morta"
       },
       "italian": {
         "name": ""
@@ -12544,7 +12544,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Auto"
+        "name": "Automático"
       },
       "italian": {
         "name": ""
@@ -13384,7 +13384,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Download CSV"
+        "name": "Baixar CSV"
       },
       "italian": {
         "name": ""
@@ -13944,7 +13944,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Daylight Savings"
+        "name": "Horários de Verão"
       },
       "italian": {
         "name": ""
@@ -14469,7 +14469,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Tarado"
       },
       "italian": {
         "name": ""
@@ -15659,7 +15659,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Nome do Produto"
       },
       "italian": {
         "name": ""
@@ -15694,7 +15694,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Nenhum Usuário"
       },
       "italian": {
         "name": ""
@@ -15764,7 +15764,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "minutos"
       },
       "italian": {
         "name": ""
@@ -15799,7 +15799,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Lote em execução para"
       },
       "italian": {
         "name": ""
@@ -15834,7 +15834,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": ""
+        "name": "Amostra em execução para"
       },
       "italian": {
         "name": ""
@@ -16044,7 +16044,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Loadcell Deadtime",
+          "name": "Tempo Morto da Célula de Carga",
           "description": ""
         },
         "italian": {
@@ -18816,7 +18816,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Motor Control",
+          "name": "Controle do Motor",
           "description": "Habilita o controle do motor para motor conectado ao PL73 na placa SD041."
         },
         "italian": {
@@ -18868,7 +18868,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Motor Control",
+          "name": "Controle do Motor",
           "description": "Habilita o controle do motor para motor conectado ao PL74 na placa SD041."
         },
         "italian": {
@@ -19804,7 +19804,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Motor Poles",
+          "name": "Pólos do Motor",
           "description": "O número de pólos do motor 2. Entre em contato com a Fortress Technology antes de trocar."
         },
         "italian": {
@@ -19856,7 +19856,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Motor Poles",
+          "name": "Pólos do Motor",
           "description": "O número de pólos do motor 3. Entre em contato com a Fortress Technology antes de trocar."
         },
         "italian": {
@@ -19908,7 +19908,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Motor Poles",
+          "name": "Pólos do Motor",
           "description": "O número de pólos do motor 4. Entre em contato com a Fortress Technology antes de trocar."
         },
         "italian": {
@@ -22016,7 +22016,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Feedback Threshold",
+          "name": "Limite de Comentários",
           "description": "A zona morta em torno do peso do alvo onde não é necessário um sinal de feedback."
         },
         "italian": {
@@ -22380,7 +22380,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Belt Speed Time Forward",
+          "name": "Tempo de Avanço da Velocidade da Esteira",
           "description": ""
         },
         "italian": {
@@ -22432,7 +22432,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Belt Speed Time Backward",
+          "name": "Tempo de Velocidade da Esteira para Trás",
           "description": ""
         },
         "italian": {
@@ -23282,7 +23282,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "End Plot Buffer",
+          "name": "Buffer de Fim de Lote",
           "description": "Tamanho do buffer final para o gráfico de peso. Aumente para ver mais amostras após a embalagem."
         },
         "italian": {
@@ -23386,7 +23386,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Histogram Bucket Size",
+          "name": "Tamanho das Barras de Histograma",
           "description": "O tamanho de cada divisão de peso no gráfico de barras do histograma."
         },
         "italian": {
@@ -23438,7 +23438,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Histogram Buckets",
+          "name": "Barras de Histograma",
           "description": "O número de divisões de peso no gráfico de barras do histograma."
         },
         "italian": {
@@ -23750,7 +23750,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Min Plot Weight",
+          "name": "Peso Mínimo do Plot",
           "description": "Define o valor de peso mínimo para o gráfico quando o Modo Plot está em Manual."
         },
         "italian": {
@@ -23958,7 +23958,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "AutoTareDelay",
+          "name": "Delay da Tara Automática",
           "description": "Se for necessária uma tara após a embalagem, o sistema aguardará esse tempo."
         },
         "italian": {
@@ -24014,7 +24014,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Delay de Tara Contínua",
+          "name": "Delay da Tara Contínua",
           "description": "Tentará uma tara depois de um tempo da última tara."
         },
         "italian": {
@@ -24070,7 +24070,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Delay de Tara Contínua",
+          "name": "Delay da Tara Contínua",
           "description": "Para o modo pós-embalagem, uma tara será tentada após a quantidade definida após cada embalagem. Para o modo contínuo, uma tara será tentada após a quantidade definida após a última tara ou pacote."
         },
         "italian": {
@@ -31223,7 +31223,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Metal Detector Fault",
+          "name": "Falha no Detector de Metais",
           "description": "Fonte de entrada usada para indicar que há uma falha no sistema do detector de metais. Deve ser baixo por padrão."
         },
         "italian": {
@@ -35981,7 +35981,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Pattern Fault",
+          "name": "Falha de Padrão",
           "description": ""
         },
         "italian": {
@@ -36033,7 +36033,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Pattern Fault",
+          "name": "Falha de Padrão",
           "description": ""
         },
         "italian": {
@@ -39965,7 +39965,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Daylight Savings",
+          "name": "Horário de Verão",
           "description": ""
         },
         "italian": {
@@ -41789,7 +41789,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Prod. Mem. Fault Warning",
+          "name": "Aviso de Falha de Memória do Produto",
           "description": ""
         },
         "italian": {
@@ -43061,7 +43061,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Input Pol. Tachometer",
+          "name": "Input Pol. Tacômetro",
           "description": ""
         },
         "italian": {
@@ -43114,7 +43114,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Input Pol. Eye",
+          "name": "Input Pol. Fotocélula",
           "description": ""
         },
         "italian": {
@@ -43273,7 +43273,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Input Pol. Reject Eye",
+          "name": "Input Pol. Rejeitar Fotocélula",
           "description": ""
         },
         "italian": {
@@ -43379,7 +43379,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Input Pol. Reject Latch",
+          "name": "Input Pol. Rejeitar Trava",
           "description": ""
         },
         "italian": {
@@ -43485,7 +43485,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Input Pol. Reject Present",
+          "name": "Input Pol. Rejeitar Presente",
           "description": ""
         },
         "italian": {
@@ -43962,7 +43962,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Input Pol. Test",
+          "name": "Input Pol. Teste",
           "description": ""
         },
         "italian": {
@@ -44121,7 +44121,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Bal. Fault Warn.",
+          "name": "Aviso de Falha no Bal.",
           "description": ""
         },
         "italian": {
@@ -44227,7 +44227,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Rej. No Running Prod.",
+          "name": "Rejeitar Nenhum Produto em Execução",
           "description": ""
         },
         "italian": {
@@ -44386,7 +44386,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Split Pack. Length",
+          "name": "Comprimento do Pacote Dividido",
           "description": ""
         },
         "italian": {
@@ -44545,7 +44545,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Ref. Fault",
+          "name": "Falha de Refêrencia",
           "description": ""
         },
         "italian": {
@@ -44598,7 +44598,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Bal. Fault",
+          "name": "Falha Bal.",
           "description": ""
         },
         "italian": {
@@ -45022,7 +45022,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Excess Rej. Fault",
+          "name": "Falha de Excesso de Rejeição",
           "description": ""
         },
         "italian": {
@@ -47036,7 +47036,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Test Req.",
+          "name": "Solicitação de Teste",
           "description": ""
         },
         "italian": {
@@ -47407,7 +47407,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Buzzer",
+          "name": "Sonoro",
           "description": ""
         },
         "italian": {
@@ -47513,7 +47513,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Shutdown Lane",
+          "name": "Faixa de Desligamento",
           "description": ""
         },
         "italian": {
@@ -47619,7 +47619,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Pack Count",
+          "name": "Contagem de Pacotes",
           "description": ""
         },
         "italian": {
@@ -47725,7 +47725,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Prod_LED_B",
+          "name": "Prod. LED B",
           "description": ""
         },
         "italian": {
@@ -50216,7 +50216,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Passw. Acc. Clear Warnings",
+          "name": "Senha de Acordo com Avisos Claros",
           "description": ""
         },
         "italian": {
@@ -50587,7 +50587,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Calibrate Settle Duration",
+          "name": "Calibrar a Duração do Assentamento",
           "description": "Este é o tempo mínimo necessário para cada etapa de pesagem da calibração."
         },
         "italian": {
@@ -51223,7 +51223,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Prod. High LED",
+          "name": "Prod. Alto LED",
           "description": ""
         },
         "italian": {
@@ -51594,7 +51594,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Est. Pack. Length",
+          "name": "Comprimento Estimado do Pacote",
           "description": ""
         },
         "italian": {
@@ -51859,7 +51859,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Sens. Cal. Packs",
+          "name": "Calibração da Sensibilidade dos Pacotes",
           "description": ""
         },
         "italian": {
@@ -51912,7 +51912,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Sens. Cal. Time",
+          "name": "Tempo de Calibração de Sensibilidade",
           "description": ""
         },
         "italian": {
@@ -51965,7 +51965,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Learn Sens.",
+          "name": "Aprender Sensibilidade",
           "description": ""
         },
         "italian": {
@@ -52018,7 +52018,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Learn Phase",
+          "name": "Aprender Fase",
           "description": ""
         },
         "italian": {
@@ -52177,7 +52177,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Return",
+          "name": "Rejeitar Retorno",
           "description": "Habilita o sensor que verifica se o dispositivo rejeitado retornou corretamente."
         },
         "italian": {
@@ -52230,7 +52230,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Return",
+          "name": "Rejeitar Retorno",
           "description": "Habilita o sensor que verifica se o dispositivo rejeitado retornou corretamente."
         },
         "italian": {
@@ -52442,7 +52442,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Reject Ret.",
+          "name": "Rejeitar Retorno",
           "description": ""
         },
         "italian": {
@@ -52495,7 +52495,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Learning Sens.",
+          "name": "Aprendendo Sensibilidade",
           "description": ""
         },
         "italian": {
@@ -56366,7 +56366,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "AutoPhaseThresh",
+          "name": "Auto Fase Thresh",
           "description": ""
         },
         "italian": {
@@ -57240,7 +57240,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Mean Weight Pack Count",
+          "name": "Contagem de Pacote de Peso Médio",
           "description": "O número de embalagens utilizadas para determinar o peso médio."
         },
         "italian": {
@@ -58140,7 +58140,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Settle Duration",
+          "name": "Duração do Assentamento",
           "description": "A duração das amostras usadas para calcular o peso do pacote."
         },
         "italian": {
@@ -58674,7 +58674,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "",
+          "name": "Total",
           "description": ""
         },
         "italian": {
@@ -61317,7 +61317,7 @@
           "name": "Requête de Test Passe"
         },
         "portuguese": {
-          "name": "Test Request Pass"
+          "name": "Solicitação de Teste Aprovada"
         },
         "italian": {
           "name": "Richiesta Test Superato"
@@ -61428,7 +61428,7 @@
           "name": "Signal Maximal du Produit"
         },
         "portuguese": {
-          "name": "Product Signal Peak"
+          "name": "Pico de Sinal do Produto"
         },
         "italian": {
           "name": "Picco Segnale Prodotto"
@@ -61465,7 +61465,7 @@
           "name": "Phase Produit Capteur Optique"
         },
         "portuguese": {
-          "name": "Eye Product Phase"
+          "name": "Fase do Produto pela Fotocélula"
         },
         "italian": {
           "name": "Fase Prodotto Fotocellula"
@@ -61798,7 +61798,7 @@
           "name": "Clignotant Blanc"
         },
         "portuguese": {
-          "name": "Flash Write"
+          "name": "Gravação Flash"
         },
         "italian": {
           "name": "Scrivere Flash"
@@ -61835,7 +61835,7 @@
           "name": "Commutateur d'Intercepteur"
         },
         "portuguese": {
-          "name": "Interceptor Switch"
+          "name": "Interruptor do Interceptor"
         },
         "italian": {
           "name": "Scambio Interceptor"
@@ -62205,7 +62205,7 @@
           "name": "Stream Event"
         },
         "portuguese": {
-          "name": "Stream Event"
+          "name": "Transmitir Evento"
         },
         "italian": {
           "name": "Stream Event"
@@ -62242,7 +62242,7 @@
           "name": "Stream FRAM"
         },
         "portuguese": {
-          "name": "Stream FRAM"
+          "name": "Transmitir FRAM"
         },
         "italian": {
           "name": "Stream FRAM"
@@ -62279,7 +62279,7 @@
           "name": "Effacer Défaillances/Erreur"
         },
         "portuguese": {
-          "name": "Faults Clear"
+          "name": "Falhas Limpas"
         },
         "italian": {
           "name": "Faults Clear"
@@ -62316,7 +62316,7 @@
           "name": "Effacer Rejet"
         },
         "portuguese": {
-          "name": "Limpar Rejeição"
+          "name": "Rejeição Limpa"
         },
         "italian": {
           "name": "Reject Clear"
@@ -62464,7 +62464,7 @@
           "name": "Test Débuté"
         },
         "portuguese": {
-          "name": "Test Started"
+          "name": "Teste Iniciado"
         },
         "italian": {
           "name": "Test Started"
@@ -62717,7 +62717,7 @@
           "name": "Warnings Clear"
         },
         "portuguese": {
-          "name": "Warnings Clear"
+          "name": "Avisos Limpos"
         },
         "italian": {
           "name": "Warnings Clear"
@@ -62965,7 +62965,7 @@
           "name": "Eye Product Peak"
         },
         "portuguese": {
-          "name": "Eye Product Peak"
+          "name": "Pico do Produto pela Fotocélula"
         },
         "italian": {
           "name": "Eye Product Peak"
@@ -63058,7 +63058,7 @@
           "name": "Interceptor Switch"
         },
         "portuguese": {
-          "name": "Interceptor Switch"
+          "name": "Interruptor do Interceptor"
         },
         "italian": {
           "name": "Interceptor Switch"
@@ -63182,7 +63182,7 @@
           "name": "Product Defaults"
         },
         "portuguese": {
-          "name": "Product Defaults"
+          "name": "Padrões do Produto"
         },
         "italian": {
           "name": "Product Defaults"
@@ -63213,7 +63213,7 @@
           "name": "Reject 2 Clear"
         },
         "portuguese": {
-          "name": "Reject 2 Clear"
+          "name": "Rejeição 2 Limpa "
         },
         "italian": {
           "name": "Reject 2 Clear"
@@ -66007,7 +66007,7 @@
         "korean": "IO Board 설정",
         "spanish": "IO Board Settings",
         "french": "Panneau Configuration IO",
-        "portuguese": "IO Board Settings",
+        "portuguese": "Configurações da placa IO",
         "italian": "Impostazioni Scheda IO",
         "german": "IO-Karte Einstellungen",
         "turkish": "IO Board Settings",
@@ -66022,7 +66022,7 @@
         "korean": "Detector Addresses",
         "spanish": "Detector Addresses",
         "french": "Adresses Détecteur",
-        "portuguese": "Detector Addresses",
+        "portuguese": "Endereços do Detector",
         "italian": "Indirizzi Detector",
         "german": "Detektor Adressen",
         "turkish": "Detector Addresses",
@@ -66551,7 +66551,7 @@
         "korean": "학습",
         "spanish": "Learn",
         "french": "Learn",
-        "portuguese": "Learn",
+        "portuguese": "Aprender",
         "italian": "Learn",
         "german": "Learn",
         "turkish": "Learn",
@@ -69983,7 +69983,7 @@
       ],
       "portuguese": [
         "Desligado",
-        "On"
+        "Ligado"
       ],
       "italian": [
         "Off",

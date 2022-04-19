@@ -320,7 +320,7 @@ class Modal extends React.Component{
 					</ModalCont>)
 			}
 			else{
-				if(this.props.onCancel!='undefined'){
+				if(this.props.onCancel){
 					cont = (<ModalCont x={this.props.x} onCancel={this.props.onCancel} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
 						{im}{this.props.children}
 						<MessageModal ref={this.msgm}/>
@@ -358,7 +358,7 @@ class ModalC extends React.Component{
 	}
 	endCalibration(){
 		this.props.toggle()
-		if(this.props.onCancel!='undefined')
+		if(this.props.onCancel)
 		{this.props.onCancel()}
 	}
 	handleClickOutside(e){

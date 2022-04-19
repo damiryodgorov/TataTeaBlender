@@ -40,7 +40,7 @@ const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const FORTRESSPURPLE3 = '#6d6490'
 const FORTRESSGRAPH = '#b8860b'
-const DISPLAYVERSION = '2022/03/01'
+const DISPLAYVERSION = '2022/03/02'
 const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
@@ -1543,7 +1543,7 @@ class LandingPage extends React.Component{
           if(e.rec['AutoLogoutMinutes'] != this.state.srec['AutoLogoutMinutes']){
             ifvisible.setIdleDuration(e.rec['AutoLogoutMinutes']*60)
           }
-          if(this.state.username == 'No User'){ 
+          if(this.state.userid == 0){ 
               this.setState({noupdate:false,srec:e.rec,language:language, username:labTransV2['No User'][language]['name'], cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), unusedList:this.getUCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
           }
           else {
@@ -1708,9 +1708,9 @@ class LandingPage extends React.Component{
             if(typeof this.state.rec['BatchRunning'] != 'undefined'){
               if(e.rec['BatchRunning'] == 1){
                 //toast('Batch Started');
-                this.ste.current.showMsg(labTransV2['Batch Started'][language]['name'])
+                this.ste.current.showMsg(labTransV2['Batch Started'][this.state.language]['name'])
                 if (this.steDual && this.steDual.current){
-                  this.steDual.current.showMsg(labTransV2['Batch Started'][language]['name'])
+                  this.steDual.current.showMsg(labTransV2['Batch Started'][this.state.language]['name'])
                 }
                 //this.lg.current.clearHisto();
                 setTimeout(function () {
@@ -1719,15 +1719,15 @@ class LandingPage extends React.Component{
                 },100)
               }else if(e.rec['BatchRunning'] == 2){
                // toast('Batch Paused')
-                this.ste.current.showMsg(labTransV2['Batch Paused'][language]['name'])
+                this.ste.current.showMsg(labTransV2['Batch Paused'][this.state.language]['name'])
                 if (this.steDual && this.steDual.current){
-                  this.steDual.current.showMsg(labTransV2['Batch Paused'][language]['name'])
+                  this.steDual.current.showMsg(labTransV2['Batch Paused'][this.state.language]['name'])
                 }
               }else{
                 //this.msgm.current.show('Batch Stopped')
-                this.ste.current.showMsg(labTransV2['Batch Stopped'][language]['name'])
+                this.ste.current.showMsg(labTransV2['Batch Stopped'][this.state.language]['name'])
                 if (this.steDual && this.steDual.current){
-                  this.steDual.current.showMsg(labTransV2['Batch Stopped'][language]['name'])
+                  this.steDual.current.showMsg(labTransV2['Batch Stopped'][this.state.language]['name'])
                 }
                //  toast('Batch Stopped')
               }
@@ -1739,10 +1739,10 @@ class LandingPage extends React.Component{
             if(e.rec['BatchRunComplete'] != this.state.rec['BatchRunComplete']){
               if(typeof this.state.rec['BatchRunComplete'] != 'undefined'){
                 if(e.rec['BatchRunComplete'] == 1){
-                  this.msgm.current.show(labTransV2['Batch Completed'][language]['name'])
-                  this.ste.current.showMsg(labTransV2['Batch Completed'][language]['name'])
+                  this.msgm.current.show(labTransV2['Batch Completed'][this.state.language]['name'])
+                  this.ste.current.showMsg(labTransV2['Batch Completed'][this.state.language]['name'])
                   if (this.steDual && this.steDual.current){
-                    this.steDual.current.showMsg(labTransV2['Batch Completed'][language]['name'])
+                    this.steDual.current.showMsg(labTransV2['Batch Completed'][this.state.language]['name'])
                   }
                   if (this.props.lane){
                     this.props.update(this.props.lane)
@@ -1763,7 +1763,7 @@ class LandingPage extends React.Component{
           if(this.state.srec['RemoteDisplayLock'] == 1){
             if(typeof e.rec['InternalIP'] != 'undefined'){
               if(window.location.host != e.rec['InternalIP']){
-                this.lockModal.current.show(labTransV2['This display has been locked for remote use'][language]['name'])
+                this.lockModal.current.show(labTransV2['This display has been locked for remote use'][this.state.language]['name'])
               }
             }
             
@@ -2939,7 +2939,6 @@ class LandingPage extends React.Component{
       statusLed = <img src="assets/led_circle_yellow.png"/>
     }
 
-
     if(this.state.srec['SRecordDate']){
         sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['System Settings'][language]['name']}</div></div>
         <SettingsPageWSB  resetCalibration={this.resetCalibration} packSamples={this.state.packSamples} soc={this.props.soc} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={this.state.confirmPressed == 1 ? 0 : this.state.calibState} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={this.state.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
@@ -3017,7 +3016,7 @@ class LandingPage extends React.Component{
     var fSize = 28;
     if(this.state.username.length>10)
     {
-      fSize = 26;
+      fSize = 24;
     }
 
     return  (<div className='interceptorMainPageUI' style={{background:backgroundColor, textAlign:'center', width:'100%',display:'block', height:'-webkit-fill-available', boxShadow:'0px 19px '+backgroundColor}}>
@@ -5548,6 +5547,7 @@ class SettingsPageWSB extends React.Component{
     if(this.state.sel == -1){
       cob = this.props.cob2
     }
+    
     var sd =<React.Fragment><div > <SettingsPage soc={this.props.soc} timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst} toggleGraph={this.toggleGraph} openUnused={this.props.openUnused} submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} 
       int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={this.props.level}/>
