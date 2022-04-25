@@ -12250,9 +12250,9 @@
         "name": ""
       }
     },
-    "Nominal Weight": {
+    "Feed Rate": {
       "english": {
-        "name": "Nominal Weight"
+        "name": "Feed Rate"
       },
       "korean": {
         "name": ""
@@ -12264,7 +12264,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Peso Nominal "
+        "name": ""
       },
       "italian": {
         "name": ""
@@ -12285,9 +12285,9 @@
         "name": ""
       }
     },
-    "Over Weight Limit": {
+    "Infeed Run Time": {
       "english": {
-        "name": "Over Weight Limit"
+        "name": "Infeed Run Time"
       },
       "korean": {
         "name": ""
@@ -12299,7 +12299,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Acima do Limite de Peso"
+        "name": ""
       },
       "italian": {
         "name": ""
@@ -15921,50 +15921,50 @@
         "Day"
       ]
     },
-    "NominalWgt": {
+    "FeedRate": {
       "@translations": {
         "english": {
-          "name": "Nominal Weight",
+          "name": "Feed Rate",
           "description": "This is the weight of the product without the packaging."
         },
         "korean": {
-          "name": "Nominal Weight",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "peso nominal",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "poids nominal",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "Peso Nominal ",
-          "description": "Este é o peso do produto sem a embalagem."
+          "name": " ",
+          "description": ""
         },
         "italian": {
-          "name": "peso nominale",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "Nenngewicht",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "nominal ağırlık",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "Nominal Weight",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "Nominal Weight",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "Nominal Weight",
+          "name": "",
           "description": ""
         }
       },
@@ -22997,50 +22997,50 @@
         "Under Weight Limit"
       ]
     },
-    "OverWeightLim": {
+    "InfeedRunTime": {
       "@translations": {
         "english": {
-          "name": "Over Weight Limit",
+          "name": "Infeed Run Time",
           "description": "This is the acceptable weight tolerance above the nominal weight."
         },
         "korean": {
-          "name": "Over Weight Limit",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "Límite de exceso de peso",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "Plus de limite de poids",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "Limite acima do peso",
-          "description": "Esta é a tolerância de peso aceitável acima do peso nominal."
+          "name": "",
+          "description": ""
         },
         "italian": {
-          "name": "Limite di peso",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "Über Gewichtslimit",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "Aşırı Ağırlık Sınırı",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "Over Weight Limit",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "Over Weight Limit",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "Over Weight Limit",
+          "name": "",
           "description": ""
         }
       },
@@ -24103,51 +24103,51 @@
         "Delay"
       ]
     },
-    "PkgWeight": {
+    "LowerWeightLimit": {
       "@translations": {
         "english": {
-          "name": "Packaging Weight",
+          "name": "Lower Weight Limit",
           "description": "This is the weight of the packaging material"
         },
         "korean": {
-          "name": "Package Weight",
-          "description": "This is the weight of the packaging material"
+          "name": "",
+          "description": ""
         },
         "spanish": {
-          "name": "Package Weight",
-          "description": "This is the weight of the packaging material"
+          "name": "",
+          "description": ""
         },
         "french": {
-          "name": "Package Weight",
-          "description": "This is the weight of the packaging material"
+          "name": "",
+          "description": ""
         },
         "portuguese": {
-          "name": "Peso da Embalagem",
-          "description": "Este é o peso do material de embalagem"
+          "name": "",
+          "description": ""
         },
         "italian": {
-          "name": "Package Weight",
-          "description": "This is the weight of the packaging material"
+          "name": "",
+          "description": ""
         },
         "german": {
-          "name": "Package Weight",
-          "description": "This is the weight of the packaging material"
+          "name": "",
+          "description": ""
         },
         "turkish": {
-          "name": "Package Weight",
-          "description": "This is the weight of the packaging material"
+          "name": "",
+          "description": ""
         },
         "russian": {
-          "name": "Package Weight",
-          "description": "This is the weight of the packaging material"
+          "name": "",
+          "description": ""
         },
         "polish": {
-          "name": "Package Weight",
-          "description": "This is the weight of the packaging material"
+          "name": "",
+          "description": ""
         },
         "chinese": {
-          "name": "Package Weight",
-          "description": "This is the weight of the packaging material"
+          "name": "",
+          "description": ""
         }
       },
       "children": [],

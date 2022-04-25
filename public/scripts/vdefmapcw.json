@@ -8204,7 +8204,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Inicar"
+        "name": "Iniciar"
       },
       "italian": {
         "name": ""
@@ -8485,6 +8485,146 @@
       },
       "portuguese": {
         "name": "Nível"
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "ADMIN": {
+      "english": {
+        "name": "ADMIN"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": "ADMINISTRADOR"
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "ENGINEER": {
+      "english": {
+        "name": "ENGINEER"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": "ENGENHEIRO"
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "TECHNICIAN": {
+      "english": {
+        "name": "TECHNICIAN"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": "Técnico"
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "OPERATOR": {
+      "english": {
+        "name": "OPERATOR"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": "OPERADOR"
       },
       "italian": {
         "name": ""
@@ -15765,6 +15905,111 @@
       },
       "portuguese": {
         "name": "minutos"
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "seconds": {
+      "english": {
+        "name": "seconds"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": "segundos"
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "in": {
+      "english": {
+        "name": "in"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": "Pol"
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "x Product Length": {
+      "english": {
+        "name": "x Product Length"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": "x Comprimento do Produto"
       },
       "italian": {
         "name": ""
@@ -25603,7 +25848,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Tempo de Activação de Rejeição",
+          "name": "Tempo de Ativação de Rejeição",
           "description": "O atraso entre o envio do sinal de rejeição principal e o dispositivo de rejeição principal que afeta o pacote."
         },
         "italian": {
@@ -26124,7 +26369,7 @@
         },
         "portuguese": {
           "name": "Rejeição Fotocélula",
-          "description": "A opção “mid” de Rejeição Photo significa que o dispositivo de rejeição atingirá o meio do pacote, independentemente do tamanho do pacote (rejeições do kicker) – ele pode ser alterado para “lead” (borda de ataque para rejeições do desviador) ou “largura” ( comprimento total do pacote para recolhimento de rejeições)"
+          "description": "A opção “mid” de Rejeição da Fotocélula significa que o dispositivo de rejeição atingirá o meio do pacote, independentemente do tamanho do pacote (rejeições do kicker) – ele pode ser alterado para “lead” (borda de ataque para rejeições do desviador) ou “largura” ( comprimento total do pacote para recolhimento de rejeições)"
         },
         "italian": {
           "name": "Eye Reject",
@@ -26175,7 +26420,7 @@
           "description": "L'option \"Mid\" du Capteur Optique détermine que le dispositif de rejet frappera le milieu du paquet peu importe la grosseur de celui-ci ( Pousseur/Piston)— elle peut être modifiée to \"Lead\" ( la partie avant pour le bras déviateur) ou \"Width\" (toute la largeur du produit pour une courroie de rappel)"
         },
         "portuguese": {
-          "name": "Rejeição Photo",
+          "name": "Rejeição da Fotocélula",
           "description": "- Use o modo “Comprimento” para dispositivos de rejeição que devem ser rejeitados em todo o comprimento do pacote.\n- Use o modo “Mid” para dispositivos de rejeição que devem rejeitar no meio do pacote.\n- Use o modo “Lead” para dispositivos de rejeição que devem rejeitar no início do pacote.\n- Use o modo \"Toggle\" para dispositivos de rejeição que alternam entre rejeitar em cada lado do transportador."
         },
         "italian": {
@@ -26227,7 +26472,7 @@
           "description": "L'option \"Mid\" du Capteur Optique détermine que le dispositif de rejet frappera le milieu du paquet peu importe la grosseur de celui-ci ( Pousseur/Piston)— elle peut être modifiée to \"Lead\" ( la partie avant pour le bras déviateur) ou \"Width\" (toute la largeur du produit pour une courroie de rappel)"
         },
         "portuguese": {
-          "name": "Rejeição Photo",
+          "name": "Rejeição da Fotocélula",
           "description": " - Use o modo “mid” para dispositivos de rejeição que devem ser ativados no meio do pacote\n - Use o modo “lead” para dispositivos de rejeição que devem ser ativados na borda de ataque do pacote\n - Use o modo “width” para dispositivos de rejeição que devem ser ativados durante todo o comprimento do pacote"
         },
         "italian": {
@@ -26799,7 +27044,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Nível de Acesso à Configurações Avançadas do Sistema",
+          "name": "Nível de Acesso às Configurações Avançadas do Sistema",
           "description": "Nível de acesso mínimo necessário para editar configurações avançadas do sistema. O nível de acesso 0 não exigirá login."
         },
         "italian": {
@@ -27631,7 +27876,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Nível de Acesso à Limpar Falha",
+          "name": "Nível de Acesso para Limpar Falhas",
           "description": ""
         },
         "italian": {
@@ -27683,7 +27928,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Nível de Acesso à Limpar Falha",
+          "name": "Nível de Acesso para Limpar Falhas",
           "description": "Nível mínimo de acesso necessário para eliminar falhas. O nível de acesso 0 não exigirá login."
         },
         "italian": {
@@ -30813,43 +31058,43 @@
           "description": "Input source used to monitor the e-stop status. This should be high when the e-stop is triggered."
         },
         "korean": {
-          "name": "비상정지",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "E-Stop",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "E-Stop",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "E-Stop",
+          "name": "Parada de Emergência",
           "description": "Fonte de entrada usada para monitorar o status da parada de emergência. Isso deve ser alto quando o e-stop é acionado."
         },
         "italian": {
-          "name": "E-Stop",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "E-Stop",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "E-Stop",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "E-Stop",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "E-Stop",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "E-Stop",
+          "name": "",
           "description": ""
         }
       },
@@ -34369,7 +34614,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Falha Memoria do produto",
+          "name": "Falha Memória do Produto",
           "description": "Esta falha ocorre quando a memória do produto está cheia ou corrompida."
         },
         "italian": {
@@ -34421,7 +34666,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Falha Memoria do produto",
+          "name": "Falha Memória do Produto",
           "description": ""
         },
         "italian": {
@@ -34889,7 +35134,7 @@
           "description": "Le capteur optique a été ou est bloqué plus longtemps que prévu"
         },
         "portuguese": {
-          "name": "Falha Fotocélula Bloqueado",
+          "name": "Falha Fotocélula Bloqueada",
           "description": "Esta falha ou aviso ocorre se a Fotocélula da Pesagem estiver bloqueado por mais tempo que o Tempo de Bloqueio da Fotocélula."
         },
         "italian": {
@@ -34941,7 +35186,7 @@
           "description": "Le capteur optique a été ou est bloqué plus longtemps que prévu"
         },
         "portuguese": {
-          "name": "Falha Fotocélula Bloqueado",
+          "name": "Falha Fotocélula Bloqueada",
           "description": "A fotocélula tem estado ou está bloqueado há mais tempo do que o esperado. "
         },
         "italian": {
@@ -35253,7 +35498,7 @@
           "description": "Pression d’air basse ou non existante"
         },
         "portuguese": {
-          "name": "Fala Pressão de AR",
+          "name": "Falha de Pressão do Ar",
           "description": "Esta falha ou aviso ocorrerá quando o sensor de pressão de ar detectar baixa pressão de ar."
         },
         "italian": {
@@ -35305,7 +35550,7 @@
           "description": "Pression d’air basse ou non existante"
         },
         "portuguese": {
-          "name": "Fala Pressão de AR",
+          "name": "Falha de Pressão do Ar",
           "description": "A pressão do ar está muito baixa ou não está presente"
         },
         "italian": {
@@ -35357,7 +35602,7 @@
           "description": "Le nombre de rejets dépasse le nombre établi"
         },
         "portuguese": {
-          "name": "Falha excesso de Rejeçoes",
+          "name": "Falha Excesso de Rejeições",
           "description": "Esta falha ou aviso ocorre quando o número de rejeições atinge o limite definido dentro do tempo definido."
         },
         "italian": {
@@ -35409,7 +35654,7 @@
           "description": "Le nombre de rejets dépasse le nombre établi"
         },
         "portuguese": {
-          "name": "Falha excesso de Rejeçoes",
+          "name": "Falha Excesso de Rejeições",
           "description": "O número de rejeições excedeu o número definido"
         },
         "italian": {
@@ -35669,7 +35914,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Falha Memoria de Rejeção",
+          "name": "Falha Memória de Rejeição",
           "description": "Esta falha ou aviso ocorre quando há muitos pacotes no sistema da balança de verificação."
         },
         "italian": {
@@ -36709,7 +36954,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Falha Placa IO",
+          "name": "Falha Placa I/O",
           "description": "Esta falha ou aviso ocorre quando a placa IO não está conectada."
         },
         "italian": {
@@ -36761,7 +37006,7 @@
           "description": ""
         },
         "portuguese": {
-          "name": "Falha Placa IO",
+          "name": "Falha Placa I/O",
           "description": ""
         },
         "italian": {
@@ -37009,43 +37254,43 @@
           "description": "This fault or warning when the E-Stop input is active."
         },
         "korean": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "E-Stop",
+          "name": "Parada de Emergência",
           "description": "Esta falha ou aviso quando a entrada E-Stop está ativa."
         },
         "italian": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         }
       },
@@ -37061,15 +37306,15 @@
           "description": ""
         },
         "korean": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "portuguese": {
@@ -37077,27 +37322,27 @@
           "description": ""
         },
         "italian": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "E-Stop Fault",
+          "name": "",
           "description": ""
         }
       },
@@ -65341,6 +65586,21 @@
     }
   },
   "@catmap": {
+    "Calibrate": {
+      "@translations": {
+        "english": "Calibrate",
+        "korean": "",
+        "spanish": "",
+        "french": "",
+        "portuguese": "Calibrar",
+        "italian": "",
+        "german": "",
+        "turkish": "",
+        "russian": "",
+        "polish": "",
+        "chinese": ""
+      }
+    },
     "Reject": {
       "@translations": {
         "english": "Reject",
@@ -66142,7 +66402,7 @@
         "korean": "Photo Reject",
         "spanish": "Photo Reject",
         "french": "Photo Reject",
-        "portuguese": "Rejeição Photo",
+        "portuguese": "Rejeição da Fotocélula",
         "italian": "Photo Reject",
         "german": "Photo Reject",
         "turkish": "Photo Reject",
@@ -66581,7 +66841,7 @@
         "korean": "Photo Reject",
         "spanish": "Photo Reject",
         "french": "Photo Reject",
-        "portuguese": "Rejeição Photo",
+        "portuguese": "Rejeição da Fotocélula",
         "italian": "Photo Reject",
         "german": "Photo Reject",
         "turkish": "Photo Reject",
@@ -66596,7 +66856,7 @@
         "korean": "Photo Reject",
         "spanish": "Photo Reject",
         "french": "Photo Reject",
-        "portuguese": "Rejeição Photo",
+        "portuguese": "Rejeição da Fotocélula",
         "italian": "Photo Reject",
         "german": "Photo Reject",
         "turkish": "Photo Reject",
@@ -69695,7 +69955,7 @@
         "USB Interno",
         "Placa IO",
         "Falha de Sinal",
-        "E-Stop",
+        "Parada de Emergência",
         "Backup do Produto",
         "Falha de Calibração",
         "Falha de Tara",

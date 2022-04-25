@@ -239,9 +239,21 @@ button{
     height: 100%;
     text-align: center;
 }
-
-
-
+.circularButton_sp{
+    text-align: center;
+    width:191px;
+    background-color: #e1e1e1;
+    position: relative;
+    margin-top: 8px;
+    margin-right: auto;
+    margin-left: auto;
+    height:50px;
+    overflow: hidden;
+    border-radius: 32px;
+    padding: 3px;
+    border: 8px solid #818a90;
+    box-shadow: 0 0 6px black;
+}
 .react-contextmenu {
     background-color: #fff;
     background-clip: padding-box;

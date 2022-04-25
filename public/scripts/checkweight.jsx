@@ -2876,7 +2876,7 @@ class LandingPage extends React.Component{
 
     // New Changes to add with greyed out functionality on startup 
     var play, stop;
-    // var sttxt = 'Start'
+    // var sttxt = 'Start' 
 
     var sttxt = labTransV2['Start Text'][language]['name']
     // if CanStartBelts == 0
@@ -2901,7 +2901,7 @@ class LandingPage extends React.Component{
 
     }
     
-
+    
     var cont = ''
     var sd = <div><DisplaySettings soc={this.props.soc} nifip={this.state.nifip} nifgw={this.state.nifgw} nifnm={this.state.nifnm} language={language} branding={this.state.branding}/>
       <button onClick={this.reboot}>{labTransV2['Reboot'][language]['name']}</button><button onClick={this.formatUSB}>{labTransV2['Format USB and Reboot'][language]['name']}</button></div>
@@ -4514,6 +4514,10 @@ class ProductSettings extends React.Component{
       }
     }else{
       val = rval
+    }
+    if(val.includes('in') && !val.includes('min'))
+    {
+      val = val.replace('in', labTransV2['in'][self.props.language]['name'])
     }
     return val;
   }
@@ -7725,7 +7729,20 @@ class MultiEditControl extends React.Component{
       var ioindicator = '';
       var vLabels = this.state.val.map(function(d,i){  
       var val = d;
-      var units = self.props.param[i]['@units']
+      var units;
+ 
+      if(self.props.param[i]['@units']=='minutes')
+      {
+       units=labTransV2['minutes'][self.props.language]['name'];
+      }else if(self.props.param[i]['@units']=='x Product Length'){
+        units=labTransV2['x Product Length'][self.props.language]['name'];
+      }else if(self.props.param[i]['@units']=='seconds'){
+        units=labTransV2['seconds'][self.props.language]['name'];
+      }else{
+        units = self.props.param[i]['@units'];
+      }
+
+
       if(units == 'grams'){
         if(self.props.weightUnits == 1){
           val = val/1000 
@@ -7866,8 +7883,20 @@ class MultiEditControl extends React.Component{
       if(iod && i == 1){
         _st.width = 190
       }
+      /**Checking and changing the value if it equals to any of the specified values */
+      if(val=='0.0'+' '+labTransV2['seconds'][self.props.language]['name'] && self.props.param[i]['@name']=='FaultClearTimeOverride')
+      {
+        val = labTransV2['DefaultClearTime'][self.props.language]['name'];
+      }else if((val == '0 mm' && self.props.param[i]['@name']=='EyeMinGapDistOverride') || (val == '0.0 in' && self.props.param[i]['@name']=='EyeMinGapDistOverride')){
+        val = labTransV2['DefaultClearTime'][self.props.language]['name'];
+      }else if(val == '0.00'+' '+labTransV2['x Product Length'][self.props.language]['name'])
+      {
+        val = labTransV2['DefaultClearTime'][self.props.language]['name'];
+      }else if (val.toString().includes('in') && !val.toString().includes('min')){
+          val = val.replace('in',labTransV2['in'][self.props.language]['name'])
+      }
 
-      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{(val == '0.0 seconds' && self.props.param[i]['@name']=='FaultClearTimeOverride')  ? labTransV2['DefaultClearTime'][self.props.language]['name'] : (val == '0 mm' && self.props.param[i]['@name']=='EyeMinGapDistOverride') || (val == '0.0 in' && self.props.param[i]['@name']=='EyeMinGapDistOverride') ? labTransV2['DefaultClearTime'][self.props.language]['name'] : val == '0.00 x Product Length' ? labTransV2['DefaultClearTime'][self.props.language]['name'] : val}</CustomLabel>)
+      return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val}</CustomLabel>)
     })
     
 
@@ -8589,7 +8618,6 @@ class AccountRow extends React.Component{
       return (<CustomLabel index={i} onClick={self.valClick} style={cst}>{val}</CustomLabel>)
     })
 
-
      var bgClr = FORTRESSPURPLE2
      var modBG = FORTRESSPURPLE1
         var txtClr = '#e1e1e1'
@@ -8598,10 +8626,9 @@ class AccountRow extends React.Component{
           bgClr = SPARCBLUE2
           txtClr = '#000'
         }
-      
-      var pw = this.state.username!='ADMIN' && <PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={labTransV2['Set Level'][this.props.language]['name']}ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
-    var userkb = this.state.username!='ADMIN' && <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={labTransV2['Username'][this.props.language]['name']}/>
-    var pswdkb = <CustomKeyboard branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={labTransV2['Password'][this.props.language]['name']}/>
+      var pw = this.state.username!= labTransV2['ADMIN'][this.props.language]['name'] && <PopoutWheel branding={this.props.branding} ovWidth={290} inputs={inputSrcArr} outputs={outputSrcArr} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={labTransV2['Set Level'][this.props.language]['name']}ref={this.pw} val={[this.state.acc]} options={[levels]} onChange={this.selectChanged}/>
+    var userkb = this.state.username!= labTransV2['ADMIN'][this.props.language]['name'] && <CustomKeyboard branding={this.props.branding} language={this.props.language} num={false} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.username} onChange={this.onUserChange} value={this.state.username} label={labTransV2['Username'][this.props.language]['name']}/>
+    var pswdkb = <CustomKeyboard passwordKeyboard={true} branding={this.props.branding} language={this.props.language} pwd={true} num={true} onFocus={this.onFocus} onRequestClose={this.onRequestClose} ref={this.pswd} onChange={this.onPswdChange} value={''} label={labTransV2['Password'][this.props.language]['name']}/>
       
       var edit = <Modal language={this.props.language} mobile={this.props.mobile} ref={this.ed} onClose={this.saveChanges} innerStyle={{background:modBG}}>
       <div style={{textAlign:'center', background:'#e1e1e1', padding:10}}>
@@ -8752,6 +8779,16 @@ class LogInControl2 extends React.Component{
 
   render(){
     var list = this.state.list
+    /**Translating level string received from the backend */
+    for(var i=0;i<list.length;i++)
+    {
+      if(list[i].includes('level'))
+      {
+        list[i] = list[i].replace('level',labTransV2['Level'][this.props.language]['name'])
+      }
+    }
+    /********************************************************/
+    
     var namestring = labTransV2['Select User'][this.props.language]['name']
     var pw = <PopoutWheel inputs={inputSrcArr} tooltipOv={true} tooltip={vdefMapV2['@tooltips']['Select User'][this.props.language]} outputs={outputSrcArr} ovWidth={290} branding={this.props.branding} mobile={this.props.mobile} vMap={this.props.vMap} language={this.props.language} index={0} interceptor={false} name={namestring} ref={this.pw} val={[this.props.val]} options={[list]} onChange={this.selectChanged} onCancel={this.onCancel}/>
 

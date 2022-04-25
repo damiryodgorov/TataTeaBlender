@@ -75,6 +75,8 @@ var cw = {
 }
 
 module.exports = {
+  //module:'development',
+  //devtool: 'inline-source-map',
   entry: {
     
     cw:'./public/cw.js',
