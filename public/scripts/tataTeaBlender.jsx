@@ -16,7 +16,7 @@ import { Line } from 'react-chartjs-2'
 import Chart from 'chart.js/auto'
 var onClickOutside = require('react-onclickoutside');
 /** Global variable declarations **/
-const DISPLAYVERSION = '2022/03/01'
+const DISPLAYVERSION = '2022/04/25'
 const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const SPARCBLUE2 = '#30A8E2'
@@ -27,7 +27,7 @@ var backgroundColor = FORTRESSPURPLE1;
 var inputSrcArr = ["NONE","TACH","EYE","RC1","RC2","ISO_1","IO_PL8_01","IO_PL8_02","IO_PL8_03","IO_PL8_04","IO_PL8_05","IO_PL8_06","IO_PL8_07","IO_PL8_08","IO_PL8_09","IO_PL6_01","IO_PL6_02","IO_PL6_03"];
 var outputSrcArr = ['NONE', 'REJ_MAIN', 'REJ_ALT','FAULT','TEST_REQ', 'HALO_FE','HALO_NFE','HALO_SS','LS_RED','LS_YEL', 'LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 
-const vdefMapV2 = require('./vdefmaptata.json')
+const vdefMapV2 = require('./vdefmapcw.json')
 const funcJSON = require('./funcjson.json')
 let vdefByMac = {};
 var _Vdef;
@@ -127,7 +127,6 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
         pAcc = par.passAcc;
       }
     }
-    console.log("_vmap[p]",_vmap[p]);
     pAcc = Math.max(passAcc, pAcc);
 		if(par.type == 0){
 
@@ -198,7 +197,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
     			_p['@children'].push(_ch)	
     		})
     			params.push(_p)
-    		}/*else if(_vmap[p]['@interceptor']){
+    		}else if(_vmap[p]['@interceptor']){
         
             var pname = p.slice(0,-4)
         //    //console.log(pname, p, 342)
@@ -219,7 +218,7 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
               if(_p!= null){
                 params.push(_p);
               }
-        }*/else if(_vmap[p]['@test']){
+        }else if(_vmap[p]['@test']){
           var a = _vmap[p].children[0];
                 if(typeof pVdef[0][a] != 'undefined'){
               _p = {'type':0, '@name':p, '@data':sysRec[a], '@children':[], acc:par.acc, passAcc:pAcc}
@@ -479,11 +478,12 @@ class Container extends React.Component {
 class LandingPage extends React.Component{
     constructor(props){
         super(props);
-        this.state = {level:0,username:'No User',userid:0,user:-1,accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''],
-                      liveWeight:0.0,updateCount:0,faultArray:[],warningArray:[],language:'english',branding:'FORTRESS',fram:{},srec:{},prec:{},rec:{},crec:{},cob:{},pcob:{},
-                      unusedList:{},checkPrecInterval:null,version:'2018/07/30',connected:false,init:false,currentPage:'landing',start:true,pause:false,stop:false,
-                      timezones:[],curDet:'',ioBITs:{},mbunits:[],dets:[], detL:{}, macList:[],nifip:'', nifnm:'',nifgw:'',connectedClients:0,confirmPressed:0,
-                      custMap:vdefMapV2,vMap:vdefMapV2,customMap:true,data:[],currentView:'',plannedBatches:[],prodNames:[],pList:[],prodList:{},prodListRaw:{}}
+        this.state = {plannedBatches:[],buckMin:0,batchList:[], buckMax:100, prclosereq:false,histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},
+                      live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,currentView:'',data:[],unusedList:{},cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
+                      branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
+                      curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
+                      detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false,
+                      checkPrecInterval:null,liveWeight:0.0, packSamples:{},confirmPressed:0,rejectAlertMessage:''}
 
         this.showDisplaySettings = this.showDisplaySettings.bind(this);
         this.onMixtureMenuOpen = this.onMixtureMenuOpen.bind(this);
@@ -784,6 +784,7 @@ class LandingPage extends React.Component{
             this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), unusedList:this.getUCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
           }else if(e.type == 1){
             //this.getProdList()
+            console.log("Record type 1")
             SingletonDataStore.prodRec = e.rec;
             setTimeout(function (argument) {
               // body...
@@ -793,6 +794,7 @@ class LandingPage extends React.Component{
             },200)
             this.setState({noupdate:false,prec:e.rec,cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), unusedList:this.getUCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
           }else if(e.type == 2){
+            console.log("Record type 2")
             var iobits = {}
             var noupdate = true
             SingletonDataStore.dynRec = e.rec;
@@ -923,7 +925,7 @@ class LandingPage extends React.Component{
                 }
               }*/
             }
-            //this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
+            this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
             
           }else if(e.type == 3){
             console.log("Record type 3");
@@ -1265,7 +1267,10 @@ class LandingPage extends React.Component{
     /****************************************************************** */
     /**Functions used to open the Mixture Menu**/
     onMixtureMenuOpen(){
+      if(this.state.connected)
+      {
         this.mixtureModal.current.toggle();
+      }  
     }
     getProdList(){
       this.sendPacket('getProdList')
@@ -3621,7 +3626,7 @@ var DeleteModalCont =  onClickOutside(DeleteModalC);
 var CopyModalCont =  onClickOutside(CopyModalC);
 var LogoutModalCont =  onClickOutside(LogoutModalC);
 /******************Modals end   **********************/
-/******************Settings Components start********************/
+/******************Settings and Product Components start********************/
 class ProductSettings extends React.Component{
   constructor(props){
     super(props)
@@ -3659,7 +3664,6 @@ class ProductSettings extends React.Component{
     this.prodMgmt = this.prodMgmt.bind(this);
     this.submitChange = this.submitChange.bind(this);
     this.closeKeyboard = this.closeKeyboard.bind(this);
-    this.toggleGraph = this.toggleGraph.bind(this);
     this.getBuffer = this.getBuffer.bind(this);
     this.onPromptCancel = this.onPromptCancel.bind(this);
     this.getMMdep = this.getMMdep.bind(this);
@@ -3750,10 +3754,6 @@ class ProductSettings extends React.Component{
       this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
     }
     
-  }
-  toggleGraph(){
-    //Toggle Pack Graph
-    this.pgm.current.toggle();
   }
   getBuffer(){
 
@@ -4446,14 +4446,12 @@ class ProductSettings extends React.Component{
           }
         })
       }
-      console.log("vdefByMac[this.props.mac]",vdefByMac[this.props.mac])
       content =( 
       <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
         <div>
         <div style={{display:'inline-block', verticalAlign:'top'}}>
-        <ProdSettingEdit prodNameComponent={true} afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={labTransV2['Product Name'][this.props.language]['name']} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
+        <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={labTransV2['Product Name'][this.props.language]['name']} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
         <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton language={this.props.language} onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Select Product'][this.props.language]['name']}/>
-        <img src='assets/graph.svg' style={{position:'absolute', width:40, left:770, marginTop:15}} onClick={this.toggleGraph}/>
         
         </div>
         <div style={{display:'none', marginBottom:-10}}>
@@ -4465,18 +4463,13 @@ class ProductSettings extends React.Component{
         </div>
         </div>
         <div style={{height:339}}>
-          <div style={{display:'inline-block',width:'50%', verticalAlign:'top'}}>
-            {/*<div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedRate'} vMap={vMapV2['FeedRate']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Feed Rate'][this.props.language]['name']} value={nwgt} param={vdefByMac[this.props.mac][1][1]['TeaTargetFeedRate']} tooltip={vMapV2['FeedRate']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'InfeedRunTime'} vMap={vMapV2['InfeedRunTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Infeed Run Time'][this.props.language]['name']} value={ovwgt} param={vdefByMac[this.props.mac][1][1]['TeaInfeedRunTime']} tooltip={vMapV2['InfeedRunTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'LowerWeightLimit'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Packaging Weight'][this.props.language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['TeaLowerWeightLimit']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Packaging Weight'][this.props.language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['TeaUpperWeightLimit']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'PkgWeight'} vMap={vMapV2['PkgWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Packaging Weight'][this.props.language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['TeaEmptyWeightLimit']}  tooltip={vMapV2['PkgWeight']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>*/}
-           {/* <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EyePkgLength'} vMap={vMapV2['EyePkgLength']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Product Length'][this.props.language]['name']} value={this.getValue(curProd['EyePkgLength'], 'EyePkgLength')} tooltip={vMapV2['EyePkgLength']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['EyePkgLength']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'VfdBeltSpeed1'} vMap={vMapV2['VfdBeltSpeed1']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={200} label={labTransV2['Belt Speed'][this.props.language]['name']} value={this.getValue(curProd['VfdBeltSpeed1'],'VfdBeltSpeed1')}  tooltip={vMapV2['VfdBeltSpeed1']['@translations'][this.props.language]['description']} param={vdefByMac[this.props.mac][1][1]['VfdBeltSpeed1']} onEdit={this.sendPacket} editable={true} num={true} shortcut={[4]} onShortcut={this.onShortcut} /></div>*/}
+          <div style={{display:'inline-block',width:'100%', verticalAlign:'top'}}>
+            <div style={{marginTop:5}}><ProdSettingEdit prodNameComponent={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedRate'} vMap={vMapV2['FeedRate']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={170} label={labTransV2['Feed Rate'][this.props.language]['name']} value={nwgt} param={vdefByMac[this.props.mac][1][1]['TeaTargetFeedRate']} tooltip={vMapV2['FeedRate']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit prodNameComponent={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'InfeedRunTime'} vMap={vMapV2['InfeedRunTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={170} label={labTransV2['Infeed Run Time'][this.props.language]['name']} value={ovwgt} param={vdefByMac[this.props.mac][1][1]['TeaInfeedRunTime']} tooltip={vMapV2['InfeedRunTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit prodNameComponent={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'LowerWeightLimit'} vMap={vMapV2['LowerWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={170} label={labTransV2['Lower Weight Limit'][this.props.language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['TeaLowerWeightLimit']}  tooltip={vMapV2['LowerWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit prodNameComponent={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UpperWeightLimit'} vMap={vMapV2['UpperWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={170} label={labTransV2['Upper Weight Limit'][this.props.language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['TeaUpperWeightLimit']}  tooltip={vMapV2['UpperWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit prodNameComponent={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EmptyWeightLimit'} vMap={vMapV2['EmptyWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={170} label={labTransV2['Empty Weight Limit'][this.props.language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['TeaEmptyWeightLimit']}  tooltip={vMapV2['EmptyWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
           </div>
-          
-          
-
         </div>
         <div>
                 
@@ -4754,7 +4747,6 @@ class ProductSelectItem extends React.Component{
       </div>)
   }
 }
-
 class ProdSettingEdit extends React.Component{
   constructor(props){
     super(props);
@@ -4970,8 +4962,20 @@ class ProdSettingEdit extends React.Component{
       
       </div>
       <div onClick={this.onClick} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:this.props.w2}}>
-        {dispVal}
+          {dispVal}
       </div>
+      {
+        this.props.prodNameComponent &&
+        <React.Fragment>
+          <div onClick={this.onClick} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:5,textAlign:'center', width:this.props.w2}}>
+            {2}
+          </div>
+          <div onClick={this.onClick} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:5,textAlign:'center', width:this.props.w2}}>
+            {3}
+          </div>
+        </React.Fragment>
+      }
+      
       
       {ckb}
        <ContextMenu id={this.props.name + '_ctmid'}>
@@ -5014,9 +5018,9 @@ class SettingsPageWSB extends React.Component{
     this.sd.current.setPath([0]);
 
     var self = this;
-    setTimeout(function(argument) {
+    /*setTimeout(function(argument) {
       self.props.sendPacket("refresh_buffer",6);
-    },300)
+    },300)*/
   }
   componentWillReceiveProps(newProps){
     this.setState({update:true})
@@ -5333,6 +5337,7 @@ class SettingsPage extends React.Component{
         data = this.props.data
       }else{
         data.push([this.props.cob2[0],0])
+        console.log("data is ", data);
         if(typeof this.props.cob2[0].params != 'undefined'){
           var _par = this.state.cob2[0].params.slice(0);
             this.state.path.forEach(function (x,i) {
@@ -7898,8 +7903,8 @@ class DisplaySettings extends React.Component{
       <div style={tstl}>{'Display Settings'}</div></h2></span>)
 
  var nav = (<div className='setNav'>
-                <div style={{marginTop:5}}><ProdSettingEdit2 trans={true} name={'Nif_ip'} vMap={vMapV2['Nif_ip']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_ip']['@translations'][this.props.language]['name']} value={this.props.nifip} editable={true} onEdit={this.editIP} param={{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
-                <div style={{marginTop:5}}><ProdSettingEdit2 trans={true} name={'Nif_nm'} vMap={vMapV2['Nif_nm']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_nm']['@translations'][this.props.language]['name']} value={this.props.nifnm} editable={true} onEdit={this.editNM} param={{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
+                <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_ip'} vMap={vMapV2['Nif_ip']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_ip']['@translations'][this.props.language]['name']} value={this.props.nifip} editable={true} onEdit={this.editIP} param={{'@name':'Nif_ip', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
+                <div style={{marginTop:5}}><ProdSettingEdit trans={true} name={'Nif_nm'} vMap={vMapV2['Nif_nm']} submitChange={this.onSubmit} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={400} label={vMapV2['Nif_nm']['@translations'][this.props.language]['name']} value={this.props.nifnm} editable={true} onEdit={this.editNM} param={{'@name':'Nif_nm', '@type':'ipv4_address','@bit_len':32, '@rpcs':{'write':[0,[0,0,0],null]}}} num={true}/></div>
                 
        
           </div>)
@@ -7932,6 +7937,8 @@ class CustomLabel extends React.Component{
       return <div onClick={this.onClick} style={style}>{this.props.children}</div>
   }
 }
+/******************Settings Components end********************/
+
 /*****************Batch Control Components*********************/
 class BatchWidget extends React.Component{
   constructor(props){
@@ -8038,213 +8045,6 @@ class BatchWidget extends React.Component{
         <MessageModal  language={this.props.language} ref={this.msgm}/>
     </div>
   }
-}
-/******************Settings Components end********************/
-/**Mixture Menu Component **/
-class ProductSettings2 extends React.Component{
-    constructor(props){
-      super(props)
-    }
-    render(){  
-    /**Declaration of Theme and Button variables**/
-      var searchColor = FORTRESSPURPLE1;      
-      var selStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:25,lineHeight:'47px'}
-      var content =(
-        <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:567}}>
-            <div>
-                <div style={{display:'inline-block', verticalAlign:'top'}}>
-                    <ProdSettingEdit  prodNameComponent={true} afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'ProdName'} vMap={'Product Name'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Product Name'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
-                </div>
-                <div style={{display:'inline-block', marginLeft:8, marginTop:3}}>
-                    <CircularButton language={'english'} onClick={'this.selectRunningProd'} branding={'FORTRESS'} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={'Select Product'}/>       
-                </div>
-                <div style={{display:'none', marginBottom:-10}}>
-                <div style={{display:'none', position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
-                    <div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-                    <div style={{height:35, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-                    <div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
-                </div>
-                </div>
-            </div>
-            <div style={{height:339}}>
-                <div style={{display:'inline-block',width:'100%', verticalAlign:'top', marginTop:-5}}>
-                    <ProdSettingEdit afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'FeedRate'} vMap={'Feed Rate'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Feed Rate'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
-                    <ProdSettingEdit afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'InfeedRunTime'} vMap={'Infeed Run Time'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Infeed Run Time'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
-                    <ProdSettingEdit afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'LowerWeightLimit'} vMap={'Lower Weight Limit'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Lower Weight Limit'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
-                    <ProdSettingEdit afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'UpperWeightLimit'} vMap={'Upper Weight Limit'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Upper Weight Limit'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
-                    <ProdSettingEdit afterEdit={'this.props.getProdList'} acc={false} trans={true} name={'EmptyWeightLimit'} vMap={'Empty Weight Limit'}  language={'english'} branding={'FORTRESS'} h1={40} w1={200} h2={60} w2={250} label={'Empty Weight Limit'} value={77}  onEdit={'this.sendPacket'} editable={true} num={false}/>
-                </div>
-            </div>
-        
-      </div>
-      )
-    /**End of Theme and Button variables declarations**/  
-        return <div style={{width:1155}}>
-        <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>Product</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:400}}>{'Current Product: '+"DY TEST spstr" }</div></div>
-        <table style={{borderCollapse:'collapse'}}>
-            <tbody>
-                <tr>
-                    <td style={{verticalAlign:'top', width:830}}>{content}
-                        <div style={{width:819, paddingTop:0}}> </div>
-                    </td>
-                    <td style={{verticalAlign:'top',textAlign:'center'}}>
-                    <ScrollArrow ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={true} mode={'top'} onClick={'this.scrollUp'}/>
-                        <div style={{display:'none', background:'#e1e1e1', padding:2}}>
-                            <div style={{position:'relative', verticalAlign:'top', marginLeft:180}}>
-                            <div style={{height:25, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-                            <div style={{height:25, width:120, display:'block', background:'linear-gradient(60deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
-                            <div style={{position:'absolute',float:'right', marginTop:-53, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:40}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>Search</div></div>
-                            </div>
-                        </div>
-                        <div onScroll={this.onProdScroll} id='prodListScrollBox' style={{height:490, background:'#e1e1e1',overflowY:'scroll'}}>{'prods'}
-                        </div>
-                        <div style={{height:85,lineHeight:'85px', background:'#e1e1e1', borderTop:'1px solid #362c66'}}>
-                            <div onClick={'this.prodMgmt'} style={{display:'table-cell',height:85, borderRight:'1px solid #362c66', width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}>Product Management</div>
-                    
-                            <div onClick={'this.toggleSearch'} style={{display:'table-cell',height:85, borderLeft:'1px solid #362c66',width:154, fontSize:15, lineHeight:'20px', verticalAlign:'middle'}}><img src='assets/search.svg' style={{width:40}}/><div style={{marginTop:-10, fontSize:16}}>Search</div></div>
-                        </div>
-                    <ScrollArrow ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={false} mode={'bot'} onClick={this.scrollDown}/>
-                
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-      
-      </div>
-            
-    }
-}
-/**ProdSettingEdit Component **/
-class ProdSettingEdit2 extends React.Component{
-    constructor(props){
-      super(props);
-      this.onClick = this.onClick.bind(this);
-      this.ed = React.createRef();
-    }
-    onClick()
-    {
-      this.ed.current.toggle()
-        console.log
-    }
-    render(){
-      var self = this;
-      var ckb;
-      var dispVal = this.props.value
-      var txtClr = '#e1e1e1';
-      var titleFont = 20;
-      var bgClr = FORTRESSPURPLE2
-      /*if(this.props.editable){
-        if(this.props.param['@labels']){
-          //vmapLists
-  
-          var list 
-          if(vMapLists[this.props.param['@labels']]){
-  
-            list = vMapLists[this.props.param['@labels']]['english'].slice(0);
-          }else{
-            list = []
-          }
-          var lists = [list]
-          ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref={this.ed} val={[this.state.value]} options={lists} onChange={this.onInput}/>
-          dispVal = list[dispVal]
-        }else if(this.props.listOverride){
-          var lists = [this.props.ovList]
-          ckb = <PopoutWheel inputs={inputSrcArr} outputs={outputSrcArr} branding={this.props.branding} ovWidth={290} mobile={this.props.mobile} params={[this.props.param]} ioBits={this.props.ioBits} vMap={this.props.vMap} language={this.props.language}  interceptor={false} name={this.props.label} ref={this.ed} val={[this.state.value]} options={lists} onChange={this.onInput}/>
-  
-        }else{
-          var minBool = false; 
-          var min = 0;
-          var maxBool = false;
-          var max = 0;
-          if(typeof self.props.param['@min'] != 'undefined'){
-                if(!isNaN(self.props.param['@min'])){
-                  minBool = true;
-                  min = self.props.param['@min'];
-                }else if(Array.isArray(self.props.param['@min'])){
-                 //var dep = 
-                  var dep = self.getMMdep(self.props.param['@min'][1])
-                  min = eval(self.props.param['@min'][0])(dep)
-                  minBool = true;
-                }else{
-                  min = self.getMMdep(self.props.param['@min'])
-                  minBool = true;
-                }
-                if(self.props.param['@type'] == 'mm' || self.props.param['@type'] == 'float_dist'){
-                  if(self.getMMdep('AppUnitDist') == 0){
-                    min = min/25.4
-                  }
-                }else if(self.props.param['@type'] == 'weight'){
-                  var wunit = self.getMMdep('WeightUnits')
-                  if(wunit == 1){
-                    min = min/1000
-                  }else if(wunit == 2){
-                    min = min/453.592
-                  }else if(wunit == 3){
-                    min = min/28.3495
-                  }
-                }
-              }
-              if(typeof self.props.param['@max'] != 'undefined'){
-                if(!isNaN(self.props.param['@max'])){
-                  maxBool = true;
-                  max = self.props.param['@max'];
-                }else if(Array.isArray(self.props.param['@max'])){
-                 //var dep = 
-                  var dep = self.getMMdep(self.props.param['@max'][1])
-                  max = eval(self.props.param['@max'][0])(dep)
-                  maxBool = true;
-                }else{
-                  max = self.getMMdep(self.props.param['@max'])
-                  maxBool = true;
-                }
-                if(self.props.param['@type'] == 'mm'  || self.props.param['@type'] == 'float_dist'){
-                  if(self.getMMdep('AppUnitDist') == 0){
-                    max = max/25.4
-                  }
-                }else if(self.props.param['@type'] == 'weight'){
-                  var wunit = self.getMMdep('WeightUnits')
-                  if(wunit == 1){
-                    max = max/1000
-                  }else if(wunit == 2){
-                    max = max/453.592
-                  }else if(wunit == 3){
-                    max = max/28.3495
-                  }
-                }
-              }
-              //var labVal = this.props.value
-              var fDec = 0;
-              if(self.props.param['@float_dec']){
-                fDec = self.props.param['@float_dec']
-              }
-          ckb = <CustomKeyboard floatDec={fDec} sendAlert={msg => this.msgm.current.show(msg)} min={[minBool,min]} max={[maxBool,max]} preload={this.props.param['@name'] == 'ProdName'} 
-                      branding={this.props.branding} ref={this.ed} language={this.props.language} tooltip={this.props.tooltip} onRequestClose={this.onRequestClose} onFocus={this.onFocus} 
-                      num={this.props.num} onChange={this.onInput} value={this.props.value} label={this.props.label+': ' + this.props.value} submitTooltip={this.submitTooltip}/>
-  
-        }
-      
-      }*/
-      ckb = <CustomKeyboard floatDec={2} sendAlert={msg => 'this.msgm.current.show(msg)'} min={[true,0]} max={[true,100]} preload={'ProdName'} branding={'FORTRESS'}
-            ref={this.ed} language={'english'} tooltip={'Test DY'} num={2} onChange={1} value={''} label={'Label Test'+': ' + 'Value'} submitTooltip={'this.submitTooltip'}/>
-
-      return <div style={{marginTop:10}}>
-        <div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:titleFont,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:this.props.w1,textAlign:'center'}}>
-           <ContextMenuTrigger id={this.props.name + '_ctmid'}>
-          {this.props.label}   </ContextMenuTrigger>
-        
-        </div>
-        <div onClick={this.onClick} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:this.props.w2}}>
-          {dispVal}
-        </div>
-        {
-            !this.props.prodNameComponent && 
-            <div onClick={this.onClick} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:15,textAlign:'center', width:this.props.w2}}>
-                {dispVal}
-            </div>
-        }
-        {ckb}
-      </div>
-    }
 }
 
 ReactDOM.render(<LandingPage/>,document.getElementById('content'))

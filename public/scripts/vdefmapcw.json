@@ -16099,6 +16099,181 @@
       "turkish": {
         "name": ""
       }
+    },
+    "Feed Rate": {
+      "english": {
+        "name": "Feed Rate"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Infeed Run Time": {
+      "english": {
+        "name": "Infeed Run Time"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Lower Weight Limit": {
+      "english": {
+        "name": "Lower Weight Limit"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Upper Weight Limit": {
+      "english": {
+        "name": "Upper Weight Limit"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Empty Weight Limit": {
+      "english": {
+        "name": "Empty Weight Limit"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
     }
   },
   "@acc": {
@@ -16160,6 +16335,112 @@
         "months",
         "days"
       ],
+      "@labels": [
+        "Year",
+        "Month",
+        "Day"
+      ]
+    },
+    "FeedRate": {
+      "@translations": {
+        "english": {
+          "name": "Feed Rate",
+          "description": "This is the weight of the product without the packaging."
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": " ",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "InfeedRunTime": {
+      "@translations": {
+        "english": {
+          "name": "Infeed Run Time",
+          "description": "This is the acceptable weight tolerance above the nominal weight."
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
       "@labels": [
         "Year",
         "Month",
@@ -24393,6 +24674,162 @@
         "chinese": {
           "name": "Package Weight",
           "description": "This is the weight of the packaging material"
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "LowerWeightLimit": {
+      "@translations": {
+        "english": {
+          "name": "Lower Weight Limit",
+          "description": "This is the weight of the packaging material"
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "UpperWeightLimit": {
+      "@translations": {
+        "english": {
+          "name": "Upper Weight Limit",
+          "description": "This is the weight of the packaging material"
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "EmptyWeightLimit": {
+      "@translations": {
+        "english": {
+          "name": "Empty Weight Limit",
+          "description": "This is the weight of the packaging material"
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
         }
       },
       "children": [],
