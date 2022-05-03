@@ -32,7 +32,7 @@ const _ioBits = ['TACH','EYE','RC_1','RC_2','REJ_EYE','AIR_PRES','REJ_LATCH','BI
                   'TEST','NONE','REJ_MAIN','REJ_ALT','FAULT','TEST_REQ','HALO_FE', 'HALO_SS', 'LS_RED','LS_YEL','LS_GRN','LS_BUZ','DOOR_LOCK','SHUTDOWN_LANE']
 var liveTimer = {}
 var myTimers = {}
-
+//document.body.setAttribute( "style", "-webkit-transform: rotate(-180deg);");
 const SPARCBLUE2 = '#30A8E2'
 const SPARCBLUE1 = '#1C3746'
 const SPARCBLUE3 = '#475C67'
@@ -607,13 +607,26 @@ function iterateCats2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc)
 	return cat
 }
 function tickFormatter(t,i) {
-  var text = t.split(' ').map(function(v,j){
+  var text = [];
+  var splitedText = t.split(' ');
+  if(splitedText.length === 3)
+  {
+    text.push(<tspan x="0" dy={0+'em'}>{splitedText[0]}</tspan>)
+    text.push(<tspan x="0" dy={1+'em'}>{splitedText[1]+" "+splitedText[2]}</tspan>)
+  }
+  else{
+    text = t.split(' ').map(function(v,j){
+      return <tspan x="0" dy={j+'em'}>{v}</tspan>
+    })
+  }
+  /*var text = t.split(' ').map(function(v,j){
     if(j==2)
     {
       j=1;
     }
     return <tspan x="0" dy={j+'em'}>{v}</tspan>
-  })
+  })*/
+  
   return (<text x="0"  transform='translate(-5,-5)' style={{textAnchor:"end", fontSize:14}}>
     {text}
   </text>);
@@ -1488,6 +1501,7 @@ class LandingPage extends React.Component{
         this.batModal.current.showMsg(msg)
       }else if(this.pmodal.current.state.show){
           if(msg == 'Reject Setup is invalid!'){
+            msg = labTransV2['Reject Setup is invalid!'][this.state.language]['name'];
             this.setState({rejectAlertMessage:msg})
           }
           else{
@@ -1495,6 +1509,9 @@ class LandingPage extends React.Component{
             this.setState({rejectAlertMessage:''})
           }
       }else if(this.settingModal.current.state.show){
+        if(msg == 'Reject Setup is invalid!'){
+          msg = labTransV2['Reject Setup is invalid!'][this.state.language]['name']
+        }
         this.settingModal.current.showMsg(msg)
         this.setState({rejectAlertMessage:''})
       }else if(this.cwModal.current.state.show){
@@ -3040,9 +3057,15 @@ class LandingPage extends React.Component{
                   <button className={logklass} style={{height:50, marginTop:-7}} onClick={this.toggleLogin} />
                   <div style={{color:'#e1e1e1', marginTop:-17, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{labTransV2['Level'][language]['name'] +' '+this.state.level}</div>
                   </div></td>
+                  {this.state.language == 'portuguese' ? 
+                  <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:20,marginBottom:-10}}/>
+                  <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{labTransV2['Settings'][language]['name']}</div>
+                  </td>:
                   <td className="confbuttCell" style={{paddingRight:5}}  onClick={this.showDisplaySettings}><button onClick={this.showDisplaySettings} className={config} style={{marginTop:-2, marginLeft:2,marginBottom:-10}}/>
                   <div style={{color:'#e1e1e1', marginTop:-20, marginBottom:-17, height:34, fontSize:18, textAlign:'center'}}>{labTransV2['Settings'][language]['name']}</div>
                   </td>
+                  }
+                  
               </tr>
             </tbody>
          
@@ -5391,7 +5414,7 @@ class ProdSettingEdit extends React.Component{
     }
     if (this.props.label.length >= 20)
     {
-      titleFont = 16;
+      titleFont = 14;
     }
     return <div>
       <div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:titleFont,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:this.props.w1,textAlign:'center'}}>
@@ -7686,7 +7709,7 @@ class MultiEditControl extends React.Component{
     var dt = false;
     var fSize = 20;
     if(namestring.length > 30){
-      fSize = 12.5
+      fSize = 11
     }
     else if(namestring.length > 24){
       fSize= 16
@@ -7893,7 +7916,14 @@ class MultiEditControl extends React.Component{
       {
         val = labTransV2['DefaultClearTime'][self.props.language]['name'];
       }else if (val.toString().includes('in') && !val.toString().includes('min')){
-          val = val.replace('in',labTransV2['in'][self.props.language]['name'])
+          var inches = val.split(' ');
+          if(typeof inches[1] != undefined && inches[1])
+          {
+            if(inches[1].toString().length == 2)
+            {
+              val = val.replace('in',labTransV2['in'][self.props.language]['name'])
+            }
+          }
       }
 
       return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{val}</CustomLabel>)

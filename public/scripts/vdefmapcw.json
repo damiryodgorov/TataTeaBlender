@@ -15785,6 +15785,41 @@
         "name": ""
       }
     },
+    "Reject Setup is invalid!": {
+      "english": {
+        "name": "Reject Setup is invalid!"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": "Configuração de rejeição é inválida!"
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
     "Product Name": {
       "english": {
         "name": "Product Name"
