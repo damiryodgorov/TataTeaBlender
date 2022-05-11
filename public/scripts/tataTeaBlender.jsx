@@ -12,8 +12,7 @@ import { cssTransition, toast, ToastContainer } from 'react-toastify';
 import { AlertModal, AuthfailModal, LockModal, MessageModal, Modal, ProgressModal, ScrollArrow, TrendBar } from './components.jsx';
 import { YAxis, XAxis, HorizontalGridLines, VerticalGridLines, XYPlot, AreaSeries, Crosshair, LineSeries,ChartLabel } from "react-vis";
 import "react-vis/dist/style.css";
-import { Line } from 'react-chartjs-2'
-import Chart from 'chart.js/auto'
+import ErrorBoundary from './ErrorBoundary.jsx';
 var onClickOutside = require('react-onclickoutside');
 /** Global variable declarations **/
 const DISPLAYVERSION = '2022/04/25'
@@ -42,6 +41,9 @@ var categoriesV2 = [vdefMapV2["@pages"]['CWSys']]
 var catMapV2 = vdefMapV2["@catmap"]
 var labTransV2 = vdefMapV2['@labels']
 let SingletonDataStore = {sysRec:{},prodRec:{}}
+var macAddress;
+var destinationIp;
+
 /*************Helper functions start**************/
 function FormatWeight(wgt, unit){
   if(typeof wgt == 'undefined'){
@@ -382,6 +384,19 @@ function getParams2(cat, pVdef, sysRec, prodRec, _vmap, dynRec, fram, passAcc){
              params.push({type:4, '@name':'Update','@data':'update',acc:0, passAcc:pAcc})
           
         }
+        else if(par.val == 'Calibrate1'){
+          params.push({type:4, '@name':'Calibrate1','@data':'calibrate1',acc:0, passAcc:pAcc})
+        }else if(par.val == 'Tare1'){
+          params.push({type:4, '@name':'Tare','@data':'tare1',acc:0, passAcc:pAcc})
+        }else if(par.val == 'Calibrate2'){
+          params.push({type:4, '@name':'Calibrate2','@data':'calibrate2',acc:0, passAcc:pAcc})
+        }else if(par.val == 'Tare2'){
+          params.push({type:4, '@name':'Tare','@data':'tare2',acc:0, passAcc:pAcc})
+        }else if(par.val == 'Calibrate3'){
+          params.push({type:4, '@name':'Calibrate3','@data':'calibrate3',acc:0, passAcc:pAcc})
+        }else if(par.val == 'Tare3'){
+          params.push({type:4, '@name':'Tare','@data':'tare3',acc:0, passAcc:pAcc})
+        }
       }else if(par.type == 5){
         params.push({type:5, '@name':'Unused','@data':'get_unused',acc:0, passAcc:pAcc})
       }
@@ -469,31 +484,35 @@ socket.on('vdef', function(vdf){
 class Container extends React.Component {
 	render(){
         return(
+          <div>
             <ErrorBoundary autoReload={false}>
                 <LandingPage/>
             </ErrorBoundary>
+          </div>
+            
         )
     }
 }
 class LandingPage extends React.Component{
     constructor(props){
         super(props);
-        this.state = {plannedBatches:[],buckMin:0,batchList:[], buckMax:100, prclosereq:false,histo:true,connectedClients:0,calibState:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},
+        this.state = {plannedBatches:[],buckMin:0,batchList:[], buckMax:100, prclosereq:false,histo:true,connectedClients:0,cwgt:0,waitCwgt:false,timezones:[],faultArray:[],language:'english',warningArray:[],ioBITs:{},
                       live:false,timer:null,username:'No User',userid:0,user:-1,loginOpen:false, level:0,currentView:'',data:[],unusedList:{},cob:{},pcob:{},pList:[],prodListRaw:{},prodNames:[],updateCount:0,connected:false,start:true,pause:false,x:null,
                       branding:'FORTRESS',customMap:true,vMap:vdefMapV2,custMap:vdefMapV2, automode:0,currentPage:'landing',netpolls:{}, curIndex:0, progress:'',srec:{},prec:{},rec:{},crec:{},fram:{},prodList:{},
                       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
                       detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false,
-                      checkPrecInterval:null,liveWeight:0.0, packSamples:{},confirmPressed:0,rejectAlertMessage:''}
+                      checkPrecInterval:null,TeaLiveWeight:0.0,FlavourLiveWeight:0.0,AddbackLiveWeight:0.0,liveWeight:0.0,packSamples:{},confirmPressed:0,rejectAlertMessage:'',FlavourGraph:[],AddbackEnabled:0,PrimeStatus:0,PurgeTea:0,
+                      PurgeFlavour:0,PurgeAddback:0,EmptyStatus:0,RefillTea:0,RefillFlavour:0,RefillAddback:0,CalibratingTea:0,CalibratingFlavour:0,CalibratingAddback:0}
 
         this.showDisplaySettings = this.showDisplaySettings.bind(this);
         this.onMixtureMenuOpen = this.onMixtureMenuOpen.bind(this);
-        this.onPrimeMenuOpen = this.onPrimeMenuOpen.bind(this);
+        this.onPrimeEnable = this.onPrimeEnable.bind(this);
         this.onBatchStartMenuMenuOpen = this.onBatchStartMenuMenuOpen.bind(this);
-        this.onEnableAddbackOpen = this.onEnableAddbackOpen.bind(this);
-        this.onEmptyOpen = this.onEmptyOpen.bind(this);
-        this.onPurgeAOpen = this.onPurgeAOpen.bind(this);
-        this.onPurgeBOpen = this.onPurgeBOpen.bind(this);
-        this.onPurgeCOpen = this.onPurgeCOpen.bind(this);
+        this.onEnableAddback = this.onEnableAddback.bind(this);
+        this.onEmptyEnable = this.onEmptyEnable.bind(this);
+        this.onPurgeAEnable = this.onPurgeAEnable.bind(this);
+        this.onPurgeBEnable = this.onPurgeBEnable.bind(this);
+        this.onPurgeCEnable = this.onPurgeCEnable.bind(this);
         this.onSilenceAlarmOpen = this.onSilenceAlarmOpen.bind(this);
         this.onStatisticsOpen = this.onStatisticsOpen.bind(this);
         this.onParamMsg = this.onParamMsg.bind(this);
@@ -527,10 +546,20 @@ class LandingPage extends React.Component{
         this.resume = this.resume.bind(this);
         this.pause = this.pause.bind(this);
         this.stop = this.stop.bind(this);
+        this.onNetpoll = this.onNetpoll.bind(this);
+        this.clearWarnings = this.clearWarnings.bind(this);
+        this.clearFaults = this.clearFaults.bind(this);
+        this.getRefBuffer = this.getRefBuffer.bind(this);
+        this.stopConfirmed = this.stopConfirmed.bind(this);
+        this.calWeightSend = this.calWeightSend.bind(this);
+        this.calWeightCancelSend = this.calWeightCancelSend.bind(this);
+        this.ste = React.createRef();
+        this.stopConfirm = React.createRef();
         this.unusedModal = React.createRef();
         this.usd = React.createRef();
         this.sd = React.createRef();
         this.am = React.createRef();
+        this.msgm = React.createRef();
         this.lgoModal = React.createRef();
         this.resetPass = React.createRef();
         this.loginControl = React.createRef();
@@ -717,10 +746,61 @@ class LandingPage extends React.Component{
         socket.on('batchJson',function (json) {
           self.setState({plannedBatches:JSON.parse(json.replace(/\s/g, '').replace(/\0/g, ''))})
         })
+        socket.on('batchList', function (list) {
+          self.setState({batchList:list.reverse()})
+        })
         socket.on('prodNames',function (pack) {
           if(self.state.curDet.ip == pack.ip){
             self.setState({pList:pack.list, prodNames:pack.names, noupdate:false})
           }
+        })
+        socket.on('updateProgress',function(r){
+          self.setState({progress:r})
+        })
+        socket.on('onReset', function(r){
+          self.setState({currentPage:'landing', curDet:''});
+        })
+        socket.on('netpoll', function(m){
+          self.onNetpoll(m.data, m.det)
+          m = null;
+        })
+        socket.on('noVdef', function(det){
+          setTimeout(function(){
+            socket.emit('vdefReq', det);
+          }, 1000)
+        })
+        socket.on('dispSettings', function(disp){
+          self.setState({automode:disp.mode})
+        }) 
+        socket.on('rpcMsg', function (data) {
+          self.onRMsg(data.data, data.det)
+          data = null;
+        })
+        socket.on('loggedIn', function(data){
+          self.setState({curUser:data.id, level:data.level})
+        })
+        socket.on('logOut', function(){
+          self.setState({curUser:'', level:0})
+        })
+        socket.on('accounts', function(data){
+          self.setState({accounts:data.data})
+        })
+        socket.on('passwordNotify',function(e){
+          var message = 'Call Fortress with ' + e.join(', ');
+          self.msgm.current.show(message)
+        })
+        socket.on('confirmProdImport', function (c) {
+          // body...
+          if(typeof self.state.fram['InternalIP'] != 'undefined'){
+              if((window.location.host === self.state.fram['InternalIP'])||(window.location.host === '192.168.50.50')||(window.location.host === '192.168.50.51')){
+                self.sendPacket('importRestore')
+                setTimeout(function () {
+                  // body...
+                  self.sendPacket('getProdList')
+                  console.log('Successfully Imported Settings')
+                },2000)      
+              }
+          }     
         })
     }
     shouldComponentUpdate(nextProps, nextState){
@@ -747,6 +827,7 @@ class LandingPage extends React.Component{
     
     /******************Parse Packets start*******************/
     onParamMsg(e,u){
+      console.log("e is",e);
       if(this.state.curDet.ip == u.ip){
         var self = this;
         liveTimer[this.state.curDet.mac] = Date.now()
@@ -754,12 +835,13 @@ class LandingPage extends React.Component{
           var pVdef = vdefByMac[this.state.curDet.mac][1]
           var vdf = vdefByMac[this.state.curDet.mac][0]
           if(e.type == 0){
+            //console.log("e 0", e);
             SingletonDataStore.sysRec = e.rec;
             var language = vdf['@labels']['Language']['english'][e.rec['Language']];
             if(e.rec['RemoteDisplayLock'] == 1){
               if(typeof this.state.fram['InternalIP'] != 'undefined'){
                 if(window.location.host != this.state.fram['InternalIP']){
-                  this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
+                  //this.lockModal.current.show('This display has been locked for remote use. Please contact system adminstrator.')
                 }
               }
               
@@ -783,8 +865,8 @@ class LandingPage extends React.Component{
             }
             this.setState({noupdate:false,srec:e.rec,language:language, cob:this.getCob(e.rec, this.state.prec, this.state.rec,this.state.fram), unusedList:this.getUCob(e.rec, this.state.prec, this.state.rec,this.state.fram), pcob:this.getPCob(e.rec, this.state.prec, this.state.rec,this.state.fram)})
           }else if(e.type == 1){
-            //this.getProdList()
-            console.log("Record type 1")
+            //console.log("e 1", e);
+            this.getProdList()
             SingletonDataStore.prodRec = e.rec;
             setTimeout(function (argument) {
               // body...
@@ -794,7 +876,7 @@ class LandingPage extends React.Component{
             },200)
             this.setState({noupdate:false,prec:e.rec,cob:this.getCob(this.state.srec, e.rec, this.state.rec,this.state.fram), unusedList:this.getUCob(this.state.srec, e.rec, this.state.rec,this.state.fram), pcob:this.getPCob(this.state.srec,e.rec, this.state.rec,this.state.fram)})
           }else if(e.type == 2){
-            console.log("Record type 2")
+            //console.log("e 2", e);
             var iobits = {}
             var noupdate = true
             SingletonDataStore.dynRec = e.rec;
@@ -876,59 +958,45 @@ class LandingPage extends React.Component{
                   this.ssDual.current.setState({rec:e.rec, crec:this.state.crec, lw:FormatWeight(lw,this.state.srec['WeightUnits'])})
                 }
                 if(this.sd.current){
-    //                console.log('update Live Weight')
+                //console.log('update Live Weight')
                   this.sd.current.updateLiveWeight(lw)
-                }
+                }*/
                 cob = this.getCob(this.state.srec, this.state.prec, e.rec,this.state.fram);
-                pcob = this.getPCob(this.state.srec, this.state.prec, e.rec,this.state.fram)*/
-              noupdate = false
-              this.setState({liveWeight:e.rec['LiveWeight'],rec:e.rec,ioBITs:iobits})
+                pcob = this.getPCob(this.state.srec, this.state.prec, e.rec,this.state.fram)
+                noupdate = false
+                this.setState({TeaLiveWeight:e.rec['tea_live_weight'],FlavourLiveWeight:e.rec['flavour_live_weight'],AddbackLiveWeight:e.rec['addback_live_weight'],liveWeight:e.rec['LiveWeight'],rec:e.rec,ioBITs:iobits})
+            }
+            if(e.rec['Calibrating'] != this.state.rec['Calibrating']){
+              noupdate = false;
             }
             if(e.rec['BatchRunning'] != this.state.rec['BatchRunning']){
               if(typeof this.state.rec['BatchRunning'] != 'undefined'){
                 if(e.rec['BatchRunning'] == 1){
-                  //toast('Batch Started');
-                  /*this.ste.current.showMsg(labTransV2['Batch Started'][language]['name'])
-                  if (this.steDual && this.steDual.current){
-                    this.steDual.current.showMsg(labTransV2['Batch Started'][language]['name'])
-                  }*/
-                  //this.lg.current.clearHisto();
+                  this.ste.current.showMsg(labTransV2['Batch Started'][this.state.language]['name'])
                   setTimeout(function () {
                     self.getRefBuffer(7)
                     // body...
                   },100)
                 }else if(e.rec['BatchRunning'] == 2){
-                  // toast('Batch Paused')
-                  /*this.ste.current.showMsg(labTransV2['Batch Paused'][language]['name'])
-                  if (this.steDual && this.steDual.current){
-                    this.steDual.current.showMsg(labTransV2['Batch Paused'][language]['name'])
-                  }*/
+                  this.ste.current.showMsg(labTransV2['Batch Paused'][this.state.language]['name'])
                 }else{
-                  //this.msgm.current.show('Batch Stopped')
-                  /*this.ste.current.showMsg(labTransV2['Batch Stopped'][language]['name'])
-                  if (this.steDual && this.steDual.current){
-                    this.steDual.current.showMsg(labTransV2['Batch Stopped'][language]['name'])
-                  }*/
-                  //  toast('Batch Stopped')
+                  this.ste.current.showMsg(labTransV2['Batch Stopped'][this.state.language]['name'])
                 }
                 noupdate = false
               }
-              /*if(e.rec['BatchRunComplete'] != this.state.rec['BatchRunComplete']){
+              if(e.rec['BatchRunComplete'] != this.state.rec['BatchRunComplete']){
                 if(typeof this.state.rec['BatchRunComplete'] != 'undefined'){
                   if(e.rec['BatchRunComplete'] == 1){
                     this.msgm.current.show(labTransV2['Batch Completed'][language]['name'])
                     this.ste.current.showMsg(labTransV2['Batch Completed'][language]['name'])
-                    if (this.steDual && this.steDual.current){
-                      this.steDual.current.showMsg(labTransV2['Batch Completed'][language]['name'])
-                    }
                   }
                 }
-              }*/
+              }
             }
-            this.setState({calibState:e.rec['Calibrating'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
+            this.setState({CalibratingTea:e.rec['CalibratingTea'],CalibratingFlavour:e.rec['CalibratingFlavour'],CalibratingAddback:e.rec['CalibratingAddback'],RefillTea:e.rec['RefillTea'],RefillFlavour:e.rec['RefillFlavour'],RefillAddback:e.rec['RefillAddback'],PurgeTea:e.rec['PurgeTea'],PurgeFlavour:e.rec['PurgeFlavour'],PurgeAddback:e.rec['PurgeAddback'],EmptyStatus:e.rec['EmptyStatus'],PrimeStatus:e.rec['PrimeStatus'],AddbackEnabled:e.rec['AddbackEnabled'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
             
           }else if(e.type == 3){
-            console.log("Record type 3");
+           // console.log("e 3", e);
             e.rec.Nif_ip = this.state.nifip
             e.rec.Nif_gw = this.state.nifgw
             e.rec.Nif_nm = this.state.nifnm
@@ -943,8 +1011,9 @@ class LandingPage extends React.Component{
               }
               
             }*/
-           this.setState({fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
+           this.setState({noupdate:false,fram:e.rec,cob:this.getCob(this.state.srec, this.state.prec, this.state.rec,e.rec)})
           }else if(e.type == 5){
+           // console.log("e 5", e);
             console.log("Record type 5");
             /*var packms = new Uint64LE(e.rec['PackTime'].data)
             e.rec['PackTime'] = packms
@@ -1029,8 +1098,8 @@ class LandingPage extends React.Component{
               this.props.update(this.props.lane)
             }
             */
-
           }else if(e.type == 6){
+            //console.log("e 6", e);
             console.log("Record type 6");
             /*var cnt = 0;
             if(typeof this.state.crec['TotalCnt'] != 'undefined'){
@@ -1038,7 +1107,9 @@ class LandingPage extends React.Component{
             }
             this.setState({packSamples:e.rec,noupdate:true})*/
           }else if(e.type == 7){
+            //console.log("e 7", e);
             console.log("Record type 7");
+            this.setState({FlavourGraph:e.rec['FlavourGraph']})
             /*if(this.btc.current){
                 var buckets = 100;
                 var bucketSize = 1;
@@ -1057,6 +1128,7 @@ class LandingPage extends React.Component{
               this.props.update(this.props.lane)
             }*/
           }else if(e.type == 15){
+            //console.log("e 15", e);
             console.log("Record type 15");
             var prodList = this.state.prodList;
             var prodListRaw = this.state.prodListRaw
@@ -1066,6 +1138,9 @@ class LandingPage extends React.Component{
           }
         }
       }
+    }
+    getRefBuffer(){
+      this.sendPacket('refresh_buffer',7)
     }
     onRMsg(e,det){
       console.log('onRMsg',e)
@@ -1093,6 +1168,9 @@ class LandingPage extends React.Component{
       vdef = null;
       _cvdf = null;
       return cob
+    }
+    onNetpoll(){
+      console.log('netpoll')
     }
     /******************Authentication Function Controls************ */
     setAuthAccount(pack){
@@ -1264,11 +1342,37 @@ class LandingPage extends React.Component{
     resetCalibration(){
       this.setState({confirmPressed:1})
     }
+    calWeightSend(value){
+      if(this.state.connected){
+        console.log("Send value is ", value);
+        var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_USE']
+        var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],value,0])
+        /*var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_USE']
+        var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);*/
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      }
+      this.setState({confirmPressed:0})
+    }
+    calWeightCancelSend(value){
+      if(this.state.connected){
+        console.log("Cancel value is ", value);
+        var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_CANCEL']
+        var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],value,0])
+        //var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
+        socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+      }
+    }
     /****************************************************************** */
     /**Functions used to open the Mixture Menu**/
     onMixtureMenuOpen(){
       if(this.state.connected)
       {
+        var self = this;
+        socket.emit('getProdList', this.state.curDet.ip)
+        setTimeout(function (argument) {
+          // body...
+          self.sendPacket('getProdSettings',self.state.srec['ProdNo'])
+        },500)
         this.mixtureModal.current.toggle();
       }  
     }
@@ -1283,32 +1387,32 @@ class LandingPage extends React.Component{
       socket.emit('formatInternalUsb')
     }
     /**Function used to open the Prime Menu**/
-    onPrimeMenuOpen(){
-        this.primeModal.current.toggle();
+    onPrimeEnable(){
+      this.sendPacket('EnablePrime');
     }
     /**Function used to open the Batch Start Menu**/
     onBatchStartMenuMenuOpen(){
-        this.batchStartModal.current.toggle();
+      //this.batchStartModal.current.toggle();
     }
-    /**Function used to open the Enable Addback Menu**/
-    onEnableAddbackOpen(){
-        this.enableAddbackModal.current.toggle();
+    /**Function used to Enable Addback**/
+    onEnableAddback(){
+      this.sendPacket('EnableAddBack');
     }
-    /**Function used to open the Empty Menu**/
-    onEmptyOpen(){
-        this.emptyModal.current.toggle();
+    /**Function used to enable the Empty**/
+    onEmptyEnable(){
+      this.sendPacket('EnableEmpty');
     }
-    /**Function used to open the Purge A Menu**/
-    onPurgeAOpen(){
-        this.purgeAModal.current.toggle();
+    /**Function used to enable the Purge A**/
+    onPurgeAEnable(){
+      this.sendPacket('Purge',1);
     }
-    /**Function used to open the Purge B Menu**/
-    onPurgeBOpen(){
-        this.purgeBModal.current.toggle();
+    /**Function used to enable the Purge B**/
+    onPurgeBEnable(){
+      this.sendPacket('Purge',2);
     }
-    /**Function used to open the Purge C Menu**/
-    onPurgeCOpen(){
-        this.purgeCModal.current.toggle();
+    /**Function used to enable the Purge C**/
+    onPurgeCEnable(){
+      this.sendPacket('Purge',3);
     }
     /**Function used to open the Silence Alarm Menu**/
     onSilenceAlarmOpen(){
@@ -1379,7 +1483,7 @@ class LandingPage extends React.Component{
             //this.manStart.current.toggle();          
         }
       }else{
-        //this.msgm.current.show('Access Denied')
+        this.msgm.current.show('Access Denied')
       }
       
     }
@@ -1396,14 +1500,23 @@ class LandingPage extends React.Component{
       this.sendPacket('BatchPause')
       this.setState({start:true, pause:false, stop:true})
       setTimeout(function(){
-        //self.stopConfirm.current.show()
+        self.stopConfirm.current.show()
       }, 150)
       
     }
+    stopConfirmed(){
+      if((this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccStartStopBatch'])){
+        this.sendPacket('BatchEnd')
+        this.setState({start:true, pause:false})
+       }else{
+        this.msgm.current.show('Access Denied')
+      }
+    }
     sendPacket(n,v){
       var self = this;
+
+      var vdef = vdefByMac[macAddress];//vdefByMac[self.state.curDet.mac]
       
-      var vdef = vdefByMac[self.state.curDet.mac]
       if(typeof n == 'string'){
         if(n == 'switchProd'){
           var rpc = vdef[0]['@rpc_map']['KAPI_PROD_NO_APIWRITE']
@@ -1419,9 +1532,9 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n== 'getProdList'){
-          socket.emit('getProdList', this.state.curDet.ip)
+          socket.emit('getProdList', destinationIp)
         }else if(n=='deleteProd'){
           var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEL_NO_WRITE']
           var pkt = rpc[1].map(function (r) {
@@ -1436,7 +1549,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'copyCurrentProd'){
           var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_WRITE']
           var pkt = rpc[1].map(function (r) {
@@ -1451,7 +1564,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'copyDefProd'){
           var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_DEFAULT']
           var pkt = rpc[1].map(function (r) {
@@ -1466,7 +1579,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'copyFacProd'){
           var rpc = vdef[0]['@rpc_map']['KAPI_PROD_COPY_NO_FACTORY']
           var pkt = rpc[1].map(function (r) {
@@ -1481,7 +1594,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'deleteAll'){
           var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_DELETEALL']
           var pkt = rpc[1].map(function (r) {
@@ -1496,7 +1609,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'deleteBatch'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PLANBATCHDELETE']
           var pkt = rpc[1].map(function (r) {
@@ -1509,7 +1622,7 @@ class LandingPage extends React.Component{
           var buf = Buffer.alloc(4)
           buf.writeUInt32LE(parseInt(v),0)
           var packet = dsp_rpc_paylod_for(rpc[0],pkt, buf);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'clearFaults'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARFAULTS']
           var pkt = rpc[1].map(function (r) {
@@ -1524,7 +1637,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'clearWarnings'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARWARNINGS']
           var pkt = rpc[1].map(function (r) {
@@ -1539,7 +1652,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'checkWeight'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
           var pkt = rpc[1].map(function (r) {
@@ -1554,7 +1667,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'checkWeightSend'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHT']
           var pkt = rpc[1].map(function (r) {
@@ -1565,7 +1678,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'cancelCW'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CHECKWEIGHTCANCEL']
           var pkt = rpc[1].map(function (r) {
@@ -1576,7 +1689,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt,v);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'updateSystem'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_UPDATESYSTEM']
           var pkt = rpc[1].map(function (r) {
@@ -1591,7 +1704,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'importRestore'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_IMPORTRESTORE']
           var pkt = rpc[1].map(function (r) {
@@ -1606,7 +1719,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'restoreDefault'){
           var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_RESTORE']
           var pkt = rpc[1].map(function (r) {
@@ -1621,7 +1734,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         
         }else if(n == 'factoryReset'){
           var rpc = vdef[0]['@rpc_map']['KAPI_PROD_FACTORY_RESET']
@@ -1637,7 +1750,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'restoreBackup'){
           var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_RESTORE']
           var pkt = rpc[1].map(function (r) {
@@ -1652,7 +1765,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'backupProduct'){
           var rpc = vdef[0]['@rpc_map']['KAPI_PROD_DEFAULT_SAVE']
           var pkt = rpc[1].map(function (r) {
@@ -1667,7 +1780,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'getProdSettings'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDREAD']
           var pkt = rpc[1].map(function (r) {
@@ -1682,7 +1795,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n == 'saveProduct'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRODRECORDWRITE']
           var pkt = rpc[1].map(function (r) {
@@ -1697,7 +1810,7 @@ class LandingPage extends React.Component{
             }
           })
           var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
           setTimeout(function (argument) {
             socket.emit('getProdList', self.state.curDet.ip)
           },150)
@@ -1708,37 +1821,37 @@ class LandingPage extends React.Component{
           }
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
           var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],rec,0])
-          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+          socket.emit('rpc',{ip:destinationIp, data:packet}) 
         }else if( n == 'refresh_buffer'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_SENDWEBPARAMETERS']
           var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],v,0])
-          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+          socket.emit('rpc',{ip:destinationIp, data:packet}) 
         }else if( n == 'BatchStart'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
           var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
-          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+          socket.emit('rpc',{ip:destinationIp, data:packet}) 
         }else if( n == 'BatchStartSel'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
           var buf = Buffer.alloc(4)
           buf.writeUInt32LE(v,0)
           var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], buf)
-          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+          socket.emit('rpc',{ip:destinationIp, data:packet}) 
         }else if( n == 'BatchStartNew'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STARTBATCH']
           var packet = dsp_rpc_paylod_for(rpc[0],rpc[1], v)
-          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+          socket.emit('rpc',{ip:destinationIp, data:packet}) 
         }else if( n == 'BatchPause'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PAUSEBATCH']
           var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
-          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+          socket.emit('rpc',{ip:destinationIp, data:packet}) 
         }else if( n == 'BatchEnd'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_STOPBATCH']
           var packet = dsp_rpc_paylod_for(rpc[0],rpc[1])
-          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+          socket.emit('rpc',{ip:destinationIp, data:packet}) 
         }else if(n=='DateTime'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_DATETIMEWRITE']
           var packet = dsp_rpc_paylod_for(rpc[0],rpc[1],v);
-          socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+          socket.emit('rpc',{ip:destinationIp, data:packet}) 
         }else if(n=='DaylightSavings'){
           var rpc = vdef[0]['@rpc_map']['KAPI_DAYLIGHT_SAVINGS_WRITE']
           var pkt = rpc[1].map(function (r) {
@@ -1753,7 +1866,7 @@ class LandingPage extends React.Component{
             }
           })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
+        socket.emit('rpc',{ip:destinationIp, data:packet}) 
         }else if(n=='Timezone'){
           var rpc = vdef[0]['@rpc_map']['KAPI_TIMEZONE_WRITE']
           var pkt = rpc[1].map(function (r) {
@@ -1768,8 +1881,57 @@ class LandingPage extends React.Component{
             }
         })
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc',{ip:this.state.curDet.ip, data:packet}) 
-        }
+        socket.emit('rpc',{ip:destinationIp, data:packet}) 
+        }else if(n=='EnableAddBack'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_TOGGLEADDBACK']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc',{ip:destinationIp, data:packet}) 
+        }else if(n=='EnablePrime'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRIMETOGGLE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc',{ip:destinationIp, data:packet}) 
+        }else if(n=='EnableEmpty'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_EMPTYTOGGLE']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc',{ip:destinationIp, data:packet}) 
+        }else if( n == 'Purge'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PURGETOGGLE']
+          var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],v,0])
+          socket.emit('rpc',{ip:destinationIp, data:packet})
+        } 
       }else{
         // console.log('here')
         if(n['@rpcs']['toggle']){
@@ -1784,7 +1946,7 @@ class LandingPage extends React.Component{
             }
           }
           var packet = dsp_rpc_paylod_for(arg1, arg2);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n['@rpcs']['write']){
           // console.log('should be here')
           var arg1 = n['@rpcs']['write'][0];
@@ -1846,7 +2008,7 @@ class LandingPage extends React.Component{
             strArg = buf;
           }
           var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);            
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n['@rpcs']['vfdwrite']){
           var arg1 = n['@rpcs']['vfdwrite'][0];
           var arg2 = [];
@@ -1872,7 +2034,7 @@ class LandingPage extends React.Component{
               buf.writeUInt32LE(parseInt(v),1);
             }
             var packet = dsp_rpc_paylod_for(arg1, arg2,buf);
-            socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+            socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n['@rpcs']['apiwrite']){
           var arg1 = n['@rpcs']['apiwrite'][0];
           var arg2 = [];
@@ -1906,25 +2068,100 @@ class LandingPage extends React.Component{
             strArg = buf;
           }
           var packet = dsp_rpc_paylod_for(arg1, arg2,strArg);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }else if(n['@rpcs']['clear']){
           var packet = dsp_rpc_paylod_for(n['@rpcs']['clear'][0], n['@rpcs']['clear'][1],n['@rpcs']['clear'][2]);
-          socket.emit('rpc', {ip:this.state.curDet.ip, data:packet})
+          socket.emit('rpc', {ip:destinationIp, data:packet})
         }
       }
     }
     /************************************************/
-  render(){
 
+    /************Status Bar Functions************/
+    clearFaults(){
+      this.sendPacket('clearFaults');
+    }
+    clearWarnings(){
+      this.sendPacket('clearWarnings')
+    }
+    /**********************************************/
+
+    render(){
+    macAddress = this.state.curDet.mac;
+    destinationIp = this.state.curDet.ip;
     /**Declaration of Theme and Button variables**/
     var language = this.state.language;
     var pl = 'assets/play-arrow-sp.svg'
     var img = 'assets/NewFortressTechnologyLogo-WHT-trans.png';
-    var startButton = <div className='circularButton' style={{backgroundColor:'#11DD11', width:220, float:'left', lineHeight:'60px',color:'black',font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60}}> 
-                            <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Start'}</div>
-                      </div>
-    var silenceAlarmButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:310, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Silence Alarm'} onClick={this.onSilenceAlarmOpen}/> 
-    var statisticsButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Statistics'} onClick={this.onStatisticsOpen}/> 
+    var startButton, stop;
+    var pauseb = 'assets/pause.svg'
+    var stp = 'assets/stop-fti.svg'
+    var backgroundColor;
+    var grbg = '#e1e1e1'
+    var psbtklass = 'circularButton'
+    var psbtcolor = 'black'
+    var grbrdcolor = '#e1e1e1'
+    var language = this.state.language
+    var mixtureImg = 'assets/tataTeaBlender/beaker.png';
+    var silenceAlarmButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:298, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Silence Alarm'} onClick={this.onSilenceAlarmOpen}/> 
+    var statisticsButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Statistics'} onClick={this.onStatisticsOpen}/>
+
+    if(this.state.branding == 'FORTRESS'){
+      backgroundColor = FORTRESSPURPLE1
+      grbrdcolor = '#e1e1e1'
+      psbtcolor = '#1C3746'
+      psbtklass = 'circularButton_sp'
+    }else{
+      grbrdcolor = '#e1e1e1'
+      psbtcolor = '#1C3746'
+      psbtklass = 'circularButton_sp'
+      backgroundColor = SPARCBLUE1
+      grbg = '#e1e1e1'
+      img = 'assets/sparc-logo-rgb-reversed.svg'
+      pl = 'assets/play-arrow-sp.svg'
+      stp = 'assets/stop-sp.svg'
+    }
+
+
+    var sttxt = labTransV2['Start Text'][language]['name']
+   
+    // if CanStartBelts == 0
+    startButton = <div className={psbtklass} style={{background:'#a9a9a9', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+    <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div>
+    </div>
+
+    stop = ''
+    if(this.state.rec['BatchRunning'] == 0){
+      if(this.state.rec['CanStartBelts'] == 1){
+        startButton = <div className={psbtklass} onClick={this.start} style={{background:'#11DD11', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+          <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div>
+        </div> 
+      }
+    }
+    else if(this.state.rec['BatchRunning'] == 1){
+      startButton =<div className={psbtklass} onClick={this.pause} style={{background:'#FFFF00', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+        <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Pause/Stop'][language]['name']}</div>
+      </div>
+      stop = ''
+    }
+    else if(this.state.rec['BatchRunning'] == 2){
+      sttxt = 'Resume'
+      startButton = <div onClick={this.resume} className={psbtklass} style={{background:'#11DD11', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+      <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div>
+      </div>
+      
+      stop = <div onClick={this.stop} className={psbtklass} style={{background:'#FF0101', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,  boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+      <img src={stp} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['End Batch'][language]['name']}</div>
+      </div> 
+      silenceAlarmButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:65, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Silence Alarm'} onClick={this.onSilenceAlarmOpen}/> 
+      if(this.state.rec['CanStartBelts'] == 0){
+        startButton = <div className={psbtklass} style={{background:'#a9a9a9', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+        <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div>
+        </div> 
+      }
+
+    }
+   
     var logklass = 'logout'
     if(this.state.user == -1){
       logklass = 'login'
@@ -1968,9 +2205,8 @@ class LandingPage extends React.Component{
 
     if(this.state.srec['SRecordDate']){
       sd = <div><div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:530, paddingLeft:10}}>{labTransV2['System Settings'][language]['name']}</div></div>
-      <SettingsPageWSB  resetCalibration={this.resetCalibration} soc={socket} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={1} setTrans={this.setTrans} setTheme={this.setTheme} onCal={'this.calWeightSend'} onCalCancel={'this.calWeightCancelSend'} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={this.state.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+      <SettingsPageWSB  resetCalibration={this.resetCalibration} soc={socket} timezones={this.state.timezones} timeZone={this.state.srec['Timezone']} dst={this.state.srec['DaylightSavings']} openUnused={this.openUnused} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} CalibratingTea={this.state.CalibratingTea} CalibratingFlavour={this.state.CalibratingFlavour} CalibratingAddback={this.state.CalibratingAddback} setTrans={this.setTrans} setTheme={this.setTheme} onCal={this.calWeightSend} onCalCancel={this.calWeightCancelSend} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'SD'} language={this.state.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
         onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.cob]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} crec={this.state.crec} dynSettings={this.state.rec} framRec={this.state.fram} level={this.state.level} accounts={this.state.usernames} vdefMap={this.state.vMap}/>
-      
       </div>
 
       cont = sd;
@@ -1981,7 +2217,7 @@ class LandingPage extends React.Component{
         <CircularButton language={this.state.language} branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={labTransV2['Calibrate'][language]['name']}/>
         </div>)*/
 
-      unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} calibState={1} setTrans={this.setTrans} setTheme={this.setTheme} onCal={'this.calWeightSend'} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
+      unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} CalibratingTea={this.state.CalibratingTea} CalibratingFlavour={this.state.CalibratingFlavour} CalibratingAddback={this.state.CalibratingAddback} setTrans={this.setTrans} setTheme={this.setTheme} onCal={'this.calWeightSend'} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
         onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.unusedList]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} vdefMap={this.state.vmap}/></div>
     }else{
       dets = this.renderModal()
@@ -1996,7 +2232,14 @@ class LandingPage extends React.Component{
                             <tr>
                                 <td><img style={{height: 67,marginRight: 10, marginLeft:10, display:'inline-block', marginTop:16}} src={img}/></td>
                                 <td>
-                                    <Mixture onMixtureMenuOpen={this.onMixtureMenuOpen} productName={this.state.prec['ProdName']}/>
+                                    <div className='mixtureSection'>
+                                      <div className='circularButton' onClick={this.onMixtureMenuOpen} style={{width:150, float:'left', lineHeight:'60px',color:'white',font:30, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:1,height:60}}> 
+                                          <img src={mixtureImg} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Mixture'}</div>
+                                      </div>
+                                      <h3 className='mixtureName'>{!this.state.prec['ProdName'] ? 'Product Name' : this.state.prec['ProdName']}</h3>
+                                      <StatusElem connected={this.state.connected} pAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccClrFaultWarn'])} clearWarnings={this.clearWarnings} clearFaults={this.clearFaults} prodName={this.state.prec['ProdName']} weighingMode={this.state.prec['WeighingMode']} warnings={this.state.warningArray} weightPassed={this.state.crec['WeightPassed']} faults={this.state.faultArray} 
+                                        ref={this.ste} branding={this.state.branding} value={'g'} name={labTransV2['StatusBar'][this.state.language]['name']} width={320} font={18} language={this.state.language}/>
+                                    </div>
                                 </td>
                                 <td style={{height:60, width:190, color:'#eee', textAlign:'right'}}>
                                     <div style={{fontSize:28,paddingRight:6}}>{this.state.username}</div>
@@ -2021,15 +2264,15 @@ class LandingPage extends React.Component{
                         <tbody>
                             <tr style={{verticalAlign:'top'}}>
                                 <td>
-                                    <TeaAndFlavour productRecord={this.state.prec} systemRecord={this.state.srec} liveRecord={this.state.rec} liveWeight={this.state.liveWeight}/>
-                                    <AddBack productRecord={this.state.prec} systemRecord={this.state.srec} liveRecord={this.state.rec} liveWeight={this.state.liveWeight}/>
-                                    <LineGraph/>
-                                    {startButton}
+                                    <TeaAndFlavour RefillTea={this.state.RefillTea} RefillFlavour={this.state.RefillFlavour} productRecord={this.state.prec} systemRecord={this.state.srec} liveRecord={this.state.rec} liveWeight={this.state.liveWeight} TeaLiveWeight={this.state.TeaLiveWeight} FlavourLiveWeight={this.state.FlavourLiveWeight}/>
+                                    <AddBack RefillAddback={this.state.RefillAddback} productRecord={this.state.prec} systemRecord={this.state.srec} liveRecord={this.state.rec} liveWeight={this.state.liveWeight} AddbackLiveWeight={this.state.AddbackLiveWeight}/>
+                                    <LineGraph targetPercentage={this.state.prec['FlavourTargetPct']} FlavourGraph={this.state.FlavourGraph}/>
+                                    {startButton}{stop}
                                     {silenceAlarmButton}
                                     {statisticsButton}
                                 </td>
                                 <td>
-                                    <SideButtonsMenu onPrimeMenuOpen={this.onPrimeMenuOpen} onBatchStartMenuMenuOpen={this.onBatchStartMenuMenuOpen} onEnableAddbackOpen={this.onEnableAddbackOpen} onEmptyOpen={this.onEmptyOpen} onPurgeAOpen={this.onPurgeAOpen} onPurgeBOpen={this.onPurgeBOpen} onPurgeCOpen={this.onPurgeCOpen}/>
+                                    <SideButtonsMenu PrimeStatus={this.state.PrimeStatus} PurgeTea={this.state.PurgeTea} PurgeFlavour={this.state.PurgeFlavour} PurgeAddback={this.state.PurgeAddback} EmptyStatus={this.state.EmptyStatus} AddbackEnabled={this.state.AddbackEnabled} onPrimeEnable={this.onPrimeEnable} onBatchStartMenuMenuOpen={this.onBatchStartMenuMenuOpen} onEnableAddback={this.onEnableAddback} onEmptyEnable={this.onEmptyEnable} onPurgeAEnable={this.onPurgeAEnable} onPurgeBEnable={this.onPurgeBEnable} onPurgeCEnable={this.onPurgeCEnable}/>
                                 </td>
                             </tr>
                         </tbody>
@@ -2063,12 +2306,15 @@ class LandingPage extends React.Component{
                     <Modal x={true} ref={this.purgeCModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPrimeClose}>
                         <h1 style={{color:'white'}}>Purge C Menu</h1>
                     </Modal>
-                    <Modal x={true} ref={this.silenceAlarmModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPrimeClose}>
-                        <h1 style={{color:'white'}}>Silence Alarm Menu</h1>
+                    <Modal language={this.state.language} ref={this.silenceAlarmModal} innerStyle={{background:backgroundColor}}>
+                        <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.state.language]['name']}</div></div>
+                      <FaultDiv language={this.state.language} branding={this.state.branding} pAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccClrFaultWarn'])} clearWarnings={this.clearWarnings} clearFaults={this.clearFaults} faults={this.state.faultArray} warnings={this.state.warningArray}/>
                     </Modal>
                     <Modal x={true} ref={this.statisticsModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPrimeClose}>
                         <h1 style={{color:'white'}}>Statistics Menu</h1>
                     </Modal>
+                    <AlertModal language={this.state.language} ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][this.state.language]['name']}
+                    </div></AlertModal>
                     <LogInControl2 language={this.state.language} branding={this.state.branding} ref={this.loginControl} onRequestClose={this.loginClosed} isOpen={this.state.loginOpen} 
                           pass6={this.state.srec['PasswordLength']} level={this.state.level}  mac={this.state.curDet.mac} ip={this.state.curDet.ip} logout={this.logout} 
                           accounts={this.state.usernames} authenticate={this.authenticate} login={this.login} val={this.state.userid}/>
@@ -2076,6 +2322,7 @@ class LandingPage extends React.Component{
                       <UserPassReset language={this.state.language} ref={this.resetPass} mobile={!this.state.brPoint} resetPassword={this.resetPassword}/>
                       <LogoutModal language={this.state.language} ref={this.lgoModal} branding={this.state.branding}/>
                     <LockModal ref={this.lockModal} branding={this.state.branding}/>
+                    <MessageModal language={this.state.language} ref={this.msgm}/>
                 </div>
             </div>
       ) 
@@ -2083,32 +2330,31 @@ class LandingPage extends React.Component{
 
 }
 
-class Mixture extends React.Component{
-    constructor(props){
-	    super(props)
-	}
-
-    render(){
-        var img = 'assets/tataTeaBlender/beaker.png';
-        return(
-            <div className='mixtureSection'>
-                <div className='circularButton' onClick={this.props.onMixtureMenuOpen} style={{width:150, float:'left', lineHeight:'60px',color:'white',font:30, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:1,height:60}}> 
-                    <img src={img} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{'Mixture'}</div>
-                </div>
-                <h3 className='mixtureName'>{!this.props.productName ? 'Connecting ...' : this.props.productName}</h3>
-                <div className='status'>
-                    Status:
-                </div>
-                
-            </div>
-        )
-    }
-}
 class TeaAndFlavour extends React.Component{
     constructor(props){
       super(props);
     }
     render(){
+      var weightUnits = this.props.systemRecord['WeightUnits']
+      var teaLiveWeight = '';
+      var flavourLiveWeight = '';
+      var teaTargetFeedRate = '';
+      var flavourTargetFeedRate = '';
+      var teaActualFeedRate = '';
+      var flavourActualFeedRate = '';
+      var teaFeedSpeed = 0;
+      var flavourFeedSpeed = 0;
+
+      if(typeof this.props.productRecord!='undefined' && typeof this.props.liveRecord!='undefined'){
+        teaLiveWeight = FormatWeight(this.props.TeaLiveWeight, weightUnits);
+        flavourLiveWeight = FormatWeight(this.props.FlavourLiveWeight, weightUnits);
+        teaTargetFeedRate = FormatWeight(this.props.productRecord['TeaTargetFeedRate'], weightUnits);
+        flavourTargetFeedRate = FormatWeight(this.props.productRecord['FlavourTargetFeedRate'], weightUnits);
+        teaActualFeedRate = FormatWeight(this.props.liveRecord['TeaFeedRate'], weightUnits);
+        flavourActualFeedRate = FormatWeight(this.props.liveRecord['FlavourFeedRate'], weightUnits);
+        teaFeedSpeed = Number(this.props.liveRecord['TeaFeedSpeed']).toFixed(1);
+        flavourFeedSpeed = Number(this.props.liveRecord['FlavourFeedSpeed']).toFixed(1);
+      }
       /*console.log("live records", this.props.liveRecord);
       console.log("system records ", this.props.systemRecord);
       console.log("product records ", this.props.productRecord);*/
@@ -2123,28 +2369,32 @@ class TeaAndFlavour extends React.Component{
                         </tr>
                         <tr>
                             <td style={{backgroundColor:'#5d5480', borderRadius:25, color:'white'}}>Live Weight Tared</td>
-                            <td style={{fontWeight:'bold'}}>{Number(this.props.liveWeight).toFixed(1)} g</td>
-                            <td style={{fontWeight:'bold'}}>{Number(this.props.liveWeight).toFixed(1)} g</td>
+                            <td style={{fontWeight:'bold'}}>{teaLiveWeight}</td>
+                            <td style={{fontWeight:'bold'}}>{flavourLiveWeight}</td>
                         </tr>
                         <tr>
                             <td style={{backgroundColor:'#5d5480', borderRadius:25, color:'white'}}>Target Feed Rate</td>
-                            <td style={{fontWeight:'bold'}}>{typeof this.props.productRecord['TeaTargetFeedRate'] == 'undefined'? '0.0' : Number(this.props.productRecord['TeaTargetFeedRate']).toFixed(1)} g/min</td>
-                            <td style={{fontWeight:'bold'}}>{typeof this.props.productRecord['FlavourTargetFeedRate'] == 'undefined'? '0.0' : Number(this.props.productRecord['FlavourTargetFeedRate']).toFixed(1)} g/min</td>
+                            <td style={{fontWeight:'bold'}}>{teaTargetFeedRate}/min</td>
+                            <td style={{fontWeight:'bold'}}>{flavourTargetFeedRate}/min</td>
                         </tr>
                         <tr>
                             <td style={{backgroundColor:'#5d5480', borderRadius:25, color:'white'}}>Actual Feed Rate</td>
-                            <td style={{fontWeight:'bold'}}>0.0 g/min</td>
-                            <td style={{fontWeight:'bold'}}>0.0 g/min</td>
+                            <td style={{fontWeight:'bold'}}>{teaActualFeedRate}/min</td>
+                            <td style={{fontWeight:'bold'}}>{flavourActualFeedRate}/min</td>
                         </tr>
                         <tr>
                             <td style={{backgroundColor:'#5d5480', borderRadius:25, color:'white'}}>Feed Speed</td>
-                            <td style={{fontWeight:'bold'}}>{typeof this.props.liveRecord['TeaFeedSpeed'] == 'undefined' ? '0.0' : Number(this.props.liveRecord['TeaFeedSpeed']).toFixed(1)} %</td>
-                            <td style={{fontWeight:'bold'}}>{typeof this.props.liveRecord['FlavourFeedSpeed'] == 'undefined' ? '0.0' : Number(this.props.liveRecord['FlavourFeedSpeed']).toFixed(1)} %</td>
+                            <td style={{fontWeight:'bold'}}>{teaFeedSpeed} %</td>
+                            <td style={{fontWeight:'bold'}}>{flavourFeedSpeed} %</td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td><span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Refilling</span></td>
-                            <td><span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Refilling</span></td>
+                            <td>
+                              <span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:this.props.RefillTea ? 'green':'#5d5480', color:'white', padding:5}}>Refilling</span>
+                            </td>
+                            <td>
+                              <span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:this.props.RefillFlavour ? 'green':'#5d5480', color:'white', padding:5}}>Refilling</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -2156,147 +2406,109 @@ class AddBack extends React.Component{
   constructor(props){
     super(props);
   }
-    render(){
-        return(
-            <div className='addBackSection'>
-               <table className='addBackTable'>
-                    <tr style={{fontWeight:'bold'}}>ADD BACK</tr>
-                    <tr style={{fontWeight:'bold'}}>{Number(this.props.liveWeight).toFixed(1)} g</tr>
-                    <tr style={{fontWeight:'bold'}}>{typeof this.props.productRecord['AddbackTargetFeedRate'] == 'undefined' ? '0.0' : Number(this.props.productRecord['AddbackTargetFeedRate']).toFixed(1)} g/min</tr>
-                    <tr style={{fontWeight:'bold'}}>0.0 g/min</tr>
-                    <tr style={{fontWeight:'bold'}}>{typeof this.props.productRecord['AddbackFeedSpeed'] == 'undefined' ? '0.0' : Number(this.props.liveRecord['AddbackFeedSpeed']).toFixed(1)} %</tr>
-                    <tr>
-                        <td><span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Refilling</span></td>
-                    </tr>
-               </table>
-            </div>
-        )
+  render(){
+    var weightUnits = this.props.systemRecord['WeightUnits']
+    var addbackLiveWeight = '';
+    var addBackTargetFeedRate = '';
+    var addBackActualFeedRate = '';
+    var addBackFeedSpeed = 0;
+
+    if(typeof this.props.productRecord!='undefined' && typeof this.props.liveRecord!='undefined'){
+      addbackLiveWeight = FormatWeight(this.props.AddbackLiveWeight, weightUnits);
+      addBackTargetFeedRate = FormatWeight(this.props.productRecord['AddbackTargetFeedRate'], weightUnits);
+      addBackActualFeedRate = FormatWeight(this.props.liveRecord['AddbackFeedRate'], weightUnits);
+      addBackFeedSpeed = Number(this.props.liveRecord['AddbackFeedSpeed']).toFixed(1);
     }
+
+    return(
+      <div className='addBackSection'>
+        <table className='addBackTable'>
+          <tr style={{fontWeight:'bold'}}>ADD BACK</tr>
+          <tr style={{fontWeight:'bold'}}>{addbackLiveWeight}</tr>
+          <tr style={{fontWeight:'bold'}}>{addBackTargetFeedRate}/min</tr>
+          <tr style={{fontWeight:'bold'}}>{addBackActualFeedRate}/min</tr>
+          <tr style={{fontWeight:'bold'}}>{addBackFeedSpeed} %</tr>
+          <tr>
+            <td><span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:this.props.RefillAddback ? 'green':'#5d5480', color:'white', padding:5}}>Refilling</span></td>
+          </tr>
+        </table>
+      </div>
+      )
+  }
 }
 class LineGraph extends React.Component{
     render(){
-      const data = [
-        {x: 0, y: 2.7},
-        {x: 1, y: 3.2},
-        {x: 2, y: 2.8},
-        {x: 6, y: 2.6},
-        {x: 8, y: 2.2}
-      ];
-      const topLineData = [
-        {x: 0, y: 3.5},
-        {x: 1, y: 3.5},
-        {x: 2, y: 3.5},
-        {x: 6, y: 3.5},
-        {x: 8, y: 3.5}
-      ];
-      const middleLineData = [
-        {x: 0, y: 3},
-        {x: 1, y: 3},
-        {x: 2, y: 3},
-        {x: 6, y: 3},
-        {x: 8, y: 3}
-      ];
-      const bottomLineData = [
-        {x: 0, y: 2.5},
-        {x: 1, y: 2.5},
-        {x: 2, y: 2.5},
-        {x: 6, y: 2.5},
-        {x: 8, y: 2.5}
-      ];
+
+      var data = new Array();
+      var flavourGraphValues = new Array();
+      var topLineData = new Array(); 
+      var bottomLineData = new Array();
+      var middleLineData = new Array();
+
+      data = this.props.FlavourGraph.map(item=>Number(item/100).toFixed(2));
+
+      for(var i = 0; i < 250; i++){
+
+        let objData = {x:i,y:this.props.targetPercentage}
+        let objDataTopRedLine = {x:i,y:this.props.targetPercentage+2}
+        let objDataBottomRedLine = {x:i,y:this.props.targetPercentage-2}
+        let objFlavourGraph = {x:i,y:data[i]}
+
+        middleLineData.push(objData);
+        topLineData.push(objDataTopRedLine);
+        bottomLineData.push(objDataBottomRedLine);
+        flavourGraphValues.push(objFlavourGraph);
+      }
+      
+      
         return(
             <div className='lineGraphSection'>
-              
               <XYPlot height={280} width= {980}>
                 <XAxis style={{ line: {stroke: 'black'}}}/>
                 <YAxis style={{ line: {stroke: 'black'}}}/>
                 <LineSeries data={topLineData} color="red"/>
                 <LineSeries data={middleLineData} color="green"/>
                 <LineSeries data={bottomLineData} color="red"/>
-                <LineSeries data={data} curve={'curveMonotoneX'} color="black" />
+                <LineSeries data={flavourGraphValues} curve={'curveMonotoneX'} color="black" />
               </XYPlot>
-                {/*<Line
-                    data={{
-                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                    datasets: [
-                        {
-                            data: [2.8,3.8,2.5,1.5,2.7,1],
-                            borderColor: [
-                            'black'
-                            ],
-                            borderWidth: 5,
-                            tension: 0.5
-                        },
-                        {
-                        data: [3.5,3.5,3.5,3.5,3.5,3.5],
-                        borderColor: [
-                            'red'
-                        ],
-                        borderWidth: 2,
-                        },
-                        {
-                        data: [3,3,3,3,3,3],
-                        borderColor: [
-                        'green'
-                        ],
-                        borderWidth: 2,
-                        },
-                        {
-                        data: [2.5,2.5,2.5,2.5,2.5,2.5],
-                        borderColor: [
-                            'red'
-                        ],
-                        borderWidth: 2,
-                        }
-                    ],
-                    }}
-                    height={400}
-                    width={600}
-                    options={{
-                        plugins: {
-                            legend: {
-                            display: false
-                            }
-                        },
-                        maintainAspectRatio: false,
-
-                        elements: {
-                            point:{
-                                radius: 0
-                            }
-                        },
-                        scales: {
-                            y: {
-                                suggestedMin: 0,
-                                ticks: {
-                                    // Include a dollar sign in the ticks
-                                    callback: function(value, index, values) {
-                                        return value+'%';
-                                    }
-                                }
-                            },
-                            x: {
-                                display:false
-                            }
-                        }         
-                    }}
-                />*/}
             </div>
         )
     }
 }
 class SideButtonsMenu extends React.Component{
+
     render(){
-        return(
-            <div className='sideButtonsSection'>
-                <CircularButton language={'english'} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25, fontWeight:'bold'}} lab={'Prime'} onClick={this.props.onPrimeMenuOpen}/> 
-                <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Batch Start'} onClick={this.props.onBatchStartMenuMenuOpen}/>  
-                <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Enable Addback'} onClick={this.props.onEnableAddbackOpen}/> 
-                <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Empty'} onClick={this.props.onEmptyOpen}/> 
-                <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Purge A'} onClick={this.props.onPurgeAOpen}/> 
-                <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Purge B'} onClick={this.props.onPurgeBOpen}/> 
-                <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Purge C'} onClick={this.props.onPurgeCOpen}/> 
-            </div>
-        )
+      var addBackBtnBranding='TATA';
+      var emptyBtnBranding='TATA';
+      var purgeABtnBranding='TATA';
+      var purgeBBtnBranding='TATA';
+      var purgeCBtnBranding='TATA';
+      if(this.props.AddbackEnabled==1){
+        addBackBtnBranding = '';
+      }
+      if(this.props.EmptyStatus==1){
+        emptyBtnBranding = '';
+      }
+      if(this.props.PurgeTea==1){
+        purgeABtnBranding = '';
+      }
+      if(this.props.PurgeFlavour==1){
+        purgeBBtnBranding = '';
+      }
+      if(this.props.PurgeAddback==1){
+        purgeCBtnBranding = '';
+      }
+      return(
+          <div className='sideButtonsSection'>
+              <CircularButton language={'english'} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25, fontWeight:'bold' , backgroundColor:this.props.PrimeStatus? 'green':'#5d5480'}} lab={'Prime'} onClick={this.props.onPrimeEnable}/> 
+              <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Batch Start'} onClick={this.props.onBatchStartMenuMenuOpen}/>  
+              <CircularButton language={'english'} branding={addBackBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Enable Addback'} onClick={this.props.onEnableAddback}/> 
+              <CircularButton language={'english'} branding={emptyBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Empty'} onClick={this.props.onEmptyEnable}/> 
+              <CircularButton language={'english'} branding={purgeABtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Purge A'} onClick={this.props.onPurgeAEnable}/> 
+              <CircularButton language={'english'} branding={purgeBBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Purge B'} onClick={this.props.onPurgeBEnable}/> 
+              <CircularButton language={'english'} branding={purgeCBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Purge C'} onClick={this.props.onPurgeCEnable}/> 
+          </div>
+      )
     }
 }
 /******************Main Components end********************/
@@ -3626,6 +3838,7 @@ var DeleteModalCont =  onClickOutside(DeleteModalC);
 var CopyModalCont =  onClickOutside(CopyModalC);
 var LogoutModalCont =  onClickOutside(LogoutModalC);
 /******************Modals end   **********************/
+
 /******************Settings and Product Components start********************/
 class ProductSettings extends React.Component{
   constructor(props){
@@ -3679,7 +3892,6 @@ class ProductSettings extends React.Component{
     this.copyFromDef = this.copyFromDef.bind(this);
     this.showProdMgmtTooltip = this.showProdMgmtTooltip.bind(this);
     this.stopConfirmed = this.stopConfirmed.bind(this);
-    this.showMessageAlert = this.showMessageAlert.bind(this);
     this.msgm = React.createRef();
     this.stopConfirm = React.createRef();
     this.deleteAllProductsAlert = React.createRef();
@@ -3711,12 +3923,11 @@ class ProductSettings extends React.Component{
         scrollInd = i;
       }
     });
-    setTimeout(function(argument) {
-      self.props.sendPacket('getProdSettings', self.props.editProd)
-    },300)
+    self.props.sendPacket('getProdSettings', self.props.editProd)
+    self.props.sendPacket('getProdList')
     var el = document.getElementById('prodListScrollBox')
     el.scrollTop = scrollInd*66
-    //this.props.sendPacket("refresh_buffer",6)
+    this.props.sendPacket("get",6)
   }
   shouldComponentUpdate(newProps,nextState){
     //console.log('Component Will Receive')
@@ -3769,6 +3980,8 @@ class ProductSettings extends React.Component{
       }
     }
     var self = this;
+    console.log("n is ", n);
+    console.log("v is ", v);
     this.props.sendPacket(n,v)
   }
   onAdvanced(){
@@ -4306,23 +4519,7 @@ class ProductSettings extends React.Component{
   showProdMgmtTooltip(){
     this.prodMgmtTooltip.current.show();
   }
-  showMessageAlert(){ 
-      if(this.props.rejectAlertMessage == 'Reject Setup is invalid!' && showAlertMessageInProductMenu == 0 && !this.pgm.current.state.show && !alreadyDisplayedRejectSetupMessageInProductMenu)
-      {
-        this.msgm.current.show(this.props.rejectAlertMessage)        
-        showAlertMessageInProductMenu = 1;
-        alreadyDisplayedRejectSetupMessageInProductMenu=true;
-      }else if(this.props.rejectAlertMessage == 'Reject Setup is invalid!' && showAlertMessageInPackGraphMenu == 0 && !alreadyDisplayedRejectSetupMessageInProductMenu && this.pgm.current.state.show){
-        this.pgm.current.showMsg(this.props.rejectAlertMessage)
-        showAlertMessageInPackGraphMenu = 1;
-        showAlertMessageInProductMenu = 1;
-      }
-  }
-  render(){    
-    setTimeout(()=>{
-      this.showMessageAlert()
-    },2000)
-    
+  render(){      
     var self = this;
     var list = [];
     var sp = null;
@@ -4380,22 +4577,79 @@ class ProductSettings extends React.Component{
       var unit = 'g'
       var weightUnits = this.props.srec['WeightUnits']
       var factor = 1;
-      var nwgt = ''
-      var fdtwgt = ''
-      var pkgwgt = ''
-      var ovwgt = ''
-      var udwgt = ''
+      var teaFeedRate = '';
+      var flavourFeedRate = '';
+      var addBackFeedRate = '';
+      var teaInfeedRunTime = '';
+      var flavourInfeedRunTime = '';
+      var addBackInfeedRunTime = '';
+      var teaLowerWeightLimit = '';
+      var flavourLowerWeightLimit = '';
+      var addBackLowerWeightLimit = '';
+      var teaUpperWeightLimit = '';
+      var flavourUpperWeightLimit = '';
+      var addBackUpperWeightLimit = '';
+      var teaEmptyWeightLimit = '';
+      var flavourEmptyWeightLimit = '';
+      var addBackEmptyWeightLimit = '';
+      var totalTargetFeedRate = '';
+      var teaTargetPct = '';
+      var flavourTargetPct = '';
+      var addBackPct = '';
+      var teaCorrFactor = '';
+      var flavourCorrFactor = '';
+      var teaDeadZone = '';
+      var flavourDeadZone = '';
+      var teaFeedSpeedMax = '';
+      var flavourFeedSpeedMax = '';
+      var teaFeedSpeedMin = '';
+      var flavourFeedSpeedMin = '';
+      var teaOriginAmplitude = '';
+      var flavourOriginAmplitude = '';
+      var teaCorrInterval = '';
+      var flavourCorrInterval = '';
+      var teaCorrWait = '';
+      var flavourCorrWait = '';
+      var teaCorrInhibit = '';
+      var flavourCorrInhibit = '';
 
-
-
-      if(typeof curProd['NominalWgt'] != 'undefined'){
-        nwgt = FormatWeight(curProd['NominalWgt'], weightUnits);
-        ovwgt = FormatWeight(curProd['OverWeightLim'], weightUnits);
-        udwgt = FormatWeight(curProd['UnderWeightLim'], weightUnits);
-        fdtwgt = FormatWeight(curProd['FeedbackTarWgt'],weightUnits);
-        pkgwgt = FormatWeight(curProd['PkgWeight'],weightUnits);
+      if(typeof curProd != 'undefined'){
+        totalTargetFeedRate = FormatWeight(curProd['TotalTargetFeedRate'],weightUnits)+'/min';
+        teaTargetPct = Number(curProd['TeaTargetPct']).toFixed(1)+' %';
+        flavourTargetPct = Number(curProd['FlavourTargetPct']).toFixed(1)+' %';
+        addBackPct = Number(curProd['AddbackTargetPct']).toFixed(1)+' %';
+        teaFeedRate = FormatWeight(curProd['TeaTargetFeedRate'], weightUnits)+'/min';
+        flavourFeedRate = FormatWeight(curProd['FlavourTargetFeedRate'], weightUnits)+'/min';
+        addBackFeedRate = FormatWeight(curProd['AddbackTargetFeedRate'], weightUnits)+'/min';
+        teaInfeedRunTime = Number(curProd['TeaInfeedRunTime']).toFixed(1);
+        flavourInfeedRunTime = Number(curProd['FlavourInfeedRunTime']).toFixed(1);
+        addBackInfeedRunTime = Number(curProd['AddbackInfeedRunTime']).toFixed(1);
+        teaLowerWeightLimit = FormatWeight(curProd['TeaLowerWeightLimit'], weightUnits);
+        flavourLowerWeightLimit = FormatWeight(curProd['FlavourLowerWeightLimit'], weightUnits);
+        addBackLowerWeightLimit = FormatWeight(curProd['AddbackLowerWeightLimit'], weightUnits);
+        teaUpperWeightLimit = FormatWeight(curProd['TeaUpperWeightLimit'], weightUnits);
+        flavourUpperWeightLimit = FormatWeight(curProd['FlavourUpperWeightLimit'], weightUnits);
+        addBackUpperWeightLimit = FormatWeight(curProd['AddbackUpperWeightLimit'], weightUnits);
+        teaEmptyWeightLimit = FormatWeight(curProd['TeaEmptyWeightLimit'], weightUnits);
+        flavourEmptyWeightLimit = FormatWeight(curProd['FlavourEmptyWeightLimit'], weightUnits);
+        addBackEmptyWeightLimit = FormatWeight(curProd['AddbackEmptyWeightLimit'], weightUnits);
+        teaCorrFactor = FormatWeight(curProd['TeaCorrFactor'], weightUnits);
+        flavourCorrFactor = FormatWeight(curProd['FlavourCorrFactor'], weightUnits);
+        teaDeadZone = Number(curProd['TeaDeadzone']).toFixed(1)+' %';
+        flavourDeadZone = Number(curProd['FlavourDeadzone']).toFixed(1)+' %';
+        teaFeedSpeedMax = Number(curProd['TeaFeedSpeedMax']).toFixed(1)+' %';
+        flavourFeedSpeedMax = Number(curProd['FlavourFeedSpeedMax']).toFixed(1)+' %';
+        teaFeedSpeedMin = Number(curProd['TeaFeedSpeedMin']).toFixed(1)+' %';
+        flavourFeedSpeedMin = Number(curProd['FlavourFeedSpeedMin']).toFixed(1)+' %';
+        teaOriginAmplitude = Number(curProd['TeaOriginAmplitude']).toFixed(1)+' %';
+        flavourOriginAmplitude = Number(curProd['FlavourOriginAmplitude']).toFixed(1)+' %';
+        teaCorrInterval = Number(curProd['TeaCorrInterval']).toFixed(1)+' s';
+        flavourCorrInterval = Number(curProd['FlavourCorrInterval']).toFixed(1)+' s';
+        teaCorrWait = Number(curProd['TeaCorrWait']).toFixed(1)+' s';
+        flavourCorrWait = Number(curProd['FlavourCorrWait']).toFixed(1)+' s';
+        teaCorrInhibit = Number(curProd['TeaCorrInhibit']).toFixed(1)+' s';
+        flavourCorrInhibit = Number(curProd['FlavourCorrInhibit']).toFixed(1)+' s';
       }
-      var grphBut = <img src='assets/graph.svg' style={{position:'absolute', width:30, left:780}} onClick={this.props.toggleGraph}/>
 
       var prodEditAcc = this.props.level >= this.props.srec['PassAccProdEdit'];
       var advProdEditAcc = this.props.level >= this.props.srec['PassAccAdvProdEdit'];
@@ -4404,39 +4658,6 @@ class ProductSettings extends React.Component{
         advProdEditAcc = true;
       }
       
-      if(typeof curProd['FeedbackCorRate']!='undefined' && typeof curProd['FeedbackCorRate']=='string'){
-        if(curProd['FeedbackCorRate'].includes('grams/pulse') || curProd['FeedbackCorRate'].includes('grams/sec'))
-				{ if(this.props.weightUnits == 2 || this.props.weightUnits == 3)
-          {
-            if(curProd['FeedbackCorRate'].includes('grams/pulse'))
-            {
-              newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/pulse","oz/pls");
-            }else if(curProd['FeedbackCorRate'].includes('grams/sec')){
-              newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/sec","oz/s");
-            }
-            var twoParts = newFeedbackCorRate.split(' ');
-            var number = Number(twoParts[0]);
-            var unit = twoParts[1];
-            newFeedbackCorRate = (number/28.3495).toFixed(2) + " " + unit;
-          }
-          else{
-            if(curProd['FeedbackCorRate'].includes('grams/pulse'))
-            {
-              newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/pulse","g/pls");
-            }else if(curProd['FeedbackCorRate'].includes('grams/sec')){
-              newFeedbackCorRate= curProd['FeedbackCorRate'].replace("grams/sec","g/s");
-            }
-            var twoParts = newFeedbackCorRate.split(' ');
-            var number = twoParts[0];
-            var unit = twoParts[1];
-            newFeedbackCorRate = Number(number).toFixed(1) + " " + unit;
-          }
-          
-				}
-        
-      }else{
-        newFeedbackCorRate = curProd['FeedbackCorRate'];
-      }
       /**Fetching the current product name */
       var rp = {}
       if(this.props.runningProd){
@@ -4447,12 +4668,12 @@ class ProductSettings extends React.Component{
         })
       }
       content =( 
-      <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:480}}>
+      <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:566}}>
         <div>
         <div style={{display:'inline-block', verticalAlign:'top'}}>
         <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={labTransV2['Product Name'][this.props.language]['name']} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
         <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton language={this.props.language} onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Select Product'][this.props.language]['name']}/>
-        
+
         </div>
         <div style={{display:'none', marginBottom:-10}}>
           <div style={{display:'none', position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
@@ -4462,31 +4683,42 @@ class ProductSettings extends React.Component{
           </div>
         </div>
         </div>
-        <div style={{height:339}}>
-          <div style={{display:'inline-block',width:'100%', verticalAlign:'top'}}>
-            <div style={{marginTop:5}}><ProdSettingEdit prodNameComponent={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedRate'} vMap={vMapV2['FeedRate']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={170} label={labTransV2['Feed Rate'][this.props.language]['name']} value={nwgt} param={vdefByMac[this.props.mac][1][1]['TeaTargetFeedRate']} tooltip={vMapV2['FeedRate']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit prodNameComponent={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'InfeedRunTime'} vMap={vMapV2['InfeedRunTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={170} label={labTransV2['Infeed Run Time'][this.props.language]['name']} value={ovwgt} param={vdefByMac[this.props.mac][1][1]['TeaInfeedRunTime']} tooltip={vMapV2['InfeedRunTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit prodNameComponent={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'LowerWeightLimit'} vMap={vMapV2['LowerWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={170} label={labTransV2['Lower Weight Limit'][this.props.language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['TeaLowerWeightLimit']}  tooltip={vMapV2['LowerWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit prodNameComponent={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UpperWeightLimit'} vMap={vMapV2['UpperWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={170} label={labTransV2['Upper Weight Limit'][this.props.language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['TeaUpperWeightLimit']}  tooltip={vMapV2['UpperWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit prodNameComponent={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EmptyWeightLimit'} vMap={vMapV2['EmptyWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={170} label={labTransV2['Empty Weight Limit'][this.props.language]['name']} value={pkgwgt} param={vdefByMac[this.props.mac][1][1]['TeaEmptyWeightLimit']}  tooltip={vMapV2['EmptyWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+        
+        <div style={{height:480,overflowY:'scroll'}}>
+          <div style={{display:'inline-block',width:'100%', verticalAlign:'top'}}>  
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'TotalTargetFeedRate'} vMap={vMapV2['TotalTargetFeedRate']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={labTransV2['Total Target Feed Rate'][this.props.language]['name']} value={totalTargetFeedRate} param={vdefByMac[this.props.mac][1][1]['TotalTargetFeedRate']} tooltip={vMapV2['TotalTargetFeedRate']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedRate'} vMap={vMapV2['FeedRate']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Feed Rate'][this.props.language]['name']} value={teaFeedRate} param={vdefByMac[this.props.mac][1][1]['TeaTargetFeedRate']} tooltip={vMapV2['FeedRate']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={false} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedRate'} vMap={vMapV2['FeedRate']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Feed Rate'][this.props.language]['name']} value={flavourFeedRate} param={vdefByMac[this.props.mac][1][1]['FlavourTargetFeedRate']} tooltip={vMapV2['FeedRate']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={false} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'TargetPct'} vMap={vMapV2['TargetPct']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Target Percentage'][this.props.language]['name']} value={teaTargetPct} param={vdefByMac[this.props.mac][1][1]['TeaTargetPct']} tooltip={vMapV2['TargetPct']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'TargetPct'} vMap={vMapV2['TargetPct']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Target Percentage'][this.props.language]['name']} value={flavourTargetPct} param={vdefByMac[this.props.mac][1][1]['FlavourTargetPct']} tooltip={vMapV2['TargetPct']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'InfeedRunTime'} vMap={vMapV2['InfeedRunTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Infeed Run Time'][this.props.language]['name']} value={teaInfeedRunTime} param={vdefByMac[this.props.mac][1][1]['TeaInfeedRunTime']} tooltip={vMapV2['InfeedRunTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'InfeedRunTime'} vMap={vMapV2['InfeedRunTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Infeed Run Time'][this.props.language]['name']} value={flavourInfeedRunTime} param={vdefByMac[this.props.mac][1][1]['FlavourInfeedRunTime']} tooltip={vMapV2['InfeedRunTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'LowerWeightLimit'} vMap={vMapV2['LowerWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Lower Weight Limit'][this.props.language]['name']} value={teaLowerWeightLimit} param={vdefByMac[this.props.mac][1][1]['TeaLowerWeightLimit']}  tooltip={vMapV2['LowerWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'LowerWeightLimit'} vMap={vMapV2['LowerWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Lower Weight Limit'][this.props.language]['name']} value={flavourLowerWeightLimit} param={vdefByMac[this.props.mac][1][1]['FlavourLowerWeightLimit']} tooltip={vMapV2['LowerWeightLimit']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UpperWeightLimit'} vMap={vMapV2['UpperWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Upper Weight Limit'][this.props.language]['name']} value={teaUpperWeightLimit} param={vdefByMac[this.props.mac][1][1]['TeaUpperWeightLimit']}  tooltip={vMapV2['UpperWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UpperWeightLimit'} vMap={vMapV2['UpperWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Upper Weight Limit'][this.props.language]['name']} value={flavourUpperWeightLimit} param={vdefByMac[this.props.mac][1][1]['FlavourUpperWeightLimit']} tooltip={vMapV2['UpperWeightLimit']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EmptyWeightLimit'} vMap={vMapV2['EmptyWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Empty Weight Limit'][this.props.language]['name']} value={teaEmptyWeightLimit} param={vdefByMac[this.props.mac][1][1]['TeaEmptyWeightLimit']}  tooltip={vMapV2['EmptyWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'EmptyWeightLimit'} vMap={vMapV2['EmptyWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Empty Weight Limit'][this.props.language]['name']} value={flavourEmptyWeightLimit} param={vdefByMac[this.props.mac][1][1]['FlavourEmptyWeightLimit']} tooltip={vMapV2['EmptyWeightLimit']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrFactor'} vMap={vMapV2['CorrFactor']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Correction Factor'][this.props.language]['name']} value={teaCorrFactor} param={vdefByMac[this.props.mac][1][1]['TeaCorrFactor']}  tooltip={vMapV2['CorrFactor']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrFactor'} vMap={vMapV2['CorrFactor']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Correction Factor'][this.props.language]['name']} value={flavourCorrFactor} param={vdefByMac[this.props.mac][1][1]['FlavourCorrFactor']} tooltip={vMapV2['CorrFactor']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'DeadZone'} vMap={vMapV2['DeadZone']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['DeadZone'][this.props.language]['name']} value={teaDeadZone} param={vdefByMac[this.props.mac][1][1]['TeaDeadzone']}  tooltip={vMapV2['DeadZone']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'DeadZone'} vMap={vMapV2['DeadZone']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['DeadZone'][this.props.language]['name']} value={flavourDeadZone} param={vdefByMac[this.props.mac][1][1]['FlavourDeadzone']} tooltip={vMapV2['DeadZone']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMax'} vMap={vMapV2['FeedSpeedMax']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMax'][this.props.language]['name']} value={teaFeedSpeedMax} param={vdefByMac[this.props.mac][1][1]['TeaFeedSpeedMax']}  tooltip={vMapV2['FeedSpeedMax']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMax'} vMap={vMapV2['FeedSpeedMax']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMax'][this.props.language]['name']} value={flavourFeedSpeedMax} param={vdefByMac[this.props.mac][1][1]['FlavourFeedSpeedMax']} tooltip={vMapV2['FeedSpeedMax']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMin'} vMap={vMapV2['FeedSpeedMin']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMin'][this.props.language]['name']} value={teaFeedSpeedMin} param={vdefByMac[this.props.mac][1][1]['TeaFeedSpeedMin']}  tooltip={vMapV2['FeedSpeedMin']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMin'} vMap={vMapV2['FeedSpeedMin']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMin'][this.props.language]['name']} value={flavourFeedSpeedMin} param={vdefByMac[this.props.mac][1][1]['FlavourFeedSpeedMin']} tooltip={vMapV2['FeedSpeedMin']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OriginAmplitude'} vMap={vMapV2['OriginAmplitude']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['OriginAmplitude'][this.props.language]['name']} value={teaOriginAmplitude} param={vdefByMac[this.props.mac][1][1]['TeaOriginAmplitude']}  tooltip={vMapV2['OriginAmplitude']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OriginAmplitude'} vMap={vMapV2['OriginAmplitude']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['OriginAmplitude'][this.props.language]['name']} value={flavourOriginAmplitude} param={vdefByMac[this.props.mac][1][1]['FlavourOriginAmplitude']} tooltip={vMapV2['OriginAmplitude']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrInterval'} vMap={vMapV2['CorrInterval']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrInterval'][this.props.language]['name']} value={teaOriginAmplitude} param={vdefByMac[this.props.mac][1][1]['TeaCorrInterval']}  tooltip={vMapV2['CorrInterval']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrInterval'} vMap={vMapV2['CorrInterval']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrInterval'][this.props.language]['name']} value={flavourCorrInterval} param={vdefByMac[this.props.mac][1][1]['FlavourCorrInterval']} tooltip={vMapV2['CorrInterval']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrWait'} vMap={vMapV2['CorrWait']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrWait'][this.props.language]['name']} value={teaCorrWait} param={vdefByMac[this.props.mac][1][1]['TeaCorrWait']}  tooltip={vMapV2['CorrWait']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrWait'} vMap={vMapV2['CorrWait']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrWait'][this.props.language]['name']} value={flavourCorrWait} param={vdefByMac[this.props.mac][1][1]['FlavourCorrWait']} tooltip={vMapV2['CorrWait']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrInhibit'} vMap={vMapV2['CorrInhibit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrInhibit'][this.props.language]['name']} value={teaCorrInhibit} param={vdefByMac[this.props.mac][1][1]['TeaCorrInhibit']}  tooltip={vMapV2['CorrInhibit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrInhibit'} vMap={vMapV2['CorrInhibit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrInhibit'][this.props.language]['name']} value={flavourCorrInhibit} param={vdefByMac[this.props.mac][1][1]['FlavourCorrInhibit']} tooltip={vMapV2['CorrInhibit']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
           </div>
-        </div>
-        <div>
-                
-          
         </div>
         
       </div>)
-      if(this.state.showAdvanceSettings){
-        content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
-        <div style={{height:482}}>  <SettingsPage soc={this.props.soc} toggleGraph={this.toggleGraph} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
-          onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={this.props.level}/>
-        </div>
-          <div>
-        
-        </div>
-        </div>
-      }
     }
     
     var scrollInd = 0
@@ -4561,9 +4793,11 @@ class ProductSettings extends React.Component{
       <div style={{color:'#e1e1e1'}}><div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>{labTransV2['Product'][this.props.language]['name']}</div><div style={{display:'inline-block', fontSize:20,textAlign:'right',width:400}}>{labTransV2['Current Product'][this.props.language]['name']+': '+spstr }</div></div>
       <table style={{borderCollapse:'collapse'}}><tbody>
         <tr>
-          <td style={{verticalAlign:'top', width:830}}>{content}<div style={{width:819, paddingTop:0}}>  
-          <BatchWidget language={this.props.language} acc={(this.props.srec['PassOn'] == 0) || (this.props.level >= this.props.srec['PassAccStartStopBatch'])} sendPacket={this.props.sendPacket} liveWeight={this.props.liveWeight} batchRunning={this.props.drec['BatchRunning']} canStartBelts={this.props.drec['CanStartBelts']} onStart={this.props.startB} onResume={this.props.resume} pause={this.props.pause} start={this.props.start} stopB={this.props.stopB} status={this.props.statusStr} netWeight={FormatWeight(this.props.crec['PackWeight'], this.props.weightUnits)}/>
-          </div></td><td style={{verticalAlign:'top',textAlign:'center'}}>
+          <td style={{verticalAlign:'top', width:830}}>
+          <ScrollArrow language={this.props.language} ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
+          {content}
+          <ScrollArrow language={this.props.language} ref={this.arrowBot} offset={72} width={72} marginTop={-30} active={SA} mode={'bot'} onClick={this.scrollDown}/>
+          </td><td style={{verticalAlign:'top',textAlign:'center'}}>
           <ScrollArrow language={this.props.language} ref={this.arrowTop} offset={72} width={72} marginTop={-40} active={SA} mode={'top'} onClick={this.scrollUp}/>
           <div style={{display:'none', background:'#e1e1e1', padding:2}}>
              <div style={{position:'relative', verticalAlign:'top', marginLeft:180}} onClick={this.toggleSearch}>
@@ -4836,6 +5070,12 @@ class ProdSettingEdit extends React.Component{
     var self = this;
     var ckb;
     var dispVal = this.props.value
+    var flavourValue;
+    var addBackValue;
+    if(typeof this.props.flavourValue!='undefined' && typeof this.props.addBackValue!='undefined'){
+      flavourValue = this.props.flavourValue;
+      addBackValue = this.props.addBackValue;
+    }
     if(this.props.editable){
       if(this.props.param['@labels']){
         //vmapLists
@@ -4947,36 +5187,28 @@ class ProdSettingEdit extends React.Component{
       }
        
     var titleFont = 20;
-    
-    if(this.props.w1/this.props.label.length < 10){
-      titleFont = 20*this.props.w1/(10*this.props.label.length) 
-    }
-    if (this.props.label.length >= 20)
+    if(this.props.label)
     {
-      titleFont = 16;
+      if(this.props.w1/this.props.label.length < 10){
+        titleFont = 20*this.props.w1/(10*this.props.label.length) 
+      }
+      if (this.props.label.length >= 20)
+      {
+        titleFont = 16;
+      }
     }
+    
     return <div>
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:titleFont,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:this.props.w1,textAlign:'center'}}>
-         <ContextMenuTrigger id={this.props.name + '_ctmid'}>
-        {this.props.label}   </ContextMenuTrigger>
+        <div style={{display:'inline-block', verticalAlign:'top', position:'relative',color:txtClr, fontSize:titleFont,zIndex:1, lineHeight:this.props.h1+'px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:this.props.w1,textAlign:'center'}}>
+          <ContextMenuTrigger id={this.props.name + '_ctmid'}>
+            {!this.props.secondaryColumns &&this.props.label}   
+          </ContextMenuTrigger>
+        </div>
+    
       
-      </div>
       <div onClick={this.onClick} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:this.props.w2}}>
           {dispVal}
-      </div>
-      {
-        this.props.prodNameComponent &&
-        <React.Fragment>
-          <div onClick={this.onClick} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:5,textAlign:'center', width:this.props.w2}}>
-            {2}
-          </div>
-          <div onClick={this.onClick} style={{display:'inline-flex',alignItems:'center',overflowWrap:'anywhere', justifyContent:'center', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:this.props.h2/2+'px', borderRadius:15,height:this.props.h2, border:'5px solid #818a90',marginLeft:5,textAlign:'center', width:this.props.w2}}>
-            {3}
-          </div>
-        </React.Fragment>
-      }
-      
-      
+      </div>   
       {ckb}
        <ContextMenu id={this.props.name + '_ctmid'}>
         <MenuItem onClick={this.translatePopup}>
@@ -5002,7 +5234,6 @@ class SettingsPageWSB extends React.Component{
     this.updateLiveWeight = this.updateLiveWeight.bind(this);
     this.toggleGraph = this.toggleGraph.bind(this)
     this.sendPacket = this.sendPacket.bind(this);
-    this.startCalibration = this.startCalibration.bind(this);
     this.closeCalibrationWindow = this.closeCalibrationWindow.bind(this);
     this.sd = React.createRef();
     this.pgm = React.createRef();
@@ -5097,118 +5328,37 @@ class SettingsPageWSB extends React.Component{
   onCalib(){
     this.props.onCal()
   }
-  startCalibration(){
-    if((this.props.sysSettings['PassOn'] == 0)||(this.props.level >= this.props.sysSettings['PassAccCalMenu'])){
-      if((this.props.dynSettings['BatchRunning'] == 0))
-      {
-        this.calibrationModal.current.show();      
-      }else{
-        this.msgm.current.show(labTransV2['Batch needs to be ended'][this.props.language]['name']+ '.');
-      }
-    }else{
-      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name']);
-    }
-  }
   closeCalibrationWindow(){
     this.calibrationModal.current.close(); 
   }
   render(){
     var self = this;
-    var weightUnits = this.props.sysSettings['WeightUnits'];
-    var calAcc = (this.props.sysSettings['PassOn'] == 0) || (this.props.level >= this.props.sysSettings['PassAccCalMenu']);
     var cats = []
     this.props.cvdf[0].params.forEach(function (c,i) {
       if(c.type == 1){
         cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={c} selected={self.state.sel == i} ind={i} onClick={self.setPath}/></div>)
       }
-    })
-    //<CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} />
-    cats.push(<div><CatSelectItem language={self.props.language} branding={self.props.branding} data={{val:{cat:'Calibrate'}}} selected={this.state.cal} ind={-2} onClick={this.onCal} /></div>)
-   
+    })   
     var cob;
     if(this.state.sel == -1){
       cob = this.props.cob2
     }
     
-    var sd =<React.Fragment><div > <SettingsPage soc={this.props.soc} timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst} toggleGraph={this.toggleGraph} openUnused={this.props.openUnused} submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} 
+    var sd =<React.Fragment><div > <SettingsPage level={this.props.level} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} CalibratingTea={this.props.CalibratingTea} CalibratingFlavour={this.props.CalibratingFlavour} CalibratingAddback={this.props.CalibratingAddback} onCal={this.props.onCal} onCalCancel={this.props.onCalCancel} soc={this.props.soc} timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst} toggleGraph={this.toggleGraph} openUnused={this.props.openUnused} submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} 
       int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={this.props.level}/>
       </div>
       <div style={{display:'none'}}> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
     if(this.state.showAccounts){
-      sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap}  setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
+      sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage level={this.props.level} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} CalibratingTea={this.props.CalibratingTea} CalibratingFlavour={this.props.CalibratingFlavour} CalibratingAddback={this.props.CalibratingAddback} onCal={this.props.onCal} onCalCancel={this.props.onCalCancel} soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap}  setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
       <div> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
-    }else if(this.state.cal){
-      var calBut = <div style={{textAlign:'center'}}><CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.startCalibration} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
-          </div>
-          
-    var calStuff = (  <div style={{background:'#e1e1e1', padding:10}}>
-       <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Calibrate'][this.props.language]['name']}</div></h2></span>
-          
-          <div style={{marginTop:5}}>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200}  label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.state.liveWeight, weightUnits)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTime'} vMap={vMapV2['LastCalTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['LastCalTime']['@translations'][this.props.language]['name']} value={this.props.sysSettings['LastCalTimeStr']} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTime']} num={true}/></div>
-          
-          </div>
-          <div style={{marginTop:5}}>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'RawWeight'} vMap={vMapV2['RawWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['RawWeight']['@translations'][this.props.language]['name']} value={this.props.dynSettings['RawWeight']} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['RawWeight']} num={true}/></div>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTare'} vMap={vMapV2['LastCalTare']} language={this.props.language} branding={this.props.branding} h1={40} w1={180} h2={51} w2={200} label={vMapV2['LastCalTare']['@translations'][this.props.language]['name']} value={this.props.sysSettings['LastCalTare'].toFixed(1)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTare']} num={true}/></div>
-          </div>
-          <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.props.sysSettings['CalWeight'], weightUnits)} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/></div>
-          <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+' ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/></div>
-          <div style={{marginTop:5}}><ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'ADCTemp'} vMap={vMapV2['ADCTemp']}  language={this.props.language} branding={this.props.branding} h1={40} w1={300} h2={51} w2={488} label={vMapV2['ADCTemp']['@translations'][this.props.language]['name']} value={this.props.dynSettings['ADCTemp']+' C'} param={vdefByMac[this.props.mac][1][0]['ADCTemp']} editable={false} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['ADCTemp']['@translations'][this.props.language]['description']}/></div>
-          <div style={{marginTop:44, fontSize:24, textAlign:'center'}}></div>
-          {calBut}
-          </div>)
-      if(this.props.sysSettings['CheckWeigherType'] == 1){
-        calStuff =  <div style={{background:'#e1e1e1', padding:10}}>
-        <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{'Calibrate'}</div></h2></span>
-          
-          <div style={{marginTop:5}}>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LiveWeight'} vMap={vMapV2['LiveWeight']} language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200}  label={vMapV2['LiveWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.state.liveWeight, weightUnits)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LiveWeight']} num={true}/></div>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTime'} vMap={vMapV2['LastCalTime']} language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200} label={vMapV2['LastCalTime']['@translations'][this.props.language]['name']} value={this.props.sysSettings['LastCalTimeStr']} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTime']} num={true}/></div>
-          
-          </div>
-          <div style={{marginTop:5}}>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'RawWeight'} vMap={vMapV2['RawWeight']} language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200} label={vMapV2['RawWeight']['@translations'][this.props.language]['name'] + ' 1'} value={this.props.dynSettings['RawWeight']} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['RawWeight']} num={true}/></div>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTare'} vMap={vMapV2['LastCalTare']} language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200} label={vMapV2['LastCalTare']['@translations'][this.props.language]['name'] + ' 1'} value={this.props.sysSettings['LastCalTare'].toFixed(1)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTare']} num={true}/></div>
-          </div>
-          <div style={{marginTop:5}}>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'RawWeight2'} vMap={vMapV2['RawWeight2']} language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200} label={vMapV2['RawWeight2']['@translations'][this.props.language]['name']} value={this.props.dynSettings['RawWeight2']} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['RawWeight2']} num={true}/></div>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTare2'} vMap={vMapV2['LastCalTare']} language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200} label={vMapV2['LastCalTare']['@translations'][this.props.language]['name'] + ' 2'} value={this.props.sysSettings['LastCalTare2'].toFixed(1)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTare2']} num={true}/></div>
-          </div>
-          <div style={{marginTop:5}}>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'RawWeight3'} vMap={vMapV2['RawWeight']} language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200} label={vMapV2['RawWeight3']['@translations'][this.props.language]['name']} value={this.props.dynSettings['RawWeight3']} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['RawWeight3']} num={true}/></div>
-          <div style={{display:'inline-block', width:395}}><ProdSettingEdit getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'LastCalTare3'} vMap={vMapV2['LastCalTare']} language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200} label={vMapV2['LastCalTare']['@translations'][this.props.language]['name'] + ' 3'} value={this.props.sysSettings['LastCalTare3'].toFixed(1)} editable={false} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][2][0]['LastCalTare3']} num={true}/></div>
-          </div>
-          
-          <div style={{marginTop:5}}>
-          <div style={{display:'inline-block', width:395}}>
-          <ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalWeight'} vMap={vMapV2['CalWeight']} language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200} label={vMapV2['CalWeight']['@translations'][this.props.language]['name']} value={FormatWeight(this.props.sysSettings['CalWeight'], weightUnits)} editable={true} onEdit={this.props.sendPacket} param={vdefByMac[this.props.mac][1][0]['CalWeight']} num={true}  submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalWeight']['@translations'][this.props.language]['description']}/>
-          </div>
-          <div style={{display:'inline-block', width:395}}>
-          <ProdSettingEdit acc={calAcc} getMMdep={this.getMMdep} submitChange={this.props.submitChange} trans={true} name={'CalDur'} vMap={vMapV2['CalDur']}  language={this.props.language} branding={this.props.branding} h1={36} w1={180} h2={47} w2={200} label={vMapV2['CalDur']['@translations'][this.props.language]['name']} value={this.props.sysSettings['CalDur']+'ms'} param={vdefByMac[this.props.mac][1][0]['CalDur']} editable={true} onEdit={this.props.sendPacket} num={true} submitTooltip={this.props.submitTooltip} tooltip={vMapV2['CalDur']['@translations'][this.props.language]['description']}/>
-          </div>
-        </div>
-          
-          <div style={{marginTop:0, fontSize:24, textAlign:'center'}}></div>
-          {calBut}
-          </div>
-      }
-
-     sd = <React.Fragment><div style={{display:'none'}}> <SettingsPage soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}   vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref={this.sd} data={this.state.data} 
-          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
-      </div>
-      <div>
-      {calStuff}
-      </div></React.Fragment>
     }else if(this.state.mot){
       sd = <React.Fragment>
-        <div style={{display:'none'}}> <SettingsPage soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+        <div style={{display:'none'}}> <SettingsPage level={this.props.level} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} CalibratingTea={this.props.CalibratingTea} CalibratingFlavour={this.props.CalibratingFlavour} CalibratingAddback={this.props.CalibratingAddback} onCal={this.props.onCal} onCalCancel={this.props.onCalCancel} soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
           onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
       </div>
 
@@ -5225,7 +5375,6 @@ class SettingsPageWSB extends React.Component{
          </div>
       </React.Fragment>
     }
-    var backgroundColor = FORTRESSPURPLE1;
     return <div>
       <table style={{borderCollapse:'collapse', verticalAlign:'top'}}><tbody><tr style={{verticalAlign:'top'}}><td style={{paddingBottom:0,paddingRight:8}}> <div style={{ height:525, background:'#e1e1e1', paddingBottom:10}}>{cats}</div></td><td style={{width:813, height:525,padding:5, background:'#e1e1e1'}}>{sd}</td></tr></tbody></table>
       <MessageModal language={this.props.language} ref={this.msgm}/> 
@@ -5288,13 +5437,8 @@ class SettingsPage extends React.Component{
     this.onRequestClose = this.onRequestClose.bind(this);
     this.goBack = this.goBack.bind(this);
     this.getBack = this.getBack.bind(this);
-    this.arrowTop = React.createRef();
-    this.arrowBot = React.createRef();
     this.submitChange = this.submitChange.bind(this)
     this.submitList = this.submitList.bind(this);
-    this.trnsmdl = React.createRef();
-    this.factoryResetMessage = React.createRef();
-    this.systemSettingsOverrides = React.createRef();
     this.translatePopup = this.translatePopup.bind(this);
     this.curtrnChange = this.curtrnChange.bind(this);
     this.submitTooltip = this.submitTooltip.bind(this);
@@ -5305,10 +5449,37 @@ class SettingsPage extends React.Component{
     this.showSystemSettingOverridesTooltip = this.showSystemSettingOverridesTooltip.bind(this);
     this.factoryReset = this.factoryReset.bind(this);
     this.showFactoryResetMessage = this.showFactoryResetMessage.bind(this);
+    this.onCalibTeaOpen = this.onCalibTeaOpen.bind(this);
+    this.closeCalibrationTeaWindow = this.closeCalibrationTeaWindow.bind(this);
+    this.onCalibFlavourOpen = this.onCalibFlavourOpen.bind(this);
+    this.closeCalibrationFlavourWindow = this.closeCalibrationFlavourWindow.bind(this);
+    this.onCalibAddbackOpen = this.onCalibAddbackOpen.bind(this);
+    this.closeCalibrationAddbackWindow = this.closeCalibrationAddbackWindow.bind(this);
+    this.tare1 = this.tare1.bind(this);
+    this.tare2 = this.tare2.bind(this);
+    this.tare3 = this.tare3.bind(this);
+    this.trnsmdl = React.createRef();
+    this.factoryResetMessage = React.createRef();
+    this.systemSettingsOverrides = React.createRef();
+    this.arrowTop = React.createRef();
+    this.arrowBot = React.createRef();
+    this.calibrationTeaModal = React.createRef();
+    this.calibrationFlavourModal = React.createRef();
+    this.calibrationAddbackModal = React.createRef();
+    this.msgm = React.createRef();
   }
   update(){
     // console.log('update CW Clicked')
     this.props.soc.emit('updateCW')
+  }
+  tare1(){
+    this.sendPacket('tare',1);
+  }
+  tare2(){
+    this.sendPacket('tare',2);
+  }
+  tare3(){
+    this.sendPacket('tare',3);
   }
   goToShortcut(path){
     this.setState({path:path})
@@ -5586,7 +5757,11 @@ class SettingsPage extends React.Component{
     var self = this;
     var vdef = vdefByMac[this.props.mac]
     // console.log([n,v])
-    if(n == 'format_usb'){
+    if(n == 'tare'){
+      var rpc = vdef[0]['@rpc_map']['KAPI_TARE_WEIGHT_TARE']
+      var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],v,0])
+      this.props.soc.emit('rpc',{ip:this.props.dsp, data:packet})
+    }else if(n == 'format_usb'){
 
       this.props.soc.emit('sendReboot')
       var rpc = vdef[0]['@rpc_map']['KAPI_RPC_FORMATUSB']
@@ -5755,7 +5930,6 @@ class SettingsPage extends React.Component{
           }
           flag = true;
         }else{
-          ////console.log('fuck')
           var dep = n['@rpcs']['write'][1][i]
           if(dep.charAt(0) == '%'){
 
@@ -5860,6 +6034,51 @@ class SettingsPage extends React.Component{
   factoryReset(){
     this.props.sendPacket('factoryReset')
   }
+  onCalibTeaOpen(){
+    if((this.props.sysSettings['PassOn'] == 0)||(this.props.level >= this.props.sysSettings['PassAccCalMenu'])){
+      if((this.props.dynSettings['BatchRunning'] == 0))
+      {
+        this.calibrationTeaModal.current.show();     
+      }else{
+        this.msgm.current.show(labTransV2['Batch needs to be ended'][this.props.language]['name']+ '.');
+      }
+    }else{
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name']);
+    }
+  }
+  closeCalibrationTeaWindow(){
+    this.calibrationTeaModal.current.close();  
+  }
+  onCalibFlavourOpen(){
+    if((this.props.sysSettings['PassOn'] == 0)||(this.props.level >= this.props.sysSettings['PassAccCalMenu'])){
+      if((this.props.dynSettings['BatchRunning'] == 0))
+      {
+        this.calibrationFlavourModal.current.show();    
+      }else{
+        this.msgm.current.show(labTransV2['Batch needs to be ended'][this.props.language]['name']+ '.');
+      }
+    }else{
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name']);
+    }
+  }
+  closeCalibrationFlavourWindow(){
+    this.calibrationFlavourModal.current.close();  
+  }
+  onCalibAddbackOpen(){
+    if((this.props.sysSettings['PassOn'] == 0)||(this.props.level >= this.props.sysSettings['PassAccCalMenu'])){
+      if((this.props.dynSettings['BatchRunning'] == 0))
+      {
+        this.calibrationAddbackModal.current.show();     
+      }else{
+        this.msgm.current.show(labTransV2['Batch needs to be ended'][this.props.language]['name']+ '.');
+      }
+    }else{
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name']);
+    }
+  }
+  closeCalibrationAddbackWindow(){
+    this.calibrationAddbackModal.current.close();  
+  }
   render(){
     var self = this;
       var isInt = this.props.int
@@ -5891,8 +6110,6 @@ class SettingsPage extends React.Component{
     var lvl = data.length 
     var handler = this.handleItemclick;
     var lab = vdefMapV2['@labels']['Settings'][this.props.language]['name']
-    var cvdf = this.props.cvdf
-    ////////////console.log(lvl)
     var label =vdefMapV2['@labels']['Settings'][this.props.language]['name']
 
     var nodes;
@@ -5908,11 +6125,9 @@ class SettingsPage extends React.Component{
     }
     var nav =''
     var backBut = ''
-    var packGraph = false;
     var grphBut = ''
     var catList = [ ]
     var lenOffset = 0;
-    var accLevel = 0;
     var len = 0;
     var SA = false;
 
@@ -5932,10 +6147,10 @@ class SettingsPage extends React.Component{
       var cat = data[lvl - 1 ][0].cat;
       if(data[lvl-1][0].packGraph){
      //console.log(5143,data[lvl-1])
-      grphBut = <img src='assets/graph.svg' style={{position:'absolute', width:30, left:780}} onClick={this.props.toggleGraph}/>
+      grphBut = ''//<img src='assets/graph.svg' style={{position:'absolute', width:30, left:780}} onClick={this.props.toggleGraph}/>
     }
       var pathString = ''
-      lab = cat//catMap[cat]['@translations']['english']
+      lab = cat
       if(lvl == 1){
           
           if(this.props.mode == 'config'){
@@ -6105,6 +6320,18 @@ class SettingsPage extends React.Component{
              nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.reboot} lab={labTransV2['Reboot'][self.props.language]['name']}/></div>)
           }else if(par['@data'] == 'update'){
              nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.update} lab={labTransV2['Update'][self.props.language]['name']}/></div>)
+          }else if(par['@data'] == 'calibrate1'){
+            nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.onCalibTeaOpen} lab={labTransV2['Calibrate'][self.props.language]['name']}/></div>)
+          }else if(par['@data'] == 'tare1'){
+            nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.tare1} lab={labTransV2['Tare'][self.props.language]['name']}/></div>)
+          }else if(par['@data'] == 'calibrate2'){
+            nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.onCalibFlavourOpen} lab={labTransV2['Calibrate'][self.props.language]['name']}/></div>)
+          }else if(par['@data'] == 'tare2'){
+            nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.tare2} lab={labTransV2['Tare'][self.props.language]['name']}/></div>)
+          }else if(par['@data'] == 'calibrate3'){
+            nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.onCalibAddbackOpen} lab={labTransV2['Calibrate'][self.props.language]['name']}/></div>)
+          }else if(par['@data'] == 'tare3'){
+            nodes.push(<div style={{display:'inline-block', padding:5}}><CircularButton language={self.props.language} branding={self.props.branding} onClick={self.tare3} lab={labTransV2['Tare'][self.props.language]['name']}/></div>)
           }
 
          
@@ -6143,12 +6370,8 @@ class SettingsPage extends React.Component{
           </div>)
     }
 
-    var bgClr = FORTRESSPURPLE2
         var modBG = FORTRESSPURPLE1
         var txtClr = '#e1e1e1'
-        var plArr = 'assets/play-arrow-fti.svg'
-        var plStop = 'assets/stop-fti.svg'
-        var vfdbutts = ''
         if(this.props.branding == 'SPARC'){
           modBG = SPARCBLUE1
           bgClr = SPARCBLUE2
@@ -6176,7 +6399,6 @@ class SettingsPage extends React.Component{
         titlediv = (<span><h2 style={{textAlign:'center', fontSize:24, marginTop: -5,fontWeight:500, color:titleColor, borderBottom:'1px solid '+titleColor}} >{backBut}<div style={tstl}>{label}{grphBut}</div></h2></span>)
     }
     catList = null;
-    //console.log(4713,SA)
     return(
       <div className='settingsDiv'>
       <ScrollArrow language={this.props.language} ref={this.arrowTop} offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
@@ -6201,7 +6423,17 @@ class SettingsPage extends React.Component{
             {vdefMapV2['@tooltips']['SystemSettingsOverridesTooltip'][this.props.language]}
         </div>
       </Modal>
+      <Modal language={this.props.language} x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationTeaModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:modBG, maxHeight:this.props.CalibratingTea == 8 || this.props.CalibratingTea == 10 || this.props.CalibratingTea == 12 ? 440 : 260, height:this.props.CalibratingTea == 8 || this.props.CalibratingTea == 10 || this.props.CalibratingTea == 12 ? 440 : 260}}>
+        <CalibrationControl calibType={'Tea'} language={this.props.language} resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationTeaWindow} calibState={this.props.CalibratingTea} onCalib={this.props.onCal} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
+      </Modal>
+      <Modal language={this.props.language} x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationFlavourModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:modBG, maxHeight:this.props.CalibratingFlavour == 8 || this.props.CalibratingFlavour == 10 || this.props.CalibratingFlavour == 12 ? 440 : 260, height:this.props.CalibratingFlavour == 8 || this.props.CalibratingFlavour == 10 || this.props.CalibratingFlavour == 12 ? 440 : 260}}>
+        <CalibrationControl calibType={'Flavour'}  language={this.props.language} resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationFlavourWindow} calibState={this.props.CalibratingFlavour} onCalib={this.props.onCal} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
+      </Modal>
+      <Modal language={this.props.language} x={true} calibWindow={'calibWindow'} onCancel={this.props.onCalCancel} ref={this.calibrationAddbackModal} Style={{maxWidth:800, width:'95%'}} innerStyle={{background:modBG, maxHeight:this.props.CalibratingAddback == 8 || this.props.CalibratingAddback == 10 || this.props.CalibratingAddback == 12 ? 440 : 260, height:this.props.CalibratingAddback == 8 || this.props.CalibratingAddback == 10 || this.props.CalibratingAddback == 12 ? 440 : 260}}>
+        <CalibrationControl calibType={'Addback'}  language={this.props.language} resetCalibration={this.props.resetCalibration} closeCalibrationWindow={this.closeCalibrationAddbackWindow} calibState={this.props.CalibratingAddback} onCalib={this.props.onCal} onCalCancel={this.props.onCalCancel} dynSettings={this.props.dynSettings['BatchRunning']} branding={this.props.branding}/>
+      </Modal>
       <AlertModal language={this.props.language} ref={this.factoryResetMessage} accept={this.factoryReset}><div style={{color:"#e1e1e1"}}>{labTransV2['Are you sure?'][this.props.language]['name']}</div></AlertModal>
+      <MessageModal language={this.props.language} ref={this.msgm}/> 
       </div>
     );
   }
@@ -7937,7 +8169,7 @@ class CustomLabel extends React.Component{
       return <div onClick={this.onClick} style={style}>{this.props.children}</div>
   }
 }
-/******************Settings Components end********************/
+/******************Settings and Product Components end********************/
 
 /*****************Batch Control Components*********************/
 class BatchWidget extends React.Component{
@@ -8046,5 +8278,312 @@ class BatchWidget extends React.Component{
     </div>
   }
 }
+/*******************Faults start *********************/
+class FaultDiv extends React.Component{
+  constructor(props) {
+    super(props)
+    this.clearFaults = this.clearFaults.bind(this)
+    this.clearWarnings = this.clearWarnings.bind(this)
+    this.maskFault = this.maskFault.bind(this)
+    this.msgm = React.createRef();
+  }
+  clearFaults () {
+    if(this.props.pAcc){
+      this.props.clearFaults()
+    }else{
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
+    }
+    
+  }
+  clearWarnings(){
+    if(this.props.pAcc){
+    this.props.clearWarnings()
+    }else{
+      this.msgm.current.show(labTransV2['Access Denied'][this.props.language]['name'])
+    }
+  }
+  maskFault (f) {
+    this.props.maskFault(f)
+  }
+  render () {
+    var self = this;
+    var cont;
+    var wcont;
+    var clButton;
+    var wclButton;
+    if((this.props.faults.length == 0) && (this.props.warnings.length == 0)){
+      cont = (<div ><label>{labTransV2['No Faults or Warnings'][this.props.language]['name']}</label></div>)
+    }else{
+            var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}
+    if(this.props.faults.length != 0){
+      clButton =<div> <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Faults'][this.props.language]['name']} onClick={this.clearFaults}/></div>
+      cont = this.props.faults.map(function(f){
+        return <FaultItem language={self.props.language} maskFault={self.maskFault} fault={f}/>
+      })
+    }
+    if(this.props.warnings.length != 0){
+      wclButton =<div> <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={innerStyle} style={{width:210, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:53}} lab={labTransV2['Clear Warnings'][this.props.language]['name']} onClick={this.clearWarnings}/></div>
+      wcont = this.props.warnings.map(function(f){
+        return <FaultItem language={self.props.language} maskFault={self.maskFault} fault={f}/>
+      })
+    }
+       
+      
+    }
+    return(<div style={{backgroundColor:'#e1e1e1', padding:5}}>
+      {cont}
+      {wcont}
+      {clButton}
+      {wclButton}
+      <MessageModal language={this.props.language} ref={this.msgm} />
+    </div>)
+  }
+}
+class FaultItem extends React.Component{
+  constructor(props) {
+    super(props)
+  }
+  render(){
+    var type = this.props.fault
+    if(typeof vMapV2[this.props.fault+'Mask'] != 'undefined'){
+        type = vMapV2[this.props.fault+'Mask']['@translations'][this.props.language]['name'];
+      }
 
-ReactDOM.render(<LandingPage/>,document.getElementById('content'))
+    return <div><label>{labTransV2['Fault type'][this.props.language]['name']+ ": " + type}</label>
+    </div>
+  }
+}
+/******************Stats Components start*******************/
+class StatusElem extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {value:this.props.value, reject:false, msg:'', showMsg:false}
+    this.fModal = React.createRef();
+    this.toggleFault = this.toggleFault.bind(this);
+    this.clearFaults = this.clearFaults.bind(this);
+    this.clearWarnings = this.clearWarnings.bind(this);
+    this.showMsg = this.showMsg.bind(this);
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({value:newProps.value})
+  }
+  showMsg(m){
+    var self = this;
+    this.setState({showMsg:true, msg:m})
+    setTimeout(function () {
+      // body...
+      self.setState({showMsg:false, msg:''})
+    }, 1500)
+
+  }
+  maskFault(){
+
+  }
+  clearFaults(){
+    this.props.clearFaults();
+    this.fModal.current.toggle();
+  }
+  clearWarnings(){
+     this.props.clearWarnings();
+    this.fModal.current.toggle();
+  }
+  toggleFault(f){
+    if(f){
+      this.fModal.current.toggle();
+    }
+  }
+  render(){
+    var outerbg ='#e1e1e1'
+    var innerbg = '#5d5480'
+    var fontColor = '#e1e1e1'
+    var bg2 = 'rgba(150,150,150,0.5)'
+    var modBg = FORTRESSPURPLE1
+    if(this.props.branding == 'SPARC'){
+      outerbg = '#e1e1e1'
+      innerbg = SPARCBLUE2
+      modBg = SPARCBLUE2
+      fontColor = 'black'
+    //  graphColor = SPARCBLUE2;
+      bg2 = 'rgba(150,150,150,0.5)'
+    }
+    if(this.props.branding == 'SPARC'){
+      innerbg = SPARCBLUE2
+      fontColor = 'black'
+    }
+    var innerWidth = Math.min((this.props.width*0.55),160);
+    var innerFont = Math.min(Math.floor(this.props.font/2), 16);
+    var bg = 'transparent';
+  var str = labTransV2['Connecting...'][this.props.language]['name']
+  var fault = false
+
+var prodFont = 25;
+var prodName = ''
+if(typeof this.props.prodName != 'undefined'){
+  prodName = this.props.prodName
+   
+}
+if(prodName.length > 17){
+    prodFont = 22
+  } 
+
+  //if(this.)
+  if(this.props.connected){
+  if(vMapLists){
+    //str = vMapLists['WeightPassed']['english'][this.props.weightPassed]
+    str = 'Good'
+    //if(this.props.weightPassed%2 == 0){
+      outerbg = '#39ff14' //neon green
+    /*}else if(this.props.weightPassed == 9){
+      outerbg = 'royalblue'
+    }else if(this.props.weightPassed%2 == 1){
+      outerbg = '#ff9300'
+    }*/
+  }
+  if(this.state.reject){
+
+    outerbg = 'ff9300'
+  }
+  if(this.props.warnings.length != 0){
+    if(this.props.warnings.length == 1){
+      if(typeof vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask'] != 'undefined'){
+        str = vMapV2[this.props.warnings[0].slice(0,-4)+'FaultMask']['@translations']['english']['name'] + ' '+ labTransV2['Active'][this.props.language]['name']
+      }else{
+        str = this.props.warnings[0] + ' '+ labTransV2['Active'][this.props.language]['name']  
+      }
+      
+    }else{
+      str = this.props.warnings.length + ' '+ labTransV2['Warnings Active'][this.props.language]['name']
+    }
+    fault = true
+    outerbg = 'orange'
+  }
+  if(this.props.faults.length != 0){
+     if(this.props.faults.length == 1){
+      if(typeof vMapV2[this.props.faults[0]+'Mask'] != 'undefined'){
+        str = vMapV2[this.props.faults[0]+'Mask']['@translations']['english']['name'] + ' '+ labTransV2['Fault Active'][this.props.language]['name']
+      }else{
+        str = this.props.faults[0] + ' '+ labTransV2['Active'][this.props.language]['name'] 
+      }
+      
+    }else{
+      str = this.props.faults.length + ' '+ labTransV2['Faults Active'][this.props.language]['name']
+    }
+    fault = true
+    outerbg = 'red'
+  }
+  
+  if(this.state.showMsg){
+    str = this.state.msg;
+  }
+
+  
+
+  }
+    return(<div style={{width:this.props.width,background:outerbg, borderRadius:25, marginTop:-8,marginBottom:5, border:'2px '+outerbg+' solid', float:'right'}}>
+
+      <div style={{display:'grid', gridTemplateColumns:'160px auto'}}></div>
+       <div style={{textAlign:'center', marginTop:-3,lineHeight:39+'px',height:35, fontSize:25, whiteSpace:'nowrap',display:'grid', gridTemplateColumns:'160px auto'}}><div></div><div style={{display:'inline-block', textAlign:'center', marginLeft:-150}} onClick={()=>this.toggleFault(fault)}>{str}</div></div>
+          <Modal language={this.props.language} ref={this.fModal} innerStyle={{background:modBg}}>
+            <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.props.language]['name']}</div></div>
+          <FaultDiv language={this.props.language} branding={this.props.branding} pAcc={this.props.pAcc} maskFault={this.maskFault} clearFaults={this.clearFaults} clearWarnings={this.clearWarnings} faults={this.props.faults} warnings={this.props.warnings}/>
+        </Modal>
+    </div>)
+  }
+}
+/******************Calibration Component*******************/
+class CalibrationControl extends React.Component{
+  constructor(props){
+    super(props)
+    this.endProcess  = this.endProcess.bind(this);
+    this.onCalibStart = this.onCalibStart.bind(this);
+    this.onCalibEnd = this.onCalibEnd.bind(this);
+  }
+  onCalibStart(){
+    if(this.props.calibType == 'Tea'){
+      this.props.onCalib(1);
+    }else if(this.props.calibType == 'Flavour'){
+      this.props.onCalib(2);
+    }else if(this.props.calibType == 'Addback'){
+      this.props.onCalib(3);
+    }
+  }
+  onCalibEnd(){
+    if(this.props.calibType == 'Tea'){
+      this.props.onCalCancel(1);
+    }else if(this.props.calibType == 'Flavour'){
+      this.props.onCalCancel(2);
+    }else if(this.props.calibType == 'Addback'){
+      this.props.onCalCancel(3);
+    }
+  }
+  endProcess(){
+    this.props.resetCalibration();
+    this.props.closeCalibrationWindow();
+  }
+  render(){
+    var calStr = labTransV2['Press calibrate to start calibration'][this.props.language]['name']+'. '+ '\n' +labTransV2['Ensure weight conveyor is empty'][this.props.language]['name']+'.'
+    var calibPicture;
+    if(this.props.calibState == 1){
+      calStr = labTransV2['Taring'][this.props.language]['name']+'..'
+    }else if(this.props.calibState == 2){
+      calStr = labTransV2['Place calibration weight on weight conv..'][this.props.language]['name']+'.'
+    }else if(this.props.calibState == 3){
+      calStr = labTransV2['Calibrating'][this.props.language]['name']+'..'
+    }else if(this.props.calibState == 4){
+      calStr = labTransV2['Remove weight and press Calibrate to tare'][this.props.language]['name']+ '.'
+    }else if(this.props.calibState == 5){
+      calStr = labTransV2['Taring'][this.props.language]['name']+'..'
+    }else if(this.props.calibState == 6){
+      calStr = labTransV2['Calibration Successful'][this.props.language]['name']+'.'
+    }else if(this.props.calibState == 7){
+      calStr = labTransV2['Calibration Failed'][this.props.language]['name']+'.'
+    }else if(this.props.calibState == 8){
+      calStr = labTransV2['Place calibration weight on position 1'][this.props.language]['name']+'.'
+      calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
+    }else if(this.props.calibState == 9){
+      calStr = labTransV2['Calibrating loadcell 1'][this.props.language]['name']+'..'
+    }else if(this.props.calibState == 10){
+      calStr = labTransV2['Place calibration weight on position 2'][this.props.language]['name']+'.'
+      calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
+    }else if(this.props.calibState == 11){
+      calStr = labTransV2['Calibrating loadcell 2'][this.props.language]['name']+'..'
+    }else if(this.props.calibState == 12){
+      calStr = labTransV2['Place calibration weight on position 3'][this.props.language]['name']+'.'
+      calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
+    }else if(this.props.calibState == 13){
+      calStr = labTransV2['Calibrating loadcell 3'][this.props.language]['name']+'..'
+    }else if(this.props.calibState == 14){
+      calStr = labTransV2['Calibration cancelled'][this.props.language]['name']+'.'
+    }
+    var calBut = <div style={{textAlign:'center'}}>
+          <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onCalibStart} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
+          </div>
+          
+    if((this.props.calibState != 0) && (this.props.calibState != 7) && (this.props.dynSettings == 0)&&(this.props.calibState != 6)){
+      calBut = <div style={{textAlign:'center'}}>
+            <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onCalibStart} lab={labTransV2['Calibrate'][this.props.language]['name']}/>
+            <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.onCalibEnd}lab={labTransV2['Cancel'][this.props.language]['name']}/>
+          </div>        
+    }
+    if(this.props.calibState == 6){
+      calBut = <div style={{textAlign:'center'}}>
+          <CircularButton language={this.props.language} branding={this.props.branding} innerStyle={{display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'50px'}} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.endProcess} lab={labTransV2['Confirm'][this.props.language]['name']}/>
+        </div>      
+    }
+    return <div>
+        <div style={{background:'#e1e1e1', padding:5, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 430 : 250}}>
+          <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Calibration Process'][this.props.language]['name']}</div></h2></span>
+
+          <div style={{marginTop: this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 20 : 50}}>
+              <div style={{fontSize:24, textAlign:'center'}}>
+                {calibPicture}
+                {calStr}
+              </div>
+                {calBut}
+          </div>
+        </div>
+    </div>
+  }
+}
+
+ReactDOM.render(<Container/>,document.getElementById('content'))

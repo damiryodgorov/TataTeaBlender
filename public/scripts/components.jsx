@@ -316,20 +316,20 @@ class Modal extends React.Component{
 			if(this.props.systemSettingTooltip){
 				cont = (<ModalCont systemSettingsTooltip={'yes'} x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
 					{im}{this.props.children}
-					<MessageModal ref={this.msgm}/>
+					<MessageModal language={this.props.language} ref={this.msgm}/>
 					</ModalCont>)
 			}
 			else{
 				if(this.props.onCancel){
 					cont = (<ModalCont x={this.props.x} onCancel={this.props.onCancel} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
 						{im}{this.props.children}
-						<MessageModal ref={this.msgm}/>
+						<MessageModal language={this.props.language} ref={this.msgm}/>
 						</ModalCont>)
 				}
 				else{
 					cont = (<ModalCont x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
 						{im}{this.props.children}
-						<MessageModal ref={this.msgm}/>
+						<MessageModal language={this.props.language} ref={this.msgm}/>
 						</ModalCont>)
 				}
 			}
@@ -1214,7 +1214,7 @@ class LockModalC extends React.Component{
 		
 
 				 return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:1000, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Alert'][this.props.language]['name']}</div>
+	  			<div style={{display:'inline-block', width:1000, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{'Alert'}</div>
 	  			<div style={{height:500}}>
 	  			{this.props.children}
 	  			</div>

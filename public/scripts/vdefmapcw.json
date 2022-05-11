@@ -15820,6 +15820,41 @@
         "name": ""
       }
     },
+    "Total Target Feed Rate": {
+      "english": {
+        "name": "Total Target Feed Rate"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
     "No User": {
       "english": {
         "name": "No User"
@@ -16135,6 +16170,41 @@
         "name": ""
       }
     },
+    "Target Percentage": {
+      "english": {
+        "name": "Target Percentage"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
     "Infeed Run Time": {
       "english": {
         "name": "Infeed Run Time"
@@ -16274,6 +16344,286 @@
       "turkish": {
         "name": ""
       }
+    },
+    "Correction Factor": {
+      "english": {
+        "name": "Correction Factor"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "DeadZone": {
+      "english": {
+        "name": "Dead Zone"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "FeedSpeedMax": {
+      "english": {
+        "name": "Feed Speed Max"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "FeedSpeedMin": {
+      "english": {
+        "name": "Feed Speed Min"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "OriginAmplitude": {
+      "english": {
+        "name": "Origin Amplitude"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "CorrInterval": {
+      "english": {
+        "name": "Correction Interval"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "CorrWait": {
+      "english": {
+        "name": "Correction Wait"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "CorrInhibit": {
+      "english": {
+        "name": "Correction Inhibit"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
     }
   },
   "@acc": {
@@ -16346,6 +16696,58 @@
         "english": {
           "name": "Feed Rate",
           "description": "This is the weight of the product without the packaging."
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": " ",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "TargetPct": {
+      "@translations": {
+        "english": {
+          "name": "Tea Target Percentage",
+          "description": ""
         },
         "korean": {
           "name": "",
@@ -18379,6 +18781,318 @@
         },
         "chinese": {
           "name": "Reboot",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "Calibrate1": {
+      "@translations": {
+        "english": {
+          "name": "Calibrate",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "Tare1": {
+      "@translations": {
+        "english": {
+          "name": "Tare",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "Calibrate2": {
+      "@translations": {
+        "english": {
+          "name": "Calibrate",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "Tare2": {
+      "@translations": {
+        "english": {
+          "name": "Tare",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "Calibrate3": {
+      "@translations": {
+        "english": {
+          "name": "Calibrate",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "Tare3": {
+      "@translations": {
+        "english": {
+          "name": "Tare",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
           "description": ""
         }
       },
@@ -22887,6 +23601,318 @@
         "g"
       ]
     },
+    "tea_live_weight": {
+      "@translations": {
+        "english": {
+          "name": " Tea Live Weight",
+          "description": ""
+        },
+        "korean": {
+          "name": "실시간 무게",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "french": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Peso ao Vivo ",
+          "description": ""
+        },
+        "italian": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "german": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "russian": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "polish": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Live Weight",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "flavour_live_weight": {
+      "@translations": {
+        "english": {
+          "name": "Flavour Live Weight",
+          "description": ""
+        },
+        "korean": {
+          "name": "실시간 무게",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "french": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Peso ao Vivo ",
+          "description": ""
+        },
+        "italian": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "german": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "russian": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "polish": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Live Weight",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "addback_live_weight": {
+      "@translations": {
+        "english": {
+          "name": "Addback Live Weight",
+          "description": ""
+        },
+        "korean": {
+          "name": "실시간 무게",
+          "description": ""
+        },
+        "spanish": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "french": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "Peso ao Vivo ",
+          "description": ""
+        },
+        "italian": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "german": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "turkish": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "russian": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "polish": {
+          "name": "Live Weight",
+          "description": ""
+        },
+        "chinese": {
+          "name": "Live Weight",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "LastCalTare0": {
+      "@translations": {
+        "english": {
+          "name": "Last Tare",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "LastCalTare1": {
+      "@translations": {
+        "english": {
+          "name": "Last Tare",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "LastCalTare2": {
+      "@translations": {
+        "english": {
+          "name": "Last Tare",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
     "BeltSpeedTimeForward": {
       "@translations": {
         "english": {
@@ -24790,6 +25816,422 @@
         "english": {
           "name": "Empty Weight Limit",
           "description": "This is the weight of the packaging material"
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "CorrFactor": {
+      "@translations": {
+        "english": {
+          "name": "Correction Factor",
+          "description": "This is the weight of the packaging material"
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "FeedSpeedMax": {
+      "@translations": {
+        "english": {
+          "name": "Feed Speed Max",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "FeedSpeedMin": {
+      "@translations": {
+        "english": {
+          "name": "Feed Speed Min",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "DeadZone": {
+      "@translations": {
+        "english": {
+          "name": "Dead Zone",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "OriginAmplitude": {
+      "@translations": {
+        "english": {
+          "name": "Origin Amplitude",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "CorrInterval": {
+      "@translations": {
+        "english": {
+          "name": "Correction Interval",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "CorrWait": {
+      "@translations": {
+        "english": {
+          "name": "Correction Wait",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Delay"
+      ]
+    },
+    "CorrInhibit": {
+      "@translations": {
+        "english": {
+          "name": "Correction Inhibit",
+          "description": ""
         },
         "korean": {
           "name": "",
@@ -26786,6 +28228,162 @@
         "Alternate Reject Latch"
       ]
     },
+    "Loadcell1Hopper": {
+      "@translations": {
+        "english": {
+          "name": "LoadCell 1 Hopper",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Alternate Reject Latch"
+      ]
+    },
+    "Loadcell2Hopper": {
+      "@translations": {
+        "english": {
+          "name": "LoadCell 2 Hopper",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Alternate Reject Latch"
+      ]
+    },
+    "Loadcell3Hopper": {
+      "@translations": {
+        "english": {
+          "name": "LoadCell 3 Hopper",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Alternate Reject Latch"
+      ]
+    },
     "EyeReject": {
       "@translations": {
         "english": {
@@ -27038,6 +28636,162 @@
         },
         "chinese": {
           "name": "Fault Clear Time",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Fault Clear Time"
+      ]
+    },
+    "SignalFault1Mask": {
+      "@translations": {
+        "english": {
+          "name": "Signal Fault 1",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Fault Clear Time"
+      ]
+    },
+    "SignalFault2Mask": {
+      "@translations": {
+        "english": {
+          "name": "Signal Fault 2",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Fault Clear Time"
+      ]
+    },
+    "SignalFault3Mask": {
+      "@translations": {
+        "english": {
+          "name": "Signal Fault 3",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
           "description": ""
         }
       },
@@ -28772,177 +30526,6 @@
       ],
       "@input": true
     },
-    "@INPUT_TACH2": {
-      "@translations": {
-        "english": {
-          "name": "Tachometer 2",
-          "description": "Encoder signal for motor 2. Must use PL16, PL17, PL18, or PL19 as inputs."
-        },
-        "korean": {
-          "name": "타코미터",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Tacómetro",
-          "description": ""
-        },
-        "french": {
-          "name": "Tachymètre",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Tacômetro 2",
-          "description": "Sinal do encoder para motor 2. Deve usar PL16, PL17, PL18 ou PL19 como entradas."
-        },
-        "italian": {
-          "name": "Tachimetro",
-          "description": ""
-        },
-        "german": {
-          "name": "Impulsgeber",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Tachometer",
-          "description": ""
-        },
-        "russian": {
-          "name": "Tachometer",
-          "description": ""
-        },
-        "polish": {
-          "name": "Tachometer",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Tachometer",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_TACH2",
-        "INPUT_POL_TACH2"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "@INPUT_TACH3": {
-      "@translations": {
-        "english": {
-          "name": "Tachometer 3",
-          "description": "Encoder signal for motor 3. Must use PL16, PL17, PL18, or PL19 as inputs."
-        },
-        "korean": {
-          "name": "타코미터",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Tacómetro",
-          "description": ""
-        },
-        "french": {
-          "name": "Tachymètre",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Tacômetro 3",
-          "description": "Sinal do encoder para motor 3. Deve usar PL16, PL17, PL18 ou PL19 como entradas."
-        },
-        "italian": {
-          "name": "Tachimetro",
-          "description": ""
-        },
-        "german": {
-          "name": "Impulsgeber",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Tachometer",
-          "description": ""
-        },
-        "russian": {
-          "name": "Tachometer",
-          "description": ""
-        },
-        "polish": {
-          "name": "Tachometer",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Tachometer",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_TACH3",
-        "INPUT_POL_TACH3"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "@INPUT_TACH4": {
-      "@translations": {
-        "english": {
-          "name": "Tachometer 4",
-          "description": "Encoder signal for motor 4. Must use PL16, PL17, PL18, or PL19 as inputs."
-        },
-        "korean": {
-          "name": "타코미터",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Tacómetro",
-          "description": ""
-        },
-        "french": {
-          "name": "Tachymètre",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Tacômetro 4",
-          "description": "Sinal do encoder para motor 4. Deve usar PL16, PL17, PL18 ou PL19 como entradas."
-        },
-        "italian": {
-          "name": "Tachimetro",
-          "description": ""
-        },
-        "german": {
-          "name": "Impulsgeber",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Tachometer",
-          "description": ""
-        },
-        "russian": {
-          "name": "Tachometer",
-          "description": ""
-        },
-        "polish": {
-          "name": "Tachometer",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Tachometer",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_TACH4",
-        "INPUT_POL_TACH4"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
     "INPUT_TACH": {
       "@translations": {
         "english": {
@@ -28993,1364 +30576,6 @@
       "children": [
         "INPUT_TACH",
         "INPUT_POL_TACH"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_EYE": {
-      "@translations": {
-        "english": {
-          "name": "Weight Photoeye",
-          "description": "Input source for photo eye before the weigh conveyor. Should be low by default."
-        },
-        "korean": {
-          "name": "포토아이",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Fotocélula",
-          "description": ""
-        },
-        "french": {
-          "name": "Capteur Optique",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Fotocélula de Pesagem",
-          "description": "Fonte de entrada para a fotocélula antes do transportador de pesagem. Deve ser baixo por padrão."
-        },
-        "italian": {
-          "name": "Fotocellula",
-          "description": ""
-        },
-        "german": {
-          "name": "Lichtschranke",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Photo Eye",
-          "description": ""
-        },
-        "russian": {
-          "name": "Photo Eye",
-          "description": ""
-        },
-        "polish": {
-          "name": "Photo Eye",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Photo Eye",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_EYE",
-        "INPUT_POL_EYE"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_EYE": {
-      "@translations": {
-        "english": {
-          "name": "Photo Eye",
-          "description": ""
-        },
-        "korean": {
-          "name": "포토아이",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Fotocélula",
-          "description": ""
-        },
-        "french": {
-          "name": "Capteur Optique",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Fotocélula",
-          "description": ""
-        },
-        "italian": {
-          "name": "Fotocellula",
-          "description": ""
-        },
-        "german": {
-          "name": "Lichtschranke",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Photo Eye",
-          "description": ""
-        },
-        "russian": {
-          "name": "Photo Eye",
-          "description": ""
-        },
-        "polish": {
-          "name": "Photo Eye",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Photo Eye",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_EYE",
-        "INPUT_POL_EYE"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_RC_1": {
-      "@translations": {
-        "english": {
-          "name": "Reject Check 1",
-          "description": ""
-        },
-        "korean": {
-          "name": "리젝트 체크 1",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Comprobación Rechazo 1",
-          "description": ""
-        },
-        "french": {
-          "name": "Confirmation Rejet 1",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Confirmação de Rejeição 1",
-          "description": ""
-        },
-        "italian": {
-          "name": "Verifica Rifiuto 1",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurfbestätigung 1",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Check 1",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Check 1",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Check 1",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Check 1",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_RC_1",
-        "INPUT_POL_RC_1"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_RC_1": {
-      "@translations": {
-        "english": {
-          "name": "Reject Check 1",
-          "description": ""
-        },
-        "korean": {
-          "name": "리젝트 체크 1",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Comprobación Rechazo 1",
-          "description": ""
-        },
-        "french": {
-          "name": "Confirmation Rejet 1",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Confirmação de Rejeição 1",
-          "description": ""
-        },
-        "italian": {
-          "name": "Verifica Rifiuto 1",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurfbestätigung 1",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Check 1",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Check 1",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Check 1",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Check 1",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_RC_1",
-        "INPUT_POL_RC_1"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_RC_2": {
-      "@translations": {
-        "english": {
-          "name": "Reject Check 2",
-          "description": ""
-        },
-        "korean": {
-          "name": "리젝트 체크 2",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Comprobación Rechazo 2",
-          "description": ""
-        },
-        "french": {
-          "name": "Confirmation Rejet 2",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Comfirmação de Rejeição 2",
-          "description": ""
-        },
-        "italian": {
-          "name": "Verifica Rifiuto 2",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurfbestätigung 2",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Check 2",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Check 2",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Check 2",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Check 2",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_RC_2",
-        "INPUT_POL_RC_2"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_RC_2": {
-      "@translations": {
-        "english": {
-          "name": "Reject Check 2",
-          "description": ""
-        },
-        "korean": {
-          "name": "리젝트 체크 2",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Comprobación Rechazo 2",
-          "description": ""
-        },
-        "french": {
-          "name": "Confirmation Rejet 2",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Comfirmação de Rejeição 2",
-          "description": ""
-        },
-        "italian": {
-          "name": "Verifica Rifiuto 2",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurfbestätigung 2",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Check 2",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Check 2",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Check 2",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Check 2",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_RC_2",
-        "INPUT_POL_RC_2"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_REJ_EYE": {
-      "@translations": {
-        "english": {
-          "name": "Exit Photoeye",
-          "description": "Input source for photo eye at exit of checkweigher system. Should be low by default."
-        },
-        "korean": {
-          "name": "리젝트 아이",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Fotocélula de Rechazo",
-          "description": ""
-        },
-        "french": {
-          "name": "Capteur Optique Rejet",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Fotocélula de Rejeição",
-          "description": "Fonte de entrada para o olho fotográfico na saída do sistema de controle de peso. Deve ser baixo por padrão."
-        },
-        "italian": {
-          "name": "Fotocellula di Rifiuto",
-          "description": ""
-        },
-        "german": {
-          "name": "Einlauflichtschranke",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Eye",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Eye",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Eye",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Eye",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_REJ_EYE",
-        "INPUT_POL_REJ_EYE"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_REJ_EYE": {
-      "@translations": {
-        "english": {
-          "name": "Reject Eye",
-          "description": ""
-        },
-        "korean": {
-          "name": "리젝트 아이",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Fotocélula de Rechazo",
-          "description": ""
-        },
-        "french": {
-          "name": "Capteur Optique Rejet",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Fotocélula de Rejeção",
-          "description": ""
-        },
-        "italian": {
-          "name": "Fotocellula di Rifiuto",
-          "description": ""
-        },
-        "german": {
-          "name": "Einlauflichtschranke",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Eye",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Eye",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Eye",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Eye",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_REJ_EYE",
-        "INPUT_POL_REJ_EYE"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "INPUT_AIR_PRES": {
-      "@translations": {
-        "english": {
-          "name": "Air Pressure",
-          "description": ""
-        },
-        "korean": {
-          "name": "공기압",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Presión Aire",
-          "description": ""
-        },
-        "french": {
-          "name": "Pression d'Air",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Pressão do Ar",
-          "description": ""
-        },
-        "italian": {
-          "name": "Pressione Aria",
-          "description": ""
-        },
-        "german": {
-          "name": "Druckluft",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Air Pressure",
-          "description": ""
-        },
-        "russian": {
-          "name": "Air Pressure",
-          "description": ""
-        },
-        "polish": {
-          "name": "Air Pressure",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Air Pressure",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_AIR_PRES",
-        "INPUT_POL_AIR_PRES"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_AIR_PRES": {
-      "@input": true,
-      "@translations": {
-        "english": {
-          "name": "Air Pressure",
-          "description": "Input source for sensor detecting air pressure. Should be high when air is present."
-        },
-        "korean": {
-          "name": "공기압",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Presión Aire",
-          "description": ""
-        },
-        "french": {
-          "name": "Pression d'Air",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Pressão do Ar",
-          "description": "Fonte de entrada para sensor que detecta a pressão do ar. Deve ser alto quando o ar está presente."
-        },
-        "italian": {
-          "name": "Pressione Aria",
-          "description": ""
-        },
-        "german": {
-          "name": "Druckluft",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Air Pressure",
-          "description": ""
-        },
-        "russian": {
-          "name": "Air Pressure",
-          "description": ""
-        },
-        "polish": {
-          "name": "Air Pressure",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Air Pressure",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_AIR_PRES",
-        "INPUT_POL_AIR_PRES"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_REJ_LATCH": {
-      "@translations": {
-        "english": {
-          "name": "Reject Latch Reset",
-          "description": "Input source to clear the reject latch. Should be low by default."
-        },
-        "korean": {
-          "name": "리젝트 래치",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Retención Rechazo",
-          "description": ""
-        },
-        "french": {
-          "name": "Verrou Rejet",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Reset da Trava de Rejeição",
-          "description": "Fonte de entrada para limpar a trava de rejeição. Deve ser baixo por padrão."
-        },
-        "italian": {
-          "name": "Mantenere Rifiuto",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurf Selbsthaltung",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Latch",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Latch",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Latch",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Latch",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_REJ_LATCH",
-        "INPUT_POL_REJ_LATCH"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_REJ_LATCH": {
-      "@translations": {
-        "english": {
-          "name": "Reject Latch",
-          "description": ""
-        },
-        "korean": {
-          "name": "리젝트 래치",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Retención Rechazo",
-          "description": ""
-        },
-        "french": {
-          "name": "Verrou Rejet",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Trava da Rejeção",
-          "description": ""
-        },
-        "italian": {
-          "name": "Mantenere Rifiuto",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurf Selbsthaltung",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Latch",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Latch",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Latch",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Latch",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_REJ_LATCH",
-        "INPUT_POL_REJ_LATCH"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_BIN_FULL": {
-      "@translations": {
-        "english": {
-          "name": "Bin Full",
-          "description": "Input source for sensor to indicate if the reject bin is full. Should be low by default."
-        },
-        "korean": {
-          "name": "보관함 용량초과",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Contenedor Lleno",
-          "description": ""
-        },
-        "french": {
-          "name": "Boîte Pleine",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Caixa Cheia",
-          "description": "Fonte de entrada para o sensor para indicar se o recipiente de rejeição está cheio. Deve ser baixo por padrão."
-        },
-        "italian": {
-          "name": "Contenitore Pieno",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurfbehälter voll",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Bin Full",
-          "description": ""
-        },
-        "russian": {
-          "name": "Bin Full",
-          "description": ""
-        },
-        "polish": {
-          "name": "Bin Full",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Bin Full",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_BIN_FULL",
-        "INPUT_POL_BIN_FULL"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_BIN_FULL": {
-      "@translations": {
-        "english": {
-          "name": "Bin Full",
-          "description": ""
-        },
-        "korean": {
-          "name": "보관함 용량초과",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Contenedor Lleno",
-          "description": ""
-        },
-        "french": {
-          "name": "Boîte Pleine",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Caixa Cheia",
-          "description": ""
-        },
-        "italian": {
-          "name": "Contenitore Pieno",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurfbehälter voll",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Bin Full",
-          "description": ""
-        },
-        "russian": {
-          "name": "Bin Full",
-          "description": ""
-        },
-        "polish": {
-          "name": "Bin Full",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Bin Full",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_BIN_FULL",
-        "INPUT_POL_BIN_FULL"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_REJ_PRESENT": {
-      "@translations": {
-        "english": {
-          "name": "Reject Present",
-          "description": ""
-        },
-        "korean": {
-          "name": "리젝트 유효",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Rechazo Presente",
-          "description": ""
-        },
-        "french": {
-          "name": "Présence Rejet",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Rejeção Presente",
-          "description": ""
-        },
-        "italian": {
-          "name": "Rifiuto Presente",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurf vorhanden",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Present",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Present",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Present",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Present",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_REJ_PRESENT",
-        "INPUT_POL_REJ_PRESENT"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "@INPUT_REJ_POS1": {
-      "@translations": {
-        "english": {
-          "name": "Reject Position 1",
-          "description": "Input source for sensor to indicate if reject device is in home position. Should be high when reject is in home position."
-        },
-        "korean": {
-          "name": "리젝트 컨펌",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Reject Position 1",
-          "description": ""
-        },
-        "french": {
-          "name": "Reject Position 1",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Posição de Rejeito 1",
-          "description": "Fonte de entrada para o sensor para indicar se o dispositivo de rejeição está na posição inicial. Deve ser alto quando a rejeição estiver na posição inicial."
-        },
-        "italian": {
-          "name": "Reject Position 1",
-          "description": ""
-        },
-        "german": {
-          "name": "Reject Position 1",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Position 1",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Position 1",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Position 1",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Position 1",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_REJ_POS1",
-        "INPUT_POL_REJ_POS1"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "@INPUT_REJ_POS2": {
-      "@translations": {
-        "english": {
-          "name": "Reject Position 2",
-          "description": "Input source for sensor to indicate if reject device is in reject position. Should be low when reject is in home position."
-        },
-        "korean": {
-          "name": "리젝트 리턴",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Reject Position 2",
-          "description": ""
-        },
-        "french": {
-          "name": "Reject Position 2",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Posição de Rejeito 2",
-          "description": "Fonte de entrada para o sensor para indicar se o dispositivo de rejeição está na posição de rejeição. Deve ser baixo quando a rejeição estiver na posição inicial."
-        },
-        "italian": {
-          "name": "Reject Position 2",
-          "description": ""
-        },
-        "german": {
-          "name": "Reject Position 2",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Position 2",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Position 2",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Position 2",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Position 2",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_REJ_POS2",
-        "INPUT_POL_REJ_POS2"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "@INPUT_REJ_CONF1": {
-      "@translations": {
-        "english": {
-          "name": "Reject Confirm 1",
-          "description": "Input source to indicate if a pack has been rejected properly into reject bin 1. Should be low by default."
-        },
-        "korean": {
-          "name": "리젝트 리턴",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Reject Confirm 1",
-          "description": ""
-        },
-        "french": {
-          "name": "Reject Confirm 1",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Confirmação de Rejeito 1",
-          "description": "Fonte de entrada para indicar se um pacote foi rejeitado corretamente no compartimento de rejeição 1. Deve ser baixo por padrão."
-        },
-        "italian": {
-          "name": "Reject Confirm 1",
-          "description": ""
-        },
-        "german": {
-          "name": "Reject Confirm 1",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Confirm 1",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Confirm 1",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Confirm 1",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Confirm 1",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_REJ_CONF1",
-        "INPUT_POL_REJ_CONF1"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "@INPUT_REJ_CONF2": {
-      "@translations": {
-        "english": {
-          "name": "Reject Confirm 2",
-          "description": "Input source to indicate if a pack has been rejected properly into reject bin 2. Should be low by default."
-        },
-        "korean": {
-          "name": "리젝트 리턴",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Reject Confirm 2",
-          "description": ""
-        },
-        "french": {
-          "name": "Reject Confirm 2",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Confrimação de Rejeição 2 ",
-          "description": "Fonte de entrada para indicar se um pacote foi rejeitado corretamente no compartimento de rejeição 2. Deve ser baixo por padrão."
-        },
-        "italian": {
-          "name": "Reject Confirm 2",
-          "description": ""
-        },
-        "german": {
-          "name": "Reject Confirm 2",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Confirm 2",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Confirm 2",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Confirm 2",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Confirm 2",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_REJ_CONF2",
-        "INPUT_POL_REJ_CONF2"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_REJ_PRESENT": {
-      "@translations": {
-        "english": {
-          "name": "Reject Present",
-          "description": ""
-        },
-        "korean": {
-          "name": "리젝트 유효",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Rechazo Presente",
-          "description": ""
-        },
-        "french": {
-          "name": "Présence Rejet",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Rejeção Presente",
-          "description": ""
-        },
-        "italian": {
-          "name": "Rifiuto Presente",
-          "description": ""
-        },
-        "german": {
-          "name": "Auswurf vorhanden",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Reject Present",
-          "description": ""
-        },
-        "russian": {
-          "name": "Reject Present",
-          "description": ""
-        },
-        "polish": {
-          "name": "Reject Present",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Reject Present",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_REJ_PRESENT",
-        "INPUT_POL_REJ_PRESENT"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_DOOR1_OPEN": {
-      "@translations": {
-        "english": {
-          "name": "Door 1 Open",
-          "description": "Input source for sensor to indicate if reject bin door 1 is open. Should be low by default."
-        },
-        "korean": {
-          "name": "문 1 열림",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Puerta 1 Abierta",
-          "description": ""
-        },
-        "french": {
-          "name": "Porte 1 Ouverte",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Porta 1 Aberta",
-          "description": "Fonte de entrada para o sensor para indicar se a porta do recipiente de rejeição 1 está aberta. Deve ser baixo por padrão."
-        },
-        "italian": {
-          "name": "Porta 1 Aperta",
-          "description": ""
-        },
-        "german": {
-          "name": "Türe 1 offen",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Door 1 Open",
-          "description": ""
-        },
-        "russian": {
-          "name": "Door 1 Open",
-          "description": ""
-        },
-        "polish": {
-          "name": "Door 1 Open",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Door 1 Open",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_DOOR1_OPEN",
-        "INPUT_POL_DOOR1_OPEN"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_DOOR1_OPEN": {
-      "@translations": {
-        "english": {
-          "name": "Door 1 Open",
-          "description": ""
-        },
-        "korean": {
-          "name": "문 1 열림",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Puerta 1 Abierta",
-          "description": ""
-        },
-        "french": {
-          "name": "Porte 1 Ouverte",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Porta 1 Aberta",
-          "description": ""
-        },
-        "italian": {
-          "name": "Porta 1 Aperta",
-          "description": ""
-        },
-        "german": {
-          "name": "Türe 1 offen",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Door 1 Open",
-          "description": ""
-        },
-        "russian": {
-          "name": "Door 1 Open",
-          "description": ""
-        },
-        "polish": {
-          "name": "Door 1 Open",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Door 1 Open",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_DOOR1_OPEN",
-        "INPUT_POL_DOOR1_OPEN"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_DOOR2_OPEN": {
-      "@translations": {
-        "english": {
-          "name": "Door 2 Open",
-          "description": "Input source for sensor to indicate if reject bin door 2 is open. Should be low by default."
-        },
-        "korean": {
-          "name": "문 2 열림",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Puerta 2 Abierta",
-          "description": ""
-        },
-        "french": {
-          "name": "Porte 2 Ouverte",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Porta 2 Aberta",
-          "description": "Fonte de entrada para o sensor para indicar se a porta do recipiente de rejeição 2 está aberta. Deve ser baixo por padrão."
-        },
-        "italian": {
-          "name": "Porta 2 Aperta",
-          "description": ""
-        },
-        "german": {
-          "name": "Türe 2 offen",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Door 2 Open",
-          "description": ""
-        },
-        "russian": {
-          "name": "Door 2 Open",
-          "description": ""
-        },
-        "polish": {
-          "name": "Door 2 Open",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Door 2 Open",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_DOOR2_OPEN",
-        "INPUT_POL_DOOR2_OPEN"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_DOOR2_OPEN": {
-      "@translations": {
-        "english": {
-          "name": "Door 2 Open",
-          "description": ""
-        },
-        "korean": {
-          "name": "문 2 열림",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Puerta 2 Abierta",
-          "description": ""
-        },
-        "french": {
-          "name": "Porte 2 Ouverte",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Porta 2 Aberta",
-          "description": ""
-        },
-        "italian": {
-          "name": "Porta 2 Aperta",
-          "description": ""
-        },
-        "german": {
-          "name": "Türe 2 offen",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Door 2 Open",
-          "description": ""
-        },
-        "russian": {
-          "name": "Door 2 Open",
-          "description": ""
-        },
-        "polish": {
-          "name": "Door 2 Open",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Door 2 Open",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_DOOR2_OPEN",
-        "INPUT_POL_DOOR2_OPEN"
       ],
       "@labels": [
         "Source",
@@ -30583,911 +30808,6 @@
         "Polarity"
       ]
     },
-    "@INPUT_CIP": {
-      "@translations": {
-        "english": {
-          "name": "CIP",
-          "description": ""
-        },
-        "korean": {
-          "name": "CIP",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Limpieza CIP",
-          "description": ""
-        },
-        "french": {
-          "name": "CIP",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "CIP",
-          "description": ""
-        },
-        "italian": {
-          "name": "Pulizia CIP",
-          "description": ""
-        },
-        "german": {
-          "name": "CIP",
-          "description": ""
-        },
-        "turkish": {
-          "name": "CIP",
-          "description": ""
-        },
-        "russian": {
-          "name": "CIP",
-          "description": ""
-        },
-        "polish": {
-          "name": "CIP",
-          "description": ""
-        },
-        "chinese": {
-          "name": "CIP",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_CIP",
-        "INPUT_POL_CIP"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_CIP": {
-      "@translations": {
-        "english": {
-          "name": "CIP",
-          "description": ""
-        },
-        "korean": {
-          "name": "CIP",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Limpieza CIP",
-          "description": ""
-        },
-        "french": {
-          "name": "CIP",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "CIP",
-          "description": ""
-        },
-        "italian": {
-          "name": "Pulizia CIP",
-          "description": ""
-        },
-        "german": {
-          "name": "CIP",
-          "description": ""
-        },
-        "turkish": {
-          "name": "CIP",
-          "description": ""
-        },
-        "russian": {
-          "name": "CIP",
-          "description": ""
-        },
-        "polish": {
-          "name": "CIP",
-          "description": ""
-        },
-        "chinese": {
-          "name": "CIP",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_CIP",
-        "INPUT_POL_CIP"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_CIP_TEST": {
-      "@translations": {
-        "english": {
-          "name": "CIP Test",
-          "description": ""
-        },
-        "korean": {
-          "name": "CIP 테스트",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Limpieza CIP TEST",
-          "description": ""
-        },
-        "french": {
-          "name": "CIP Teste",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Teste CIP",
-          "description": ""
-        },
-        "italian": {
-          "name": "Pulizia CIP Test",
-          "description": ""
-        },
-        "german": {
-          "name": "CIP Test",
-          "description": ""
-        },
-        "turkish": {
-          "name": "CIP Test",
-          "description": ""
-        },
-        "russian": {
-          "name": "CIP Test",
-          "description": ""
-        },
-        "polish": {
-          "name": "CIP Test",
-          "description": ""
-        },
-        "chinese": {
-          "name": "CIP Test",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_CIP_TEST",
-        "INPUT_POL_CIP_TEST"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_CIP_TEST": {
-      "@translations": {
-        "english": {
-          "name": "CIP Test",
-          "description": ""
-        },
-        "korean": {
-          "name": "CIP 테스트",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Limpieza CIP TEST",
-          "description": ""
-        },
-        "french": {
-          "name": "CIP Teste",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Teste CIP",
-          "description": ""
-        },
-        "italian": {
-          "name": "Pulizia CIP Test",
-          "description": ""
-        },
-        "german": {
-          "name": "CIP Test",
-          "description": ""
-        },
-        "turkish": {
-          "name": "CIP Test",
-          "description": ""
-        },
-        "russian": {
-          "name": "CIP Test",
-          "description": ""
-        },
-        "polish": {
-          "name": "CIP Test",
-          "description": ""
-        },
-        "chinese": {
-          "name": "CIP Test",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_CIP_TEST",
-        "INPUT_POL_CIP_TEST"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_CIP_PLC": {
-      "@translations": {
-        "english": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "korean": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Limpieza CIP PLC",
-          "description": ""
-        },
-        "french": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "italian": {
-          "name": "Pulizia CIP PLC",
-          "description": ""
-        },
-        "german": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "turkish": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "russian": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "polish": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "chinese": {
-          "name": "CIP PLC",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_CIP_PLC",
-        "INPUT_POL_CIP_PLC"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_CIP_PLC": {
-      "@translations": {
-        "english": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "korean": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Limpieza CIP PLC",
-          "description": ""
-        },
-        "french": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "italian": {
-          "name": "Pulizia CIP PLC",
-          "description": ""
-        },
-        "german": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "turkish": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "russian": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "polish": {
-          "name": "CIP PLC",
-          "description": ""
-        },
-        "chinese": {
-          "name": "CIP PLC",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_CIP_PLC",
-        "INPUT_POL_CIP_PLC"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_PHASE_HOLD": {
-      "@translations": {
-        "english": {
-          "name": "Phase Hold",
-          "description": ""
-        },
-        "korean": {
-          "name": "페이즈 유지",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Retención Fase",
-          "description": ""
-        },
-        "french": {
-          "name": "maintien de phase",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Espera de Fase",
-          "description": ""
-        },
-        "italian": {
-          "name": "tenuta di fase",
-          "description": ""
-        },
-        "german": {
-          "name": "Phase halten",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Phase Hold",
-          "description": ""
-        },
-        "russian": {
-          "name": "Phase Hold",
-          "description": ""
-        },
-        "polish": {
-          "name": "Phase Hold",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Phase Hold",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PHASE_HOLD",
-        "INPUT_POL_PHASE_HOLD"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_PHASE_HOLD": {
-      "@translations": {
-        "english": {
-          "name": "Phase Hold",
-          "description": ""
-        },
-        "korean": {
-          "name": "페이즈 유지",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Retención Fase",
-          "description": ""
-        },
-        "french": {
-          "name": "maintien de phase",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Espera de Fase",
-          "description": ""
-        },
-        "italian": {
-          "name": "tenuta di fase",
-          "description": ""
-        },
-        "german": {
-          "name": "Phase halten",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Phase Hold",
-          "description": ""
-        },
-        "russian": {
-          "name": "Phase Hold",
-          "description": ""
-        },
-        "polish": {
-          "name": "Phase Hold",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Phase Hold",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PHASE_HOLD",
-        "INPUT_POL_PHASE_HOLD"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_PROD_SEL1": {
-      "@translations": {
-        "english": {
-          "name": "Product Select 1",
-          "description": ""
-        },
-        "korean": {
-          "name": "품목 선택 1",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Selección Producto 1",
-          "description": ""
-        },
-        "french": {
-          "name": "Sélection Produit 1",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Seleção Produto 1",
-          "description": ""
-        },
-        "italian": {
-          "name": "Selezione Prodotto 1",
-          "description": ""
-        },
-        "german": {
-          "name": "Produkt Eing.1",
-          "description": "Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."
-        },
-        "turkish": {
-          "name": "Product Select 1",
-          "description": ""
-        },
-        "russian": {
-          "name": "Product Select 1",
-          "description": ""
-        },
-        "polish": {
-          "name": "Product Select 1",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Product Select 1",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PROD_SEL1",
-        "INPUT_POL_PROD_SEL1"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_PROD_SEL1": {
-      "@translations": {
-        "english": {
-          "name": "Product Select 1",
-          "description": ""
-        },
-        "korean": {
-          "name": "품목 선택 1",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Selección Producto 1",
-          "description": ""
-        },
-        "french": {
-          "name": "Sélection Produit 1",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Seleção Produto 1",
-          "description": ""
-        },
-        "italian": {
-          "name": "Selezione Prodotto 1",
-          "description": ""
-        },
-        "german": {
-          "name": "Produkt Eing.1",
-          "description": "Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."
-        },
-        "turkish": {
-          "name": "Product Select 1",
-          "description": ""
-        },
-        "russian": {
-          "name": "Product Select 1",
-          "description": ""
-        },
-        "polish": {
-          "name": "Product Select 1",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Product Select 1",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PROD_SEL1",
-        "INPUT_POL_PROD_SEL1"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_PROD_SEL2": {
-      "@translations": {
-        "english": {
-          "name": "Product Select 2",
-          "description": ""
-        },
-        "korean": {
-          "name": "품목 선택 2",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Selección Producto 2",
-          "description": ""
-        },
-        "french": {
-          "name": "Sélection Produit 2",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Seleção Produto 2",
-          "description": ""
-        },
-        "italian": {
-          "name": "Selezione Prodotto 2",
-          "description": ""
-        },
-        "german": {
-          "name": "Produkt Eing.2",
-          "description": "Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."
-        },
-        "turkish": {
-          "name": "Product Select 2",
-          "description": ""
-        },
-        "russian": {
-          "name": "Product Select 2",
-          "description": ""
-        },
-        "polish": {
-          "name": "Product Select 2",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Product Select 2",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PROD_SEL2",
-        "INPUT_POL_PROD_SEL2"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_PROD_SEL2": {
-      "@translations": {
-        "english": {
-          "name": "Product Select 2",
-          "description": ""
-        },
-        "korean": {
-          "name": "품목 선택 2",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Selección Producto 2",
-          "description": ""
-        },
-        "french": {
-          "name": "Sélection Produit 2",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Seleção Produto 2",
-          "description": ""
-        },
-        "italian": {
-          "name": "Selezione Prodotto 2",
-          "description": ""
-        },
-        "german": {
-          "name": "Produkt Eing.2",
-          "description": "Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."
-        },
-        "turkish": {
-          "name": "Product Select 2",
-          "description": ""
-        },
-        "russian": {
-          "name": "Product Select 2",
-          "description": ""
-        },
-        "polish": {
-          "name": "Product Select 2",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Product Select 2",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PROD_SEL2",
-        "INPUT_POL_PROD_SEL2"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_PROD_SEL3": {
-      "@translations": {
-        "english": {
-          "name": "Product Select 3",
-          "description": ""
-        },
-        "korean": {
-          "name": "품목 선택 3",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Selección Producto 3",
-          "description": ""
-        },
-        "french": {
-          "name": "Sélection Produit 3",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Seleção Produto 3",
-          "description": ""
-        },
-        "italian": {
-          "name": "Selezione Prodotto 3",
-          "description": ""
-        },
-        "german": {
-          "name": "Produkt Eing.3",
-          "description": "Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."
-        },
-        "turkish": {
-          "name": "Product Select 3",
-          "description": ""
-        },
-        "russian": {
-          "name": "Product Select 3",
-          "description": ""
-        },
-        "polish": {
-          "name": "Product Select 3",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Product Select 3",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PROD_SEL3",
-        "INPUT_POL_PROD_SEL3"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_PROD_SEL3": {
-      "@translations": {
-        "english": {
-          "name": "Product Select 3",
-          "description": ""
-        },
-        "korean": {
-          "name": "품목 선택 3",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Selección Producto 3",
-          "description": ""
-        },
-        "french": {
-          "name": "Sélection Produit 3",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Seleção Produto 3",
-          "description": ""
-        },
-        "italian": {
-          "name": "Selezione Prodotto 3",
-          "description": ""
-        },
-        "german": {
-          "name": "Produkt Eing.3",
-          "description": "Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."
-        },
-        "turkish": {
-          "name": "Product Select 3",
-          "description": ""
-        },
-        "russian": {
-          "name": "Product Select 3",
-          "description": ""
-        },
-        "polish": {
-          "name": "Product Select 3",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Product Select 3",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PROD_SEL3",
-        "INPUT_POL_PROD_SEL3"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_PROD_SEL4": {
-      "@translations": {
-        "english": {
-          "name": "Product Select 4",
-          "description": ""
-        },
-        "korean": {
-          "name": "품목 선택 4",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Selección Producto 4",
-          "description": ""
-        },
-        "french": {
-          "name": "Sélection Poduit 4",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Seleção Produto 4",
-          "description": ""
-        },
-        "italian": {
-          "name": "Selezione Prodotto 4",
-          "description": ""
-        },
-        "german": {
-          "name": "Produkt Eing. 4",
-          "description": "Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."
-        },
-        "turkish": {
-          "name": "Product Select 4",
-          "description": ""
-        },
-        "russian": {
-          "name": "Product Select 4",
-          "description": ""
-        },
-        "polish": {
-          "name": "Product Select 4",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Product Select 4",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PROD_SEL4",
-        "INPUT_POL_PROD_SEL4"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "@INPUT_PROD_BACKUP": {
-      "@translations": {
-        "english": {
-          "name": "Product Backup",
-          "description": "Input source for sensor indicating product is backed up. Should be low by default."
-        },
-        "korean": {
-          "name": "품목 백업",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Product Backup",
-          "description": ""
-        },
-        "french": {
-          "name": "Product Backup",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Backup do Produto",
-          "description": "A fonte de entrada para o sensor indicando que o produto está em backup. Deve ser baixo por padrão."
-        },
-        "italian": {
-          "name": "Product Backup",
-          "description": ""
-        },
-        "german": {
-          "name": "Product Backup",
-          "description": ""
-        },
-        "turkish": {
-          "name": "Product Backup",
-          "description": ""
-        },
-        "russian": {
-          "name": "Product Backup",
-          "description": ""
-        },
-        "polish": {
-          "name": "Product Backup",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Product Backup",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PROD_BACKUP",
-        "INPUT_POL_PROD_BACKUP"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
     "@INPUT_E_STOP": {
       "@translations": {
         "english": {
@@ -31538,176 +30858,6 @@
       "children": [
         "INPUT_E_STOP",
         "INPUT_POL_E_STOP"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "INPUT_PROD_SEL4": {
-      "@translations": {
-        "english": {
-          "name": "Product Select 4",
-          "description": ""
-        },
-        "korean": {
-          "name": "품목 선택 4",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Selección Producto 4",
-          "description": ""
-        },
-        "french": {
-          "name": "Sélection Poduit 4",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Seleção Produto 4",
-          "description": ""
-        },
-        "italian": {
-          "name": "Selezione Prodotto 4",
-          "description": ""
-        },
-        "german": {
-          "name": "Produkt Eing. 4",
-          "description": "Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."
-        },
-        "turkish": {
-          "name": "Product Select 4",
-          "description": ""
-        },
-        "russian": {
-          "name": "Product Select 4",
-          "description": ""
-        },
-        "polish": {
-          "name": "Product Select 4",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Product Select 4",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_PROD_SEL4",
-        "INPUT_POL_PROD_SEL4"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ]
-    },
-    "@INPUT_TEST": {
-      "@translations": {
-        "english": {
-          "name": "Test",
-          "description": "Link Test button with connection and select polarity."
-        },
-        "korean": {
-          "name": "테스트",
-          "description": ""
-        },
-        "spanish": {
-          "name": "Test",
-          "description": ""
-        },
-        "french": {
-          "name": "Test",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Teste",
-          "description": "Botão Link Test com conexão e seleção de polaridade."
-        },
-        "italian": {
-          "name": "Test",
-          "description": ""
-        },
-        "german": {
-          "name": "Test",
-          "description": "Die Produkt-Eingänge 1-4 können zur Umschaltung zwischen den Produkten verwendetet werden. Hierzu wird der Binärcode auf die Eingänge angewendet."
-        },
-        "turkish": {
-          "name": "Test",
-          "description": ""
-        },
-        "russian": {
-          "name": "Test",
-          "description": ""
-        },
-        "polish": {
-          "name": "Test",
-          "description": ""
-        },
-        "chinese": {
-          "name": "Test",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_TEST",
-        "INPUT_POL_TEST"
-      ],
-      "@labels": [
-        "Source",
-        "Polarity"
-      ],
-      "@input": true
-    },
-    "@INPUT_CRO": {
-      "@translations": {
-        "english": {
-          "name": "CRO",
-          "description": "Input source to indicate if CRO mode is being used. Should be high be default."
-        },
-        "korean": {
-          "name": "CRO",
-          "description": ""
-        },
-        "spanish": {
-          "name": "CRO",
-          "description": ""
-        },
-        "french": {
-          "name": "CRO",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "CRO",
-          "description": "Fonte de entrada para indicar se o modo CRO está sendo usado. Deve ser alto como padrão."
-        },
-        "italian": {
-          "name": "CRO",
-          "description": ""
-        },
-        "german": {
-          "name": "CRO",
-          "description": ""
-        },
-        "turkish": {
-          "name": "CRO",
-          "description": ""
-        },
-        "russian": {
-          "name": "CRO",
-          "description": ""
-        },
-        "polish": {
-          "name": "CRO",
-          "description": ""
-        },
-        "chinese": {
-          "name": "CRO",
-          "description": ""
-        }
-      },
-      "children": [
-        "INPUT_CRO",
-        "INPUT_POL_CRO"
       ],
       "@labels": [
         "Source",
@@ -31886,56 +31036,56 @@
       ],
       "@input": true
     },
-    "@MDFAULT": {
+    "@OUTFEED_READY": {
       "@translations": {
         "english": {
-          "name": "Metal Detector Fault",
-          "description": "Input source used to indicate there is a fault on the metal detector system. Should be low by default."
+          "name": "Outfeed Ready",
+          "description": ""
         },
         "korean": {
-          "name": "Metal Detector Fault",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "Metal Detector Fault",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "Metal Detector Fault",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "Falha no Detector de Metais",
-          "description": "Fonte de entrada usada para indicar que há uma falha no sistema do detector de metais. Deve ser baixo por padrão."
+          "name": "",
+          "description": ""
         },
         "italian": {
-          "name": "Metal Detector Fault",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "Metal Detector Fault",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "Metal Detector Fault",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "Metal Detector Fault",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "Metal Detector Fault",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "Metal Detector Fault",
+          "name": "",
           "description": ""
         }
       },
       "children": [
-        "INPUT_MD_FAULT",
-        "INPUT_POL_MD_FAULT"
+        "INPUT_OUTFEED_READY",
+        "INPUT_POL_OUTFEED_READY"
       ],
       "@labels": [
         "Source",
@@ -31943,56 +31093,227 @@
       ],
       "@input": true
     },
-    "@MD_REJECT": {
+    "@HOPPER_SENSOR_1": {
       "@translations": {
         "english": {
-          "name": "Metal Detector Reject",
-          "description": "Input source used to indicate a pack is a metal reject. Should be low by default."
+          "name": "Hopper Sensor 1",
+          "description": ""
         },
         "korean": {
-          "name": "Metal Detector Reject",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "Metal Detector Reject",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "Metal Detector Reject",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "Rejeição do Detector de Metais",
-          "description": "A fonte de entrada usada para indicar que um pacote é um metal rejeitado. Deve ser baixo por padrão."
+          "name": "",
+          "description": ""
         },
         "italian": {
-          "name": "Metal Detector Reject",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "Metal Detector Reject",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "Metal Detector Reject",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "Metal Detector Reject",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "Metal Detector Reject",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "Metal Detector Reject",
+          "name": "",
           "description": ""
         }
       },
       "children": [
-        "INPUT_MD_REJECT",
-        "INPUT_POL_MD_REJECT"
+        "INPUT_HOPPER_SENSOR_1",
+        "INPUT_POL_HOPPER_SENSOR_1"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@HOPPER_SENSOR_2": {
+      "@translations": {
+        "english": {
+          "name": "Hopper Sensor 2",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [
+        "INPUT_HOPPER_SENSOR_2",
+        "INPUT_POL_HOPPER_SENSOR_2"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@HOPPER_SENSOR_3": {
+      "@translations": {
+        "english": {
+          "name": "Hopper Sensor 3",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [
+        "INPUT_HOPPER_SENSOR_3",
+        "INPUT_POL_HOPPER_SENSOR_3"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@BLEND_HOPPER_FULL": {
+      "@translations": {
+        "english": {
+          "name": "Blend Hopper Full",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [
+        "INPUT_BLEND_HOPPER_FULL",
+        "INPUT_POL_BLEND_HOPPER_FULL"
       ],
       "@labels": [
         "Source",
@@ -38152,6 +37473,162 @@
         "Signal Fault"
       ]
     },
+    "OutfeedFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Outfeed Fault",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "FpgaFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Fpga Fault",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "OutOfRangeFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Out of Range",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
     "Conveyor1FaultMaskOverride": {
       "@translations": {
         "english": {
@@ -42391,6 +41868,59 @@
         "turkish": {
           "name": "Product Name",
           "description": "This is the name of the product. Maximum 20 characters."
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Product Name"
+      ]
+    },
+    "TotalTargetFeedRate": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Total Target Feed Rate",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
         }
       },
       "children": [],
@@ -61304,32 +60834,6 @@
       "polish": "No source selected. Select a source to view explaination",
       "chinese": "No source selected. Select a source to view explaination"
     },
-    "REJ_MAIN": {
-      "english": "This output will be active according to the main reject settings.",
-      "korean": "This output will be active according to the main reject settings.",
-      "spanish": "This output will be active according to the main reject settings.",
-      "french": "This output will be active according to the main reject settings.",
-      "portuguese": "Esta saída estará ativa de acordo com as principais configurações de rejeição.",
-      "italian": "This output will be active according to the main reject settings.",
-      "german": "This output will be active according to the main reject settings.",
-      "turkish": "This output will be active according to the main reject settings.",
-      "russian": "This output will be active according to the main reject settings.",
-      "polish": "This output will be active according to the main reject settings.",
-      "chinese": "This output will be active according to the main reject settings."
-    },
-    "REJ_ALT": {
-      "english": "This output will be active when according to the alternate reject settings.",
-      "korean": "This output will be active when according to the alternate reject settings.",
-      "spanish": "This output will be active when according to the alternate reject settings.",
-      "french": "This output will be active when according to the alternate reject settings.",
-      "portuguese": "Esta saída estará ativa quando estiver de acordo com as configurações alternativas de rejeição.",
-      "italian": "This output will be active when according to the alternate reject settings.",
-      "german": "This output will be active when according to the alternate reject settings.",
-      "turkish": "This output will be active when according to the alternate reject settings.",
-      "russian": "This output will be active when according to the alternate reject settings.",
-      "polish": "This output will be active when according to the alternate reject settings.",
-      "chinese": "This output will be active when according to the alternate reject settings."
-    },
     "FAULT": {
       "english": "This output will be active when there are faults present.",
       "korean": "This output will be active when there are faults present.",
@@ -61395,19 +60899,6 @@
       "polish": "This output signal controls the connected buzzer.",
       "chinese": "This output signal controls the connected buzzer."
     },
-    "DOOR_LOCK": {
-      "english": "This output will be active when there are warnings present.",
-      "korean": "This output will be active when there are warnings present.",
-      "spanish": "This output will be active when there are warnings present.",
-      "french": "This output will be active when there are warnings present.",
-      "portuguese": "Esta saída estará ativa quando houver avisos presentes.",
-      "italian": "This output will be active when there are warnings present.",
-      "german": "This output will be active when there are warnings present.",
-      "turkish": "This output will be active when there are warnings present.",
-      "russian": "This output will be active when there are warnings present.",
-      "polish": "This output will be active when there are warnings present.",
-      "chinese": "This output will be active when there are warnings present."
-    },
     "WARNING": {
       "english": "This output will be active when there are warnings present.",
       "korean": "This output will be active when there are warnings present.",
@@ -61420,32 +60911,6 @@
       "russian": "This output will be active when there are warnings present.",
       "polish": "This output will be active when there are warnings present.",
       "chinese": "This output will be active when there are warnings present."
-    },
-    "FEEDBACK_UP": {
-      "english": "This output will send a signal to the filler according to the feedback settings to increase the fill weight",
-      "korean": "This output will send a signal to the filler according to the feedback settings to increase the fill weight",
-      "spanish": "This output will send a signal to the filler according to the feedback settings to increase the fill weight",
-      "french": "This output will send a signal to the filler according to the feedback settings to increase the fill weight",
-      "portuguese": "Esta saída enviará um sinal para a embaladora de acordo com as configurações de feedback para aumentar o peso da embaladora (controle de tendência)",
-      "italian": "This output will send a signal to the filler according to the feedback settings to increase the fill weight",
-      "german": "This output will send a signal to the filler according to the feedback settings to increase the fill weight",
-      "turkish": "This output will send a signal to the filler according to the feedback settings to increase the fill weight",
-      "russian": "This output will send a signal to the filler according to the feedback settings to increase the fill weight",
-      "polish": "This output will send a signal to the filler according to the feedback settings to increase the fill weight",
-      "chinese": "This output will send a signal to the filler according to the feedback settings to increase the fill weight"
-    },
-    "FEEDBACK_DOWN": {
-      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
-      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
-      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
-      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
-      "portuguese": "Esta saída enviará um sinal para a emabaladora de acordo com as configurações de feedback para diminuir o peso da embaladora (controle de tendência)",
-      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
-      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
-      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
-      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
-      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
-      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
     },
     "BATCH_RUNNING": {
       "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
@@ -61474,6 +60939,84 @@
       "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
     },
     "CAN_START_BELTS": {
+      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "portuguese": "Esta saída enviará um sinal para a emabaladora de acordo com as configurações de feedback para diminuir o peso da embaladora (controle de tendência)",
+      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
+    },
+    "REFILL_TEA": {
+      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "portuguese": "Esta saída enviará um sinal para a emabaladora de acordo com as configurações de feedback para diminuir o peso da embaladora (controle de tendência)",
+      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
+    },
+    "REFILL_FLAVOUR": {
+      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "portuguese": "Esta saída enviará um sinal para a emabaladora de acordo com as configurações de feedback para diminuir o peso da embaladora (controle de tendência)",
+      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
+    },
+    "REFILL_ADDBACK": {
+      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "portuguese": "Esta saída enviará um sinal para a emabaladora de acordo com as configurações de feedback para diminuir o peso da embaladora (controle de tendência)",
+      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
+    },
+    "VACUUM_TEA": {
+      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "portuguese": "Esta saída enviará um sinal para a emabaladora de acordo com as configurações de feedback para diminuir o peso da embaladora (controle de tendência)",
+      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
+    },
+    "VACUUM_FLAVOUR": {
+      "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "french": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "portuguese": "Esta saída enviará um sinal para a emabaladora de acordo com as configurações de feedback para diminuir o peso da embaladora (controle de tendência)",
+      "italian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "german": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "turkish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "russian": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "polish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
+      "chinese": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight"
+    },
+    "VACUUM_ADDBACK": {
       "english": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
       "korean": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
       "spanish": "This output will send a signal to the filler according to the feedback settings to decrease the fill weight",
@@ -64096,75 +63639,6 @@
                           {
                             "type": 1,
                             "val": {
-                              "cat": "Dim",
-                              "params": [
-                                {
-                                  "type": 0,
-                                  "val": "PackTrigMode",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "WeighLength",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "RejDelDist",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "RejDelDist2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 1,
-                                  "val": {
-                                    "cat": "RejectExit",
-                                    "child": 0,
-                                    "params": [
-                                      {
-                                        "type": 0,
-                                        "val": "RejExitDist",
-                                        "acc": 0
-                                      },
-                                      {
-                                        "type": 0,
-                                        "val": "RejExitDistEst",
-                                        "acc": 0
-                                      },
-                                      {
-                                        "type": 0,
-                                        "val": "RejExitWin",
-                                        "acc": 0
-                                      }
-                                    ]
-                                  },
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "EyeDist",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "EyeMinGapDist",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "EyeBlockTime",
-                                  "acc": 0
-                                }
-                              ]
-                            },
-                            "acc": 0
-                          },
-                          {
-                            "type": 1,
-                            "val": {
                               "cat": "RejectChecks",
                               "params": [
                                 {
@@ -64228,6 +63702,30 @@
                           }
                         ]
                       },
+                      "acc": 0
+                    },
+                    {
+                      "val": {
+                        "cat": "Hoppers",
+                        "params": [
+                          {
+                            "type": 0,
+                            "val": "Loadcell1Hopper",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "Loadcell2Hopper",
+                            "acc": 0
+                          },
+                          {
+                            "type": 0,
+                            "val": "Loadcell3Hopper",
+                            "acc": 0
+                          }
+                        ]
+                      },
+                      "type": 1,
                       "acc": 0
                     },
                     {
@@ -64894,81 +64392,6 @@
                     },
                     {
                       "type": 0,
-                      "val": "@INPUT_TACH2",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_TACH3",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_TACH4",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_EYE",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_REJ_POS1",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_REJ_POS2",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_REJ_CONF1",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_REJ_CONF2",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_REJ_EYE",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_AIR_PRES",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_REJ_LATCH",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_BIN_FULL",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_REJ_PRESENT",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_DOOR1_OPEN",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_DOOR2_OPEN",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
                       "val": "@INPUT_CLEAR_FAULTS",
                       "acc": 0
                     },
@@ -64979,62 +64402,7 @@
                     },
                     {
                       "type": 0,
-                      "val": "@INPUT_PHASE_HOLD",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_CIP",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_CIP_TEST",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_CIP_PLC",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_PROD_SEL1",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_PROD_SEL2",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_PROD_SEL3",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_PROD_SEL4",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_TEST",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
                       "val": "@INPUT_E_STOP",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_PROD_BACKUP",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "@INPUT_CRO",
                       "acc": 0
                     },
                     {
@@ -65054,12 +64422,27 @@
                     },
                     {
                       "type": 0,
-                      "val": "@MDFAULT",
+                      "val": "@OUTFEED_READY",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@MD_REJECT",
+                      "val": "@HOPPER_SENSOR_1",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@HOPPER_SENSOR_2",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@HOPPER_SENSOR_3",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@BLEND_HOPPER_FULL",
                       "acc": 0
                     }
                   ]
@@ -65249,152 +64632,12 @@
             "params": [
               {
                 "type": 0,
-                "val": "FaultClearTime",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "RefFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "BalFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
                 "val": "ProdMemFaultMask",
                 "acc": 0
               },
               {
                 "type": 0,
-                "val": "RejPositionFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "RejectConfirmFaultMask",
-                "acc": 0
-              },
-              {
-                "val": {
-                  "child": 0,
-                  "cat": "BeltSpeedFault",
-                  "params": [
-                    {
-                      "type": 0,
-                      "val": "BeltSpeedFaultMask",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "BeltSpeedFaultTime",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "BeltSpeedFaultTolerance",
-                      "acc": 0
-                    }
-                  ]
-                },
-                "type": 1,
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "PeyeBlockFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "RejBinFullFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "AirFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 1,
-                "val": {
-                  "cat": "ExcessRej",
-                  "child": 0,
-                  "params": [
-                    {
-                      "type": 0,
-                      "val": "ExcessRejFaultMask",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "ExcessRejTime",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "ExcessRejects",
-                      "acc": 0
-                    }
-                  ]
-                },
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "BigMetalFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "NetBufferFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "RejMemoryFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "RejectExitFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "TachometerFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "PatternFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "ExitNoPackFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "ExitNewPackFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "InterceptorFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
                 "val": "RtcLowBatFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "RtcTimeFaultMask",
                 "acc": 0
               },
               {
@@ -65409,12 +64652,17 @@
               },
               {
                 "type": 0,
-                "val": "HaloFaultMask",
+                "val": "SignalFault1Mask",
                 "acc": 0
               },
               {
                 "type": 0,
-                "val": "SignalFaultMask",
+                "val": "SignalFault2Mask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "SignalFault3Mask",
                 "acc": 0
               },
               {
@@ -65424,12 +64672,12 @@
               },
               {
                 "type": 0,
-                "val": "ProdBackupFaultMask",
+                "val": "CalibrateFaultMask",
                 "acc": 0
               },
               {
                 "type": 0,
-                "val": "CalibrateFaultMask",
+                "val": "TareFaultMask",
                 "acc": 0
               },
               {
@@ -65439,43 +64687,67 @@
               },
               {
                 "type": 0,
-                "val": "Conveyor2FaultMask",
+                "val": "OutfeedFaultMask",
                 "acc": 0
               },
               {
                 "type": 0,
-                "val": "Conveyor3FaultMask",
+                "val": "FpgaFaultMask",
                 "acc": 0
               },
               {
                 "type": 0,
-                "val": "Conveyor4FaultMask",
+                "val": "OutOfRangeFaultMask",
                 "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "CheckWeightFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "CroFaultMask",
-                "acc": 0
-              },
+              }
+            ]
+          },
+          "acc": 0,
+          "passAcc": "PassAccEditFaults"
+        },
+        {
+          "type": 1,
+          "val": {
+            "cat": "Calibrate",
+            "params": [
               {
                 "val": {
-                  "child": 0,
-                  "cat": "TareFault",
+                  "cat": "Tea",
                   "params": [
                     {
                       "type": 0,
-                      "val": "TareFaultMask",
+                      "val": "tea_live_weight",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "TareFaultTime",
+                      "val": "LastCalTare0",
                       "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "RawWeight",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "CalWeight",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "CalDur",
+                      "acc": 0
+                    },
+                    {
+                      "type": 4,
+                      "val": "Calibrate1",
+                      "acc": 3
+                    },
+                    {
+                      "type": 4,
+                      "val": "Tare1",
+                      "acc": 3
                     }
                   ]
                 },
@@ -65483,43 +64755,91 @@
                 "acc": 0
               },
               {
-                "type": 1,
                 "val": {
-                  "cat": "BinDoorTime",
-                  "child": 0,
+                  "cat": "Flavour",
                   "params": [
                     {
                       "type": 0,
-                      "val": "RejBinDoorFaultMask",
+                      "val": "flavour_live_weight",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "RejBinDoorTime",
+                      "val": "LastCalTare1",
                       "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "RawWeight",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "CalWeight",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "CalDur",
+                      "acc": 0
+                    },
+                    {
+                      "type": 4,
+                      "val": "Calibrate2",
+                      "acc": 3
+                    },
+                    {
+                      "type": 4,
+                      "val": "Tare2",
+                      "acc": 3
                     }
                   ]
                 },
+                "type": 1,
                 "acc": 0
               },
               {
-                "type": 0,
-                "val": "RejSetupFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "Rej2SetupFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "LastCalibrateFaultMask",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "MetalDetectorFaultMask",
+                "val": {
+                  "cat": "Addback",
+                  "params": [
+                    {
+                      "type": 0,
+                      "val": "addback_live_weight",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "LastCalTare2",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "RawWeight",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "CalWeight",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "CalDur",
+                      "acc": 0
+                    },
+                    {
+                      "type": 4,
+                      "val": "Calibrate3",
+                      "acc": 3
+                    },
+                    {
+                      "type": 4,
+                      "val": "Tare3",
+                      "acc": 3
+                    }
+                  ]
+                },
+                "type": 1,
                 "acc": 0
               }
             ]
@@ -66456,6 +65776,66 @@
         "russian": "Reject",
         "polish": "Reject",
         "chinese": "Reject"
+      }
+    },
+    "System/Advanced/Hoppers": {
+      "@translations": {
+        "english": "Hoppers",
+        "korean": "",
+        "spanish": "",
+        "french": "",
+        "portuguese": "Rejeição",
+        "italian": "",
+        "german": "",
+        "turkish": "",
+        "russian": "",
+        "polish": "",
+        "chinese": ""
+      }
+    },
+    "Calibrate/Tea": {
+      "@translations": {
+        "english": "Tea",
+        "korean": "",
+        "spanish": "",
+        "french": "",
+        "portuguese": "",
+        "italian": "",
+        "german": "",
+        "turkish": "",
+        "russian": "",
+        "polish": "",
+        "chinese": ""
+      }
+    },
+    "Calibrate/Flavour": {
+      "@translations": {
+        "english": "Flavour",
+        "korean": "",
+        "spanish": "",
+        "french": "",
+        "portuguese": "",
+        "italian": "",
+        "german": "",
+        "turkish": "",
+        "russian": "",
+        "polish": "",
+        "chinese": ""
+      }
+    },
+    "Calibrate/Addback": {
+      "@translations": {
+        "english": "Addback",
+        "korean": "",
+        "spanish": "",
+        "french": "",
+        "portuguese": "",
+        "italian": "",
+        "german": "",
+        "turkish": "",
+        "russian": "",
+        "polish": "",
+        "chinese": ""
       }
     },
     "System/About": {
@@ -67847,189 +67227,201 @@
     "OutputSrc": {
       "english": [
         "No Source",
-        "Main Reject",
-        "Alternate Reject",
         "Fault",
         "Light-Stack - Red",
         "Light-Stack - Yellow",
         "Light-Stack - Green",
         "Light-Stack - Buzzer",
-        "Door Lock",
         "Warning",
-        "Feedback Up",
-        "Feedback Down",
         "Batch Running",
         "Safety Circuit",
-        "Healthy"
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ],
       "korean": [
-        "none",
-        "reject-main",
-        "reject-alt",
-        "fault",
-        "light-red",
-        "light-yellow",
-        "light-green",
-        "buzzer",
-        "door-lock",
-        "warning",
-        "feedback-up",
-        "feedback-down",
-        "batch-running",
+        "No Source",
+        "Fault",
+        "Light-Stack - Red",
+        "Light-Stack - Yellow",
+        "Light-Stack - Green",
+        "Light-Stack - Buzzer",
+        "Warning",
+        "Batch Running",
         "Safety Circuit",
-        "Can Start Belts"
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ],
       "spanish": [
-        "none",
-        "reject-main",
-        "reject-alt",
-        "fault",
-        "light-red",
-        "light-yellow",
-        "light-green",
-        "buzzer",
-        "door-lock",
-        "warning",
-        "feedback-up",
-        "feedback-down",
-        "batch-running",
+        "No Source",
+        "Fault",
+        "Light-Stack - Red",
+        "Light-Stack - Yellow",
+        "Light-Stack - Green",
+        "Light-Stack - Buzzer",
+        "Warning",
+        "Batch Running",
         "Safety Circuit",
-        "Can Start Belts"
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ],
       "french": [
-        "none",
-        "reject-main",
-        "reject-alt",
-        "fault",
-        "light-red",
-        "light-yellow",
-        "light-green",
-        "buzzer",
-        "door-lock",
-        "warning",
-        "feedback-up",
-        "feedback-down",
-        "batch-running",
+        "No Source",
+        "Fault",
+        "Light-Stack - Red",
+        "Light-Stack - Yellow",
+        "Light-Stack - Green",
+        "Light-Stack - Buzzer",
+        "Warning",
+        "Batch Running",
         "Safety Circuit",
-        "Can Start Belts"
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ],
       "portuguese": [
-        "Nenhuma Fonte",
-        "Rejeição Principal",
-        "Rejeição Alternativa ",
-        "Falha",
-        "Beacon - Vermelho",
-        "Beacon - Amarelo ",
-        "Beacon - Verde",
-        "Beacon - Sonoro",
-        "Fechadura da Porta ",
-        "Aviso",
-        "Feedback Ativo",
-        "Feedback Inativo",
-        "Execução de Lote",
-        "Circuito de Segurança",
-        "Saudável"
+        "No Source",
+        "Fault",
+        "Light-Stack - Red",
+        "Light-Stack - Yellow",
+        "Light-Stack - Green",
+        "Light-Stack - Buzzer",
+        "Warning",
+        "Batch Running",
+        "Safety Circuit",
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ],
       "italian": [
-        "none",
-        "reject-main",
-        "reject-alt",
-        "fault",
-        "light-red",
-        "light-yellow",
-        "light-green",
-        "buzzer",
-        "door-lock",
-        "warning",
-        "feedback-up",
-        "feedback-down",
-        "batch-running",
+        "No Source",
+        "Fault",
+        "Light-Stack - Red",
+        "Light-Stack - Yellow",
+        "Light-Stack - Green",
+        "Light-Stack - Buzzer",
+        "Warning",
+        "Batch Running",
         "Safety Circuit",
-        "Can Start Belts"
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ],
       "german": [
-        "none",
-        "reject-main",
-        "reject-alt",
-        "fault",
-        "light-red",
-        "light-yellow",
-        "light-green",
-        "buzzer",
-        "door-lock",
-        "warning",
-        "feedback-up",
-        "feedback-down",
-        "batch-running",
+        "No Source",
+        "Fault",
+        "Light-Stack - Red",
+        "Light-Stack - Yellow",
+        "Light-Stack - Green",
+        "Light-Stack - Buzzer",
+        "Warning",
+        "Batch Running",
         "Safety Circuit",
-        "Can Start Belts"
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ],
       "polish": [
-        "none",
-        "reject-main",
-        "reject-alt",
-        "fault",
-        "light-red",
-        "light-yellow",
-        "light-green",
-        "buzzer",
-        "door-lock",
-        "warning",
-        "feedback-up",
-        "feedback-down",
-        "batch-running",
+        "No Source",
+        "Fault",
+        "Light-Stack - Red",
+        "Light-Stack - Yellow",
+        "Light-Stack - Green",
+        "Light-Stack - Buzzer",
+        "Warning",
+        "Batch Running",
         "Safety Circuit",
-        "Can Start Belts"
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ],
       "turkish": [
-        "none",
-        "reject-main",
-        "reject-alt",
-        "fault",
-        "light-red",
-        "light-yellow",
-        "light-green",
-        "buzzer",
-        "door-lock",
-        "warning",
-        "feedback-up",
-        "feedback-down",
-        "batch-running",
+        "No Source",
+        "Fault",
+        "Light-Stack - Red",
+        "Light-Stack - Yellow",
+        "Light-Stack - Green",
+        "Light-Stack - Buzzer",
+        "Warning",
+        "Batch Running",
         "Safety Circuit",
-        "Can Start Belts"
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ],
       "russian": [
-        "none",
-        "reject-main",
-        "reject-alt",
-        "fault",
-        "light-red",
-        "light-yellow",
-        "light-green",
-        "buzzer",
-        "door-lock",
-        "warning",
-        "feedback-up",
-        "feedback-down",
-        "batch-running",
+        "No Source",
+        "Fault",
+        "Light-Stack - Red",
+        "Light-Stack - Yellow",
+        "Light-Stack - Green",
+        "Light-Stack - Buzzer",
+        "Warning",
+        "Batch Running",
         "Safety Circuit",
-        "Can Start Belts"
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ],
       "chinese": [
-        "none",
-        "reject-main",
-        "reject-alt",
-        "fault",
-        "light-red",
-        "light-yellow",
-        "light-green",
-        "buzzer",
-        "door-lock",
-        "warning",
-        "feedback-up",
-        "feedback-down",
+        "No Source",
+        "Fault",
+        "Light-Stack - Red",
+        "Light-Stack - Yellow",
+        "Light-Stack - Green",
+        "Light-Stack - Buzzer",
+        "Warning",
+        "Batch Running",
         "Safety Circuit",
-        "Can Start Belts"
+        "Can Start Belts",
+        "Refill Tea",
+        "Refill Flavour",
+        "Refill Addback",
+        "Vacuum Tea",
+        "Vacuum Flavour",
+        "Vacuum Addback"
       ]
     },
     "PasswordLength": {
