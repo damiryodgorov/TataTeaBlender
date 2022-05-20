@@ -10,12 +10,12 @@ import { PopoutWheel } from './popwheel.jsx';
 import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu";
 import { cssTransition, toast, ToastContainer } from 'react-toastify';
 import { AlertModal, AuthfailModal, LockModal, MessageModal, Modal, ProgressModal, ScrollArrow, TrendBar } from './components.jsx';
-import { YAxis, XAxis, HorizontalGridLines, VerticalGridLines, XYPlot, AreaSeries, Crosshair, LineSeries,ChartLabel } from "react-vis";
+import { YAxis, XAxis, HorizontalGridLines, VerticalGridLines, XYPlot, AreaSeries, Crosshair, LineSeries,ChartLabel , Borders} from "react-vis";
 import "react-vis/dist/style.css";
 import ErrorBoundary from './ErrorBoundary.jsx';
 var onClickOutside = require('react-onclickoutside');
 /** Global variable declarations **/
-const DISPLAYVERSION = '2022/04/25'
+const DISPLAYVERSION = '2022/05/18'
 const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const SPARCBLUE2 = '#30A8E2'
@@ -502,7 +502,7 @@ class LandingPage extends React.Component{
                       curModal:'add',detectors:[], mbunits:[],ipToAdd:'',curDet:'',dets:[], curUser:'',tmpUid:'', version:'2018/07/30',pmsg:'',pON:false,percent:0, init:false,
                       detL:{}, macList:[], tmpMB:{name:'NEW', type:'single', banks:[]}, accounts:['operator','engineer','Fortress'],usernames:['ADMIN','','','','','','','','',''], nifip:'', nifnm:'',nifgw:'',scpFileSize:0, scpStatus:false,
                       checkPrecInterval:null,TeaLiveWeight:0.0,FlavourLiveWeight:0.0,AddbackLiveWeight:0.0,liveWeight:0.0,packSamples:{},confirmPressed:0,rejectAlertMessage:'',FlavourGraph:[],AddbackEnabled:0,PrimeStatus:0,PurgeTea:0,
-                      PurgeFlavour:0,PurgeAddback:0,EmptyStatus:0,RefillTea:0,RefillFlavour:0,RefillAddback:0,CalibratingTea:0,CalibratingFlavour:0,CalibratingAddback:0}
+                      PurgeFlavour:0,PurgeAddback:0,EmptyStatus:0,RefillTea:0,RefillFlavour:0,RefillAddback:0,CalibratingTea:0,CalibratingFlavour:0,CalibratingAddback:0,FlowControlTea:0,FlowControlFlavour:0,FlowControlAddback:0}
 
         this.showDisplaySettings = this.showDisplaySettings.bind(this);
         this.onMixtureMenuOpen = this.onMixtureMenuOpen.bind(this);
@@ -993,7 +993,7 @@ class LandingPage extends React.Component{
                 }
               }
             }
-            this.setState({CalibratingTea:e.rec['CalibratingTea'],CalibratingFlavour:e.rec['CalibratingFlavour'],CalibratingAddback:e.rec['CalibratingAddback'],RefillTea:e.rec['RefillTea'],RefillFlavour:e.rec['RefillFlavour'],RefillAddback:e.rec['RefillAddback'],PurgeTea:e.rec['PurgeTea'],PurgeFlavour:e.rec['PurgeFlavour'],PurgeAddback:e.rec['PurgeAddback'],EmptyStatus:e.rec['EmptyStatus'],PrimeStatus:e.rec['PrimeStatus'],AddbackEnabled:e.rec['AddbackEnabled'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
+            this.setState({CalibratingTea:e.rec['CalibratingTea'],CalibratingFlavour:e.rec['CalibratingFlavour'],CalibratingAddback:e.rec['CalibratingAddback'],FlowControlTea:e.rec['FlowControlTea'], FlowControlFlavour:e.rec['FlowControlFlavour'],FlowControlAddback:e.rec['FlowControlAddback'],RefillTea:e.rec['RefillTea'],RefillFlavour:e.rec['RefillFlavour'],RefillAddback:e.rec['RefillAddback'],PurgeTea:e.rec['PurgeTea'],PurgeFlavour:e.rec['PurgeFlavour'],PurgeAddback:e.rec['PurgeAddback'],EmptyStatus:e.rec['EmptyStatus'],PrimeStatus:e.rec['PrimeStatus'],AddbackEnabled:e.rec['AddbackEnabled'],faultArray:faultArray,start:(e.rec['BatchRunning'] != 1),pcob:pcob,cob:cob, stop:(e.rec['BatchRunning'] != 0), pause:(e.rec['BatchRunning'] == 1),warningArray:warningArray,updateCount:(this.state.updateCount+1)%4, noupdate:noupdate, live:true})
             
           }else if(e.type == 3){
            // console.log("e 3", e);
@@ -1355,7 +1355,6 @@ class LandingPage extends React.Component{
     }
     calWeightCancelSend(value){
       if(this.state.connected){
-        console.log("Cancel value is ", value);
         var rpc = vdefByMac[this.state.curDet.mac][0]['@rpc_map']['KAPI_CAL_WEIGHT_CANCEL']
         var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],value,0])
         //var packet = dsp_rpc_paylod_for(rpc[0],rpc[1]);
@@ -1395,8 +1394,8 @@ class LandingPage extends React.Component{
       //this.batchStartModal.current.toggle();
     }
     /**Function used to Enable Addback**/
-    onEnableAddback(){
-      this.sendPacket('EnableAddBack');
+    onEnableAddback(value){
+      this.sendPacket('EnableAddBack',value);
     }
     /**Function used to enable the Empty**/
     onEmptyEnable(){
@@ -1883,20 +1882,26 @@ class LandingPage extends React.Component{
         var packet = dsp_rpc_paylod_for(rpc[0],pkt);
         socket.emit('rpc',{ip:destinationIp, data:packet}) 
         }else if(n=='EnableAddBack'){
-          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_TOGGLEADDBACK']
-          var pkt = rpc[1].map(function (r) {
-            if(!isNaN(r)){
-              return r
-            }else{
-              if(isNaN(v)){
-                return 0
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_TOGGLEADDBACK'];
+          var packet;
+          if(v!=0)
+          {
+            packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],v,0]) 
+          }else{
+            var pkt = rpc[1].map(function (r) {
+              if(!isNaN(r)){
+                return r
               }else{
-                return parseInt(v)
+                if(isNaN(v)){
+                  return 0
+                }else{
+                  return parseInt(v)
+                }
               }
-            }
-        })
-        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
-        socket.emit('rpc',{ip:destinationIp, data:packet}) 
+            })
+            packet = dsp_rpc_paylod_for(rpc[0],pkt);
+          }
+          socket.emit('rpc',{ip:destinationIp, data:packet})
         }else if(n=='EnablePrime'){
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PRIMETOGGLE']
           var pkt = rpc[1].map(function (r) {
@@ -1931,7 +1936,22 @@ class LandingPage extends React.Component{
           var rpc = vdef[0]['@rpc_map']['KAPI_RPC_PURGETOGGLE']
           var packet = dsp_rpc_paylod_for(rpc[0],[rpc[1][0],v,0])
           socket.emit('rpc',{ip:destinationIp, data:packet})
-        } 
+        }else if(n=='ClearStatistics'){
+          var rpc = vdef[0]['@rpc_map']['KAPI_RPC_CLEARSTATISTICS']
+          var pkt = rpc[1].map(function (r) {
+            if(!isNaN(r)){
+              return r
+            }else{
+              if(isNaN(v)){
+                return 0
+              }else{
+                return parseInt(v)
+              }
+            }
+        })
+        var packet = dsp_rpc_paylod_for(rpc[0],pkt);
+        socket.emit('rpc',{ip:destinationIp, data:packet}) 
+        }
       }else{
         // console.log('here')
         if(n['@rpcs']['toggle']){
@@ -2264,9 +2284,9 @@ class LandingPage extends React.Component{
                         <tbody>
                             <tr style={{verticalAlign:'top'}}>
                                 <td>
-                                    <TeaAndFlavour RefillTea={this.state.RefillTea} RefillFlavour={this.state.RefillFlavour} productRecord={this.state.prec} systemRecord={this.state.srec} liveRecord={this.state.rec} liveWeight={this.state.liveWeight} TeaLiveWeight={this.state.TeaLiveWeight} FlavourLiveWeight={this.state.FlavourLiveWeight}/>
+                                    <TeaAndFlavour FlowControlTea={this.state.FlowControlTea} FlowControlFlavour={this.state.FlowControlFlavour} FlowControlAddback={this.state.FlowControlAddback} RefillTea={this.state.RefillTea} RefillFlavour={this.state.RefillFlavour} productRecord={this.state.prec} systemRecord={this.state.srec} liveRecord={this.state.rec} liveWeight={this.state.liveWeight} TeaLiveWeight={this.state.TeaLiveWeight} FlavourLiveWeight={this.state.FlavourLiveWeight}/>
                                     <AddBack RefillAddback={this.state.RefillAddback} productRecord={this.state.prec} systemRecord={this.state.srec} liveRecord={this.state.rec} liveWeight={this.state.liveWeight} AddbackLiveWeight={this.state.AddbackLiveWeight}/>
-                                    <LineGraph targetPercentage={this.state.prec['FlavourTargetPct']} FlavourGraph={this.state.FlavourGraph}/>
+                                    <LineGraph flavourCorrectionInterval={this.state.prec['FlavourCorrInterval']} flavourGraphDivisor={this.state.prec['FlavourGraphDivisor']} targetPercentage={this.state.prec['FlavourTargetPct']} FlavourGraph={this.state.FlavourGraph}/>
                                     {startButton}{stop}
                                     {silenceAlarmButton}
                                     {statisticsButton}
@@ -2310,8 +2330,8 @@ class LandingPage extends React.Component{
                         <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.state.language]['name']}</div></div>
                       <FaultDiv language={this.state.language} branding={this.state.branding} pAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccClrFaultWarn'])} clearWarnings={this.clearWarnings} clearFaults={this.clearFaults} faults={this.state.faultArray} warnings={this.state.warningArray}/>
                     </Modal>
-                    <Modal x={true} ref={this.statisticsModal} Style={{maxWidth:1200, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPrimeClose}>
-                        <h1 style={{color:'white'}}>Statistics Menu</h1>
+                    <Modal x={true} ref={this.statisticsModal} Style={{maxWidth:1210, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPrimeClose}>
+                        <Statistics prodName={this.state.prec['ProdName']} productRecords={this.state.prec} systemRecords={this.state.rec} sendPacket={this.sendPacket}/>
                     </Modal>
                     <AlertModal language={this.state.language} ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][this.state.language]['name']}
                     </div></AlertModal>
@@ -2390,10 +2410,10 @@ class TeaAndFlavour extends React.Component{
                         <tr>
                             <td></td>
                             <td>
-                              <span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:this.props.RefillTea ? 'green':'#5d5480', color:'white', padding:5}}>Refilling</span>
+                              <span style={{backgroundColor:this.props.FlowControlTea ? 'green':'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:this.props.RefillTea ? 'green':'#5d5480', color:'white', padding:5}}>Refilling</span>
                             </td>
                             <td>
-                              <span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:this.props.RefillFlavour ? 'green':'#5d5480', color:'white', padding:5}}>Refilling</span>
+                              <span style={{backgroundColor:this.props.FlowControlFlavour ? 'green':'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:this.props.RefillFlavour ? 'green':'#5d5480', color:'white', padding:5}}>Refilling</span>
                             </td>
                         </tr>
                     </tbody>
@@ -2429,7 +2449,7 @@ class AddBack extends React.Component{
           <tr style={{fontWeight:'bold'}}>{addBackActualFeedRate}/min</tr>
           <tr style={{fontWeight:'bold'}}>{addBackFeedSpeed} %</tr>
           <tr>
-            <td><span style={{backgroundColor:'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:this.props.RefillAddback ? 'green':'#5d5480', color:'white', padding:5}}>Refilling</span></td>
+            <td><span style={{backgroundColor:this.props.FlowControlAddback ? 'green':'#5d5480', color:'white', padding:5}}>Flow Control</span> <span style={{backgroundColor:this.props.RefillAddback ? 'green':'#5d5480', color:'white', padding:5}}>Refilling</span></td>
           </tr>
         </table>
       </div>
@@ -2444,45 +2464,62 @@ class LineGraph extends React.Component{
       var topLineData = new Array(); 
       var bottomLineData = new Array();
       var middleLineData = new Array();
-
+      var xAxisRange = Number((this.props.flavourCorrectionInterval * this.props.flavourGraphDivisor * 250) / 60).toFixed(0);
       data = this.props.FlavourGraph.map(item=>Number(item/100).toFixed(2));
-
-      for(var i = 0; i < 250; i++){
+      //console.log("data is ", data);
+      //Number((i*this.props.flavourCorrectionInterval * this.props.flavourGraphDivisor)/60).toFixed(0)
+      for(var i = 0; i <= 250; i++){
 
         let objData = {x:i,y:this.props.targetPercentage}
         let objDataTopRedLine = {x:i,y:this.props.targetPercentage+2}
         let objDataBottomRedLine = {x:i,y:this.props.targetPercentage-2}
-        let objFlavourGraph = {x:i,y:data[i]}
+        let objFlavourGraph = {x:i,y:Number(data[i])}
 
         middleLineData.push(objData);
         topLineData.push(objDataTopRedLine);
         bottomLineData.push(objDataBottomRedLine);
         flavourGraphValues.push(objFlavourGraph);
-      }
-      
-      
+      }      
         return(
             <div className='lineGraphSection'>
-              <XYPlot height={280} width= {980}>
+              <XYPlot height={280} width= {980}  yDomain={[0, this.props.targetPercentage+8]} xDomain={[250, 0]}>
                 <XAxis style={{ line: {stroke: 'black'}}}/>
-                <YAxis style={{ line: {stroke: 'black'}}}/>
+                <YAxis style={{ line: {stroke: 'black'}}} tickFormat={v => `${v}%`}/>
                 <LineSeries data={topLineData} color="red"/>
                 <LineSeries data={middleLineData} color="green"/>
                 <LineSeries data={bottomLineData} color="red"/>
-                <LineSeries data={flavourGraphValues} curve={'curveMonotoneX'} color="black" />
+                <LineSeries data={flavourGraphValues} curve={'curveMonotoneX'} color="black"/>       
               </XYPlot>
             </div>
         )
     }
 }
 class SideButtonsMenu extends React.Component{
-
-    render(){
+  constructor(props){
+    super(props)  
+    this.ed = React.createRef();
+    this.msgm = React.createRef();
+    this.onClick = this.onClick.bind(this);
+    this.onInput = this.onInput.bind(this);
+  }
+  onClick(){
+    if(this.props.AddbackEnabled == 1)
+    {
+      this.props.onEnableAddback(0);
+    }else{
+      this.ed.current.toggle();
+    }
+  }
+  onInput(v){
+    this.props.onEnableAddback(v);
+  }
+  render(){
       var addBackBtnBranding='TATA';
       var emptyBtnBranding='TATA';
       var purgeABtnBranding='TATA';
       var purgeBBtnBranding='TATA';
       var purgeCBtnBranding='TATA';
+      var ckb;
       if(this.props.AddbackEnabled==1){
         addBackBtnBranding = '';
       }
@@ -2498,15 +2535,17 @@ class SideButtonsMenu extends React.Component{
       if(this.props.PurgeAddback==1){
         purgeCBtnBranding = '';
       }
+      ckb = <CustomKeyboard branding={'FORTRESS'} sendAlert={msg => this.msgm.current.show(msg)}  ref={this.ed} language={'english'} num={true} onChange={this.onInput} value={''} label={'Addback value'} min={[true,1]} max={[true,100]}/>
       return(
           <div className='sideButtonsSection'>
-              <CircularButton language={'english'} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25, fontWeight:'bold' , backgroundColor:this.props.PrimeStatus? 'green':'#5d5480'}} lab={'Prime'} onClick={this.props.onPrimeEnable}/> 
-              <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Batch Start'} onClick={this.props.onBatchStartMenuMenuOpen}/>  
-              <CircularButton language={'english'} branding={addBackBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Enable Addback'} onClick={this.props.onEnableAddback}/> 
-              <CircularButton language={'english'} branding={emptyBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Empty'} onClick={this.props.onEmptyEnable}/> 
-              <CircularButton language={'english'} branding={purgeABtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Purge A'} onClick={this.props.onPurgeAEnable}/> 
-              <CircularButton language={'english'} branding={purgeBBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Purge B'} onClick={this.props.onPurgeBEnable}/> 
-              <CircularButton language={'english'} branding={purgeCBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:10,marginLeft:10, marginRight:5, borderWidth:1,height:55, borderRadius:25}} lab={'Purge C'} onClick={this.props.onPurgeCEnable}/> 
+              {ckb}
+              <CircularButton language={'english'} innerStyle={innerStyle} style={{width:220, display:'inline-block',marginTop:20,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25, fontWeight:'bold' , backgroundColor:this.props.PrimeStatus? 'green':'#5d5480'}} lab={'Prime'} onClick={this.props.onPrimeEnable}/> 
+              <CircularButton language={'english'} branding={addBackBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:18,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Enable Addback'} onClick={this.onClick}/> 
+              <CircularButton language={'english'} branding={emptyBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:18,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Empty'} onClick={this.props.onEmptyEnable}/> 
+              <CircularButton language={'english'} branding={purgeABtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:18,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Purge A'} onClick={this.props.onPurgeAEnable}/> 
+              <CircularButton language={'english'} branding={purgeBBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:18,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Purge B'} onClick={this.props.onPurgeBEnable}/> 
+              <CircularButton language={'english'} branding={purgeCBtnBranding} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:18,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Purge C'} onClick={this.props.onPurgeCEnable}/> 
+              <MessageModal language={'english'} ref={this.msgm}/>
           </div>
       )
     }
@@ -4579,31 +4618,21 @@ class ProductSettings extends React.Component{
       var factor = 1;
       var teaFeedRate = '';
       var flavourFeedRate = '';
-      var addBackFeedRate = '';
       var teaInfeedRunTime = '';
       var flavourInfeedRunTime = '';
-      var addBackInfeedRunTime = '';
       var teaLowerWeightLimit = '';
       var flavourLowerWeightLimit = '';
-      var addBackLowerWeightLimit = '';
       var teaUpperWeightLimit = '';
       var flavourUpperWeightLimit = '';
-      var addBackUpperWeightLimit = '';
       var teaEmptyWeightLimit = '';
       var flavourEmptyWeightLimit = '';
-      var addBackEmptyWeightLimit = '';
       var totalTargetFeedRate = '';
       var teaTargetPct = '';
       var flavourTargetPct = '';
-      var addBackPct = '';
       var teaCorrFactor = '';
       var flavourCorrFactor = '';
       var teaDeadZone = '';
       var flavourDeadZone = '';
-      var teaFeedSpeedMax = '';
-      var flavourFeedSpeedMax = '';
-      var teaFeedSpeedMin = '';
-      var flavourFeedSpeedMin = '';
       var teaOriginAmplitude = '';
       var flavourOriginAmplitude = '';
       var teaCorrInterval = '';
@@ -4612,35 +4641,41 @@ class ProductSettings extends React.Component{
       var flavourCorrWait = '';
       var teaCorrInhibit = '';
       var flavourCorrInhibit = '';
+      var teaAirblastRunTime = '';
+      var flavourAirblastRunTime = '';
+      var teaAirblastDelayTime = '';
+      var flavourAirblastDelayTime = '';
+      var flavourGraphDivisor = '';
+      var teaFeedSpeedStart = '';
+      var flavourFeedSpeedStart = '';
+      var teaFeedSpeedMax = '';
+      var flavourFeedSpeedMax = '';
+      var teaFeedSpeedMin = '';
+      var flavourFeedSpeedMin = '';
+      var teaFeedSpeedPurge = '';
+      var flavourFeedSpeedPurge = '';
 
       if(typeof curProd != 'undefined'){
         totalTargetFeedRate = FormatWeight(curProd['TotalTargetFeedRate'],weightUnits)+'/min';
-        teaTargetPct = Number(curProd['TeaTargetPct']).toFixed(1)+' %';
-        flavourTargetPct = Number(curProd['FlavourTargetPct']).toFixed(1)+' %';
-        addBackPct = Number(curProd['AddbackTargetPct']).toFixed(1)+' %';
+        flavourGraphDivisor = curProd['FlavourGraphDivisor'];
+        teaTargetPct = Number(curProd['TeaTargetPct']).toFixed(2)+' %';
+        flavourTargetPct = Number(curProd['FlavourTargetPct']).toFixed(2)+' %';
+        teaFeedSpeedStart = Number(curProd['TeaFeedSpeedStart']).toFixed(1)+' %';
+        flavourFeedSpeedStart = Number(curProd['FlavourFeedSpeedStart']).toFixed(1)+' %';
         teaFeedRate = FormatWeight(curProd['TeaTargetFeedRate'], weightUnits)+'/min';
         flavourFeedRate = FormatWeight(curProd['FlavourTargetFeedRate'], weightUnits)+'/min';
-        addBackFeedRate = FormatWeight(curProd['AddbackTargetFeedRate'], weightUnits)+'/min';
-        teaInfeedRunTime = Number(curProd['TeaInfeedRunTime']).toFixed(1);
-        flavourInfeedRunTime = Number(curProd['FlavourInfeedRunTime']).toFixed(1);
-        addBackInfeedRunTime = Number(curProd['AddbackInfeedRunTime']).toFixed(1);
+        teaInfeedRunTime = Number(curProd['TeaInfeedRunTime']).toFixed(1) +' s';
+        flavourInfeedRunTime = Number(curProd['FlavourInfeedRunTime']).toFixed(1) + ' s' ; 
         teaLowerWeightLimit = FormatWeight(curProd['TeaLowerWeightLimit'], weightUnits);
         flavourLowerWeightLimit = FormatWeight(curProd['FlavourLowerWeightLimit'], weightUnits);
-        addBackLowerWeightLimit = FormatWeight(curProd['AddbackLowerWeightLimit'], weightUnits);
         teaUpperWeightLimit = FormatWeight(curProd['TeaUpperWeightLimit'], weightUnits);
         flavourUpperWeightLimit = FormatWeight(curProd['FlavourUpperWeightLimit'], weightUnits);
-        addBackUpperWeightLimit = FormatWeight(curProd['AddbackUpperWeightLimit'], weightUnits);
         teaEmptyWeightLimit = FormatWeight(curProd['TeaEmptyWeightLimit'], weightUnits);
         flavourEmptyWeightLimit = FormatWeight(curProd['FlavourEmptyWeightLimit'], weightUnits);
-        addBackEmptyWeightLimit = FormatWeight(curProd['AddbackEmptyWeightLimit'], weightUnits);
         teaCorrFactor = FormatWeight(curProd['TeaCorrFactor'], weightUnits);
         flavourCorrFactor = FormatWeight(curProd['FlavourCorrFactor'], weightUnits);
         teaDeadZone = Number(curProd['TeaDeadzone']).toFixed(1)+' %';
         flavourDeadZone = Number(curProd['FlavourDeadzone']).toFixed(1)+' %';
-        teaFeedSpeedMax = Number(curProd['TeaFeedSpeedMax']).toFixed(1)+' %';
-        flavourFeedSpeedMax = Number(curProd['FlavourFeedSpeedMax']).toFixed(1)+' %';
-        teaFeedSpeedMin = Number(curProd['TeaFeedSpeedMin']).toFixed(1)+' %';
-        flavourFeedSpeedMin = Number(curProd['FlavourFeedSpeedMin']).toFixed(1)+' %';
         teaOriginAmplitude = Number(curProd['TeaOriginAmplitude']).toFixed(1)+' %';
         flavourOriginAmplitude = Number(curProd['FlavourOriginAmplitude']).toFixed(1)+' %';
         teaCorrInterval = Number(curProd['TeaCorrInterval']).toFixed(1)+' s';
@@ -4649,6 +4684,16 @@ class ProductSettings extends React.Component{
         flavourCorrWait = Number(curProd['FlavourCorrWait']).toFixed(1)+' s';
         teaCorrInhibit = Number(curProd['TeaCorrInhibit']).toFixed(1)+' s';
         flavourCorrInhibit = Number(curProd['FlavourCorrInhibit']).toFixed(1)+' s';
+        teaAirblastRunTime = Number(curProd['TeaAirblastRunTime']).toFixed(1)+' s';
+        flavourAirblastRunTime = Number(curProd['FlavourAirblastRunTime']).toFixed(1)+' s';
+        teaAirblastDelayTime = Number(curProd['TeaAirblastDelayTime']).toFixed(1)+' s';
+        flavourAirblastDelayTime = Number(curProd['FlavourAirblastDelayTime']).toFixed(1)+' s';
+        teaFeedSpeedMax = Number(curProd['TeaFeedSpeedMax']).toFixed(1)+' %';
+        flavourFeedSpeedMax = Number(curProd['FlavourFeedSpeedMax']).toFixed(1)+' %';
+        teaFeedSpeedMin = Number(curProd['TeaFeedSpeedMin']).toFixed(1)+' %';
+        flavourFeedSpeedMin = Number(curProd['FlavourFeedSpeedMin']).toFixed(1)+' %';
+        teaFeedSpeedPurge = Number(curProd['TeaFeedSpeedPurge']).toFixed(1)+' %';
+        flavourFeedSpeedPurge = Number(curProd['FlavourFeedSpeedMin']).toFixed(1)+' %';
       }
 
       var prodEditAcc = this.props.level >= this.props.srec['PassAccProdEdit'];
@@ -4670,11 +4715,28 @@ class ProductSettings extends React.Component{
       content =( 
       <div style={{background:'#e1e1e1', padding:5, width:813,marginRight:6,height:566}}>
         <div>
+
         <div style={{display:'inline-block', verticalAlign:'top'}}>
         <ProdSettingEdit afterEdit={this.props.getProdList} acc={prodEditAcc} trans={true} name={'ProdName'} vMap={vMapV2['ProdName']}  language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={labTransV2['Product Name'][this.props.language]['name']} value={curProd['ProdName']} param={vdefByMac[this.props.mac][1][1]['ProdName']} tooltip={vMapV2['ProdName']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={false}/></div>
         <div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton language={this.props.language} onClick={this.selectRunningProd} branding={this.props.branding} innerStyle={selStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:50, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Select Product'][this.props.language]['name']}/>
-
         </div>
+        
+        <div style={{display:'inline-block', verticalAlign:'top'}}>
+        <ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'TotalTargetFeedRate'} vMap={vMapV2['TotalTargetFeedRate']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={labTransV2['Total Target Feed Rate'][this.props.language]['name']} value={totalTargetFeedRate} param={vdefByMac[this.props.mac][1][1]['TotalTargetFeedRate']} tooltip={vMapV2['TotalTargetFeedRate']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+        {/*<div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton language={this.props.language} onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Advanced'][this.props.language]['name']}/>
+        </div>*/}
+        
+        <div style={{display:'inline-block', verticalAlign:'top', marginBottom:5}}>
+          <ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FlavourGraphDivisor'} vMap={vMapV2['FlavourGraphDivisor']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={labTransV2['Flavour Graph Divisor'][this.props.language]['name']} value={flavourGraphDivisor} param={vdefByMac[this.props.mac][1][1]['FlavourGraphDivisor']} tooltip={vMapV2['FlavourGraphDivisor']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+        <div>
+        <div style={{marginLeft:225, display:'inline-block', verticalAlign:'top', position:'relative',color:'#FFF', fontSize:26,zIndex:1, lineHeight:40+'px', borderRadius:15, backgroundColor:FORTRESSPURPLE2, width:200,textAlign:'center'}}>
+          Tea   
+        </div>
+        <div style={{marginLeft:70, display:'inline-block', verticalAlign:'top', position:'relative',color:'#FFF', fontSize:26,zIndex:1, lineHeight:40+'px', borderRadius:15, backgroundColor:FORTRESSPURPLE2, width:200,textAlign:'center'}}>
+          Flavour  
+        </div>
+      </div>
+        
         <div style={{display:'none', marginBottom:-10}}>
           <div style={{display:'none', position:'relative', verticalAlign:'top'}} onClick={this.toggleSearch}>
             <div style={{height:35, width:120, display:'block', background:'linear-gradient(120deg, transparent, transparent 25%, '+ searchColor + ' 26%, '+ searchColor}}/>
@@ -4682,17 +4744,34 @@ class ProductSettings extends React.Component{
             <div style={{position:'absolute',float:'right', marginTop:-70, marginLeft:50, color:'#e1e1e1'}}><img src='assets/search_w.svg' style={{width:50}}/><div style={{textAlign:'right', paddingRight:20, marginTop:-20, fontSize:16}}>{labTransV2['Search'][this.props.language]['name']}</div></div>
           </div>
         </div>
+        
         </div>
         
-        <div style={{height:480,overflowY:'scroll'}}>
+        <div style={{height:300,overflowY:'scroll'}}>
           <div style={{display:'inline-block',width:'100%', verticalAlign:'top'}}>  
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'TotalTargetFeedRate'} vMap={vMapV2['TotalTargetFeedRate']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={labTransV2['Total Target Feed Rate'][this.props.language]['name']} value={totalTargetFeedRate} param={vdefByMac[this.props.mac][1][1]['TotalTargetFeedRate']} tooltip={vMapV2['TotalTargetFeedRate']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedRate'} vMap={vMapV2['FeedRate']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Feed Rate'][this.props.language]['name']} value={teaFeedRate} param={vdefByMac[this.props.mac][1][1]['TeaTargetFeedRate']} tooltip={vMapV2['FeedRate']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={false} num={true}/></div>
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedRate'} vMap={vMapV2['FeedRate']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Feed Rate'][this.props.language]['name']} value={flavourFeedRate} param={vdefByMac[this.props.mac][1][1]['FlavourTargetFeedRate']} tooltip={vMapV2['FeedRate']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={false} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'TargetPct'} vMap={vMapV2['TargetPct']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Target Percentage'][this.props.language]['name']} value={teaTargetPct} param={vdefByMac[this.props.mac][1][1]['TeaTargetPct']} tooltip={vMapV2['TargetPct']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'TargetPct'} vMap={vMapV2['TargetPct']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Target Percentage'][this.props.language]['name']} value={flavourTargetPct} param={vdefByMac[this.props.mac][1][1]['FlavourTargetPct']} tooltip={vMapV2['TargetPct']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'InfeedRunTime'} vMap={vMapV2['InfeedRunTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Infeed Run Time'][this.props.language]['name']} value={teaInfeedRunTime} param={vdefByMac[this.props.mac][1][1]['TeaInfeedRunTime']} tooltip={vMapV2['InfeedRunTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'InfeedRunTime'} vMap={vMapV2['InfeedRunTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Infeed Run Time'][this.props.language]['name']} value={flavourInfeedRunTime} param={vdefByMac[this.props.mac][1][1]['FlavourInfeedRunTime']} tooltip={vMapV2['InfeedRunTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedStart'} vMap={vMapV2['FeedSpeedStart']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Feed Speed Start'][this.props.language]['name']} value={teaFeedSpeedStart} param={vdefByMac[this.props.mac][1][1]['TeaFeedSpeedStart']}  tooltip={vMapV2['FeedSpeedStart']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedStart'} vMap={vMapV2['FeedSpeedStart']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Feed Speed Start'][this.props.language]['name']} value={flavourFeedSpeedStart} param={vdefByMac[this.props.mac][1][1]['FlavourFeedSpeedStart']} tooltip={vMapV2['FeedSpeedStart']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedPurge'} vMap={vMapV2['FeedSpeedPurge']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Feed Speed Purge'][this.props.language]['name']} value={teaFeedSpeedPurge} param={vdefByMac[this.props.mac][1][1]['TeaFeedSpeedPurge']}  tooltip={vMapV2['FeedSpeedPurge']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedPurge'} vMap={vMapV2['FeedSpeedPurge']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Feed Speed Purge'][this.props.language]['name']} value={flavourFeedSpeedPurge} param={vdefByMac[this.props.mac][1][1]['FlavourFeedSpeedPurge']} tooltip={vMapV2['FeedSpeedPurge']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMax'} vMap={vMapV2['FeedSpeedMax']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMax'][this.props.language]['name']} value={teaFeedSpeedMax} param={vdefByMac[this.props.mac][1][1]['TeaFeedSpeedMax']}  tooltip={vMapV2['FeedSpeedMax']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMax'} vMap={vMapV2['FeedSpeedMax']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMax'][this.props.language]['name']} value={flavourFeedSpeedMax} param={vdefByMac[this.props.mac][1][1]['FlavourFeedSpeedMax']} tooltip={vMapV2['FeedSpeedMax']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMin'} vMap={vMapV2['FeedSpeedMin']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMin'][this.props.language]['name']} value={teaFeedSpeedMin} param={vdefByMac[this.props.mac][1][1]['TeaFeedSpeedMin']}  tooltip={vMapV2['FeedSpeedMin']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMin'} vMap={vMapV2['FeedSpeedMin']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMin'][this.props.language]['name']} value={flavourFeedSpeedMin} param={vdefByMac[this.props.mac][1][1]['FlavourFeedSpeedMin']} tooltip={vMapV2['FeedSpeedMin']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'AirblastRunTime'} vMap={vMapV2['AirblastRunTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Airblast Run Time'][this.props.language]['name']} value={teaAirblastRunTime} param={vdefByMac[this.props.mac][1][1]['TeaAirblastRunTime']} tooltip={vMapV2['AirblastRunTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'AirblastRunTime'} vMap={vMapV2['AirblastRunTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Airblast Run Time'][this.props.language]['name']} value={flavourAirblastRunTime} param={vdefByMac[this.props.mac][1][1]['FlavourAirblastRunTime']} tooltip={vMapV2['AirblastRunTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'AirblastDelayTime'} vMap={vMapV2['AirblastDelayTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Airblast Delay Time'][this.props.language]['name']} value={teaAirblastDelayTime} param={vdefByMac[this.props.mac][1][1]['TeaAirblastDelayTime']} tooltip={vMapV2['AirblastDelayTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'AirblastDelayTime'} vMap={vMapV2['AirblastDelayTime']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Airblast Delay Time'][this.props.language]['name']} value={flavourAirblastDelayTime} param={vdefByMac[this.props.mac][1][1]['FlavourAirblastDelayTime']} tooltip={vMapV2['AirblastDelayTime']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'LowerWeightLimit'} vMap={vMapV2['LowerWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Lower Weight Limit'][this.props.language]['name']} value={teaLowerWeightLimit} param={vdefByMac[this.props.mac][1][1]['TeaLowerWeightLimit']}  tooltip={vMapV2['LowerWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'LowerWeightLimit'} vMap={vMapV2['LowerWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Lower Weight Limit'][this.props.language]['name']} value={flavourLowerWeightLimit} param={vdefByMac[this.props.mac][1][1]['FlavourLowerWeightLimit']} tooltip={vMapV2['LowerWeightLimit']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'UpperWeightLimit'} vMap={vMapV2['UpperWeightLimit']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Upper Weight Limit'][this.props.language]['name']} value={teaUpperWeightLimit} param={vdefByMac[this.props.mac][1][1]['TeaUpperWeightLimit']}  tooltip={vMapV2['UpperWeightLimit']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
@@ -4703,13 +4782,9 @@ class ProductSettings extends React.Component{
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrFactor'} vMap={vMapV2['CorrFactor']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Correction Factor'][this.props.language]['name']} value={flavourCorrFactor} param={vdefByMac[this.props.mac][1][1]['FlavourCorrFactor']} tooltip={vMapV2['CorrFactor']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'DeadZone'} vMap={vMapV2['DeadZone']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['DeadZone'][this.props.language]['name']} value={teaDeadZone} param={vdefByMac[this.props.mac][1][1]['TeaDeadzone']}  tooltip={vMapV2['DeadZone']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'DeadZone'} vMap={vMapV2['DeadZone']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['DeadZone'][this.props.language]['name']} value={flavourDeadZone} param={vdefByMac[this.props.mac][1][1]['FlavourDeadzone']} tooltip={vMapV2['DeadZone']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMax'} vMap={vMapV2['FeedSpeedMax']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMax'][this.props.language]['name']} value={teaFeedSpeedMax} param={vdefByMac[this.props.mac][1][1]['TeaFeedSpeedMax']}  tooltip={vMapV2['FeedSpeedMax']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMax'} vMap={vMapV2['FeedSpeedMax']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMax'][this.props.language]['name']} value={flavourFeedSpeedMax} param={vdefByMac[this.props.mac][1][1]['FlavourFeedSpeedMax']} tooltip={vMapV2['FeedSpeedMax']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMin'} vMap={vMapV2['FeedSpeedMin']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMin'][this.props.language]['name']} value={teaFeedSpeedMin} param={vdefByMac[this.props.mac][1][1]['TeaFeedSpeedMin']}  tooltip={vMapV2['FeedSpeedMin']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMin'} vMap={vMapV2['FeedSpeedMin']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMin'][this.props.language]['name']} value={flavourFeedSpeedMin} param={vdefByMac[this.props.mac][1][1]['FlavourFeedSpeedMin']} tooltip={vMapV2['FeedSpeedMin']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OriginAmplitude'} vMap={vMapV2['OriginAmplitude']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['OriginAmplitude'][this.props.language]['name']} value={teaOriginAmplitude} param={vdefByMac[this.props.mac][1][1]['TeaOriginAmplitude']}  tooltip={vMapV2['OriginAmplitude']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'OriginAmplitude'} vMap={vMapV2['OriginAmplitude']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['OriginAmplitude'][this.props.language]['name']} value={flavourOriginAmplitude} param={vdefByMac[this.props.mac][1][1]['FlavourOriginAmplitude']} tooltip={vMapV2['OriginAmplitude']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
-            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrInterval'} vMap={vMapV2['CorrInterval']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrInterval'][this.props.language]['name']} value={teaOriginAmplitude} param={vdefByMac[this.props.mac][1][1]['TeaCorrInterval']}  tooltip={vMapV2['CorrInterval']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrInterval'} vMap={vMapV2['CorrInterval']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrInterval'][this.props.language]['name']} value={teaCorrInterval} param={vdefByMac[this.props.mac][1][1]['TeaCorrInterval']}  tooltip={vMapV2['CorrInterval']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrInterval'} vMap={vMapV2['CorrInterval']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrInterval'][this.props.language]['name']} value={flavourCorrInterval} param={vdefByMac[this.props.mac][1][1]['FlavourCorrInterval']} tooltip={vMapV2['CorrInterval']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrWait'} vMap={vMapV2['CorrWait']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrWait'][this.props.language]['name']} value={teaCorrWait} param={vdefByMac[this.props.mac][1][1]['TeaCorrWait']}  tooltip={vMapV2['CorrWait']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'CorrWait'} vMap={vMapV2['CorrWait']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['CorrWait'][this.props.language]['name']} value={flavourCorrWait} param={vdefByMac[this.props.mac][1][1]['FlavourCorrWait']} tooltip={vMapV2['CorrWait']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
@@ -4719,6 +4794,17 @@ class ProductSettings extends React.Component{
         </div>
         
       </div>)
+      if(this.state.showAdvanceSettings){
+        content = <div style={{width:813, display:'inline-block', background:'#e1e1e1', padding:5}}>
+        <div style={{height:566}}>  
+        <SettingsPage productRecord={true} soc={this.props.soc} toggleGraph={this.toggleGraph} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} prodPage={true} getBack={this.onAdvanced} black={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={[]} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.sd} data={this.state.data} 
+          onHandleClick={this.settingClick} dsp={this.props.ip} mac={this.props.mac} cob2={[this.state.cob2]} cvdf={vdefByMac[this.props.mac][4]} sendPacket={this.sendPacket} prodSettings={curProd} sysSettings={this.props.srec} dynSettings={this.props.drec} framRec={this.props.fram} level={this.props.level}/>
+        </div>
+          <div>
+        
+        </div>
+        </div>
+      }
     }
     
     var scrollInd = 0
@@ -4838,6 +4924,169 @@ class ProductSettings extends React.Component{
     </div>
     //<CircularButton branding={this.props.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Select Product'} onClick={this.selectRunningProd}/>
           
+  }
+}
+class Statistics extends React.Component{
+  constructor(props){
+    super(props)
+    this.state={clear:false};
+    this.onClearStatistics = this.onClearStatistics.bind(this);
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    if(this.state.clear){
+      this.setState({clear:false});
+      return true;
+    }else{
+      if (this.props !== nextProps) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+  onClearStatistics(){
+    this.setState({clear:true});
+    this.props.sendPacket('ClearStatistics');
+  }
+  render(){      
+    var content = ''
+    var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
+    var headerStyle = {height:50,width:300, backgroundColor:'#5D5480', color:'#fff', borderRadius:15, textAlign:'center', fontSize:20 ,lineHeight:'40px'}
+    var dataStyle = {height:50,width:300,fontSize:25, textAlign:'center', lineHeight:'40px'}
+    var weightUnits = this.props.systemRecords['WeightUnits']
+    var teaTotalWeight = '';
+    var flavourTotalWeight = '';
+    var addbackTotalWeight = '';
+    var totalWeight = '';
+    var totalTeaPct = '';
+    var totalFlavourPct= '';
+    var totalTargetFeedRate = '';
+    var productionMinutes = '';
+    var totalAddbackWeight = '';
+    var totalPlusAddbackWeight = '';
+    if(typeof this.props.systemRecords!='undefined' && typeof this.props.systemRecords!='undefined'){
+      totalTargetFeedRate = FormatWeight(this.props.productRecords['TotalTargetFeedRate'],weightUnits)+'/min';
+      teaTotalWeight = FormatWeight(this.props.systemRecords['TotalTeaWeight'], weightUnits);
+      flavourTotalWeight = FormatWeight(this.props.systemRecords['TotalFlavourWeight'], weightUnits);
+      totalWeight = FormatWeight(this.props.systemRecords['TotalCombinedWeight'], weightUnits);
+      totalTeaPct = Number(this.props.systemRecords['TotalTeaPct']).toFixed(2)+'%';
+      totalFlavourPct = Number(this.props.systemRecords['TotalFlavourPct']).toFixed(2)+'%';
+      productionMinutes = Number(this.props.systemRecords['ProductionMinutes']).toFixed(1)+' min';
+      totalAddbackWeight = FormatWeight(this.props.systemRecords['TotalAddbackWeight'], weightUnits);
+      totalPlusAddbackWeight = FormatWeight(this.props.systemRecords['TotalPlusAddbackWeight'], weightUnits);
+    }
+    content =( 
+      <div style={{background:'#e1e1e1', padding:5, width:1155,height:566}}>
+        <div>
+        <table>
+          <tr>
+            <th style={headerStyle}>
+              Product Name
+            </th>
+            <th style={headerStyle}>
+              Target Feed Rate
+            </th>
+            <th style={headerStyle}>
+              Production Minutes
+            </th>
+          </tr>
+          <tr>
+            <td style={dataStyle}>
+              {this.props.prodName}
+            </td>
+            <td style={dataStyle}>
+              {totalTargetFeedRate}
+            </td>
+            <td style={dataStyle}>
+              {productionMinutes}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              
+            </td>
+            <td style={headerStyle}>
+              TEA
+            </td>
+            <td style={headerStyle}>
+              Flavour
+            </td>
+            <td style={headerStyle}>
+              Overall
+            </td>
+          </tr>
+          <tr>
+            <td style={headerStyle}>
+              Total Dispensed Weight
+            </td>
+            <td style={dataStyle}>
+              {teaTotalWeight}
+            </td>
+            <td style={dataStyle}>
+              {flavourTotalWeight}
+            </td>
+            <td style={dataStyle}>
+              {totalWeight}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              
+            </td>
+            <td style={headerStyle}>
+              TEA
+            </td>
+            <td style={headerStyle}>
+              Flavour
+            </td>
+          </tr>
+          <tr>
+            <td style={headerStyle}>
+              Total Percentage
+            </td>
+            <td style={dataStyle}>
+              {totalTeaPct}
+            </td>
+            <td style={dataStyle}>
+              {totalFlavourPct}
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td style={headerStyle}>
+              Total Addback Weight
+            </td>
+            <td style={headerStyle}>
+              Total Plus Addback Weight
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td style={dataStyle}>
+              {totalAddbackWeight}
+            </td>
+            <td style={dataStyle}>
+              {totalPlusAddbackWeight}
+            </td>
+          </tr>
+        </table>
+        <CircularButton branding={'FORTRESS'} language={'english'} innerStyle={innerStyle} style={{width:250, display:'inline-block',marginLeft:870,marginTop:60, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Clear'} onClick={this.onClearStatistics}/>
+        </div>
+      </div>)
+    return <div style={{width:1}}>
+      <div style={{color:'#e1e1e1'}}>
+        <div style={{display:'inline-block', fontSize:30, textAlign:'left', width:720, paddingLeft:10}}>{'Statistics'}</div>
+        </div>
+        <table style={{borderCollapse:'collapse'}}>
+          <tbody>
+            <tr>
+              <td style={{verticalAlign:'top', width:830}}>
+              {content}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
   }
 }
 class ProductSelectItem extends React.Component{
@@ -6103,7 +6352,7 @@ class SettingsPage extends React.Component{
       if(this.props.black){
         titleColor = '#000'
       }
-      var maxHeight = 419;
+      var maxHeight = 490;
       if(this.props.wsb){
         maxHeight = 462;
       }
@@ -6345,7 +6594,7 @@ class SettingsPage extends React.Component{
 
       len = data[lvl - 1 ][0].params.length;
       var ph = ""
-      if((len - lenOffset) > 7){
+      if((len - lenOffset) > 8){
           ph = <div style={{display:'block', width:'100%', height:20}}></div>
           SA = true;
       }
@@ -6401,9 +6650,11 @@ class SettingsPage extends React.Component{
     catList = null;
     return(
       <div className='settingsDiv'>
+         
       <ScrollArrow language={this.props.language} ref={this.arrowTop} offset={72} width={72} marginTop={5} active={SA} mode={'top'} onClick={this.scrollUp}/>
     
       <div className={className}>
+      
         <ContextMenuTrigger id={pathString+'_titleCTMID'}>
         {titlediv}
         </ContextMenuTrigger>
@@ -6412,7 +6663,17 @@ class SettingsPage extends React.Component{
           {labTransV2['Translate Setting'][this.props.language]['name']}
         </MenuItem>
         </ContextMenu>
-
+        { this.props.productRecord &&
+        <React.Fragment>
+          <div style={{marginLeft:280, display:'inline-block', verticalAlign:'top', position:'relative',color:'#FFF', fontSize:26,zIndex:1, lineHeight:40+'px', borderRadius:15, backgroundColor:FORTRESSPURPLE2, width:200,textAlign:'center'}}>
+            Tea   
+          </div>
+          <div style={{marginLeft:50, display:'inline-block', verticalAlign:'top', position:'relative',color:'#FFF', fontSize:26,zIndex:1, lineHeight:40+'px', borderRadius:15, backgroundColor:FORTRESSPURPLE2, width:200,textAlign:'center'}}>
+            Flavour  
+          </div>
+        </React.Fragment>
+        }
+        
       {trnsmdl}{nav}
      
       </div>
@@ -7136,17 +7397,29 @@ class SettingItem3 extends React.Component{
       sty.height = 51;
       sty.paddingRight = 5;
     }
-              if(!display){
+    if(!display){
             sty.display = 'none'
-          }
+    }
+    if(vMapV2[this.props.lkey]["@labels"] == 'ProductSettings2')
+    {
+      sty = {height:0};
+    }
     var medctrl= (<MultiEditControl dt={this.props.dt} disabled={disable}  getToolTip={this.getToolTip} getMMdep={this.getMMdep} weightUnits={this.props.sysSettings['WeightUnits']} branding={this.props.branding} submitTooltip={this.props.submitTooltip} submitList={this.submitList} 
       submitChange={this.submitChange} combo={(this.props.data['@combo'] == true)} mobile={this.props.mobile} mac={this.props.mac} ov={false} vMap={vMapV2[this.props.lkey]} language={this.props.language} ip={this.props.ip} ioBits={this.props.ioBits} onFocus={this.onFocus}
        onRequestClose={this.onRequestClose} pAcc={this.props.passAcc} acc={this.props.acc} ref='ed' vst={vst} 
           lvst={st} param={this.state.pram} size={this.props.font} sendPacket={this.sendPacket} data={this.state.val} 
           label={this.state.label} int={false} name={this.props.lkey}/>)
-          return (<div hidden={!display} className='sprc-prod' style={sty}> {medctrl}{accModal}
-          </div>)
-      
+          return (      
+            <div hidden={!display} className='sprc-prod' style={sty}> 
+              {/*<div style={{marginLeft:225, display:'inline-block', verticalAlign:'top', position:'relative',color:'#FFF', fontSize:26,zIndex:1, lineHeight:40+'px', borderRadius:15, backgroundColor:FORTRESSPURPLE2, width:200,textAlign:'center'}}>
+                Tea   
+              </div>
+              <div style={{marginLeft:70, display:'inline-block', verticalAlign:'top', position:'relative',color:'#FFF', fontSize:26,zIndex:1, lineHeight:40+'px', borderRadius:15, backgroundColor:FORTRESSPURPLE2, width:200,textAlign:'center'}}>
+                Flavour  
+          </div>*/}
+              {medctrl}{accModal}
+            </div>
+          )
     }
   }
 }
@@ -7481,9 +7754,10 @@ class MultiEditControl extends React.Component{
     
     render(){
       var self = this;
-
-    var popupmenu = ''
-    var namestring = this.props.name
+      var productRecord = false;
+      var productRecords = false;
+      var popupmenu = ''
+      var namestring = this.props.name
     
     if(typeof vdefByMac[this.props.mac][5][this.props.name] != 'undefined'){
       if(vdefByMac[this.props.mac][5][this.props.name]['@translations'][this.props.language]['name'] != ''){
@@ -7553,6 +7827,8 @@ class MultiEditControl extends React.Component{
           units = 'g'
         }
       }
+      console.log("self.props.param[i] ", self.props.param[i]);
+      console.log("self.props", self.props);
       if(self.props.param[i]['@type'] == 'float' || self.props.param[i]['@type'] == 'weight' || self.props.param[i]['@type'] == 'fdbk_rate'){
         if(val == null){
           val = 0;
@@ -7678,6 +7954,15 @@ class MultiEditControl extends React.Component{
       
       if(iod && i == 1){
         _st.width = 190
+      }
+      
+      if(self.props['vMap']['@labels']=='ProductSettings2')
+      {
+        namestring='';
+        productRecord = true;
+      }
+      if(self.props['vMap']['@labels']=='ProductSettings1'){
+        productRecords = true;
       }
 
       return (<CustomLabel index={i} onClick={self.valClick} style={_st}>{(val == '0.0 seconds' && self.props.param[i]['@name']=='FaultClearTimeOverride')  ? labTransV2['DefaultClearTime'][self.props.language]['name'] : (val == '0 mm' && self.props.param[i]['@name']=='EyeMinGapDistOverride') || (val == '0.0 in' && self.props.param[i]['@name']=='EyeMinGapDistOverride') ? labTransV2['DefaultClearTime'][self.props.language]['name'] : val == '0.00 x Product Length' ? labTransV2['DefaultClearTime'][self.props.language]['name'] : val}</CustomLabel>)
@@ -8075,16 +8360,28 @@ class MultiEditControl extends React.Component{
      
      return <div>
      <div style={{display:'grid', gridTemplateColumns:"300px auto"}}>
-      <div><div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
-        <ContextMenuTrigger id={this.props.name + 'ctmid'}>
-          {namestring}
-        </ContextMenuTrigger>
-      </div>
-      </div>
-     
-      <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
-        {ioindicator}{vLabels}
-      </div>
+      {
+        !productRecord &&
+        <div>
+          <div style={{display:'inline-block', verticalAlign:'top', position:'relative', color:txtClr, fontSize:fSize,zIndex:1, lineHeight:'38px', borderBottomLeftRadius:15,borderTopRightRadius:15, backgroundColor:bgClr, width:300,textAlign:'center'}}>
+            <ContextMenuTrigger id={this.props.name + 'ctmid'}>
+              {namestring}
+            </ContextMenuTrigger>
+          </div>
+        </div>
+      }
+      { productRecord ? 
+        <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:550,marginTop:-63, textAlign:'center', width:240}}>
+            {ioindicator}{vLabels}
+        </div> :
+        productRecords ?
+        <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:240}}>
+          {ioindicator}{vLabels}
+        </div> :
+        <div style={{display:'inline-block', verticalAlign:'top', position:'relative', fontSize:24,zIndex:2,lineHeight:'50px', borderRadius:15,height:50, border:'5px solid #818a90',marginLeft:-5,textAlign:'center', width:496}}>
+          {ioindicator}{vLabels}
+        </div>
+      }
       </div>
       {options}
       {vfdsetupbutt}

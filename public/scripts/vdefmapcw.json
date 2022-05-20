@@ -15855,6 +15855,41 @@
         "name": ""
       }
     },
+    "Flavour Graph Divisor": {
+      "english": {
+        "name": "Flavour Graph Divisor"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
     "No User": {
       "english": {
         "name": "No User"
@@ -16208,6 +16243,146 @@
     "Infeed Run Time": {
       "english": {
         "name": "Infeed Run Time"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Airblast Run Time": {
+      "english": {
+        "name": "Airblast Run Time"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Airblast Delay Time": {
+      "english": {
+        "name": "Airblast Delay Time"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Feed Speed Start": {
+      "english": {
+        "name": "Feed Speed Start"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "Feed Speed Purge": {
+      "english": {
+        "name": "Feed Speed Purge"
       },
       "korean": {
         "name": ""
@@ -16743,6 +16918,110 @@
         "g"
       ]
     },
+    "FeedSpeedStart": {
+      "@translations": {
+        "english": {
+          "name": "Feed Speed Start",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": " ",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "FeedSpeedPurge": {
+      "@translations": {
+        "english": {
+          "name": "Feed Speed Purge",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": " ",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
     "TargetPct": {
       "@translations": {
         "english": {
@@ -16800,6 +17079,114 @@
         "english": {
           "name": "Infeed Run Time",
           "description": "This is the acceptable weight tolerance above the nominal weight."
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Year",
+        "Month",
+        "Day"
+      ]
+    },
+    "AirblastRunTime": {
+      "@translations": {
+        "english": {
+          "name": "Airblast Run Time",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Year",
+        "Month",
+        "Day"
+      ]
+    },
+    "AirblastDelayTime": {
+      "@translations": {
+        "english": {
+          "name": "Airblast Delay Time",
+          "description": ""
         },
         "korean": {
           "name": "",
@@ -18324,47 +18711,47 @@
     "VfdStatus0": {
       "@translations": {
         "english": {
-          "name": "Vfd Status",
+          "name": "Auger Status",
           "description": ""
         },
         "korean": {
-          "name": "Vfd Status",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "Vfd Status",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "Vfd Status",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "Status Vfd",
+          "name": "",
           "description": ""
         },
         "italian": {
-          "name": "Vfd Status",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "Vfd Status",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "Vfd Status",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "Vfd Status",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "Vfd Status",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "Vfd Status",
+          "name": "",
           "description": ""
         }
       },
@@ -20817,6 +21204,110 @@
         "g"
       ]
     },
+    "OutfeedRunTime": {
+      "@translations": {
+        "english": {
+          "name": "Auger Run Time",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "VfdSpeed0": {
+      "@translations": {
+        "english": {
+          "name": "Auger RPM",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
     "VfdDir1": {
       "@translations": {
         "english": {
@@ -21797,214 +22288,6 @@
         },
         "chinese": {
           "name": "Maximum Current",
-          "description": ""
-        }
-      },
-      "children": [],
-      "@labels": [
-        "g"
-      ]
-    },
-    "VfdSpeed0": {
-      "@translations": {
-        "english": {
-          "name": "VFD Speed 0",
-          "description": ""
-        },
-        "korean": {
-          "name": "VFD Speed 0",
-          "description": ""
-        },
-        "spanish": {
-          "name": "VFD Speed 0",
-          "description": ""
-        },
-        "french": {
-          "name": "VFD Speed 0",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Velocidade VFD 0",
-          "description": ""
-        },
-        "italian": {
-          "name": "VFD Speed 0",
-          "description": ""
-        },
-        "german": {
-          "name": "VFD Speed 0",
-          "description": ""
-        },
-        "turkish": {
-          "name": "VFD Speed 0",
-          "description": ""
-        },
-        "russian": {
-          "name": "VFD Speed 0",
-          "description": ""
-        },
-        "polish": {
-          "name": "VFD Speed 0",
-          "description": ""
-        },
-        "chinese": {
-          "name": "VFD Speed 0",
-          "description": ""
-        }
-      },
-      "children": [],
-      "@labels": [
-        "g"
-      ]
-    },
-    "VfdSpeed1": {
-      "@translations": {
-        "english": {
-          "name": "VFD Speed 1",
-          "description": ""
-        },
-        "korean": {
-          "name": "VFD Speed 1",
-          "description": ""
-        },
-        "spanish": {
-          "name": "VFD Speed 1",
-          "description": ""
-        },
-        "french": {
-          "name": "VFD Speed 1",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Velocidade VFD 1",
-          "description": ""
-        },
-        "italian": {
-          "name": "VFD Speed 1",
-          "description": ""
-        },
-        "german": {
-          "name": "VFD Speed 1",
-          "description": ""
-        },
-        "turkish": {
-          "name": "VFD Speed 1",
-          "description": ""
-        },
-        "russian": {
-          "name": "VFD Speed 1",
-          "description": ""
-        },
-        "polish": {
-          "name": "VFD Speed 1",
-          "description": ""
-        },
-        "chinese": {
-          "name": "VFD Speed 1",
-          "description": ""
-        }
-      },
-      "children": [],
-      "@labels": [
-        "g"
-      ]
-    },
-    "VfdSpeed2": {
-      "@translations": {
-        "english": {
-          "name": "VFD Speed 2",
-          "description": ""
-        },
-        "korean": {
-          "name": "VFD Speed 2",
-          "description": ""
-        },
-        "spanish": {
-          "name": "VFD Speed 2",
-          "description": ""
-        },
-        "french": {
-          "name": "VFD Speed 2",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Velocidade VFD 2",
-          "description": ""
-        },
-        "italian": {
-          "name": "VFD Speed 2",
-          "description": ""
-        },
-        "german": {
-          "name": "VFD Speed 2",
-          "description": ""
-        },
-        "turkish": {
-          "name": "VFD Speed 2",
-          "description": ""
-        },
-        "russian": {
-          "name": "VFD Speed 2",
-          "description": ""
-        },
-        "polish": {
-          "name": "VFD Speed 2",
-          "description": ""
-        },
-        "chinese": {
-          "name": "VFD Speed 2",
-          "description": ""
-        }
-      },
-      "children": [],
-      "@labels": [
-        "g"
-      ]
-    },
-    "VfdSpeed3": {
-      "@translations": {
-        "english": {
-          "name": "VFD Speed 3",
-          "description": ""
-        },
-        "korean": {
-          "name": "VFD Speed 3",
-          "description": ""
-        },
-        "spanish": {
-          "name": "VFD Speed 3",
-          "description": ""
-        },
-        "french": {
-          "name": "VFD Speed 3",
-          "description": ""
-        },
-        "portuguese": {
-          "name": "Velocidade VFD 3",
-          "description": ""
-        },
-        "italian": {
-          "name": "VFD Speed 3",
-          "description": ""
-        },
-        "german": {
-          "name": "VFD Speed 3",
-          "description": ""
-        },
-        "turkish": {
-          "name": "VFD Speed 3",
-          "description": ""
-        },
-        "russian": {
-          "name": "VFD Speed 3",
-          "description": ""
-        },
-        "polish": {
-          "name": "VFD Speed 3",
-          "description": ""
-        },
-        "chinese": {
-          "name": "VFD Speed 3",
           "description": ""
         }
       },
@@ -28648,7 +28931,7 @@
       "@translations": {
         "english": {
           "name": "Signal Fault 1",
-          "description": ""
+          "description": "Loadcell board 1 is not communicating."
         },
         "korean": {
           "name": "",
@@ -28700,7 +28983,7 @@
       "@translations": {
         "english": {
           "name": "Signal Fault 2",
-          "description": ""
+          "description": "Loadcell board 2 is not communicating."
         },
         "korean": {
           "name": "",
@@ -28752,7 +29035,7 @@
       "@translations": {
         "english": {
           "name": "Signal Fault 3",
-          "description": ""
+          "description": "Loadcell board 3 is not communicating."
         },
         "korean": {
           "name": "",
@@ -34357,7 +34640,7 @@
       "@translations": {
         "english": {
           "name": "Product Memory",
-          "description": "This fault occurs when product memory is full or corrupted."
+          "description": "Product database did not load correctly or is corrupted."
         },
         "korean": {
           "name": "품목 메모리 폴트",
@@ -34403,6 +34686,110 @@
       "children": [],
       "@labels": [
         "Product Memory Fault"
+      ]
+    },
+    "TeaRefillFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Tea Refill",
+          "description": "Tea failed to refill."
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Tea Refill Fault"
+      ]
+    },
+    "FlavourRefillFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Flavour Refill",
+          "description": "Flavour failed to refill."
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Flavour Refill Fault"
       ]
     },
     "ProdMemFaultMaskOverride": {
@@ -36385,7 +36772,7 @@
       "@translations": {
         "english": {
           "name": "Low Battery",
-          "description": "This fault or warning occurs when the CR2032 coil cell battery on the SD035 board is low and should be replaced."
+          "description": "Internal CR2032 battery is low."
         },
         "korean": {
           "name": "Rtc 로우 배터리 폴트",
@@ -36593,7 +36980,7 @@
       "@translations": {
         "english": {
           "name": "Internal USB",
-          "description": "This fault or warning occurs when the internal USB on the controller has an issue and may need to be replaced."
+          "description": "Internal USB memory stick has become corrupted."
         },
         "korean": {
           "name": "내부 Usb 폴트",
@@ -36697,7 +37084,7 @@
       "@translations": {
         "english": {
           "name": "IO Board",
-          "description": "This fault or warning occurs when the IO Board is not connected."
+          "description": "Not able to communicate with Inputs/Outputs."
         },
         "korean": {
           "name": "IO 보드 폴트",
@@ -37009,7 +37396,7 @@
       "@translations": {
         "english": {
           "name": "E-Stop",
-          "description": "This fault or warning when the E-Stop input is active."
+          "description": "E-Stop input is active."
         },
         "korean": {
           "name": "",
@@ -37217,7 +37604,7 @@
       "@translations": {
         "english": {
           "name": "Calibrate",
-          "description": "This fault or warning occurs when a calibration fails or times out."
+          "description": "Calibration failed."
         },
         "korean": {
           "name": "Calibrate Fault",
@@ -37477,7 +37864,7 @@
       "@translations": {
         "english": {
           "name": "Outfeed Fault",
-          "description": ""
+          "description": "Connected to Outfeed Hopper Sensor."
         },
         "korean": {
           "name": "",
@@ -37581,6 +37968,318 @@
       "@translations": {
         "english": {
           "name": "Out of Range",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "TareTeaFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Tare Tea Fault",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "TareFlavourFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Tare Flavour Fault",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "TareAddbackFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Tare Addback Fault",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "CalibrateTeaFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Calibrate Tea Fault",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "CalibrateFlavourFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Calibrate Flavour Fault",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "CalibrateAddbackFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Calibrate Addback Fault",
           "description": ""
         },
         "korean": {
@@ -38205,7 +38904,7 @@
       "@translations": {
         "english": {
           "name": "Tare",
-          "description": "This fault or warning occurs when the checkweigher has not been tared for the Tare Fault Time."
+          "description": "System has tared too far since last Calibration."
         },
         "korean": {
           "name": "Tare Fault",
@@ -41880,6 +42579,59 @@
       "@translations": {
         "english": {
           "name": "Total Target Feed Rate",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Product Name"
+      ]
+    },
+    "FlavourGraphDivisor": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Flavour Graph Divisor",
           "description": ""
         },
         "korean": {
@@ -50832,6 +51584,377 @@
         "Peak"
       ]
     },
+    "FlavourFeedSpeedStart": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Flavour Feed Speed Start",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "ProductSettings2"
+      ]
+    },
+    "FlavourFeedSpeedPurge": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Flavour Feed Speed Purge",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "ProductSettings2"
+      ]
+    },
+    "TeaFeedSpeedPurge": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Feed Speed Purge",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "ProductSettings1"
+      ]
+    },
+    "TeaFeedSpeedMax": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Feed Speed Max",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "ProductSettings1"
+      ]
+    },
+    "FlavourFeedSpeedMax": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Flavour Feed Speed Max",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "ProductSettings2"
+      ]
+    },
+    "TeaFeedSpeedMin": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Feed Speed Min",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "ProductSettings1"
+      ]
+    },
+    "FlavourFeedSpeedMin": {
+      "@parent": "",
+      "@translations": {
+        "english": {
+          "name": "Flavour Feed Speed Min",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "ProductSettings2"
+      ]
+    },
     "LoadcellFreq": {
       "@parent": "",
       "@translations": {
@@ -59400,56 +60523,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL30_1A2": {
+    "@SD041_PL30_1A2": {
       "@translations": {
         "english": {
-          "name": "PL30 1A2",
-          "description": "Reject Main - Main Reject output\nFault - Fault Output\nLight Red - Red Light for Banner Control\n"
+          "name": "SD041 PL30 1A2",
+          "description": ""
         },
         "korean": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "PL30 1A2",
-          "description": "Rejeição Principal - Saída de Rejeição Principal Falha - Saída de Falha Luz Vermelha - Luz Vermelha para Controle de Banner"
+          "name": "",
+          "description": ""
         },
         "italian": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL30_1A2",
-        "OUT_POL_PL30_1A2"
+        "OUT_PHY_SD041_PL30_1A2",
+        "OUT_POL_SD041_PL30_1A2"
       ],
       "@labels": [
         "Source",
@@ -59514,56 +60637,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL30_3A4": {
+    "@SD041_PL30_3A4": {
       "@translations": {
         "english": {
-          "name": "PL30 3A4",
-          "description": "Link Output connected to ISO PL30 3A4 and select polarity."
+          "name": "SD041 PL30 3A4",
+          "description": ""
         },
         "korean": {
-          "name": "PL30 3A4",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "PL30 3A4",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "PL30 3A4",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "PL30 3A4",
-          "description": "Link Output conectado ao ISO PL30 3A4 e selecione a polaridade."
+          "name": "",
+          "description": ""
         },
         "italian": {
-          "name": "PL30 3A4",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "PL30 3A4",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "PL30 3A4",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "PL30 3A4",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "PL30 3A4",
+          "name": "",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL30_3A4",
-        "OUT_POL_PL30_3A4"
+        "OUT_PHY_SD041_PL30_3A4",
+        "OUT_POL_SD041_PL30_3A4"
       ],
       "@labels": [
         "Source",
@@ -59628,56 +60751,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL30_5A6": {
+    "@SD041_PL30_5A6": {
       "@translations": {
         "english": {
-          "name": "PL30 5A6",
-          "description": "Link Output connected to ISO PL30 5A6 and select polarity."
+          "name": "SD041 PL30 5A6",
+          "description": ""
         },
         "korean": {
-          "name": "PL30 5A6",
+          "name": "",
           "description": ""
         },
         "spanish": {
-          "name": "PL30 5A6",
+          "name": "",
           "description": ""
         },
         "french": {
-          "name": "PL30 5A6",
+          "name": "",
           "description": ""
         },
         "portuguese": {
-          "name": "PL30 5A6",
-          "description": "Link Output conectado ao ISO PL30 5A6 e selecione a polaridade."
+          "name": "",
+          "description": ""
         },
         "italian": {
-          "name": "PL30 5A6",
+          "name": "",
           "description": ""
         },
         "german": {
-          "name": "PL30 5A6",
+          "name": "",
           "description": ""
         },
         "turkish": {
-          "name": "PL30 1A2",
+          "name": "",
           "description": ""
         },
         "russian": {
-          "name": "PL30 5A6",
+          "name": "",
           "description": ""
         },
         "polish": {
-          "name": "PL30 5A6",
+          "name": "",
           "description": ""
         },
         "chinese": {
-          "name": "PL30 5A6",
+          "name": "",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL30_5A6",
-        "OUT_POL_PL30_5A6"
+        "OUT_PHY_SD041_PL30_5A6",
+        "OUT_POL_SD041_PL30_5A6"
       ],
       "@labels": [
         "Source",
@@ -59742,56 +60865,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL30_7A8": {
+    "@SD041_PL30_7A8": {
       "@translations": {
         "english": {
-          "name": "PL30 7A8",
-          "description": "Link Output connected to ISO PL30 7A8 and select polarity."
+          "name": "SD041 PL30 7A8",
+          "description": ""
         },
         "korean": {
-          "name": "PL30 7A8",
+          "name": "SD041 PL30 7A8",
           "description": ""
         },
         "spanish": {
-          "name": "PL30 7A8",
+          "name": "SD041 PL30 7A8",
           "description": ""
         },
         "french": {
-          "name": "PL30 7A8",
+          "name": "SD041 PL30 7A8",
           "description": ""
         },
         "portuguese": {
-          "name": "PL30 7A8",
-          "description": "Link Output conectado ao ISO PL30 7A8 e selecione a polaridade."
+          "name": "SD041 PL30 7A8",
+          "description": ""
         },
         "italian": {
-          "name": "PL30 7A8",
+          "name": "SD041 PL30 7A8",
           "description": ""
         },
         "german": {
-          "name": "PL30 7A8",
+          "name": "SD041 PL30 7A8",
           "description": ""
         },
         "turkish": {
-          "name": "PL30 7A8",
+          "name": "SD041 PL30 7A8",
           "description": ""
         },
         "russian": {
-          "name": "PL30 7A8",
+          "name": "SD041 PL30 7A8",
           "description": ""
         },
         "polish": {
-          "name": "PL30 7A8",
+          "name": "SD041 PL30 7A8",
           "description": ""
         },
         "chinese": {
-          "name": "PL30 7A8",
+          "name": "SD041 PL30 7A8",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL30_7A8",
-        "OUT_POL_PL30_7A8"
+        "OUT_PHY_SD041_PL30_7A8",
+        "OUT_POL_SD041_PL30_7A8"
       ],
       "@labels": [
         "Source",
@@ -59856,56 +60979,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL31_1A2": {
+    "@SD041_PL31_1A2": {
       "@translations": {
         "english": {
-          "name": "PL31 1A2",
-          "description": "Link Output connected to ISO PL31 1A2 and select polarity."
+          "name": "SD041 PL31 1A2",
+          "description": ""
         },
         "korean": {
-          "name": "PL31 1A2",
+          "name": "SD041 PL31 1A2",
           "description": ""
         },
         "spanish": {
-          "name": "PL31 1A2",
+          "name": "SD041 PL31 1A2",
           "description": ""
         },
         "french": {
-          "name": "PL31 1A2",
+          "name": "SD041 PL31 1A2",
           "description": ""
         },
         "portuguese": {
-          "name": "PL31 1A2",
-          "description": "Link Output conectado ao ISO PL31 1A2 e selecione a polaridade."
+          "name": "SD041 PL31 1A2",
+          "description": ""
         },
         "italian": {
-          "name": "PL31 1A2",
+          "name": "SD041 PL31 1A2",
           "description": ""
         },
         "german": {
-          "name": "PL31 1A2",
+          "name": "SD041 PL31 1A2",
           "description": ""
         },
         "turkish": {
-          "name": "PL31 1A2",
+          "name": "SD041 PL31 1A2",
           "description": ""
         },
         "russian": {
-          "name": "PL31 1A2",
+          "name": "SD041 PL31 1A2",
           "description": ""
         },
         "polish": {
-          "name": "PL31 1A2",
+          "name": "SD041 PL31 1A2",
           "description": ""
         },
         "chinese": {
-          "name": "PL31 1A2",
+          "name": "SD041 PL31 1A2",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL31_1A2",
-        "OUT_POL_PL31_1A2"
+        "OUT_PHY_SD041_PL31_1A2",
+        "OUT_POL_SD041_PL31_1A2"
       ],
       "@labels": [
         "Source",
@@ -59970,56 +61093,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL31_3A4": {
+    "@SD041_PL31_3A4": {
       "@translations": {
         "english": {
-          "name": "PL31 3A4",
-          "description": "Link Output connected to ISO PL31 3A4 and select polarity."
+          "name": "SD041 PL31 3A4",
+          "description": ""
         },
         "korean": {
-          "name": "PL31 3A4",
+          "name": "SD041 PL31 3A4",
           "description": ""
         },
         "spanish": {
-          "name": "PL31 3A4",
+          "name": "SD041 PL31 3A4",
           "description": ""
         },
         "french": {
-          "name": "PL31 3A4",
+          "name": "SD041 PL31 3A4",
           "description": ""
         },
         "portuguese": {
-          "name": "PL31 3A4",
-          "description": "Link Output conectado ao ISO PL31 3A4 e selecione a polaridade."
+          "name": "SD041 PL31 3A4",
+          "description": ""
         },
         "italian": {
-          "name": "PL31 3A4",
+          "name": "SD041 PL31 3A4",
           "description": ""
         },
         "german": {
-          "name": "PL31 3A4",
+          "name": "SD041 PL31 3A4",
           "description": ""
         },
         "turkish": {
-          "name": "PL31 3A4",
+          "name": "SD041 PL31 3A4",
           "description": ""
         },
         "russian": {
-          "name": "PL31 3A4",
+          "name": "SD041 PL31 3A4",
           "description": ""
         },
         "polish": {
-          "name": "PL31 3A4",
+          "name": "SD041 PL31 3A4",
           "description": ""
         },
         "chinese": {
-          "name": "PL31 3A4",
+          "name": "SD041 PL31 3A4",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL31_3A4",
-        "OUT_POL_PL31_3A4"
+        "OUT_PHY_SD041_PL31_3A4",
+        "OUT_POL_SD041_PL31_3A4"
       ],
       "@labels": [
         "Source",
@@ -60084,56 +61207,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL31_5A6": {
+    "@SD041_PL31_5A6": {
       "@translations": {
         "english": {
-          "name": "PL31 5A6",
-          "description": "Link Output connected to ISO PL31 5A6 and select polarity."
+          "name": "SD041 PL31 5A6",
+          "description": ""
         },
         "korean": {
-          "name": "PL31 5A6",
+          "name": "SD041 PL31 5A6",
           "description": ""
         },
         "spanish": {
-          "name": "PL31 5A6",
+          "name": "SD041 PL31 5A6",
           "description": ""
         },
         "french": {
-          "name": "PL31 5A6",
+          "name": "SD041 PL31 5A6",
           "description": ""
         },
         "portuguese": {
-          "name": "PL31 5A6",
-          "description": "Link Output conectado ao ISO PL31 5A6 e selecione a polaridade."
+          "name": "SD041 PL31 5A6",
+          "description": ""
         },
         "italian": {
-          "name": "PL31 5A6",
+          "name": "SD041 PL31 5A6",
           "description": ""
         },
         "german": {
-          "name": "PL31 5A6",
+          "name": "SD041 PL31 5A6",
           "description": ""
         },
         "turkish": {
-          "name": "PL31 5A6",
+          "name": "SD041 PL31 5A6",
           "description": ""
         },
         "russian": {
-          "name": "PL31 5A6",
+          "name": "SD041 PL31 5A6",
           "description": ""
         },
         "polish": {
-          "name": "PL31 5A6",
+          "name": "SD041 PL31 5A6",
           "description": ""
         },
         "chinese": {
-          "name": "PL31 5A6",
+          "name": "SD041 PL31 5A6",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL31_5A6",
-        "OUT_POL_PL31_5A6"
+        "OUT_PHY_SD041_PL31_5A6",
+        "OUT_POL_SD041_PL31_5A6"
       ],
       "@labels": [
         "Source",
@@ -60198,56 +61321,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL31_7A8": {
+    "@SD041_PL31_7A8": {
       "@translations": {
         "english": {
-          "name": "PL31 7A8",
-          "description": "Link Output connected to ISO PL31 7A8 and select polarity."
+          "name": "SD041 PL31 7A8",
+          "description": ""
         },
         "korean": {
-          "name": "PL31 7A8",
+          "name": "SD041 PL31 7A8",
           "description": ""
         },
         "spanish": {
-          "name": "PL31 7A8",
+          "name": "SD041 PL31 7A8",
           "description": ""
         },
         "french": {
-          "name": "PL31 7A8",
+          "name": "SD041 PL31 7A8",
           "description": ""
         },
         "portuguese": {
-          "name": "PL31 7A8",
-          "description": "Link Output conectado ao ISO PL31 7A8 e selecione a polaridade."
+          "name": "SD041 PL31 7A8",
+          "description": ""
         },
         "italian": {
-          "name": "PL31 7A8",
+          "name": "SD041 PL31 7A8",
           "description": ""
         },
         "german": {
-          "name": "PL31 7A8",
+          "name": "SD041 PL31 7A8",
           "description": ""
         },
         "turkish": {
-          "name": "PL31 7A8",
+          "name": "SD041 PL31 7A8",
           "description": ""
         },
         "russian": {
-          "name": "PL31 7A8",
+          "name": "SD041 PL31 7A8",
           "description": ""
         },
         "polish": {
-          "name": "PL31 7A8",
+          "name": "SD041 PL31 7A8",
           "description": ""
         },
         "chinese": {
-          "name": "PL31 7A8",
+          "name": "SD041 PL31 7A8",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL31_7A8",
-        "OUT_POL_PL31_7A8"
+        "OUT_PHY_SD041_PL31_7A8",
+        "OUT_POL_SD041_PL31_7A8"
       ],
       "@labels": [
         "Source",
@@ -60312,56 +61435,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL40_01": {
+    "@SD041_PL40_01": {
       "@translations": {
         "english": {
-          "name": "PL40 01",
-          "description": "Link Output connected to ISO PL40 01 and select polarity."
+          "name": "SD041 PL40 01",
+          "description": ""
         },
         "korean": {
-          "name": "PL40 01",
+          "name": "SD041 PL40 01",
           "description": ""
         },
         "spanish": {
-          "name": "PL40 01",
+          "name": "SD041 PL40 01",
           "description": ""
         },
         "french": {
-          "name": "PL40 01",
+          "name": "SD041 PL40 01",
           "description": ""
         },
         "portuguese": {
-          "name": "PL40 01",
-          "description": "Link Output conectado ao ISO PL40 01 e selecione a polaridade."
+          "name": "SD041 PL40 01",
+          "description": ""
         },
         "italian": {
-          "name": "PL40 01",
+          "name": "SD041 PL40 01",
           "description": ""
         },
         "german": {
-          "name": "PL40 01",
+          "name": "SD041 PL40 01",
           "description": ""
         },
         "turkish": {
-          "name": "PL40 01",
+          "name": "SD041 PL40 01",
           "description": ""
         },
         "russian": {
-          "name": "PL40 01",
+          "name": "SD041 PL40 01",
           "description": ""
         },
         "polish": {
-          "name": "PL40 01",
+          "name": "SD041 PL40 01",
           "description": ""
         },
         "chinese": {
-          "name": "PL40 01",
+          "name": "SD041 PL40 01",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL40_01",
-        "OUT_POL_PL40_01"
+        "OUT_PHY_SD041_PL40_01",
+        "OUT_POL_SD041_PL40_01"
       ],
       "@labels": [
         "Source",
@@ -60426,56 +61549,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL40_02": {
+    "@SD041_PL40_02": {
       "@translations": {
         "english": {
-          "name": "PL40 02",
-          "description": "Link Output connected to ISO PL40 02 and select polarity."
+          "name": "SD041 PL40 02",
+          "description": ""
         },
         "korean": {
-          "name": "PL40 02",
+          "name": "SD041 PL40 02",
           "description": ""
         },
         "spanish": {
-          "name": "PL40 02",
+          "name": "SD041 PL40 02",
           "description": ""
         },
         "french": {
-          "name": "PL40 02",
+          "name": "SD041 PL40 02",
           "description": ""
         },
         "portuguese": {
-          "name": "PL40 02",
-          "description": "Link Output conectado ao ISO PL40 02 e selecione a polaridade."
+          "name": "SD041 PL40 02",
+          "description": ""
         },
         "italian": {
-          "name": "PL40 02",
+          "name": "SD041 PL40 02",
           "description": ""
         },
         "german": {
-          "name": "PL40 02",
+          "name": "SD041 PL40 02",
           "description": ""
         },
         "turkish": {
-          "name": "PL40 02",
+          "name": "SD041 PL40 02",
           "description": ""
         },
         "russian": {
-          "name": "PL40 02",
+          "name": "SD041 PL40 02",
           "description": ""
         },
         "polish": {
-          "name": "PL40 02",
+          "name": "SD041 PL40 02",
           "description": ""
         },
         "chinese": {
-          "name": "PL40 02",
+          "name": "SD041 PL40 02",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL40_02",
-        "OUT_POL_PL40_02"
+        "OUT_PHY_SD041_PL40_02",
+        "OUT_POL_SD041_PL40_02"
       ],
       "@labels": [
         "Source",
@@ -60540,56 +61663,56 @@
       ],
       "@input": true
     },
-    "@OUT_PL40_03": {
+    "@SD041_PL40_03": {
       "@translations": {
         "english": {
-          "name": "PL40 03",
-          "description": "Link Output connected to ISO PL40 03 and select polarity."
+          "name": "SD041 PL40 03",
+          "description": ""
         },
         "korean": {
-          "name": "PL40 03",
+          "name": "SD041 PL40 03",
           "description": ""
         },
         "spanish": {
-          "name": "PL40 03",
+          "name": "SD041 PL40 03",
           "description": ""
         },
         "french": {
-          "name": "PL40 03",
+          "name": "SD041 PL40 03",
           "description": ""
         },
         "portuguese": {
-          "name": "PL40 03",
-          "description": "Link Output conectado ao ISO PL40 03 e selecione a polaridade."
+          "name": "SD041 PL40 03",
+          "description": ""
         },
         "italian": {
-          "name": "PL40 03",
+          "name": "SD041 PL40 03",
           "description": ""
         },
         "german": {
-          "name": "PL40 03",
+          "name": "SD041 PL40 03",
           "description": ""
         },
         "turkish": {
-          "name": "PL40 03",
+          "name": "SD041 PL40 03",
           "description": ""
         },
         "russian": {
-          "name": "PL40 03",
+          "name": "SD041 PL40 03",
           "description": ""
         },
         "polish": {
-          "name": "PL40 03",
+          "name": "SD041 PL40 03",
           "description": ""
         },
         "chinese": {
-          "name": "PL40 03",
+          "name": "SD041 PL40 03",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL40_03",
-        "OUT_POL_PL40_03"
+        "OUT_PHY_SD041_PL40_03",
+        "OUT_POL_SD041_PL40_03"
       ],
       "@labels": [
         "Source",
@@ -60654,56 +61777,512 @@
       ],
       "@input": true
     },
-    "@OUT_PL40_04": {
+    "@SD041_PL40_04": {
       "@translations": {
         "english": {
-          "name": "PL40 04",
-          "description": "Link Output connected to ISO PL40 04 and select polarity."
+          "name": "SD041 PL40 04",
+          "description": ""
         },
         "korean": {
-          "name": "PL40 04",
+          "name": "SD041 PL40 04",
           "description": ""
         },
         "spanish": {
-          "name": "PL40 04",
+          "name": "SD041 PL40 04",
           "description": ""
         },
         "french": {
-          "name": "PL40 04",
+          "name": "SD041 PL40 04",
           "description": ""
         },
         "portuguese": {
-          "name": "PL40 04",
-          "description": "Link Output conectado ao ISO PL40 04 e selecione a polaridade."
+          "name": "SD041 PL40 04",
+          "description": ""
         },
         "italian": {
-          "name": "PL40 04",
+          "name": "SD041 PL40 04",
           "description": ""
         },
         "german": {
-          "name": "PL40 04",
+          "name": "SD041 PL40 04",
           "description": ""
         },
         "turkish": {
-          "name": "PL40 04",
+          "name": "SD041 PL40 04",
           "description": ""
         },
         "russian": {
-          "name": "PL40 04",
+          "name": "SD041 PL40 04",
           "description": ""
         },
         "polish": {
-          "name": "PL40 04",
+          "name": "SD041 PL40 04",
           "description": ""
         },
         "chinese": {
-          "name": "PL40 04",
+          "name": "SD041 PL40 04",
           "description": ""
         }
       },
       "children": [
-        "OUT_PHY_PL40_04",
-        "OUT_POL_PL40_04"
+        "OUT_PHY_SD041_PL40_04",
+        "OUT_POL_SD041_PL40_04"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@SD049_PL30_1A2": {
+      "@translations": {
+        "english": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        },
+        "korean": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        },
+        "spanish": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        },
+        "french": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        },
+        "italian": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        },
+        "german": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        },
+        "turkish": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        },
+        "russian": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        },
+        "polish": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        },
+        "chinese": {
+          "name": "SD049 PL30 1A2",
+          "description": ""
+        }
+      },
+      "children": [
+        "OUT_PHY_SD049_PL30_1A2",
+        "OUT_POL_SD049_PL30_1A2"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@SD049_PL30_3A4": {
+      "@translations": {
+        "english": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        },
+        "korean": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        },
+        "spanish": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        },
+        "french": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        },
+        "italian": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        },
+        "german": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        },
+        "turkish": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        },
+        "russian": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        },
+        "polish": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        },
+        "chinese": {
+          "name": "SD049 PL30 3A4",
+          "description": ""
+        }
+      },
+      "children": [
+        "OUT_PHY_SD049_PL30_3A4",
+        "OUT_POL_SD049_PL30_3A4"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@SD049_PL30_5A6": {
+      "@translations": {
+        "english": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        },
+        "korean": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        },
+        "spanish": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        },
+        "french": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        },
+        "italian": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        },
+        "german": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        },
+        "turkish": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        },
+        "russian": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        },
+        "polish": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        },
+        "chinese": {
+          "name": "SD049 PL30 5A6",
+          "description": ""
+        }
+      },
+      "children": [
+        "OUT_PHY_SD049_PL30_5A6",
+        "OUT_POL_SD049_PL30_5A6"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@SD049_PL30_7A8": {
+      "@translations": {
+        "english": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        },
+        "korean": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        },
+        "spanish": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        },
+        "french": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        },
+        "italian": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        },
+        "german": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        },
+        "turkish": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        },
+        "russian": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        },
+        "polish": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        },
+        "chinese": {
+          "name": "SD049 PL30 7A8",
+          "description": ""
+        }
+      },
+      "children": [
+        "OUT_PHY_SD049_PL30_7A8",
+        "OUT_POL_SD049_PL30_7A8"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@SD049_PL31_1A2": {
+      "@translations": {
+        "english": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        },
+        "korean": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        },
+        "spanish": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        },
+        "french": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        },
+        "italian": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        },
+        "german": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        },
+        "turkish": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        },
+        "russian": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        },
+        "polish": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        },
+        "chinese": {
+          "name": "SD049 PL31 1A2",
+          "description": ""
+        }
+      },
+      "children": [
+        "OUT_PHY_SD049_PL31_1A2",
+        "OUT_POL_SD049_PL31_1A2"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@SD049_PL31_3A4": {
+      "@translations": {
+        "english": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        },
+        "korean": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        },
+        "spanish": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        },
+        "french": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        },
+        "italian": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        },
+        "german": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        },
+        "turkish": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        },
+        "russian": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        },
+        "polish": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        },
+        "chinese": {
+          "name": "SD049 PL31 3A4",
+          "description": ""
+        }
+      },
+      "children": [
+        "OUT_PHY_SD049_PL31_3A4",
+        "OUT_POL_SD049_PL31_3A4"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@SD049_PL31_5A6": {
+      "@translations": {
+        "english": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        },
+        "korean": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        },
+        "spanish": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        },
+        "french": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        },
+        "italian": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        },
+        "german": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        },
+        "turkish": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        },
+        "russian": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        },
+        "polish": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        },
+        "chinese": {
+          "name": "SD049 PL31 5A6",
+          "description": ""
+        }
+      },
+      "children": [
+        "OUT_PHY_SD049_PL31_5A6",
+        "OUT_POL_SD049_PL31_5A6"
+      ],
+      "@labels": [
+        "Source",
+        "Polarity"
+      ],
+      "@input": true
+    },
+    "@SD049_PL31_7A8": {
+      "@translations": {
+        "english": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        },
+        "korean": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        },
+        "spanish": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        },
+        "french": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        },
+        "italian": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        },
+        "german": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        },
+        "turkish": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        },
+        "russian": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        },
+        "polish": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        },
+        "chinese": {
+          "name": "SD049 PL31 7A8",
+          "description": ""
+        }
+      },
+      "children": [
+        "OUT_PHY_SD049_PL31_7A8",
+        "OUT_POL_SD049_PL31_7A8"
       ],
       "@labels": [
         "Source",
@@ -63613,99 +65192,6 @@
                   "params": [
                     {
                       "val": {
-                        "cat": "PlotSettings",
-                        "packGraph": true,
-                        "params": [
-                          {
-                            "type": 0,
-                            "val": "WindowDelBeg",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "WindowDelEnd",
-                            "acc": 0
-                          }
-                        ]
-                      },
-                      "type": 1,
-                      "acc": 0
-                    },
-                    {
-                      "type": 1,
-                      "val": {
-                        "cat": "Reject",
-                        "params": [
-                          {
-                            "type": 1,
-                            "val": {
-                              "cat": "RejectChecks",
-                              "params": [
-                                {
-                                  "type": 0,
-                                  "val": "RejCheckTime",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "SplitPkgLength",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "Rej2Check",
-                                  "acc": 0
-                                }
-                              ]
-                            },
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "PhotoReject",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejDur",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejDur2",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejectDeviceDelay",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejectDevice2Delay",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "EncFreq",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejDelClock",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "ManRejState",
-                            "acc": 0
-                          }
-                        ]
-                      },
-                      "acc": 0
-                    },
-                    {
-                      "val": {
                         "cat": "Hoppers",
                         "params": [
                           {
@@ -63730,385 +65216,34 @@
                     },
                     {
                       "val": {
-                        "cat": "MotorControl",
-                        "params": [
-                          {
-                            "val": {
-                              "cat": "VFD0",
-                              "params": [
-                                {
-                                  "type": 0,
-                                  "val": "VfdState0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "EncPulsesPerRev0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdType0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdConversion0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdCurrMax0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdAccelTime0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdDecelTime0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdDir0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdGearRatio0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdPulleyRatio0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdRollerDiameter0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMaxRpm0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdStatus0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "RealBeltSpeed0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdTemp0",
-                                  "acc": 3
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMinFreq0",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMaxFreq0",
-                                  "acc": 0
-                                }
-                              ]
-                            },
-                            "type": 1,
-                            "acc": 0
-                          },
-                          {
-                            "val": {
-                              "cat": "VFD1",
-                              "params": [
-                                {
-                                  "type": 0,
-                                  "val": "VfdState1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "EncPulsesPerRev1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdType1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdConversion1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdCurrMax1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdAccelTime1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdDecelTime1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdDir1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdGearRatio1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdPulleyRatio1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdRollerDiameter1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMaxRpm1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdStatus1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "RealBeltSpeed1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdTemp1",
-                                  "acc": 3
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMinFreq1",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMaxFreq1",
-                                  "acc": 0
-                                }
-                              ]
-                            },
-                            "type": 1,
-                            "acc": 0
-                          },
-                          {
-                            "val": {
-                              "cat": "VFD2",
-                              "params": [
-                                {
-                                  "type": 0,
-                                  "val": "VfdState2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "EncPulsesPerRev2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdType2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdConversion2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdCurrMax2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdAccelTime2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdDecelTime2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdDir2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdGearRatio2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdPulleyRatio2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdRollerDiameter2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMaxRpm2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdStatus2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "RealBeltSpeed2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdTemp2",
-                                  "acc": 3
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMinFreq2",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMaxFreq2",
-                                  "acc": 0
-                                }
-                              ]
-                            },
-                            "type": 1,
-                            "acc": 0
-                          },
-                          {
-                            "val": {
-                              "cat": "VFD3",
-                              "params": [
-                                {
-                                  "type": 0,
-                                  "val": "VfdState3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "EncPulsesPerRev3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdType3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdConversion3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdCurrMax3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdAccelTime3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdDecelTime3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdDir3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdGearRatio3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdPulleyRatio3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdRollerDiameter3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMaxRpm3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdStatus3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "RealBeltSpeed3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdTemp3",
-                                  "acc": 3
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMinFreq3",
-                                  "acc": 0
-                                },
-                                {
-                                  "type": 0,
-                                  "val": "VfdMaxFreq3",
-                                  "acc": 0
-                                }
-                              ]
-                            },
-                            "type": 1,
-                            "acc": 0
-                          }
-                        ]
+                      "cat": "MotorControl",
+                      "params": [      
+                        {
+                          "type": 0,
+                          "val": "VfdState0",
+                          "acc": 0
+                        },
+                        {
+                          "type": 0,
+                          "val": "VfdStatus0",
+                          "acc": 0
+                        },
+                        {
+                          "type": 0,
+                          "val": "VfdDir0",
+                          "acc": 0
+                        },
+                        {
+                          "type": 0,
+                          "val": "OutfeedRunTime",
+                          "acc": 0
+                        },
+                        {
+                          "type": 0,
+                          "val": "VfdSpeed0",
+                          "acc": 0
+                        }                      
+                      ]
                       },
                       "type": 1,
                       "acc": 0
@@ -64456,62 +65591,102 @@
                   "params": [
                     {
                       "type": 0,
-                      "val": "@OUT_PL30_1A2",
+                      "val": "@SD041_PL30_1A2",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL30_3A4",
+                      "val": "@SD041_PL30_3A4",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL30_5A6",
+                      "val": "@SD041_PL30_5A6",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL30_7A8",
+                      "val": "@SD041_PL30_7A8",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL31_1A2",
+                      "val": "@SD041_PL31_1A2",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL31_3A4",
+                      "val": "@SD041_PL31_3A4",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL31_5A6",
+                      "val": "@SD041_PL31_5A6",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL31_7A8",
+                      "val": "@SD041_PL31_7A8",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL40_01",
+                      "val": "@SD041_PL40_01",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL40_02",
+                      "val": "@SD041_PL40_02",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL40_03",
+                      "val": "@SD041_PL40_03",
                       "acc": 0
                     },
                     {
                       "type": 0,
-                      "val": "@OUT_PL40_04",
+                      "val": "@SD041_PL40_04",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@SD049_PL30_1A2",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@SD049_PL30_3A4",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@SD049_PL30_5A6",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@SD049_PL30_7A8",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@SD049_PL31_1A2",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@SD049_PL31_3A4",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@SD049_PL31_5A6",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "@SD049_PL31_7A8",
                       "acc": 0
                     }
                   ]
@@ -64637,6 +65812,16 @@
               },
               {
                 "type": 0,
+                "val": "TeaRefillFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "FlavourRefillFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
                 "val": "RtcLowBatFaultMask",
                 "acc": 0
               },
@@ -64698,6 +65883,36 @@
               {
                 "type": 0,
                 "val": "OutOfRangeFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "TareTeaFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "TareFlavourFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "TareAddbackFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "CalibrateTeaFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "CalibrateFlavourFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "CalibrateAddbackFaultMask",
                 "acc": 0
               }
             ]
@@ -64854,462 +66069,7 @@
       "passAcc": "PassAccAdvProdEdit",
       "cat": "Product Settings",
       "params": [
-        {
-          "type": 1,
-          "val": {
-            "cat": "Weights",
-            "packGraph": true,
-            "params": [
-              {
-                "type": 0,
-                "val": "NominalWgt",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "UnderWeightLim",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "OverWeightLim",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "PkgWeight",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "SettleWeight",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "SettleDur",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "OverWeightAllowed",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "WeightAvgMode",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "FilterFreq",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "WeighingMode",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "WeighingModeLess",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "MavTable",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "SetTolNegErr",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "TolNegErrPct",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "TolNegErrorX2",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "T1Lim",
-                "acc": 0
-              },
-              {
-                "type": 1,
-                "val": {
-                  "display": [
-                    "(function(val){return val == 3})",
-                    "WeighingMode"
-                  ],
-                  "child": 0,
-                  "cat": "Mean Weight",
-                  "params": [
-                    {
-                      "type": 0,
-                      "val": "MeanWeightMode",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "MeanWeightPackCount",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "MeanWeightUpperTol",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "MeanWeightLowerTol",
-                      "acc": 0
-                    }
-                  ]
-                },
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "HistogramBuckets",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "HistogramBucketSize",
-                "acc": 0
-              }
-            ]
-          },
-          "acc": 0
-        },
-        {
-          "type": 1,
-          "val": {
-            "cat": "Overrides",
-            "params": [
-              {
-                "type": 1,
-                "val": {
-                  "cat": "Fault",
-                  "params": [
-                    {
-                      "type": 0,
-                      "val": "FaultClearTimeOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "BeltSpeedFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "PhaseFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "TestSigFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "PeyeBlockFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "AirFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "ExcessRejFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RejectExitFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "TachometerFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "PatternFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "ExitNoPackFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "ExitNewPackFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RtcTimeFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "ProdBackupFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "TareFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RejBinFullFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RejBinDoorFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RejPositionFaultMaskOverride",
-                      "acc": 0
-                    },
-                    {
-                      "type": 0,
-                      "val": "RejectConfirmFaultMaskOverride",
-                      "acc": 0
-                    }
-                  ]
-                },
-                "acc": 0
-              },
-              {
-                "type": 1,
-                "val": {
-                  "cat": "Reject",
-                  "params": [
-                    {
-                      "type": 1,
-                      "val": {
-                        "child": 0,
-                        "cat": "PhotoReject",
-                        "params": [
-                          {
-                            "type": 0,
-                            "val": "PhotoRejectOverride",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "EyePkgLength",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "SplitPkgLength",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "EyeBlockTimeOverride",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "EyeMinGapDistOverride",
-                            "acc": 0
-                          }
-                        ]
-                      },
-                      "acc": 0
-                    },
-                    {
-                      "type": 1,
-                      "val": {
-                        "cat": "RejectOffsets",
-                        "params": [
-                          {
-                            "type": 0,
-                            "val": "RejDelFudge",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejDelFudge2",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejDurFudge",
-                            "acc": 0
-                          },
-                          {
-                            "type": 0,
-                            "val": "RejDurFudge2",
-                            "acc": 0
-                          }
-                        ]
-                      },
-                      "acc": 0
-                    }
-                  ]
-                },
-                "acc": 0
-              }
-            ]
-          },
-          "acc": 0
-        },
-        {
-          "type": 1,
-          "val": {
-            "cat": "Feedback",
-            "params": [
-              {
-                "type": 0,
-                "val": "FeedbackMode",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "FeedbackTarWgt",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "FeedbackHiLim",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "FeedbackLoLim",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "FeedbackDeadZone",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "FeedbackCorRate",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "FeedbackWaitCnt",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "FeedbackSampCnt",
-                "acc": 0
-              }
-            ]
-          },
-          "acc": 0,
-          "display": [
-            "(function(val){return val != 3})",
-            "WeighingMode"
-          ]
-        },
-        {
-          "type": 1,
-          "val": {
-            "cat": "Tare",
-            "params": [
-              {
-                "type": 0,
-                "val": "AutoTaring",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "AutoTareDelay",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "contTareDelay",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "ContTareDelay",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "MaxTareChange",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "TareDur",
-                "acc": 0
-              }
-            ]
-          },
-          "acc": 0
-        },
-        {
-          "type": 1,
-          "val": {
-            "cat": "VFD",
-            "params": [
-              {
-                "type": 0,
-                "val": "VfdBeltSpeed0",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "VfdBeltSpeed1",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "VfdBeltSpeed2",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "VfdBeltSpeed3",
-                "acc": 0
-              },
-              {
-                "type": 0,
-                "val": "SameBeltSpeeds",
-                "acc": 0
-              }
-            ]
-          },
-          "acc": 0
-        },
-        {
-          "type": 0,
-          "val": "SampleResetMinutes",
-          "acc": 0
-        },
-        {
-          "type": 0,
-          "val": "CheckWeightTimeout",
-          "acc": 0
-        }
+          
       ]
     },
     "Batch": {
@@ -65960,17 +66720,17 @@
     },
     "System/Advanced/MotorControl": {
       "@translations": {
-        "english": "Motor Setup",
-        "korean": "Motor Setup",
-        "spanish": "Motor Setup",
-        "french": "Motor Setup",
+        "english": "Auger Setup",
+        "korean": "Auger Setup",
+        "spanish": "Auger Setup",
+        "french": "Auger Setup",
         "portuguese": "Configurações do Motor",
-        "italian": "Motor Setup",
-        "german": "Motor Setup",
-        "turkish": "Motor Setup",
-        "russian": "Motor Setup",
-        "polish": "Motor Setup",
-        "chinese": "Motor Setup"
+        "italian": "Auger Setup",
+        "german": "Auger Setup",
+        "turkish": "Auger Setup",
+        "russian": "Auger Setup",
+        "polish": "Auger Setup",
+        "chinese": "Auger Setup"
       }
     },
     "System/Advanced/Time": {
