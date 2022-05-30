@@ -15,7 +15,7 @@ import "react-vis/dist/style.css";
 import ErrorBoundary from './ErrorBoundary.jsx';
 var onClickOutside = require('react-onclickoutside');
 /** Global variable declarations **/
-const DISPLAYVERSION = '2022/05/18'
+const DISPLAYVERSION = '2022/05/25'
 const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const SPARCBLUE2 = '#30A8E2'
@@ -2286,7 +2286,7 @@ class LandingPage extends React.Component{
                                 <td>
                                     <TeaAndFlavour FlowControlTea={this.state.FlowControlTea} FlowControlFlavour={this.state.FlowControlFlavour} FlowControlAddback={this.state.FlowControlAddback} RefillTea={this.state.RefillTea} RefillFlavour={this.state.RefillFlavour} productRecord={this.state.prec} systemRecord={this.state.srec} liveRecord={this.state.rec} liveWeight={this.state.liveWeight} TeaLiveWeight={this.state.TeaLiveWeight} FlavourLiveWeight={this.state.FlavourLiveWeight}/>
                                     <AddBack RefillAddback={this.state.RefillAddback} productRecord={this.state.prec} systemRecord={this.state.srec} liveRecord={this.state.rec} liveWeight={this.state.liveWeight} AddbackLiveWeight={this.state.AddbackLiveWeight}/>
-                                    <LineGraph flavourCorrectionInterval={this.state.prec['FlavourCorrInterval']} flavourGraphDivisor={this.state.prec['FlavourGraphDivisor']} targetPercentage={this.state.prec['FlavourTargetPct']} FlavourGraph={this.state.FlavourGraph}/>
+                                    <LineGraph flavourCorrFactor={this.state.prec['FlavourCorrFactor']} flavourCorrectionInterval={this.state.prec['FlavourCorrInterval']} flavourGraphDivisor={this.state.prec['FlavourGraphDivisor']} targetPercentage={this.state.prec['FlavourTargetPct']} FlavourGraph={this.state.FlavourGraph}/>
                                     {startButton}{stop}
                                     {silenceAlarmButton}
                                     {statisticsButton}
@@ -2471,8 +2471,8 @@ class LineGraph extends React.Component{
       for(var i = 0; i <= 250; i++){
 
         let objData = {x:i,y:this.props.targetPercentage}
-        let objDataTopRedLine = {x:i,y:this.props.targetPercentage+2}
-        let objDataBottomRedLine = {x:i,y:this.props.targetPercentage-2}
+        let objDataTopRedLine = {x:i,y:this.props.targetPercentage+1}
+        let objDataBottomRedLine = {x:i,y:this.props.targetPercentage-1}
         let objFlavourGraph = {x:i,y:Number(data[i])}
 
         middleLineData.push(objData);
@@ -2482,7 +2482,7 @@ class LineGraph extends React.Component{
       }      
         return(
             <div className='lineGraphSection'>
-              <XYPlot height={280} width= {980}  yDomain={[0, this.props.targetPercentage+8]} xDomain={[250, 0]}>
+              <XYPlot height={255} width= {980}  yDomain={[0, this.props.targetPercentage+8]} xDomain={[250, 0]}>
                 <XAxis style={{ line: {stroke: 'black'}}}/>
                 <YAxis style={{ line: {stroke: 'black'}}} tickFormat={v => `${v}%`}/>
                 <LineSeries data={topLineData} color="red"/>
@@ -2490,6 +2490,9 @@ class LineGraph extends React.Component{
                 <LineSeries data={bottomLineData} color="red"/>
                 <LineSeries data={flavourGraphValues} curve={'curveMonotoneX'} color="black"/>       
               </XYPlot>
+              <div style={{height:20, textAlign:'center',marginTop:-12}}>
+                Each value represents {Number(this.props.flavourCorrFactor * this.props.flavourGraphDivisor).toFixed(1)} seconds
+              </div>
             </div>
         )
     }
@@ -4654,6 +4657,10 @@ class ProductSettings extends React.Component{
       var flavourFeedSpeedMin = '';
       var teaFeedSpeedPurge = '';
       var flavourFeedSpeedPurge = '';
+      var teaMaxRetries = '';
+      var flavourMaxRetries = '';
+      var teaFilterFreq = '' ;
+      var flavourFilterFreq = '';
 
       if(typeof curProd != 'undefined'){
         totalTargetFeedRate = FormatWeight(curProd['TotalTargetFeedRate'],weightUnits)+'/min';
@@ -4693,7 +4700,11 @@ class ProductSettings extends React.Component{
         teaFeedSpeedMin = Number(curProd['TeaFeedSpeedMin']).toFixed(1)+' %';
         flavourFeedSpeedMin = Number(curProd['FlavourFeedSpeedMin']).toFixed(1)+' %';
         teaFeedSpeedPurge = Number(curProd['TeaFeedSpeedPurge']).toFixed(1)+' %';
-        flavourFeedSpeedPurge = Number(curProd['FlavourFeedSpeedMin']).toFixed(1)+' %';
+        flavourFeedSpeedPurge = Number(curProd['FlavourFeedSpeedPurge']).toFixed(1)+' %';
+        teaMaxRetries = curProd['TeaMaxRetries'];
+        flavourMaxRetries = curProd['FlavourMaxRetries'];
+        teaFilterFreq = Number(curProd['TeaFilterFreq']).toFixed(1)+' Hz';
+        flavourFilterFreq = Number(curProd['FlavourFilterFreq']).toFixed(1)+' Hz';
       }
 
       var prodEditAcc = this.props.level >= this.props.srec['PassAccProdEdit'];
@@ -4726,7 +4737,7 @@ class ProductSettings extends React.Component{
         {/*<div style={{display:'inline-block', marginLeft:5, marginTop:-5}}><CircularButton language={this.props.language} onClick={this.onAdvanced} branding={this.props.branding} innerStyle={innerStyle} style={{width:200, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15, boxShadow:'none'}} lab={labTransV2['Advanced'][this.props.language]['name']}/>
         </div>*/}
         
-        <div style={{display:'inline-block', verticalAlign:'top', marginBottom:5}}>
+        <div style={{display:'inline-block', verticalAlign:'top', marginBottom:5, marginTop:5}}>
           <ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FlavourGraphDivisor'} vMap={vMapV2['FlavourGraphDivisor']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={60} w2={300} label={labTransV2['Flavour Graph Divisor'][this.props.language]['name']} value={flavourGraphDivisor} param={vdefByMac[this.props.mac][1][1]['FlavourGraphDivisor']} tooltip={vMapV2['FlavourGraphDivisor']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
         <div>
         <div style={{marginLeft:225, display:'inline-block', verticalAlign:'top', position:'relative',color:'#FFF', fontSize:26,zIndex:1, lineHeight:40+'px', borderRadius:15, backgroundColor:FORTRESSPURPLE2, width:200,textAlign:'center'}}>
@@ -4762,6 +4773,12 @@ class ProductSettings extends React.Component{
 
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedPurge'} vMap={vMapV2['FeedSpeedPurge']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Feed Speed Purge'][this.props.language]['name']} value={teaFeedSpeedPurge} param={vdefByMac[this.props.mac][1][1]['TeaFeedSpeedPurge']}  tooltip={vMapV2['FeedSpeedPurge']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedPurge'} vMap={vMapV2['FeedSpeedPurge']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Feed Speed Purge'][this.props.language]['name']} value={flavourFeedSpeedPurge} param={vdefByMac[this.props.mac][1][1]['FlavourFeedSpeedPurge']} tooltip={vMapV2['FeedSpeedPurge']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'MaxRetries'} vMap={vMapV2['MaxRetries']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Max Retries'][this.props.language]['name']} value={teaMaxRetries} param={vdefByMac[this.props.mac][1][1]['TeaMaxRetries']}  tooltip={vMapV2['MaxRetries']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'MaxRetries'} vMap={vMapV2['MaxRetries']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['Max Retries'][this.props.language]['name']} value={flavourMaxRetries} param={vdefByMac[this.props.mac][1][1]['FlavourMaxRetries']} tooltip={vMapV2['MaxRetries']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
+      
+            <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'teaFilterFreq'} vMap={vMapV2['teaFilterFreq']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['tea Filter Freq'][this.props.language]['name']} value={teaFilterFreq} param={vdefByMac[this.props.mac][1][1]['TeaFilterFreq']}  tooltip={vMapV2['teaFilterFreq']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
+            <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'teaFilterFreq'} vMap={vMapV2['teaFilterFreq']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['tea Filter Freq'][this.props.language]['name']} value={flavourFilterFreq} param={vdefByMac[this.props.mac][1][1]['FlavourFilterFreq']} tooltip={vMapV2['teaFilterFreq']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>
 
             <div style={{marginTop:5}}><ProdSettingEdit acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMax'} vMap={vMapV2['FeedSpeedMax']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMax'][this.props.language]['name']} value={teaFeedSpeedMax} param={vdefByMac[this.props.mac][1][1]['TeaFeedSpeedMax']}  tooltip={vMapV2['FeedSpeedMax']['@translations'][this.props.language]['description']} onEdit={this.sendPacket} editable={true} num={true}/></div>
             <div style={{marginTop:-61, marginLeft:270}}><ProdSettingEdit secondaryColumns={true} acc={prodEditAcc} getMMdep={this.getMMdep}  submitChange={this.submitChange} trans={true} name={'FeedSpeedMax'} vMap={vMapV2['FeedSpeedMax']} language={this.props.language} branding={this.props.branding} h1={40} w1={200} h2={51} w2={250} label={labTransV2['FeedSpeedMax'][this.props.language]['name']} value={flavourFeedSpeedMax} param={vdefByMac[this.props.mac][1][1]['FlavourFeedSpeedMax']} tooltip={vMapV2['FeedSpeedMax']['@translations'][this.props.language]['description']}  onEdit={this.sendPacket} editable={true} num={true}/></div>

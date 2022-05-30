@@ -16415,6 +16415,76 @@
         "name": ""
       }
     },
+    "Max Retries": {
+      "english": {
+        "name": "Max Retries"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
+    "tea Filter Freq": {
+      "english": {
+        "name": "Filter Frequency"
+      },
+      "korean": {
+        "name": ""
+      },
+      "spanish": {
+        "name": ""
+      },
+      "french": {
+        "name": ""
+      },
+      "portuguese": {
+        "name": ""
+      },
+      "italian": {
+        "name": ""
+      },
+      "russian": {
+        "name": ""
+      },
+      "polish": {
+        "name": ""
+      },
+      "chinese": {
+        "name": ""
+      },
+      "german": {
+        "name": ""
+      },
+      "turkish": {
+        "name": ""
+      }
+    },
     "Lower Weight Limit": {
       "english": {
         "name": "Lower Weight Limit"
@@ -16974,6 +17044,110 @@
       "@translations": {
         "english": {
           "name": "Feed Speed Purge",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": " ",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "MaxRetries": {
+      "@translations": {
+        "english": {
+          "name": "Max Retries",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": " ",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "g"
+      ]
+    },
+    "teaFilterFreq": {
+      "@translations": {
+        "english": {
+          "name": "Filter Frequency",
           "description": ""
         },
         "korean": {
@@ -37968,6 +38142,162 @@
       "@translations": {
         "english": {
           "name": "Out of Range",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "OutOfRangeCriticalFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Out of Range Critical",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "OutOfRangeTime": {
+      "@translations": {
+        "english": {
+          "name": "Out of Range Time",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "OutOfRangeCriticalTime": {
+      "@translations": {
+        "english": {
+          "name": "Out of Range Critical Time",
           "description": ""
         },
         "korean": {
@@ -65881,10 +66211,46 @@
                 "acc": 0
               },
               {
-                "type": 0,
-                "val": "OutOfRangeFaultMask",
+                "val": {
+                  "child": 0,
+                  "cat": "OutOfRangeFault",
+                  "params": [
+                    {
+                      "type": 0,
+                      "val": "OutOfRangeFaultMask",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "OutOfRangeTime",
+                      "acc": 0
+                    }
+                  
+                  ]
+                },
+                "type": 1,
                 "acc": 0
               },
+              {
+                "val": {
+                  "child": 0,
+                  "cat": "OutOfRangeCriticalFault",
+                  "params": [
+                    {
+                      "type": 0,
+                      "val": "OutOfRangeCriticalFaultMask",
+                      "acc": 0
+                    },
+                    {
+                      "type": 0,
+                      "val": "OutOfRangeCriticalTime",
+                      "acc": 0
+                    }                   
+                  ]
+                },
+                "type": 1,
+                "acc": 0
+              },              
               {
                 "type": 0,
                 "val": "TareTeaFaultMask",
@@ -66358,19 +66724,34 @@
         "chinese": "Faults"
       }
     },
-    "Fault/BeltSpeedFault": {
+    "Fault/OutOfRangeFault": {
       "@translations": {
-        "english": "Belt Speed",
-        "korean": "Belt Speed",
-        "spanish": "Belt Speed",
-        "french": "Belt Speed",
-        "portuguese": "Velocidade da Esteira ",
-        "italian": "Belt Speed",
-        "german": "Belt Speed",
-        "turkish": "Belt Speed",
-        "russian": "Belt Speed",
-        "polish": "Belt Speed",
-        "chinese": "Belt Speed"
+        "english": "Out Of Range",
+        "korean": "",
+        "spanish": "",
+        "french": "",
+        "portuguese": "",
+        "italian": "",
+        "german": "",
+        "turkish": "",
+        "russian": "",
+        "polish": "",
+        "chinese": ""
+      }
+    },
+    "Fault/OutOfRangeCriticalFault": {
+      "@translations": {
+        "english": "Out Of Range Critical",
+        "korean": "",
+        "spanish": "",
+        "french": "",
+        "portuguese": "",
+        "italian": "",
+        "german": "",
+        "turkish": "",
+        "russian": "",
+        "polish": "",
+        "chinese": ""
       }
     },
     "Fault/TareFault": {
