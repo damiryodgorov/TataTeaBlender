@@ -3,6 +3,7 @@ const ReactDOM = require('react-dom')
 const ifvisible = require('ifvisible');
 const timezoneJSON = require('./timezones.json');
 const FtiSockIo = require('./ftisockio.js')
+var fileDownload = require('js-file-download');
 import { Uint64LE } from 'int64-buffer';
 import { CircularButton } from './buttons.jsx';
 import { CustomKeyboard, EmbeddedKeyboard } from './keyboard.jsx';
@@ -15,7 +16,7 @@ import "react-vis/dist/style.css";
 import ErrorBoundary from './ErrorBoundary.jsx';
 var onClickOutside = require('react-onclickoutside');
 /** Global variable declarations **/
-const DISPLAYVERSION = '2022/05/25'
+const DISPLAYVERSION = '2022/06/24'
 const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const SPARCBLUE2 = '#30A8E2'
@@ -1230,7 +1231,12 @@ class LandingPage extends React.Component{
     /**Response message */
     notify(msg){
       console.log("Received message ", msg)
-        /*if(this.batModal.current.state.show){
+      if(this.statisticsModal.current.state.show)
+      {
+        this.statisticsModal.current.showMsg(msg);
+      }
+      
+      /*if(this.batModal.current.state.show){
           this.batModal.current.showMsg(msg)
         }else if(this.pmodal.current.state.show){
             if(msg == 'Reject Setup is invalid!'){
@@ -2100,6 +2106,7 @@ class LandingPage extends React.Component{
     /************Status Bar Functions************/
     clearFaults(){
       this.sendPacket('clearFaults');
+      this.sendPacket('clearWarnings')
     }
     clearWarnings(){
       this.sendPacket('clearWarnings')
@@ -2123,8 +2130,9 @@ class LandingPage extends React.Component{
     var grbrdcolor = '#e1e1e1'
     var language = this.state.language
     var mixtureImg = 'assets/tataTeaBlender/beaker.png';
-    var silenceAlarmButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:298, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Silence Alarm'} onClick={this.onSilenceAlarmOpen}/> 
-    var statisticsButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Statistics'} onClick={this.onStatisticsOpen}/>
+    var silenceAlarmButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:180, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Silence Alarm'} onClick={this.onSilenceAlarmOpen}/> 
+    var statisticsButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:180, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Statistics'} onClick={this.onStatisticsOpen}/>
+    var clearFaultsButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:180, display:'inline-block',marginTop:12,marginLeft:171, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Clear Faults'} onClick={this.clearFaults}/> 
 
     if(this.state.branding == 'FORTRESS'){
       backgroundColor = FORTRESSPURPLE1
@@ -2288,6 +2296,7 @@ class LandingPage extends React.Component{
                                     <AddBack RefillAddback={this.state.RefillAddback} productRecord={this.state.prec} systemRecord={this.state.srec} liveRecord={this.state.rec} liveWeight={this.state.liveWeight} AddbackLiveWeight={this.state.AddbackLiveWeight}/>
                                     <LineGraph flavourCorrFactor={this.state.prec['FlavourCorrFactor']} flavourCorrectionInterval={this.state.prec['FlavourCorrInterval']} flavourGraphDivisor={this.state.prec['FlavourGraphDivisor']} targetPercentage={this.state.prec['FlavourTargetPct']} FlavourGraph={this.state.FlavourGraph}/>
                                     {startButton}{stop}
+                                    {clearFaultsButton}
                                     {silenceAlarmButton}
                                     {statisticsButton}
                                 </td>
@@ -2330,8 +2339,8 @@ class LandingPage extends React.Component{
                         <div style={{color:'#e1e1e1'}}><div style={{display:'block', fontSize:30, textAlign:'left', paddingLeft:10}}>{labTransV2['Faults'][this.state.language]['name']}</div></div>
                       <FaultDiv language={this.state.language} branding={this.state.branding} pAcc={(this.state.srec['PassOn'] == 0) || (this.state.level >= this.state.srec['PassAccClrFaultWarn'])} clearWarnings={this.clearWarnings} clearFaults={this.clearFaults} faults={this.state.faultArray} warnings={this.state.warningArray}/>
                     </Modal>
-                    <Modal x={true} ref={this.statisticsModal} Style={{maxWidth:1210, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPrimeClose}>
-                        <Statistics prodName={this.state.prec['ProdName']} productRecords={this.state.prec} systemRecords={this.state.rec} sendPacket={this.sendPacket}/>
+                    <Modal language={this.state.language} x={true} ref={this.statisticsModal} Style={{maxWidth:1210, width:'95%'}} innerStyle={{background:backgroundColor, maxHeight:650}} onClose={this.onPrimeClose}>
+                        <Statistics prodName={this.state.prec['ProdName']} productRecords={this.state.prec} systemRecords={this.state.rec} currentBatchID={this.state.srec['CurrentBatchID']} sendPacket={this.sendPacket}/>
                     </Modal>
                     <AlertModal language={this.state.language} ref={this.stopConfirm} accept={this.stopConfirmed}><div style={{color:"#e1e1e1"}}>{labTransV2['end the current batch. Confirm?'][this.state.language]['name']}
                     </div></AlertModal>
@@ -2364,10 +2373,13 @@ class TeaAndFlavour extends React.Component{
       var flavourActualFeedRate = '';
       var teaFeedSpeed = 0;
       var flavourFeedSpeed = 0;
-
+      var teaTargetPct = '';
+      var flavourTargetPct = '';
       if(typeof this.props.productRecord!='undefined' && typeof this.props.liveRecord!='undefined'){
         teaLiveWeight = FormatWeight(this.props.TeaLiveWeight, weightUnits);
         flavourLiveWeight = FormatWeight(this.props.FlavourLiveWeight, weightUnits);
+        teaTargetPct = Number(this.props.productRecord['TeaTargetPct']).toFixed(2)+' %';
+        flavourTargetPct = Number(this.props.productRecord['FlavourTargetPct']).toFixed(2)+' %';
         teaTargetFeedRate = FormatWeight(this.props.productRecord['TeaTargetFeedRate'], weightUnits);
         flavourTargetFeedRate = FormatWeight(this.props.productRecord['FlavourTargetFeedRate'], weightUnits);
         teaActualFeedRate = FormatWeight(this.props.liveRecord['TeaFeedRate'], weightUnits);
@@ -2384,8 +2396,8 @@ class TeaAndFlavour extends React.Component{
                     <tbody>
                         <tr>
                             <td style={{backgroundColor:'#5d5480', borderRadius:25, color:'white'}}>Hopper</td>
-                            <td style={{fontWeight:'bold'}}>TEA</td>
-                            <td style={{fontWeight:'bold'}}>FLAVOUR</td>
+                            <td style={{fontWeight:'bold'}}>TEA : {teaTargetPct}</td>
+                            <td style={{fontWeight:'bold'}}>FLAVOUR : {flavourTargetPct}</td>
                         </tr>
                         <tr>
                             <td style={{backgroundColor:'#5d5480', borderRadius:25, color:'white'}}>Live Weight Tared</td>
@@ -4946,8 +4958,9 @@ class ProductSettings extends React.Component{
 class Statistics extends React.Component{
   constructor(props){
     super(props)
-    this.state={clear:false};
+    this.state={clear:false,bRec:''};
     this.onClearStatistics = this.onClearStatistics.bind(this);
+    this.downloadBatch = this.downloadBatch.bind(this);
   }
   shouldComponentUpdate(nextProps, nextState) {
     if(this.state.clear){
@@ -4965,6 +4978,20 @@ class Statistics extends React.Component{
     this.setState({clear:true});
     this.props.sendPacket('ClearStatistics');
   }
+  downloadBatch(){
+    var currentBatchID = this.props.currentBatchID;
+    var strZeros = ""
+    for (var n=0; n < (11-currentBatchID.toString().length); n++){
+      strZeros+="0"
+    }
+    var batchIdStr = strZeros+currentBatchID.toString();
+    this.props.sendPacket('ClearStatistics');
+
+    setTimeout(()=>{
+      socket.emit('getTftp', {filename:batchIdStr+'.csv', opts:{mac:macAddress.split('-').join('').toUpperCase()}})
+    },1500)
+  }
+
   render(){      
     var content = ''
     var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
@@ -4973,12 +5000,12 @@ class Statistics extends React.Component{
     var weightUnits = this.props.systemRecords['WeightUnits']
     var teaTotalWeight = '';
     var flavourTotalWeight = '';
-    var addbackTotalWeight = '';
     var totalWeight = '';
     var totalTeaPct = '';
     var totalFlavourPct= '';
     var totalTargetFeedRate = '';
     var productionMinutes = '';
+    var statisticsMinutes = '';
     var totalAddbackWeight = '';
     var totalPlusAddbackWeight = '';
     if(typeof this.props.systemRecords!='undefined' && typeof this.props.systemRecords!='undefined'){
@@ -4989,9 +5016,11 @@ class Statistics extends React.Component{
       totalTeaPct = Number(this.props.systemRecords['TotalTeaPct']).toFixed(2)+'%';
       totalFlavourPct = Number(this.props.systemRecords['TotalFlavourPct']).toFixed(2)+'%';
       productionMinutes = Number(this.props.systemRecords['ProductionMinutes']).toFixed(1)+' min';
+      statisticsMinutes = Number(this.props.systemRecords['StatisticsMinutes']).toFixed(1)+' min';
       totalAddbackWeight = FormatWeight(this.props.systemRecords['TotalAddbackWeight'], weightUnits);
       totalPlusAddbackWeight = FormatWeight(this.props.systemRecords['TotalPlusAddbackWeight'], weightUnits);
     }
+
     content =( 
       <div style={{background:'#e1e1e1', padding:5, width:1155,height:566}}>
         <div>
@@ -5006,6 +5035,9 @@ class Statistics extends React.Component{
             <th style={headerStyle}>
               Production Minutes
             </th>
+            <th style={headerStyle}>
+              Statistics Minutes
+            </th>
           </tr>
           <tr>
             <td style={dataStyle}>
@@ -5016,6 +5048,9 @@ class Statistics extends React.Component{
             </td>
             <td style={dataStyle}>
               {productionMinutes}
+            </td>
+            <td style={dataStyle}>
+              {statisticsMinutes}
             </td>
           </tr>
           <tr>
@@ -5087,7 +5122,8 @@ class Statistics extends React.Component{
             </td>
           </tr>
         </table>
-        <CircularButton branding={'FORTRESS'} language={'english'} innerStyle={innerStyle} style={{width:250, display:'inline-block',marginLeft:870,marginTop:60, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Clear'} onClick={this.onClearStatistics}/>
+        <CircularButton branding={'FORTRESS'} language={'english'} innerStyle={innerStyle} style={{width:250, marginLeft:600,marginTop:60, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Export'} onClick={this.downloadBatch}/>
+        <CircularButton branding={'FORTRESS'} language={'english'} innerStyle={innerStyle} style={{width:250, marginLeft:880,marginTop:-60, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Clear'} onClick={this.onClearStatistics}/>
         </div>
       </div>)
     return <div style={{width:1}}>
