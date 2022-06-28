@@ -16,7 +16,7 @@ import "react-vis/dist/style.css";
 import ErrorBoundary from './ErrorBoundary.jsx';
 var onClickOutside = require('react-onclickoutside');
 /** Global variable declarations **/
-const DISPLAYVERSION = '2022/06/24'
+const DISPLAYVERSION = '2022/06/28'
 const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const SPARCBLUE2 = '#30A8E2'
