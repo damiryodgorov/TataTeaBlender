@@ -16,7 +16,7 @@ import "react-vis/dist/style.css";
 import ErrorBoundary from './ErrorBoundary.jsx';
 var onClickOutside = require('react-onclickoutside');
 /** Global variable declarations **/
-const DISPLAYVERSION = '2022/06/28'
+const DISPLAYVERSION = '2022/06/29'
 const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const SPARCBLUE2 = '#30A8E2'
@@ -2132,7 +2132,7 @@ class LandingPage extends React.Component{
     var mixtureImg = 'assets/tataTeaBlender/beaker.png';
     var silenceAlarmButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:180, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Silence Alarm'} onClick={this.onSilenceAlarmOpen}/> 
     var statisticsButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:180, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Statistics'} onClick={this.onStatisticsOpen}/>
-    var clearFaultsButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:180, display:'inline-block',marginTop:12,marginLeft:171, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Clear Faults'} onClick={this.clearFaults}/> 
+    var clearFaultsButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:180, display:'inline-block',marginTop:12,marginLeft:213, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Clear Faults'} onClick={this.clearFaults}/> 
 
     if(this.state.branding == 'FORTRESS'){
       backgroundColor = FORTRESSPURPLE1
@@ -2154,36 +2154,37 @@ class LandingPage extends React.Component{
     var sttxt = labTransV2['Start Text'][language]['name']
    
     // if CanStartBelts == 0
-    startButton = <div className={psbtklass} style={{background:'#a9a9a9', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+    startButton = <div className={psbtklass} style={{background:'#a9a9a9', width:180, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
     <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div>
     </div>
 
     stop = ''
     if(this.state.rec['BatchRunning'] == 0){
       if(this.state.rec['CanStartBelts'] == 1){
-        startButton = <div className={psbtklass} onClick={this.start} style={{background:'#11DD11', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+        startButton = <div className={psbtklass} onClick={this.start} style={{background:'#11DD11', width:180, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60, boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
           <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div>
         </div> 
       }
     }
     else if(this.state.rec['BatchRunning'] == 1){
-      startButton =<div className={psbtklass} onClick={this.pause} style={{background:'#FFFF00', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+      startButton =<div className={psbtklass} onClick={this.pause} style={{background:'#FFFF00', width:180, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
         <img src={pauseb} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['Pause/Stop'][language]['name']}</div>
       </div>
       stop = ''
     }
     else if(this.state.rec['BatchRunning'] == 2){
       sttxt = 'Resume'
-      startButton = <div onClick={this.resume} className={psbtklass} style={{background:'#11DD11', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+      startButton = <div onClick={this.resume} className={psbtklass} style={{background:'#11DD11', width:180, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
       <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div>
       </div>
       
-      stop = <div onClick={this.stop} className={psbtklass} style={{background:'#FF0101', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,  boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+      stop = <div onClick={this.stop} className={psbtklass} style={{background:'#FF0101', width:180, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,  boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
       <img src={stp} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{labTransV2['End Batch'][language]['name']}</div>
       </div> 
-      silenceAlarmButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:220, display:'inline-block',marginTop:12,marginLeft:65, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Silence Alarm'} onClick={this.onSilenceAlarmOpen}/> 
+      clearFaultsButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:180, display:'inline-block',marginTop:12,marginLeft:20, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Clear Faults'} onClick={this.clearFaults}/> 
+      silenceAlarmButton = <CircularButton language={'english'} branding={'TATA'} innerStyle={innerStyle2} style={{width:180, display:'inline-block',marginTop:12,marginLeft:10, marginRight:5, borderWidth:1,height:60, borderRadius:25}} lab={'Silence Alarm'} onClick={this.onSilenceAlarmOpen}/> 
       if(this.state.rec['CanStartBelts'] == 0){
-        startButton = <div className={psbtklass} style={{background:'#a9a9a9', width:220, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
+        startButton = <div className={psbtklass} style={{background:'#a9a9a9', width:180, float:'left', lineHeight:'60px',color:psbtcolor,font:30, display:'inline-block',marginTop:12, marginRight:5, borderWidth:1,height:60,boxShadow:'inset 2px 4px 7px 0px rgba(0,0,0,0.75)'}}> 
         <img src={pl} style={{display:'inline-block', marginLeft:-15, width:30, verticalAlign:'middle'}}/><div style={{display:'inline-block'}}>{sttxt}</div>
         </div> 
       }

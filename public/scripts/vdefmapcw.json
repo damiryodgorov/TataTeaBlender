@@ -38037,7 +38037,7 @@
     "OutfeedFaultMask": {
       "@translations": {
         "english": {
-          "name": "Outfeed Fault",
+          "name": "Outfeed Bin Full",
           "description": "Connected to Outfeed Hopper Sensor."
         },
         "korean": {
@@ -38090,6 +38090,110 @@
       "@translations": {
         "english": {
           "name": "Fpga Fault",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "NeedToPrimeFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Need to Prime",
+          "description": ""
+        },
+        "korean": {
+          "name": "",
+          "description": ""
+        },
+        "spanish": {
+          "name": "",
+          "description": ""
+        },
+        "french": {
+          "name": "",
+          "description": ""
+        },
+        "portuguese": {
+          "name": "",
+          "description": ""
+        },
+        "italian": {
+          "name": "",
+          "description": ""
+        },
+        "german": {
+          "name": "",
+          "description": ""
+        },
+        "turkish": {
+          "name": "",
+          "description": ""
+        },
+        "russian": {
+          "name": "",
+          "description": ""
+        },
+        "polish": {
+          "name": "",
+          "description": ""
+        },
+        "chinese": {
+          "name": "",
+          "description": ""
+        }
+      },
+      "children": [],
+      "@labels": [
+        "Signal Fault"
+      ]
+    },
+    "PrimingFaultMask": {
+      "@translations": {
+        "english": {
+          "name": "Priming",
           "description": ""
         },
         "korean": {
@@ -65572,7 +65676,12 @@
                           "type": 0,
                           "val": "VfdSpeed0",
                           "acc": 0
-                        }                      
+                        },
+                        {
+                          "type": 0,
+                          "val": "VfdCurrMax0",
+                          "acc": 0
+                        }                       
                       ]
                       },
                       "type": 1,
@@ -66279,6 +66388,16 @@
               {
                 "type": 0,
                 "val": "CalibrateAddbackFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "NeedToPrimeFaultMask",
+                "acc": 0
+              },
+              {
+                "type": 0,
+                "val": "PrimingFaultMask",
                 "acc": 0
               }
             ]
