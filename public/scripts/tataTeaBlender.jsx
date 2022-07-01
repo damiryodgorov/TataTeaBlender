@@ -2246,7 +2246,7 @@ class LandingPage extends React.Component{
         <CircularButton language={this.state.language} branding={this.state.branding} innerStyle={innerStyle} style={{width:380, display:'inline-block',marginLeft:5, marginRight:5, borderWidth:5,height:43, borderRadius:15}} onClick={this.calWeightSend} lab={labTransV2['Calibrate'][language]['name']}/>
         </div>)*/
 
-      unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} CalibratingTea={this.state.CalibratingTea} CalibratingFlavour={this.state.CalibratingFlavour} CalibratingAddback={this.state.CalibratingAddback} setTrans={this.setTrans} setTheme={this.setTheme} onCal={'this.calWeightSend'} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
+      unused = <div style={{background:'#e1e1e1', padding:10}}><SettingsPage resetCalibration={this.resetCalibration} soc={this.props.soc} black={true} submitList={this.listChange} submitChange={this.transChange} submitTooltip={this.submitTooltip} CalibratingTea={this.state.CalibratingTea} CalibratingFlavour={this.state.CalibratingFlavour} CalibratingAddback={this.state.CalibratingAddback} setTrans={this.setTrans} setTheme={this.setTheme} onCal={'this.calWeightSend'} branding={this.state.branding} int={false} usernames={this.state.usernames} mobile={false} Id={'uSD'} language={language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.state.ioBITs} goBack={this.goBack} accLevel={this.props.acc} ws={this.props.ws} ref ={this.usd} data={this.state.data} 
         onHandleClick={this.settingClick} dsp={this.state.curDet.ip} mac={this.state.curDet.mac} cob2={[this.state.unusedList]} cvdf={vdefByMac[this.state.curDet.mac][4]} sendPacket={this.sendPacket} prodSettings={this.state.prec} sysSettings={this.state.srec} dynSettings={this.state.rec} framRec={this.state.fram} level={4} accounts={this.state.usernames} vdefMap={this.state.vmap}/></div>
     }else{
       dets = this.renderModal()
@@ -5647,9 +5647,9 @@ class SettingsPageWSB extends React.Component{
       cob = this.props.cob2
     }
     
-    var sd =<React.Fragment><div > <SettingsPage level={this.props.level} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} CalibratingTea={this.props.CalibratingTea} CalibratingFlavour={this.props.CalibratingFlavour} CalibratingAddback={this.props.CalibratingAddback} onCal={this.props.onCal} onCalCancel={this.props.onCalCancel} soc={this.props.soc} timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst} toggleGraph={this.toggleGraph} openUnused={this.props.openUnused} submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} 
+    var sd =<React.Fragment><div > <SettingsPage resetCalibration={this.props.resetCalibration} level={this.props.level} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} CalibratingTea={this.props.CalibratingTea} CalibratingFlavour={this.props.CalibratingFlavour} CalibratingAddback={this.props.CalibratingAddback} onCal={this.props.onCal} onCalCancel={this.props.onCalCancel} soc={this.props.soc} timezones={this.props.timezones} timeZone={this.props.timeZone} dst={this.props.dst} toggleGraph={this.toggleGraph} openUnused={this.props.openUnused} submitList={this.props.submitList} submitChange={this.props.submitChange}  submitTooltip={this.props.submitTooltip} vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} 
       int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = {this.sd} data={this.state.data} 
-          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={this.props.level}/>
+          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={this.props.level}/>
       </div>
       <div style={{display:'none'}}> <AccountControl soc={this.props.soc} goBack={this.backAccount} mobile={false} level={this.props.level} accounts={this.props.accounts} ip={this.props.dsp} language={this.props.language} branding={this.props.branding} val={this.props.level}/>
       </div></React.Fragment>
@@ -5661,8 +5661,8 @@ class SettingsPageWSB extends React.Component{
       </div></React.Fragment>
     }else if(this.state.mot){
       sd = <React.Fragment>
-        <div style={{display:'none'}}> <SettingsPage level={this.props.level} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} CalibratingTea={this.props.CalibratingTea} CalibratingFlavour={this.props.CalibratingFlavour} CalibratingAddback={this.props.CalibratingAddback} onCal={this.props.onCal} onCalCancel={this.props.onCalCancel} soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
-          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} framRec={this.props.framRec} level={4}/>
+        <div style={{display:'none'}}> <SettingsPage resetCalibration={this.props.resetCalibration} level={this.props.level} sysSettings={this.props.sysSettings} dynSettings={this.props.dynSettings} CalibratingTea={this.props.CalibratingTea} CalibratingFlavour={this.props.CalibratingFlavour} CalibratingAddback={this.props.CalibratingAddback} onCal={this.props.onCal} onCalCancel={this.props.onCalCancel} soc={this.props.soc} submitList={this.props.submitList} submitChange={this.props.submitChange} submitTooltip={this.props.submitTooltip}  vdefMap={this.props.vdefMap} setTrans={this.props.setTrans} setTheme={this.props.setTheme} black={true} wsb={true} branding={this.props.branding} int={false} usernames={[]} mobile={false} Id={'SD'} language={this.props.language} mode={'config'} setOverride={this.setOverride} faultBits={[]} ioBits={this.props.ioBits} goBack={this.props.goBack} accLevel={this.props.accLevel} ws={this.props.ws} ref = 'sd' data={this.state.data} 
+          onHandleClick={this.onHandleClick} dsp={this.props.dsp} mac={this.props.mac} cob2={this.props.cob2} cvdf={this.props.cvdf} sendPacket={this.props.sendPacket} prodSettings={this.props.prodSettings} framRec={this.props.framRec} level={4}/>
       </div>
 
       <div>
@@ -8873,7 +8873,6 @@ class CalibrationControl extends React.Component{
   }
   render(){
     var calStr = labTransV2['Press calibrate to start calibration'][this.props.language]['name']+'. '+ '\n' +labTransV2['Ensure weight conveyor is empty'][this.props.language]['name']+'.'
-    var calibPicture;
     if(this.props.calibState == 1){
       calStr = labTransV2['Taring'][this.props.language]['name']+'..'
     }else if(this.props.calibState == 2){
@@ -8890,17 +8889,14 @@ class CalibrationControl extends React.Component{
       calStr = labTransV2['Calibration Failed'][this.props.language]['name']+'.'
     }else if(this.props.calibState == 8){
       calStr = labTransV2['Place calibration weight on position 1'][this.props.language]['name']+'.'
-      calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
     }else if(this.props.calibState == 9){
       calStr = labTransV2['Calibrating loadcell 1'][this.props.language]['name']+'..'
     }else if(this.props.calibState == 10){
       calStr = labTransV2['Place calibration weight on position 2'][this.props.language]['name']+'.'
-      calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
     }else if(this.props.calibState == 11){
       calStr = labTransV2['Calibrating loadcell 2'][this.props.language]['name']+'..'
     }else if(this.props.calibState == 12){
       calStr = labTransV2['Place calibration weight on position 3'][this.props.language]['name']+'.'
-      calibPicture= <img src='assets/calibrationPicture.png' style={{maxHeight:250, maxWidth:300, display:'block', margin:'auto'}}/> 
     }else if(this.props.calibState == 13){
       calStr = labTransV2['Calibrating loadcell 3'][this.props.language]['name']+'..'
     }else if(this.props.calibState == 14){
@@ -8922,12 +8918,11 @@ class CalibrationControl extends React.Component{
         </div>      
     }
     return <div>
-        <div style={{background:'#e1e1e1', padding:5, height:this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 430 : 250}}>
+        <div style={{background:'#e1e1e1', padding:5, height:250}}>
           <span ><h2 style={{textAlign:'center', fontSize:26, marginTop:-5,fontWeight:500, color:'#000', borderBottom:'1px solid #000'}} ><div style={{display:'inline-block', textAlign:'center'}}>{labTransV2['Calibration Process'][this.props.language]['name']}</div></h2></span>
 
-          <div style={{marginTop: this.props.calibState == 8 || this.props.calibState == 10 || this.props.calibState == 12 ? 20 : 50}}>
+          <div style={{marginTop:50}}>
               <div style={{fontSize:24, textAlign:'center'}}>
-                {calibPicture}
                 {calStr}
               </div>
                 {calBut}

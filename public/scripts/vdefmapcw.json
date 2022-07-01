@@ -14527,7 +14527,7 @@
     },
     "Ensure weight conveyor is empty": {
       "english": {
-        "name": "Ensure weight conveyor is empty before starting"
+        "name": "Ensure vibratory feeder is empty before starting"
       },
       "korean": {
         "name": ""
@@ -14539,7 +14539,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Assegurar que o módulo de pesagem está vazio antes de iniciar"
+        "name": ""
       },
       "italian": {
         "name": ""
@@ -14632,7 +14632,7 @@
     },
     "Place calibration weight on weight conv..": {
       "english": {
-        "name": "Place calibration weight on weight conveyor and press Calibrate"
+        "name": "Place calibration weight on vibratory feeder and press Calibrate"
       },
       "korean": {
         "name": ""
@@ -14644,7 +14644,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Coloque o peso de calibração no transportador de peso e pressione Calibrar"
+        "name": ""
       },
       "italian": {
         "name": ""
@@ -14807,7 +14807,7 @@
     },
     "Place calibration weight on position 1": {
       "english": {
-        "name": "Place calibration weight on position 1 and press Calibrate"
+        "name": "Place calibration weight on the back of loadcell platform and press Calibrate"
       },
       "korean": {
         "name": ""
@@ -14819,7 +14819,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Coloque o peso de calibração na posição 1 e pressione Calibrar"
+        "name": ""
       },
       "italian": {
         "name": ""
@@ -14877,7 +14877,7 @@
     },
     "Place calibration weight on position 2": {
       "english": {
-        "name": "Place calibration weight on position 2 and press Calibrate"
+        "name": "Place calibration weight on the back of loadcell platform and press Calibrate"
       },
       "korean": {
         "name": ""
@@ -14889,7 +14889,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Coloque o peso de calibração na posição 2 e pressione Calibrar"
+        "name": ""
       },
       "italian": {
         "name": ""
@@ -14947,7 +14947,7 @@
     },
     "Place calibration weight on position 3": {
       "english": {
-        "name": "Place calibration weight on position 3 and press Calibrate"
+        "name": "Place calibration weight on the back of loadcell platform and press Calibrate"
       },
       "korean": {
         "name": ""
@@ -14959,7 +14959,7 @@
         "name": ""
       },
       "portuguese": {
-        "name": "Coloque o peso de calibração na posição 3 e pressione Calibrar"
+        "name": ""
       },
       "italian": {
         "name": ""
