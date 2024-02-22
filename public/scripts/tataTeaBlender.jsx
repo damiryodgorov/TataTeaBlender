@@ -16,7 +16,7 @@ import "react-vis/dist/style.css";
 import ErrorBoundary from './ErrorBoundary.jsx';
 var onClickOutside = require('react-onclickoutside');
 /** Global variable declarations **/
-const DISPLAYVERSION = '2022/06/29'
+const DISPLAYVERSION = '2022/07/22'
 const FORTRESSPURPLE1 = 'rgb(40, 32, 72)'
 const FORTRESSPURPLE2 = '#5d5480'
 const SPARCBLUE2 = '#30A8E2'
@@ -2190,7 +2190,6 @@ class LandingPage extends React.Component{
       }
 
     }
-   
     var logklass = 'logout'
     if(this.state.user == -1){
       logklass = 'login'
@@ -4035,9 +4034,11 @@ class ProductSettings extends React.Component{
       }
     }
     var self = this;
-    console.log("n is ", n);
-    console.log("v is ", v);
     this.props.sendPacket(n,v)
+    if(self.props.drec['BatchRunning'] == 0){
+      this.props.sendPacket('refresh_buffer')
+      this.props.sendPacket('refresh',6)
+    }
   }
   onAdvanced(){
     //Show SettingsPage
@@ -4605,7 +4606,6 @@ class ProductSettings extends React.Component{
       if(this.props.runningProd == this.props.editProd){
         curProd = this.props.curProd
       }
-
       if(this.props.prods[this.state.selProd]){
         curProd = this.props.prods[this.state.selProd]
       }
@@ -4674,7 +4674,6 @@ class ProductSettings extends React.Component{
       var flavourMaxRetries = '';
       var teaFilterFreq = '' ;
       var flavourFilterFreq = '';
-
       if(typeof curProd != 'undefined'){
         totalTargetFeedRate = FormatWeight(curProd['TotalTargetFeedRate'],weightUnits)+'/min';
         flavourGraphDivisor = curProd['FlavourGraphDivisor'];
@@ -4940,9 +4939,7 @@ class ProductSettings extends React.Component{
       <CopyModal language={this.props.language} ref={this.cfModal}  branding={this.props.branding}/>
       <DeleteModal language={this.props.language} ref={this.dltModal} branding={this.props.branding} deleteProd={this.deleteProdConfirm}/>
       <Modal language={this.props.language} x={true} Style={{maxWidth:1100}} innerStyle={{maxHeight:600}} ref={this.pgm} branding={this.props.branding}>
-        
         <PromptModal language={this.props.language} branding={this.props.branding} ref={this.pmd2} save={this.saveProductPassThrough} discard={this.passThrough} onClose={this.onPromptCancel}/>
-      
       </Modal>
       <Modal language={this.props.language} x={true} Style={{width:870, marginTop:50}} ref={this.pmgmt} branding={this.props.branding}>
         {createNew}
@@ -4987,7 +4984,7 @@ class Statistics extends React.Component{
     }
     var batchIdStr = strZeros+currentBatchID.toString();
     this.props.sendPacket('ClearStatistics');
-
+    console.log("batchIdStr is ", batchIdStr);
     setTimeout(()=>{
       socket.emit('getTftp', {filename:batchIdStr+'.csv', opts:{mac:macAddress.split('-').join('').toUpperCase()}})
     },1500)
@@ -4995,6 +4992,7 @@ class Statistics extends React.Component{
 
   render(){      
     var content = ''
+    var exportStatisticBtn = '';
     var innerStyle = {display:'inline-block', position:'relative', verticalAlign:'middle',height:'100%',width:'100%',color:'#1C3746',fontSize:30,lineHeight:'40px'}
     var headerStyle = {height:50,width:300, backgroundColor:'#5D5480', color:'#fff', borderRadius:15, textAlign:'center', fontSize:20 ,lineHeight:'40px'}
     var dataStyle = {height:50,width:300,fontSize:25, textAlign:'center', lineHeight:'40px'}
@@ -5009,6 +5007,7 @@ class Statistics extends React.Component{
     var statisticsMinutes = '';
     var totalAddbackWeight = '';
     var totalPlusAddbackWeight = '';
+    exportStatisticBtn = <CircularButton disabled={true} branding={'FORTRESS'} language={'english'} innerStyle={innerStyle} style={{width:250, marginLeft:600,marginTop:60, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Export'} onClick={this.downloadBatch}/>
     if(typeof this.props.systemRecords!='undefined' && typeof this.props.systemRecords!='undefined'){
       totalTargetFeedRate = FormatWeight(this.props.productRecords['TotalTargetFeedRate'],weightUnits)+'/min';
       teaTotalWeight = FormatWeight(this.props.systemRecords['TotalTeaWeight'], weightUnits);
@@ -5021,7 +5020,9 @@ class Statistics extends React.Component{
       totalAddbackWeight = FormatWeight(this.props.systemRecords['TotalAddbackWeight'], weightUnits);
       totalPlusAddbackWeight = FormatWeight(this.props.systemRecords['TotalPlusAddbackWeight'], weightUnits);
     }
-
+    if(this.props.systemRecords['ExtUsbConnected'] == 1 ){
+      exportStatisticBtn = <CircularButton branding={'FORTRESS'} language={'english'} innerStyle={innerStyle} style={{width:250, marginLeft:600,marginTop:60, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Export'} onClick={this.downloadBatch}/>
+    }
     content =( 
       <div style={{background:'#e1e1e1', padding:5, width:1155,height:566}}>
         <div>
@@ -5123,7 +5124,7 @@ class Statistics extends React.Component{
             </td>
           </tr>
         </table>
-        <CircularButton branding={'FORTRESS'} language={'english'} innerStyle={innerStyle} style={{width:250, marginLeft:600,marginTop:60, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Export'} onClick={this.downloadBatch}/>
+        {exportStatisticBtn}
         <CircularButton branding={'FORTRESS'} language={'english'} innerStyle={innerStyle} style={{width:250, marginLeft:880,marginTop:-60, marginRight:5, borderWidth:5,height:43, borderRadius:15}} lab={'Clear'} onClick={this.onClearStatistics}/>
         </div>
       </div>)

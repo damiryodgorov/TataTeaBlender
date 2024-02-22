@@ -1401,7 +1401,7 @@ wss.on('connection', function(scket, req){
     })
   })
   socket.on('getTftp', function(file){
-    sendTftp('/batches/'+file.filename+'.csv', file.opts)
+    sendTftp('/batches/'+file.filename, file.opts)
   })
   socket.on('sendTftp',function(fpath){
     let opts = {}
