@@ -1,27 +1,27 @@
+/**Styling general elements on the page**/
 html, body {
-  width : 100%;
-  height: 100%;
-  overscroll-behavior: none;
-  touch-action: none;
+    width : 100%;
+    height: 100%;
+    overscroll-behavior: none;
+    touch-action: none;
 }
 body{
-   /* min-width: 290px;*/
     user-select: none;
-  /*  max-width: 1028px;*/
-   /* max-height: 600px;*/
     margin-left: auto;
     margin-right: auto;
     background: #e1e1e1;
     overflow: hidden;
-     -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-li.placeholder { background: rgb(255,240,120);}
-li.placeholder:before {
-  content: "Drop here"; color: rgb(225,210,90);
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 ::-webkit-scrollbar{
     display: none;
+}
+#content{
+    min-height: 100%
+}
+.landingMenuTable{
+    width: 100%;
 }
 button{
     height: 32px;
@@ -31,8 +31,231 @@ button{
     padding: 2px 10px;
     border: none;
 }
-#content{
-    min-height: 100%
+.circularButton{
+    text-align: center;
+    width:191px;
+    background-color: #5d5480;
+    color:white;
+    position: relative;
+    margin-top: 3px;
+    margin-right: auto;
+    margin-left: auto;
+    height:50px;
+    overflow: hidden;
+    border-radius: 25px;
+    padding: 3px;
+    border: 1px solid rgb(129,138,144);
+    box-shadow: 0 0 6px black;
+}
+.circularButton_TATA{
+    text-align: center;
+    width:191px;
+    background-color: #a9a9a9;
+    color:black;
+    position: relative;
+    margin-top: 8px;
+    margin-right: auto;
+    margin-left: auto;
+    height:50px;
+    overflow: hidden;
+    border-radius: 32px;
+    padding: 3px;
+    border: 8px solid rgb(129,138,144);
+    box-shadow: 0 0 6px black;
+}
+.touchActive_TATA{
+    background-color: #5d5480;
+    color:#e1e1e1;
+}
+.touchActive{
+    background-color: #332a5f;
+    color:#e1e1e1;
+}
+.modal-close{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    padding: 0px;
+    border-radius: 46px;
+    background: radial-gradient(#bbb,#bbb 68%, transparent 68%);
+    z-index: 4;
+    float: right;
+    right: -20px;
+    top: -18px;
+}
+.custom-modal{
+    position: fixed; /* Stay in place */
+    z-index: 4; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%; /* Full height */
+    overflow-x: hidden;
+    overflow-y:  hidden; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.modal-outer{
+    position: relative;
+    margin-top: 25px;
+    width: 90%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.modal-content{
+    background-color: #362c66;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    top: 0px;
+    position: relative;
+    border: 0px solid gray;
+    max-height: 500px;
+}
+.closeIcon{
+    width: 50px;
+}
+
+/**End of styling general elements on the page**/
+
+/**Styling Navigation section**/
+.mixtureSection{
+    width:500px;
+    background-color: #cccccc;
+    border-radius:25px;
+    display: inline-block;
+    margin-top:20px;
+    text-align: center;
+    padding: 8px;
+    margin-left:50px;
+}
+.mixtureName{
+    float:right;
+    width:300px;
+    font-size: 22px;
+    position: relative;
+    left:-10px;
+}
+.status{
+    width:320px;
+    background-color: #888888;
+    border-radius:25px;
+    float:right;
+    font-size: 18px;
+}
+.logbuttCell{
+    width: 46px;
+    height: 100px;
+}
+.logbuttCell button{
+    height: 50px;
+ }
+.logbuttCell button{
+    border: none;
+    background: transparent;
+}
+.logbuttCell button::after{
+    background-size: contain;
+    height: 40px;
+    width: 40px;
+    margin-top: -10px;
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+.confbuttCell{
+    width: 46px;
+    height: 100px;
+}
+.confbuttCell button{
+    height: 60px;
+}
+.confbuttCell button::after{
+    background-size: contain;
+    height: 48px;
+    width: 50px;
+    margin-top: -10px;
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+.confbuttCell button{
+    border: none;
+    background: transparent;
+}
+.config::after{
+    float: right;
+    content: " ";
+    background: url('../assets/config.svg');
+}
+.config_w::after{
+    float: right;
+    content: " ";
+    background: url('../assets/config_w.svg');
+}
+/**Styling the bottom sections**/
+.teaAndFlavourSection{
+    width:650px;
+    height:205px;
+    background-color: #cccccc;
+    border-radius:25px;
+    padding: 10px;
+}
+.addBackSection{
+    width:300px;
+    height: 205px;
+    background-color: #cccccc;
+    border-radius: 25px;
+    margin-right:3px;
+    margin-top: -225px;
+    float: right;
+    padding: 10px;
+    font-size: 18px;
+    
+}
+.sideButtonsSection{
+    width:250px;
+    height:595px;
+    background-color: #cccccc;
+    border-radius: 25px;
+    margin-left:8px;
+}
+.lineGraphSection{
+    width: 985px;
+    height: 260px;
+    margin-top:10px;
+    background-color: #cccccc;
+    border-radius: 25px;
+    padding:10px;
+}
+/**Styling tables **/
+.categoryTable{
+    width:100%;
+    height: 100%;
+    text-align: center;
+    font-size: 18px;
+}
+.addBackTable{
+    margin-top: 5px;
+    width:100%;
+    height: 100%;
+    text-align: center;
+}
+.circularButton_sp{
+    text-align: center;
+    width:191px;
+    background-color: #e1e1e1;
+    position: relative;
+    margin-top: 8px;
+    margin-right: auto;
+    margin-left: auto;
+    height:50px;
+    overflow: hidden;
+    border-radius: 32px;
+    padding: 3px;
+    border: 1px solid #818a90;
+    box-shadow: 0 0 6px black;
 }
 .react-contextmenu {
     background-color: #fff;
@@ -518,21 +741,6 @@ li {
     background: url('../assets/circle.svg');
     background-repeat: no-repeat;
 }
-.circularButton{
-    text-align: center;
-    width:191px;
-    background-color: #484074;
-    position: relative;
-    margin-top: 8px;
-    margin-right: auto;
-    margin-left: auto;
-    height:50px;
-    overflow: hidden;
-    border-radius: 32px;
-    padding: 3px;
-    border: 8px solid rgb(129,138,144);
-    box-shadow: 0 0 6px black;
-}
 .circularButton_FT{
     text-align: center;
     width:191px;
@@ -547,30 +755,6 @@ li {
     padding: 3px;
     border: 8px solid rgb(129,138,144);
     box-shadow: 0 0 6px black;
-}
-.touchActive{
-    background-color: #332a5f;
-    color:#e1e1e1;
-}
-
-.circularButton_sp{
-    text-align: center;
-    width:191px;
-    background-color: #e1e1e1;
-    position: relative;
-    margin-top: 8px;
-    margin-right: auto;
-    margin-left: auto;
-    height:50px;
-    overflow: hidden;
-    border-radius: 32px;
-    padding: 3px;
-    border: 8px solid #818a90;
-    box-shadow: 0 0 6px black;
-}
-.touchActive_sp{
-    background-color: #2098d2;
-    color:#e1e1e1;
 }
 .touchActive_FT{
     background-color: #5d5480;
@@ -602,7 +786,7 @@ li {
 }
 
 .login::after{
-     height: 40px;
+    height: 40px;
     width: 40px;
     float: right;
     content:" ";
@@ -611,7 +795,7 @@ li {
 
 }
 .logout::after{
-     height: 40px;
+    height: 40px;
     width: 40px;
     float: right;
     content:" ";
@@ -669,22 +853,6 @@ li {
     width: 130px;
     padding: 5px;
     background: white;
-}
-.custom-modal{
-    /*display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 4; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    margin-left: auto;
-    margin-right: auto;
-    height: 100%; /* Full height */
-    overflow-x: hidden;
-    overflow-y:  hidden; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-
 }
 .pop-modal{
     /*display: none; /* Hidden by default */
@@ -1226,21 +1394,6 @@ li {
     z-index: 1;
     position: relative;
 }
-.modal-content{
-    background-color: #362c66;
-    padding: 20px;
-    border: 1px solid #888;
-    /* width: 80%; */
-    border-radius: 10px;
-    top: 0px;
-    position: relative;
-    border: 0px solid gray;
-    /*box-shadow: inset 0 0 29px 14px rgba(128, 128, 128, 0.3);*/
-    max-height: 500px;
-   /* overflow-y: hidden;scroll;*/
-
-    /* z-index: -1;/* Could be more or less, depending on screen size */
-}
 .selectmodal-content{
     /* margin: 15% auto; */
     /* margin-top: -30px;*/
@@ -1256,42 +1409,8 @@ li {
 
     /* z-index: -1;/* Could be more or less, depending on screen size */
 }
-.modal-close{
-
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    padding: 0px;
-    /* margin-top: 15%; */
-    /* margin-bottom: -20px; */
-    border-radius: 46px;
-    /* border: 1px solid #eee; */
-    background: radial-gradient(#bbb,#bbb 68%, transparent 68%);
-    z-index: 4;
-    float: right;
-    /* margin-left: auto; */
-    right: -20px;
-    top: -18px;
-    /* margin-right: 0px; */
-}
 .innerDiv{
     background: #c1c1c1;
-}
-.modal-outer{
-    position: relative;
-    margin-top: 25px;
-    width: 90%;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-}
-.modal-outer2{
-    position: relative;
-    margin-top: 25px;
-    width: 90%;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
 }
 .selectmodal-outer{
     position: relative;
@@ -1696,7 +1815,6 @@ li {
     padding: 1px;
     text-align: center;
 }
-
 .example_path .example_block {
     position: absolute;
     width: 30px;
@@ -1717,7 +1835,6 @@ li {
     margin-bottom: 1px;
     /*border: 3px solid #000;*/
 }
-
 .example_path_i .example_block_i {
     position: absolute;
     width: 30px;
@@ -1732,7 +1849,6 @@ li {
 .panelControls{
     width: 100%;
 }
-
 .panelControls-mobile table{
     table-layout: fixed;
     margin-left: auto;
@@ -1742,7 +1858,6 @@ li {
     vertical-align: top;
 
 }
-
 .panelControls table { table-layout: fixed; 
     margin-left: auto;
     margin-right: auto;
@@ -1762,9 +1877,7 @@ li {
     position: relative;
 }
 .sItem label{
-
   width: 310px;
-   
 }
 .noChild{
     background: #808a90;
@@ -1773,7 +1886,6 @@ li {
     padding-left: 6px;
     line-height: 57px;
 }
-
 .hasChild{
     border: 5px solid #818a90;
     background: rgba(240, 240, 240, 0.2);
@@ -1799,20 +1911,16 @@ li {
 .touchDown{
     background: rgba(100,100,100, 0.5)
 }
-
 .txtLeft{
     text-align: -webkit-right;
 }
 .panelButton{
-   
-    
     cursor:pointer;
     background-color:#eee;
     color:#7B8585;
     height: 40px;
     width: 125px;
     font-size: 18px;
-    
 }
 .ledBar{
     font-size:16px;
@@ -2041,3 +2149,39 @@ li {
     width: 100%;
     border-spacing: 0px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+ 
+

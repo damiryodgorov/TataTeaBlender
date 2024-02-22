@@ -1141,7 +1141,6 @@ function sendReboot(){
     rq.end()
 }
 function sendTftp(fpath, opts){
-
   if(typeof opts == 'undefined'){
     opts = {}
   }
@@ -1154,6 +1153,7 @@ function sendTftp(fpath, opts){
           'Content-Length': data.length
         }
     }
+    
     let rq = HTTP.request(options, rs => {
         console.log(`statusCode: ${rs.statusCode}`)
         rs.on('data', d => {
@@ -1399,6 +1399,9 @@ wss.on('connection', function(scket, req){
         sendTftp(file.filename, file.opts)
       }
     })
+  })
+  socket.on('getTftp', function(file){
+    sendTftp('/batches/'+file.filename, file.opts)
   })
   socket.on('sendTftp',function(fpath){
     let opts = {}

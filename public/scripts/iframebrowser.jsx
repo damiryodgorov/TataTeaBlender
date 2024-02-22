@@ -47,29 +47,33 @@ class NavWrapper extends React.Component{
 			}else{
 				dsps.forEach(function (d) {
 				// body...
-				if(self.state.lastLink == 'http://'+d.ip+'/cw.html'){
-				socket.emit('setIp', d.ip)
-				setTimeout(function(){
-					window.location.href = 'http://'+d.ip+'/cw.html'
+					if(self.state.lastLink == 'http://'+d.ip+'/cw.html'){
+						socket.emit('setIp', d.ip)
+						setTimeout(function(){
+							window.location.href = 'http://'+d.ip+'/cw.html'
+						},100)
+					}
 
-				},100)
-				}
-
-				links.push('http://'+d.ip+'/cw.html')
-			})
-			self.setState({links:links})
+					links.push('http://'+d.ip+'/cw.html')
+				})
+				self.setState({links:links})
 			
 			}
-			})
+		})
 		setTimeout(function (argument) {
 			
 			self.loadInitPage();
-		}, 500)	
+		}, 10000)	
 	}
 	loadInitPage(){
 		if(socket.sock.readyState  ==1){
-			socket.emit('getLink');
-			this.locate();
+//			socket.emit('getLink');
+//			this.locate();
+			//window.location.href = 'http://192.168.50.50/cw.html?lane2=192.168.50.51'
+			//socket.emit('setIp', '192.168.10.60')
+			window.location.href = 'http://192.168.10.60/tata.html'
+			//window.location.href = 'http://192.168.10.60/cw.html'
+			socket.emit('setIp', '192.168.10.60')
 		}
 	}
 	onLinkClick(l){

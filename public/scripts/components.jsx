@@ -4,7 +4,8 @@ var SmoothieChart = require('./smoothie.js').SmoothieChart;
 var TimeSeries = require('./smoothie.js').TimeSeries;
 var createReactClass = require('create-react-class');
 var onClickOutside = require('react-onclickoutside');
-const vdefMapV2 = require('./vdefmap.json')
+const vdefMapV2 = require('./vdefmapcw.json')
+var labTransV2 = vdefMapV2['@labels']
 
 const SPARCBLUE1 = '#30A8E2'
 const FORTRESSPURPLE1 = '#362c66'
@@ -220,10 +221,14 @@ class Modal extends React.Component{
 		this.setState({show:false})
 	}
 	close(){
+		if(this.props.calibWindow == 'calibWindow')
+		{
+			this.props.onCancel()
+		}
 		var self = this;
 		////console.log(4530, self.props.onClose)
 		if(this.props.closeOv != true){
-			this.setState({show:false})
+				this.setState({show:false})
 			setTimeout(function(){
 				if(typeof self.props.onClose != 'undefined'){
 			
@@ -235,7 +240,6 @@ class Modal extends React.Component{
 			},50)
 		}else{
 			if(typeof self.props.onClose != 'undefined'){
-			
 				self.props.onClose();
 			}
 		}
@@ -294,6 +298,7 @@ class Modal extends React.Component{
 	}
 	render () {
 		var cont = '';
+		var className;
 		var h = !this.state.show
 		if(typeof this.props.override != 'undefined'){
 			if(this.props.override == 1){
@@ -303,18 +308,33 @@ class Modal extends React.Component{
 			}
 		}
 
-
 		if(!h){
 			var im =''
 			if(this.props.dfMeter){
 				im = <StealthMeterBar ref={this.mb} clear={this.clear} mobile={this.props.mobile}/>
 			}
-				cont = (<ModalCont x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
+			if(this.props.systemSettingTooltip){
+				cont = (<ModalCont systemSettingsTooltip={'yes'} x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
 					{im}{this.props.children}
-					<MessageModal ref={this.msgm}/>
+					<MessageModal language={this.props.language} ref={this.msgm}/>
 					</ModalCont>)
+			}
+			else{
+				if(this.props.onCancel){
+					cont = (<ModalCont x={this.props.x} onCancel={this.props.onCancel} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
+						{im}{this.props.children}
+						<MessageModal language={this.props.language} ref={this.msgm}/>
+						</ModalCont>)
+				}
+				else{
+					cont = (<ModalCont x={this.props.x} toggle={this.toggle} Style={this.props.Style} innerStyle={this.props.innerStyle} mobile={this.props.mobile}>
+						{im}{this.props.children}
+						<MessageModal language={this.props.language} ref={this.msgm}/>
+						</ModalCont>)
+				}
+			}
+				
 		
-
 		return(<div className={this.state.className} hidden={h}>
 			{cont}
 	</div>)
@@ -324,15 +344,22 @@ class Modal extends React.Component{
 	}
 	}
 }
+
 class ModalC extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {keyboardVisible:false}
 		this.toggle = this.toggle.bind(this);
 		this.handleClickOutside = this.handleClickOutside.bind(this);
+		this.endCalibration = this.endCalibration.bind(this);
 	}
 	toggle(){
 		this.props.toggle()
+	}
+	endCalibration(){
+		this.props.toggle()
+		if(this.props.onCancel)
+		{this.props.onCancel()}
 	}
 	handleClickOutside(e){
 		if(!this.state.keyboardVisible){
@@ -343,7 +370,13 @@ class ModalC extends React.Component{
 		var style= this.props.Style || {}
 		var cs = this.props.innerStyle || {}
 		var button = ''
-		
+		var className;
+		if(this.props.systemSettingsTooltip){
+			className = 'modal-outer2'
+		}
+		else{
+			className = 'modal-outer'
+		}
 		if(this.props.mobile){
 			cs.padding = 7;
 			cs.maxHeight = '83%'
@@ -352,10 +385,15 @@ class ModalC extends React.Component{
 			style.overflow = 'scroll'
 			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
 		}else if(this.props.x == true){
-			button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
+			if(this.props.onCancel!='undefined'){
+				button = <button className='modal-close' onClick={this.endCalibration}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
+			}
+			else{
+				button = <button className='modal-close' onClick={this.toggle}><img className='closeIcon' src='assets/Close-icon.svg'/></button>
+			}
 		}
 
-				return (<div className='modal-outer' style={style}>
+				return (<div className={className} style={style}>
 					
 				<div className='modal-content' style={cs}>
 				{button}
@@ -514,6 +552,7 @@ class TrendBar extends React.Component{
 
 			pctgs = [((this.props.low - this.props.lowerbound)*100)/range, ((this.props.high - this.props.lowerbound)*100)/range]
 			ranges = [this.props.low,this.props.high]
+			av_ranges = [this.props.t2,this.props.t1, this.props.nominal, this.props.high]
 			bgcolors = ['#aa0000a0','#00aa00a0','#aa0000a0']
 			colors = ['#ff0000','#00ff00','#ff0000']
 			bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + pctgs[0].toFixed(0) +  '%, #00aa00a0 ' +pctgs[0].toFixed(0)
@@ -522,21 +561,72 @@ class TrendBar extends React.Component{
 				bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + pctgs[0].toFixed(0) +  '%, #00aa00a0 ' +pctgs[0].toFixed(0)
 				+ '%, #00aa00a0 '+pctgs[1].toFixed(0)+'%, #dddd00a0 ' +pctgs[1].toFixed(0) + '%, #dddd00a0)';
 			}
-
-			if(tickerVal < ranges[0]){
-				color = colors[0]
-			}else if(tickerVal <= ranges[1]){
-				color = colors[1]
-			}else{
-				color = colors[2]
-				if(this.props.allowOverweight == 1){
-					color = "#ffdf00"
+			// console.log("bgstr", bgstr)
+			if(this.props.prodSettings["WeighingMode"] == 1)
+			{
+				if(tickerVal < av_ranges[0]){
+					color = colors[0]
+				}else if(tickerVal <= av_ranges[1] && this.props.weightPassed!== 1){
+					color = colors[1]
+				}else if(tickerVal <= av_ranges[2] && this.props.weightPassed!== 1){
+					color = colors[1]
+				}
+				else if(tickerVal <= av_ranges[3] && tickerVal > av_ranges[2]){
+					color = colors[1]
+				}
+				else{
+					color = colors[2]
+					if(this.props.allowOverweight == 1){
+						color = "#ffdf00"
+					}
 				}
 			}
-			labels = ranges.map(function(r,i) {
-				// body...
-				return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
-			})
+			else{
+				if(tickerVal < ranges[0]){
+					color = colors[0]
+				}else if(tickerVal <= ranges[1]){
+					color = colors[1]
+				}else{
+					color = colors[2]
+					if(this.props.allowOverweight == 1){
+						color = "#ffdf00"
+					}
+				}
+			}
+			
+			
+			// labels = ranges.map(function(r,i) {
+			// 	// body...
+			// 	return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+			// })
+			if(this.props.prodSettings["WeighingMode"] == 1){
+				
+				avwpctgs = [((this.props.t2 - this.props.lowerbound)*100)/range, ((this.props.t1 - this.props.lowerbound)*100)/range, ((this.props.nominal - this.props.lowerbound)*100)/range , ((this.props.high - this.props.lowerbound)*100)/range]
+
+				// colors = ['#ff0000','#00ff00','#ff0000']
+				bgstr = 'linear-gradient(90deg, #aa0000a0, #aa0000a0 ' + avwpctgs[0].toFixed(0) +  '%, #FFD700 ' +avwpctgs[0].toFixed(0)
+				+ '%, #FFD700 '+avwpctgs[1].toFixed(0)+'%, #FFFF00 ' +avwpctgs[1].toFixed(0) + '%, #FFFF00 '
+				+avwpctgs[2].toFixed(0) + '%, #00aa00a0 ' +avwpctgs[2].toFixed(0) + '%, #00aa00a0 '
+				+avwpctgs[3].toFixed(0) + '%, #aa0000a0 ' +avwpctgs[3].toFixed(0) + '%, #aa0000a0)';
+				// console.log("bgstr av", bgstr)
+
+				label_names_array = ['T2', 'T1' , labTransV2['Nominal'][this.props.language]['name'], labTransV2['Over'][this.props.language]['name']]
+				label_names = av_ranges.map(function(r,i) {
+					// body...
+					return <div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{label_names_array[i]}</div>
+					})
+				
+				labels = av_ranges.map(function(r,i) {
+					// body...
+					return <div style={{position:'absolute', left:avwpctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+				})
+			}
+			else {
+				labels = ranges.map(function(r,i) {
+					// body...
+					return <div style={{position:'absolute', left:pctgs[i].toFixed(0) +'%', width:50, marginLeft:-25, color:labclr}}>{(r*factor).toFixed(1)}</div>
+				})
+			}
 
 
 		}
@@ -544,6 +634,19 @@ class TrendBar extends React.Component{
 		var path = 'example_path'
 		var block = 'example_block'
 		//console.log(bgstr)
+		if(this.props.prodSettings["WeighingMode"] == 1){
+			return (
+				<div className='tickerBox' style={{position:'relative', height:40, color:'#e1e1e1'}}>
+				<div style={{height:20,display:'block',fontSize:16}}>{label_names}</div>
+				<div style={{height:20,display:'block',fontSize:16}}>{labels}</div>
+				<div style={{background:'#000', borderRadius:5}}><div className={path} style={{background:bgstr, height:25,borderRadius:5}}>
+					<div className={block} style = {{left:((tickerVal-this.props.lowerbound)*100)/range+'%',backgroundColor:color, height:25, width:20, marginLeft:-10}}/>
+				</div></div>
+				
+				</div>
+			)
+		}
+
 		return (
 			<div className='tickerBox' style={{position:'relative', height:40, color:'#e1e1e1'}}>
 			<div style={{height:20,display:'block',fontSize:16}}>{labels}</div>
@@ -745,6 +848,7 @@ class AuthfailModal extends React.Component{
 		this.show = this.show.bind(this);
 		this.close = this.close.bind(this);
 		this.forgot = this.forgot.bind(this);
+		this.tryAgain = this.tryAgain.bind(this);
 	}
 	show (userid, ip) {
 		this.setState({show:true, userid:userid,ip:ip})
@@ -754,15 +858,21 @@ class AuthfailModal extends React.Component{
 		setTimeout(function () {
 			self.setState({show:false})
 		},100)
-		
 	}
 	forgot(){
 		this.props.forgot(this.state.userid,this.state.ip);
 	}
+	tryAgain(){
+		var self = this;
+		setTimeout(function () {
+			self.setState({show:false})
+		},100)
+		self.props.tryAgain();
+	}
 	render () {
 		var	cont = ""
 		if(this.state.show){
-		cont =  <AFModalCont vMap={this.props.vMap} accept={this.forgot} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</AFModalCont>
+		cont =  <AFModalCont vMap={this.props.vMap} tryAgain={this.tryAgain} accept={this.forgot} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}>{this.props.children}</AFModalCont>
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
 	{/*	<div className='modal-x' onClick={this.close}>
@@ -811,7 +921,7 @@ class AFModalC extends React.Component{
 	cancel(){
 		var self = this;
 		setTimeout(function(){
-			self.close();
+			self.props.tryAgain();
 			
 		}, 100)
 	}
@@ -820,10 +930,10 @@ class AFModalC extends React.Component{
 		var self = this;
 		
 	  return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Authentication Failed</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Authentication Failed'][this.props.language]['name']}</div>
 	  			{this.props.children}
-				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Try Again</button>
-				<button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>Forgot</button></div>
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{labTransV2['Try Again'][this.props.language]['name']}</button>
+				<button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>{labTransV2['Forgot'][this.props.language]['name']}</button></div>
 	  		
 		  </div>)
 
@@ -910,7 +1020,7 @@ class PrModalC extends React.Component{
 		
 		
 				 return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Progress</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Progress'][this.props.language]['name']}</div>
 	  			{this.props.children}
 				
 		  </div>)
@@ -940,20 +1050,15 @@ class MessageModal extends React.Component{
 		setTimeout(function () {
 			self.setState({show:false})
 		},100)
-		
 	}
 	
 	render () {
 		var	cont = ""
 		if(this.state.show){
+
 		cont =  <MModalCont vMap={this.props.vMap} accept={this.props.accept} language={this.props.language} interceptor={this.props.interceptor} name={this.props.name} show={this.state.show} onChange={this.onChange} close={this.close} value={this.props.value} options={this.props.options}><div style={{color:'#e1e1e1'}}>{this.state.message}</div></MModalCont>
 		}
 		return <div hidden={!this.state.show} className= 'pop-modal'>
-	{/*	<div className='modal-x' onClick={this.close}>
-			 	 <svg viewbox="0 0 40 40">
-    				<path className="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30" />
-  				</svg>
-			</div>*/}
 			{cont}
 		</div>
 	}
@@ -1005,16 +1110,16 @@ class MModalC extends React.Component{
 		
 		if(typeof this.props.accept != 'undefined'){
 			 return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Attention</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Attention'][this.props.language]['name']}</div>
 	  			{this.props.children}
-				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Cancel</button><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>Confirm</button></div>
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{labTransV2['Cancel'][this.props.language]['name']}</button><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.accept}>{labTransV2['Confirm'][this.props.language]['name']}</button></div>
 	  		
 		  </div>)
 			}else{
 				 return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Alert</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Alert'][this.props.language]['name']}</div>
 	  			{this.props.children}
-				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Confirm</button></div>
+				<div><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{this.props.children.props.children == labTransV2['Batch needs to be ended'][this.props.language]['name']+'.' || this.props.children.props.children == labTransV2['Can not change this setting'][this.props.language]['name']+'.'? labTransV2['Dismiss'][this.props.language]['name'] : labTransV2['Confirm'][this.props.language]['name']}</button></div>
 	  		
 		  </div>)
 			}
@@ -1109,11 +1214,11 @@ class LockModalC extends React.Component{
 		
 
 				 return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:1000, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Alert</div>
+	  			<div style={{display:'inline-block', width:1000, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{'Alert'}</div>
 	  			<div style={{height:500}}>
 	  			{this.props.children}
 	  			</div>
-	  			<div style={{display:'none'}}><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>Confirm</button></div>
+	  			<div style={{display:'none'}}><button style={{height:60, border:'5px solid #808a90',color:'#e1e1e1', background:'#5d5480', width:160, borderRadius:25,fontSize:30, lineHeight:'50px'}} onClick={this.cancel}>{labTransV2['Confirm'][this.props.language]['name']}</button></div>
 	  		
 		  </div>)
 	 
@@ -1208,7 +1313,7 @@ class AlertModalC extends React.Component{
 		var self = this;
 		
 	  return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Confirm Action</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Confirm Action'][this.props.language]['name']}</div>
 	  			{this.props.children}
 				<div>
 	  		<CircButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept']['english'].name}/>
@@ -1307,7 +1412,7 @@ class AccModalC extends React.Component{
 		var self = this;
 		
 	  return( <div className='alertmodal-outer'>
-	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>Access Denied</div>
+	  			<div style={{display:'inline-block', width:400, marginRight:'auto', marginLeft:'auto', textAlign:'center', color:'#fefefe', fontSize:30}}>{labTransV2['Access Denied'][this.props.language]['name']}</div>
 	  			{this.props.children}
 				<div>
 	  		<CircButton style={{height:45,display:'inline-block', border:'5px solid #808a90', marginLeft:2, marginRight:2, color:'#e1e1e1', width:156, borderRadius:25, fontSize:30, lineHeight:'50px', display:'inline-block'}} onClick={this.accept} lab={vdefMapV2['@labels']['Accept']['english'].name}/>
@@ -1365,14 +1470,14 @@ class MessageConsole extends React.Component{
 		var wrapper = {width:'100%', height:88, marginLeft:'auto', marginRight:'auto', marginTop:10}
 		var rptxt = vdefMapV2['@labels']['Running Product'][this.props.language]['name'];
 		if(!this.props.live){
-			rptxt = 'Not Connected'
+			rptxt = labTransV2['Not Connected'][this.props.language]['name']
 		}
 		var line1 = <div style={{display:'block', height:34, width:'100%', marginBottom:-3}}>{rptxt}</div>
 		var line2 = 	<div style={{display:'block', height:34, width:'100%', fontSize:25}}>{this.props.prodName}</div>
 		var textColor = '#eee'
 		if(fActive){
-			var fref = 'Faults'
-			var wref = 'Warnings'
+			var fref = labTransV2['Faults'][this.props.language]['name']
+			var wref = labTransV2['Warnings'][this.props.language]['name']
 			var fstr = this.props.faultArray.length + " " +vdefMapV2['@labels'][fref][this.props.language].name
 			var wstr = ''
 			if(this.props.warningArray.length > 0){
@@ -1382,10 +1487,10 @@ class MessageConsole extends React.Component{
 				}else{
 
 					if(faultCount == 1){
-						fref = 'Fault'
+						fref = labTransV2['Fault'][this.props.language]['name']
 					}
 					if(this.props.warningArray.length == 1){
-						wref = 'Warning'
+						wref = labTransV2['Warning'][this.props.language]['name']
 					}
 					fstr = faultCount + " " + vdefMapV2['@labels'][fref][this.props.language].name; 
 					wstr =  this.props.warningArray.length + " " +vdefMapV2['@labels'][wref][this.props.language].name
@@ -1507,7 +1612,7 @@ class CircButton extends React.Component{
 		if(!this.props.disabled){
 			this.props.onClick();
 		}else{
-			toast('Test is not configured')
+			toast(labTransV2['Test is not configured'][this.props.language]['name'])
 		}
 	}
 	onTouchStart (){

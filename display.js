@@ -319,7 +319,9 @@ app.post('/updateDisplay', function(){
       // body...
       if(fs.existsSync('/media/usb_stick/FortressTechnology/SATUPDATE.tar.gz')){
          //update pi
-         updateMe();
+         setTimeout(function(){
+           updateMe();
+         },5000)
       } 
 
     })
@@ -328,7 +330,9 @@ app.post('/updateDisplay', function(){
   }else{
     if(fs.existsSync('/media/usb_stick/FortressTechnology/SATUPDATE.tar.gz')){
     //update pi
-    updateMe();
+      setTimeout(function(){
+        updateMe();
+      },5000)
     }else{
       sendPost(_HOST, '/continueUpdate', JSON.stringify({}))
     }
@@ -348,7 +352,7 @@ wss.on('error', function(error){
 
 })
 //wss.on('')
-wss.on('connection', function(scket, req){ 
+wss.on('connection', function(scket, req){
   //console.log(1360, scket)
   exec('mount --options remount,rw /dev/root /')
   let loginLevel = 0;

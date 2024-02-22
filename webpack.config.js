@@ -75,11 +75,20 @@ var cw = {
 }
 
 module.exports = {
+  //module:'development',
+  //devtool: 'inline-source-map',
   entry: {
-    md:'./public/index.js',
+    
     cw:'./public/cw.js',
+    combo:'./public/combo.js',
+    tata:'./public/tata.js',
     if:'./public/iframe.js',
-    xray:'./public/xray.js'
+    stealthMD:'./public/stealthMD.js'
+    /*
+    md:'./public/index.js',
+    xray:'./public/xray.js',
+    dual:'./public/dual.js',
+    */
   },
   output: { path: __dirname+ '/public/', filename: '[name].bundle.js' },
   module: {
